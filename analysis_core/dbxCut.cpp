@@ -4,7 +4,7 @@
 #include "dbxCut.h"
 #include <math.h>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -687,9 +687,46 @@ bool dbxCutPtof::select(AnalysisObjects *ao){
                    clearFoundResults();
                    return (true);
               }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+              if ( getParticleIndex(0) != 6213 ) {
+                 result=calc(ao);
+                 DEBUG("  res:"<< result << "\n");
+                 return (Ccompare( result ) );
+              } else {
+               DEBUG(getParticleIndex(0)<< "i  t"<< getParticleType(0)<<"\n");
+               DEBUG("DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
+               int ipart_max;
+// 0 is muon
+// 1 is electron
+// 2 is any jet // 3 is a b jet // 4 is light jet
+// 8 is gammas
+                switch (getParticleType(0)){
+                 case 0: ipart_max=ao->muos.size(); break;
+                 case 1: ipart_max=ao->eles.size(); break;
+                 case 2: ipart_max=ao->jets.size(); break;
+                 case 8: ipart_max=ao->gams.size(); break;
+                }
+
+               for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                 setParticleIndex(0, ipart);
+                 result=calc(ao);
+                 bool ppassed=Ccompare(result);
+                 DEBUG("\n tested:"<<ipart<< " res:"<< result << " =>"<< ppassed <<"\n");
+                 if (!ppassed) {
+                   switch (getParticleType(0)){
+                     case 0: ao->muos.erase(ao->muos.begin()+ipart); break;
+                     case 1: ao->eles.erase(ao->eles.begin()+ipart); break;
+                     case 2: ao->jets.erase(ao->jets.begin()+ipart); break;
+                     case 8: ao->gams.erase(ao->gams.begin()+ipart); break;
+                   }
+                 }
+               }
+
+               DEBUG("FINAL "<<ao->jets.size()<<" "<<ao->eles.size()<<" \n");
+
+               setParticleIndex(0,6213);
+               return true;
+              }//end of object selection
+              
 }
 
 float dbxCutPtof::calc(AnalysisObjects *ao)
@@ -825,12 +862,12 @@ bool dbxCutdRof::select(AnalysisObjects *ao){
                    clearFoundResults();
                    return (true);
               }
-              DEBUG(getParticleIndex(0)<<"  "<< getParticleIndex(1)<< "  "<< getParticleIndex(2)   <<"\n");
               if ( getParticleIndex(0) != 6213 ) {
                result=calc(ao);
                DEBUG(" res:"<< result << "\n");
                return (Ccompare( result ) );
               } else {
+               DEBUG(getParticleIndex(0)<<"  "<< getParticleIndex(1)<< "  "<< getParticleIndex(2)   <<"\n");
                DEBUG(" DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
                DEBUG(getParticleType(0)<<"  "<< getParticleType(1)<<"  " << getParticleType(2)  <<"\n");
                int ipart_max[2]; 
@@ -861,6 +898,7 @@ bool dbxCutdRof::select(AnalysisObjects *ao){
                      case 2: ao->jets.erase(ao->jets.begin()+ipart); break;
                      case 8: ao->gams.erase(ao->gams.begin()+ipart); break;
                    }
+                   break;
                  }
                }
 
