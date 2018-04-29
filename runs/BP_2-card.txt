@@ -1,0 +1,36 @@
+# PLEASE PAY ATTENTION TO SPACE BEFORE AND AFTER = SIGN
+# format is " variable = value "
+
+minpte  = 15.0  # min pt of electrons 
+minptm  = 15.0  # min pt of muons 
+minptj  = 15.0  # min pt of jets
+maxetae = 2.47  # max pseudorapidity of electrons  
+maxetam = 2.5   # max pseudorapidity of muons 
+maxetaj = 5.5   # max pseudorapidity of jets
+
+btag_lowthreshold_ATLASOD = 0.7892
+btag_lowthreshold_CMSOD   = 1.7400
+
+TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+
+###### USER DEFINITIONS
+
+
+
+algo __teknik2__
+def1 = "WH1 : JET_-1 JET_-1 "  # W boson of the first top
+def2 = "WH2 : JET_-11 JET_-11 "  # W boson of the second top
+def3 = "mWH1 : { WH1 }m "  # mass of W boson of the first top
+def4 = "mWH2 : { WH2 }m "  # mass of @ boson of the second top
+def5 = "mTopH1 : { WH1 JET_-2 }m "  # first top quark's mass
+def6 = "mTopH2 : { WH2 JET_-4 }m "  # second top quark's mass
+def7 = "WHbR1 : {WH1 , JET_-2 }R "  # angular distance between W1 and b jet
+def8 = "WHbR2 : {WH2 , JET_-4 }R "  # angular distance between W2 and b jet
+def9 = "Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2 " #chi2 for W finder
+def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
+cmd1 = "ALL "           # to count all events
+cmd2 = "nJET >= 6 "     # events with 6 or more jets
+cmd3 = "MET < 100 "     # fully hadronic events should have small MET
+cmd4 = "topchi2 + Wchi2 ~= 0 "  # reconstruct two hadronic Ws in the event
+cmd5 = "FillHistos "

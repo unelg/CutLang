@@ -1,0 +1,15 @@
+*.root
+*.eps
+*.pdf
+*.png
+*.lhco
+*.so
+a.out
+a.out.dSYM
+.DS_Store
+*pd.o
+*~
+*.par
+two2oned
+DBX2analysis
+AutoDict_*

@@ -1,0 +1,6 @@
+histo1 = "mWHh1 , Hadronic W reco (GeV), 50, 50, 150 ,1, mWH1 "
+histo2 = "mWHh2 , Hadronic W reco (GeV), 50, 50, 150 ,1, mWH2 "
+histo3 = "mTopHha1 , Hadronic top reco (GeV), 70, 0, 700 ,1, mTopH1 "
+histo4 = "mTopHhb1 , Hadronic top reco (GeV), 70, 0, 700 ,1, mTopH2 "
+histo5 = "WHbRh1 , Angular distance between W and bjet, 70, 0, 7 ,1, WHbR1 "
+histo6 = "WHbRh2 , Angular distance between W and bjet, 70, 0, 7 ,1, WHbR2 "

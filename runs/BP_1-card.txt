@@ -1,0 +1,53 @@
+# PLEASE PAY ATTENTION TO SPACE BEFORE AND AFTER = SIGN
+# format is " variable = value "
+
+minptp  = 10.0  # min pt of photons 
+minpte  =  7.0  # min pt of electrons 
+minptm  =  6.0  # min pt of muons 
+minptj  = 20.0  # min pt of jets
+
+maxetap = 2.37  # max pseudorapidity of photons  
+maxetae = 2.70  # max pseudorapidity of electrons  
+maxetam = 2.70  # max pseudorapidity of muons 
+maxetaj = 4.50  # max pseudorapidity of jets
+
+btag_lowthreshold_ATLASOD = 0.7892
+btag_lowthreshold_CMSOD   = 1.7400
+
+TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+
+###### USER DEFINITIONS
+
+######## USER OBJECTS
+obj1   = "JETclean : JET "
+cmd1-1 = "{ JET_ , ELE_ }dR >= 0.9 "
+
+#obj2   = "MUOclean : MUO "
+#cmd2-1 = "{ MUO_ , JETclean_ }dR >= 0.4 "
+
+#obj3   = "ELEclean : ELE "
+#cmd3-1 = "{ ELE_ , JETclean_ }dR >= 0.4 "
+
+#obj2   =  "PHOtight : PHO " 
+#cmd2-1 =  "{ PHO_ }Eta [] -1.37 1.37 "  
+
+#obj5   = "srJET : cleanJET "
+#cmd5-1 = "{JET_ , PHO_ }dR >= 0.4 "
+#cmd5-2 = "{cleanJET_ }Pt > 30 "
+#cmd5-3 = "{cleanJET_ }Eta [] -4.5 4.5 "
+
+cmd1 = " ALL "                            # to count all events
+cmd2 = " nJET  >= 2 "              # events with 1 or more tight photons
+cmd3 = " nJETclean  >= 2 "              # events with 1 or more tight photons
+
+#cmd2 = " nPHOtight  >= 1 "              # events with 1 or more tight photons
+#cmd3 = "{ PHOtight_0 }Pt > 150 "         # select photons[0].PT > 150
+#cmd4 = "{ PHOtight_0 , METLV_0 }dPhi > 0.4 "   # select dphi(photon[0].Phi, MET.Phi) > 0.4
+#############cmd5 = "MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
+#cmd5 = " MET > 8.5 "           # select METoverSqrtSumET > 8.5
+#cmd6 = "{ srJET_ }N <= 1 "                # reject jetsSR.size > 1
+#cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
+#cmd8 = "{ cleanMUO_ }N == 0 "             # select cleanmuons.size == 0
+#cmd9 = "{ cleanELE_ }N == 0 "             # select cleanelectrons.size == 0
+#cmd10 = "MET > 150 "    

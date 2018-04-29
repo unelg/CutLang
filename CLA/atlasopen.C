@@ -1,0 +1,175 @@
+#define atlasopen_cxx
+#include "atlasopen.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <signal.h>
+
+#include "dbx_electron.h"
+#include "dbx_muon.h"
+#include "dbx_jet.h"
+#include "dbx_a.h"
+#include "DBXNtuple.h"
+#include "analysis_core.h"
+#include "AnalysisController.h"
+
+//#define __DEBUG__
+extern void _fsig_handler (int) ;
+extern bool fctrlc;
+
+void atlasopen::Loop(analy_struct aselect, char *extname)
+{
+// Signal HANDLER
+   signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
+
+   if (fChain == 0) {
+          cout <<"Error opening the data file"<<endl; return;
+   }
+
+   int verboseFreq(aselect.verbfreq);
+   evt_data anevt;
+   float blow_th=0.7892;
+   int prev_RunNumber=-1;
+
+   map < string, int > syst_names;
+        syst_names["01_jes"]       = 2;
+   AnalysisController aCtrl(&aselect, syst_names);
+   aCtrl.Initialize(extname);
+   cout << "End of analysis initialization"<<endl;
+
+
+   TString CardName="BP_1-card.txt";
+   blow_th=ReadCard(CardName,"btag_lowthreshold_ATLASOD",blow_th);        
+  
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   if (aselect.maxEvents > 0) nentries=aselect.maxEvents;
+   for (Long64_t j=0; j<nentries; ++j) {
+
+       if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
+       if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
+       fChain->GetEntry(j);
+#ifdef __DEBUG__
+std::cout << "Read Event"<<std::endl;
+#endif
+/*
+       int RunNumber=137;
+       if (int(RunNumber)!=prev_RunNumber) {
+               cout << "Working on Run #:"<<RunNumber<<endl;
+               prev_RunNumber=RunNumber;
+       }
+*/
+       vector<dbxMuon>     muons;
+       vector<dbxElectron> electrons;
+       vector<dbxPhoton>   photons;
+       vector<dbxJet>      jets;
+
+//temporary variables
+       TLorentzVector  alv;
+       TVector2 met;
+       dbxJet      *adbxj;
+       dbxElectron *adbxe;
+       dbxMuon     *adbxm;
+       dbxPhoton   *adbxp;
+
+#ifdef __DEBUG__
+std::cout << "Begin Filling"<<std::endl;
+#endif
+
+        for (unsigned int i=0; i<lep_n; i++) {
+            alv.SetPtEtaPhiE( lep_pt[i]*0.001, lep_eta[i], lep_phi[i], lep_E[i]*0.001 ); // all in GeV
+            if (lep_type[i]==13) {
+                adbxm= new dbxMuon(alv);
+                adbxm->setCharge(lep_charge[i] );
+                adbxm->setEtCone(lep_etcone20[i]  );
+                adbxm->setPtCone(lep_ptcone30[i]  );
+                adbxm->setParticleIndx(i);
+                adbxm->setZ0(lep_z0[i] );
+                muons.push_back(*adbxm);
+                delete adbxm;
+            }
+            if (lep_type[i]==11) {
+                adbxe= new dbxElectron(alv);
+                adbxe->setCharge(lep_charge[i] );
+                adbxe->setParticleIndx(i);
+                adbxe->setEtCone(lep_etcone20[i]  );
+                adbxe->setPtCone(lep_ptcone30[i]  );
+                adbxe->setZ0(lep_z0[i] );
+                electrons.push_back(*adbxe);
+                delete adbxe;
+            }
+        }
+
+#ifdef __DEBUG__
+std::cout << "Muons and Electrons OK:"<< Electron_ <<std::endl;
+#endif
+
+/*
+//PHOTONS
+        for (unsigned int i=0; i<Photon_size; i++) {
+                alv.SetPtEtaPhiM( Photon_PT[i], Photon_Eta[i], Photon_Phi[i], 0 ); // all in GeV
+                adbxp= new dbxPhoton(alv);
+                adbxp->setCharge(0);
+                adbxp->setParticleIndx(i);
+                adbxp->setClusterE(Photon_EhadOverEem[i] );
+                photons.push_back(*adbxp);
+                delete adbxp;
+        }
+#ifdef __DEBUG__
+std::cout << "Photons OK:"<<Photon_size<<std::endl;
+#endif
+*/
+//JETS
+        for (unsigned int i=0; i<alljet_n; i++) {
+                alv.SetPtEtaPhiE( jet_pt[i]*0.001, jet_eta[i], jet_phi[i], jet_E[i]*0.001 ); // all in GeV
+                adbxj= new dbxJet(alv);
+                adbxj->setCharge(-99);
+                adbxj->setJVtxf(jet_jvf[i]);
+                adbxj->setParticleIndx(i);
+                adbxj->setFlavor(jet_trueflav[i] );
+                adbxj->set_isbtagged_77( jet_MV1[i] > blow_th ); // 5 is btag
+                jets.push_back(*adbxj);
+                delete adbxj;
+        }
+#ifdef __DEBUG__
+std::cout << "Jets:"<<Jet_<<std::endl;
+#endif
+//MET
+        met.SetMagPhi( met_et*0.001,  met_phi);
+#ifdef __DEBUG__
+std::cout << "MET OK"<<std::endl;
+#endif
+
+
+//------------ auxiliary information -------
+        anevt.run_no=runNumber;
+        anevt.lumiblk_no=1;
+        anevt.top_hfor_type=0;
+        anevt.event_no=eventNumber;
+        anevt.TRG_e= trigE;
+        anevt.TRG_m= trigM;
+        anevt.TRG_j= 0;
+        anevt.vxp_maxtrk_no= 9;
+        anevt.badjet=0;
+        anevt.mcevt_weight=1.0;
+        anevt.pileup_weight=1.0;
+        anevt.z_vtx_weight = 1.0;
+        anevt.weight_bTagSF_77 = 1.0;
+        anevt.weight_leptonSF = 1.0;
+        anevt.vxpType=0;
+        anevt.lar_Error=0;
+        anevt.tile_Error=0;
+        anevt.core_Flags=0;
+
+#ifdef __DEBUG__
+std::cout << "Filling finished"<<std::endl;
+#endif
+
+        AnalysisObjects a0={muons, electrons, photons, jets, met, anevt};
+        aCtrl.RunTasks(a0);
+
+  }// event loop ends.
+
+  aCtrl.Finalize();
+
+}
