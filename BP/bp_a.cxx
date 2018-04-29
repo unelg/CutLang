@@ -1,0 +1,727 @@
+#include "TParameter.h"
+#include <TRandom.h>
+#include "TText.h"
+
+#include "bp_a.h"
+#include "analysis_core.h"
+#include "dbx_a.h"
+
+//#define __VERBOSE3__
+#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
+
+#ifdef _CLV_
+     DEBUG( "--previous finder:  ");
+     DEBUG( acut->getName()<<" Found idx: "); for (int qq=0; qq<found_idx_vecs->size(); qq++) DEBUG(found_idx_vecs->at(qq)<<" "); DEBUG("\t");
+     DEBUG("found type<>origs:"); for (int qq=0; qq<found_type_vecs->size(); qq++) DEBUG(found_type_vecs->at(qq)<<"<>"<< found_idx_origs->at(qq)<<" "); DEBUG("\n");
+     DEBUG(" searchable types in this cut: "); 
+     for (int qq=0; qq<acut->getSearchableType(); qq++) DEBUG( acut->getSearchableType(qq)<<" "); DEBUG("  ");
+     DEBUG("ALL idxs in this cut: "); for (int qq=0; qq<acut->getParticleIndex(); qq++) DEBUG(acut->getParticleIndex(qq)<<" "); DEBUG("\t");
+#endif
+
+     if (found_idx_vecs->size() == 0) {cerr << "Found idx vector empty!!\n"; exit (23);}
+  // vector <int> itobeused; // store found idx for this histo
+  // vector <int> ttobeused; // store found idx for this histo
+     vector <int> alreadyused; // store already used found idx
+     vector<int>::iterator it;
+     vector<int> local_part_idxs;
+
+     for (int ipd=0; ipd< acut->getParticleIndex(); ipd++)  // this cut needs // loop over indices remove 999
+          if ( acut->getParticleIndex(ipd) != 999) local_part_idxs.push_back(acut->getParticleIndex(ipd));
+              
+     for (int ipd=0; ipd< acut->getSearchableType(); ipd++)  // this cut needs // loop over indices MUST
+        for (unsigned int itk=0; itk<found_idx_vecs->size(); itk++){ // read from found list.
+             if ( found_type_vecs->at(itk) == acut->getSearchableType(ipd)
+               && ( local_part_idxs[ipd]  < 0 )
+               && found_idx_origs->at(itk) == local_part_idxs[ipd]
+               ) {
+               it=find(alreadyused.begin(), alreadyused.end(), itk);
+               if ( it == alreadyused.end() ) { // not previously used
+                //itobeused.push_back(found_idx_vecs->at(itk));
+                //ttobeused.push_back(found_type_vecs->at(itk));
+                  ret_i->push_back(found_idx_vecs->at(itk));
+                  ret_t->push_back(found_type_vecs->at(itk));
+                  alreadyused.push_back(itk);
+               }
+             }
+     }// loop over all previously found idx
+   //*ret_i= itobeused; 
+   //*ret_t= ttobeused;
+     return ;
+}             
+
+
+int BPdbxA::plotVariables(int sel) {
+ return 0;  
+}
+
+//--------------------------
+int BPdbxA:: readAnalysisParams() {
+  int retval=0;
+
+/* --- we should do this whenever we can't find the txt file but if the ini file is around
+  string i2tconverter="./ini2txt.sh ";
+         i2tconverter+=cname;
+  retval=system(i2tconverter.data());
+  if (retval==0) cout<<"ini to txt convestion OK for:"<< cname <<"\n";
+
+*/
+
+  dbxA::ChangeDir(cname);
+  TString CardName=cname;
+          CardName+="-card.txt";
+
+   minptm     = ReadCard(CardName,"minptm",15.);
+   maxetam    = ReadCard(CardName,"maxetam",2.5);
+   minpte     = ReadCard(CardName,"minpte",15.);
+   maxetae    = ReadCard(CardName,"maxetae",2.5);
+   minptj     = ReadCard(CardName,"minptj", 15.);
+   maxetaj    = ReadCard(CardName,"maxetaj",2.5);
+   maxmet     = ReadCard(CardName,"maxmet", 30.);
+
+   TRGe = ReadCard(CardName,"TRGe",1);
+   TRGm = ReadCard(CardName,"TRGm",1);
+
+// ---------------------------DBX style defs
+    int kk=1;
+    map < string, string > def_names;
+    size_t apos = 0;
+    std::string subdelimiter = ":";
+    TString DefList2file="\n";
+    while (1){
+                  TString basedef="def";
+                          basedef+=kk++;
+                  string def0 = ReadCardString(CardName,basedef,"XXX");
+                  if (def0=="XXX") break;
+//                  cout << "==========-> def id:"<<kk-1<<") "<<def0<<endl;
+                  if ((apos=def0.find(subdelimiter)) != std::string::npos )  {
+                         std::string subtoken0, subtoken1;
+                         subtoken0 = def0.substr(0, apos); //
+                         subtoken1 = def0.substr(apos+subdelimiter.length(),std::string::npos); //
+                         subtoken1+=" ";
+//                       std::cout <<"DEFINE  "<<subtoken0<<" as "<<subtoken1<<std::endl;
+                         DefList2file+=subtoken0;
+                         DefList2file+=":";
+                         DefList2file+=subtoken1;
+                         DefList2file+="\n";
+                         TNamed *astr_tmp=new TNamed (subtoken0.data(), subtoken1.data());
+//                       TParameter<std::string> *astr_tmp=new TParameter<std::string> (subtoken0.data(), subtoken1,'f');
+//                                             astr_tmp->Write(); // can we overload merge on TName? or similar.
+//TParameter<std::string> is Foobar because of line 142 on TParameter.h :   fVal *= c->GetVal(); // can't be done with strings
+                         def_names[subtoken0]=subtoken1;
+                  } else{
+                  cout << "This def is problematic. STOP\n"; exit (3);
+                  }
+     }
+     TText info(0,0,DefList2file.Data());
+           info.SetName("CLA2defs");
+           info.Write();
+
+// ****************************************
+//---------------------------DBX style analysis object definitions
+// ****************************************
+     kk=1;
+     TString CutList2file="\n";
+     while (1){
+               TString basecut="obj";
+                       basecut+=kk++; 
+               string cut0 = ReadCardString(CardName,basecut,"XXX");
+               if (cut0=="XXX") break;
+               std::string subtoken0, subtoken1;
+               if ((apos=cut0.find(subdelimiter)) != std::string::npos )  {
+                         subtoken0 = cut0.substr(0, apos); //
+                         std::string::iterator end_pos = std::remove(subtoken0.begin(), subtoken0.end(), ' ');
+                         subtoken0.erase(end_pos, subtoken0.end());
+                         subtoken1 = cut0.substr(apos+subdelimiter.length(),std::string::npos); //
+                                               end_pos = std::remove(subtoken1.begin(), subtoken1.end(), ' ');
+                         subtoken1.erase(end_pos, subtoken1.end());
+                         std::cout <<"Object "<<subtoken0<<" is "<<subtoken1<<". ";
+                         obj_names.insert ( pair<string,string>(subtoken0,subtoken1) );
+               } else { std::cout <<"WRONG object definition!\n"; exit (1);}
+
+               CutList2file+=basecut;
+               CutList2file+=" : ";
+               CutList2file+=cut0;
+               CutList2file+="\n";
+               cout << "\n~******----> obj id:"<<kk-1<<") "<<cut0<<"\t";
+               int kj=1;
+               vector< vector<dbxCut*> > objSelList;
+               vector< vector<string>  > objOpeList;
+               while (1){
+                      basecut="cmd";
+                      basecut+=kk-1; 
+                      basecut+="-";
+                      basecut+=kj++; 
+                      string cut1 = ReadCardString(CardName,basecut,"XXX", false);
+                      if (cut1=="XXX") break;
+
+                      std::vector<dbxCut*> acutlist;
+                      acutlist.reserve(10);
+                      std::vector<std::string> q;
+                      q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                      objSelList.push_back(acutlist);
+                      objOpeList.push_back(q);
+
+                      CutList2file+=basecut;
+                      CutList2file+=" : ";
+                      CutList2file+=cut1;
+                      CutList2file+="\n";
+                      cout << "\n~~~~~~~~~~-> sel cmd id:"<<kj-1<<") "<<cut1<<"\t";
+               }// end of while 1 over cmds
+               pair< vector< vector<dbxCut*> >, vector< vector<string> > > anObjdef(objSelList, objOpeList);
+               obj_defs.insert(pair< string, pair< vector< vector<dbxCut*> >, vector< vector<string> > > >(subtoken0, anObjdef ) );
+     } // end of while 1 over objs
+
+// ****************************************
+// ---------------------------DBX style cuts
+         CutList2file="\n";
+         BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
+         eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+         int kFillHistos=0;
+         kk=1;
+
+         while (1){
+                  std::vector< std::pair<string,string> > obj2use;
+                  TString basecut="cmd";
+                          basecut+=kk++; 
+                  string cut0 = ReadCardString(CardName,basecut,"XXX");
+                  if (cut0=="XXX") break;
+
+                  for( map<string,string>::reverse_iterator it=obj_names.rbegin(); it!=obj_names.rend(); ++it) {
+                   std::size_t objfound =cut0.find(it->first);
+                   if (objfound !=std::string::npos) {
+                     DEBUG("using derived object "<< it->first<< " as "<<it->second );
+                     obj2use.push_back(std::pair<string,string>(it->first, it->second) );
+                   }
+                  }
+                  if (obj2use.size() > 0 ) levelObjectMap.insert( std::pair<int, vector<std::pair<string,string> > > (kk-1,obj2use)  );
+
+                  CutList2file+=basecut;
+                  CutList2file+=" : ";
+                  CutList2file+=cut0;
+                  CutList2file+="\n";
+
+//                  cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
+                  TString newLabels = cut0.data();
+                  string cut1;
+// loop over all chars. Put a space before and after each operator.
+                  for (int ic=0; ic<cut0.size(); ic++){
+                   if (cut0[ic] == '(' || cut0[ic] == ')' || cut0[ic] == '+' 
+                    || cut0[ic] == '-' || cut0[ic] == '^' || cut0[ic] == '/' 
+                    || cut0[ic] == '*' ) 
+                   {
+                    if (ic>0 && cut0[ic-1] != '_'){
+                       cut1.append(" ");
+                       cut1.append(cut0,ic,1);
+                       cut1.append(" ");
+                    }else { cut1.append(cut0,ic,1); }
+                   } else { cut1.append(cut0,ic,1); }
+                  }
+                  DEBUG("====>>>"<<cut1<<".\n");
+
+                  if (cut1.find("FillHistos")!=std::string::npos){ newLabels = "FillHistos-"+TString::Format("%d",++kFillHistos); }
+
+// do we have a definition?
+                 for( map<string,string>::reverse_iterator it=def_names.rbegin(); it!=def_names.rend(); ++it) {
+//                  cout << "\ndef:"<<it->first<<endl;
+                  std::size_t found =cut1.find(it->first);
+                  while ( found !=std::string::npos){
+//                  cout << "Replace with:"<<it->second<<"  ";
+                    cut1.replace(found,it->first.length(),it->second);
+//                    cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<" becomes ) "<<cut1<<"\t";
+                    found =cut1.find(it->first);
+                  }
+                 }
+                  eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
+                  std::vector<dbxCut*> acutlist;
+                  acutlist.reserve(10);
+                  std::vector<std::string> q;
+                  q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                  mycutlist.push_back(acutlist);
+                  myopelist.push_back(q);
+/////////DEBUG
+/*
+                  for ( unsigned int ic=0; ic<acutlist.size(); ic++) {
+                      cout<<" name:"<<acutlist[ic]->getName()<<"\t";
+                  }
+                  cout<<endl;
+
+                  unsigned int jc=0;
+                  for ( unsigned int ic=0; ic<q.size(); ic++) {
+                    if (q[ic]=="x"){
+                      cout<<acutlist[jc++]->getName();
+                      cout<<q[ic];
+                    } else {
+                      cout<<q[ic];
+                    }
+                  }
+                  cout<<endl;
+*/
+         } // end of while 1
+         cout << "\nWe have "<<mycutlist.size() << " CutLang Cuts\n";
+         if ( levelObjectMap.size() > 0) {
+              map <int, vector<std::pair<string,string> > >::iterator it;
+              for (it=levelObjectMap.begin(); it!=levelObjectMap.end(); ++it) {
+                  std::cout <<"Cut:"<< it->first << "  ";
+                  for (int iobj=0; iobj<it->second.size(); iobj++){
+                     std::cout << it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second;
+                  }
+                  std::cout <<"\n";
+              }
+         }
+         TText cinfo(0,0,CutList2file.Data());
+               cinfo.SetName("CLA2cuts");
+               cinfo.Write();
+
+// PUT ANALYSIS PARAMETERS INTO .ROOT //////////////
+	
+	TParameter<double> *minpte_tmp=new TParameter<double> ("minpte", minpte);
+	TParameter<double> *maxetae_tmp=new TParameter<double> ("maxetae", maxetae);
+	TParameter<double> *minptm_tmp=new TParameter<double> ("minptm", minptm);
+	TParameter<double> *maxetam_tmp=new TParameter<double> ("maxetam", maxetam);
+	TParameter<double> *minptj_tmp=new TParameter<double> ("minptj", minptj);
+	TParameter<double> *maxetaj_tmp=new TParameter<double> ("maxetaj", maxetaj);
+	TParameter<double> *TRGe_tmp=new TParameter<double> ("TRGe", TRGe);
+	TParameter<double> *TRGm_tmp=new TParameter<double> ("TRGm", TRGm);
+	
+    minpte_tmp->Write("minpte");
+    maxetae_tmp->Write("maxetae");
+    minptm_tmp->Write("minptm");
+    maxetam_tmp->Write("maxetam");
+    minptj_tmp->Write("minptj");
+    maxetaj_tmp->Write("maxetaj");
+    TRGe_tmp->Write("TRGe");
+    TRGm_tmp->Write("TRGm");
+
+  return retval;
+}
+
+int BPdbxA:: printEfficiencies() {
+  int retval=0;
+  PrintEfficiencies(eff);
+  return retval;
+}
+
+int BPdbxA:: initGRL() {
+  int retval=0;
+  grl_cut=true;
+  return retval;
+}
+
+int BPdbxA:: bookAdditionalHistos() {
+        int retval=0;
+        dbxA::ChangeDir(cname);
+        int kk=1;
+        std::string Hsubdelimiter = ",";
+        char HCardName[64];
+        size_t apos = 0;
+
+// read histo defitions from file
+        sprintf(HCardName,"%s-histos.txt",cname);
+        vector <pair <int, std::vector<dbxCut*> > > aa; 
+        std::vector<dbxCut*> aajunk;
+
+#ifdef __VERBOSE3__
+	// Sezen's handmade histograms
+	mWHh1 = new TH1D("mWHh1", "Hadronic W best combi (GeV)", 50, 50, 150);
+	mWHh2 = new TH1D("mHWh2", "Hadronic W best combi (GeV)", 50, 50, 150);
+	mTopHh1 = new TH1D("mTopHh1", "Hadronic top combi (GeV)", 70, 0, 700);
+	mTopHh2 = new TH1D("mTopHh2", "Hadronic top combi (GeV)", 70, 0, 700);
+	WHbRh1 = new TH1D("WHbRh1", "Angular distance between W1 and bjet", 70, 0, 7);
+	WHbRh2 = new TH1D("WHbRh2", "Angular distance between W2 and bjet", 70, 0, 7);
+	xWHbRh1 = new TH1D("xWHbRh1", "Hadronic top combi (GeV) after angular cut", 70, 0, 700);
+	xWHbRh2 = new TH1D("xWHbRh2", "Hadronic top combi (GeV) after angular cut", 70, 0, 700);
+#endif
+
+// ---------------------------DBX style defs from the main file
+ TString CardName=cname;
+         CardName+="-card.txt";
+         map < string, string > def_names;
+         std::string subdelimiter = ":";
+         while (1){
+                  TString basedef="def";
+                          basedef+=kk++;
+                  string def0 = ReadCardString(CardName,basedef,"XXX");
+                  if (def0=="XXX") break;
+//                  cout << "==========-> def id:"<<kk-1<<") "<<def0<<endl;
+                  if ((apos=def0.find(subdelimiter)) != std::string::npos )  {
+                         std::string subtoken0, subtoken1;
+                         subtoken0 = def0.substr(0, apos); //
+                         subtoken1 = def0.substr(apos+subdelimiter.length(),std::string::npos); //
+                         subtoken1+=" ";
+//                       std::cout <<"DEFINE  "<<subtoken0<<" as "<<subtoken1<<std::endl;
+                         TNamed *astr_tmp=new TNamed (subtoken0.data(), subtoken1.data());
+//                       TParameter<std::string> *astr_tmp=new TParameter<std::string> (subtoken0.data(), subtoken1,'f');
+//                                             astr_tmp->Write(); // can we overload merge on TName? or similar.
+//TParameter<std::string> is Foobar because of line 142 on TParameter.h :   fVal *= c->GetVal(); // can't be done with strings
+                         def_names[subtoken0]=subtoken1;
+                  } else{
+                  cout << "This def is problematic. STOP\n"; exit (3);
+                  }
+        }
+
+        aa.push_back( make_pair(-1, aajunk) );
+        for (int dummy=0; dummy<9; dummy++) { histos_order.push_back( aa ); b_histos[dummy]=-1;}
+        kk=1;
+        while (1){
+                  TString basedef="histo";
+                          basedef+=kk++;
+                  string def0 = ReadCardString(HCardName,basedef,"XXX");
+                  if (def0=="XXX") break;
+                  string def1;
+// loop over all chars. Put a space before and after each operator.
+                  for (int ic=0; ic<def0.size(); ic++){
+                   if (def0[ic] == '(' 
+                    || def0[ic] == ')' 
+                    || def0[ic] == '+' 
+                    || def0[ic] == '-' 
+                    || def0[ic] == '^' 
+                    || def0[ic] == '/' 
+                    || def0[ic] == '*' ) 
+                   {
+                    if (ic>0 && def0[ic-1] != '_'){
+                       def1.append(" ");
+                       def1.append(def0,ic,1);
+                       def1.append(" ");
+                    }else { def1.append(def0,ic,1); }
+                   } else { def1.append(def0,ic,1); }
+                  }
+                  DEBUG("====>>>"<<def1<<".\n");
+
+// do we have a definition?
+                 for( map<string,string>::reverse_iterator it=def_names.rbegin(); it!=def_names.rend(); ++it) {
+                  std::size_t found =def1.find(it->first); 
+                  while ( found !=std::string::npos){
+//                    cout << "Replace with:"<<it->second<<"  ";
+                    def1.replace(found,it->first.length(),it->second);
+//                    cout << "\n+++=> histo id:"<<kk-1<<" becomes ) "<<def1<<"\t";
+                    found =def1.find(it->first);
+                  }
+                 }
+
+// ------- the rest of the histo definitions
+                  if ((apos=def1.find(Hsubdelimiter)) != std::string::npos )  {
+                         std::string subtoken0, subtoken1;
+                         int hnbin, horder;
+                         float hxmin, hxmax;
+                         string hargument;
+
+                         subtoken0 = def1.substr(0, apos); // histo name
+                         def1.erase(0, apos + Hsubdelimiter.length());
+                         apos=def1.find(Hsubdelimiter);     // histo title
+                         subtoken1 = def1.substr(0, apos); // histo title
+                         def1.erase(0, apos + Hsubdelimiter.length());
+                         apos=def1.find(Hsubdelimiter);     // histo nbins
+                         hnbin=atoi(def1.substr(0, apos).data());
+
+                         if (subtoken0.find("Basics") != std::string::npos  ) {
+                          cout << "\nBasics Histos @:"<<hnbin<<" using id:"<< atoi(subtoken1.data() ) << "  ";
+                          b_histos[hnbin]=atoi(subtoken1.data() );
+                         } else {
+
+                            def1.erase(0, apos + Hsubdelimiter.length());
+                            apos=def1.find(Hsubdelimiter);            //histo xmin
+                            hxmin=atof(def1.substr(0, apos).data()); //histo xmin
+                            def1.erase(0, apos + Hsubdelimiter.length());
+                            apos=def1.find(Hsubdelimiter);            //histo xmax
+                            hxmax=atof(def1.substr(0, apos).data()); //histo xmax
+                            def1.erase(0, apos + Hsubdelimiter.length());
+                            apos=def1.find(Hsubdelimiter);            //histo order
+                            horder=atoi(def1.substr(0, apos).data());//histo order
+                            def1.erase(0, apos + Hsubdelimiter.length());
+                            apos=def1.find(subdelimiter);     // histo argument
+                            hargument = def1.substr(0, apos); // histo argument
+
+          //                  std::cout <<"\nHISTO ---:  "<<subtoken0<<" name:"<<subtoken1<< "."<< " nbin:"<<hnbin<<" ["<<hxmin<<","<<hxmax<<"]" << " @:"<<horder<<" w/"<<hargument << " ";
+                            a_histos[kk-1]=new TH1F(subtoken0.data(), subtoken1.data(), hnbin, hxmin, hxmax);
+
+                            std::vector<dbxCut*> acutlist;
+                            acutlist.reserve(10);
+                            BPcutlist.cutTokenizer(hargument, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+
+                            histos_order.at(horder-1).push_back( make_pair (kk-1, acutlist) );
+                         }
+
+                  } else{
+                  cout << "This histo is problematic. STOP\n"; exit (3);
+                  }
+        }
+  return retval;
+}
+
+/////////////////////////
+int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector <dbxPhoton> photons,
+                               vector<dbxJet> jets, TVector2 met, evt_data anevt) {
+  int retval=0;
+  int cur_cut=1;
+
+  vector<dbxElectron>  goodElectrons;
+  vector<dbxMuon>      goodMuons;
+  vector<dbxJet>       goodJets;
+  vector<dbxPhoton>    gams;
+
+//----------------------selection of good electrons-----------------
+        for (UInt_t i=0; i<electrons.size(); i++) {
+               if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
+                  &&(electrons.at(i).lv().Eta() < maxetae )  // and maximum eta.
+                  )
+                  goodElectrons.push_back( electrons.at(i) );
+        }
+
+//----------------------selection of good muons-----------------
+        for (UInt_t i=0; i<muons.size(); i++) {
+               TLorentzVector mu4p = muons.at(i).lv();
+               if (    (mu4p.Pt()  > minptm)
+                    && (fabs(mu4p.Eta()) < maxetam)
+                  )
+                  goodMuons.push_back(muons.at(i));
+        }
+
+//------------selection of good jets----------------------------------
+        for (UInt_t i=0; i<jets.size(); i++) {
+               TLorentzVector jet4p = jets.at(i).lv();
+               if (   (fabs(jet4p.Pt())  > minptj ) // this corresponds to min PT cut
+                    && (jet4p.E() >= 0)
+                    && (fabs(jet4p.Eta())<= maxetaj) 
+                   )
+                   goodJets.push_back(jets.at(i) );
+        }
+
+///////
+        double theLeptonWeight = 1;
+        double theFourJetWeight = 1;
+        unsigned int njets;
+        double evt_weight = 1;
+
+// --------- INITIAL  # events  ====> C0
+        eff->Fill(cur_cut, 1);
+        cur_cut++;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    AnalysisObjects a0={goodMuons, goodElectrons, gams, goodJets, met, anevt};
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~cutLang style preselection
+         map < string, vector<dbxElectron> > ele_sets;
+         map < string, vector<dbxMuon>     > muo_sets;
+         map < string, vector<dbxJet>      > jet_sets;
+         map < string, vector<dbxPhoton>   > pho_sets;
+
+// basic analysis objects---- are they needed?
+         ele_sets["ELE"]=goodElectrons;
+         muo_sets["MUO"]=goodMuons;
+         pho_sets["PHO"]=gams;
+         jet_sets["JET"]=goodJets;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// do we have other objects?
+         if ( obj_names.size() > 0) { // remove the if and check...
+            for( map<string,string>::iterator anobj=obj_names.begin(); anobj!=obj_names.end(); ++anobj) {
+             DEBUG("-----will now define:"<<anobj->first <<" as "<< anobj->second[0]  <<endl);
+              map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> > > >::iterator acutset;
+              acutset=obj_defs.find(anobj->first);
+              if (acutset != obj_defs.end()){
+               DEBUG("a0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
+               for (unsigned int k=0; k<(acutset->second).first.size(); k++){
+                 unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase
+                 DEBUG("Obj def sel:"<<((acutset->second).first)[k][j]->getName() <<"    \n");
+                 ((acutset->second).first)[k][j]->select(&a0); // execute the selection cut
+                 DEBUG("b0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
+                 switch ( anobj->second[0] ){
+                  case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(anobj->first, a0.jets) ); break;
+                  case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(anobj->first, a0.eles) ); break;
+                  case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(anobj->first, a0.muos) ); break;
+                  case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(anobj->first, a0.gams) ); break;
+                 }
+
+               }//loop over definition cuts
+              }//valid cutset for current object
+            }//end of object definition loop
+         }// any obj def?
+
+#ifdef _CLV_
+         for( map<string, vector<dbxJet> >::iterator apart=jet_sets.begin(); apart!=jet_sets.end(); ++apart) 
+          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
+         for( map<string, vector<dbxElectron> >::iterator apart=ele_sets.begin(); apart!=ele_sets.end(); ++apart) 
+          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
+         for( map<string, vector<dbxMuon> >::iterator apart=muo_sets.begin(); apart!=muo_sets.end(); ++apart) 
+          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
+         for( map<string, vector<dbxPhoton> >::iterator apart=pho_sets.begin(); apart!=pho_sets.end(); ++apart) 
+          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
+#endif
+
+    unsigned int btagSF_counter=0;
+    unsigned int FillHistos_counter=0;
+             int ahistid;
+           float ahistval;
+DEBUG("------------------------------------------------- event ID:"<<anevt.event_no<<" \n");
+
+
+    found_type_vecs.clear(); found_idx_vecs.clear(); found_idx_origs.clear();
+    for (unsigned int k=0; k<mycutlist.size(); k++){
+           if (mycutlist[k][0]->getOp()=="~=" || mycutlist[k][0]->getOp()=="!=")  // closest to or far away from
+              mycutlist[k][0]->clearFoundVector(); //---- clear previous events findings.
+    }
+
+// ***************************
+/// CutLang starts------ here*
+// ***************************
+
+    for (unsigned int k=0; k<mycutlist.size(); k++){
+
+         if ( levelObjectMap.size() > 0) {
+              map <int, vector<std::pair<string,string> > >::iterator it;
+              it=levelObjectMap.find(k+1); 
+              if (it != levelObjectMap.end()){
+                  std::cout <<"Cut:"<< it->first << "  ";
+                  for (int iobj=0; iobj<it->second.size(); iobj++){
+                     std::cout << it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second;
+                  }
+                  std::cout <<"\n";
+              }
+         } 
+
+
+
+        unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
+        double d;
+//      DEBUG("\nCUT:"<<k<< " "<<" # operations in this cut:"<<myopelist[k].size());
+        DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
+//--------- we apply lepton scale factor
+        if (TRGe==2 || TRGm== 2) {
+         if (mycutlist[k][j]->getName() == "LEPsf" ) evt_weight*=anevt.weight_leptonSF;
+         if (mycutlist[k][j]->getName() == "nBJET" ) {
+               // evt_weight*=anevt.weight_bTagSF_77;
+                btagSF_counter++;
+         } //TO BE IMPROVED
+        }
+
+//----------------histogram filling
+        if (mycutlist[k][j]->getName() == "FillHistos") {
+           FillHistos_counter++;
+
+           switch ( FillHistos_counter ) {
+           case 1:
+                 anevt.mcevt_weight = evt_weight;//BG
+                 break;
+           case 2:
+                 anevt.mcevt_weight = evt_weight;//BG
+                 break;
+           case 3:
+                 break;
+
+// if it is not defined---------------
+          default:
+                //cout << "This PLOT section is NOT defined!!!!!!!!\n";
+                break;
+         }
+
+        // no need to calculate cut value, since this is only plotting facility
+        // continue; ---------TODO
+
+
+//---------fill cutlang type histos
+//      DEBUG("FillSet "<<FillHistos_counter<<endl);
+        for (int ij=1; ij<histos_order.at(FillHistos_counter-1).size(); ij++){
+           ahistid=histos_order.at(FillHistos_counter-1)[ij].first;
+           if (histos_order.at(FillHistos_counter-1)[ij].second.at(0)->isSearchable() ){
+//                  DEBUG("searchable histo.\t");
+                    dbxCut *histocut= histos_order.at(FillHistos_counter-1)[ij].second.at(0);
+                    ret_i.clear(); 
+                    ret_t.clear(); 
+                    find_idxtype_tobeused( histocut,  &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
+//                  DEBUG("#idxs to be used:"<< ret_i.size()<<endl);
+                    histos_order.at(FillHistos_counter-1)[ij].second.at(0)->setFoundVectors ( &ret_i, &ret_t, &found_idx_origs ); 
+           }
+//         DEBUG("calculating..\t");
+           ahistval=histos_order.at(FillHistos_counter-1)[ij].second.at(0)->calc(&a0); // calculate as before
+//         DEBUG("Histo ID:"<<ahistid<<" to be filled with:"<<ahistval<< " title:"<<   histos_order.at(FillHistos_counter-1)[ij].second.at(0)->getName()<<endl);
+           a_histos[ahistid]->Fill(ahistval, evt_weight);
+        }
+
+        if (b_histos[FillHistos_counter] != -1 ) { //was set at the initialization also we start @1.
+           dbxA::makeAnalysis (goodMuons, goodElectrons, goodJets, met, anevt, b_histos[FillHistos_counter]);
+        }
+
+        }// end of histogram filling command
+
+        if (myopelist[k].size()>1) { //more than one operator
+           std::ostringstream oss;
+           for ( unsigned int i=0; i<myopelist[k].size(); i++) { //loop over operations
+           if (myopelist[k][i]=="x"){   //something to be evaluated
+//             DEBUG("op:"<<mycutlist[k][j]->getOp()   <<"  "); // this operator
+               if (mycutlist[k][j]->isSearchable() ) {
+//                  DEBUG(mycutlist[k][j]->getName()<<" is searchable.\n");
+                    int found_res_size=found_idx_vecs.size();
+                    if (found_idx_vecs.size() >0) {// do we have any previous results we can use?
+                        ret_i.clear(); 
+                        ret_t.clear(); 
+                        find_idxtype_tobeused( mycutlist[k][j], &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
+//                      DEBUG("To be used idx_vec size:"<< ret_i.size()<<endl);
+                        if (ret_i.size() >0) { mycutlist[k][j]->setFoundVectors( &ret_i, &ret_t, &found_idx_origs); }
+                        forbidthese.clear();
+                        for (int ikk=0; ikk<found_res_size; ikk++){ 
+                             forbidthese.push_back( make_pair(found_idx_vecs[ikk],found_type_vecs[ikk]) );
+                        }
+                        mycutlist[k][j]->setForbiddenVector(&forbidthese);
+                    }
+               }// end searchable
+
+              oss<<mycutlist[k][j++]->select(&a0);
+           } else {
+              oss<<myopelist[k][i];
+           }
+           } // end of operations
+//           oss << "  "; // very very important to finish with space.
+           DEBUG("\n Total oper is:"<< oss.str()<<endl);
+
+//--------------we now have a logic operation to perform
+           basic_parser pars;
+           std::vector<std::string> rpn;
+           std::vector<std::string> tokens = pars.getExpressionTokens( oss.str() );
+           pars.infixToRPN( tokens, tokens.size(), &rpn );
+           d = pars.RPNtoDouble( rpn );
+	} else { //single operation
+           if (mycutlist[k][j]->isSearchable() ) {
+               DEBUG(mycutlist[k][j]->getName()<<" is searchable.\n");
+                int found_res_size=found_idx_vecs.size();
+                if (found_res_size >0) {// do we have any previous results we can use?
+                  ret_i.clear(); 
+                  ret_t.clear(); 
+                  find_idxtype_tobeused( mycutlist[k][j], &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
+                  DEBUG("To be used idx_vec size:"<< ret_i.size()<<endl);
+                  if (ret_i.size() >0) { mycutlist[k][j]->setFoundVectors( &ret_i, &ret_t, &found_idx_origs); }
+                  forbidthese.clear();
+                  for (int ikk=0; ikk<found_res_size; ikk++){ 
+                     forbidthese.push_back( make_pair(found_idx_vecs[ikk],found_type_vecs[ikk]) );
+                  }
+                  mycutlist[k][j]->setForbiddenVector(&forbidthese);
+                }
+           }// end searchable
+           DEBUG("Selecting: ");
+           d=mycutlist[k][j]->select(&a0); // execute the selection cut
+//---------if this was a defining cut, we will store the results;
+           if (mycutlist[k][j]->getOp()=="~=" || mycutlist[k][j]->getOp()=="!=") {
+                DEBUG("storing found vecs. Tot="<<(mycutlist[k][j]->getFoundVector()).size()); 
+                for (int iti=0; iti<(mycutlist[k][j]->getFoundVector()).size(); iti++) {
+                      found_idx_vecs.push_back ( mycutlist[k][j]->getFoundVector()[iti]  );
+                      found_type_vecs.push_back( mycutlist[k][j]->getFoundType(iti) );
+                      found_idx_origs.push_back( mycutlist[k][j]->getOrigFoundIndexes(iti) );
+                }
+           //   DEBUG(" TOT#found:"<<found_idx_vecs.size()<<" tot#Oi:"<<found_idx_origs.size() <<" \n ");
+           //   for (int iti=0; iti<found_idx_origs.size(); iti++) {DEBUG(" Oi:"<<found_idx_origs[iti]);}  DEBUG("\n");
+           }
+           j++;
+        }
+        DEBUG("             Result = " << d << std::endl);
+        if (d==0) return k; // quit the event.
+        eff->Fill(k+2, evt_weight); // filling starts from 1 which is already filled.
+    } // loop over all cutlang cuts
+    cur_cut+=mycutlist.size(); // we continue
+return 1;
+}
