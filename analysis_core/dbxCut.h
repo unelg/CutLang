@@ -548,43 +548,8 @@ private:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ListClass
 class dbxCutList : public TObject {
-  public:
-        dbxCutList(){
-                    TrigType=0; // no trigger
-	            cutlist.push_back(new dbxCutALL());
-	            cutlist.push_back(new dbxCutFillHistos());
-	            cutlist.push_back(new dbxCutNEle());
-	            cutlist.push_back(new dbxCutNMu());
-	            cutlist.push_back(new dbxCutNJet());
-	            cutlist.push_back(new dbxCutNPho());
-	            cutlist.push_back(new dbxCutNLEP());
-	            cutlist.push_back(new dbxCutQQLEP());
-	            cutlist.push_back(new dbxCutm2LEP());
-	            cutlist.push_back(new dbxCutpt2LEP());
-	            cutlist.push_back(new dbxCutTrig());
-	            cutlist.push_back(new dbxCutVtxTrks());
-   		    cutlist.push_back(new dbxCutTrigMatch());
-                    cutlist.push_back(new dbxCutLEPsf());
-                    cutlist.push_back(new dbxCutR_Z_J0());
-                    cutlist.push_back(new dbxCutMET());
-                    cutlist.push_back(new dbxCutMWT());
-                    cutlist.push_back(new dbxCutMETMWT());
-                    cutlist.push_back(new dbxCutnBJet());
-                    cutlist.push_back(new dbxCutnQGJet());
-                    cutlist.push_back(new dbxCutSumHTJET());
-                    cutlist.push_back(new dbxCutQof());
-                    cutlist.push_back(new dbxCutPtof());
-                    cutlist.push_back(new dbxCutEtaof());
-                    cutlist.push_back(new dbxCutPhiof());
-                    cutlist.push_back(new dbxCutNof());
-                    cutlist.push_back(new dbxCutMof());
-                    cutlist.push_back(new dbxCutEof());
-                    cutlist.push_back(new dbxCutPof());
-                    cutlist.push_back(new dbxCutPzof());
-                    cutlist.push_back(new dbxCutdRof());
-                    cutlist.push_back(new dbxCutdPhiof());
-
-        }
+ public:
+        dbxCutList();
        ~dbxCutList(){}
         void setTrigType(int t){ TrigType=t; }
         std::vector<std::string> cutTokenizer(std::string s, std::vector<dbxCut*> *mycut);
@@ -593,6 +558,5 @@ class dbxCutList : public TObject {
         int TrigType;
         ClassDef(dbxCutList,1);
 };
-
 
 #endif
