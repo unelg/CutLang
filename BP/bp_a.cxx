@@ -158,7 +158,7 @@ int BPdbxA:: readAnalysisParams() {
                vector< vector<dbxCut*> > objSelList;
                vector< vector<string>  > objOpeList;
                while (1){
-                      basecut="cmd";
+                      basecut="sel";
                       basecut+=kk-1; 
                       basecut+="-";
                       basecut+=kj++; 

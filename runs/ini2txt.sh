@@ -4,9 +4,22 @@ inpf=${1}-card.ini
 outf=${1}-card.txt
 
 
-cat $inpf | grep -v "cmd "| grep -v "def " | grep -v "histo " > $outf
+cat $inpf | grep -v "cmd "| grep -v "obj "| grep -v "sel " | grep -v "__"| grep -v "def " | grep -v "histo " > $outf
+echo >> $outf
+cat $inpf | grep "^obj " | awk 'BEGIN{i=1} { print "obj" i++,"=", substr($0, index($0,$2)) }' >> $outf
+echo >> $outf
 cat $inpf | grep "^def " | awk 'BEGIN{i=1} { print "def" i++,"=", substr($0, index($0,$2)) }' >> $outf
+echo >> $outf
 cat $inpf | grep "^cmd " | awk 'BEGIN{i=1} { print "cmd" i++,"=", substr($0, index($0,$2)) }' >> $outf
+echo >> $outf
+echo >> $outf
+
+ocnum=`grep -o obj  $inpf | wc -l|awk '{print $1}' `
+cat $inpf| grep -v "^#"| awk  -F'["]' 'BEGIN{i=1} /obj/ {flag++; i=1; next};  { if (flag>=1) { 
+if ($1 ~ /^sel/) 
+   print "sel" flag "-" i++,  "=", "\" " substr($2, index($1,$5)), "\" "
+}
+}' >> $outf
 
 outf=${1}-histos.txt
 ocnum=`grep -o FillHistos  $inpf | wc -l|awk '{print $1}' `
@@ -23,4 +36,6 @@ else if ($1 ~ /Basics/ ) print "histo" i++,"=",  "histo    \"Basics,",flag,"," ,
 }' > pippo.tmp
 
 cat pippo.tmp | awk '{print $1,$2,substr($0, index($0,$4)) }' > $outf
-#rm -f  pippo.tmp
+rm -f  pippo.tmp
+
+

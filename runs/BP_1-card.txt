@@ -20,36 +20,53 @@ TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd tri
 ###### USER DEFINITIONS
 
 ######## USER OBJECTS
-obj1   = "JETclean : JET "
-cmd1-1 = "{ JET_ , ELE_ }dR >= 0.9 "
-cmd1-2 = "{ JET_ , MUO_ }dR >= 1.0 "
-cmd1-3 = "{ JET_ }Pt >= 20 "
 
-obj2   = "MUOclean : MUO "
-cmd2-1 = "{ MUO_ , JETclean_ }dR >= 1.4 "
 
-#obj3   = "ELEclean : ELE "
-#cmd3-1 = "{ ELE_ , JETclean_ }dR >= 0.4 "
 
-#obj2   =  "PHOtight : PHO " 
-#cmd2-1 =  "{ PHO_ }Eta [] -1.37 1.37 "  
 
-#obj5   = "srJET : cleanJET "
-#cmd5-1 = "{JET_ , PHO_ }dR >= 0.4 "
-#cmd5-2 = "{cleanJET_ }Pt > 30 "
-#cmd5-3 = "{cleanJET_ }Eta [] -4.5 4.5 "
 
-cmd1 = " ALL "                            # to count all events
+
+
+  
+
+obj1 = "JETclean : JET "
+obj2 = "MUOclean : MUO "
+obj3 = "ELEclean : ELE "
+obj4 = "PHOtight : PHO "
+obj5 = "JETsr : JETclean "
+
+def1 = "WH1 : JET_-1 JET_-1 "  # W boson of the first top
+def2 = "WH2 : JET_-11 JET_-11 "  # W boson of the second top
+def3 = "mWH1 : { WH1 }m "  # mass of W boson of the first top
+def4 = "mWH2 : { WH2 }m "  # mass of @ boson of the second top
+def5 = "mTopH1 : { WH1 JET_-2 }m "  # first top quark's mass
+def6 = "mTopH2 : { WH2 JET_-4 }m "  # second top quark's mass
+def7 = "WHbR1 : {WH1 , JET_-2 }dR "  # angular distance between W1 and b jet
+def8 = "WHbR2 : {WH2 , JET_-4 }dR "  # angular distance between W2 and b jet
+def9 = "Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2 " #chi2 for W finder
+def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
+
+cmd1 = "ALL "                            # to count all events
 cmd2 = " nJET  >= 4 "              # events with 1 or more tight photons
-cmd3 = " nJETclean  >= 4 "              # events with 1 or more tight photons
-#cmd4 = " { MET , JETclean }Meff >= 123 "
-#cmd2 = " nPHOtight  >= 1 "              # events with 1 or more tight photons
-#cmd3 = "{ PHOtight_0 }Pt > 150 "         # select photons[0].PT > 150
-#cmd4 = "{ PHOtight_0 , METLV_0 }dPhi > 0.4 "   # select dphi(photon[0].Phi, MET.Phi) > 0.4
-#############cmd5 = "MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
-#cmd5 = " MET > 8.5 "           # select METoverSqrtSumET > 8.5
-#cmd6 = "{ srJET_ }N <= 1 "                # reject jetsSR.size > 1
-#cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
-#cmd8 = "{ cleanMUO_ }N == 0 "             # select cleanmuons.size == 0
-#cmd9 = "{ cleanELE_ }N == 0 "             # select cleanelectrons.size == 0
-#cmd10 = "MET > 150 "    
+cmd3 = " nJETclean  >= 4 "    
+cmd4 = " nPHOtight >= 0 "              # events with 1 or more tight photons
+cmd5 = " MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
+cmd6 = " nJETsr >= 4 "                # reject jetsSR.size > 1
+cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
+cmd8 = "  nMUOclean == 0 "             # select cleanmuons.size == 0
+cmd9 = "  nELEclean == 0 "             # select cleanelectrons.size == 0
+cmd10 = "MET > 150 "    
+cmd11 = "MET > 225 "    
+cmd12 = "MET > 300 "  
+cmd13 = "MET [] 150 225 "    
+cmd14 = "MET [] 225 300 "    
+
+
+sel1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
+sel1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
+sel1-3 = " { JET_ }Pt >= 20  " 
+sel2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
+sel3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+sel4-1 = " { PHO_ }Eta [] -1.37 1.37  " 
+sel5-1 = " { JETclean_ , ELE_ }dR >= 0.4  " 
+sel5-2 = " { JETclean_ }Pt > 50  " 
