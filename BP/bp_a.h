@@ -62,7 +62,7 @@ class BPdbxA : public dbxA {
         dbxCutList                              BPcutlist;
         std::vector< pair< int , int >        > forbidthese;
   
-        map < string, string > obj_names;
+        map < string, vector<string> > obj_names;
         map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> >  >  > obj_defs;
 
 

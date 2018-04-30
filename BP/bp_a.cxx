@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __VERBOSE3__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -93,7 +93,9 @@ int BPdbxA:: readAnalysisParams() {
     int kk=1;
     map < string, string > def_names;
     size_t apos = 0;
-    std::string subdelimiter = ":";
+    string subdelimiter = ":";
+    string seldelimiter = ",";
+    string  opdelimiter = "_";
     TString DefList2file="\n";
     while (1){
                   TString basedef="def";
@@ -134,7 +136,8 @@ int BPdbxA:: readAnalysisParams() {
                        basecut+=kk++; 
                string cut0 = ReadCardString(CardName,basecut,"XXX");
                if (cut0=="XXX") break;
-               std::string subtoken0, subtoken1;
+               string subtoken0, subtoken1;
+               vector <string> nametokens;
                if ((apos=cut0.find(subdelimiter)) != std::string::npos )  {
                          subtoken0 = cut0.substr(0, apos); //
                          std::string::iterator end_pos = std::remove(subtoken0.begin(), subtoken0.end(), ' ');
@@ -143,7 +146,7 @@ int BPdbxA:: readAnalysisParams() {
                                                end_pos = std::remove(subtoken1.begin(), subtoken1.end(), ' ');
                          subtoken1.erase(end_pos, subtoken1.end());
                          std::cout <<"Object "<<subtoken0<<" is "<<subtoken1<<". ";
-                         obj_names.insert ( pair<string,string>(subtoken0,subtoken1) );
+                         nametokens.push_back( subtoken1 ); // we keep what the new object will be
                } else { std::cout <<"WRONG object definition!\n"; exit (1);}
 
                CutList2file+=basecut;
@@ -169,6 +172,20 @@ int BPdbxA:: readAnalysisParams() {
                       objSelList.push_back(acutlist);
                       objOpeList.push_back(q);
 
+
+                      if ((apos=cut1.find(seldelimiter)) != std::string::npos )  {  // take between , and close curly
+                        string pippo=cut1.substr(apos+subdelimiter.length(),std::string::npos);
+                        apos=pippo.find(opdelimiter);
+                        pippo=pippo.substr(0, apos);
+                        std::string::iterator jnk_pos = std::remove(pippo.begin(), pippo.end(), ' ');// delete whites and insert.
+                        pippo.erase(jnk_pos, pippo.end());
+                        nametokens.push_back(pippo);
+                      } else {
+// this is a single variable cut
+                        nametokens.push_back("XXX");
+                      }
+
+
                       CutList2file+=basecut;
                       CutList2file+=" : ";
                       CutList2file+=cut1;
@@ -177,6 +194,7 @@ int BPdbxA:: readAnalysisParams() {
                }// end of while 1 over cmds
                pair< vector< vector<dbxCut*> >, vector< vector<string> > > anObjdef(objSelList, objOpeList);
                obj_defs.insert(pair< string, pair< vector< vector<dbxCut*> >, vector< vector<string> > > >(subtoken0, anObjdef ) );
+               obj_names.insert ( pair<string,vector<string> >(subtoken0,nametokens) );
      } // end of while 1 over objs
 
 // ****************************************
@@ -194,11 +212,11 @@ int BPdbxA:: readAnalysisParams() {
                   string cut0 = ReadCardString(CardName,basecut,"XXX");
                   if (cut0=="XXX") break;
 
-                  for( map<string,string>::reverse_iterator it=obj_names.rbegin(); it!=obj_names.rend(); ++it) {
+                  for( map<string, vector<string> >::reverse_iterator it=obj_names.rbegin(); it!=obj_names.rend(); ++it) {
                    std::size_t objfound =cut0.find(it->first);
                    if (objfound !=std::string::npos) {
-                     DEBUG("using derived object "<< it->first<< " as "<<it->second );
-                     obj2use.push_back(std::pair<string,string>(it->first, it->second) );
+                     DEBUG("using derived object "<< it->first<< " as "<<it->second[0] );
+                     obj2use.push_back(std::pair<string,string>(it->first, it->second[0]) );
                    }
                   }
                   if (obj2use.size() > 0 ) levelObjectMap.insert( std::pair<int, vector<std::pair<string,string> > > (kk-1,obj2use)  );
@@ -518,25 +536,45 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
          pho_sets["PHO"]=gams;
          jet_sets["JET"]=goodJets;
 
+         map <string, vector<dbxJet> >::iterator tmpjet;
+         map <string, vector<dbxElectron> >::iterator tmpele;
+         map <string, vector<dbxMuon> >::iterator tmpmuo;
+         map <string, vector<dbxPhoton> >::iterator tmpgam;
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // do we have other objects?
          if ( obj_names.size() > 0) { // remove the if and check...
-            for( map<string,string>::iterator anobj=obj_names.begin(); anobj!=obj_names.end(); ++anobj) {
-             DEBUG("-----will now define:"<<anobj->first <<" as "<< anobj->second[0]  <<endl);
+            for( map<string, vector<string> >::iterator newdef=obj_names.begin(); newdef!=obj_names.end(); ++newdef) {
+              DEBUG("-----will now define:"<<newdef->first <<" using "<< newdef->second[0] <<endl);
               map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> > > >::iterator acutset;
-              acutset=obj_defs.find(anobj->first);
+              acutset=obj_defs.find(newdef->first);
               if (acutset != obj_defs.end()){
-               DEBUG("a0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
                for (unsigned int k=0; k<(acutset->second).first.size(); k++){
+                 switch ( newdef->second[1+k][0] ){
+                     case 'J': tmpjet=jet_sets.find(newdef->second[1+k]); 
+                            DEBUG("~~~Will use "<< newdef->second[1+k] <<"~~~~\n");
+	           	    if (tmpjet != jet_sets.end()){ a0.jets=tmpjet->second; }
+	           	    break;
+                     case 'E': tmpele=ele_sets.find(newdef->second[1+k]); 
+	           	    if (tmpele != ele_sets.end()){ a0.eles=tmpele->second; }
+	           	    break;
+                     case 'M': tmpmuo=muo_sets.find(newdef->second[1+k]); 
+	           	    if (tmpmuo != muo_sets.end()){ a0.muos=tmpmuo->second; }
+	           	    break;
+                     case 'G': tmpgam=pho_sets.find(newdef->second[1+k]); 
+	           	    if (tmpgam != pho_sets.end()){ a0.gams=tmpgam->second; }
+	           	    break;
+                 }
+                 DEBUG(newdef->second[1+k]<<" a0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
                  unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase
                  DEBUG("Obj def sel:"<<((acutset->second).first)[k][j]->getName() <<"    \n");
                  ((acutset->second).first)[k][j]->select(&a0); // execute the selection cut
                  DEBUG("b0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
-                 switch ( anobj->second[0] ){
-                  case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(anobj->first, a0.jets) ); break;
-                  case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(anobj->first, a0.eles) ); break;
-                  case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(anobj->first, a0.muos) ); break;
-                  case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(anobj->first, a0.gams) ); break;
+                 switch ( newdef->second[0][0] ){
+                  case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(newdef->first, a0.jets) ); break;
+                  case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(newdef->first, a0.eles) ); break;
+                  case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(newdef->first, a0.muos) ); break;
+                  case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(newdef->first, a0.gams) ); break;
                  }
 
                }//loop over definition cuts
@@ -568,9 +606,9 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
               mycutlist[k][0]->clearFoundVector(); //---- clear previous events findings.
     }
 
-// ***************************
-/// CutLang starts------ here*
-// ***************************
+// *************************************
+/// CutLang execution starts-------here*
+// *************************************
 
     for (unsigned int k=0; k<mycutlist.size(); k++){
 
@@ -578,11 +616,11 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
               map <int, vector<std::pair<string,string> > >::iterator it;
               it=levelObjectMap.find(k+1); 
               if (it != levelObjectMap.end()){
-                  std::cout <<"Cut:"<< it->first << "  ";
+                  DEBUG("Cut:"<< it->first << "  ");
                   for (int iobj=0; iobj<it->second.size(); iobj++){
-                     std::cout << it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second;
+                     DEBUG( it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second );
                   }
-                  std::cout <<"\n";
+                  DEBUG("\n" );
               }
          } 
 
