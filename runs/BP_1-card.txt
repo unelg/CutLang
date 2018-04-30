@@ -26,7 +26,7 @@ cmd1-2 = "{ JET_ , MUO_ }dR >= 2.0 "
 cmd1-3 = "{ JET_ }Pt >= 20 "
 
 obj2   = "MUOclean : MUO "
-cmd2-1 = "{ MUO_ , JETclean_ }dR >= 0.4 "
+cmd2-1 = "{ MUO_ , JETclean_ }dR >= 1.4 "
 
 #obj3   = "ELEclean : ELE "
 #cmd3-1 = "{ ELE_ , JETclean_ }dR >= 0.4 "

@@ -985,7 +985,7 @@ ClassImp(dbxCutList)
                          std::string subtoken0, subtoken1;
                          subtoken0 = token0.substr(0, apos); //
                          subtoken1 = token0.substr(apos+subdelimiter.length(),std::string::npos); // 0&+number index, -number search, nonumber: ALL
-                         std::cout <<"found PList0:"<<subtoken0<<" and PList1:"<<subtoken1.length()<< ".  idxlist:"<<my_indexlist.size()<<std::endl;
+//                       std::cout <<"found PList0:"<<subtoken0<<" and PList1:"<<subtoken1.length()<< ".  idxlist:"<<my_indexlist.size()<<std::endl;
 // -------------depending on subtoken0, fill the particle type.
                          if        (subtoken0=="LEP"){
                                                DEBUG(" Lepton at:"<< std::stoi(subtoken1) << "\t");
