@@ -570,14 +570,14 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
                  DEBUG("Obj def sel:"<<((acutset->second).first)[k][j]->getName() <<"    \n");
                  ((acutset->second).first)[k][j]->select(&a0); // execute the selection cut
                  DEBUG("b0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
-                 switch ( newdef->second[0][0] ){
-                  case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(newdef->first, a0.jets) ); break;
-                  case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(newdef->first, a0.eles) ); break;
-                  case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(newdef->first, a0.muos) ); break;
-                  case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(newdef->first, a0.gams) ); break;
-                 }
-
                }//loop over definition cuts
+               switch ( newdef->second[0][0] ){
+                     case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(newdef->first, a0.jets) ); break;
+                     case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(newdef->first, a0.eles) ); break;
+                     case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(newdef->first, a0.muos) ); break;
+                     case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(newdef->first, a0.gams) ); break;
+               }
+
               }//valid cutset for current object
             }//end of object definition loop
          }// any obj def?
@@ -611,6 +611,7 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
 // *************************************
 
     for (unsigned int k=0; k<mycutlist.size(); k++){
+        a0={goodMuons, goodElectrons, gams, goodJets, met, anevt}; // we start from good ones.
 
          if ( levelObjectMap.size() > 0) {
               map <int, vector<std::pair<string,string> > >::iterator it;
@@ -619,6 +620,24 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
                   DEBUG("Cut:"<< it->first << "  ");
                   for (int iobj=0; iobj<it->second.size(); iobj++){
                      DEBUG( it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second );
+//--------here we must replace      e.g.                JETclean will be used as JET
+                     switch ( it->second.at(iobj).second[0] ){
+                     case 'J': tmpjet=jet_sets.find(it->second.at(iobj).first); 
+                            DEBUG("~~~Will use "<< it->second.at(iobj).first <<"~~~~\n");
+                            if (tmpjet != jet_sets.end()){ a0.jets=tmpjet->second; }
+                            break;
+                     case 'E': tmpele=ele_sets.find(it->second.at(iobj).first); 
+                            if (tmpele != ele_sets.end()){ a0.eles=tmpele->second; }
+                            break;
+                     case 'M': tmpmuo=muo_sets.find(it->second.at(iobj).first); 
+                            if (tmpmuo != muo_sets.end()){ a0.muos=tmpmuo->second; }
+                            break;
+                     case 'G': tmpgam=pho_sets.find(it->second.at(iobj).first); 
+                            if (tmpgam != pho_sets.end()){ a0.gams=tmpgam->second; }
+                            break;
+                 }
+
+
                   }
                   DEBUG("\n" );
               }
