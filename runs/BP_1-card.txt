@@ -29,10 +29,22 @@ TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd tri
 
 
 obj1 = "JETclean : JET "
+cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
+cmd1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
+cmd1-3 = " { JET_ }Pt >= 20  " 
+
 obj2 = "MUOclean : MUO "
+cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
+
 obj3 = "ELEclean : ELE "
+cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+
 obj4 = "PHOtight : PHO "
+cmd4-1 = " { PHO_ }AbsEta <= 1.37  " 
+
 obj5 = "JETsr : JETclean "
+cmd5-1 = " { JETclean_ , ELE_ }dR >= 0.4  " 
+cmd5-2 = " { JETclean_ }Pt > 20  " 
 
 def1 = "WH1 : JET_-1 JET_-1 "  # W boson of the first top
 def2 = "WH2 : JET_-11 JET_-11 "  # W boson of the second top
@@ -56,11 +68,3 @@ cmd8 = "  nMUOclean == 0 "                # select cleanmuons.size == 0
 cmd9 = "  nELEclean == 0 "                # select cleanelectrons.size == 0
 
 
-cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
-cmd1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
-cmd1-3 = " { JET_ }Pt >= 20  " 
-cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
-cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
-cmd4-1 = " { PHO_ }Eta [] -1.37 1.37  " 
-cmd5-1 = " { JETclean_ , ELE_ }dR >= 0.4  " 
-cmd5-2 = " { JETclean_ }Pt > 50  " 
