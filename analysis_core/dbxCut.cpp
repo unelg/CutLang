@@ -211,16 +211,16 @@ void dbxCut::useFoundResults()
 //-----------------getSearchableType
 bool dbxCut::Ccompare(float v)
 {
-                       if (p_oper=="~=" || p_oper=="~!") { return (true);} // these are combi selections, always pass.
-                       if (p_oper=="EQ" || p_oper=="==") { return (v==p_cutf);}
-                       if (p_oper=="NE" || p_oper=="!=") { return (v!=p_cutf);}
-                       if (p_oper=="LE" || p_oper=="<=") { return (v<=p_cutf);}
-                       if (p_oper=="LT" || p_oper=="<")  { return (v< p_cutf);}
-                       if (p_oper=="GE" || p_oper==">=") { return (v>=p_cutf);}
-                       if (p_oper=="GT" || p_oper==">")  { return (v> p_cutf);}
-                       if (p_oper=="[]") { return ((v>=p_min) && (v<=p_max));} 
-                       if (p_oper=="][") { return ((v<=p_min) && (v>=p_max));}
-                       return false;
+          if (p_oper=="~=" || p_oper=="~!") { return (true);} // these are combi selections, always pass.
+          if (p_oper=="EQ" || p_oper=="==") { return (v==p_cutf);}
+          if (p_oper=="NE" || p_oper=="!=") { return (v!=p_cutf);}
+          if (p_oper=="LE" || p_oper=="<=") { return (v<=p_cutf);}
+          if (p_oper=="LT" || p_oper=="<")  { return (v< p_cutf);}
+          if (p_oper=="GE" || p_oper==">=") { return (v>=p_cutf);}
+          if (p_oper=="GT" || p_oper==">")  { return (v> p_cutf);}
+          if (p_oper=="[]") { return ((v>=p_min) && (v<=p_max));} 
+          if (p_oper=="][") { return ((v<=p_min) && (v>=p_max));}
+          return false;
 }
 
 //-------------------------------------arithmetic ops
@@ -575,6 +575,8 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
                       break;
               case 9: retval=aparticle[ipart].q(); // I used Q to carry number of particles in this set.
                       break;
+              case 10:retval=fabs(aparticle[ipart].lv().Eta() );
+                      break;
              case 31: retval=aparticle[ipart].lv().DeltaR(aparticle[ipart+1].lv() );
                       twoParam=true;
                       break;
@@ -611,94 +613,20 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
             return (totretval);
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Nof
-ClassImp(dbxCutNof)
-bool dbxCutNof::select(AnalysisObjects *ao){
-              float result;
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
-}
-
-
-float dbxCutNof::calc(AnalysisObjects *ao)
+//---------------------------------------------m1select
+bool dbxCut::m1select(AnalysisObjects *ao)
 {
-            return ( cxcalc(ao, getParams() )); 
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Mof
-ClassImp(dbxCutMof)
-bool dbxCutMof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
-                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
-                   if ( (getFoundVector()).size() > 0 ){
-                        useFoundResults();
-                   }
-                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
-                   clearFoundResults();
-                   return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
-}
-
-
-float dbxCutMof::calc(AnalysisObjects *ao)
-{
-            return ( cxcalc(ao, getParams() )); 
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Qof
-ClassImp(dbxCutQof)
-bool dbxCutQof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
-                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
-                   if ( (getFoundVector()).size() > 0 ){
-                        useFoundResults();
-                   }
-                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
-                   clearFoundResults();
-                   return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
-}
-
-float dbxCutQof::calc(AnalysisObjects *ao)
-{
-            return ( cxcalc(ao, getParams() )); 
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Ptof
-ClassImp(dbxCutPtof)
-bool dbxCutPtof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
-                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
-                   if ( (getFoundVector()).size() > 0 ){
-                        useFoundResults();
-                   }
-                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
-                   clearFoundResults();
-                   return (true);
-              }
-              if ( getParticleIndex(0) != 6213 ) {
+       float result;
+       if ( getParticleIndex(0) != 6213 ) {
                  result=calc(ao);
                  DEBUG("  res:"<< result << "\n");
                  return (Ccompare( result ) );
-              } else {
+       } else {
                DEBUG(getParticleIndex(0)<< "i  t"<< getParticleType(0)<<"\n");
                DEBUG("DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
                int ipart_max;
-// 0 is muon
-// 1 is electron
+// 0 is muon // 1 is electron // 8 is gammas
 // 2 is any jet // 3 is a b jet // 4 is light jet
-// 8 is gammas
                 switch (getParticleType(0)){
                  case 0: ipart_max=ao->muos.size(); break;
                  case 1: ipart_max=ao->eles.size(); break;
@@ -721,12 +649,82 @@ bool dbxCutPtof::select(AnalysisObjects *ao){
                  }
                }
 
-               DEBUG("FINAL "<<ao->jets.size()<<" "<<ao->eles.size()<<" \n");
-
                setParticleIndex(0,6213);
                return true;
-              }//end of object selection
-              
+        }//end of object selection
+
+}
+//##########################################################
+//##########################################################
+//##########################################################
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Nof
+ClassImp(dbxCutNof)
+bool dbxCutNof::select(AnalysisObjects *ao){
+        return (m1select(ao));          
+}
+
+
+float dbxCutNof::calc(AnalysisObjects *ao)
+{
+            return ( cxcalc(ao, getParams() )); 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Mof
+ClassImp(dbxCutMof)
+bool dbxCutMof::select(AnalysisObjects *ao){
+        if (getOp()=="~=" || getOp()=="~!") {
+                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
+                   if ( (getFoundVector()).size() > 0 ){
+                        useFoundResults();
+                   }
+                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
+                   clearFoundResults();
+                   return (true);
+        }
+        return (m1select(ao));          
+}
+
+float dbxCutMof::calc(AnalysisObjects *ao)
+{
+            return ( cxcalc(ao, getParams() )); 
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Qof
+ClassImp(dbxCutQof)
+bool dbxCutQof::select(AnalysisObjects *ao){
+        if (getOp()=="~=" || getOp()=="~!") {
+                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
+                   if ( (getFoundVector()).size() > 0 ){
+                        useFoundResults();
+                   }
+                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
+                   clearFoundResults();
+                   return (true);
+        }
+        return (m1select(ao));          
+}
+
+float dbxCutQof::calc(AnalysisObjects *ao)
+{
+            return ( cxcalc(ao, getParams() )); 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Ptof
+ClassImp(dbxCutPtof)
+bool dbxCutPtof::select(AnalysisObjects *ao){
+        if (getOp()=="~=" || getOp()=="~!") {
+                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
+                   if ( (getFoundVector()).size() > 0 ){
+                        useFoundResults();
+                   }
+                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
+                   clearFoundResults();
+                   return (true);
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutPtof::calc(AnalysisObjects *ao)
@@ -737,8 +735,7 @@ float dbxCutPtof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Pzof
 ClassImp(dbxCutPzof)
 bool dbxCutPzof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -746,10 +743,8 @@ bool dbxCutPzof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutPzof::calc(AnalysisObjects *ao)
@@ -760,8 +755,7 @@ float dbxCutPzof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Pof
 ClassImp(dbxCutPof)
 bool dbxCutPof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -769,10 +763,8 @@ bool dbxCutPof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutPof::calc(AnalysisObjects *ao)
@@ -783,8 +775,7 @@ float dbxCutPof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Eof
 ClassImp(dbxCutEof)
 bool dbxCutEof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -792,10 +783,8 @@ bool dbxCutEof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutEof::calc(AnalysisObjects *ao)
@@ -803,11 +792,10 @@ float dbxCutEof::calc(AnalysisObjects *ao)
             return ( cxcalc(ao, getParams() )); 
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Etaof
-ClassImp(dbxCutEtaof)
-bool dbxCutEtaof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~AbsEtaof
+ClassImp(dbxCutAbsEtaof)
+bool dbxCutAbsEtaof::select(AnalysisObjects *ao){
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -815,10 +803,27 @@ bool dbxCutEtaof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+        }
+        return (m1select(ao));          
+}
+
+float dbxCutAbsEtaof::calc(AnalysisObjects *ao)
+{ 
+            return ( cxcalc(ao, getParams() )); 
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Etaof
+ClassImp(dbxCutEtaof)
+bool dbxCutEtaof::select(AnalysisObjects *ao){
+        if (getOp()=="~=" || getOp()=="~!") {
+                   DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
+                   if ( (getFoundVector()).size() > 0 ){
+                        useFoundResults();
+                   }
+                   if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
+                   clearFoundResults();
+                   return (true);
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutEtaof::calc(AnalysisObjects *ao)
@@ -829,8 +834,7 @@ float dbxCutEtaof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Phiof
 ClassImp(dbxCutPhiof)
 bool dbxCutPhiof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -838,10 +842,8 @@ bool dbxCutPhiof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG("  res:"<< result << "\n");
-              return (Ccompare( result ) );
+        }
+        return (m1select(ao));          
 }
 
 float dbxCutPhiof::calc(AnalysisObjects *ao)
@@ -1053,17 +1055,18 @@ ClassImp(dbxCutList)
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
                         else if(token0=="SumHTJET")  {mycut->push_back(new dbxCutSumHTJET()       );} // remove sum, add HTALL
                         else if(token0=="TrigMatch") {mycut->push_back(new dbxCutTrigMatch(TrigType) );}
-                        else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,   my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}Pt")       {mycut->push_back(new dbxCutPtof(my_typelist,  my_indexlist,2) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}Eta")      {mycut->push_back(new dbxCutEtaof(my_typelist, my_indexlist,3) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}Phi")      {mycut->push_back(new dbxCutPhiof(my_typelist, my_indexlist,4) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}q")        {mycut->push_back(new dbxCutQof(my_typelist,   my_indexlist,5) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}Pz")       {mycut->push_back(new dbxCutPzof(my_typelist,  my_indexlist,6) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}P")        {mycut->push_back(new dbxCutPof(my_typelist,   my_indexlist,7) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}E")        {mycut->push_back(new dbxCutEof(my_typelist,   my_indexlist,8) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}N")        {mycut->push_back(new dbxCutNof(my_typelist,   my_indexlist,9) ); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}dR")       {mycut->push_back(new dbxCutdRof(my_typelist,  my_indexlist,31)); my_typelist.clear(); my_indexlist.clear();}
-                        else if(token0=="}dPhi")     {mycut->push_back(new dbxCutdPhiof(my_typelist,my_indexlist,32)); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,      my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}Pt")       {mycut->push_back(new dbxCutPtof(my_typelist,     my_indexlist,2) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}Eta")      {mycut->push_back(new dbxCutEtaof(my_typelist,    my_indexlist,3) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}Phi")      {mycut->push_back(new dbxCutPhiof(my_typelist,    my_indexlist,4) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}q")        {mycut->push_back(new dbxCutQof(my_typelist,      my_indexlist,5) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}Pz")       {mycut->push_back(new dbxCutPzof(my_typelist,     my_indexlist,6) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}P")        {mycut->push_back(new dbxCutPof(my_typelist,      my_indexlist,7) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}E")        {mycut->push_back(new dbxCutEof(my_typelist,      my_indexlist,8) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}N")        {mycut->push_back(new dbxCutNof(my_typelist,      my_indexlist,9) ); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}AbsEta")   {mycut->push_back(new dbxCutAbsEtaof(my_typelist, my_indexlist,10)); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}dR")       {mycut->push_back(new dbxCutdRof(my_typelist,     my_indexlist,31)); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}dPhi")     {mycut->push_back(new dbxCutdPhiof(my_typelist,   my_indexlist,32)); my_typelist.clear(); my_indexlist.clear();}
                         else {std::cout << "This Cut IS NOT defined. MAJOR ERROR. STOP!\n"; exit(32);}
                         i=cutlist.size();
                      }
@@ -1227,6 +1230,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutQof());
                     cutlist.push_back(new dbxCutPtof());
                     cutlist.push_back(new dbxCutEtaof());
+                    cutlist.push_back(new dbxCutAbsEtaof());
                     cutlist.push_back(new dbxCutPhiof());
                     cutlist.push_back(new dbxCutNof());
                     cutlist.push_back(new dbxCutMof());
