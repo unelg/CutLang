@@ -45,15 +45,15 @@ def8 = "WHbR2 : {WH2 , JET_-4 }dR "  # angular distance between W2 and b jet
 def9 = "Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2 " #chi2 for W finder
 def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
 
-cmd1 = "ALL "                            # to count all events
-cmd2 = " nJET  >= 4 "              # events with 1 or more tight photons
+cmd1 = "ALL "                             # to count all events
+cmd2 = " nJET  >= 4 "                     # events with 1 or more tight photons
 cmd3 = " nJETclean  >= 4 "
-cmd4 = " nPHOtight >= 0 "              # events with 1 or more tight photons
+cmd4 = " nPHOtight >= 0 "                 # events with 1 or more tight photons
 cmd5 = " MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
-cmd6 = " nJETsr >= 4 "                # reject jetsSR.size > 1
+cmd6 = " nJETsr >= 4 "                    # reject jetsSR.size > 1
 cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
-cmd8 = "  nMUOclean == 0 "             # select cleanmuons.size == 0
-cmd9 = "  nELEclean == 0 "             # select cleanelectrons.size == 0
+cmd8 = "  nMUOclean == 0 "                # select cleanmuons.size == 0
+cmd9 = "  nELEclean == 0 "                # select cleanelectrons.size == 0
 
 
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
