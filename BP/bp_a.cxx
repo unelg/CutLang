@@ -158,7 +158,7 @@ int BPdbxA:: readAnalysisParams() {
                vector< vector<dbxCut*> > objSelList;
                vector< vector<string>  > objOpeList;
                while (1){
-                      basecut="sel";
+                      basecut="cmd";
                       basecut+=kk-1; 
                       basecut+="-";
                       basecut+=kj++; 
@@ -190,7 +190,7 @@ int BPdbxA:: readAnalysisParams() {
                       CutList2file+=" : ";
                       CutList2file+=cut1;
                       CutList2file+="\n";
-                      cout << "\n~~~~~~~~~~-> sel cmd id:"<<kj-1<<") "<<cut1<<"\t";
+                      cout << "\n~~~~~~~~~~->obj cmd id:"<<kj-1<<") "<<cut1<<"\t";
                }// end of while 1 over cmds
                pair< vector< vector<dbxCut*> >, vector< vector<string> > > anObjdef(objSelList, objOpeList);
                obj_defs.insert(pair< string, pair< vector< vector<dbxCut*> >, vector< vector<string> > > >(subtoken0, anObjdef ) );
