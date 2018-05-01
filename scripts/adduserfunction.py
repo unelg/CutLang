@@ -1,10 +1,10 @@
+#!/usr/bin/env python
 '''
-Script for adding (or deleting) user defined functions into CutLang
-run as python adduserfunction.py <functionname>
-To delete an already added function, run python adduserfunction.py <functionname> --clean
+#Script for adding (or deleting) user defined functions into CutLang
+#run as python adduserfunction.py <functionname>
+#To delete an already added function, run python adduserfunction.py <functionname> --clean
 '''
 
-#!/usr/bin/env python
 import os,sys
 from string import *
 from optparse import OptionParser

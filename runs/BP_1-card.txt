@@ -27,8 +27,6 @@ TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd tri
 
 
 
-  
-
 obj1 = "JETclean : JET "
 obj2 = "MUOclean : MUO "
 obj3 = "ELEclean : ELE "
@@ -48,18 +46,13 @@ def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
 
 cmd1 = "ALL "                            # to count all events
 cmd2 = " nJET  >= 4 "              # events with 1 or more tight photons
-cmd3 = " nJETclean  >= 4 "    
+cmd3 = " nJETclean  >= 4 "
 cmd4 = " nPHOtight >= 0 "              # events with 1 or more tight photons
 cmd5 = " MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
 cmd6 = " nJETsr >= 4 "                # reject jetsSR.size > 1
 cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
 cmd8 = "  nMUOclean == 0 "             # select cleanmuons.size == 0
 cmd9 = "  nELEclean == 0 "             # select cleanelectrons.size == 0
-cmd10 = "MET > 150 "    
-cmd11 = "MET > 225 "    
-cmd12 = "MET > 300 "  
-cmd13 = "MET [] 150 225 "    
-cmd14 = "MET [] 225 300 "    
 
 
 sel1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
