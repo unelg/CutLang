@@ -4,6 +4,7 @@
 #include "dbxCut.h"
 #include <math.h>
 #include "ex1.h"
+#include "dbx_myCut.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -1240,6 +1241,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutdRof());
                     cutlist.push_back(new dbxCutdPhiof());
                     cutlist.push_back(new dbxCutEx1of());
+                    cutlist.push_back(new dbxCutmyCut());
         }
 
 

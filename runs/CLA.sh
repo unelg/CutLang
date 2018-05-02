@@ -59,7 +59,7 @@ Nalgo=`cat ${INIFILE} | grep "^algo" | wc -l`
 
 if [ $Nalgo -gt 1 ]; then
  echo Analysis with Multiple Regions
- ./separate_algos.sh ${INIFILE}
+ ../scripts/separate_algos.sh ${INIFILE}
 else
  echo Simple Analysis
  cp ${INIFILE} BP_1-card.ini
@@ -67,7 +67,7 @@ else
 fi
  
  for ialgo in `seq $Nalgo`; do
-  ./ini2txt.sh  BP_$ialgo
+  ../scripts/ini2txt.sh  BP_$ialgo
  done
 
 if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
