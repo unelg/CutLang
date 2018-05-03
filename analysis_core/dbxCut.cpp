@@ -652,8 +652,57 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                setParticleIndex(0,6213);
                return true;
         }//end of object selection
+}//end of m1
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bool dbxCut::m2select(AnalysisObjects *ao)
+{
+       float result;
+       if ( getParticleIndex(0) != 6213 ) {
+               result=calc(ao);
+               DEBUG(" res:"<< result << "\n");
+               return (Ccompare( result ) );
+       } else {
+               DEBUG(getParticleIndex(0)<<"  "<< getParticleIndex(1)<< "  "<< getParticleIndex(2)   <<"\n");
+               DEBUG(" DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
+               DEBUG(getParticleType(0)<<"  "<< getParticleType(1)<<"  " << getParticleType(2)  <<"\n");
+               int ipart_max[2]; 
+// 0 is muon
+// 1 is electron
+// 2 is any jet // 3 is a b jet // 4 is light jet
+// 8 is gammas
+               for (int jj=0; jj<2; jj++)
+                switch (getParticleType(jj*2)){
+                 case 0: ipart_max[jj]=ao->muos.size(); break;
+                 case 1: ipart_max[jj]=ao->eles.size(); break;
+                 case 2: ipart_max[jj]=ao->jets.size(); break;
+                 case 8: ipart_max[jj]=ao->gams.size(); break;
+                }
+               DEBUG(ipart_max[0]<<" "<<ipart_max[1]<<" \n");
 
-}
+               for (int ipart=ipart_max[0]-1; ipart>=0; ipart--)
+                for (int jpart=0; jpart<ipart_max[1]; jpart++) {
+                 setParticleIndex(0, ipart);
+                 setParticleIndex(2, jpart);
+                 result=calc(ao);
+                 bool ppassed=Ccompare(result);
+                 DEBUG("\n tested:"<<ipart<< ","<< jpart<< " res:"<< result << " =>"<< ppassed <<"\n");
+                 if (!ppassed) {
+                   switch (getParticleType(0)){
+                     case 0: ao->muos.erase(ao->muos.begin()+ipart); break;
+                     case 1: ao->eles.erase(ao->eles.begin()+ipart); break;
+                     case 2: ao->jets.erase(ao->jets.begin()+ipart); break;
+                     case 8: ao->gams.erase(ao->gams.begin()+ipart); break;
+                   }
+                   break;
+                 }
+               }
+
+               DEBUG("FINAL "<<ao->jets.size()<<" "<<ao->eles.size()<<" \n");
+               setParticleIndex(0,6213);
+               setParticleIndex(2,6213);
+               return true;
+       }//end of object selection
+}// end of m2
 //##########################################################
 //##########################################################
 //##########################################################
@@ -854,8 +903,7 @@ float dbxCutPhiof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~dRof
 ClassImp(dbxCutdRof)
 bool dbxCutdRof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -863,53 +911,8 @@ bool dbxCutdRof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              if ( getParticleIndex(0) != 6213 ) {
-               result=calc(ao);
-               DEBUG(" res:"<< result << "\n");
-               return (Ccompare( result ) );
-              } else {
-               DEBUG(getParticleIndex(0)<<"  "<< getParticleIndex(1)<< "  "<< getParticleIndex(2)   <<"\n");
-               DEBUG(" DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
-               DEBUG(getParticleType(0)<<"  "<< getParticleType(1)<<"  " << getParticleType(2)  <<"\n");
-               int ipart_max[2]; 
-// 0 is muon
-// 1 is electron
-// 2 is any jet // 3 is a b jet // 4 is light jet
-// 8 is gammas
-               for (int jj=0; jj<2; jj++)
-                switch (getParticleType(jj*2)){
-                 case 0: ipart_max[jj]=ao->muos.size(); break;
-                 case 1: ipart_max[jj]=ao->eles.size(); break;
-                 case 2: ipart_max[jj]=ao->jets.size(); break;
-                 case 8: ipart_max[jj]=ao->gams.size(); break;
-                }
-               DEBUG(ipart_max[0]<<" "<<ipart_max[1]<<" \n");
-
-               for (int ipart=ipart_max[0]-1; ipart>=0; ipart--)
-                for (int jpart=0; jpart<ipart_max[1]; jpart++) {
-                 setParticleIndex(0, ipart);
-                 setParticleIndex(2, jpart);
-                 result=calc(ao);
-                 bool ppassed=Ccompare(result);
-                 DEBUG("\n tested:"<<ipart<< ","<< jpart<< " res:"<< result << " =>"<< ppassed <<"\n");
-                 if (!ppassed) {
-                   switch (getParticleType(0)){
-                     case 0: ao->muos.erase(ao->muos.begin()+ipart); break;
-                     case 1: ao->eles.erase(ao->eles.begin()+ipart); break;
-                     case 2: ao->jets.erase(ao->jets.begin()+ipart); break;
-                     case 8: ao->gams.erase(ao->gams.begin()+ipart); break;
-                   }
-                   break;
-                 }
-               }
-
-               DEBUG("FINAL "<<ao->jets.size()<<" "<<ao->eles.size()<<" \n");
-
-               setParticleIndex(0,6213);
-               setParticleIndex(2,6213);
-               return true;
-              }//end of object selection
+        }
+        return (m2select(ao));          
 }//end of dRof
 
 float dbxCutdRof::calc(AnalysisObjects *ao)
@@ -920,8 +923,7 @@ float dbxCutdRof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~dPhiof
 ClassImp(dbxCutdPhiof)
 bool dbxCutdPhiof::select(AnalysisObjects *ao){
-              float result;
-              if (getOp()=="~=" || getOp()=="~!") {
+        if (getOp()=="~=" || getOp()=="~!") {
                    DEBUG(" OPTIMIZING #searchables:"<<getSearchableType()<<std::endl);
                    if ( (getFoundVector()).size() > 0 ){
                         useFoundResults();
@@ -929,11 +931,8 @@ bool dbxCutdPhiof::select(AnalysisObjects *ao){
                    if ( !find(ao) ) {std::cerr<<"Find ERROR\n"; exit(213);}
                    clearFoundResults();
                    return (true);
-              }
-              result=calc(ao);
-              DEBUG(" res:"<< result << "\n");
-// put back the originals
-              return (Ccompare( result ) );
+        }
+        return (m2select(ao));          
 }
 
 float dbxCutdPhiof::calc(AnalysisObjects *ao)
