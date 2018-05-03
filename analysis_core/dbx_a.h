@@ -77,7 +77,8 @@ public:
    char cname[128];
    TH1F *eff;
 // list the analysis parameters here.
-   float minpte,minptm,minptm2011,minptm2012,maxetae,maxetam,minmetmu,minmwte,minmwtmu;  // leptons
+   float minpte, minptm, minptg, maxmet;
+   float maxetae,maxetam,maxetag, minmetmu,minmwte,minmwtmu;  // leptons
    float minmete,minmwtmete;  // met and mwt related
    float minmetm,minmwtmetm;  // met and mwt related
    float minptj, maxetaj;   // basic jet definitions 

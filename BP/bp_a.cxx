@@ -82,6 +82,8 @@ int BPdbxA:: readAnalysisParams() {
    maxetam    = ReadCard(CardName,"maxetam",2.5);
    minpte     = ReadCard(CardName,"minpte",15.);
    maxetae    = ReadCard(CardName,"maxetae",2.5);
+   minptg     = ReadCard(CardName,"minptg",15.);
+   maxetag    = ReadCard(CardName,"maxetag",2.5);
    minptj     = ReadCard(CardName,"minptj", 15.);
    maxetaj    = ReadCard(CardName,"maxetaj",2.5);
    maxmet     = ReadCard(CardName,"maxmet", 30.);
@@ -483,8 +485,16 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
   vector<dbxElectron>  goodElectrons;
   vector<dbxMuon>      goodMuons;
   vector<dbxJet>       goodJets;
-  vector<dbxPhoton>    gams;
+  vector<dbxPhoton>    goodPhotons;
 
+//----------------------selection of good gams-----------------
+        for (UInt_t i=0; i<photons.size(); i++) {
+               TLorentzVector gam4p = photons.at(i).lv();
+               if (    (gam4p.Pt()  > minptg)
+                    && (fabs(gam4p.Eta()) < maxetag)
+                  )
+                  goodPhotons.push_back(photons.at(i));
+        }
 //----------------------selection of good electrons-----------------
         for (UInt_t i=0; i<electrons.size(); i++) {
                if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
@@ -523,7 +533,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         cur_cut++;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    AnalysisObjects a0={goodMuons, goodElectrons, gams, goodJets, met, anevt};
+    AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~cutLang style preselection
          map < string, vector<dbxElectron> > ele_sets;
          map < string, vector<dbxMuon>     > muo_sets;
@@ -533,7 +543,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
 // basic analysis objects---- are they needed?
          ele_sets["ELE"]=goodElectrons;
          muo_sets["MUO"]=goodMuons;
-         pho_sets["PHO"]=gams;
+         pho_sets["PHO"]=goodPhotons;
          jet_sets["JET"]=goodJets;
 
          map <string, vector<dbxJet> >::iterator tmpjet;
@@ -611,7 +621,7 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
 // *************************************
 
     for (unsigned int k=0; k<mycutlist.size(); k++){
-        a0={goodMuons, goodElectrons, gams, goodJets, met, anevt}; // we start from good ones.
+        a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
          if ( levelObjectMap.size() > 0) {
               map <int, vector<std::pair<string,string> > >::iterator it;

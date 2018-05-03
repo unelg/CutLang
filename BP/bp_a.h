@@ -51,8 +51,7 @@ class BPdbxA : public dbxA {
       TH1D* xWHbRh2;
       TH1D* Zlm;
 
-      Double_t minwidthw, minwidthz, minptm, minmassmm, maxetam, mindrmm, maxetconem, minptj;
-      Double_t maxetaj, maxmet ;
+      Double_t minwidthw, minwidthz, minmassmm, mindrmm, maxetconem;
       Int_t chargeveto, minnjetsw;  
       int TRGe, TRGm;
  
