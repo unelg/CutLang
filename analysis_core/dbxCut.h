@@ -71,7 +71,9 @@ public:
                     bool normal_op;
                     bool find(AnalysisObjects *ao);
                    float cxcalc(AnalysisObjects *ao, std::vector<int> *param);
+
                     bool m1select(AnalysisObjects *ao);
+                    bool m2select(AnalysisObjects *ao);
 
 
                     void addString(std::string v){p_toEvaluate+=v;}
