@@ -63,7 +63,7 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                    // return (myPart); // returning here results in 3.35s for 25k events
                     myPart.Reset();
                     size_t kk=0, kstart=0, pcount=0;
-                    DEBUG("O:"<<order<< " #p:"<<p_part_type.size()<<" ");
+                    DEBUG("O:"<<order<< " #PT:"<<p_part_type.size()<<" ");
                     if (order>1) {
                      for (kk=0; kk<p_part_type.size(); kk++){
                       if (p_part_type.at(kk)==-1) pcount++;           
@@ -80,6 +80,7 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                                   if (p_part_index.at(kk) < 0)  { 
                                    DEBUG(" "<<p_part_index.at(kk)<<"@"<<kk<<"\t");
                                   } else {
+                                         DEBUG(p_part_type.at(kk)<<"@"<<kk<<"\t");
                                          switch (p_part_type.at(kk)) { // unused cases don't cost any time.
                                             case -1: DEBUG("MPS ");
                                                      break;
@@ -91,9 +92,9 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                                                     myPart.setCharge(myPart.q()+ao->eles[ p_part_index.at(kk) ].q() );
                                                     DEBUG("electron:"<<p_part_index.at(kk)<<"  ");
                                                     break;
-                                           case 2: myPart.setTlv(myPart.lv()+ao->jets[ p_part_index.at(kk)].lv() ); // 2 is any jet
-//                                                  DEBUG("jet:"<<p_part_index.at(kk)<<" ");
-                                                  break;
+                                           case 2:  DEBUG("jet:"<<p_part_index.at(kk)<<" ");
+                                                    myPart.setTlv(myPart.lv()+ao->jets[ p_part_index.at(kk)].lv() ); // 2 is any jet
+                                                    break;
 //                                            case 2: myPart.addTlv(  &(ao->jets[ p_part_index.at(kk)].lv()) ); // 2 is any jet
 //                                                    break;
                                             case 3: myPart.setTlv(myPart.lv()+tagJets(ao, 1)[ p_part_index.at(kk) ].lv() ); // 3 is a b jet
@@ -112,9 +113,10 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                                                     myPart.setTlv(myPart.lv()+ametlv); // v from MET using same eta approx.
                                                     DEBUG("eleMET ");
                                                     break;
-                                            case 7: ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
+                                            case 7: DEBUG("MET PV\n ");
+                                                    ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
                                                     myPart.setTlv(myPart.lv()+ametlv); // v from MET using same eta approx.
-                                                    DEBUG("MET PV ");
+                                                    
                                                     break;
                                             case 8: if (p_part_index.at(kk)==6213) {
                                                       myPart.setCharge( ao->gams.size() );

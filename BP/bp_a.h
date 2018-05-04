@@ -58,7 +58,12 @@ class BPdbxA : public dbxA {
 //DBXcut relevant variables
         std::vector< std::vector<dbxCut*>     > mycutlist;
         std::vector< std::vector<std::string> > myopelist;
+        std::vector< std::vector<dbxCut*>     > terCutlistT;
+        std::vector< std::vector<std::string> > terOpelistT;
+        std::vector< std::vector<dbxCut*>     > terCutlistF;
+        std::vector< std::vector<std::string> > terOpelistF;
         dbxCutList                              BPcutlist;
+        std::vector< bool                     > isTernary;
         std::vector< pair< int , int >        > forbidthese;
   
         map < string, vector<string> > obj_names;

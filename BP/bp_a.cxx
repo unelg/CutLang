@@ -95,6 +95,7 @@ int BPdbxA:: readAnalysisParams() {
     int kk=1;
     map < string, string > def_names;
     size_t apos = 0;
+    size_t bpos = 0;
     string subdelimiter = ":";
     string seldelimiter = ",";
     string  opdelimiter = "_";
@@ -230,6 +231,7 @@ int BPdbxA:: readAnalysisParams() {
 
 //                  cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
                   TString newLabels = cut0.data();
+                  eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
                   string cut1;
 // loop over all chars. Put a space before and after each operator.
                   for (int ic=0; ic<cut0.size(); ic++){
@@ -244,8 +246,8 @@ int BPdbxA:: readAnalysisParams() {
                     }else { cut1.append(cut0,ic,1); }
                    } else { cut1.append(cut0,ic,1); }
                   }
-                  DEBUG("====>>>"<<cut1<<".\n");
 
+                  DEBUG("====>>>"<<cut1<<".\n");
                   if (cut1.find("FillHistos")!=std::string::npos){ newLabels = "FillHistos-"+TString::Format("%d",++kFillHistos); }
 
 // do we have a definition?
@@ -258,14 +260,48 @@ int BPdbxA:: readAnalysisParams() {
 //                    cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<" becomes ) "<<cut1<<"\t";
                     found =cut1.find(it->first);
                   }
+                 } 
+                 if ((apos=cut1.find('?'))!=std::string::npos){ 
+                    isTernary.push_back(1);
+                    bpos=cut1.find(':');
+                    DEBUG("****>>>We have a trinary operator:"<< apos<< "  "<< bpos<<"\n");
+                    std::string subtok0, subtokT, subtokF;
+                    subtok0 = cut1.substr(0, apos); 
+                    subtokT = cut1.substr(apos+subdelimiter.length(),bpos-apos-1); //
+                    subtokT+=" ";
+                    subtokF = cut1.substr(bpos+subdelimiter.length(),std::string::npos); //
+                    subtokF+=" ";
+                    DEBUG("Main  "<<subtok0<<" |T:"<<subtokT<< "|F:"<<subtokF <<std::endl);
+
+                    std::vector<dbxCut*> acutlist; 
+                    std::vector<dbxCut*> bcutlist; 
+                    std::vector<dbxCut*> ccutlist; 
+                    acutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                    bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                    ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                    std::vector<std::string> q;
+
+                    q=BPcutlist.cutTokenizer(subtok0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                    mycutlist.push_back(acutlist);
+                    myopelist.push_back(q);
+
+                    q=BPcutlist.cutTokenizer(subtokT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                    terCutlistT.push_back(bcutlist);
+                    terOpelistT.push_back(q);
+
+                    q=BPcutlist.cutTokenizer(subtokF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                    terCutlistF.push_back(ccutlist);
+                    terOpelistF.push_back(q);
+
+                 } else { // normally we dont have ternaries
+                    isTernary.push_back(0);
+                    std::vector<dbxCut*> acutlist; 
+                    acutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                    std::vector<std::string> q;
+                    q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                    mycutlist.push_back(acutlist);
+                    myopelist.push_back(q);
                  }
-                  eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
-                  std::vector<dbxCut*> acutlist;
-                  acutlist.reserve(10);
-                  std::vector<std::string> q;
-                  q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                  mycutlist.push_back(acutlist);
-                  myopelist.push_back(q);
 /////////DEBUG
 /*
                   for ( unsigned int ic=0; ic<acutlist.size(); ic++) {
@@ -620,10 +656,11 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
 /// CutLang execution starts-------here*
 // *************************************
 
+    unsigned int ternaryCount=0;
     for (unsigned int k=0; k<mycutlist.size(); k++){
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
-         if ( levelObjectMap.size() > 0) {
+        if ( levelObjectMap.size() > 0) {
               map <int, vector<std::pair<string,string> > >::iterator it;
               it=levelObjectMap.find(k+1); 
               if (it != levelObjectMap.end()){
@@ -651,13 +688,29 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
                   }
                   DEBUG("\n" );
               }
-         } 
-
-
-
+        } 
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
-        double d;
-//      DEBUG("\nCUT:"<<k<< " "<<" # operations in this cut:"<<myopelist[k].size());
+        double d, dt=-1;
+
+        if ( isTernary[k] ) {  
+            DEBUG("             TERNARY------------------------- res:"); 
+            dt=mycutlist[k][j]->select(&a0); // execute the selection cut
+            DEBUG(dt<<"\n"); 
+            if (dt > 0) { DEBUG("True\t");
+                          DEBUG(" name of this cut:"<<terCutlistT[ternaryCount][j]->getName() );
+                          mycutlist[k].swap( terCutlistT[ternaryCount] );
+                          myopelist[k].swap( terOpelistT[ternaryCount] ); 
+            }  else  {    DEBUG("False\t");
+                          DEBUG(" name of this cut:"<<terCutlistF[ternaryCount][j]->getName() );
+                          myopelist[k].swap(terOpelistF[ternaryCount] );
+                          mycutlist[k].swap(terCutlistF[ternaryCount] );
+            }
+            DEBUG(" Swapped\n");
+        }
+
+
+
+        DEBUG("\nCUT:"<<k<< " "<<" # operations in this cut:"<<myopelist[k].size());
         DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
 //--------- we apply lepton scale factor
         if (TRGe==2 || TRGm== 2) {
@@ -784,6 +837,16 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
            //   for (int iti=0; iti<found_idx_origs.size(); iti++) {DEBUG(" Oi:"<<found_idx_origs[iti]);}  DEBUG("\n");
            }
            j++;
+        }
+        if ( isTernary[k]){
+            if (dt > 0) { 
+                          mycutlist[k].swap( terCutlistT[ternaryCount] );
+                          myopelist[k].swap( terOpelistT[ternaryCount] ); 
+            }  else  {    
+                          myopelist[k].swap(terOpelistF[ternaryCount] );
+                          mycutlist[k].swap(terCutlistF[ternaryCount] );
+            }
+         ternaryCount++;
         }
         DEBUG("             Result = " << d << std::endl);
         if (d==0) return k; // quit the event.
