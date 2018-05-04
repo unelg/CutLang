@@ -1,6 +1,17 @@
 # PLEASE PAY ATTENTION TO SPACE BEFORE AND AFTER = SIGN
 # format is " variable = value "
 
+# info analysis
+#   experiment ATLAS
+#   id EXOT-2016-32
+#   publication Eur.Phys.J. C77 (2017) no.6, 393
+#   sqrtS 13.0
+#   lumi 36.1
+#   arXiv 1704.03848
+#   hepdata https://www.hepdata.net/record/ins1591328
+#   doi 10.1140/epjc/s10052-017-4965-8
+
+######## GENERIC OBJECT THRESHOLDS
 minptp  = 10.0  # min pt of photons 
 minpte  =  7.0  # min pt of electrons 
 minptm  =  6.0  # min pt of muons 
@@ -11,23 +22,7 @@ maxetae = 2.70  # max pseudorapidity of electrons
 maxetam = 2.70  # max pseudorapidity of muons 
 maxetaj = 4.50  # max pseudorapidity of jets
 
-btag_lowthreshold_ATLASOD = 0.7892
-btag_lowthreshold_CMSOD   = 1.7400
-
-TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-
-###### USER DEFINITIONS
-
-######## USER OBJECTS
-
-
-
-
-
-######## USER ALGORITHMS
-
-
+######## OBJECT SELECTION
 obj1 = "JETclean : JET "
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
 cmd1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
@@ -40,31 +35,26 @@ obj3 = "ELEclean : ELE "
 cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
 
 obj4 = "PHOtight : PHO "
-cmd4-1 = " { PHO_ }AbsEta <= 1.37  " 
+cmd4-1 = " { PHO_ }AbsEta ][  1.37 1.52  " 
 
 obj5 = "JETsr : JETclean "
-cmd5-1 = " { JETclean_ , ELE_ }dR >= 0.4  " 
-cmd5-2 = " { JETclean_ }Pt > 20  " 
+cmd5-1 = " { JETclean_ , PHO_ }dR >= 0.4  " 
+cmd5-2 = " { JETclean_ }Pt > 50  " 
+cmd5-3 = " { JETclean_ }AbsEta < 4.5  " 
 
-def1 = "WH1 : JET_-1 JET_-1 "  # W boson of the first top
-def2 = "WH2 : JET_-11 JET_-11 "  # W boson of the second top
-def3 = "mWH1 : { WH1 }m "  # mass of W boson of the first top
-def4 = "mWH2 : { WH2 }m "  # mass of @ boson of the second top
-def5 = "mTopH1 : { WH1 JET_-2 }m "  # first top quark's mass
-def6 = "mTopH2 : { WH2 JET_-4 }m "  # second top quark's mass
-def7 = "WHbR1 : {WH1 , JET_-2 }dR "  # angular distance between W1 and b jet
-def8 = "WHbR2 : {WH2 , JET_-4 }dR "  # angular distance between W2 and b jet
-def9 = "Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2 " #chi2 for W finder
-def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
-
-cmd1 = "ALL "                             # to count all events
-cmd2 = " nJET  >= 4 "                     # events with 1 or more tight photons
-cmd3 = " nJETclean  >= 4 "
-cmd4 = " nPHOtight >= 0 "                 # events with 1 or more tight photons
-cmd5 = " MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
-cmd6 = " nJETsr >= 4 "                    # reject jetsSR.size > 1
-cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
-cmd8 = "  nMUOclean == 0 "                # select cleanmuons.size == 0
-cmd9 = "  nELEclean == 0 "                # select cleanelectrons.size == 0
+######## EVENT SELECTION
+cmd1 = "ALL "                            # to count all events
+cmd2 = "nPHOtight >= 1 "              # events with 1 or more tight photons
+cmd3 = "{ PHOtight_0 }Pt > 150 "         # select photons[0].PT > 150
+cmd4 = "MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
+cmd5 = "nJETsr <= 1 "
+cmd6 = "nJETsr == 0 ? ALL : { JETsr_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
+cmd7 = "nMUOclean == 0 "             # select cleanmuons.size == 0
+cmd8 = "nELEclean == 0 "             # select cleanelectrons.size == 0
+cmd9 = "MET > 150 "
+#cmd10 = "MET > 225 "
+#cmd11 = "MET > 300 "
+#cmd12 = "MET [] 150 225 "
+#cmd13 = "MET [] 225 300 "
 
 
