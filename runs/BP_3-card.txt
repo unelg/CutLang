@@ -1,67 +1,74 @@
 # PLEASE PAY ATTENTION TO SPACE BEFORE AND AFTER = SIGN
 # format is " variable = value "
 
+# info analysis
+#  experiment ATLAS
+#  id SUSY-2013-15
+#  publication Eur. Phys. J. C(2016) 76: 392
+#  sqrtS 13.0
+#  lumi 3.2
+#  arXiv 1605.03814
+#  hepdata http://hepdata.cedar.ac.uk/view/ins1304456
+#  doi 10.1140/epjc/s10052-016-4184-8
+
+######## GENERIC OBJECT THRESHOLDS
 minptp  = 10.0  # min pt of photons 
-minpte  =  7.0  # min pt of electrons 
-minptm  =  6.0  # min pt of muons 
+minpte  = 10.0  # min pt of electrons 
+minptm  = 10.0  # min pt of muons 
 minptj  = 20.0  # min pt of jets
 
 maxetap = 2.37  # max pseudorapidity of photons  
-maxetae = 2.70  # max pseudorapidity of electrons  
+maxetae = 2.47  # max pseudorapidity of electrons  
 maxetam = 2.70  # max pseudorapidity of muons 
-maxetaj = 4.50  # max pseudorapidity of jets
+maxetaj = 2.80  # max pseudorapidity of jets
 
-btag_lowthreshold_ATLASOD = 0.7892
-btag_lowthreshold_CMSOD   = 1.7400
+######## USER DEFINITIONS
 
-TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+######## OBJECT SELECTION
 
-###### USER DEFINITIONS
-
-######## USER OBJECTS
+# How to do bjets?
 
 
 
 
 
-######## USER ALGORITHMS
+######## EVENT SELECTION
+
 
 
 obj1 = "JETclean : JET "
 obj2 = "MUOclean : MUO "
 obj3 = "ELEclean : ELE "
-obj4 = "PHOtight : PHO "
+obj4 = "ELEveryclean : ELE "
 obj5 = "JETsr : JETclean "
 
-def1 = "WH1 : JET_-1 JET_-1 "  # W boson of the first top
-def2 = "WH2 : JET_-11 JET_-11 "  # W boson of the second top
-def3 = "mWH1 : { WH1 }m "  # mass of W boson of the first top
-def4 = "mWH2 : { WH2 }m "  # mass of @ boson of the second top
-def5 = "mTopH1 : { WH1 JET_-2 }m "  # first top quark's mass
-def6 = "mTopH2 : { WH2 JET_-4 }m "  # second top quark's mass
-def7 = "WHbR1 : {WH1 , JET_-2 }dR "  # angular distance between W1 and b jet
-def8 = "WHbR2 : {WH2 , JET_-4 }dR "  # angular distance between W2 and b jet
-def9 = "Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2 " #chi2 for W finder
-def10 = "topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2 " #chi2 for top finder
+def1 = "Meff : MET + HT "  #Meff is simple
+def2 = "Jsr0MEtFi : { JETsr_0 , METLV_0 }dPhi "
+def3 = "Jsr1MEtFi : { JETsr_1 , METLV_0 }dPhi "
+def4 = "Jsr2MEtFi : { JETsr_2 , METLV_0 }dPhi "
+def5 = "Meff4j : MET + { JETsr_0 }Pt + { JETsr_1 }Pt + { JETsr_2 }Pt + { JETsr_3 }Pt "
+def6 = "Meff5j : Meff4j + { JETsr_4 }Pt "
+def7 = "Meff6j : Meff5j + { JETsr_5 }Pt "
 
-cmd1 = "ALL "                             # to count all events
-cmd2 = " nJET  >= 4 "                     # events with 1 or more tight photons
-cmd3 = " nJETclean  >= 4 "
-cmd4 = " nPHOtight >= 0 "                 # events with 1 or more tight photons
-cmd5 = " MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
-cmd6 = " nJETsr >= 4 "                    # reject jetsSR.size > 1
-cmd7 = "{ JET_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
-cmd8 = "  nMUOclean == 0 "                # select cleanmuons.size == 0
-cmd9 = "  nELEclean == 0 "                # select cleanelectrons.size == 0
-cmd10 = "MET > 225 "
+cmd1 = "ALL "                          # to count all events
+cmd2 = "MET > 200 "                    
+cmd3 = "nPHOtight >= 0 "
+cmd4 = "nMUOclean <= 1 "         # Reject evt if there is a muon with pT > 10
+cmd5 = "nMUOclean == 0 ? ALL : { MUOclean_0 }Pt < 10 "         # Reject evt if there is a muon with pT > 10
+cmd6 = "nELEveryclean <= 1 "         # Reject evt if there is a muon with pT > 10
+cmd7 = "nELEveryclean == 0 ? ALL : { ELEveryclean_0 }Pt < 10 "    # Reject evt if there is an electron with pT > 10
+cmd8 = "nJETsr > 0 "
+cmd9 = " nJETsr >= 1 "
+cmd10 = "{ JETsr_0 }Pt > 300 "
+cmd11 = " nJETsr >= 2 "
+cmd12 = " Ex1 > 0.4  "
+cmd13 = "{ JETsr_1 }Pt > 50 "
+cmd14 = " MET / HT ^ 0.5 > 15 "
+cmd15 = " Meff > 1600 "
 
 
-cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
-cmd1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
-cmd1-3 = " { JET_ }Pt >= 20  " 
+cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
 cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
 cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
-cmd4-1 = " { PHO_ }Eta [] -1.37 1.37  " 
-cmd5-1 = " { JETclean_ , ELE_ }dR >= 0.4  " 
-cmd5-2 = " { JETclean_ }Pt > 50  " 
+cmd4-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+cmd5-1 = " { JETclean_ }Pt > 50  " 

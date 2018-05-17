@@ -2,59 +2,74 @@
 # format is " variable = value "
 
 # info analysis
-#   experiment ATLAS
-#   id EXOT-2016-32
-#   publication Eur.Phys.J. C77 (2017) no.6, 393
-#   sqrtS 13.0
-#   lumi 36.1
-#   arXiv 1704.03848
-#   hepdata https://www.hepdata.net/record/ins1591328
-#   doi 10.1140/epjc/s10052-017-4965-8
+#  experiment ATLAS
+#  id SUSY-2013-15
+#  publication Eur. Phys. J. C(2016) 76: 392
+#  sqrtS 13.0
+#  lumi 3.2
+#  arXiv 1605.03814
+#  hepdata http://hepdata.cedar.ac.uk/view/ins1304456
+#  doi 10.1140/epjc/s10052-016-4184-8
 
 ######## GENERIC OBJECT THRESHOLDS
 minptp  = 10.0  # min pt of photons 
-minpte  =  7.0  # min pt of electrons 
-minptm  =  6.0  # min pt of muons 
+minpte  = 10.0  # min pt of electrons 
+minptm  = 10.0  # min pt of muons 
 minptj  = 20.0  # min pt of jets
 
 maxetap = 2.37  # max pseudorapidity of photons  
-maxetae = 2.70  # max pseudorapidity of electrons  
+maxetae = 2.47  # max pseudorapidity of electrons  
 maxetam = 2.70  # max pseudorapidity of muons 
-maxetaj = 4.50  # max pseudorapidity of jets
+maxetaj = 2.80  # max pseudorapidity of jets
+
+######## USER DEFINITIONS
 
 ######## OBJECT SELECTION
-obj1 = "JETclean : JET "
-cmd1-1 = " { JET_ , ELE_ }dR >= 0.9  " 
-cmd1-2 = " { JET_ , MUO_ }dR >= 1.0  " 
-cmd1-3 = " { JET_ }Pt >= 20  " 
 
-obj2 = "MUOclean : MUO "
-cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
+# How to do bjets?
 
-obj3 = "ELEclean : ELE "
-cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
 
-obj4 = "PHOtight : PHO "
-cmd4-1 = " { PHO_ }AbsEta ][  1.37 1.52  " 
 
-obj5 = "JETsr : JETclean "
-cmd5-1 = " { JETclean_ , PHO_ }dR >= 0.4  " 
-cmd5-2 = " { JETclean_ }Pt > 50  " 
-cmd5-3 = " { JETclean_ }AbsEta < 4.5  " 
+
 
 ######## EVENT SELECTION
-cmd1 = "ALL "                            # to count all events
-cmd2 = "nPHOtight >= 1 "              # events with 1 or more tight photons
-cmd3 = "{ PHOtight_0 }Pt > 150 "         # select photons[0].PT > 150
-cmd4 = "MET / HT ^ 0.5 > 8.5 "           # select METoverSqrtSumET > 8.5
-cmd5 = "nJETsr <= 1 "
-cmd6 = "nJETsr == 0 ? ALL : { JETsr_0 , METLV_0 }dPhi > 0.4 "   # select dphi(jetsSR.Phi, MET.Phi) > 0.4
-cmd7 = "nMUOclean == 0 "             # select cleanmuons.size == 0
-cmd8 = "nELEclean == 0 "             # select cleanelectrons.size == 0
-cmd9 = "MET > 150 "
-#cmd10 = "MET > 225 "
-#cmd11 = "MET > 300 "
-#cmd12 = "MET [] 150 225 "
-#cmd13 = "MET [] 225 300 "
 
 
+obj1 = "JETclean : JET "
+obj2 = "MUOclean : MUO "
+obj3 = "ELEclean : ELE "
+obj4 = "ELEveryclean : ELE "
+obj5 = "JETsr : JETclean "
+
+def1 = "Meff : MET + HT "  #Meff is simple
+def2 = "Jsr0MEtFi : { JETsr_0 , METLV_0 }dPhi "
+def3 = "Jsr1MEtFi : { JETsr_1 , METLV_0 }dPhi "
+def4 = "Jsr2MEtFi : { JETsr_2 , METLV_0 }dPhi "
+def5 = "Meff4j : MET + { JETsr_0 }Pt + { JETsr_1 }Pt + { JETsr_2 }Pt + { JETsr_3 }Pt "
+def6 = "Meff5j : Meff4j + { JETsr_4 }Pt "
+def7 = "Meff6j : Meff5j + { JETsr_5 }Pt "
+
+cmd1 = "ALL "                          # to count all events
+cmd2 = "MET > 200 "                    
+cmd3 = "nPHOtight >= 0 "
+cmd4 = "nMUOclean <= 1 "         # Reject evt if there is a muon with pT > 10
+cmd5 = "nMUOclean == 0 ? ALL : { MUOclean_0 }Pt < 10 "         # Reject evt if there is a muon with pT > 10                  ######T0
+cmd6 = "nELEveryclean <= 1 "         # Reject evt if there is a muon with pT > 10
+cmd7 = "nELEveryclean == 0 ? ALL : { ELEveryclean_0 }Pt < 10 "    # Reject evt if there is an electron with pT > 10          ######T1
+cmd8 = "nJETsr > 0 "
+cmd9 = "nJETsr >= 1 "
+cmd10 = "{ JETsr_0 }Pt > 200 "
+cmd11 = "nJETsr >= 2 "
+cmd12 = "nJETsr >= 3 "
+cmd13 = " Ex1 > 0.8  "
+cmd14 = "Jsr0MEtFi - Jsr1MEtFi < 0 ? Jsr0MEtFi - Jsr2MEtFi < 0 ? Jsr0MEtFi > 0.8 : Jsr2MEtFi > 0.8 : Jsr1MEtFi - Jsr2MEtFi < 0 ? Jsr1MEtFi > 0.8 : Jsr2MEtFi > 0.8 " ######T2
+cmd15 = "{ JETsr_1 }Pt > 200 "
+cmd16 = "MET / HT ^ 0.5 > 15 "  # make sure we use JETsr in HT
+cmd17 = "Meff > 1200 "
+
+
+cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
+cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
+cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+cmd4-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+cmd5-1 = " { JETclean_ }Pt > 50  " 

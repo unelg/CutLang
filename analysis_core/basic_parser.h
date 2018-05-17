@@ -30,19 +30,14 @@ public:
 		const std::pair<int,int> dum2(0, LEFT_ASSOC );
 		const std::pair<int,int> dum3(5, LEFT_ASSOC );
 		const std::pair<int,int> dum4(5, LEFT_ASSOC );
+                const std::pair<int,int> dum5(9, LEFT_ASSOC );
 
- /*
-		const OpMap::value_type assocs[] =     
-		    {  OpMap::value_type( "+", dum1 ),      
-		       OpMap::value_type( "-", dum2 ),        
-  		       OpMap::value_type( "*", dum3 ),        
-    		       OpMap::value_type( "/", dum4 ) };    
-           //opmap( assocs, assocs + sizeof( assocs ) / sizeof( assocs[ 0 ] ) );    
-*/
+
            opmap[ "+"] =dum1;    
            opmap[ "-"] =dum2;    
            opmap[ "*"] =dum3;    
            opmap[ "/"] =dum4;    
+           opmap[ "^"] =dum5;    
   
                    }
     ~basic_parser(){}
@@ -56,7 +51,7 @@ public:
 bool isOperator( const std::string& token)          
 {          
     return token == "+" || token == "-" ||        
-           token == "*" || token == "/";        
+           token == "*" || token == "/" ||  token == "^" ;        
 }        
   
 // Test associativity of operator token          
@@ -211,7 +206,8 @@ double RPNtoDouble( std::vector<std::string> tokens )
                 const double d1 = strtod( val1.c_str(), NULL );       
   
                 //Get the result          
-                result = token == "+" ? d1 + d2 :          
+                result = token == "^" ? pow(d1, d2) :          
+                         token == "+" ? d1 + d2 :          
                          token == "-" ? d1 - d2 :          
                          token == "*" ? d1 * d2 :          
                                         d1 / d2;          
