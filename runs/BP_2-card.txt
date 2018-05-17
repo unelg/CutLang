@@ -61,12 +61,11 @@ cmd8 = "nJETsr > 0 "
 cmd9 = "nJETsr >= 1 "
 cmd10 = "{ JETsr_0 }Pt > 200 "
 cmd11 = "nJETsr >= 2 "
-cmd12 = "nJETsr >= 3 "
-cmd13 = "Jsr0MEtFi - Jsr1MEtFi < 0 ?  Jsr0MEtFi - Jsr2MEtFi < 0 ? Jsr0MEtFi > 0.8 : Jsr2MEtFi > 0.8 : Jsr1MEtFi - Jsr2MEtFi < 0 ? Jsr1MEtFi > 0.8 : Jsr2MEtFi > 0.8 "
-cmd14 = " Ex1 > 0.8  "
-cmd15 = "{ JETsr_1 }Pt > 200 "
-cmd16 = "MET / HT ^ 0.5 > 15 "  # make sure we use JETsr in HT
-cmd17 = "Meff > 1200 "
+cmd12 = " Ex1 > 0.8  "
+cmd13 = "{ JETsr_1 }Pt > 200 "
+cmd14 = "MET / HT ^ 0.5 > 15 "  # make sure we use JETsr in HT
+cmd15 = "Meff > 1200 "
+cmd16 = "Jsr0MEtFi - Jsr1MEtFi < 0 ?     ALL         : Jsr1MEtFi - Jsr2MEtFi < 0 ? Jsr1MEtFi > 0.8 : Jsr2MEtFi > 0.8 "
 
 
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
