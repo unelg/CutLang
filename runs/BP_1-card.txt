@@ -53,19 +53,10 @@ cmd1 = "ALL "                          # to count all events
 cmd2 = "MET > 200 "                    
 cmd3 = "nPHOtight >= 0 "
 cmd4 = "nMUOclean <= 1 "         # Reject evt if there is a muon with pT > 10
-cmd5 = "nMUOclean == 0 ? ALL : { MUOclean_0 }Pt < 10 "         # Reject evt if there is a muon with pT > 10                  ######T0
+cmd5 = "nMUOclean == 0 ? ALL : { MUOclean_0 }Pt < 10 "         # Reject evt if there is a muon with pT > 10
 cmd6 = "nELEveryclean <= 1 "         # Reject evt if there is a muon with pT > 10
-cmd7 = "nELEveryclean == 0 ? ALL : { ELEveryclean_0 }Pt < 10 "    # Reject evt if there is an electron with pT > 10          ######T1
+cmd7 = "nELEveryclean == 0 ? ALL : { ELEveryclean_0 }Pt < 10 "    # Reject evt if there is an electron with pT > 10
 cmd8 = "nJETsr > 0 "
-cmd9 = "nJETsr >= 1 "
-cmd10 = "{ JETsr_0 }Pt > 200 "
-cmd11 = "nJETsr >= 2 "
-cmd12 = "nJETsr >= 3 "
-cmd13 = " Ex1 > 0.8  "
-cmd14 = "Jsr0MEtFi - Jsr1MEtFi < 0 ? Jsr0MEtFi - Jsr2MEtFi < 0 ? Jsr0MEtFi > 0.8 : Jsr2MEtFi > 0.8 : Jsr1MEtFi - Jsr2MEtFi < 0 ? Jsr1MEtFi > 0.8 : Jsr2MEtFi > 0.8 " ######T2
-cmd15 = "{ JETsr_1 }Pt > 200 "
-cmd16 = "MET / HT ^ 0.5 > 15 "  # make sure we use JETsr in HT
-cmd17 = "Meff > 1200 "
 
 
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
