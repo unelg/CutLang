@@ -73,7 +73,7 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                     } // end of if
 // now I start constructing my particles.
                     DEBUG("Start@"<<kstart<<" ");
-                    if (kstart >= p_part_type.size()) {std::cout << "countint ERROR, STOP\n"; exit (-11);}
+                    if (kstart >= p_part_type.size()) {std::cout << "counting ERROR, STOP\n"; exit (-11);}
                     float v_eta; 
 //                  return myPart; //----------------------------> 3.35s
                     for (kk=kstart; kk<p_part_type.size(); kk++){ 
@@ -269,9 +269,9 @@ bool dbxCut::isSpecial(int order)
 float dbxCut::doArithOps(float v, int order, float vt)
 {
    int op_start=0, op_stop=-1;
-// for (size_t iop=0; iop< p_arith_ops.size(); iop++){
-//     DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
-// }
+ for (size_t iop=0; iop< p_arith_ops.size(); iop++){
+     DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
+ }
 
    for (size_t iop=0; iop< p_arith_ops.size(); iop++){
        op_stop++;
@@ -582,7 +582,7 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
              case 31: retval=aparticle[ipart].lv().DeltaR(aparticle[ipart+1].lv() );
                       twoParam=true;
                       break;
-             case 32: retval=aparticle[ipart].lv().DeltaR(aparticle[ipart+1].lv() );
+             case 32: retval=fabs(aparticle[ipart].lv().DeltaPhi(aparticle[ipart+1].lv() ) );
                       twoParam=true;
                       break;
              case 33: retval=fabs(aparticle[ipart].lv().Eta() - aparticle[ipart+1].lv().Eta() );
@@ -599,7 +599,7 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
              if (special_op) { retval=doArithOps(retval, iporder,totretval); // ~ totretval+=retval;
                                DEBUG ("Toti:"<<retval);
              }
-             if (getArithVals() >0 ) {retval=doArithOps(retval,iporder+1); DEBUG(" aRetVal:"<<retval<<" "); }
+             if (getArithVal() >0 ) {retval=doArithOps(retval,iporder+1); DEBUG(" aRetVal:"<<retval<<" "); }
 
              if (ipart==0) { totretval=retval;
              } else {
@@ -659,7 +659,7 @@ bool dbxCut::m1select(AnalysisObjects *ao)
 bool dbxCut::m2select(AnalysisObjects *ao)
 {
        float result;
-       if ( getParticleIndex(0) != 6213 ) {
+       if ( getParticleIndex(0) != 6213 ) { //normal selection
                result=calc(ao);
                DEBUG(" res:"<< result << "\n");
                return (Ccompare( result ) );
@@ -941,6 +941,89 @@ float dbxCutdPhiof::calc(AnalysisObjects *ao)
 { 
             return ( cxcalc(ao, getParams() )); 
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MET
+ClassImp(dbxCutMET)
+bool dbxCutMET::select(AnalysisObjects *ao){
+
+      basic_parser aparser;
+      TString myoss;
+      std::vector<std::string> rpn;
+      dbxParticle *myparticles;
+
+      float retval, totretval=0;
+      std::vector<int> *param=getParams();
+      unsigned int PS=param->size();
+      int extraParticleSet=getNpart();
+      int ipart=0;
+      for (unsigned int ii=0; ii<PS; ii++){
+             if (param->at(ii)>30 ) extraParticleSet=extraParticleSet+1; // special case for R function which has 2 parameters.
+      }
+      DEBUG("#ExParts:"<< extraParticleSet <<" "<< getArithVal(-1)<<" ");
+      if (extraParticleSet > 0){
+        myparticles=new dbxParticle[16];
+        for (ipart=0; ipart<=extraParticleSet; ipart++) myparticles[ipart]=partConstruct(ao,ipart+1); //3.4s
+        DEBUG(" initialized.\n ");
+      }
+      ipart=1; 
+      for (unsigned int iporder=0; iporder<PS; iporder++){
+             DEBUG("AP:" << param->at(iporder) << "\t");
+             if (param->at(iporder)==2) { // this is Pt
+                retval=myparticles[ipart].lv().Pt();
+                ipart++;
+             }
+
+             if (param->at(iporder)==21) { retval=ao->met.Mod();}
+             if (param->at(iporder)==22) { retval=0;
+               for (UInt_t i=0; i<ao->jets.size(); i++) retval+=ao->jets.at(i).lv().Pt();
+             }
+             DEBUG(retval << "\t");
+
+             myoss+=retval;
+             myoss+=" ";
+             if (iporder < getArithVal(-1)){
+                 myoss+= getArithOp(iporder) ;
+                 DEBUG(getArithOp(iporder)<<"\t");
+                 myoss+=" ";
+               float retval=getArithVal(iporder);
+               DEBUG(retval<<"\n");
+               if (retval != 0.0){
+                   myoss+= retval;
+                   myoss+=" ";
+               }
+             }
+
+/*
+             bool special_op=false;
+             if (iporder>0) {
+                  special_op=isSpecial(iporder-1);
+             
+             if (special_op) { retval=doArithOps(retval, iporder-1,totretval); // ~ totretval+=retval;
+                               DEBUG("Toti:"<<retval);
+             }
+             if (getArithVal() >0 ) {retval=doArithOps(retval,iporder); DEBUG(" aRetVal:"<<retval<<" "); }
+             }
+
+             if (iporder==0) { 
+               totretval=retval;
+             } else {
+              if (!special_op) {
+                DEBUG(" T:"<<totretval<<" aRv:"<<retval);
+                totretval=doArithOps(retval, (iporder),totretval); // ~ totretval+=retval;
+              } else { totretval=retval; }
+             }
+            DEBUG(" GTot:"<<totretval<<"\n");
+*/ 
+      }
+      DEBUG(" STR:"<<myoss<<"\n");
+      std::vector<std::string> tokens = aparser.getExpressionTokens( myoss.Data() );
+      aparser.infixToRPN( tokens, tokens.size(), &rpn );
+      totretval = aparser.RPNtoDouble( rpn );
+      DEBUG(" GTot:"<<totretval<<"\n");
+                     
+      return (Ccompare(totretval) );    
+
+}
+
 
 //-------------------------------------------------------dbxCutList
 //-------------------------------------------------------dbxCutList
@@ -1050,12 +1133,13 @@ ClassImp(dbxCutList)
                         else if(token0=="Trig")      {mycut->push_back(new dbxCutTrig(TrigType)   );}
                         else if(token0=="VtxTrks")   {mycut->push_back(new dbxCutVtxTrks()        );}
                         else if(token0=="LEPsf")     {mycut->push_back(new dbxCutLEPsf()          );}
-                        else if(token0=="MET")       {mycut->push_back(new dbxCutMET()            );}
                         else if(token0=="MWT")       {mycut->push_back(new dbxCutMWT(TrigType)    );}
                         else if(token0=="R2LEPJ0")   {mycut->push_back(new dbxCutR_Z_J0(TrigType) );}
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
-                        else if(token0=="SumHTJET")  {mycut->push_back(new dbxCutSumHTJET()       );} // remove sum, add HTALL
+                        else if(token0=="HT")        {mycut->push_back(new dbxCutHT()             );} // add HTALL
+                        else if(token0=="Ex1")       {mycut->push_back(new dbxCutEx1of()          );} // example
                         else if(token0=="TrigMatch") {mycut->push_back(new dbxCutTrigMatch(TrigType) );}
+                        else if(token0=="MET")       {mycut->push_back(new dbxCutMET(my_typelist,      my_indexlist,21)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,      my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}Pt")       {mycut->push_back(new dbxCutPtof(my_typelist,     my_indexlist,2) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}Eta")      {mycut->push_back(new dbxCutEtaof(my_typelist,    my_indexlist,3) ); my_typelist.clear(); my_indexlist.clear();}
@@ -1101,7 +1185,7 @@ ClassImp(dbxCutList)
                     }
                  } else {        //this must be the cut operator OR artihmetic operator
                      if (  token0=="}m" || token0=="}dR" || token0=="}Pt" || token0=="}Phi" || token0=="}q"    || token0=="}N"
-                        || token0=="}E" || token0=="}Pz" || token0=="}P"  || token0=="}Eta" || token0=="}dPhi"
+                        || token0=="}E" || token0=="}Pz" || token0=="}P"  || token0=="}Eta" || token0=="}dPhi" || token0=="HT"
                         ) { DEBUG("Another Op found:"<<token0<<"\n");
                                  if(token0=="}m")   {mycut->back()->addParam(1) ; }
                             else if(token0=="}Pt")  {mycut->back()->addParam(2) ; }
@@ -1114,9 +1198,13 @@ ClassImp(dbxCutList)
                             else if(token0=="}N")   {mycut->back()->addParam(9) ; }
                             else if(token0=="}dR")  {mycut->back()->addParam(31); }
                             else if(token0=="}dPhi"){mycut->back()->addParam(32); }
+                            else if(token0=="HT")   {mycut->back()->addParam(22); }
                    
                             myEvalString+="x";
-
+                            if ( (mycut->back()->getOp()=="")) {
+                                  DEBUG(" Arithmetic Op between cuts ");
+                                  mycut->back()->addArithVal( 0.0 );
+                            }
                             mycut->back()->addTypesIndexes(my_typelist,my_indexlist); 
                             my_typelist.clear(); my_indexlist.clear();
                        
@@ -1125,7 +1213,7 @@ ClassImp(dbxCutList)
                           DEBUG(token0 <<" is an arithmetic Op ");
                           mycut->back()->addArithOp(*token0.c_str() );
                      } else { //is this is cut operator like < > ==
-                             myEvalString+=".";
+                             myEvalString+="?"; //just before the operator
                              if (token0.find_first_of("=<>![") !=std::string::npos ) {  //is it an op?  
                                  if ((token0.find('[') != std::string::npos) && (token0.find(']') != std::string::npos )) {
                                      DEBUG(token0<< " is an OP with two arguments.\n");
@@ -1150,7 +1238,7 @@ ClassImp(dbxCutList)
               if (found4!=std::string::npos) { //found a curly 
                DEBUG(":NP:");
                if (mycut->size() >0) if (mycut->back()->getOp() == "") {
-                  DEBUG(" Reset4ExtraParts:"<<mycut->back()->getOp()<<" ");
+                  DEBUG(" Reset4ExtraParts:"<<mycut->back()->getOp()<<".");
                   mycut->back()->addApart();
 //                  foundcut=false; //reset the search
                   my_typelist.push_back(-1); my_indexlist.push_back(999);
@@ -1227,7 +1315,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutMETMWT());
                     cutlist.push_back(new dbxCutnBJet());
                     cutlist.push_back(new dbxCutnQGJet());
-                    cutlist.push_back(new dbxCutSumHTJET());
+                    cutlist.push_back(new dbxCutHT());
                     cutlist.push_back(new dbxCutQof());
                     cutlist.push_back(new dbxCutPtof());
                     cutlist.push_back(new dbxCutEtaof());

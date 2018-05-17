@@ -6,8 +6,8 @@
 
 class dbxCutEx1of : public dbxCut {
  public:
-      dbxCutEx1of( ): dbxCut("}Meff"){}
-      dbxCutEx1of(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("}Meff",ts,is,v){}
+      dbxCutEx1of( ): dbxCut("Ex1"){}
+      dbxCutEx1of(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("Ex1",ts,is,v){}
 
       bool select(AnalysisObjects *ao){
           float result;
@@ -19,8 +19,9 @@ class dbxCutEx1of : public dbxCut {
 // 7 met
 
       float calc(AnalysisObjects *ao){
-         double meff;
-         for (int jj=0; jj<2; jj++)
+/*
+         double meff=0;
+         for (unsigned int jj=0; jj<2; jj++)
            switch (getParticleType(jj*2)){
 
             case 0: for (int ii=0; ii<ao->muos.size(); ii++) meff+=ao->muos[ii].lv().Pt();
@@ -38,13 +39,17 @@ class dbxCutEx1of : public dbxCut {
             case 8: for (int ii=0; ii<ao->gams.size(); ii++) meff+=ao->gams[ii].lv().Pt();
                     break;
          }
-/*
-         double meff = ao->met.Mod() ;
-         for (int i=0; i<ao->jets.size(); i++) {
-               meff += ao->jets[i].lv().Pt();
-         }
 */
-         return meff;
+         int maxJ=ao->jets.size();
+         if (maxJ>3) maxJ=3;
+         double dphimin=999;
+         TLorentzVector ametlv;
+         for (int i=0; i<maxJ; i++) {
+               ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
+               double dphi = fabs(ao->jets[i].lv().DeltaPhi( ametlv ) );
+               if (dphi < dphimin) dphimin = dphi;
+         }
+         return dphimin;
       }
 private:
 };

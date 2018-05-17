@@ -84,9 +84,9 @@ public:
 
                     void addArithOp(char v){p_arith_ops.push_back(v);}
                     char getLastArithOp(){return p_arith_ops.back();}
-
+                    char getArithOp(int v){if (v<p_arith_ops.size() ){return p_arith_ops.at(v);} else {return ' ';}}
                     void addArithVal(float v){p_arith_vals.push_back(v);}
-                   float getArithVals(int v=-1){if (v<0) {return p_arith_vals.size();} else { return p_arith_vals[v];  }; }
+                   float getArithVal(int v=-1){if (v<0) {return p_arith_vals.size();} else { return p_arith_vals[v];  }; }
                     bool isSpecial(int order=1);
                    float doArithOps(float v, int order=1, float vt=0);
 
@@ -308,11 +308,12 @@ private:
 class dbxCutMET : public dbxCut {
  public:
       dbxCutMET( ): dbxCut("MET"){}
+      dbxCutMET(std::vector<int> ts, std::vector<int> is,int v ): dbxCut("MET",ts,is,v){normal_op=true;}
       dbxCutMET( int i): dbxCut("MET", i){}
       float  calc(AnalysisObjects *ao){ 
                      return (ao->met.Mod() );         }
-      bool select(AnalysisObjects *ao){ 
-                     return (Ccompare(ao->met.Mod()) );         }
+      bool select(AnalysisObjects *ao);
+
 private:
        ClassDef(dbxCutMET,1);
 };	
@@ -406,11 +407,11 @@ private:
        ClassDef(dbxCutnBJet,1);
 };
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SumHTJET
-class dbxCutSumHTJET : public dbxCut {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HT
+class dbxCutHT : public dbxCut {
  public:
-      dbxCutSumHTJET( ): dbxCut("SumHTJET"){}
-      dbxCutSumHTJET( int i): dbxCut("SumHTJET", i){}
+      dbxCutHT( ): dbxCut("HT"){}
+      dbxCutHT( int i): dbxCut("HT", i){}
       float calc(AnalysisObjects *ao){ 
                    double sum_htjet=0;
                    for (UInt_t i=0; i<ao->jets.size(); i++) sum_htjet+=ao->jets.at(i).lv().Pt();
@@ -420,7 +421,7 @@ class dbxCutSumHTJET : public dbxCut {
                    for (UInt_t i=0; i<ao->jets.size(); i++) sum_htjet+=ao->jets.at(i).lv().Pt();
                    return (Ccompare(sum_htjet ) );         }
 private:
-       ClassDef(dbxCutSumHTJET,1);
+       ClassDef(dbxCutHT,1);
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Number of /////// we dont want "normal" op
 class dbxCutNof : public dbxCut {

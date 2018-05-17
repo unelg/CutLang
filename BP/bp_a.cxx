@@ -96,6 +96,8 @@ int BPdbxA:: readAnalysisParams() {
     map < string, string > def_names;
     size_t apos = 0;
     size_t bpos = 0;
+    size_t cpos = 0;
+    size_t dpos = 0;
     string subdelimiter = ":";
     string seldelimiter = ",";
     string  opdelimiter = "_";
@@ -261,37 +263,102 @@ int BPdbxA:: readAnalysisParams() {
                     found =cut1.find(it->first);
                   }
                  } 
+//----------------------TERNARIES-----------------------------
                  if ((apos=cut1.find('?'))!=std::string::npos){ 
-                    isTernary.push_back(1);
-                    bpos=cut1.find(':');
-                    DEBUG("****>>>We have a trinary operator:"<< apos<< "  "<< bpos<<"\n");
-                    std::string subtok0, subtokT, subtokF;
-                    subtok0 = cut1.substr(0, apos); 
-                    subtokT = cut1.substr(apos+subdelimiter.length(),bpos-apos-1); //
-                    subtokT+=" ";
-                    subtokF = cut1.substr(bpos+subdelimiter.length(),std::string::npos); //
-                    subtokF+=" ";
-                    DEBUG("Main  "<<subtok0<<" |T:"<<subtokT<< "|F:"<<subtokF <<std::endl);
+                    std::vector<std::string> q;
+                    std::string subtok0, subtokT, subtokF, subtokTMP;
+                    std::string subtok0T, subtok0F;
+                    std::string subtokTT, subtokTF, subtokFT, subtokFF;
+                    subtok0 = cut1.substr(0, apos); // test condition
+                    subtokTMP = cut1.substr(apos+subdelimiter.length(), std::string::npos); // the rest...
+                    bpos=subtokTMP.find(':');
+                    cpos=subtokTMP.find('?'); // another, nested, ternary?
+                    DEBUG("****>>>We have a ternary operator @"<< apos <<"\n");
 
                     std::vector<dbxCut*> acutlist; 
-                    std::vector<dbxCut*> bcutlist; 
-                    std::vector<dbxCut*> ccutlist; 
                     acutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                    bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                    ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                    std::vector<std::string> q;
-
                     q=BPcutlist.cutTokenizer(subtok0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                    mycutlist.push_back(acutlist);
-                    myopelist.push_back(q);
+                    mycutlist.push_back(acutlist); myopelist.push_back(q);
 
-                    q=BPcutlist.cutTokenizer(subtokT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                    terCutlistT.push_back(bcutlist);
-                    terOpelistT.push_back(q);
 
-                    q=BPcutlist.cutTokenizer(subtokF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                    terCutlistF.push_back(ccutlist);
-                    terOpelistF.push_back(q);
+
+//do we have another nested ternary?
+                    if ( cpos!=std::string::npos){
+                     int terval=0;
+                     DEBUG("~~~~~~>We have a nested ternary operator @"<< cpos <<"\n");
+                     if ( cpos < bpos ) {// another ternary in true
+                         terval+=10;
+                         subtok0T = subtokTMP.substr(0, cpos); // test condition
+                         subtokTMP = subtokTMP.substr(cpos+subdelimiter.length(), std::string::npos); // the rest...
+                         bpos=subtokTMP.find(':');
+                         subtokTT = subtokTMP.substr(0, bpos); // test condition
+                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
+                         bpos=subtokTMP.find(':');
+                         subtokTF = subtokTMP.substr(0, bpos); // test condition
+                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
+                         DEBUG("****>>>true test:"<< subtok0T <<"\n");
+                         DEBUG("****>>>true true:"<< subtokTT <<"\n");
+                         DEBUG("****>>>true false:"<<subtokTF <<"\n");
+                         DEBUG("****>>>remaining: "<< subtokTMP <<"\n");
+//-----------------------
+                         std::vector<dbxCut*> acutlist, bcutlist, ccutlist; 
+                         acutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         q=BPcutlist.cutTokenizer(subtok0T, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistT.push_back(acutlist); terOpelistT.push_back(q); // to keep track of IDs
+
+                         q=BPcutlist.cutTokenizer(subtokTT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
+                         q=BPcutlist.cutTokenizer(subtokTF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
+
+                     } else {
+                         subtokTT = subtokTMP.substr(0, bpos); // test condition
+                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
+                         DEBUG("****>>>true "<< subtokTT <<"\n");
+                     } 
+                     cpos=subtokTMP.find('?'); // another nested ternary
+                     if ( cpos!=std::string::npos){
+                      terval+=11;               // another ternary in false
+                      subtok0F = subtokTMP.substr(0, cpos); // test condition
+                      subtokTMP = subtokTMP.substr(cpos+subdelimiter.length(), std::string::npos); // the rest...
+                      bpos=subtokTMP.find(':');
+                      subtokFT = subtokTMP.substr(0, bpos); // test condition
+                      subtokFF = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
+                      DEBUG("****>>>false test:"<< subtok0F <<"\n");
+                      DEBUG("****>>>false true:"<< subtokFT <<"\n");
+                      DEBUG("****>>>false false:"<<subtokFF <<"\n");
+//-----------------------
+                         std::vector<dbxCut*> acutlist, bcutlist, ccutlist; 
+                         acutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         q=BPcutlist.cutTokenizer(subtok0F, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistF.push_back(acutlist); terOpelistF.push_back(q); // to keep track of IDs
+                         q=BPcutlist.cutTokenizer(subtokFT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
+                         q=BPcutlist.cutTokenizer(subtokFF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
+                     } else {
+                       subtokFT = subtokTMP; // test condition
+                     }
+                     isTernary.push_back(terval);
+                    } else {
+                            isTernary.push_back(1);
+                            subtokT = subtokTMP.substr(0,bpos); //
+                            subtokT+=" ";
+                            subtokF = subtokTMP.substr(bpos+subdelimiter.length(),std::string::npos); //
+                            subtokF+=" ";
+                            DEBUG("Test  "<<subtok0<<" |T:"<<subtokT<< "\n|F:"<<subtokF <<std::endl);
+                            std::vector<dbxCut*> bcutlist, ccutlist; 
+                            bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                            ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                            q=BPcutlist.cutTokenizer(subtokT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                            terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
+                            q=BPcutlist.cutTokenizer(subtokF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                            terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
+                    }
 
                  } else { // normally we dont have ternaries
                     isTernary.push_back(0);
@@ -643,7 +710,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
     unsigned int FillHistos_counter=0;
              int ahistid;
            float ahistval;
-DEBUG("------------------------------------------------- event ID:"<<anevt.event_no<<" \n");
+DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 
 
     found_type_vecs.clear(); found_idx_vecs.clear(); found_idx_origs.clear();
@@ -691,26 +758,40 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
         } 
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
-
-        if ( isTernary[k] ) {  
-            DEBUG("             TERNARY------------------------- res:"); 
+        DEBUG(isTernary.size()<<"\t tc:" <<ternaryCount << "\t k:" << k <<" ");
+        DEBUG(terCutlistT.size()<<"\n" );
+        if ( isTernary[k]>0 ) {  
+            DEBUG(" BEFORE CUT, solve TERNARY @-LVL:"<< isTernary[k] <<"---------"); 
             dt=mycutlist[k][j]->select(&a0); // execute the selection cut
-            DEBUG(dt<<"\n"); 
-            if (dt > 0) { DEBUG("True\t");
+            DEBUG("L0 Res:"<<dt<<"\n"); 
+
+            if (isTernary[k]==21){ // TWO ternaries
+               if (dt > 0) { DEBUG("True L1\t");
+                 dt=terCutlistT[ternaryCount][j]->select(&a0); // execute the selection cut
+                 ternaryCount++; // move to true;
+               }  else  {    DEBUG("False L1\t");
+                  ternaryCount++;
+                  DEBUG(" cutName:"<<terCutlistF[ternaryCount][j]->getName()<< " cutOp:"<<terCutlistF[ternaryCount][j]->getOp()<<" #cutParts:"<<terCutlistF[ternaryCount][j]->getParticleType() );
+                  dt=terCutlistF[ternaryCount][j]->select(&a0); // execute the selection cut
+                   DEBUG(" L1 dt:"<<"\n");
+               }
+               ternaryCount++;// ternary skips true; moves to false
+            }
+
+            if (dt > 0) { DEBUG("Final True "<< ternaryCount <<"\t");
                           DEBUG(" name of this cut:"<<terCutlistT[ternaryCount][j]->getName() );
                           mycutlist[k].swap( terCutlistT[ternaryCount] );
                           myopelist[k].swap( terOpelistT[ternaryCount] ); 
-            }  else  {    DEBUG("False\t");
+            }  else  {    DEBUG("Final False "<< ternaryCount <<"\t");
                           DEBUG(" name of this cut:"<<terCutlistF[ternaryCount][j]->getName() );
                           myopelist[k].swap(terOpelistF[ternaryCount] );
                           mycutlist[k].swap(terCutlistF[ternaryCount] );
             }
-            DEBUG(" Swapped\n");
+            DEBUG(" Swapped.\n");
         }
 
 
-
-        DEBUG("\nCUT:"<<k<< " "<<" # operations in this cut:"<<myopelist[k].size());
+        DEBUG("\nCUT:"<<k+1<< " "<<" # operations in this cut:"<<myopelist[k].size());
         DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
 //--------- we apply lepton scale factor
         if (TRGe==2 || TRGm== 2) {
@@ -838,7 +919,7 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
            }
            j++;
         }
-        if ( isTernary[k]){
+        if ( isTernary[k] > 0){
             if (dt > 0) { 
                           mycutlist[k].swap( terCutlistT[ternaryCount] );
                           myopelist[k].swap( terOpelistT[ternaryCount] ); 
@@ -846,7 +927,7 @@ DEBUG("------------------------------------------------- event ID:"<<anevt.event
                           myopelist[k].swap(terOpelistF[ternaryCount] );
                           mycutlist[k].swap(terCutlistF[ternaryCount] );
             }
-         ternaryCount++;
+         ternaryCount++; // ternary skips 1 here, nested or not doesn't matter.
         }
         DEBUG("             Result = " << d << std::endl);
         if (d==0) return k; // quit the event.
