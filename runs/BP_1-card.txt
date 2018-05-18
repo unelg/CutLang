@@ -51,16 +51,13 @@ def7 = "Meff6j : Meff5j + { JETsr_5 }Pt "
 
 cmd1 = "ALL "                          # to count all events
 cmd2 = "MET > 200 "                    
-cmd3 = "nPHOtight >= 0 "
-cmd4 = "nMUOclean <= 1 "         # Reject evt if there is a muon with pT > 10
-cmd5 = "nMUOclean == 0 ? ALL : { MUOclean_0 }Pt < 10 "         # Reject evt if there is a muon with pT > 10
-cmd6 = "nELEveryclean <= 1 "         # Reject evt if there is a muon with pT > 10
-cmd7 = "nELEveryclean == 0 ? ALL : { ELEveryclean_0 }Pt < 10 "    # Reject evt if there is an electron with pT > 10
-cmd8 = "nJETsr > 0 "
+cmd3 = "nMUOclean == 0 "         # Reject evt if there is a muon with pT > 10
+cmd4 = "nELEveryclean == 0 "         # Reject evt if there is a muon with pT > 10
+cmd5 = "nJETsr > 0 "
 
 
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
-cmd2-1 = " { MUO_ , JETclean_ }dR >= 1.4  " 
+cmd2-1 = " { MUO_ , JETclean_ }dR >= 0.4  " 
 cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
 cmd4-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
 cmd5-1 = " { JETclean_ }Pt > 50  " 
