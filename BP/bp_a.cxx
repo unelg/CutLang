@@ -731,7 +731,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
               map <int, vector<std::pair<string,string> > >::iterator it;
               it=levelObjectMap.find(k+1); 
               if (it != levelObjectMap.end()){
-                  DEBUG("Cut:"<< it->first << "  ");
+                  DEBUG("cut predef:"<< it->first << "  ");
                   for (int iobj=0; iobj<it->second.size(); iobj++){
                      DEBUG( it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second );
 //--------here we must replace      e.g.                JETclean will be used as JET
@@ -749,9 +749,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                      case 'G': tmpgam=pho_sets.find(it->second.at(iobj).first); 
                             if (tmpgam != pho_sets.end()){ a0.gams=tmpgam->second; }
                             break;
-                 }
-
-
+                     }
                   }
                   DEBUG("\n" );
               }
