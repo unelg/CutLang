@@ -280,8 +280,6 @@ int BPdbxA:: readAnalysisParams() {
                     q=BPcutlist.cutTokenizer(subtok0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
                     mycutlist.push_back(acutlist); myopelist.push_back(q);
 
-
-
 //do we have another nested ternary?
                     if ( cpos!=std::string::npos){
                      int terval=0;
@@ -307,7 +305,6 @@ int BPdbxA:: readAnalysisParams() {
                          ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
                          q=BPcutlist.cutTokenizer(subtok0T, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
                          terCutlistT.push_back(acutlist); terOpelistT.push_back(q); // to keep track of IDs
-
                          q=BPcutlist.cutTokenizer(subtokTT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
                          terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
                          q=BPcutlist.cutTokenizer(subtokTF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
@@ -317,6 +314,10 @@ int BPdbxA:: readAnalysisParams() {
                          subtokTT = subtokTMP.substr(0, bpos); // test condition
                          subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
                          DEBUG("****>>>true "<< subtokTT <<"\n");
+                         std::vector<dbxCut*> bcutlist; 
+                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
+                         q=BPcutlist.cutTokenizer(subtokTT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
                      } 
                      cpos=subtokTMP.find('?'); // another nested ternary
                      if ( cpos!=std::string::npos){
@@ -326,8 +327,8 @@ int BPdbxA:: readAnalysisParams() {
                       bpos=subtokTMP.find(':');
                       subtokFT = subtokTMP.substr(0, bpos); // test condition
                       subtokFF = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
-                      DEBUG("****>>>false test:"<< subtok0F <<"\n");
-                      DEBUG("****>>>false true:"<< subtokFT <<"\n");
+                      DEBUG("****>>>false test :"<< subtok0F <<"\n");
+                      DEBUG("****>>>false true :"<< subtokFT <<"\n");
                       DEBUG("****>>>false false:"<<subtokFF <<"\n");
 //-----------------------
                          std::vector<dbxCut*> acutlist, bcutlist, ccutlist; 
@@ -344,7 +345,7 @@ int BPdbxA:: readAnalysisParams() {
                        subtokFT = subtokTMP; // test condition
                      }
                      isTernary.push_back(terval);
-                    } else {
+                    } else { // simple ternary
                             isTernary.push_back(1);
                             subtokT = subtokTMP.substr(0,bpos); //
                             subtokT+=" ";
@@ -590,6 +591,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
   vector<dbxJet>       goodJets;
   vector<dbxPhoton>    goodPhotons;
 
+  DEBUG("--------------------------------------------------------------------\n");
 //----------------------selection of good gams-----------------
         for (UInt_t i=0; i<photons.size(); i++) {
                TLorentzVector gam4p = photons.at(i).lv();
@@ -737,7 +739,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 //--------here we must replace      e.g.                JETclean will be used as JET
                      switch ( it->second.at(iobj).second[0] ){
                      case 'J': tmpjet=jet_sets.find(it->second.at(iobj).first); 
-                            DEBUG("~~~Will use "<< it->second.at(iobj).first <<"~~~~\n");
+                            DEBUG("~~~Will use "<< it->second.at(iobj).first <<"~~~~\t");
                             if (tmpjet != jet_sets.end()){ a0.jets=tmpjet->second; }
                             break;
                      case 'E': tmpele=ele_sets.find(it->second.at(iobj).first); 
@@ -756,31 +758,47 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         } 
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
-        DEBUG(isTernary.size()<<"\t tc:" <<ternaryCount << "\t k:" << k <<" ");
-        DEBUG(terCutlistT.size()<<"\n" );
         if ( isTernary[k]>0 ) {  
-            DEBUG(" BEFORE CUT, solve TERNARY @-LVL:"<< isTernary[k] <<"---------"); 
+            DEBUG(" isTernarySize:"<<isTernary.size()<<"\t tc:" <<ternaryCount << "\t k:" << k <<" maxTC:"<<terCutlistT.size()<<"\n" );
+            DEBUG(" BEFORE CUT, solve TERNARY @Degree:"<< isTernary[k] <<"---------"); 
             dt=mycutlist[k][j]->select(&a0); // execute the selection cut
-            DEBUG("L0 Res:"<<dt<<"\n"); 
+            DEBUG("L0 dt:"<<dt<<"\n"); 
 
-            if (isTernary[k]==21){ // TWO ternaries
-               if (dt > 0) { DEBUG("True L1\t");
+            if (isTernary[k]==10){ // ONE more ternary in T, F is a normal cut
+               if (dt > 0) { DEBUG("@L1, True\t");
                  dt=terCutlistT[ternaryCount][j]->select(&a0); // execute the selection cut
-                 ternaryCount++; // move to true;
-               }  else  {    DEBUG("False L1\t");
+               }  else  {    DEBUG("@L1, False\t");
+                 ternaryCount++;
+               }
+            }
+            if (isTernary[k]==11){ // ONE more ternary in F, T is a normal cut
+               if (dt > 0) { DEBUG("@L1, True\t");
+                 ternaryCount++;
+               }  else  {    DEBUG("@L1, False\t");
+                 dt=terCutlistF[ternaryCount][j]->select(&a0); // execute the selection cut
+                 ternaryCount++;
+               }
+            }
+
+            if (isTernary[k]==21){ // TWO ternaries both in T and F
+               if (dt > 0) { DEBUG("@L1, True\t");
+                 dt=terCutlistT[ternaryCount][j]->select(&a0); // execute the selection cut
+                 ternaryCount++;
+               }  else  {    DEBUG("@L1, False\t");
                   ternaryCount++;
                   DEBUG(" cutName:"<<terCutlistF[ternaryCount][j]->getName()<< " cutOp:"<<terCutlistF[ternaryCount][j]->getOp()<<" #cutParts:"<<terCutlistF[ternaryCount][j]->getParticleType() );
                   dt=terCutlistF[ternaryCount][j]->select(&a0); // execute the selection cut
-                   DEBUG(" L1 dt:"<<"\n");
                }
+               DEBUG("L1 dt:"<<dt<<"\n");
                ternaryCount++;// ternary skips true; moves to false
             }
 
-            if (dt > 0) { DEBUG("Final True "<< ternaryCount <<"\t");
+            if (dt > 0) { DEBUG("Final True  @"<< ternaryCount <<"\t");
                           DEBUG(" name of this cut:"<<terCutlistT[ternaryCount][j]->getName() );
                           mycutlist[k].swap( terCutlistT[ternaryCount] );
                           myopelist[k].swap( terOpelistT[ternaryCount] ); 
-            }  else  {    DEBUG("Final False "<< ternaryCount <<"\t");
+            }  else  {    
+                          DEBUG("Final False @"<< ternaryCount <<"\t");
                           DEBUG(" name of this cut:"<<terCutlistF[ternaryCount][j]->getName() );
                           myopelist[k].swap(terOpelistF[ternaryCount] );
                           mycutlist[k].swap(terCutlistF[ternaryCount] );
@@ -789,7 +807,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         }
 
 
-        DEBUG("\nCUT:"<<k+1<< " "<<" # operations in this cut:"<<myopelist[k].size());
+        DEBUG("CUT:"<<k+1<< " "<<" # operations in this cut:"<<myopelist[k].size());
         DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
 //--------- we apply lepton scale factor
         if (TRGe==2 || TRGm== 2) {
