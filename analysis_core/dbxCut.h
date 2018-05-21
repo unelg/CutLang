@@ -526,6 +526,18 @@ private:
        ClassDef(dbxCutEof,1);
 };
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ nbj
+class dbxCutNbj : public dbxCut {
+ public:
+      dbxCutNbj( ): dbxCut("}nbj"){normal_op=true;}
+      dbxCutNbj(std::vector<int> ts, std::vector<int> is,int v ): dbxCut("}nbj",ts,is,v){normal_op=true;}
+
+      bool select(AnalysisObjects *ao);
+     float calc(AnalysisObjects *ao); 
+private:
+       ClassDef(dbxCutNbj,1);
+};
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Mof
 class dbxCutMof : public dbxCut {
  public:

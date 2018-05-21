@@ -47,8 +47,10 @@ class dbxCutEx1of : public dbxCut {
          for (int i=0; i<maxJ; i++) {
                ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
                double dphi = fabs(ao->jets[i].lv().DeltaPhi( ametlv ) );
+               std::cout <<"\n i:"<<i<<" dphi:"<<dphi<<"\t";
                if (dphi < dphimin) dphimin = dphi;
          }
+         std::cout <<" min:"<<dphimin<<"\n";
          return dphimin;
       }
 private:

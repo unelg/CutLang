@@ -113,10 +113,9 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                                                     myPart.setTlv(myPart.lv()+ametlv); // v from MET using same eta approx.
                                                     DEBUG("eleMET ");
                                                     break;
-                                            case 7: DEBUG("MET PV\n ");
+                                            case 7: DEBUG("MET LV\n ");
                                                     ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
                                                     myPart.setTlv(myPart.lv()+ametlv); // v from MET using same eta approx.
-                                                    
                                                     break;
                                             case 8: if (p_part_index.at(kk)==6213) {
                                                       myPart.setCharge( ao->gams.size() );
@@ -537,13 +536,14 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
               DEBUG(" #searchables:"<<getSearchableType()<<std::endl);
               if ( (getFoundVector()).size() < getSearchableType() ) find(ao);
               for (int ipart=0; ipart<=extraParticleSet; ipart++) aparticle[ipart]=dbxCut::partConstruct(ao,ipart+1) ;
-              clearFoundResults();
+//              clearFoundResults();
             } else {
               DEBUG(" NNO #PT:"<<p_part_type.size()<< "  #PI:"<<p_part_index.size()<<"\n" );
               for (int ipart=0; ipart<=extraParticleSet; ipart++) aparticle[ipart]=partConstruct(ao,ipart+1); //3.4s
 //              for (int ipart=0; ipart<=extraParticleSet; ipart++) aparticle[ipart]=myPart; // 2.8s
 // pushing a dummy particle costs 1.1s in 25k events (2.6 --> 3.7 s)
             }
+
 //@ 4.5s return(rand() % 10000); 
 //************************************************
 // 2.5s  -->4.5s --> 6.2
@@ -551,7 +551,8 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 // the cost of below lines is 6.2-4.5 = 1.7s
 //************************************************
             float retval, totretval=0; 
-            int iporder=-1;
+            int iporder=-1; 
+            int bj_found=0;
             for (int ipart=0; ipart<=extraParticleSet; ipart++){
              bool special_op=false;
              bool twoParam=false;
@@ -577,7 +578,21 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
                       break;
               case 9: retval=aparticle[ipart].q(); // I used Q to carry number of particles in this set.
                       break;
-              case 10:retval=fabs(aparticle[ipart].lv().Eta() );
+             case 10: retval=fabs(aparticle[ipart].lv().Eta() );
+                      break;
+             case 11: DEBUG("nbj---\t");
+                      for (int kk=0; kk<p_part_type.size(); kk++){
+                              if (p_part_index.at(kk) < 0)  {
+                               DEBUG(" "<<p_part_index.at(kk)<<"@"<<kk<<"\t");
+                              } else {
+                                DEBUG(p_part_type.at(kk)<<"@"<<kk<<"\t");
+                                if (p_part_type.at(kk)==2) { 
+                                    DEBUG("jet:"<<p_part_index.at(kk)<<" ");
+                                    if (ao->jets[p_part_index.at(kk) ].isbtagged_77() == 1 ) {bj_found++; DEBUG(" b "); } 
+                                }
+                              }
+                      }
+                      retval=(float)bj_found;
                       break;
              case 31: retval=aparticle[ipart].lv().DeltaR(aparticle[ipart+1].lv() );
                       twoParam=true;
@@ -588,10 +603,13 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
              case 33: retval=fabs(aparticle[ipart].lv().Eta() - aparticle[ipart+1].lv().Eta() );
                       twoParam=true;
                       break;
-              default: std::cout<<"No such Parameter "<< param->at(ipart) << " to use! ERROR\n";
+             default: std::cout<<"No such Parameter "<< param->at(ipart) << " to use! ERROR\n";
                       break;
              }
              DEBUG("\n Xp:"<<ipart<<" ipo:"<<iporder<<" Op:"<<param->at(iporder)<<" RetVal:"<<retval<<" ");
+           if (normal_op && (getFoundVector()).size() > 0){
+               clearFoundResults();
+           }
 //-----------------------------------ok
 
              special_op=isSpecial(iporder);
@@ -625,7 +643,7 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                  return (Ccompare( result ) );
        } else {
                DEBUG(getParticleIndex(0)<< "i  t"<< getParticleType(0)<<"\n");
-               DEBUG("DEFINING NEW OBJECT: #i:"<< getParticleIndex(-1) <<"  #t:"<<getParticleType(-1) <<"\n");
+               DEBUG("DEFINING NEW OBJECT: #idx:"<< getParticleIndex(-1) <<"  #typ:"<<getParticleType(-1) <<"\n");
                int ipart_max;
 // 0 is muon // 1 is electron // 8 is gammas
 // 2 is any jet // 3 is a b jet // 4 is light jet
@@ -650,7 +668,7 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                    }
                  }
                }
-
+               DEBUG("---obj.sel. finished---\n");
                setParticleIndex(0,6213);
                return true;
         }//end of object selection
@@ -699,7 +717,8 @@ bool dbxCut::m2select(AnalysisObjects *ao)
                  }
                }
 
-               DEBUG("FINAL "<<ao->jets.size()<<" "<<ao->eles.size()<<" \n");
+               DEBUG("---obj.sel. finished---\n");
+               DEBUG("FINAL #j:"<<ao->jets.size()<<" #e:"<<ao->eles.size()<<" \n");
                setParticleIndex(0,6213);
                setParticleIndex(2,6213);
                return true;
@@ -718,6 +737,18 @@ bool dbxCutNof::select(AnalysisObjects *ao){
 
 
 float dbxCutNof::calc(AnalysisObjects *ao)
+{
+            return ( cxcalc(ao, getParams() )); 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Nbj
+ClassImp(dbxCutNbj)
+bool dbxCutNbj::select(AnalysisObjects *ao){
+        return (m1select(ao));          
+}
+
+
+float dbxCutNbj::calc(AnalysisObjects *ao)
 {
             return ( cxcalc(ao, getParams() )); 
 }
@@ -986,7 +1017,7 @@ bool dbxCutMET::select(AnalysisObjects *ao){
                  myoss+=" ";
                float retval=getArithVal(iporder);
                DEBUG(retval<<"\n");
-               if (retval != 0.0){
+               if (retval != 0.0){ // do not use zero, skip.
                    myoss+= retval;
                    myoss+=" ";
                }
@@ -1150,6 +1181,7 @@ ClassImp(dbxCutList)
                         else if(token0=="}E")        {mycut->push_back(new dbxCutEof(my_typelist,      my_indexlist,8) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}N")        {mycut->push_back(new dbxCutNof(my_typelist,      my_indexlist,9) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}AbsEta")   {mycut->push_back(new dbxCutAbsEtaof(my_typelist, my_indexlist,10)); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}nbj")      {mycut->push_back(new dbxCutNbj(my_typelist,      my_indexlist,11)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}dR")       {mycut->push_back(new dbxCutdRof(my_typelist,     my_indexlist,31)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}dPhi")     {mycut->push_back(new dbxCutdPhiof(my_typelist,   my_indexlist,32)); my_typelist.clear(); my_indexlist.clear();}
                         else {std::cout << "This Cut IS NOT defined. MAJOR ERROR. STOP!\n"; exit(32);}
@@ -1202,7 +1234,7 @@ ClassImp(dbxCutList)
                    
                             myEvalString+="x";
                             if ( (mycut->back()->getOp()=="")) {
-                                  DEBUG(" Arithmetic Op between cuts ");
+                                  DEBUG(" Arithmetic Op between cuts add 0 ");
                                   mycut->back()->addArithVal( 0.0 );
                             }
                             mycut->back()->addTypesIndexes(my_typelist,my_indexlist); 
@@ -1240,9 +1272,8 @@ ClassImp(dbxCutList)
                if (mycut->size() >0) if (mycut->back()->getOp() == "") {
                   DEBUG(" Reset4ExtraParts:"<<mycut->back()->getOp()<<".");
                   mycut->back()->addApart();
-//                  foundcut=false; //reset the search
                   my_typelist.push_back(-1); my_indexlist.push_back(999);
-                  mycut->back()->addArithVal(0.0); // zero is special in this case.
+             //     mycut->back()->addArithVal(0.0); // zero is special in this case.
                }
               }
               if (found0!=std::string::npos) { //found at the beginning of a keyword
@@ -1271,7 +1302,6 @@ ClassImp(dbxCutList)
             s.erase(0, pos + delimiter.length());
             if (pos == std::string::npos) break;
         }
-
 
         std::vector<std::string> qret_reduced;
         bool use_reduced=true;
@@ -1322,6 +1352,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutAbsEtaof());
                     cutlist.push_back(new dbxCutPhiof());
                     cutlist.push_back(new dbxCutNof());
+                    cutlist.push_back(new dbxCutNbj());
                     cutlist.push_back(new dbxCutMof());
                     cutlist.push_back(new dbxCutEof());
                     cutlist.push_back(new dbxCutPof());
@@ -1330,6 +1361,5 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutdPhiof());
                     cutlist.push_back(new dbxCutEx1of());
         }
-
 
 #endif
