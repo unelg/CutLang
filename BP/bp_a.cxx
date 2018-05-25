@@ -27,35 +27,32 @@ void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <
 #endif
 
      if (found_idx_vecs->size() == 0) {cerr << "Found idx vector empty!!\n"; exit (23);}
-  // vector <int> itobeused; // store found idx for this histo
-  // vector <int> ttobeused; // store found idx for this histo
      vector <int> alreadyused; // store already used found idx
      vector<int>::iterator it;
      vector<int> local_part_idxs;
 
      for (int ipd=0; ipd< acut->getParticleIndex(); ipd++)  // this cut needs // loop over indices remove 999
-          if ( acut->getParticleIndex(ipd) != 999) local_part_idxs.push_back(acut->getParticleIndex(ipd));
+          if ( acut->getParticleIndex(ipd) < 0) local_part_idxs.push_back(acut->getParticleIndex(ipd));
               
      for (int ipd=0; ipd< acut->getSearchableType(); ipd++)  // this cut needs // loop over indices MUST
         for (unsigned int itk=0; itk<found_idx_vecs->size(); itk++){ // read from found list.
-             if ( found_type_vecs->at(itk) == acut->getSearchableType(ipd)
-               && ( local_part_idxs[ipd]  < 0 )
-               && found_idx_origs->at(itk) == local_part_idxs[ipd]
+             DEBUG (local_part_idxs[ipd]<<" -vs- "<< found_idx_vecs->at(itk) << "\n");
+             if ( found_type_vecs->at(itk) == acut->getSearchableType(ipd)  // types match
+               && ( local_part_idxs[ipd]  < 0 )                             // searchable type.
+               && found_idx_origs->at(itk) == local_part_idxs[ipd]          // idx match 
                ) {
                it=find(alreadyused.begin(), alreadyused.end(), itk);
                if ( it == alreadyused.end() ) { // not previously used
-                //itobeused.push_back(found_idx_vecs->at(itk));
-                //ttobeused.push_back(found_type_vecs->at(itk));
                   ret_i->push_back(found_idx_vecs->at(itk));
                   ret_t->push_back(found_type_vecs->at(itk));
                   alreadyused.push_back(itk);
                }
              }
      }// loop over all previously found idx
-   //*ret_i= itobeused; 
-   //*ret_t= ttobeused;
+//   DEBUG(" #reti:"<<ret_i->size()<< "  #rett:"<<ret_t->size());
+//   DEBUG(": previous finder--\n");
      return ;
-}             
+}   
 
 
 int BPdbxA::plotVariables(int sel) {
@@ -602,6 +599,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         }
 //----------------------selection of good electrons-----------------
         for (UInt_t i=0; i<electrons.size(); i++) {
+               if(electrons.at(i).isZCand()==0) continue;//This varible has just added in tree. //TODO
                if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
                   &&(electrons.at(i).lv().Eta() < maxetae )  // and maximum eta.
                   )
@@ -633,6 +631,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         unsigned int njets;
         double evt_weight = 1;
 
+        if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(cur_cut, 1);
         cur_cut++;

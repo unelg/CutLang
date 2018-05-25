@@ -63,7 +63,6 @@ typedef struct evt_data
 		core_Flags   =right.core_Flags;
 		z_vtx_weight =right.z_vtx_weight;
 
-//-----SERHAT keske bunlari da eklesydin.
                 weight_mc    =right.weight_mc;
                 weight_pileup=right.weight_pileup;
               weight_leptonSF=right.weight_leptonSF;

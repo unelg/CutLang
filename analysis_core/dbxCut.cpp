@@ -4,6 +4,7 @@
 #include "dbxCut.h"
 #include <math.h>
 #include "ex1.h"
+#include "dbx_IsolationVarRhoCorr.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -311,6 +312,8 @@ float dbxCut::doArithOps(float v, int order, float vt)
      if (p_arith_ops[iop]=='*') { v*=p_arith_vals[iop];        continue;}
      if (p_arith_ops[iop]=='/') { v/=p_arith_vals[iop];        continue;}
      if (p_arith_ops[iop]=='^') { v=pow(v, p_arith_vals[iop]); continue;}
+     //if (p_arith_ops[iop]=='<U+03B8') { if(v < p_arith_vals[iop]) {v=0;} else {v=1;} DEBUG(" VV="<<v<<"\t"); continue;}
+     if (p_arith_ops[iop]=='@') { if(v >= p_arith_vals[iop]) {v=0;} else {v=1;} DEBUG(" VV="<<v<<"\t"); continue;}
 
 //   if (p_arith_ops[iop]=='+') { v+=p_arith_vals[iop]; DEBUG(" +"<<p_arith_vals[iop]); continue;}
 //   if (p_arith_ops[iop]=='-') { v-=p_arith_vals[iop]; DEBUG(" -"<<p_arith_vals[iop]); continue;}
@@ -364,18 +367,17 @@ bool dbxCut::find(AnalysisObjects *ao)
           bool multiparticleset=false;
           for (int pp=0; pp<getParticleIndex() && tpp<unk_MAX; pp++ ){ //loop over all particle indexes
            int aParticleIndex=getParticleIndex(pp);
-           DEBUG("Scan:"<<aParticleIndex<<" ");
+           DEBUG("Scan:"<<aParticleIndex<<" "); // like -1, -3, -11 etc..
 // NGU---TODO
            bool idx_used_before=false;
            if (aParticleIndex == 999) multiparticleset=true;
            if (aParticleIndex <0){
              
-      //   if (multiparticleset) for (int ipp=0; ipp<= tpp; ipp++) {
-      //      if (oldvals[ipp]==aParticleIndex) { DEBUG(" *index seen before* ");
-      //       idx_used_before=true;
-      //      }
-      //   }
-
+           if (multiparticleset) for (int ipp=0; ipp<= tpp; ipp++) {
+              if (oldvals[ipp]==aParticleIndex) { DEBUG(" *index seen before* "); //TODO: CHECK type as well
+               idx_used_before=true;
+              }
+           }
 
            if ( !idx_used_before) {
              pp_target[tpp]=pp;                       // now I know which particle index to replace
@@ -1169,6 +1171,7 @@ ClassImp(dbxCutList)
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
                         else if(token0=="HT")        {mycut->push_back(new dbxCutHT()             );} // add HTALL
                         else if(token0=="Ex1")       {mycut->push_back(new dbxCutEx1of()          );} // example
+                        else if(token0=="IsolationVarRhoCorr")       {mycut->push_back(new dbxCutIsolationVarRhoCorr()          );} // example
                         else if(token0=="TrigMatch") {mycut->push_back(new dbxCutTrigMatch(TrigType) );}
                         else if(token0=="MET")       {mycut->push_back(new dbxCutMET(my_typelist,      my_indexlist,21)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,      my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
@@ -1240,7 +1243,7 @@ ClassImp(dbxCutList)
                             mycut->back()->addTypesIndexes(my_typelist,my_indexlist); 
                             my_typelist.clear(); my_indexlist.clear();
                        
-                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" ) {        //is it a math operation like + - ...
+                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" || token0=="@" ) {        //is it a math operation like + - ...
                           myEvalString+=token0;  
                           DEBUG(token0 <<" is an arithmetic Op ");
                           mycut->back()->addArithOp(*token0.c_str() );
@@ -1360,6 +1363,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutdRof());
                     cutlist.push_back(new dbxCutdPhiof());
                     cutlist.push_back(new dbxCutEx1of());
+                    cutlist.push_back(new dbxCutIsolationVarRhoCorr());
         }
 
 #endif
