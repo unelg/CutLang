@@ -19,7 +19,10 @@ class dbxCutEx1of : public dbxCut {
 // 7 met
 
       float calc(AnalysisObjects *ao){
-/*
+/* this is an example on how to calculate Meff in an external function.
+// each particle given to this function is of type getParticleType(jj)
+// each particle 
+
          double meff=0;
          for (unsigned int jj=0; jj<2; jj++)
            switch (getParticleType(jj*2)){
@@ -47,10 +50,10 @@ class dbxCutEx1of : public dbxCut {
          for (int i=0; i<maxJ; i++) {
                ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
                double dphi = fabs(ao->jets[i].lv().DeltaPhi( ametlv ) );
-               std::cout <<"\n i:"<<i<<" dphi:"<<dphi<<"\t";
+//               std::cout <<"\n i:"<<i<<" dphi:"<<dphi<<"\t";
                if (dphi < dphimin) dphimin = dphi;
          }
-         std::cout <<" min:"<<dphimin<<"\n";
+//         std::cout <<" min:"<<dphimin<<"\n";
          return dphimin;
       }
 private:
