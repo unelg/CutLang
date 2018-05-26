@@ -27,7 +27,7 @@ dbxCut::dbxCut( std::string name, std::vector<int> mytypes, std::vector<int> myi
                 }
                 DEBUG("searchable?:"<<sresult<<" w/"); for (size_t it=0; it<p_searchable_types.size(); it++) DEBUG(p_searchable_types[it]<<",");
                 p_searchable=sresult;
-                aparticle=new dbxParticle[16];
+                aparticle=new dbxParticle[32];
 }  
 void dbxCut::addTypesIndexes(std::vector<int> newtypes, std::vector<int> newids){
               bool sresult=false;
@@ -186,6 +186,7 @@ void dbxCut::useFoundResults()
          std::vector<int> secondary_idx;
          std::vector<int> secondary_pos;
          int prev_idx=0;
+         int prev_found=-1;
          for (int pp=0; pp<getParticleIndex(); pp++ ) {
            int api=getParticleIndex(pp);
            if (api<0){ //loop over all particle indexes
@@ -193,17 +194,19 @@ void dbxCut::useFoundResults()
               for (int ov=0; ov<found_list.size(); ov++){ // previously found guys
                  if ( (p_found_orig_idxs[ov] == api) && ( p_part_type[pp] == p_found_types[ov] ) )
                   { // previous found index does it match the current one?
-                       if (prev_idx == api) { prev_idx=0; continue;} // skip this match take next one
- ////////                      DEBUG ("<"<<p_part_type[pp]<<"?"<<p_found_types[ov]<<">"); // I know previous type.
+                       if (prev_idx == api) {prev_idx=0; continue;} // skip this match take next one
+                       if (found_list[ov]==prev_found) {ov=-1; prev_idx=0; continue;} // skip this match return to beginning 
                        DEBUG (found_list[ov]<<" |");
 //set the index here. also save the previous values
                        secondary_idx.push_back(api);
                        secondary_pos.push_back(pp);
                        setParticleIndex( pp, found_list[ov] ); // same as we looped over.
+                       prev_found=found_list[ov];
                        prev_idx=api;
                        break; // should break the first loop
                   }
               }// loop pre-existing ones
+
            }// found unused neg.
          }// loop over all particles
 //add to ....
@@ -269,10 +272,11 @@ bool dbxCut::isSpecial(int order)
 float dbxCut::doArithOps(float v, int order, float vt)
 {
    int op_start=0, op_stop=-1;
+/*
  for (size_t iop=0; iop< p_arith_ops.size(); iop++){
      DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
  }
-
+*/
    for (size_t iop=0; iop< p_arith_ops.size(); iop++){
        op_stop++;
        if ( p_arith_vals[iop]==0 ) {break;}
@@ -456,17 +460,18 @@ bool dbxCut::find(AnalysisObjects *ao)
          int prev_idx=0;
          for (int pp=0; pp<getParticleIndex(); pp++ ) {
            int api=getParticleIndex(pp);
+           if (api==999) prev_idx=0;
            if (api<0){ //loop over all particle indexes
               DEBUG (api<<"@"<<pp<<"~>");
               for (int ov=0; ov<unk_MAX; ov++){
                   if (oldvals[ov] == api) { // old value is recognized.
-                    if (prev_idx == api) { prev_idx=0; continue;} // skip this match take next one
+                    if (prev_idx == api) { prev_idx=0; DEBUG("N"); continue;} // skip this match take next one
                     DEBUG (getParticleIndex(pp_target[ov])<<"| ");
 //set the index here. also save the previous values
                     secondary_idx.push_back(api);
                     secondary_pos.push_back(pp);
                     setParticleIndex( pp, getParticleIndex(pp_target[ov]) ); // same as we looped over. 
-                    prev_idx=api;
+                    prev_idx=api; // -1
                     break; // should break the first loop
                   }
               }// loop existing ones
@@ -521,6 +526,7 @@ bool dbxCut::find(AnalysisObjects *ao)
             }
           } 
       DEBUG(" best value found:"<< getPrecalc()<< " "<< p_found_types.size()  <<std::endl);
+//      std::cout<<" best value found:"<< getPrecalc()<< " "<< p_found_types.size()  <<"\t";
       return 1;
 }
 /////////////// complex calc ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1100,7 +1106,7 @@ ClassImp(dbxCutList)
                 else if (token0=="," )  { DEBUG("Adding new particle set. "); 
                                           my_typelist.push_back(-1); my_indexlist.push_back(999); // for R function 
                                         } // comma  means I have 2 particles, distinguished by -1
-                else if ((apos=token0.find(subdelimiter)) != std::string::npos )  {
+                else if ((apos=token0.find(subdelimiter)) != std::string::npos )  { 
                          std::string subtoken0, subtoken1;
                          subtoken0 = token0.substr(0, apos); //
                          subtoken1 = token0.substr(apos+subdelimiter.length(),std::string::npos); // 0&+number index, -number search, nonumber: ALL
@@ -1140,7 +1146,7 @@ ClassImp(dbxCutList)
                          }
                          if (subtoken1.length() == 0) { DEBUG("all ");  my_indexlist.push_back(6213);} //magic number
                            else my_indexlist.push_back(std::atoi(subtoken1.data() ));
-                     }
+                     }//did not find a _
                 else {
                 if (!foundcut) {
 // search the cut in the list
@@ -1166,6 +1172,7 @@ ClassImp(dbxCutList)
                         else if(token0=="Trig")      {mycut->push_back(new dbxCutTrig(TrigType)   );}
                         else if(token0=="VtxTrks")   {mycut->push_back(new dbxCutVtxTrks()        );}
                         else if(token0=="LEPsf")     {mycut->push_back(new dbxCutLEPsf()          );}
+//                        else if(token0=="BJsf")      {mycut->push_back(new dbxCutBJsf()           );}
                         else if(token0=="MWT")       {mycut->push_back(new dbxCutMWT(TrigType)    );}
                         else if(token0=="R2LEPJ0")   {mycut->push_back(new dbxCutR_Z_J0(TrigType) );}
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
@@ -1193,8 +1200,8 @@ ClassImp(dbxCutList)
                    }
 //if we didn't find a match by now, this cut is f*cked up.
                    if (!foundcut) { std::cout << token0<< " is a UFO!\n"; exit (1);}
-                } else { // foundcut
-                 if (atoi(token0.c_str())!=0 || isdigit(token0.c_str()[0]) ){ //this is the digit
+                } else {  //we found a cut (this is not a cut) it is not something with _
+                 if (atoi(token0.c_str())!=0 || isdigit(token0.c_str()[0]) ){ //is this a number?
                     myEvalString+=token0;
                     DEBUG(token0 << " is a value ");
                     if ( (mycut->back()->getOp()=="")) {
@@ -1243,7 +1250,7 @@ ClassImp(dbxCutList)
                             mycut->back()->addTypesIndexes(my_typelist,my_indexlist); 
                             my_typelist.clear(); my_indexlist.clear();
                        
-                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" || token0=="@" ) {        //is it a math operation like + - ...
+                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" || token0=="@" ) {  //is it a math operation like + - ...
                           myEvalString+=token0;  
                           DEBUG(token0 <<" is an arithmetic Op ");
                           mycut->back()->addArithOp(*token0.c_str() );
@@ -1260,6 +1267,7 @@ ClassImp(dbxCutList)
                                      mycut->back()->setOp(token0);
                                  }
                              }//is it an op?
+                             else { std::cout << token0<< " is a UFO. STOP!\n"; exit(32); }
                      }//end of checking arithmetic or cut operator
                  }
                 }//else foundcut close
@@ -1342,6 +1350,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutVtxTrks());
                     cutlist.push_back(new dbxCutTrigMatch());
                     cutlist.push_back(new dbxCutLEPsf());
+//                    cutlist.push_back(new dbxCutBJsf());
                     cutlist.push_back(new dbxCutR_Z_J0());
                     cutlist.push_back(new dbxCutMET());
                     cutlist.push_back(new dbxCutMWT());
