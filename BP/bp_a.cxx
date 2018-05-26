@@ -41,6 +41,7 @@ void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <
                && ( local_part_idxs[ipd]  < 0 )                             // searchable type.
                && found_idx_origs->at(itk) == local_part_idxs[ipd]          // idx match 
                ) {
+               DEBUG(" useI:"<<found_idx_vecs->at(itk)<<"\n");
                it=find(alreadyused.begin(), alreadyused.end(), itk);
                if ( it == alreadyused.end() ) { // not previously used
                   ret_i->push_back(found_idx_vecs->at(itk));
@@ -49,8 +50,10 @@ void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <
                }
              }
      }// loop over all previously found idx
-//   DEBUG(" #reti:"<<ret_i->size()<< "  #rett:"<<ret_t->size());
-//   DEBUG(": previous finder--\n");
+     for (int ipd=0; ipd< ret_i->size(); ipd++){
+      DEBUG(" ridx:"<<ret_i->at(ipd)<< "  rtyp:"<<ret_t->at(ipd)<<"\n");
+     }
+     DEBUG(": previous finder--\n");
      return ;
 }   
 
@@ -228,7 +231,7 @@ int BPdbxA:: readAnalysisParams() {
                   CutList2file+=cut0;
                   CutList2file+="\n";
 
-//                  cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
+//                cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
                   TString newLabels = cut0.data();
                   eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
                   string cut1;
@@ -713,6 +716,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
            float ahistval;
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 
+//    std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"  ";
 
     found_type_vecs.clear(); found_idx_vecs.clear(); found_idx_origs.clear();
     for (unsigned int k=0; k<mycutlist.size(); k++){
@@ -808,11 +812,12 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
         DEBUG("CUT:"<<k+1<< " "<<" # operations in this cut:"<<myopelist[k].size());
         DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
-//--------- we apply lepton scale factor
+//--------- we apply scale factors
         if (TRGe==2 || TRGm== 2) {
          if (mycutlist[k][j]->getName() == "LEPsf" ) evt_weight*=anevt.weight_leptonSF;
-         if (mycutlist[k][j]->getName() == "nBJET" ) {
-               // evt_weight*=anevt.weight_bTagSF_77;
+         if (mycutlist[k][j]->getName() == "nBJET" || mycutlist[k][j]->getName()=="}nbj" ) {
+                evt_weight*=anevt.weight_bTagSF_77;
+                anevt.mcevt_weight = evt_weight;
                 btagSF_counter++;
          } //TO BE IMPROVED
         }

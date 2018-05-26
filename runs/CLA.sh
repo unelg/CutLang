@@ -77,7 +77,9 @@ fi
  
 rm histoOut-BP_*.root
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
-rm pippo.tmp _*
-rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-rm   histoOut-${rbase}.root 
-hadd histoOut-${rbase}.root histoOut-BP_*.root
+if [ $? -eq 0 ]; then
+  rm _*
+  rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+  rm   histoOut-${rbase}.root 
+  hadd histoOut-${rbase}.root histoOut-BP_*.root
+fi

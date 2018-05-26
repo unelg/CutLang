@@ -44,12 +44,14 @@ MinSubPJetPtE = 65 # Minimum Pt of at least one of the Prompt Jets for Electron
 MinSubPJetPtM = 65 # Minimum Pt of at least one of the Prompt Jets for Muon
 
 TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
 
 ###### DEFINITIONS
 
 
 
+
+is_this_zjetsCR = 0
 
 
 
@@ -71,7 +73,7 @@ def15 = "DZerrorM : 42 "
 def16 = "MinRDist : 1 "
 def17 = "DeltaDE6rrorE : 5069 " #DHerrorE^2 - DZerrorE^2
 def18 = "DeltaDE6rrorM : 4680 " #DHerrorM^2 - DZerrorM^2
-def19 = "chi2E : { Higgs JET_-3 }m - { ZReco JET_-4 }m ^ 2 / DeltaDE6rrorE + { Higgs }m - 126 / 18 ^ 2 + { Higgs , JET_-3 }dR @ 1 * 9999 + { Zreco , JET_-4 }dR @ 1 * 9999 " #chi2 for DE6 finder
+def19 = "chi2E : { Higgs JET_-3 }m - { ZReco JET_-4 }m ^ 2 / DeltaDE6rrorE + { Higgs }m - 126 / 18 ^ 2 + { Higgs , JET_-3 }dR @ 1 * 9999 + { ZReco , JET_-4 }dR @ 1 * 8888 " #chi2 for DE6 finder
 def20 = "chi2M : { Higgs }m - 126 / HerrorM ^ 2 + mDE6Higgs - mDE6Z ^ 2 / DeltaDE6rrorM  " #chi2 for DE6 finder
 
 cmd1 = "ALL "
@@ -80,5 +82,13 @@ cmd3 = "nLEP >= 2 "
 cmd4 = "nLEP == 2 "
 cmd5 = "qLL == 0 "
 cmd6 = "LEPsf "
+cmd7 = "nJET >= 2 "
+cmd8 = "nJET == 4 "
+cmd9 = "mLL []  81 101  "
+cmd10 = "{ JET_0 }Pt >= 100 "
+cmd11 = "{ JET_1 }Pt >= 65 "
+cmd12 = "chi2E ~= 0 "
+cmd13 = "chi2E <= 15 "
+cmd14 = "{ Higgs }nbj > 0 "
 
 
