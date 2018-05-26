@@ -272,11 +272,11 @@ bool dbxCut::isSpecial(int order)
 float dbxCut::doArithOps(float v, int order, float vt)
 {
    int op_start=0, op_stop=-1;
-/*
+
  for (size_t iop=0; iop< p_arith_ops.size(); iop++){
      DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
  }
-*/
+
    for (size_t iop=0; iop< p_arith_ops.size(); iop++){
        op_stop++;
        if ( p_arith_vals[iop]==0 ) {break;}
@@ -306,6 +306,30 @@ float dbxCut::doArithOps(float v, int order, float vt)
        op_stop++;
    }
    } 
+   if (order>=5) {
+     op_stop++;
+     op_start=op_stop; 
+     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
+       if ( p_arith_vals[iop]==0 ) {break;}
+       op_stop++;
+   }
+   } 
+   if (order>=6) {
+     op_stop++;
+     op_start=op_stop; 
+     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
+       if ( p_arith_vals[iop]==0 ) {break;}
+       op_stop++;
+   }
+   } 
+   if (order>=7) {
+     op_stop++;
+     op_start=op_stop; 
+     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
+       if ( p_arith_vals[iop]==0 ) {break;}
+       op_stop++;
+   }
+   } 
 
    DEBUG(" @"<<order<<" From:"<<op_start<<" To:"<<op_stop<<" ");
 
@@ -316,8 +340,8 @@ float dbxCut::doArithOps(float v, int order, float vt)
      if (p_arith_ops[iop]=='*') { v*=p_arith_vals[iop];        continue;}
      if (p_arith_ops[iop]=='/') { v/=p_arith_vals[iop];        continue;}
      if (p_arith_ops[iop]=='^') { v=pow(v, p_arith_vals[iop]); continue;}
-     //if (p_arith_ops[iop]=='<U+03B8') { if(v < p_arith_vals[iop]) {v=0;} else {v=1;} DEBUG(" VV="<<v<<"\t"); continue;}
-     if (p_arith_ops[iop]=='@') { if(v >= p_arith_vals[iop]) {v=0;} else {v=1;} DEBUG(" VV="<<v<<"\t"); continue;}
+     if (p_arith_ops[iop]=='$') { if(v <= p_arith_vals[iop]) {v=1;} else {v=0;} DEBUG(" VV="<<v<<" L:"<<p_arith_vals[iop]<<" "); continue;}
+     if (p_arith_ops[iop]=='@') { if(v <= p_arith_vals[iop]) {v=0;} else {v=1;} DEBUG(" VV="<<v<<"\t"); continue;}
 
 //   if (p_arith_ops[iop]=='+') { v+=p_arith_vals[iop]; DEBUG(" +"<<p_arith_vals[iop]); continue;}
 //   if (p_arith_ops[iop]=='-') { v-=p_arith_vals[iop]; DEBUG(" -"<<p_arith_vals[iop]); continue;}
@@ -1172,7 +1196,6 @@ ClassImp(dbxCutList)
                         else if(token0=="Trig")      {mycut->push_back(new dbxCutTrig(TrigType)   );}
                         else if(token0=="VtxTrks")   {mycut->push_back(new dbxCutVtxTrks()        );}
                         else if(token0=="LEPsf")     {mycut->push_back(new dbxCutLEPsf()          );}
-//                        else if(token0=="BJsf")      {mycut->push_back(new dbxCutBJsf()           );}
                         else if(token0=="MWT")       {mycut->push_back(new dbxCutMWT(TrigType)    );}
                         else if(token0=="R2LEPJ0")   {mycut->push_back(new dbxCutR_Z_J0(TrigType) );}
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
@@ -1250,7 +1273,8 @@ ClassImp(dbxCutList)
                             mycut->back()->addTypesIndexes(my_typelist,my_indexlist); 
                             my_typelist.clear(); my_indexlist.clear();
                        
-                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" || token0=="@" ) {  //is it a math operation like + - ...
+                     } else if ( token0=="+" || token0=="-" || token0=="/" || token0=="*" || token0=="^" 
+                                             || token0=="@" || token0=="$") {  //is it a math operation like + - ...
                           myEvalString+=token0;  
                           DEBUG(token0 <<" is an arithmetic Op ");
                           mycut->back()->addArithOp(*token0.c_str() );
@@ -1350,7 +1374,6 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutVtxTrks());
                     cutlist.push_back(new dbxCutTrigMatch());
                     cutlist.push_back(new dbxCutLEPsf());
-//                    cutlist.push_back(new dbxCutBJsf());
                     cutlist.push_back(new dbxCutR_Z_J0());
                     cutlist.push_back(new dbxCutMET());
                     cutlist.push_back(new dbxCutMWT());
