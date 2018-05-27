@@ -6,7 +6,7 @@
 #include "ex1.h"
 #include "dbx_IsolationVarRhoCorr.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -282,54 +282,14 @@ float dbxCut::doArithOps(float v, int order, float vt)
        if ( p_arith_vals[iop]==0 ) {break;}
    }
 
-   if (order>=2) {
+   for (int anorder=2; anorder<=order; anorder++){
      op_stop++;
-     op_start=op_stop; 
+     op_start=op_stop;
      for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
        if ( p_arith_vals[iop]==0 ) {break;}
        op_stop++;
+     }
    }
-   } 
-   if (order>=3) {
-     op_stop++;
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-   }
-   } 
-   if (order>=4) {
-     op_stop++;
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-   }
-   } 
-   if (order>=5) {
-     op_stop++;
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-   }
-   } 
-   if (order>=6) {
-     op_stop++;
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-   }
-   } 
-   if (order>=7) {
-     op_stop++;
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-   }
-   } 
 
    DEBUG(" @"<<order<<" From:"<<op_start<<" To:"<<op_stop<<" ");
 
