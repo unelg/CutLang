@@ -6,7 +6,7 @@
 #include "ex1.h"
 #include "dbx_IsolationVarRhoCorr.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -237,23 +237,16 @@ bool dbxCut::isSpecial(int order)
        op_stop++;
        if ( p_arith_vals[iop]==0 ) {break;}
    }
-/*
-   if (order>=1) {
-     op_start=op_stop; 
-     for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
-       if ( p_arith_vals[iop]==0 ) {break;}
-       op_stop++;
-     }
-   } 
-*/
-   if (order>=2) {
+   for (int anorder=2; anorder<=order; anorder++){
      op_stop++;
      op_start=op_stop; 
      for (size_t iop=op_start; iop< p_arith_ops.size(); iop++){
        op_stop++;
        if ( p_arith_vals[iop]==0 ) {break;}
      }
-   } 
+   }
+
+/* 
    if (order>=3) {
      op_stop++;
      op_start=op_stop; 
@@ -262,20 +255,23 @@ bool dbxCut::isSpecial(int order)
        if ( p_arith_vals[iop]==0 ) {break;}
      }
    } 
-
+*/
    if (op_start==op_stop) rv=true;
-   DEBUG("[SO"<<order<<":"<<rv<<"] ");
-   return rv;
 
+   if ( (op_stop-op_start<=2) && (p_arith_ops.size() > op_stop+2)) {
+       if (  (p_arith_ops[op_stop+1]=='*' || p_arith_ops[op_stop+1]=='/')
+          && (p_arith_ops[op_stop+2]=='$' )
+          ) rv=true;
+   }
+
+   DEBUG("["<<op_start<<","<<op_stop<<"][SO"<<order<<":"<<rv<<"] ");
+   return rv;
 }
+
 //-------------------------------------arithmetic ops
 float dbxCut::doArithOps(float v, int order, float vt)
 {
    int op_start=0, op_stop=-1;
-
- for (size_t iop=0; iop< p_arith_ops.size(); iop++){
-     DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
- }
 
    for (size_t iop=0; iop< p_arith_ops.size(); iop++){
        op_stop++;
@@ -542,9 +538,15 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 // the cost of above lines is 4.5-2.5 = 2.0s
 // the cost of below lines is 6.2-4.5 = 1.7s
 //************************************************
-            float retval, totretval=0; 
+            double retval, totretval=0, tmp_retval=-6213.123; 
             int iporder=-1; 
             int bj_found=0;
+            DEBUG("\n");
+            for (size_t iop=0; iop< p_arith_ops.size(); iop++){
+             DEBUG("[@"<<iop<<p_arith_ops[iop]<<p_arith_vals[iop]<<"] ");
+            }
+            DEBUG("\n");
+
             for (int ipart=0; ipart<=extraParticleSet; ipart++){
              bool special_op=false;
              bool twoParam=false;
@@ -602,25 +604,39 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
            if (normal_op && (getFoundVector()).size() > 0){
                clearFoundResults();
            }
-//-----------------------------------ok
-
+//-----------------------------------ok with 1 return value, overall result in totretval
              special_op=isSpecial(iporder);
 
-             if (special_op) { retval=doArithOps(retval, iporder,totretval); // ~ totretval+=retval;
-                               DEBUG ("Toti:"<<retval);
+             if (special_op) { 
+                  if (iporder>5 ) { // condition to be fixed generalized
+                          if (getArithVal() >0 ) {tmp_retval=doArithOps(retval,iporder+1); DEBUG(" tRetVal:"<<tmp_retval<<" "); }
+                          continue;
+                  } else {
+                          retval=doArithOps(retval, iporder,totretval); // ~ totretval+=retval;
+                          DEBUG ("Toti:"<<retval);
+                 }
              }
-             if (getArithVal() >0 ) {retval=doArithOps(retval,iporder+1); DEBUG(" aRetVal:"<<retval<<" "); }
+             if (tmp_retval != -6213.123) {
+                          retval=doArithOps(retval, iporder+1); // ~ tmp_retval+=retval;
+                          DEBUG ("Tott:"<<retval);
+                          retval=doArithOps(retval, iporder,tmp_retval); // ~ tmp_retval+=retval;
+                          DEBUG ("TotT:"<<retval);
+             }
+             else if (getArithVal() >0 ) {retval=doArithOps(retval,iporder+1); DEBUG(" aRetVal:"<<retval<<" "); }
 
              if (ipart==0) { totretval=retval;
              } else {
               if (!special_op) { 
                 DEBUG(" T:"<<totretval<<" aRv:"<<retval);
-                totretval=doArithOps(retval, (iporder),totretval); // ~ totretval+=retval; 
+                if ( retval != 0 ) {
+                  totretval=doArithOps(retval, (iporder),totretval); // ~ totretval+=retval; 
+                }
               } else { totretval=retval; }
              }
              DEBUG ("GTot:"<<totretval);
              if (twoParam) { ipart++; }
-            }
+
+            }//end of loop over ipart
              DEBUG ("-> FinalGTot:"<<totretval);
             return (totretval);
 }
@@ -973,7 +989,7 @@ bool dbxCutMET::select(AnalysisObjects *ao){
       std::vector<std::string> rpn;
       dbxParticle *myparticles;
 
-      float retval, totretval=0;
+      double retval, totretval=0;
       std::vector<int> *param=getParams();
       unsigned int PS=param->size();
       int extraParticleSet=getNpart();
