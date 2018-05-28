@@ -36,7 +36,7 @@ void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <
               
      for (int ipd=0; ipd< acut->getSearchableType(); ipd++)  // this cut needs // loop over indices MUST
         for (unsigned int itk=0; itk<found_idx_vecs->size(); itk++){ // read from found list.
-             DEBUG (local_part_idxs[ipd]<<" -vs- "<< found_idx_vecs->at(itk) << "\n");
+//             DEBUG (local_part_idxs[ipd]<<" -vs- "<< found_idx_vecs->at(itk) << "\n");
              if ( found_type_vecs->at(itk) == acut->getSearchableType(ipd)  // types match
                && ( local_part_idxs[ipd]  < 0 )                             // searchable type.
                && found_idx_origs->at(itk) == local_part_idxs[ipd]          // idx match 
@@ -758,6 +758,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                   DEBUG("\n" );
               }
         } 
+
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
         if ( isTernary[k]>0 ) {  

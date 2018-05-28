@@ -82,16 +82,17 @@ def19 = "chi2E : { Higgs JET_-3 }m - { ZReco JET_-4 }m ^ 2 / 5069 + { Higgs }m -
 def20 = "chi2M : { Higgs }m - 126 / HerrorM ^ 2 + mDE6Higgs - mDE6Z ^ 2 / DeltaDE6rrorM  " #chi2 for DE6 finder
 
 cmd1 = "ALL "
-cmd2 = "ELEclean_ nLEP >= 1 "
-cmd3 = "ELEclean_ nLEP >= 2 "
-cmd4 = "ELEclean_ nLEP == 2 "
-cmd5 = "ELEclean_ qLL == 0 "
+cmd2 = "nLEP ( ELEclean_ MUOclean_ ) >= 1 "
+cmd3 = "nLEP ( ELEclean_ MUOclean_ ) >= 2 "
+cmd4 = "nLEP ( ELEclean_ MUOclean_ ) == 2 "
+cmd5 = "qLL  ( ELEclean_ MUOclean_ ) == 0 "
 cmd6 = "LEPsf "
 cmd7 = "nJET >= 2 "
 cmd8 = "nJET >= 4 "
 cmd9 = " mLL ELEclean_ [] 81 101 "
 cmd10 = "chi2E ELEclean_ ~= 0 "
 cmd11 = "chi2E ELEclean_ <= 15 "
+cmd12 = "{ Higgs }nbj > 0 "
 
 
 cmd1-1 = " { ELE_ }isZcand != 0  " 
