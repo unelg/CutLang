@@ -556,7 +556,7 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 
              switch (param->at(iporder) ){
               case 1: retval=aparticle[ipart].lv().M();
-                      DEBUG("M:"<<retval <<"\n");
+//                      DEBUG("M:"<<retval <<"\n");
                       break;
               case 2: retval=aparticle[ipart].lv().Pt();
                       break;
@@ -649,16 +649,13 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 bool dbxCut::m1select(AnalysisObjects *ao)
 {
        float result;
- //      std::cout << "bbbb1"<<"\n";
        if ( getParticleIndex(0) != 6213 ) {
                  result=calc(ao);
                  DEBUG("  res:"<< result << "\n");
-//       std::cout << "cccc2"<<"\n";
                  return (Ccompare( result ) );
        } else {
                DEBUG(getParticleIndex(0)<< "i  t"<< getParticleType(0)<<"\n");
                DEBUG("DEFINING NEW OBJECT: #idx:"<< getParticleIndex(-1) <<"  #typ:"<<getParticleType(-1) <<"\n");
-//       std::cout << "bbbb2"<<"\n";
                int ipart_max;
 // 0 is muon // 1 is electron // 8 is gammas
 // 2 is any jet // 3 is a b jet // 4 is light jet
@@ -670,7 +667,6 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                 }
 
                for (int ipart=ipart_max-1; ipart>=0; ipart--){
-//       std::cout << "bbbb3"<<"\n";
                  setParticleIndex(0, ipart);
                  result=calc(ao);
                  bool ppassed=Ccompare(result);
