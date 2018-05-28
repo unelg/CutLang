@@ -286,24 +286,6 @@ class dbxCutLEPsf : public dbxCut {
 private:
        ClassDef(dbxCutLEPsf,1);
 };
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ R2LEPJ0
-class dbxCutR_Z_J0 : public dbxCut {
- public:
-      dbxCutR_Z_J0( ): dbxCut("R2LEPJ0"){}
-      dbxCutR_Z_J0( int i): dbxCut("R2LEPJ0", i){}
-      bool select(AnalysisObjects *ao){
-                   return (Ccompare( calc(ao) ) );
-                 } 
-      float  calc(AnalysisObjects *ao){ //depends on trigger type set previously
-                     dbxParticle ZReco; 
-                     int TrigType=dbxCut::getCi();
-                     if ((TrigType>0) && (TrigType<4) ) ZReco=(ao->muos[0] + ao->muos[1] ); //  in muon channel
-                     if ((TrigType>3) && (TrigType<16)) ZReco=(ao->eles[0] + ao->eles[1] ); //   in e channel
-                     return (ZReco.lv().DeltaR( ao->jets.at(0).lv() ) );
-     }
-private:
-       ClassDef(dbxCutR_Z_J0,1);
-};
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MET
 class dbxCutMET : public dbxCut {
  public:
@@ -537,6 +519,18 @@ class dbxCutNbj : public dbxCut {
 private:
        ClassDef(dbxCutNbj,1);
 };
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ isZcand
+class dbxCutIsZcand : public dbxCut {
+ public:
+      dbxCutIsZcand( ): dbxCut("}isZcand"){normal_op=true;}
+      dbxCutIsZcand(std::vector<int> ts, std::vector<int> is,int v ): dbxCut("}isZcand",ts,is,v){normal_op=true;}
+
+      bool select(AnalysisObjects *ao);
+     float calc(AnalysisObjects *ao); 
+private:
+       ClassDef(dbxCutIsZcand,1);
+};
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Mof
 class dbxCutMof : public dbxCut {
@@ -573,6 +567,32 @@ class dbxCutdPhiof : public dbxCut {
 private:
        ClassDef(dbxCutdPhiof,1);
 };
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Isolation
+class dbxCutIsolationVarRhoCorr : public dbxCut {
+ public:
+      dbxCutIsolationVarRhoCorr() : dbxCut("Isolation"){}
+      dbxCutIsolationVarRhoCorr(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("Isolation",ts,is,v){}
+
+      bool select(AnalysisObjects *ao){
+          float result;
+          result=calc(ao);
+          return (Ccompare(result) );
+      }
+      float calc(AnalysisObjects *ao){
+         float retval=0.0;
+
+         // ***********************************
+         // Write your own code here
+         // ***********************************
+
+         return retval;
+}
+private:
+};
+
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ListClass
 class dbxCutList : public TObject {

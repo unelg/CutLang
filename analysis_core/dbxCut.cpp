@@ -4,7 +4,6 @@
 #include "dbxCut.h"
 #include <math.h>
 #include "ex1.h"
-#include "dbx_IsolationVarRhoCorr.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -87,10 +86,12 @@ dbxParticle dbxCut::partConstruct(AnalysisObjects *ao, int order)
                                                      break;
                                             case 0: myPart.setTlv(myPart.lv()+ao->muos[ p_part_index.at(kk) ].lv() ); // 0 is muon
                                                     myPart.setCharge(myPart.q()+ao->muos[ p_part_index.at(kk) ].q() );
+                                                    myPart.setIsTight(ao->muos[ p_part_index.at(kk)].isZCand()); // i am overloading the isTight
                                                     DEBUG("muon:"<<p_part_index.at(kk)<<" ");
                                                     break;
                                             case 1: myPart.setTlv(myPart.lv()+ao->eles[ p_part_index.at(kk) ].lv() ); // 1 is electron
                                                     myPart.setCharge(myPart.q()+ao->eles[ p_part_index.at(kk) ].q() );
+                                                    myPart.setIsTight(ao->eles[ p_part_index.at(kk)].isZCand()); // i am overloading the isTight
                                                     DEBUG("electron:"<<p_part_index.at(kk)<<"  ");
                                                     break;
                                            case 2:  DEBUG("jet:"<<p_part_index.at(kk)<<" ");
@@ -555,6 +556,7 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 
              switch (param->at(iporder) ){
               case 1: retval=aparticle[ipart].lv().M();
+                      DEBUG("M:"<<retval <<"\n");
                       break;
               case 2: retval=aparticle[ipart].lv().Pt();
                       break;
@@ -587,6 +589,8 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
                               }
                       }
                       retval=(float)bj_found;
+                      break;
+             case 12: retval=aparticle[ipart].isTight(); // contains integer "isZcandidate"
                       break;
              case 31: retval=aparticle[ipart].lv().DeltaR(aparticle[ipart+1].lv() );
                       twoParam=true;
@@ -645,13 +649,16 @@ float dbxCut::cxcalc(AnalysisObjects *ao, std::vector<int> * param)
 bool dbxCut::m1select(AnalysisObjects *ao)
 {
        float result;
+ //      std::cout << "bbbb1"<<"\n";
        if ( getParticleIndex(0) != 6213 ) {
                  result=calc(ao);
                  DEBUG("  res:"<< result << "\n");
+//       std::cout << "cccc2"<<"\n";
                  return (Ccompare( result ) );
        } else {
                DEBUG(getParticleIndex(0)<< "i  t"<< getParticleType(0)<<"\n");
                DEBUG("DEFINING NEW OBJECT: #idx:"<< getParticleIndex(-1) <<"  #typ:"<<getParticleType(-1) <<"\n");
+//       std::cout << "bbbb2"<<"\n";
                int ipart_max;
 // 0 is muon // 1 is electron // 8 is gammas
 // 2 is any jet // 3 is a b jet // 4 is light jet
@@ -663,6 +670,7 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                 }
 
                for (int ipart=ipart_max-1; ipart>=0; ipart--){
+//       std::cout << "bbbb3"<<"\n";
                  setParticleIndex(0, ipart);
                  result=calc(ao);
                  bool ppassed=Ccompare(result);
@@ -681,6 +689,7 @@ bool dbxCut::m1select(AnalysisObjects *ao)
                return true;
         }//end of object selection
 }//end of m1
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool dbxCut::m2select(AnalysisObjects *ao)
 {
@@ -757,6 +766,18 @@ bool dbxCutNbj::select(AnalysisObjects *ao){
 
 
 float dbxCutNbj::calc(AnalysisObjects *ao)
+{
+            return ( cxcalc(ao, getParams() )); 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IsZcand
+ClassImp(dbxCutIsZcand)
+bool dbxCutIsZcand::select(AnalysisObjects *ao){
+        return (m1select(ao));          
+}
+
+
+float dbxCutIsZcand::calc(AnalysisObjects *ao)
 {
             return ( cxcalc(ao, getParams() )); 
 }
@@ -1173,11 +1194,10 @@ ClassImp(dbxCutList)
                         else if(token0=="VtxTrks")   {mycut->push_back(new dbxCutVtxTrks()        );}
                         else if(token0=="LEPsf")     {mycut->push_back(new dbxCutLEPsf()          );}
                         else if(token0=="MWT")       {mycut->push_back(new dbxCutMWT(TrigType)    );}
-                        else if(token0=="R2LEPJ0")   {mycut->push_back(new dbxCutR_Z_J0(TrigType) );}
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
                         else if(token0=="HT")        {mycut->push_back(new dbxCutHT()             );} // add HTALL
                         else if(token0=="Ex1")       {mycut->push_back(new dbxCutEx1of()          );} // example
-                        else if(token0=="IsolationVarRhoCorr")       {mycut->push_back(new dbxCutIsolationVarRhoCorr()          );} // example
+                        else if(token0=="Isolation") {mycut->push_back(new dbxCutIsolationVarRhoCorr()      );} 
                         else if(token0=="TrigMatch") {mycut->push_back(new dbxCutTrigMatch(TrigType) );}
                         else if(token0=="MET")       {mycut->push_back(new dbxCutMET(my_typelist,      my_indexlist,21)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,      my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
@@ -1191,6 +1211,7 @@ ClassImp(dbxCutList)
                         else if(token0=="}N")        {mycut->push_back(new dbxCutNof(my_typelist,      my_indexlist,9) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}AbsEta")   {mycut->push_back(new dbxCutAbsEtaof(my_typelist, my_indexlist,10)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}nbj")      {mycut->push_back(new dbxCutNbj(my_typelist,      my_indexlist,11)); my_typelist.clear(); my_indexlist.clear();}
+                        else if(token0=="}isZcand")  {mycut->push_back(new dbxCutIsZcand(my_typelist,  my_indexlist,12)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}dR")       {mycut->push_back(new dbxCutdRof(my_typelist,     my_indexlist,31)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}dPhi")     {mycut->push_back(new dbxCutdPhiof(my_typelist,   my_indexlist,32)); my_typelist.clear(); my_indexlist.clear();}
                         else {std::cout << "This Cut IS NOT defined. MAJOR ERROR. STOP!\n"; exit(32);}
@@ -1350,7 +1371,6 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutVtxTrks());
                     cutlist.push_back(new dbxCutTrigMatch());
                     cutlist.push_back(new dbxCutLEPsf());
-                    cutlist.push_back(new dbxCutR_Z_J0());
                     cutlist.push_back(new dbxCutMET());
                     cutlist.push_back(new dbxCutMWT());
                     cutlist.push_back(new dbxCutMETMWT());
@@ -1368,6 +1388,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutEof());
                     cutlist.push_back(new dbxCutPof());
                     cutlist.push_back(new dbxCutPzof());
+                    cutlist.push_back(new dbxCutIsZcand());
                     cutlist.push_back(new dbxCutdRof());
                     cutlist.push_back(new dbxCutdPhiof());
                     cutlist.push_back(new dbxCutEx1of());
