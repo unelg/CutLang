@@ -44,7 +44,7 @@ MinSubPJetPtE = 65 # Minimum Pt of at least one of the Prompt Jets for Electron
 MinSubPJetPtM = 65 # Minimum Pt of at least one of the Prompt Jets for Muon
 
 TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
 
 ###### DEFINITIONS
 
@@ -83,7 +83,7 @@ cmd4 = "nLEP == 2 "
 cmd5 = "qLL == 0 "
 cmd6 = "LEPsf "
 cmd7 = "nJET >= 2 "
-cmd8 = "nJET == 4 "
+cmd8 = "nJET >= 4 "
 cmd9 = "mLL []  81 101  "
 cmd10 = "{ JET_0 }Pt >= 100 "
 cmd11 = "{ JET_1 }Pt >= 65 "
