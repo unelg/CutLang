@@ -51,9 +51,14 @@ TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd tri
 
 
 
+
+
+
 is_this_zjetsCR = 0
 
 
+obj1 = "ELEclean : ELE "
+obj2 = "MUOclean : MUO "
 
 def1 = "mLL : { LEP_1 LEP_0 }m"
 def2 = "qLL : { LEP_1 LEP_0 }q"
@@ -77,18 +82,17 @@ def19 = "chi2E : { Higgs JET_-3 }m - { ZReco JET_-4 }m ^ 2 / 5069 + { Higgs }m -
 def20 = "chi2M : { Higgs }m - 126 / HerrorM ^ 2 + mDE6Higgs - mDE6Z ^ 2 / DeltaDE6rrorM  " #chi2 for DE6 finder
 
 cmd1 = "ALL "
-cmd2 = "nLEP >= 1 "
-cmd3 = "nLEP >= 2 "
-cmd4 = "nLEP == 2 "
-cmd5 = "qLL == 0 "
+cmd2 = "ELEclean_ nLEP >= 1 "
+cmd3 = "ELEclean_ nLEP >= 2 "
+cmd4 = "ELEclean_ nLEP == 2 "
+cmd5 = "ELEclean_ qLL == 0 "
 cmd6 = "LEPsf "
 cmd7 = "nJET >= 2 "
 cmd8 = "nJET >= 4 "
-cmd9 = "mLL []  81 101  "
-cmd10 = "{ JET_0 }Pt >= 100 "
-cmd11 = "{ JET_1 }Pt >= 65 "
-cmd12 = "chi2E ~= 0 "
-cmd13 = "chi2E <= 15 "
-cmd14 = "{ Higgs }nbj > 0 "
+cmd9 = " mLL ELEclean_ [] 81 101 "
+cmd10 = "chi2E ELEclean_ ~= 0 "
+cmd11 = "chi2E ELEclean_ <= 15 "
 
 
+cmd1-1 = " { ELE_ }isZcand != 0  " 
+cmd2-1 = " { MUO_ }isZcand != 0  " 

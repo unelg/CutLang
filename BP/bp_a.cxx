@@ -602,7 +602,6 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         }
 //----------------------selection of good electrons-----------------
         for (UInt_t i=0; i<electrons.size(); i++) {
-               if(electrons.at(i).isZCand()==0) continue;//This varible has just added in tree. //TODO
                if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
                   &&(electrons.at(i).lv().Eta() < maxetae )  // and maximum eta.
                   )
