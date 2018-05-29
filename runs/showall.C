@@ -46,40 +46,13 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
         
   } // end loop over k
 
-  /*    
-	for (unsigned p=0; p<tek.size(); ++p)
-	{
-        for (unsigned l=0; l<cift.size(); ++l)
-        { TString strg = tek.at(p) ;
-	if(strncmp (tek.at(p),cift.at(l),(strg.Length() - 1 )) == 0)
-	{ cout << cift.at(l) <<endl;
-	cout << tek.at(p)  <<endl;
-	}
-        }
-	}
-  */
-    
-  /*
-    for (unsigned t=0; t<tek.size(); ++t)
-    {
-    for (unsigned d=0; d<trip.size(); ++d)
-    {  TString strg2 = tek.at(t) ;
-    if(strncmp (tek.at(t),trip.at(d), (strg2.Length() - 1)) == 0)
-    {
-    cout << tek.at(t)  <<endl;
-    cout << trip.at(d) <<endl;
-    }
-    }
-    }
-  */    
-    
   TFile *_file0 = TFile::Open(inpfile);
   TString dirname="BP_"; 
           dirname+=inpreg;
   _file0->cd(dirname);
     
   TCanvas *c1=new TCanvas("c1","CutLang histogramming example",200,10,700,500);
-  gStyle->SetOptStat(0);
+  gStyle->SetOptStat(1);
   gStyle->SetOptTitle(0);
   /*
     c1->SetFillColor(42);

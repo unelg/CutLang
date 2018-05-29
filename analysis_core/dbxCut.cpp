@@ -1000,7 +1000,7 @@ float dbxCutdPhiof::calc(AnalysisObjects *ao)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MET
 ClassImp(dbxCutMET)
 bool dbxCutMET::select(AnalysisObjects *ao){
-
+//#define DEBUG(a) std::cout<<a
       basic_parser aparser;
       TString myoss;
       std::vector<std::string> rpn;
@@ -1039,6 +1039,7 @@ bool dbxCutMET::select(AnalysisObjects *ao){
              if (iporder < getArithVal(-1)){
                  myoss+= getArithOp(iporder) ;
                  DEBUG(getArithOp(iporder)<<"\t");
+                 if (getArithOp(iporder) == '/')  myoss+=" ( ";
                  myoss+=" ";
                float retval=getArithVal(iporder);
                DEBUG(retval<<"\n");
@@ -1070,12 +1071,15 @@ bool dbxCutMET::select(AnalysisObjects *ao){
             DEBUG(" GTot:"<<totretval<<"\n");
 */ 
       }
+      if (myoss.Contains( '(') ) myoss+=" ) ";
       DEBUG(" STR:"<<myoss<<"\n");
       std::vector<std::string> tokens = aparser.getExpressionTokens( myoss.Data() );
       aparser.infixToRPN( tokens, tokens.size(), &rpn );
       totretval = aparser.RPNtoDouble( rpn );
       DEBUG(" GTot:"<<totretval<<"\n");
                      
+//#define DEBUG(a)
+
       return (Ccompare(totretval) );    
 
 }
@@ -1193,8 +1197,8 @@ ClassImp(dbxCutList)
                         else if(token0=="METMWT")    {mycut->push_back(new dbxCutMETMWT(TrigType) );}
                         else if(token0=="HT")        {mycut->push_back(new dbxCutHT()             );} // add HTALL
                         else if(token0=="Ex1")       {mycut->push_back(new dbxCutEx1of()          );} // example
-                        else if(token0=="Isolation") {mycut->push_back(new dbxCutIsolationVarRhoCorr()      );} 
                         else if(token0=="TrigMatch") {mycut->push_back(new dbxCutTrigMatch(TrigType) );}
+                else if(token0=="}IsolationRhoCorr") {mycut->push_back(new dbxCutIsoRhoCorr(my_typelist,my_indexlist,0)); my_typelist.clear(); my_indexlist.clear();} 
                         else if(token0=="MET")       {mycut->push_back(new dbxCutMET(my_typelist,      my_indexlist,21)); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}m")        {mycut->push_back(new dbxCutMof(my_typelist,      my_indexlist,1) ); my_typelist.clear(); my_indexlist.clear();}
                         else if(token0=="}Pt")       {mycut->push_back(new dbxCutPtof(my_typelist,     my_indexlist,2) ); my_typelist.clear(); my_indexlist.clear();}
@@ -1243,7 +1247,7 @@ ClassImp(dbxCutList)
                     }
                  } else {        //this must be the cut operator OR artihmetic operator
                      if (  token0=="}m" || token0=="}dR" || token0=="}Pt" || token0=="}Phi" || token0=="}q"    || token0=="}N"
-                        || token0=="}E" || token0=="}Pz" || token0=="}P"  || token0=="}Eta" || token0=="}dPhi" || token0=="HT"
+                        || token0=="}E" || token0=="}Pz" || token0=="}P"  || token0=="}Eta" || token0=="}dPhi" || token0=="HT" || token0=="MET"
                         ) { DEBUG("Another Op found:"<<token0<<"\n");
                                  if(token0=="}m")   {mycut->back()->addParam(1) ; }
                             else if(token0=="}Pt")  {mycut->back()->addParam(2) ; }
@@ -1256,6 +1260,7 @@ ClassImp(dbxCutList)
                             else if(token0=="}N")   {mycut->back()->addParam(9) ; }
                             else if(token0=="}dR")  {mycut->back()->addParam(31); }
                             else if(token0=="}dPhi"){mycut->back()->addParam(32); }
+                            else if(token0=="MET")  {mycut->back()->addParam(21); }
                             else if(token0=="HT")   {mycut->back()->addParam(22); }
                    
                             myEvalString+="x";
@@ -1388,7 +1393,7 @@ dbxCutList::dbxCutList(){
                     cutlist.push_back(new dbxCutdRof());
                     cutlist.push_back(new dbxCutdPhiof());
                     cutlist.push_back(new dbxCutEx1of());
-                    cutlist.push_back(new dbxCutIsolationVarRhoCorr());
+                    cutlist.push_back(new dbxCutIsoRhoCorr());
         }
 
 #endif
