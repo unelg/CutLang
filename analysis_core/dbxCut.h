@@ -569,30 +569,29 @@ private:
 };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Isolation
-class dbxCutIsolationVarRhoCorr : public dbxCut {
+class dbxCutIsoRhoCorr : public dbxCut {
  public:
-      dbxCutIsolationVarRhoCorr() : dbxCut("Isolation"){}
-      dbxCutIsolationVarRhoCorr(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("Isolation",ts,is,v){}
+      dbxCutIsoRhoCorr() : dbxCut("}IsolationRhoCorr"){}
+      dbxCutIsoRhoCorr(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("}IsolationRhoCorr",ts,is,v){}
 
       bool select(AnalysisObjects *ao){
-          float result;
-          result=calc(ao);
-          return (Ccompare(result) );
+        return (m1select(ao));
       }
+
+//  adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
+//  adbxm->setPtCone(Muon_IsolationVar[i]        );
+
       float calc(AnalysisObjects *ao){
          float retval=0.0;
-
-         // ***********************************
-         // Write your own code here
-         // ***********************************
+         if (ao->muos.size()<1) return retval;
+         for (int kk=0; kk<getParticleType(-1); kk++){
+            retval=ao->muos[ getParticleIndex(kk) ].EtCone();
+         }
 
          return retval;
 }
 private:
 };
-
-
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ListClass
 class dbxCutList : public TObject {
