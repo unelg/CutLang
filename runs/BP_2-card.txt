@@ -1,94 +1,69 @@
-#systematics_bci = 0b01111111111111111111111111111111111111111111 #SF systematics
-#systematics_bci = 0b10000000000000000000000000000000000000000000 #modelling systematics
-#                   ^^^                          ^         ^   ^pileup
-#                   |                            last-m    last-e
-#                   | last-bTag
-#                   |JVT
-#                   modelling
+# PLEASE PAY ATTENTION TO SPACE BEFORE AND AFTER = SIGN
+# format is " variable = value "
 
-minpte  = 30.0  # min pt of electrons old 25
-minptm  = 30.0  # min pt of muons
-maxz0e = 2           #max z0 wrt PV for electrons   //we are not using now
-maxz0m = 2           #max z0 wrt PV for muons
-jetVtxf2011 = 0.75  #jet vertex fraction of 2011
-jetVtxf2012 = 0.50  #jet vertex fraction of 2012
+# info analysis
+#  experiment ATLAS
+#  id SUSY-2013-15
+#  publication Eur. Phys. J. C(2016) 76: 392
+#  sqrtS 13.0
+#  lumi 3.2
+#  arXiv 1605.03814
+#  hepdata http://hepdata.cedar.ac.uk/view/ins1304456
+#  doi 10.1140/epjc/s10052-016-4184-8
 
-maxetae = 2.47   # max pseudorapidity of electrons  TO BE OPTIMIZED
-maxetam = 2.5  # max pseudorapidity of muons TO BE OPTIMIZED
+######## GENERIC OBJECT THRESHOLDS
+minptp  = 10.0  # min pt of photons 
+minpte  = 10.0  # min pt of electrons 
+minptm  = 10.0  # min pt of muons 
+minptj  = 20.0  # min pt of jets
 
-minmete = 60   # min Met of Elec
-minmetmu = 60  # min Met of Muon
-minptj  = 25.0   # min pt of jets
-maxetaj = 2.50   # max pseudorapidity of jets
-mindrjm = 0.4   # min deltaR between jets and muons
-mindrje = 0.2   # min deltaR between jets and electrons
-mqhxmin = 50    # for the final HQ mass histo, x-axis min
-mqhxmax = 850 # for the final HQ mass histo, x-axis max
-maxMuPtCone = 2.5 # Max muon Pt for 2011
-maxMuEtCone = 4.0 # Max muon Et for 2011
+maxetap = 2.37  # max pseudorapidity of photons  
+maxetae = 2.47  # max pseudorapidity of electrons  
+maxetam = 2.70  # max pseudorapidity of muons 
+maxetaj = 2.80  # max pseudorapidity of jets
 
-# E6 Analysis Parameters
-maxDeltaZmassEl = 10 # maximum Z mass spread of Elec
-maxDeltaZmassMu = 10 # maximum Z mass spread of Muon old 15
-HerrorM = 17 # Higgs Chisquare sigma Value of Muon
-DHerrorM = 54 # De from Higgs Chisquare sigma Value of Muon
-DZerrorM = 42 # De from Z Chisquare sigma Value of Muon
-HerrorE = 18 # Higgs Chisquare sigma Value of Elec
-DHerrorE = 62 # De from Higgs Chisquare sigma Value of Elec
-DZerrorE = 35 # De from Z Chisquare sigma Value of Elec
-MaximumChi = 15 # Max Chisqure value
-MinRDist = 1 # Minimum R Dist between Jets
-MinPJetPtE = 100 # Minimum Pt of at least one of the Prompt Jets for Electron
-MinPJetPtM = 100 # Minimum Pt of at least one of the Prompt Jets for Muon
-MinSubPJetPtE = 65 # Minimum Pt of at least one of the Prompt Jets for Electron
-MinSubPJetPtM = 65 # Minimum Pt of at least one of the Prompt Jets for Muon
+######## USER DEFINITIONS
 
-TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-
-###### DEFINITIONS
+######## OBJECT SELECTION
 
 
 
 
-is_this_zjetsCR = 0
+
+######## EVENT SELECTION
 
 
 
-def1 = "mLL : { LEP_1 LEP_0 }m"
-def2 = "qLL : { LEP_1 LEP_0 }q"
-def3 = "ZReco : LEP_1 LEP_0 "
-def4 = "Higgs : JET_-1 JET_-1 " # reconstructed Higgs boson
-def5 = "DE6Higgs : { Higgs JET_-3 } "
-def6 = "DE6Z : { ZReco JET_-4 } "
-def7 = "mDE6Higgs : { DE6Higgs }m "
-def8 = "mDE6Z : { DE6Z }m "
-def9 = "mHiggs : { Higgs }m "  # mass of Higgs boson
-def10 = "HerrorE : 18 "
-def11 = "HerrorM : 17 "
-def12 = "DHerrorE : 62 "
-def13 = "DHerrorM : 54 "
-def14 = "DZerrorE : 35 "
-def15 = "DZerrorM : 42 "
-def16 = "MinRDist : 1 "
-def17 = "DeltaDE6rrorE : 5069 " #DHerrorE^2 - DZerrorE^2
-def18 = "DeltaDE6rrorM : 4680 " #DHerrorM^2 - DZerrorM^2
-def19 = "chi2E : { Higgs JET_-3 }m - { ZReco JET_-4 }m ^ 2 / DeltaDE6rrorE + { Higgs }m - 126 / 18 ^ 2 + { Higgs , JET_-3 }dR @ 1 * 9999 + { Zreco , JET_-4 }dR @ 1 * 9999 " #chi2 for DE6 finder
-def20 = "chi2M : { Higgs }m - 126 / HerrorM ^ 2 + mDE6Higgs - mDE6Z ^ 2 / DeltaDE6rrorM  " #chi2 for DE6 finder
+obj1 = "JETclean : JET "
+obj2 = "MUOclean : MUO "
+obj3 = "ELEclean : ELE "
+obj4 = "ELEveryclean : ELE "
+obj5 = "JETsr : JETclean "
 
-cmd1 = "ALL "
-cmd2 = "nLEP >= 1 "
-cmd3 = "nLEP >= 2 "
-cmd4 = "nLEP == 2 "
-cmd5 = "qLL == 0 "
-cmd6 = "LEPsf "
-cmd7 = "nJET >= 2 "
-cmd8 = "nJET == 4 "
-cmd9 = "mLL []  81 101  "
-cmd10 = "{ JET_0 }Pt >= 100 "
-cmd11 = "{ JET_1 }Pt >= 65 "
-cmd12 = "chi2E ~= 0 "
-cmd13 = "chi2E <= 15 "
-cmd14 = "{ Higgs }nbj > 0 "
+def1 = "Meff : MET + HT "  #Meff is simple
+def2 = "Jsr0MEtFi : { JETsr_0 , METLV_0 }dPhi "
+def3 = "Jsr1MEtFi : { JETsr_1 , METLV_0 }dPhi "
+def4 = "Jsr2MEtFi : { JETsr_2 , METLV_0 }dPhi "
+def5 = "Meff4j : MET + { JETsr_0 }Pt + { JETsr_1 }Pt + { JETsr_2 }Pt + { JETsr_3 }Pt "
+def6 = "Meff5j : Meff4j + { JETsr_4 }Pt "
+def7 = "Meff6j : Meff5j + { JETsr_5 }Pt "
+
+cmd1 = "ALL "                          # to count all events
+cmd2 = "MET > 200 "                    
+cmd3 = "nMUOclean == 0 "         # Reject evt if there is a muon with pT > 10
+cmd4 = "nELEveryclean == 0 "         # Reject evt if there is a muon with pT > 10
+cmd5 = "nJETsr > 0 "
+cmd6 = "nJETsr >= 1 "
+cmd7 = "{ JETsr_0 }Pt > 200 "
+cmd8 = "nJETsr >= 2 "
+cmd9 = "Ex1 ( JETsr_ ) > 0.8  "
+cmd10 = "{ JETsr_1 }Pt > 200 "
+cmd11 = "MET / HT ( JETsr_ ) ^ 0.5 > 20 "
+cmd12 = "Meff ( JETsr_ ) > 2000 "
 
 
+cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
+cmd2-1 = " { MUO_ , JETclean_ }dR >= 0.4  " 
+cmd3-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+cmd4-1 = " { ELE_ , JETclean_ }dR >= 0.4  " 
+cmd5-1 = " { JETclean_ }Pt > 50  " 
