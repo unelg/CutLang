@@ -26,8 +26,6 @@ maxetaj = 2.80  # max pseudorapidity of jets
 
 ######## OBJECT SELECTION
 
-# How to do bjets?
-
 
 
 
@@ -58,10 +56,10 @@ cmd5 = "nJETsr > 0 "
 cmd6 = " nJETsr >= 1 "
 cmd7 = "{ JETsr_0 }Pt > 300 "
 cmd8 = " nJETsr >= 2 "
-cmd9 = " Ex1 > 0.4  "
+cmd9 = " Ex1 ( JETsr_ ) > 0.4  "
 cmd10 = "{ JETsr_1 }Pt > 50 "
-cmd11 = " MET / HT ^ 0.5 > 15 "
-cmd12 = " Meff > 1600 "
+cmd11 = " MET / HT ( JETsr_ ) ^ 0.5 > 15 "
+cmd12 = " Meff ( JETsr_ ) > 1600 "
 
 
 cmd1-1 = " { JET_ , ELE_ }dR >= 0.2  " 
