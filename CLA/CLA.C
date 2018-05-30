@@ -49,7 +49,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
- cout << "CLA v2.0.0\n";
+ cout << "CLA v2.1.0\n";
 
 for (int i = 2; i < argc; i++) {
      if (i + 1 != argc) // Check that we haven't finished parsing already
