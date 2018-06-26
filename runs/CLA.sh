@@ -1,5 +1,6 @@
 #!/bin/bash
-
+export PATH=$PATH:$ROOTSYS/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system
 EVENTS=0
 INIFILE=CLA.ini
 VERBOSE=5000
