@@ -1,9 +1,9 @@
 # CutLang
-This is the development Repository for CutLang
+This is the repository for CutLang
 
+1/ Directory structure for CutLang
 
 ===Analysis_core===
-
 basic_parser		Parsing arithmetic expressions	
 atlasopen		Data format definition for ATLAS opendata type
 cmsod 	        	Data format definition for CMS opendata	type
@@ -21,13 +21,11 @@ dbxCut			Define basic Cut class, and Children Cuts				superclass: TObject
 DBXNtuple		Define Ntuple class: vectors of other elementary particles (elec,muon…)	superclass: TObject 
 dbxParticle		Define the base particle class (setters, getters, operators)		superclass: TObject 
 ex1			Define external function						superclass: dbxCut
-AnalysisController      
-Makefile		to compile and prepare the object libraries
-
-PrintEfficiencies	Print out efficiency	
+AnalysisController      Degine analysis control class
+PrintEfficiencies	Print out efficiencies for an analysis
 ReadCard		Read the card text files line by line	
 TStringAddFloat		Operator + of a String and a float	
-
+Makefile		to compile and prepare the object libraries
 
 ===BP===
 bp_a			Define  BP analysis class						superclass: dbx_a
@@ -48,5 +46,17 @@ CLA.sh			bash script to run the code, once compiled.
 adduserfunction.py	python script to add user defined analysis cut
 ini2txt.sh		bash scipt to convert ini files into 2 txt files, histograms and cuts
 separate_algos.sh       bash scipt to prepare signal regions to be studied in parallel
+
+2/ Requirements
+*ROOT (root.cern.ch) needs to be installed
+*command line compilation utilities (makes,gcc,g++...) need to be available
+
+3/ Compilation
+ cd CutLang/CLA
+ make
+ cd ../runs
+
+4/ Running
+ ./CLA.sh [inputfilename] [inputfiletype] -i [inifilename]
 
 
