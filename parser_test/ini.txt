@@ -1,1 +1,11 @@
-6
+def       mWH2:{ WH2 }m #chi
+#hi def
+def Anna1 :my particle 
+def       WH1 :JET_-1 JET_-1   
+def       WH2 : JET_-11 JET_-11   
+def       mWH1 : { WH1 }m   # mass of W boson of the first top
+def       mWH2 : { WH2 }m   # mass of @ boson of the second top
+def       mTopH1 : { WH1 JET_-2 }m   # first top quark's mass
+def       mTopH2 : { WH2 JET_-4 }m   # second top quark's mass
+def       WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
+def       WHbR2 : {WH2 , JET_-4 }dR   # angular distance between W2 and b jet
