@@ -1,6 +1,7 @@
 %{ 
 //#define YYSTYPE double
 #include <math.h>
+#include "stdlib.h"
 #include <iostream>
 #include <string.h>
 #include <map>
@@ -48,18 +49,20 @@ definitions : definitions definition
             | 
             ;
 definition : DEF ID ':' particules {
-                                        // string name = $2;
-                                        // string phrase= $4;
-                                        // vars.insert(make_pair(name,phrase));
-								
+                                         string name = $2;
+                                         string phrase= $4;
+                                         vars.insert(make_pair(name,phrase));
 							        }
-particules : particules particule
+particules : particules particule { std::cout<<$2<<std::endl;}
             |
             ;
 particule : ELE '_' index {
                             //do something with name and index?
-                            std::cout<<"ele_"<<$3<<std::endl;
-                            $$=""
+                            //std::cout<<"ele_"<<$3<<std::endl;
+                            
+                            string tmp="ele_"+to_string($3);
+                            //////////////////////////$$=strdup(tmp);
+                            
                             }
         | MUO '_' index {std::cout<<"muo_"<<$3<<std::endl;}
         | LEP '_' index {std::cout<<"lep_"<<$3<<std::endl;}
@@ -90,7 +93,7 @@ command : CMD //to continue
 //    |'(' e ')' { $$ = $2 ;}
 //    | NB { $$ = $1 ;std::cout<<"NB: "<<$1<<std::endl;} 	
 //    ;
-//we should also match integers in here
+//we should also match integers in here INT
 %%
 int main(void) {yyparse(); 
 cout<<"\n results: \n";
