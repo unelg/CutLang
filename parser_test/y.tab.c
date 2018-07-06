@@ -114,6 +114,7 @@
  
 //#define YYSTYPE double
 #include <math.h>
+#include "stdlib.h"
 #include <iostream>
 #include <string.h>
 #include <map>
@@ -146,13 +147,13 @@ map<string,string> vars;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 15 "parse.y"
+#line 16 "parse.y"
 {
 	double real;
 	char* s;
 }
 /* Line 193 of yacc.c.  */
-#line 156 "y.tab.c"
+#line 157 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -165,7 +166,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 169 "y.tab.c"
+#line 170 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -456,9 +457,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    43,    43,    45,    46,    48,    54,    55,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    67,    68,    70,
-      71,    73
+       0,    46,    46,    48,    49,    51,    56,    57,    59,    67,
+      68,    69,    70,    71,    72,    73,    74,    76,    77,    79,
+      80,    82
 };
 #endif
 
@@ -1382,73 +1383,84 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 48 "parse.y"
+#line 51 "parse.y"
     {
-                                        // string name = $2;
-                                        // string phrase= $4;
-                                        // vars.insert(make_pair(name,phrase));
-								
+                                         string name = (yyvsp[(2) - (4)].s);
+                                         string phrase= (yyvsp[(4) - (4)].s);
+                                         vars.insert(make_pair(name,phrase));
 							        }
     break;
 
+  case 6:
+#line 56 "parse.y"
+    { std::cout<<(yyvsp[(2) - (2)].s)<<std::endl;}
+    break;
+
   case 8:
-#line 57 "parse.y"
-    {std::cout<<"ele_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
+#line 59 "parse.y"
+    {
+                            //do something with name and index?
+                            //std::cout<<"ele_"<<$3<<std::endl;
+                            
+                            string tmp="ele_"+to_string((yyvsp[(3) - (3)].real));
+                            (yyval.s)=strdup(tmp);
+                            
+                            }
     break;
 
   case 9:
-#line 58 "parse.y"
+#line 67 "parse.y"
     {std::cout<<"muo_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 10:
-#line 59 "parse.y"
+#line 68 "parse.y"
     {std::cout<<"lep_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 11:
-#line 60 "parse.y"
+#line 69 "parse.y"
     {std::cout<<"pho_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 12:
-#line 61 "parse.y"
+#line 70 "parse.y"
     {std::cout<<"jet_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 13:
-#line 62 "parse.y"
+#line 71 "parse.y"
     {std::cout<<"bjet_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 14:
-#line 63 "parse.y"
+#line 72 "parse.y"
     {std::cout<<"qgjet_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 15:
-#line 64 "parse.y"
+#line 73 "parse.y"
     {std::cout<<"numet_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 16:
-#line 65 "parse.y"
+#line 74 "parse.y"
     {std::cout<<"metlv_"<<(yyvsp[(3) - (3)].real)<<std::endl;}
     break;
 
   case 17:
-#line 67 "parse.y"
+#line 76 "parse.y"
     {(yyval.real)=-(yyvsp[(2) - (2)].real);}
     break;
 
   case 18:
-#line 68 "parse.y"
+#line 77 "parse.y"
     {(yyval.real)= (yyvsp[(1) - (1)].real);}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1452 "y.tab.c"
+#line 1464 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1662,7 +1674,7 @@ yyreturn:
 }
 
 
-#line 88 "parse.y"
+#line 97 "parse.y"
 
 int main(void) {yyparse(); 
 cout<<"\n results: \n";
