@@ -40,26 +40,44 @@
       know about them.  */
    enum yytokentype {
      DEF = 258,
-     VARDEF = 259,
-     CMD = 260,
-     NB = 261,
-     ID = 262,
-     SIN = 263,
-     COS = 264,
-     TAN = 265,
-     Unary = 266
+     CMD = 259,
+     ELE = 260,
+     MUO = 261,
+     LEP = 262,
+     PHO = 263,
+     JET = 264,
+     BJET = 265,
+     QGJET = 266,
+     NUMET = 267,
+     METLV = 268,
+     NB = 269,
+     ID = 270,
+     SIN = 271,
+     COS = 272,
+     TAN = 273,
+     INT = 274,
+     Unary = 275
    };
 #endif
 /* Tokens.  */
 #define DEF 258
-#define VARDEF 259
-#define CMD 260
-#define NB 261
-#define ID 262
-#define SIN 263
-#define COS 264
-#define TAN 265
-#define Unary 266
+#define CMD 259
+#define ELE 260
+#define MUO 261
+#define LEP 262
+#define PHO 263
+#define JET 264
+#define BJET 265
+#define QGJET 266
+#define NUMET 267
+#define METLV 268
+#define NB 269
+#define ID 270
+#define SIN 271
+#define COS 272
+#define TAN 273
+#define INT 274
+#define Unary 275
 
 
 
@@ -72,7 +90,7 @@ typedef union YYSTYPE
 	char* s;
 }
 /* Line 1529 of yacc.c.  */
-#line 76 "y.tab.h"
+#line 94 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

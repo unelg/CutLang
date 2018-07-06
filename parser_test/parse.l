@@ -14,16 +14,22 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def" return DEF;//case sensitive in this case
 "cmd" return CMD;
-"#".* ;
+"ELE" return ELE;
+"MUO" return MUO;
+"LEP" return LEP;
+"PHO" return PHO;
+"JET" return JET;
+"BJET" return BJET;
+"QGJET" return QGJET;
+"NUMET" return NUMET;
+"METLV" return METLV;
+"#".*"\n" ;
 [ \t\n] ;
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
+{integer} sscanf(yytext, "%lf",&yylval.real);return INT;//to test
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}] return *yytext;
+[-+*/()^:{}_] return *yytext;
 [a-zA-Z]+{integer} yylval.s=strdup(yytext);return ID;
-":"[^#]* {std::cout<<++i<<" "<<yytext<<std::endl;
-            yylval.s=strdup(yytext);
-            return (VARDEF);
-        }
 %%
