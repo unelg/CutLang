@@ -42,6 +42,7 @@ map<string,string> vars;
 %right Unary
 %right '^'
 %type <real> index
+%type <s> vardef
 %type <s> particule
 %type <s> particules
 %%
@@ -62,7 +63,8 @@ definition : DEF ID ':' vardef {
 vardef : particules {pnum=0;}
        | function
        ;
-function : '{' particules '}m' 
+function : '{' particules '}' 'm' 
+        ;
 particules : particules particule { 
                                         if (pnum==0){
                                                 
