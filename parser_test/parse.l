@@ -30,6 +30,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][oO][sS] return COS;
 {integer} sscanf(yytext, "%lf",&yylval.real);return INT;//to test
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}_] return *yytext;
-[a-zA-Z]+{integer} yylval.s=strdup(yytext);return ID;
+[-+*/()^:{}_m] return *yytext;
+[a-zA-Z]+{integer}? yylval.s=strdup(yytext);return ID;
 %%
