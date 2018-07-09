@@ -3,7 +3,7 @@
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <map>
 #include <iterator>
 extern int yylex();
@@ -11,6 +11,7 @@ extern int yyparse();
 void yyerror(const char *s) { std::cout << s << std::endl; } 
 double result;
 using namespace std;
+string tmp;
 map<string,string> vars;
 %}
 %union {
@@ -49,29 +50,54 @@ definitions : definitions definition
             | 
             ;
 definition : DEF ID ':' particules {
-                                         string name = $2;
-                                         string phrase= $4;
-                                         vars.insert(make_pair(name,phrase));
-							        }
-particules : particules particule { std::cout<<$2<<std::endl;}
-            |
+                                         //string name = $2;
+                                         //string phrase= $4;
+                                         //vars.insert(make_pair(name,phrase));
+				}
+particules : particules particule 
+            | 
             ;
 particule : ELE '_' index {
-                            //do something with name and index?
-                            //std::cout<<"ele_"<<$3<<std::endl;
+                            //do something with name and index? Maybe put them in lists
                             
-                            string tmp="ele_"+to_string($3);
-                            //////////////////////////$$=strdup(tmp);
+                            
+                            tmp="ele_"+to_string((int)$3);                        
+                            $$=strdup(tmp.c_str());
+                            std::cout<<$$<<std::endl;
                             
                             }
-        | MUO '_' index {std::cout<<"muo_"<<$3<<std::endl;}
-        | LEP '_' index {std::cout<<"lep_"<<$3<<std::endl;}
-        | PHO '_' index {std::cout<<"pho_"<<$3<<std::endl;}
-        | JET '_' index {std::cout<<"jet_"<<$3<<std::endl;}
-        | BJET '_' index {std::cout<<"bjet_"<<$3<<std::endl;}
-        | QGJET '_' index {std::cout<<"qgjet_"<<$3<<std::endl;}
-        | NUMET '_' index {std::cout<<"numet_"<<$3<<std::endl;}
-        | METLV '_' index {std::cout<<"metlv_"<<$3<<std::endl;}
+        | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | BJET '_' index {       tmp="bjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | QGJET '_' index {       tmp="qgjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
+        | METLV '_' index {       tmp="metlv_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                std::cout<<$$<<std::endl;
+                        }
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
@@ -80,7 +106,7 @@ commands : commands command
         | 
         ;
 command : CMD //to continue
-		;
+	;
 // e : e '+' e  { $$ = $1 + $3 ; }
 //    | e '-' e { $$ = $1 - $3 ; }
 //    | e '*' e { $$ = $1 * $3 ; }
@@ -93,15 +119,17 @@ command : CMD //to continue
 //    |'(' e ')' { $$ = $2 ;}
 //    | NB { $$ = $1 ;std::cout<<"NB: "<<$1<<std::endl;} 	
 //    ;
-//we should also match integers in here INT
+//we should also match integers in here INT and check which one is detected first NB or INT
 %%
-int main(void) {yyparse(); 
-cout<<"\n results: \n";
-			std::map<std::string, string>::iterator it = vars.begin();
-    while(it != vars.end())
-    {
-        std::cout<<it->first<<" :: "<<it->second<<std::endl;
-        it++;
-    }
-			//std::cout <<"Main Result: " <<result << std::endl;
-			}
+int main(void) {
+        yyparse(); 
+        cout<<"\n results: \n";
+	std::map<std::string, string>::iterator it = vars.begin();
+        while(it != vars.end())
+        {
+                std::cout<<it->first<<" :: "<<it->second<<std::endl;
+                it++;
+        }
+	//std::cout <<"Main Result: " <<result << std::endl;
+			
+                }
