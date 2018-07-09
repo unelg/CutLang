@@ -1520,7 +1520,7 @@ yyreduce:
 
   case 20:
 #line 138 "parse.y"
-    { 
+    { //needs testing
                 map<string, string>::iterator it ;
                 it = vars.find((yyvsp[(1) - (1)].s));
      
