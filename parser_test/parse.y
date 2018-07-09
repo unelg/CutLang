@@ -53,7 +53,17 @@ definitions : definitions definition
             ;
 definition : DEF ID ':' vardef {
                                          
+                                         map<string, string>::iterator it ;
                                          string name = $2;
+                                        it = vars.find(name);
+                        
+                                        if(it != vars.end()) {
+                                                cout <<name<<" : " ;
+                                                yyerror("Variable already defined");
+                                                YYERROR;//stops parsing
+                                                
+                                        }
+                                         
                                          string phrase= $4;
                                          vars.insert(make_pair(name,phrase));
                                          cout<<"\nend "<<$4<<endl;
@@ -63,7 +73,7 @@ definition : DEF ID ':' vardef {
 vardef : particules {pnum=0;}
        | function
        ;
-function : '{' particules '}' 'm' 
+function : '{' particules '}' 'm' ////////////////
         ;
 particules : particules particule { 
                                         if (pnum==0){
@@ -125,6 +135,20 @@ particule : ELE '_' index {
                                 $$=strdup(tmp.c_str());
                                 
                         }
+        | ID { 
+                map<string, string>::iterator it ;
+                it = vars.find($1);
+     
+                if(it == vars.end()) {
+                        cout <<$1<<" : " ;
+                        yyerror("Variable not defined");
+                        YYERROR;//stops parsing
+                        
+                }
+                else {tmp= it->second ;
+                $$=strdup(tmp.c_str());}
+
+                }
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
