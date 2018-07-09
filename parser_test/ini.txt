@@ -3,6 +3,8 @@ def       WH1 :JET_1 JET_-1   #comment here
 
 def  Whhh2 : JET_3 ELE_3 ELE_3   #another comment here
 def WWW: Whhh2 ELE_0 WH1
+def A1 : WWW ELE_0
+def A1 : WWW ELE_0
 
 
 

@@ -135,7 +135,7 @@ particule : ELE '_' index {
                                 $$=strdup(tmp.c_str());
                                 
                         }
-        | ID { 
+        | ID { //needs testing
                 map<string, string>::iterator it ;
                 it = vars.find($1);
      
