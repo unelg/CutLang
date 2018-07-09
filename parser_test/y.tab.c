@@ -462,7 +462,7 @@ static const yytype_uint8 yyrline[] =
 {
        0,    49,    49,    51,    52,    54,    73,    74,    76,    78,
       97,    99,   106,   110,   114,   118,   122,   126,   130,   134,
-     138,   153,   154,   156,   157,   159
+     138,   154,   155,   157,   158,   160
 };
 #endif
 
@@ -1404,7 +1404,7 @@ yyreduce:
                                         if(it != vars.end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror("Variable already defined");
-                                                YYERROR;//stops parsing
+                                                YYERROR;//stops parsing if variable already defined
                                                 
                                         }
                                          
@@ -1430,7 +1430,7 @@ yyreduce:
                                         }
                                         else{
                                                 
-                                                char s [1024];
+                                                char s [2048];
                                                 strcpy(s,(yyval.s)); 
                                                 strcat(s," ");
                                                 strcat(s,(yyvsp[(2) - (2)].s));
@@ -1527,28 +1527,29 @@ yyreduce:
                 if(it == vars.end()) {
                         cout <<(yyvsp[(1) - (1)].s)<<" : " ;
                         yyerror("Variable not defined");
-                        YYERROR;//stops parsing
+                        YYERROR;//stops parsing if variable not found
                         
                 }
-                else {tmp= it->second ;
-                (yyval.s)=strdup(tmp.c_str());}
+                else {
+                        tmp= it->second ;
+                        (yyval.s)=strdup(tmp.c_str());}
 
                 }
     break;
 
   case 21:
-#line 153 "parse.y"
+#line 154 "parse.y"
     {(yyval.real)=-(yyvsp[(2) - (2)].real);}
     break;
 
   case 22:
-#line 154 "parse.y"
+#line 155 "parse.y"
     {(yyval.real)= (yyvsp[(1) - (1)].real);}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1552 "y.tab.c"
+#line 1553 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1762,7 +1763,7 @@ yyreturn:
 }
 
 
-#line 174 "parse.y"
+#line 175 "parse.y"
 
 int main(void) {
         yyparse(); 

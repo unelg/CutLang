@@ -2,9 +2,7 @@ def       WH1 :JET_1 JET_-1   #comment here
 #comment on new line
 
 def  Whhh2 : JET_3 ELE_3 ELE_3   #another comment here
-def WWW: Whhh2 ELE_0
-def Anna : ELE_0
-def anna:ELE_1 Anna
+def WWW: Whhh2 ELE_0 WH1
 
 
 

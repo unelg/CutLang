@@ -60,7 +60,7 @@ definition : DEF ID ':' vardef {
                                         if(it != vars.end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror("Variable already defined");
-                                                YYERROR;//stops parsing
+                                                YYERROR;//stops parsing if variable already defined
                                                 
                                         }
                                          
@@ -83,7 +83,7 @@ particules : particules particule {
                                         }
                                         else{
                                                 
-                                                char s [1024];
+                                                char s [2048];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$2);
@@ -142,11 +142,12 @@ particule : ELE '_' index {
                 if(it == vars.end()) {
                         cout <<$1<<" : " ;
                         yyerror("Variable not defined");
-                        YYERROR;//stops parsing
+                        YYERROR;//stops parsing if variable not found
                         
                 }
-                else {tmp= it->second ;
-                $$=strdup(tmp.c_str());}
+                else {
+                        tmp= it->second ;
+                        $$=strdup(tmp.c_str());}
 
                 }
         ;
