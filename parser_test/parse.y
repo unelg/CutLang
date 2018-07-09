@@ -12,6 +12,7 @@ void yyerror(const char *s) { std::cout << s << std::endl; }
 double result;
 using namespace std;
 string tmp;
+int pnum;
 map<string,string> vars;
 %}
 %union {
@@ -49,54 +50,78 @@ input : definitions commands
 definitions : definitions definition
             | 
             ;
-definition : DEF ID ':' particules {
-                                         //string name = $2;
-                                         //string phrase= $4;
-                                         //vars.insert(make_pair(name,phrase));
+definition : DEF ID ':' vardef {
+                                         
+                                         string name = $2;
+                                         string phrase= $4;
+                                         vars.insert(make_pair(name,phrase));
+                                         cout<<"\nend "<<$4<<endl;
+                                         
 				}
-particules : particules particule 
+           ;
+vardef : particules {pnum=0;}
+       | function
+       ;
+function : '{' particules '}m' 
+particules : particules particule { 
+                                        if (pnum==0){
+                                                
+                                                $$=strdup($2);
+                                                pnum++;
+                                        }
+                                        else{
+                                                
+                                                char s [1024];
+                                                strcpy(s,$$); 
+                                                strcat(s," ");
+                                                strcat(s,$2);
+                                                strcpy($$,s);
+
+                                        }
+
+                                        free($2);
+
+                                        }
             | 
             ;
 particule : ELE '_' index {
                             //do something with name and index? Maybe put them in lists
-                            
-                            
+                                                        
                             tmp="ele_"+to_string((int)$3);                        
                             $$=strdup(tmp.c_str());
-                            std::cout<<$$<<std::endl;
-                            
+                                                        
                             }
         | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | BJET '_' index {       tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | QGJET '_' index {       tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         | METLV '_' index {       tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                std::cout<<$$<<std::endl;
+                                
                         }
         ;
 index : '-' INT {$$=-$2;}
