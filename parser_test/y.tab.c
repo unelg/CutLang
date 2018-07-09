@@ -125,6 +125,7 @@ void yyerror(const char *s) { std::cout << s << std::endl; }
 double result;
 using namespace std;
 string tmp;
+int pnum;
 map<string,string> vars;
 
 
@@ -148,13 +149,13 @@ map<string,string> vars;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 17 "parse.y"
+#line 18 "parse.y"
 {
 	double real;
 	char* s;
 }
 /* Line 193 of yacc.c.  */
-#line 158 "y.tab.c"
+#line 159 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -167,7 +168,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 171 "y.tab.c"
+#line 172 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -458,9 +459,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    47,    47,    49,    50,    52,    57,    58,    60,    69,
-      73,    77,    81,    85,    89,    93,    97,   102,   103,   105,
-     106,   108
+       0,    48,    48,    50,    51,    53,    61,    80,    82,    89,
+      93,    97,   101,   105,   109,   113,   117,   122,   123,   125,
+     126,   128
 };
 #endif
 
@@ -1384,104 +1385,128 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 52 "parse.y"
+#line 53 "parse.y"
     {
-                                         //string name = $2;
-                                         //string phrase= $4;
-                                         //vars.insert(make_pair(name,phrase));
+                                         
+                                         string name = (yyvsp[(2) - (4)].s);
+                                         string phrase= (yyvsp[(4) - (4)].s);
+                                         vars.insert(make_pair(name,phrase));
+                                         cout<<"\nend "<<(yyvsp[(4) - (4)].s)<<endl;
+                                         pnum=0;
 				}
     break;
 
+  case 6:
+#line 61 "parse.y"
+    { 
+                                        if (pnum==0){
+                                                
+                                                (yyval.s)=strdup((yyvsp[(2) - (2)].s));
+                                                pnum++;
+                                        }
+                                        else{
+                                                
+                                                char s [1024];
+                                                strcpy(s,(yyval.s)); // copy string one into the result.
+                                                strcat(s," ");
+                                                strcat(s,(yyvsp[(2) - (2)].s));
+                                                strcpy((yyval.s),s);
+
+                                        }
+
+                                        free((yyvsp[(2) - (2)].s));
+
+                                        }
+    break;
+
   case 8:
-#line 60 "parse.y"
+#line 82 "parse.y"
     {
                             //do something with name and index? Maybe put them in lists
-                            
-                            
+                                                        
                             tmp="ele_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                             (yyval.s)=strdup(tmp.c_str());
-                            std::cout<<(yyval.s)<<std::endl;
-                            
+                                                        
                             }
     break;
 
   case 9:
-#line 69 "parse.y"
+#line 89 "parse.y"
     {       tmp="muo_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 10:
-#line 73 "parse.y"
+#line 93 "parse.y"
     {       tmp="lep_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 11:
-#line 77 "parse.y"
+#line 97 "parse.y"
     {       tmp="pho_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 12:
-#line 81 "parse.y"
+#line 101 "parse.y"
     {       tmp="jet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 13:
-#line 85 "parse.y"
+#line 105 "parse.y"
     {       tmp="bjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 14:
-#line 89 "parse.y"
+#line 109 "parse.y"
     {       tmp="qgjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 15:
-#line 93 "parse.y"
+#line 113 "parse.y"
     {       tmp="numet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 16:
-#line 97 "parse.y"
+#line 117 "parse.y"
     {       tmp="metlv_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
-                                std::cout<<(yyval.s)<<std::endl;
+                                
                         }
     break;
 
   case 17:
-#line 102 "parse.y"
+#line 122 "parse.y"
     {(yyval.real)=-(yyvsp[(2) - (2)].real);}
     break;
 
   case 18:
-#line 103 "parse.y"
+#line 123 "parse.y"
     {(yyval.real)= (yyvsp[(1) - (1)].real);}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1485 "y.tab.c"
+#line 1510 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1695,7 +1720,7 @@ yyreturn:
 }
 
 
-#line 123 "parse.y"
+#line 143 "parse.y"
 
 int main(void) {
         yyparse(); 
