@@ -20,7 +20,7 @@ map<string,string> vars;
 	char* s;
 }
 %token DEF
-//%token <s> VARDEF
+%token <s> VARDEF
 %token CMD
 %token ELE
 %token MUO
@@ -31,6 +31,14 @@ map<string,string> vars;
 %token QGJET
 %token NUMET
 %token METLV
+%token PHI;
+%token ETA;
+%token ABSETA;
+%token PT;
+%token PZ;
+%token NBF;
+%token DR;
+%token DPHI;
 %token <real> NB
 %token <s> ID
 %token SIN
@@ -45,6 +53,8 @@ map<string,string> vars;
 %type <s> vardef
 %type <s> particule
 %type <s> particules
+%type <s> function
+//%type <s> secondHalf
 %%
 input : definitions commands
      ;
@@ -71,27 +81,106 @@ definition : DEF ID ':' vardef {
 				}
            ;
 vardef : particules {pnum=0;}
-       | function
+       | function { pnum=0;}
        ;
-function : '{' particules '}' 'm' ////////////////
+function : '{' particules '}' 'm' {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }m";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' 'q' {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }q";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' 'P' {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }P";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' 'E' {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }E";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' PHI {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }Phi";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' ETA {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }Eta";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' ABSETA {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }AbsEta";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' PT {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }Pt";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' PZ {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }Pz";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules '}' NBF {     
+                                        string s=$2;
+                                        tmp="{ "+s+" }ndf";                        
+                                        $$=strdup(tmp.c_str());
+
+                                }
+         | '{' particules ',' particules '}' DR {    //needs debugging 
+                                        pnum=0;
+                                        string s=$2;
+                                        string s2=$4;
+                                        s="{ "+s+" , "+s2+" }dR";                        
+                                        $$=strdup(s.c_str());
+                                        cout<<" hey : "<<s2<<endl;
+
+                                }
+        | '{' particules ',' particules '}' DPHI {     
+                                        pnum=0;
+                                        string s=$2;
+                                        string s2=$4;
+                                        s="{ "+s+" , "+s2+" }dPhi";                        
+                                        $$=strdup(s.c_str());
+                                        cout<<" hey : "<<s2<<endl;
+
+                                }
         ;
 particules : particules particule { 
+        
                                         if (pnum==0){
                                                 
                                                 $$=strdup($2);
                                                 pnum++;
+                                                cout<<" p0 : "<<$$<<endl;
                                         }
                                         else{
                                                 
-                                                char s [2048];
+                                                char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$2);
                                                 strcpy($$,s);
 
                                         }
-
-                                        free($2);
+                                        cout<<" p : "<<$$<<endl;
+                                        //free($2); MEMORY LEAK?
 
                                         }
             | 
