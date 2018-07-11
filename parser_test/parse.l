@@ -23,6 +23,14 @@ vardef {varname}" "?":"" "?.*"\n"
 "QGJET" return QGJET;
 "NUMET" return NUMET;
 "METLV" return METLV;
+"Phi" return PHI;
+"Eta" return ETA;
+"AbsEta" return ABSETA;
+"Pt" return PT;
+"Pz" return PZ;
+"nbf" return NBF;
+"dR" return DR;
+"dPhi" return DPHI;
 "#".*"\n" ;
 [ \t\n] ;
 [tT][aA][nN] return TAN;
@@ -30,6 +38,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][oO][sS] return COS;
 {integer} sscanf(yytext, "%lf",&yylval.real);return INT;//to test
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}_m] return *yytext;
+[-+*/()^:{}_mqPE,] return *yytext;
 [a-zA-Z]+{integer}? yylval.s=strdup(yytext);return ID;
 %%
