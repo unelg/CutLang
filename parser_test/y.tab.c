@@ -1600,7 +1600,7 @@ yyreduce:
                                                 
                                                 (yyval.s)=strdup((yyvsp[(2) - (2)].s));
                                                 pnum++;
-                                                cout<<" p0 : "<<(yyval.s)<<endl;
+                                                //cout<<" p0 : "<<$$<<endl;
                                         }
                                         else{
                                                 
@@ -1611,7 +1611,7 @@ yyreduce:
                                                 strcpy((yyval.s),s);
 
                                         }
-                                        cout<<" p : "<<(yyval.s)<<endl;
+                                        //cout<<" p : "<<$$<<endl;
                                         //free($2); MEMORY LEAK?
 
                                         }
