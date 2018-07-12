@@ -31,14 +31,14 @@ map<string,string> vars;
 %token QGJET
 %token NUMET
 %token METLV
-%token PHI;
-%token ETA;
-%token ABSETA;
-%token PT;
-%token PZ;
-%token NBF;
-%token DR;
-%token DPHI;
+%token PHI
+%token ETA
+%token ABSETA
+%token PT
+%token PZ
+%token NBF
+%token DR
+%token DPHI
 %token <real> NB
 %token <s> ID
 %token SIN
@@ -168,7 +168,7 @@ particules : particules particule {
                                                 
                                                 $$=strdup($2);
                                                 pnum++;
-                                                cout<<" p0 : "<<$$<<endl;
+                                                //cout<<" p0 : "<<$$<<endl;
                                         }
                                         else{
                                                 
@@ -179,7 +179,7 @@ particules : particules particule {
                                                 strcpy($$,s);
 
                                         }
-                                        cout<<" p : "<<$$<<endl;
+                                        //cout<<" p : "<<$$<<endl;
                                         //free($2); MEMORY LEAK?
 
                                         }
