@@ -14,6 +14,7 @@ using namespace std;
 string tmp;
 int pnum;
 map<string,string> vars;
+map<string,string> parts;
 %}
 %union {
 	double real;
@@ -56,15 +57,33 @@ map<string,string> vars;
 %right Unary
 %right '^'
 %type <real> index
-%type <s> vardef particule particules list function e
+%type <s> particule particules list function e
 %%
 input : definitions commands 
      ;
 definitions : definitions definition 
             | 
             ;
-definition : DEF ID ':' vardef {
+definition : DEF ID ':' particules {
+                                        pnum=0;
+                                        map<string, string>::iterator it ;
+                                        string name = $2;
+                                        it = parts.find(name);
+                        
+                                        if(it != parts.end()) {
+                                                cout <<name<<" : " ;
+                                                yyerror("Particule already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                                
+                                        }
                                          
+                                         string phrase= $4;
+                                         parts.insert(make_pair(name,phrase));
+                                         cout<<"\ndef "<<$2<<":"<<$4<<endl;
+                                         
+				}
+            | DEF ID ':' e {
+                                        pnum=0;
                                         map<string, string>::iterator it ;
                                         string name = $2;
                                         it = vars.find(name);
@@ -78,13 +97,10 @@ definition : DEF ID ':' vardef {
                                          
                                          string phrase= $4;
                                          vars.insert(make_pair(name,phrase));
-                                         cout<<"\nend "<<$4<<endl;
+                                         cout<<"\ndef "<<$2<<":"<<$4<<endl;
                                          
 				}
-           ;
-vardef : particules {pnum=0;}
-       | e {pnum=0;}
-       ;
+        ;
 function : '{' particules '}' 'm' {     
                                         string s=$2;
                                         tmp="{ "+s+" }m";                        
@@ -145,13 +161,13 @@ function : '{' particules '}' 'm' {
                                         $$=strdup(tmp.c_str());
 
                                 }
-         | list DR {    //needs debugging 
+         | list DR {     
                                         
                                         string s=$1;                                       
                                         s=s+"dR";                        
                                         $$=strdup(s.c_str());
                                 }
-        | list DPHI {    //needs debugging 
+        | list DPHI {    
                                         
                                         string s=$1;                                       
                                         s=s+"dPhi";                        
@@ -227,11 +243,11 @@ particule : ELE '_' index {
                         }
         | ID { //we want the original defintions as well
                 map<string, string>::iterator it ;
-                it = vars.find($1);
+                it = parts.find($1);
      
-                if(it == vars.end()) {
+                if(it == parts.end()) {
                         cout <<$1<<" : " ;
-                        yyerror("Variable not defined");
+                        yyerror("Particule not defined");
                         YYERROR;//stops parsing if variable not found
                         
                 }
@@ -293,24 +309,44 @@ e : e '+' e  { string s1=$1; string s3=$3;
    | NB { tmp=to_string($1); $$=strdup(tmp.c_str()); } 
    | INT { tmp=to_string((int)$1); $$=strdup(tmp.c_str()); } 
    | function {$$=$1; pnum=0;}
-   ;
-   // !!!!!!!!make the difference between ID + ID and ID ID in particules!!!!!!!!!!!
-//    | ID { //we want the original defintions as well
-//                 map<string, string>::iterator it ;
-//                 it = vars.find($1);
+   // !!!!!!!!make the difference between ID + ID and ID ID in particules!!!!!!!!!!!->create two maps
+   | ID { //we want the original defintions as well
+                map<string, string>::iterator it ;
+                it = vars.find($1);
      
-//                 if(it == vars.end()) {
-//                         cout <<$1<<" : " ;
-//                         yyerror("Variable not defined");
-//                         YYERROR;//stops parsing if variable not found
+                if(it == vars.end()) {
+                        cout <<$1<<" : " ;
+                        yyerror("Variable not defined");
+                        YYERROR;//stops parsing if variable not found
                         
-//                 }
-//                 else {
-//                         tmp= it->second ;
-//                         $$=strdup(tmp.c_str());
-//                 }
-//                }
-//    ;
+                }
+                else {
+                        tmp= it->second ;
+                        $$=strdup(tmp.c_str());
+                }
+               }
+   ;
+%%
+int main(void) {
+        yyparse(); 
+        cout<<"\n Variables results: \n";
+	std::map<std::string, string>::iterator it = vars.begin();
+        while(it != vars.end())
+        {
+                std::cout<<it->first<<" :: "<<it->second<<std::endl;
+                it++;
+        }
+        cout<<"\n Particles results: \n";
+	 it = parts.begin();
+        while(it != parts.end())
+        {
+                std::cout<<it->first<<" :: "<<it->second<<std::endl;
+                it++;
+        }
+	
+			
+                }
+                //calculator
 // e : e '+' e  { $$ = $1 + $3 ;string s=$2;
 //                                         tmp="{ "+s+" }m";                        
 //                                         $$=strdup(tmp.c_str()); }
@@ -327,16 +363,3 @@ e : e '+' e  { string s1=$1; string s3=$3;
 //    | INT { $$ = $1 ;}	
 //    | function 
 //    ;
-%%
-int main(void) {
-        yyparse(); 
-        cout<<"\n results: \n";
-	std::map<std::string, string>::iterator it = vars.begin();
-        while(it != vars.end())
-        {
-                std::cout<<it->first<<" :: "<<it->second<<std::endl;
-                it++;
-        }
-	//std::cout <<"Main Result: " <<result << std::endl;
-			
-                }

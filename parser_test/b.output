@@ -1,3 +1,6 @@
+State 21 conflicts: 3 reduce/reduce
+
+
 Grammar
 
     0 $accept: input $end
@@ -7,110 +10,109 @@ Grammar
     2 definitions: definitions definition
     3            | /* empty */
 
-    4 definition: DEF ID ':' vardef
+    4 definition: DEF ID ':' particules
+    5           | DEF ID ':' e
 
-    5 vardef: particules
-    6       | e
+    6 function: '{' particules '}' 'm'
+    7         | '{' particules '}' 'q'
+    8         | '{' particules '}' 'P'
+    9         | '{' particules '}' 'E'
+   10         | '{' particules '}' PHI
+   11         | '{' particules '}' ETA
+   12         | '{' particules '}' ABSETA
+   13         | '{' particules '}' PT
+   14         | '{' particules '}' PZ
+   15         | '{' particules '}' NBF
+   16         | list DR
+   17         | list DPHI
 
-    7 function: '{' particules '}' 'm'
-    8         | '{' particules '}' 'q'
-    9         | '{' particules '}' 'P'
-   10         | '{' particules '}' 'E'
-   11         | '{' particules '}' PHI
-   12         | '{' particules '}' ETA
-   13         | '{' particules '}' ABSETA
-   14         | '{' particules '}' PT
-   15         | '{' particules '}' PZ
-   16         | '{' particules '}' NBF
-   17         | list DR
-   18         | list DPHI
+   18 @1: /* empty */
 
-   19 @1: /* empty */
+   19 list: '{' particules @1 ',' particules '}'
 
-   20 list: '{' particules @1 ',' particules '}'
+   20 particules: particules particule
+   21           | particule
 
-   21 particules: particules particule
-   22           | particule
+   22 particule: ELE '_' index
+   23          | MUO '_' index
+   24          | LEP '_' index
+   25          | PHO '_' index
+   26          | JET '_' index
+   27          | BJET '_' index
+   28          | QGJET '_' index
+   29          | NUMET '_' index
+   30          | METLV '_' index
+   31          | ID
 
-   23 particule: ELE '_' index
-   24          | MUO '_' index
-   25          | LEP '_' index
-   26          | PHO '_' index
-   27          | JET '_' index
-   28          | BJET '_' index
-   29          | QGJET '_' index
-   30          | NUMET '_' index
-   31          | METLV '_' index
-   32          | ID
+   32 index: '-' INT
+   33      | INT
 
-   33 index: '-' INT
-   34      | INT
+   34 commands: commands command
+   35         | /* empty */
 
-   35 commands: commands command
-   36         | /* empty */
+   36 command: CMD
 
-   37 command: CMD
-
-   38 e: e '+' e
-   39  | e '-' e
-   40  | e '*' e
-   41  | e '/' e
-   42  | e '^' e
-   43  | '-' e
-   44  | COS '(' e ')'
-   45  | SIN '(' e ')'
-   46  | TAN '(' e ')'
-   47  | '(' e ')'
-   48  | NB
-   49  | INT
-   50  | function
+   37 e: e '+' e
+   38  | e '-' e
+   39  | e '*' e
+   40  | e '/' e
+   41  | e '^' e
+   42  | '-' e
+   43  | COS '(' e ')'
+   44  | SIN '(' e ')'
+   45  | TAN '(' e ')'
+   46  | '(' e ')'
+   47  | NB
+   48  | INT
+   49  | function
+   50  | ID
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 44 45 46 47
-')' (41) 44 45 46 47
-'*' (42) 40
-'+' (43) 38
-',' (44) 20
-'-' (45) 33 39 43
-'/' (47) 41
-':' (58) 4
-'E' (69) 10
-'P' (80) 9
-'^' (94) 42
-'_' (95) 23 24 25 26 27 28 29 30 31
-'m' (109) 7
-'q' (113) 8
-'{' (123) 7 8 9 10 11 12 13 14 15 16 20
-'}' (125) 7 8 9 10 11 12 13 14 15 16 20
+'(' (40) 43 44 45 46
+')' (41) 43 44 45 46
+'*' (42) 39
+'+' (43) 37
+',' (44) 19
+'-' (45) 32 38 42
+'/' (47) 40
+':' (58) 4 5
+'E' (69) 9
+'P' (80) 8
+'^' (94) 41
+'_' (95) 22 23 24 25 26 27 28 29 30
+'m' (109) 6
+'q' (113) 7
+'{' (123) 6 7 8 9 10 11 12 13 14 15 19
+'}' (125) 6 7 8 9 10 11 12 13 14 15 19
 error (256)
-DEF (258) 4
-CMD (259) 37
-ELE (260) 23
-MUO (261) 24
-LEP (262) 25
-PHO (263) 26
-JET (264) 27
-BJET (265) 28
-QGJET (266) 29
-NUMET (267) 30
-METLV (268) 31
-PHI (269) 11
-ETA (270) 12
-ABSETA (271) 13
-PT (272) 14
-PZ (273) 15
-NBF (274) 16
-DR (275) 17
-DPHI (276) 18
-NB (277) 48
-ID (278) 4 32
-SIN (279) 45
-COS (280) 44
-TAN (281) 46
-INT (282) 33 34 49
+DEF (258) 4 5
+CMD (259) 36
+ELE (260) 22
+MUO (261) 23
+LEP (262) 24
+PHO (263) 25
+JET (264) 26
+BJET (265) 27
+QGJET (266) 28
+NUMET (267) 29
+METLV (268) 30
+PHI (269) 10
+ETA (270) 11
+ABSETA (271) 12
+PT (272) 13
+PZ (273) 14
+NBF (274) 15
+DR (275) 16
+DPHI (276) 17
+NB (277) 47
+ID (278) 4 5 31 50
+SIN (279) 44
+COS (280) 43
+TAN (281) 45
+INT (282) 32 33 48
 Unary (283)
 
 
@@ -123,28 +125,26 @@ input (46)
 definitions (47)
     on left: 2 3, on right: 1 2
 definition (48)
-    on left: 4, on right: 2
-vardef (49)
-    on left: 5 6, on right: 4
-function (50)
-    on left: 7 8 9 10 11 12 13 14 15 16 17 18, on right: 50
-list (51)
-    on left: 20, on right: 17 18
-@1 (52)
-    on left: 19, on right: 20
-particules (53)
-    on left: 21 22, on right: 5 7 8 9 10 11 12 13 14 15 16 20 21
-particule (54)
-    on left: 23 24 25 26 27 28 29 30 31 32, on right: 21 22
-index (55)
-    on left: 33 34, on right: 23 24 25 26 27 28 29 30 31
-commands (56)
-    on left: 35 36, on right: 1 35
-command (57)
-    on left: 37, on right: 35
-e (58)
-    on left: 38 39 40 41 42 43 44 45 46 47 48 49 50,
-    on right: 6 38 39 40 41 42 43 44 45 46 47
+    on left: 4 5, on right: 2
+function (49)
+    on left: 6 7 8 9 10 11 12 13 14 15 16 17, on right: 49
+list (50)
+    on left: 19, on right: 16 17
+@1 (51)
+    on left: 18, on right: 19
+particules (52)
+    on left: 20 21, on right: 4 6 7 8 9 10 11 12 13 14 15 19 20
+particule (53)
+    on left: 22 23 24 25 26 27 28 29 30 31, on right: 20 21
+index (54)
+    on left: 32 33, on right: 22 23 24 25 26 27 28 29 30
+commands (55)
+    on left: 34 35, on right: 1 34
+command (56)
+    on left: 36, on right: 34
+e (57)
+    on left: 37 38 39 40 41 42 43 44 45 46 47 48 49 50,
+    on right: 5 37 38 39 40 41 42 43 44 45 46
 
 
 state 0
@@ -171,7 +171,7 @@ state 2
 
     DEF  shift, and go to state 4
 
-    $default  reduce using rule 36 (commands)
+    $default  reduce using rule 35 (commands)
 
     definition  go to state 5
     commands    go to state 6
@@ -186,7 +186,8 @@ state 3
 
 state 4
 
-    4 definition: DEF . ID ':' vardef
+    4 definition: DEF . ID ':' particules
+    5           | DEF . ID ':' e
 
     ID  shift, and go to state 7
 
@@ -201,7 +202,7 @@ state 5
 state 6
 
     1 input: definitions commands .
-   35 commands: commands . command
+   34 commands: commands . command
 
     CMD  shift, and go to state 8
 
@@ -212,28 +213,30 @@ state 6
 
 state 7
 
-    4 definition: DEF ID . ':' vardef
+    4 definition: DEF ID . ':' particules
+    5           | DEF ID . ':' e
 
     ':'  shift, and go to state 10
 
 
 state 8
 
-   37 command: CMD .
+   36 command: CMD .
 
-    $default  reduce using rule 37 (command)
+    $default  reduce using rule 36 (command)
 
 
 state 9
 
-   35 commands: commands command .
+   34 commands: commands command .
 
-    $default  reduce using rule 35 (commands)
+    $default  reduce using rule 34 (commands)
 
 
 state 10
 
-    4 definition: DEF ID ':' . vardef
+    4 definition: DEF ID ':' . particules
+    5           | DEF ID ':' . e
 
     ELE    shift, and go to state 11
     MUO    shift, and go to state 12
@@ -254,124 +257,136 @@ state 10
     '{'    shift, and go to state 27
     '('    shift, and go to state 28
 
-    vardef      go to state 29
-    function    go to state 30
-    list        go to state 31
-    particules  go to state 32
-    particule   go to state 33
-    e           go to state 34
+    function    go to state 29
+    list        go to state 30
+    particules  go to state 31
+    particule   go to state 32
+    e           go to state 33
 
 
 state 11
 
-   23 particule: ELE . '_' index
+   22 particule: ELE . '_' index
 
-    '_'  shift, and go to state 35
+    '_'  shift, and go to state 34
 
 
 state 12
 
-   24 particule: MUO . '_' index
+   23 particule: MUO . '_' index
 
-    '_'  shift, and go to state 36
+    '_'  shift, and go to state 35
 
 
 state 13
 
-   25 particule: LEP . '_' index
+   24 particule: LEP . '_' index
 
-    '_'  shift, and go to state 37
+    '_'  shift, and go to state 36
 
 
 state 14
 
-   26 particule: PHO . '_' index
+   25 particule: PHO . '_' index
 
-    '_'  shift, and go to state 38
+    '_'  shift, and go to state 37
 
 
 state 15
 
-   27 particule: JET . '_' index
+   26 particule: JET . '_' index
 
-    '_'  shift, and go to state 39
+    '_'  shift, and go to state 38
 
 
 state 16
 
-   28 particule: BJET . '_' index
+   27 particule: BJET . '_' index
 
-    '_'  shift, and go to state 40
+    '_'  shift, and go to state 39
 
 
 state 17
 
-   29 particule: QGJET . '_' index
+   28 particule: QGJET . '_' index
 
-    '_'  shift, and go to state 41
+    '_'  shift, and go to state 40
 
 
 state 18
 
-   30 particule: NUMET . '_' index
+   29 particule: NUMET . '_' index
 
-    '_'  shift, and go to state 42
+    '_'  shift, and go to state 41
 
 
 state 19
 
-   31 particule: METLV . '_' index
+   30 particule: METLV . '_' index
 
-    '_'  shift, and go to state 43
+    '_'  shift, and go to state 42
 
 
 state 20
 
-   48 e: NB .
+   47 e: NB .
 
-    $default  reduce using rule 48 (e)
+    $default  reduce using rule 47 (e)
 
 
 state 21
 
-   32 particule: ID .
+   31 particule: ID .
+   50 e: ID .
 
-    $default  reduce using rule 32 (particule)
+    $end      reduce using rule 31 (particule)
+    $end      [reduce using rule 50 (e)]
+    DEF       reduce using rule 31 (particule)
+    DEF       [reduce using rule 50 (e)]
+    CMD       reduce using rule 31 (particule)
+    CMD       [reduce using rule 50 (e)]
+    '+'       reduce using rule 50 (e)
+    '-'       reduce using rule 50 (e)
+    '*'       reduce using rule 50 (e)
+    '/'       reduce using rule 50 (e)
+    '^'       reduce using rule 50 (e)
+    $default  reduce using rule 31 (particule)
 
 
 state 22
 
-   45 e: SIN . '(' e ')'
+   44 e: SIN . '(' e ')'
 
-    '('  shift, and go to state 44
+    '('  shift, and go to state 43
 
 
 state 23
 
-   44 e: COS . '(' e ')'
+   43 e: COS . '(' e ')'
 
-    '('  shift, and go to state 45
+    '('  shift, and go to state 44
 
 
 state 24
 
-   46 e: TAN . '(' e ')'
+   45 e: TAN . '(' e ')'
 
-    '('  shift, and go to state 46
+    '('  shift, and go to state 45
 
 
 state 25
 
-   49 e: INT .
+   48 e: INT .
 
-    $default  reduce using rule 49 (e)
+    $default  reduce using rule 48 (e)
 
 
 state 26
 
-   43 e: '-' . e
+   42 e: '-' . e
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -380,24 +395,24 @@ state 26
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
+    function  go to state 29
+    list      go to state 30
     e         go to state 47
 
 
 state 27
 
-    7 function: '{' . particules '}' 'm'
-    8         | '{' . particules '}' 'q'
-    9         | '{' . particules '}' 'P'
-   10         | '{' . particules '}' 'E'
-   11         | '{' . particules '}' PHI
-   12         | '{' . particules '}' ETA
-   13         | '{' . particules '}' ABSETA
-   14         | '{' . particules '}' PT
-   15         | '{' . particules '}' PZ
-   16         | '{' . particules '}' NBF
-   20 list: '{' . particules @1 ',' particules '}'
+    6 function: '{' . particules '}' 'm'
+    7         | '{' . particules '}' 'q'
+    8         | '{' . particules '}' 'P'
+    9         | '{' . particules '}' 'E'
+   10         | '{' . particules '}' PHI
+   11         | '{' . particules '}' ETA
+   12         | '{' . particules '}' ABSETA
+   13         | '{' . particules '}' PT
+   14         | '{' . particules '}' PZ
+   15         | '{' . particules '}' NBF
+   19 list: '{' . particules @1 ',' particules '}'
 
     ELE    shift, and go to state 11
     MUO    shift, and go to state 12
@@ -408,17 +423,18 @@ state 27
     QGJET  shift, and go to state 17
     NUMET  shift, and go to state 18
     METLV  shift, and go to state 19
-    ID     shift, and go to state 21
+    ID     shift, and go to state 48
 
-    particules  go to state 48
-    particule   go to state 33
+    particules  go to state 49
+    particule   go to state 32
 
 
 state 28
 
-   47 e: '(' . e ')'
+   46 e: '(' . e ')'
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -427,314 +443,169 @@ state 28
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
-    e         go to state 49
+    function  go to state 29
+    list      go to state 30
+    e         go to state 50
 
 
 state 29
 
-    4 definition: DEF ID ':' vardef .
+   49 e: function .
 
-    $default  reduce using rule 4 (definition)
+    $default  reduce using rule 49 (e)
 
 
 state 30
 
-   50 e: function .
+   16 function: list . DR
+   17         | list . DPHI
 
-    $default  reduce using rule 50 (e)
+    DR    shift, and go to state 51
+    DPHI  shift, and go to state 52
 
 
 state 31
 
-   17 function: list . DR
-   18         | list . DPHI
+    4 definition: DEF ID ':' particules .
+   20 particules: particules . particule
 
-    DR    shift, and go to state 50
-    DPHI  shift, and go to state 51
+    ELE    shift, and go to state 11
+    MUO    shift, and go to state 12
+    LEP    shift, and go to state 13
+    PHO    shift, and go to state 14
+    JET    shift, and go to state 15
+    BJET   shift, and go to state 16
+    QGJET  shift, and go to state 17
+    NUMET  shift, and go to state 18
+    METLV  shift, and go to state 19
+    ID     shift, and go to state 48
+
+    $default  reduce using rule 4 (definition)
+
+    particule  go to state 53
 
 
 state 32
 
-    5 vardef: particules .
-   21 particules: particules . particule
-
-    ELE    shift, and go to state 11
-    MUO    shift, and go to state 12
-    LEP    shift, and go to state 13
-    PHO    shift, and go to state 14
-    JET    shift, and go to state 15
-    BJET   shift, and go to state 16
-    QGJET  shift, and go to state 17
-    NUMET  shift, and go to state 18
-    METLV  shift, and go to state 19
-    ID     shift, and go to state 21
-
-    $default  reduce using rule 5 (vardef)
-
-    particule  go to state 52
-
-
-state 33
-
-   22 particules: particule .
-
-    $default  reduce using rule 22 (particules)
-
-
-state 34
-
-    6 vardef: e .
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-
-    '+'  shift, and go to state 53
-    '-'  shift, and go to state 54
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
-
-    $default  reduce using rule 6 (vardef)
-
-
-state 35
-
-   23 particule: ELE '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 60
-
-
-state 36
-
-   24 particule: MUO '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 61
-
-
-state 37
-
-   25 particule: LEP '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 62
-
-
-state 38
-
-   26 particule: PHO '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 63
-
-
-state 39
-
-   27 particule: JET '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 64
-
-
-state 40
-
-   28 particule: BJET '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 65
-
-
-state 41
-
-   29 particule: QGJET '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 66
-
-
-state 42
-
-   30 particule: NUMET '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 67
-
-
-state 43
-
-   31 particule: METLV '_' . index
-
-    INT  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    index  go to state 68
-
-
-state 44
-
-   45 e: SIN '(' . e ')'
-
-    NB   shift, and go to state 20
-    SIN  shift, and go to state 22
-    COS  shift, and go to state 23
-    TAN  shift, and go to state 24
-    INT  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '{'  shift, and go to state 27
-    '('  shift, and go to state 28
-
-    function  go to state 30
-    list      go to state 31
-    e         go to state 69
-
-
-state 45
-
-   44 e: COS '(' . e ')'
-
-    NB   shift, and go to state 20
-    SIN  shift, and go to state 22
-    COS  shift, and go to state 23
-    TAN  shift, and go to state 24
-    INT  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '{'  shift, and go to state 27
-    '('  shift, and go to state 28
-
-    function  go to state 30
-    list      go to state 31
-    e         go to state 70
-
-
-state 46
-
-   46 e: TAN '(' . e ')'
-
-    NB   shift, and go to state 20
-    SIN  shift, and go to state 22
-    COS  shift, and go to state 23
-    TAN  shift, and go to state 24
-    INT  shift, and go to state 25
-    '-'  shift, and go to state 26
-    '{'  shift, and go to state 27
-    '('  shift, and go to state 28
-
-    function  go to state 30
-    list      go to state 31
-    e         go to state 71
-
-
-state 47
-
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   43  | '-' e .
-
-    '^'  shift, and go to state 57
-
-    $default  reduce using rule 43 (e)
-
-
-state 48
-
-    7 function: '{' particules . '}' 'm'
-    8         | '{' particules . '}' 'q'
-    9         | '{' particules . '}' 'P'
-   10         | '{' particules . '}' 'E'
-   11         | '{' particules . '}' PHI
-   12         | '{' particules . '}' ETA
-   13         | '{' particules . '}' ABSETA
-   14         | '{' particules . '}' PT
-   15         | '{' particules . '}' PZ
-   16         | '{' particules . '}' NBF
-   20 list: '{' particules . @1 ',' particules '}'
-   21 particules: particules . particule
-
-    ELE    shift, and go to state 11
-    MUO    shift, and go to state 12
-    LEP    shift, and go to state 13
-    PHO    shift, and go to state 14
-    JET    shift, and go to state 15
-    BJET   shift, and go to state 16
-    QGJET  shift, and go to state 17
-    NUMET  shift, and go to state 18
-    METLV  shift, and go to state 19
-    ID     shift, and go to state 21
-    '}'    shift, and go to state 72
-
-    $default  reduce using rule 19 (@1)
-
-    @1         go to state 73
-    particule  go to state 52
-
-
-state 49
-
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   47  | '(' e . ')'
-
-    '+'  shift, and go to state 53
-    '-'  shift, and go to state 54
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
-    ')'  shift, and go to state 74
-
-
-state 50
-
-   17 function: list DR .
-
-    $default  reduce using rule 17 (function)
-
-
-state 51
-
-   18 function: list DPHI .
-
-    $default  reduce using rule 18 (function)
-
-
-state 52
-
-   21 particules: particules particule .
+   21 particules: particule .
 
     $default  reduce using rule 21 (particules)
 
 
-state 53
+state 33
 
-   38 e: e '+' . e
+    5 definition: DEF ID ':' e .
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
+
+    $default  reduce using rule 5 (definition)
+
+
+state 34
+
+   22 particule: ELE '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 61
+
+
+state 35
+
+   23 particule: MUO '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 62
+
+
+state 36
+
+   24 particule: LEP '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 63
+
+
+state 37
+
+   25 particule: PHO '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 64
+
+
+state 38
+
+   26 particule: JET '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 65
+
+
+state 39
+
+   27 particule: BJET '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 66
+
+
+state 40
+
+   28 particule: QGJET '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 67
+
+
+state 41
+
+   29 particule: NUMET '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 68
+
+
+state 42
+
+   30 particule: METLV '_' . index
+
+    INT  shift, and go to state 59
+    '-'  shift, and go to state 60
+
+    index  go to state 69
+
+
+state 43
+
+   44 e: SIN '(' . e ')'
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -743,16 +614,154 @@ state 53
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
-    e         go to state 75
+    function  go to state 29
+    list      go to state 30
+    e         go to state 70
+
+
+state 44
+
+   43 e: COS '(' . e ')'
+
+    NB   shift, and go to state 20
+    ID   shift, and go to state 46
+    SIN  shift, and go to state 22
+    COS  shift, and go to state 23
+    TAN  shift, and go to state 24
+    INT  shift, and go to state 25
+    '-'  shift, and go to state 26
+    '{'  shift, and go to state 27
+    '('  shift, and go to state 28
+
+    function  go to state 29
+    list      go to state 30
+    e         go to state 71
+
+
+state 45
+
+   45 e: TAN '(' . e ')'
+
+    NB   shift, and go to state 20
+    ID   shift, and go to state 46
+    SIN  shift, and go to state 22
+    COS  shift, and go to state 23
+    TAN  shift, and go to state 24
+    INT  shift, and go to state 25
+    '-'  shift, and go to state 26
+    '{'  shift, and go to state 27
+    '('  shift, and go to state 28
+
+    function  go to state 29
+    list      go to state 30
+    e         go to state 72
+
+
+state 46
+
+   50 e: ID .
+
+    $default  reduce using rule 50 (e)
+
+
+state 47
+
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   42  | '-' e .
+
+    '^'  shift, and go to state 58
+
+    $default  reduce using rule 42 (e)
+
+
+state 48
+
+   31 particule: ID .
+
+    $default  reduce using rule 31 (particule)
+
+
+state 49
+
+    6 function: '{' particules . '}' 'm'
+    7         | '{' particules . '}' 'q'
+    8         | '{' particules . '}' 'P'
+    9         | '{' particules . '}' 'E'
+   10         | '{' particules . '}' PHI
+   11         | '{' particules . '}' ETA
+   12         | '{' particules . '}' ABSETA
+   13         | '{' particules . '}' PT
+   14         | '{' particules . '}' PZ
+   15         | '{' particules . '}' NBF
+   19 list: '{' particules . @1 ',' particules '}'
+   20 particules: particules . particule
+
+    ELE    shift, and go to state 11
+    MUO    shift, and go to state 12
+    LEP    shift, and go to state 13
+    PHO    shift, and go to state 14
+    JET    shift, and go to state 15
+    BJET   shift, and go to state 16
+    QGJET  shift, and go to state 17
+    NUMET  shift, and go to state 18
+    METLV  shift, and go to state 19
+    ID     shift, and go to state 48
+    '}'    shift, and go to state 73
+
+    $default  reduce using rule 18 (@1)
+
+    @1         go to state 74
+    particule  go to state 53
+
+
+state 50
+
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   46  | '(' e . ')'
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
+    ')'  shift, and go to state 75
+
+
+state 51
+
+   16 function: list DR .
+
+    $default  reduce using rule 16 (function)
+
+
+state 52
+
+   17 function: list DPHI .
+
+    $default  reduce using rule 17 (function)
+
+
+state 53
+
+   20 particules: particules particule .
+
+    $default  reduce using rule 20 (particules)
 
 
 state 54
 
-   39 e: e '-' . e
+   37 e: e '+' . e
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -761,16 +770,17 @@ state 54
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
+    function  go to state 29
+    list      go to state 30
     e         go to state 76
 
 
 state 55
 
-   40 e: e '*' . e
+   38 e: e '-' . e
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -779,16 +789,17 @@ state 55
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
+    function  go to state 29
+    list      go to state 30
     e         go to state 77
 
 
 state 56
 
-   41 e: e '/' . e
+   39 e: e '*' . e
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -797,16 +808,17 @@ state 56
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
+    function  go to state 29
+    list      go to state 30
     e         go to state 78
 
 
 state 57
 
-   42 e: e '^' . e
+   40 e: e '/' . e
 
     NB   shift, and go to state 20
+    ID   shift, and go to state 46
     SIN  shift, and go to state 22
     COS  shift, and go to state 23
     TAN  shift, and go to state 24
@@ -815,373 +827,372 @@ state 57
     '{'  shift, and go to state 27
     '('  shift, and go to state 28
 
-    function  go to state 30
-    list      go to state 31
+    function  go to state 29
+    list      go to state 30
     e         go to state 79
 
 
 state 58
 
-   34 index: INT .
+   41 e: e '^' . e
 
-    $default  reduce using rule 34 (index)
+    NB   shift, and go to state 20
+    ID   shift, and go to state 46
+    SIN  shift, and go to state 22
+    COS  shift, and go to state 23
+    TAN  shift, and go to state 24
+    INT  shift, and go to state 25
+    '-'  shift, and go to state 26
+    '{'  shift, and go to state 27
+    '('  shift, and go to state 28
+
+    function  go to state 29
+    list      go to state 30
+    e         go to state 80
 
 
 state 59
 
-   33 index: '-' . INT
+   33 index: INT .
 
-    INT  shift, and go to state 80
+    $default  reduce using rule 33 (index)
 
 
 state 60
 
-   23 particule: ELE '_' index .
+   32 index: '-' . INT
 
-    $default  reduce using rule 23 (particule)
+    INT  shift, and go to state 81
 
 
 state 61
 
-   24 particule: MUO '_' index .
+   22 particule: ELE '_' index .
 
-    $default  reduce using rule 24 (particule)
+    $default  reduce using rule 22 (particule)
 
 
 state 62
 
-   25 particule: LEP '_' index .
+   23 particule: MUO '_' index .
 
-    $default  reduce using rule 25 (particule)
+    $default  reduce using rule 23 (particule)
 
 
 state 63
 
-   26 particule: PHO '_' index .
+   24 particule: LEP '_' index .
 
-    $default  reduce using rule 26 (particule)
+    $default  reduce using rule 24 (particule)
 
 
 state 64
 
-   27 particule: JET '_' index .
+   25 particule: PHO '_' index .
 
-    $default  reduce using rule 27 (particule)
+    $default  reduce using rule 25 (particule)
 
 
 state 65
 
-   28 particule: BJET '_' index .
+   26 particule: JET '_' index .
 
-    $default  reduce using rule 28 (particule)
+    $default  reduce using rule 26 (particule)
 
 
 state 66
 
-   29 particule: QGJET '_' index .
+   27 particule: BJET '_' index .
 
-    $default  reduce using rule 29 (particule)
+    $default  reduce using rule 27 (particule)
 
 
 state 67
 
-   30 particule: NUMET '_' index .
+   28 particule: QGJET '_' index .
 
-    $default  reduce using rule 30 (particule)
+    $default  reduce using rule 28 (particule)
 
 
 state 68
 
-   31 particule: METLV '_' index .
+   29 particule: NUMET '_' index .
 
-    $default  reduce using rule 31 (particule)
+    $default  reduce using rule 29 (particule)
 
 
 state 69
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   45  | SIN '(' e . ')'
+   30 particule: METLV '_' index .
 
-    '+'  shift, and go to state 53
-    '-'  shift, and go to state 54
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
-    ')'  shift, and go to state 81
+    $default  reduce using rule 30 (particule)
 
 
 state 70
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   44  | COS '(' e . ')'
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   44  | SIN '(' e . ')'
 
-    '+'  shift, and go to state 53
-    '-'  shift, and go to state 54
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
     ')'  shift, and go to state 82
 
 
 state 71
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   46  | TAN '(' e . ')'
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   43  | COS '(' e . ')'
 
-    '+'  shift, and go to state 53
-    '-'  shift, and go to state 54
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
     ')'  shift, and go to state 83
 
 
 state 72
 
-    7 function: '{' particules '}' . 'm'
-    8         | '{' particules '}' . 'q'
-    9         | '{' particules '}' . 'P'
-   10         | '{' particules '}' . 'E'
-   11         | '{' particules '}' . PHI
-   12         | '{' particules '}' . ETA
-   13         | '{' particules '}' . ABSETA
-   14         | '{' particules '}' . PT
-   15         | '{' particules '}' . PZ
-   16         | '{' particules '}' . NBF
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   45  | TAN '(' e . ')'
 
-    PHI     shift, and go to state 84
-    ETA     shift, and go to state 85
-    ABSETA  shift, and go to state 86
-    PT      shift, and go to state 87
-    PZ      shift, and go to state 88
-    NBF     shift, and go to state 89
-    'm'     shift, and go to state 90
-    'q'     shift, and go to state 91
-    'P'     shift, and go to state 92
-    'E'     shift, and go to state 93
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
+    ')'  shift, and go to state 84
 
 
 state 73
 
-   20 list: '{' particules @1 . ',' particules '}'
+    6 function: '{' particules '}' . 'm'
+    7         | '{' particules '}' . 'q'
+    8         | '{' particules '}' . 'P'
+    9         | '{' particules '}' . 'E'
+   10         | '{' particules '}' . PHI
+   11         | '{' particules '}' . ETA
+   12         | '{' particules '}' . ABSETA
+   13         | '{' particules '}' . PT
+   14         | '{' particules '}' . PZ
+   15         | '{' particules '}' . NBF
 
-    ','  shift, and go to state 94
+    PHI     shift, and go to state 85
+    ETA     shift, and go to state 86
+    ABSETA  shift, and go to state 87
+    PT      shift, and go to state 88
+    PZ      shift, and go to state 89
+    NBF     shift, and go to state 90
+    'm'     shift, and go to state 91
+    'q'     shift, and go to state 92
+    'P'     shift, and go to state 93
+    'E'     shift, and go to state 94
 
 
 state 74
 
-   47 e: '(' e ')' .
+   19 list: '{' particules @1 . ',' particules '}'
 
-    $default  reduce using rule 47 (e)
+    ','  shift, and go to state 95
 
 
 state 75
 
-   38 e: e . '+' e
-   38  | e '+' e .
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
+   46 e: '(' e ')' .
 
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
-
-    $default  reduce using rule 38 (e)
+    $default  reduce using rule 46 (e)
 
 
 state 76
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   39  | e '-' e .
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
+   37 e: e . '+' e
+   37  | e '+' e .
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
 
-    '*'  shift, and go to state 55
-    '/'  shift, and go to state 56
-    '^'  shift, and go to state 57
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
 
-    $default  reduce using rule 39 (e)
+    $default  reduce using rule 37 (e)
 
 
 state 77
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   40  | e '*' e .
-   41  | e . '/' e
-   42  | e . '^' e
+   37 e: e . '+' e
+   38  | e . '-' e
+   38  | e '-' e .
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
 
-    '^'  shift, and go to state 57
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+    '^'  shift, and go to state 58
 
-    $default  reduce using rule 40 (e)
+    $default  reduce using rule 38 (e)
 
 
 state 78
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   41  | e '/' e .
-   42  | e . '^' e
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   39  | e '*' e .
+   40  | e . '/' e
+   41  | e . '^' e
 
-    '^'  shift, and go to state 57
+    '^'  shift, and go to state 58
 
-    $default  reduce using rule 41 (e)
+    $default  reduce using rule 39 (e)
 
 
 state 79
 
-   38 e: e . '+' e
-   39  | e . '-' e
-   40  | e . '*' e
-   41  | e . '/' e
-   42  | e . '^' e
-   42  | e '^' e .
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   40  | e '/' e .
+   41  | e . '^' e
 
-    '^'  shift, and go to state 57
+    '^'  shift, and go to state 58
 
-    $default  reduce using rule 42 (e)
+    $default  reduce using rule 40 (e)
 
 
 state 80
 
-   33 index: '-' INT .
+   37 e: e . '+' e
+   38  | e . '-' e
+   39  | e . '*' e
+   40  | e . '/' e
+   41  | e . '^' e
+   41  | e '^' e .
 
-    $default  reduce using rule 33 (index)
+    '^'  shift, and go to state 58
+
+    $default  reduce using rule 41 (e)
 
 
 state 81
 
-   45 e: SIN '(' e ')' .
+   32 index: '-' INT .
 
-    $default  reduce using rule 45 (e)
+    $default  reduce using rule 32 (index)
 
 
 state 82
 
-   44 e: COS '(' e ')' .
+   44 e: SIN '(' e ')' .
 
     $default  reduce using rule 44 (e)
 
 
 state 83
 
-   46 e: TAN '(' e ')' .
+   43 e: COS '(' e ')' .
 
-    $default  reduce using rule 46 (e)
+    $default  reduce using rule 43 (e)
 
 
 state 84
 
-   11 function: '{' particules '}' PHI .
+   45 e: TAN '(' e ')' .
 
-    $default  reduce using rule 11 (function)
+    $default  reduce using rule 45 (e)
 
 
 state 85
 
-   12 function: '{' particules '}' ETA .
-
-    $default  reduce using rule 12 (function)
-
-
-state 86
-
-   13 function: '{' particules '}' ABSETA .
-
-    $default  reduce using rule 13 (function)
-
-
-state 87
-
-   14 function: '{' particules '}' PT .
-
-    $default  reduce using rule 14 (function)
-
-
-state 88
-
-   15 function: '{' particules '}' PZ .
-
-    $default  reduce using rule 15 (function)
-
-
-state 89
-
-   16 function: '{' particules '}' NBF .
-
-    $default  reduce using rule 16 (function)
-
-
-state 90
-
-    7 function: '{' particules '}' 'm' .
-
-    $default  reduce using rule 7 (function)
-
-
-state 91
-
-    8 function: '{' particules '}' 'q' .
-
-    $default  reduce using rule 8 (function)
-
-
-state 92
-
-    9 function: '{' particules '}' 'P' .
-
-    $default  reduce using rule 9 (function)
-
-
-state 93
-
-   10 function: '{' particules '}' 'E' .
+   10 function: '{' particules '}' PHI .
 
     $default  reduce using rule 10 (function)
 
 
+state 86
+
+   11 function: '{' particules '}' ETA .
+
+    $default  reduce using rule 11 (function)
+
+
+state 87
+
+   12 function: '{' particules '}' ABSETA .
+
+    $default  reduce using rule 12 (function)
+
+
+state 88
+
+   13 function: '{' particules '}' PT .
+
+    $default  reduce using rule 13 (function)
+
+
+state 89
+
+   14 function: '{' particules '}' PZ .
+
+    $default  reduce using rule 14 (function)
+
+
+state 90
+
+   15 function: '{' particules '}' NBF .
+
+    $default  reduce using rule 15 (function)
+
+
+state 91
+
+    6 function: '{' particules '}' 'm' .
+
+    $default  reduce using rule 6 (function)
+
+
+state 92
+
+    7 function: '{' particules '}' 'q' .
+
+    $default  reduce using rule 7 (function)
+
+
+state 93
+
+    8 function: '{' particules '}' 'P' .
+
+    $default  reduce using rule 8 (function)
+
+
 state 94
 
-   20 list: '{' particules @1 ',' . particules '}'
+    9 function: '{' particules '}' 'E' .
 
-    ELE    shift, and go to state 11
-    MUO    shift, and go to state 12
-    LEP    shift, and go to state 13
-    PHO    shift, and go to state 14
-    JET    shift, and go to state 15
-    BJET   shift, and go to state 16
-    QGJET  shift, and go to state 17
-    NUMET  shift, and go to state 18
-    METLV  shift, and go to state 19
-    ID     shift, and go to state 21
-
-    particules  go to state 95
-    particule   go to state 33
+    $default  reduce using rule 9 (function)
 
 
 state 95
 
-   20 list: '{' particules @1 ',' particules . '}'
-   21 particules: particules . particule
+   19 list: '{' particules @1 ',' . particules '}'
 
     ELE    shift, and go to state 11
     MUO    shift, and go to state 12
@@ -1192,14 +1203,34 @@ state 95
     QGJET  shift, and go to state 17
     NUMET  shift, and go to state 18
     METLV  shift, and go to state 19
-    ID     shift, and go to state 21
-    '}'    shift, and go to state 96
+    ID     shift, and go to state 48
 
-    particule  go to state 52
+    particules  go to state 96
+    particule   go to state 32
 
 
 state 96
 
-   20 list: '{' particules @1 ',' particules '}' .
+   19 list: '{' particules @1 ',' particules . '}'
+   20 particules: particules . particule
 
-    $default  reduce using rule 20 (list)
+    ELE    shift, and go to state 11
+    MUO    shift, and go to state 12
+    LEP    shift, and go to state 13
+    PHO    shift, and go to state 14
+    JET    shift, and go to state 15
+    BJET   shift, and go to state 16
+    QGJET  shift, and go to state 17
+    NUMET  shift, and go to state 18
+    METLV  shift, and go to state 19
+    ID     shift, and go to state 48
+    '}'    shift, and go to state 97
+
+    particule  go to state 53
+
+
+state 97
+
+   19 list: '{' particules @1 ',' particules '}' .
+
+    $default  reduce using rule 19 (list)
