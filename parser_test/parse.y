@@ -338,7 +338,6 @@ e : e '+' e  { string s1=$1; string s3=$3;
 //    | INT { $$ = $1 ;}	
 //    | function 
 //    ;
-//we should also match integers in here INT and check which one is detected first NB or INT
 %%
 int main(void) {
         yyparse(); 
