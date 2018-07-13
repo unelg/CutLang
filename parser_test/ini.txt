@@ -1,5 +1,5 @@
 #chou 3am bisir?
-def       WH1 : {JET_-2 JET_-2 JET_-2 , JET_-2 }dR   # angular distance between W1 and b jet
+def       WH1 : {JET_-2 , JET_-2 }dR   # angular distance between W1 and b jet
 def       WHbR2 : {WH1 , JET_-4 }dR   # angular distance between W2 and b jet
 
 

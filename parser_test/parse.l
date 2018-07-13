@@ -3,7 +3,8 @@
 #include "stdlib.h"
 #include <string>
 #include <iostream>
-#include "y.tab.h"
+//#include "y.tab.h"
+#include "b.hpp"
 int i=0;
 %}
 integer [0-9]+
