@@ -343,7 +343,6 @@ int main(void) {
                 std::cout<<it->first<<" :: "<<it->second<<std::endl;
                 it++;
         }
-	
 			
                 }
                 //calculator
