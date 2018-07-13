@@ -173,7 +173,7 @@ typedef union YYSTYPE
 	char* s;
 }
 /* Line 193 of yacc.c.  */
-#line 177 "y.tab.c"
+#line 177 "b.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -186,7 +186,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 190 "y.tab.c"
+#line 190 "b.cpp"
 
 #ifdef short
 # undef short
@@ -1453,17 +1453,17 @@ yyreduce:
                                          vars.insert(make_pair(name,phrase));
                                          cout<<"\nend "<<(yyvsp[(4) - (4)].s)<<endl;
                                          
-				}
+				;}
     break;
 
   case 6:
 #line 83 "parse.y"
-    {pnum=0;}
+    {pnum=0;;}
     break;
 
   case 7:
 #line 84 "parse.y"
-    { pnum=0;}
+    { pnum=0;;}
     break;
 
   case 8:
@@ -1473,7 +1473,7 @@ yyreduce:
                                         tmp="{ "+s+" }m";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 9:
@@ -1483,7 +1483,7 @@ yyreduce:
                                         tmp="{ "+s+" }q";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 10:
@@ -1493,7 +1493,7 @@ yyreduce:
                                         tmp="{ "+s+" }P";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 11:
@@ -1503,7 +1503,7 @@ yyreduce:
                                         tmp="{ "+s+" }E";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 12:
@@ -1513,7 +1513,7 @@ yyreduce:
                                         tmp="{ "+s+" }Phi";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 13:
@@ -1523,7 +1523,7 @@ yyreduce:
                                         tmp="{ "+s+" }Eta";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 14:
@@ -1533,7 +1533,7 @@ yyreduce:
                                         tmp="{ "+s+" }AbsEta";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 15:
@@ -1543,7 +1543,7 @@ yyreduce:
                                         tmp="{ "+s+" }Pt";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 16:
@@ -1553,7 +1553,7 @@ yyreduce:
                                         tmp="{ "+s+" }Pz";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 17:
@@ -1563,7 +1563,7 @@ yyreduce:
                                         tmp="{ "+s+" }ndf";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                }
+                                ;}
     break;
 
   case 18:
@@ -1576,7 +1576,7 @@ yyreduce:
                                         (yyval.s)=strdup(s.c_str());
                                         cout<<" hey : "<<s2<<endl;
 
-                                }
+                                ;}
     break;
 
   case 19:
@@ -1589,7 +1589,7 @@ yyreduce:
                                         (yyval.s)=strdup(s.c_str());
                                         cout<<" hey : "<<s2<<endl;
 
-                                }
+                                ;}
     break;
 
   case 20:
@@ -1614,7 +1614,7 @@ yyreduce:
                                         //cout<<" p : "<<$$<<endl;
                                         //free($2); MEMORY LEAK?
 
-                                        }
+                                        ;}
     break;
 
   case 22:
@@ -1625,7 +1625,7 @@ yyreduce:
                             tmp="ele_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                             (yyval.s)=strdup(tmp.c_str());
                                                         
-                            }
+                            ;}
     break;
 
   case 23:
@@ -1633,7 +1633,7 @@ yyreduce:
     {       tmp="muo_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 24:
@@ -1641,7 +1641,7 @@ yyreduce:
     {       tmp="lep_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 25:
@@ -1649,7 +1649,7 @@ yyreduce:
     {       tmp="pho_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 26:
@@ -1657,7 +1657,7 @@ yyreduce:
     {       tmp="jet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 27:
@@ -1665,7 +1665,7 @@ yyreduce:
     {       tmp="bjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 28:
@@ -1673,7 +1673,7 @@ yyreduce:
     {       tmp="qgjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 29:
@@ -1681,7 +1681,7 @@ yyreduce:
     {       tmp="numet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 30:
@@ -1689,7 +1689,7 @@ yyreduce:
     {       tmp="metlv_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        }
+                        ;}
     break;
 
   case 31:
@@ -1708,22 +1708,22 @@ yyreduce:
                         tmp= it->second ;
                         (yyval.s)=strdup(tmp.c_str());}
 
-                }
+                ;}
     break;
 
   case 32:
 #line 243 "parse.y"
-    {(yyval.real)=-(yyvsp[(2) - (2)].real);}
+    {(yyval.real)=-(yyvsp[(2) - (2)].real);;}
     break;
 
   case 33:
 #line 244 "parse.y"
-    {(yyval.real)= (yyvsp[(1) - (1)].real);}
+    {(yyval.real)= (yyvsp[(1) - (1)].real);;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1727 "y.tab.c"
+#line 1727 "b.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

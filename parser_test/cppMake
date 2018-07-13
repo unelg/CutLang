@@ -1,0 +1,5 @@
+#!/bin/bash
+bison -d -v -ob.cpp parse.y
+flex -ol.cpp parse.l
+g++ b.cpp l.cpp
+./a.out<./ini.txt

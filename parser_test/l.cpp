@@ -1,5 +1,6 @@
+#line 2 "l.cpp"
 
-#line 3 "lex.yy.c"
+#line 4 "l.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -531,9 +532,10 @@ char *yytext;
 #include "stdlib.h"
 #include <string>
 #include <iostream>
-#include "y.tab.h"
+//#include "y.tab.h"
+#include "b.hpp"
 int i=0;
-#line 537 "lex.yy.c"
+#line 539 "l.cpp"
 
 #define INITIAL 0
 
@@ -715,9 +717,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 14 "parse.l"
+#line 15 "parse.l"
 
-#line 721 "lex.yy.c"
+#line 723 "l.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -802,152 +804,152 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "parse.l"
+#line 16 "parse.l"
 return DEF;//case sensitive in this case
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 16 "parse.l"
+#line 17 "parse.l"
 return CMD;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 17 "parse.l"
+#line 18 "parse.l"
 return ELE;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 18 "parse.l"
+#line 19 "parse.l"
 return MUO;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 19 "parse.l"
+#line 20 "parse.l"
 return LEP;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 20 "parse.l"
+#line 21 "parse.l"
 return PHO;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 21 "parse.l"
+#line 22 "parse.l"
 return JET;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 22 "parse.l"
+#line 23 "parse.l"
 return BJET;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 23 "parse.l"
+#line 24 "parse.l"
 return QGJET;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 24 "parse.l"
+#line 25 "parse.l"
 return NUMET;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 25 "parse.l"
+#line 26 "parse.l"
 return METLV;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 26 "parse.l"
+#line 27 "parse.l"
 return PHI;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 27 "parse.l"
+#line 28 "parse.l"
 return ETA;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 28 "parse.l"
+#line 29 "parse.l"
 return ABSETA;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 29 "parse.l"
+#line 30 "parse.l"
 return PT;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 30 "parse.l"
+#line 31 "parse.l"
 return PZ;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 31 "parse.l"
+#line 32 "parse.l"
 return NBF;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 32 "parse.l"
+#line 33 "parse.l"
 return DR;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 33 "parse.l"
+#line 34 "parse.l"
 return DPHI;
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 34 "parse.l"
+#line 35 "parse.l"
 ;
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 35 "parse.l"
+#line 36 "parse.l"
 ;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 36 "parse.l"
+#line 37 "parse.l"
 return TAN;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 37 "parse.l"
+#line 38 "parse.l"
 return SIN;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 38 "parse.l"
+#line 39 "parse.l"
 return COS;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 39 "parse.l"
+#line 40 "parse.l"
 sscanf(yytext, "%lf",&yylval.real);return INT;//to test
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 40 "parse.l"
+#line 41 "parse.l"
 sscanf(yytext, "%lf",&yylval.real);return NB ;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 41 "parse.l"
+#line 42 "parse.l"
 return *yytext;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 42 "parse.l"
+#line 43 "parse.l"
 yylval.s=strdup(yytext);return ID;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 43 "parse.l"
+#line 44 "parse.l"
 ECHO;
 	YY_BREAK
-#line 951 "lex.yy.c"
+#line 953 "l.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1944,7 +1946,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 43 "parse.l"
+#line 44 "parse.l"
 
 
 

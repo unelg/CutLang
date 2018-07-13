@@ -1,0 +1,719 @@
+Terminals which are not used
+
+   VARDEF
+   NB
+   SIN
+   COS
+   TAN
+   '+'
+   '*'
+   '/'
+   Unary
+   '^'
+
+
+Grammar
+
+    0 $accept: input $end
+
+    1 input: definitions commands
+
+    2 definitions: definitions definition
+    3            | /* empty */
+
+    4 definition: DEF ID ':' vardef
+
+    5 vardef: particules
+    6       | function
+
+    7 function: '{' particules '}' 'm'
+    8         | '{' particules '}' 'q'
+    9         | '{' particules '}' 'P'
+   10         | '{' particules '}' 'E'
+   11         | '{' particules '}' PHI
+   12         | '{' particules '}' ETA
+   13         | '{' particules '}' ABSETA
+   14         | '{' particules '}' PT
+   15         | '{' particules '}' PZ
+   16         | '{' particules '}' NBF
+   17         | '{' particules ',' particules '}' DR
+   18         | '{' particules ',' particules '}' DPHI
+
+   19 particules: particules particule
+   20           | /* empty */
+
+   21 particule: ELE '_' index
+   22          | MUO '_' index
+   23          | LEP '_' index
+   24          | PHO '_' index
+   25          | JET '_' index
+   26          | BJET '_' index
+   27          | QGJET '_' index
+   28          | NUMET '_' index
+   29          | METLV '_' index
+   30          | ID
+
+   31 index: '-' INT
+   32      | INT
+
+   33 commands: commands command
+   34         | /* empty */
+
+   35 command: CMD
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'*' (42)
+'+' (43)
+',' (44) 17 18
+'-' (45) 31
+'/' (47)
+':' (58) 4
+'E' (69) 10
+'P' (80) 9
+'^' (94)
+'_' (95) 21 22 23 24 25 26 27 28 29
+'m' (109) 7
+'q' (113) 8
+'{' (123) 7 8 9 10 11 12 13 14 15 16 17 18
+'}' (125) 7 8 9 10 11 12 13 14 15 16 17 18
+error (256)
+DEF (258) 4
+VARDEF (259)
+CMD (260) 35
+ELE (261) 21
+MUO (262) 22
+LEP (263) 23
+PHO (264) 24
+JET (265) 25
+BJET (266) 26
+QGJET (267) 27
+NUMET (268) 28
+METLV (269) 29
+PHI (270) 11
+ETA (271) 12
+ABSETA (272) 13
+PT (273) 14
+PZ (274) 15
+NBF (275) 16
+DR (276) 17
+DPHI (277) 18
+NB (278)
+ID (279) 4 30
+SIN (280)
+COS (281)
+TAN (282)
+INT (283) 31 32
+Unary (284)
+
+
+Nonterminals, with rules where they appear
+
+$accept (44)
+    on left: 0
+input (45)
+    on left: 1, on right: 0
+definitions (46)
+    on left: 2 3, on right: 1 2
+definition (47)
+    on left: 4, on right: 2
+vardef (48)
+    on left: 5 6, on right: 4
+function (49)
+    on left: 7 8 9 10 11 12 13 14 15 16 17 18, on right: 6
+particules (50)
+    on left: 19 20, on right: 5 7 8 9 10 11 12 13 14 15 16 17 18 19
+particule (51)
+    on left: 21 22 23 24 25 26 27 28 29 30, on right: 19
+index (52)
+    on left: 31 32, on right: 21 22 23 24 25 26 27 28 29
+commands (53)
+    on left: 33 34, on right: 1 33
+command (54)
+    on left: 35, on right: 33
+
+
+state 0
+
+    0 $accept: . input $end
+
+    $default  reduce using rule 3 (definitions)
+
+    input        go to state 1
+    definitions  go to state 2
+
+
+state 1
+
+    0 $accept: input . $end
+
+    $end  shift, and go to state 3
+
+
+state 2
+
+    1 input: definitions . commands
+    2 definitions: definitions . definition
+
+    DEF  shift, and go to state 4
+
+    $default  reduce using rule 34 (commands)
+
+    definition  go to state 5
+    commands    go to state 6
+
+
+state 3
+
+    0 $accept: input $end .
+
+    $default  accept
+
+
+state 4
+
+    4 definition: DEF . ID ':' vardef
+
+    ID  shift, and go to state 7
+
+
+state 5
+
+    2 definitions: definitions definition .
+
+    $default  reduce using rule 2 (definitions)
+
+
+state 6
+
+    1 input: definitions commands .
+   33 commands: commands . command
+
+    CMD  shift, and go to state 8
+
+    $default  reduce using rule 1 (input)
+
+    command  go to state 9
+
+
+state 7
+
+    4 definition: DEF ID . ':' vardef
+
+    ':'  shift, and go to state 10
+
+
+state 8
+
+   35 command: CMD .
+
+    $default  reduce using rule 35 (command)
+
+
+state 9
+
+   33 commands: commands command .
+
+    $default  reduce using rule 33 (commands)
+
+
+state 10
+
+    4 definition: DEF ID ':' . vardef
+
+    '{'  shift, and go to state 11
+
+    $default  reduce using rule 20 (particules)
+
+    vardef      go to state 12
+    function    go to state 13
+    particules  go to state 14
+
+
+state 11
+
+    7 function: '{' . particules '}' 'm'
+    8         | '{' . particules '}' 'q'
+    9         | '{' . particules '}' 'P'
+   10         | '{' . particules '}' 'E'
+   11         | '{' . particules '}' PHI
+   12         | '{' . particules '}' ETA
+   13         | '{' . particules '}' ABSETA
+   14         | '{' . particules '}' PT
+   15         | '{' . particules '}' PZ
+   16         | '{' . particules '}' NBF
+   17         | '{' . particules ',' particules '}' DR
+   18         | '{' . particules ',' particules '}' DPHI
+
+    $default  reduce using rule 20 (particules)
+
+    particules  go to state 15
+
+
+state 12
+
+    4 definition: DEF ID ':' vardef .
+
+    $default  reduce using rule 4 (definition)
+
+
+state 13
+
+    6 vardef: function .
+
+    $default  reduce using rule 6 (vardef)
+
+
+state 14
+
+    5 vardef: particules .
+   19 particules: particules . particule
+
+    ELE    shift, and go to state 16
+    MUO    shift, and go to state 17
+    LEP    shift, and go to state 18
+    PHO    shift, and go to state 19
+    JET    shift, and go to state 20
+    BJET   shift, and go to state 21
+    QGJET  shift, and go to state 22
+    NUMET  shift, and go to state 23
+    METLV  shift, and go to state 24
+    ID     shift, and go to state 25
+
+    $default  reduce using rule 5 (vardef)
+
+    particule  go to state 26
+
+
+state 15
+
+    7 function: '{' particules . '}' 'm'
+    8         | '{' particules . '}' 'q'
+    9         | '{' particules . '}' 'P'
+   10         | '{' particules . '}' 'E'
+   11         | '{' particules . '}' PHI
+   12         | '{' particules . '}' ETA
+   13         | '{' particules . '}' ABSETA
+   14         | '{' particules . '}' PT
+   15         | '{' particules . '}' PZ
+   16         | '{' particules . '}' NBF
+   17         | '{' particules . ',' particules '}' DR
+   18         | '{' particules . ',' particules '}' DPHI
+   19 particules: particules . particule
+
+    ELE    shift, and go to state 16
+    MUO    shift, and go to state 17
+    LEP    shift, and go to state 18
+    PHO    shift, and go to state 19
+    JET    shift, and go to state 20
+    BJET   shift, and go to state 21
+    QGJET  shift, and go to state 22
+    NUMET  shift, and go to state 23
+    METLV  shift, and go to state 24
+    ID     shift, and go to state 25
+    '}'    shift, and go to state 27
+    ','    shift, and go to state 28
+
+    particule  go to state 26
+
+
+state 16
+
+   21 particule: ELE . '_' index
+
+    '_'  shift, and go to state 29
+
+
+state 17
+
+   22 particule: MUO . '_' index
+
+    '_'  shift, and go to state 30
+
+
+state 18
+
+   23 particule: LEP . '_' index
+
+    '_'  shift, and go to state 31
+
+
+state 19
+
+   24 particule: PHO . '_' index
+
+    '_'  shift, and go to state 32
+
+
+state 20
+
+   25 particule: JET . '_' index
+
+    '_'  shift, and go to state 33
+
+
+state 21
+
+   26 particule: BJET . '_' index
+
+    '_'  shift, and go to state 34
+
+
+state 22
+
+   27 particule: QGJET . '_' index
+
+    '_'  shift, and go to state 35
+
+
+state 23
+
+   28 particule: NUMET . '_' index
+
+    '_'  shift, and go to state 36
+
+
+state 24
+
+   29 particule: METLV . '_' index
+
+    '_'  shift, and go to state 37
+
+
+state 25
+
+   30 particule: ID .
+
+    $default  reduce using rule 30 (particule)
+
+
+state 26
+
+   19 particules: particules particule .
+
+    $default  reduce using rule 19 (particules)
+
+
+state 27
+
+    7 function: '{' particules '}' . 'm'
+    8         | '{' particules '}' . 'q'
+    9         | '{' particules '}' . 'P'
+   10         | '{' particules '}' . 'E'
+   11         | '{' particules '}' . PHI
+   12         | '{' particules '}' . ETA
+   13         | '{' particules '}' . ABSETA
+   14         | '{' particules '}' . PT
+   15         | '{' particules '}' . PZ
+   16         | '{' particules '}' . NBF
+
+    PHI     shift, and go to state 38
+    ETA     shift, and go to state 39
+    ABSETA  shift, and go to state 40
+    PT      shift, and go to state 41
+    PZ      shift, and go to state 42
+    NBF     shift, and go to state 43
+    'm'     shift, and go to state 44
+    'q'     shift, and go to state 45
+    'P'     shift, and go to state 46
+    'E'     shift, and go to state 47
+
+
+state 28
+
+   17 function: '{' particules ',' . particules '}' DR
+   18         | '{' particules ',' . particules '}' DPHI
+
+    $default  reduce using rule 20 (particules)
+
+    particules  go to state 48
+
+
+state 29
+
+   21 particule: ELE '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 51
+
+
+state 30
+
+   22 particule: MUO '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 52
+
+
+state 31
+
+   23 particule: LEP '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 53
+
+
+state 32
+
+   24 particule: PHO '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 54
+
+
+state 33
+
+   25 particule: JET '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 55
+
+
+state 34
+
+   26 particule: BJET '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 56
+
+
+state 35
+
+   27 particule: QGJET '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 57
+
+
+state 36
+
+   28 particule: NUMET '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 58
+
+
+state 37
+
+   29 particule: METLV '_' . index
+
+    INT  shift, and go to state 49
+    '-'  shift, and go to state 50
+
+    index  go to state 59
+
+
+state 38
+
+   11 function: '{' particules '}' PHI .
+
+    $default  reduce using rule 11 (function)
+
+
+state 39
+
+   12 function: '{' particules '}' ETA .
+
+    $default  reduce using rule 12 (function)
+
+
+state 40
+
+   13 function: '{' particules '}' ABSETA .
+
+    $default  reduce using rule 13 (function)
+
+
+state 41
+
+   14 function: '{' particules '}' PT .
+
+    $default  reduce using rule 14 (function)
+
+
+state 42
+
+   15 function: '{' particules '}' PZ .
+
+    $default  reduce using rule 15 (function)
+
+
+state 43
+
+   16 function: '{' particules '}' NBF .
+
+    $default  reduce using rule 16 (function)
+
+
+state 44
+
+    7 function: '{' particules '}' 'm' .
+
+    $default  reduce using rule 7 (function)
+
+
+state 45
+
+    8 function: '{' particules '}' 'q' .
+
+    $default  reduce using rule 8 (function)
+
+
+state 46
+
+    9 function: '{' particules '}' 'P' .
+
+    $default  reduce using rule 9 (function)
+
+
+state 47
+
+   10 function: '{' particules '}' 'E' .
+
+    $default  reduce using rule 10 (function)
+
+
+state 48
+
+   17 function: '{' particules ',' particules . '}' DR
+   18         | '{' particules ',' particules . '}' DPHI
+   19 particules: particules . particule
+
+    ELE    shift, and go to state 16
+    MUO    shift, and go to state 17
+    LEP    shift, and go to state 18
+    PHO    shift, and go to state 19
+    JET    shift, and go to state 20
+    BJET   shift, and go to state 21
+    QGJET  shift, and go to state 22
+    NUMET  shift, and go to state 23
+    METLV  shift, and go to state 24
+    ID     shift, and go to state 25
+    '}'    shift, and go to state 60
+
+    particule  go to state 26
+
+
+state 49
+
+   32 index: INT .
+
+    $default  reduce using rule 32 (index)
+
+
+state 50
+
+   31 index: '-' . INT
+
+    INT  shift, and go to state 61
+
+
+state 51
+
+   21 particule: ELE '_' index .
+
+    $default  reduce using rule 21 (particule)
+
+
+state 52
+
+   22 particule: MUO '_' index .
+
+    $default  reduce using rule 22 (particule)
+
+
+state 53
+
+   23 particule: LEP '_' index .
+
+    $default  reduce using rule 23 (particule)
+
+
+state 54
+
+   24 particule: PHO '_' index .
+
+    $default  reduce using rule 24 (particule)
+
+
+state 55
+
+   25 particule: JET '_' index .
+
+    $default  reduce using rule 25 (particule)
+
+
+state 56
+
+   26 particule: BJET '_' index .
+
+    $default  reduce using rule 26 (particule)
+
+
+state 57
+
+   27 particule: QGJET '_' index .
+
+    $default  reduce using rule 27 (particule)
+
+
+state 58
+
+   28 particule: NUMET '_' index .
+
+    $default  reduce using rule 28 (particule)
+
+
+state 59
+
+   29 particule: METLV '_' index .
+
+    $default  reduce using rule 29 (particule)
+
+
+state 60
+
+   17 function: '{' particules ',' particules '}' . DR
+   18         | '{' particules ',' particules '}' . DPHI
+
+    DR    shift, and go to state 62
+    DPHI  shift, and go to state 63
+
+
+state 61
+
+   31 index: '-' INT .
+
+    $default  reduce using rule 31 (index)
+
+
+state 62
+
+   17 function: '{' particules ',' particules '}' DR .
+
+    $default  reduce using rule 17 (function)
+
+
+state 63
+
+   18 function: '{' particules ',' particules '}' DPHI .
+
+    $default  reduce using rule 18 (function)
