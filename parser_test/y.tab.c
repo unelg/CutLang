@@ -171,7 +171,7 @@ typedef union YYSTYPE
 	char* s;
 }
 /* Line 193 of yacc.c.  */
-#line 175 "b.cpp"
+#line 175 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -184,7 +184,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 188 "b.cpp"
+#line 188 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -493,10 +493,10 @@ static const yytype_uint16 yyrline[] =
 {
        0,    61,    61,    63,    64,    66,    85,    86,    88,    94,
      100,   106,   112,   118,   124,   130,   136,   142,   148,   154,
-     161,   161,   169,   184,   200,   207,   211,   215,   219,   223,
-     227,   231,   235,   239,   256,   257,   259,   260,   262,   264,
-     268,   272,   276,   280,   284,   288,   292,   296,   300,   304,
-     305,   306
+     161,   161,   169,   190,   192,   199,   203,   207,   211,   215,
+     219,   223,   227,   231,   248,   249,   251,   252,   254,   256,
+     260,   264,   268,   272,   276,   280,   284,   288,   292,   296,
+     297,   298
 };
 #endif
 
@@ -1493,17 +1493,17 @@ yyreduce:
                                          vars.insert(make_pair(name,phrase));
                                          cout<<"\nend "<<(yyvsp[(4) - (4)].s)<<endl;
                                          
-				;}
+				}
     break;
 
   case 6:
 #line 85 "parse.y"
-    {pnum=0;;}
+    {pnum=0;}
     break;
 
   case 7:
 #line 86 "parse.y"
-    {pnum=0;;}
+    {pnum=0;}
     break;
 
   case 8:
@@ -1513,7 +1513,7 @@ yyreduce:
                                         tmp="{ "+s+" }m";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 9:
@@ -1523,7 +1523,7 @@ yyreduce:
                                         tmp="{ "+s+" }q";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 10:
@@ -1533,7 +1533,7 @@ yyreduce:
                                         tmp="{ "+s+" }P";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 11:
@@ -1543,7 +1543,7 @@ yyreduce:
                                         tmp="{ "+s+" }E";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 12:
@@ -1553,7 +1553,7 @@ yyreduce:
                                         tmp="{ "+s+" }Phi";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 13:
@@ -1563,7 +1563,7 @@ yyreduce:
                                         tmp="{ "+s+" }Eta";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 14:
@@ -1573,7 +1573,7 @@ yyreduce:
                                         tmp="{ "+s+" }AbsEta";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 15:
@@ -1583,7 +1583,7 @@ yyreduce:
                                         tmp="{ "+s+" }Pt";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 16:
@@ -1593,7 +1593,7 @@ yyreduce:
                                         tmp="{ "+s+" }Pz";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 17:
@@ -1603,7 +1603,7 @@ yyreduce:
                                         tmp="{ "+s+" }ndf";                        
                                         (yyval.s)=strdup(tmp.c_str());
 
-                                ;}
+                                }
     break;
 
   case 18:
@@ -1613,7 +1613,7 @@ yyreduce:
                                         string s=(yyvsp[(1) - (2)].s);                                       
                                         s=s+"dR";                        
                                         (yyval.s)=strdup(s.c_str());
-                                ;}
+                                }
     break;
 
   case 19:
@@ -1623,12 +1623,12 @@ yyreduce:
                                         string s=(yyvsp[(1) - (2)].s);                                       
                                         s=s+"dPhi";                        
                                         (yyval.s)=strdup(s.c_str());
-                                ;}
+                                }
     break;
 
   case 20:
 #line 161 "parse.y"
-    { pnum=0; ;}
+    { pnum=0; }
     break;
 
   case 21:
@@ -1639,33 +1639,16 @@ yyreduce:
                                                         s="{ "+s+" , "+s2+" }";                        
                                                         (yyval.s)=strdup(s.c_str());
 
-                                                        ;}
+                                                        }
     break;
 
   case 22:
 #line 169 "parse.y"
     { 
         
-                                        
+                                        if (pnum==0){
                                                 
-                                                char s [512];
-                                                strcpy(s,(yyval.s)); 
-                                                strcat(s," ");
-                                                strcat(s,(yyvsp[(2) - (2)].s));
-                                                strcpy((yyval.s),s);
-
-                                        
-                                        
-                                        //free($2); MEMORY LEAK?
-
-                                        ;}
-    break;
-
-  case 23:
-#line 184 "parse.y"
-    {if (pnum==0){
-                                                
-                                                (yyval.s)=strdup((yyvsp[(1) - (1)].s));
+                                                (yyval.s)=strdup((yyvsp[(2) - (2)].s));
                                                 pnum++;
                                                 
                                         }
@@ -1674,89 +1657,98 @@ yyreduce:
                                                 char s [512];
                                                 strcpy(s,(yyval.s)); 
                                                 strcat(s," ");
-                                                strcat(s,(yyvsp[(1) - (1)].s));
+                                                strcat(s,(yyvsp[(2) - (2)].s));
                                                 strcpy((yyval.s),s);
 
-                                        };}
+                                        }
+                                        
+                                        //free($2); MEMORY LEAK?
+
+                                        }
+    break;
+
+  case 23:
+#line 190 "parse.y"
+    {(yyval.s)=(yyvsp[(1) - (1)].s);}
     break;
 
   case 24:
-#line 200 "parse.y"
+#line 192 "parse.y"
     {
                             //do something with name and index? Maybe put them in lists
                                                         
                             tmp="ele_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                             (yyval.s)=strdup(tmp.c_str());
                                                         
-                            ;}
+                            }
     break;
 
   case 25:
-#line 207 "parse.y"
+#line 199 "parse.y"
     {       tmp="muo_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 26:
-#line 211 "parse.y"
+#line 203 "parse.y"
     {       tmp="lep_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 27:
-#line 215 "parse.y"
+#line 207 "parse.y"
     {       tmp="pho_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 28:
-#line 219 "parse.y"
+#line 211 "parse.y"
     {       tmp="jet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 29:
-#line 223 "parse.y"
+#line 215 "parse.y"
     {       tmp="bjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 30:
-#line 227 "parse.y"
+#line 219 "parse.y"
     {       tmp="qgjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 31:
-#line 231 "parse.y"
+#line 223 "parse.y"
     {       tmp="numet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 32:
-#line 235 "parse.y"
+#line 227 "parse.y"
     {       tmp="metlv_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 
-                        ;}
+                        }
     break;
 
   case 33:
-#line 239 "parse.y"
+#line 231 "parse.y"
     { //we want the original defintions as well
                 map<string, string>::iterator it ;
                 it = vars.find((yyvsp[(1) - (1)].s));
@@ -1772,122 +1764,122 @@ yyreduce:
                         (yyval.s)=strdup(tmp.c_str());
                 }
 
-               ;}
+               }
     break;
 
   case 34:
-#line 256 "parse.y"
-    {(yyval.real)=-(yyvsp[(2) - (2)].real);;}
+#line 248 "parse.y"
+    {(yyval.real)=-(yyvsp[(2) - (2)].real);}
     break;
 
   case 35:
-#line 257 "parse.y"
-    {(yyval.real)= (yyvsp[(1) - (1)].real);;}
+#line 249 "parse.y"
+    {(yyval.real)= (yyvsp[(1) - (1)].real);}
     break;
 
   case 38:
-#line 262 "parse.y"
-    {;;}
+#line 254 "parse.y"
+    {;}
     break;
 
   case 39:
-#line 264 "parse.y"
+#line 256 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" + "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 40:
-#line 268 "parse.y"
+#line 260 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" - "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 41:
-#line 272 "parse.y"
+#line 264 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" * "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 42:
-#line 276 "parse.y"
+#line 268 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" / "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 43:
-#line 280 "parse.y"
+#line 272 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" ^ "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 44:
-#line 284 "parse.y"
+#line 276 "parse.y"
     { string s1=(yyvsp[(2) - (2)].s);
                tmp=" -"+s1;   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 45:
-#line 288 "parse.y"
+#line 280 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" cos( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 46:
-#line 292 "parse.y"
+#line 284 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" sin( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 47:
-#line 296 "parse.y"
+#line 288 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" tan( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 48:
-#line 300 "parse.y"
+#line 292 "parse.y"
     { string s3=(yyvsp[(2) - (3)].s);
                tmp=" ( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
-               ;}
+               }
     break;
 
   case 49:
-#line 304 "parse.y"
-    { tmp=to_string((yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
+#line 296 "parse.y"
+    { tmp=to_string((yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); }
     break;
 
   case 50:
-#line 305 "parse.y"
-    { tmp=to_string((int)(yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
+#line 297 "parse.y"
+    { tmp=to_string((int)(yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); }
     break;
 
   case 51:
-#line 306 "parse.y"
-    {(yyval.s)=(yyvsp[(1) - (1)].s); pnum=0;;}
+#line 298 "parse.y"
+    {(yyval.s)=(yyvsp[(1) - (1)].s);}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1891 "b.cpp"
+#line 1883 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2101,7 +2093,7 @@ yyreturn:
 }
 
 
-#line 341 "parse.y"
+#line 333 "parse.y"
 
 int main(void) {
         yyparse(); 

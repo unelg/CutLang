@@ -20,7 +20,6 @@ map<string,string> vars;
 	char* s;
 }
 %token DEF
-%token <s> VARDEF
 %token CMD
 %token ELE
 %token MUO
@@ -40,31 +39,34 @@ map<string,string> vars;
 %token DR
 %token DPHI
 %token <real> NB
-%token <s> ID
+%token <s> ID 
 %token SIN
 %token COS
 %token TAN
 %token <real> INT
+//TO ADD IN LEX see course
+// %token OR AND NOT
+// %token LT GT LE GE EQ NEQ
+// %left OR
+// %left AND
+// %right NOT
+// %nonassoc LT GT LE GE EQ NEQ
 %left '+' '-'
 %left '*' '/'
 %right Unary
 %right '^'
 %type <real> index
-%type <s> vardef
-%type <s> particule
-%type <s> particules
-%type <s> function
-//%type <s> secondHalf
+%type <s> vardef particule particules list function e
 %%
-input : definitions commands
+input : definitions commands 
      ;
-definitions : definitions definition
+definitions : definitions definition 
             | 
             ;
 definition : DEF ID ':' vardef {
                                          
-                                         map<string, string>::iterator it ;
-                                         string name = $2;
+                                        map<string, string>::iterator it ;
+                                        string name = $2;
                                         it = vars.find(name);
                         
                                         if(it != vars.end()) {
@@ -81,7 +83,7 @@ definition : DEF ID ':' vardef {
 				}
            ;
 vardef : particules {pnum=0;}
-       | function { pnum=0;}
+       | e {pnum=0;}
        ;
 function : '{' particules '}' 'm' {     
                                         string s=$2;
@@ -143,34 +145,30 @@ function : '{' particules '}' 'm' {
                                         $$=strdup(tmp.c_str());
 
                                 }
-         | '{' particules ',' particules '}' DR {    //needs debugging 
-                                        pnum=0;
-                                        string s=$2;
-                                        string s2=$4;
-                                        s="{ "+s+" , "+s2+" }dR";                        
+         | list DR {    //needs debugging 
+                                        
+                                        string s=$1;                                       
+                                        s=s+"dR";                        
                                         $$=strdup(s.c_str());
-                                        cout<<" hey : "<<s2<<endl;
-
                                 }
-        | '{' particules ',' particules '}' DPHI {     
-                                        pnum=0;
-                                        string s=$2;
-                                        string s2=$4;
-                                        s="{ "+s+" , "+s2+" }dPhi";                        
+        | list DPHI {    //needs debugging 
+                                        
+                                        string s=$1;                                       
+                                        s=s+"dPhi";                        
                                         $$=strdup(s.c_str());
-                                        cout<<" hey : "<<s2<<endl;
-
                                 }
         ;
+list : '{' particules { pnum=0; } ',' particules '}' { 
+                                                        string s=$2;
+                                                        string s2=$5;
+                                                        s="{ "+s+" , "+s2+" }";                        
+                                                        $$=strdup(s.c_str());
+
+                                                        }
+     ;
 particules : particules particule { 
         
-                                        if (pnum==0){
-                                                
-                                                $$=strdup($2);
-                                                pnum++;
-                                                //cout<<" p0 : "<<$$<<endl;
-                                        }
-                                        else{
+                                        
                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
@@ -178,12 +176,26 @@ particules : particules particule {
                                                 strcat(s,$2);
                                                 strcpy($$,s);
 
-                                        }
-                                        //cout<<" p : "<<$$<<endl;
+                                        
+                                        
                                         //free($2); MEMORY LEAK?
 
                                         }
-            | 
+            | particule {if (pnum==0){
+                                                
+                                                $$=strdup($1);
+                                                pnum++;
+                                                
+                                        }
+                                        else{
+                                                
+                                                char s [512];
+                                                strcpy(s,$$); 
+                                                strcat(s," ");
+                                                strcat(s,$1);
+                                                strcpy($$,s);
+
+                                        }}
             ;
 particule : ELE '_' index {
                             //do something with name and index? Maybe put them in lists
@@ -224,7 +236,7 @@ particule : ELE '_' index {
                                 $$=strdup(tmp.c_str());
                                 
                         }
-        | ID { //needs testing
+        | ID { //we want the original defintions as well
                 map<string, string>::iterator it ;
                 it = vars.find($1);
      
@@ -236,19 +248,83 @@ particule : ELE '_' index {
                 }
                 else {
                         tmp= it->second ;
-                        $$=strdup(tmp.c_str());}
-
+                        $$=strdup(tmp.c_str());
                 }
+
+               }
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
       ; 
-commands : commands command
+commands : commands command 
         | 
         ;
-command : CMD //to continue
+command : CMD {;} //to continue
 	;
-// e : e '+' e  { $$ = $1 + $3 ; }
+e : e '+' e  { string s1=$1; string s3=$3;
+               tmp=s1+" + "+s3;   
+               $$=strdup(tmp.c_str()); 
+               }
+   | e '-' e { string s1=$1; string s3=$3;
+               tmp=s1+" - "+s3;   
+               $$=strdup(tmp.c_str()); 
+               }
+   | e '*' e { string s1=$1; string s3=$3;
+               tmp=s1+" * "+s3;   
+               $$=strdup(tmp.c_str()); 
+               }
+   | e '/' e { string s1=$1; string s3=$3;
+               tmp=s1+" / "+s3;   
+               $$=strdup(tmp.c_str()); 
+               }
+   | e '^' e { string s1=$1; string s3=$3;
+               tmp=s1+" ^ "+s3;   
+               $$=strdup(tmp.c_str()); 
+               } 	
+   |'-' e %prec Unary { string s1=$2;
+               tmp=" -"+s1;   
+               $$=strdup(tmp.c_str()); 
+               }
+   | COS '(' e ')' { string s3=$3;
+               tmp=" cos( "+s3+" ) ";   
+               $$=strdup(tmp.c_str()); 
+               }
+   | SIN '(' e ')' { string s3=$3;
+               tmp=" sin( "+s3+" ) ";   
+               $$=strdup(tmp.c_str()); 
+               }
+   | TAN '(' e ')' { string s3=$3;
+               tmp=" tan( "+s3+" ) ";   
+               $$=strdup(tmp.c_str()); 
+               }
+   |'(' e ')' { string s3=$2;
+               tmp=" ( "+s3+" ) ";   
+               $$=strdup(tmp.c_str()); 
+               }
+   | NB { tmp=to_string($1); $$=strdup(tmp.c_str()); } 
+   | INT { tmp=to_string((int)$1); $$=strdup(tmp.c_str()); } 
+   | function {$$=$1; pnum=0;}
+   ;
+   // !!!!!!!!make the difference between ID + ID and ID ID in particules!!!!!!!!!!!
+//    | ID { //we want the original defintions as well
+//                 map<string, string>::iterator it ;
+//                 it = vars.find($1);
+     
+//                 if(it == vars.end()) {
+//                         cout <<$1<<" : " ;
+//                         yyerror("Variable not defined");
+//                         YYERROR;//stops parsing if variable not found
+                        
+//                 }
+//                 else {
+//                         tmp= it->second ;
+//                         $$=strdup(tmp.c_str());
+//                 }
+//                }
+//    ;
+// e : e '+' e  { $$ = $1 + $3 ;string s=$2;
+//                                         tmp="{ "+s+" }m";                        
+//                                         $$=strdup(tmp.c_str()); }
 //    | e '-' e { $$ = $1 - $3 ; }
 //    | e '*' e { $$ = $1 * $3 ; }
 //    | e '/' e { $$ = $1 / $3*1.0 ; }
@@ -258,7 +334,9 @@ command : CMD //to continue
 //    | SIN '(' e ')' { $$ = sin($3) ;}
 //    | TAN '(' e ')' { $$ = tan($3) ;}
 //    |'(' e ')' { $$ = $2 ;}
-//    | NB { $$ = $1 ;std::cout<<"NB: "<<$1<<std::endl;} 	
+//    | NB { $$ = $1 ;} 
+//    | INT { $$ = $1 ;}	
+//    | function 
 //    ;
 //we should also match integers in here INT and check which one is detected first NB or INT
 %%
