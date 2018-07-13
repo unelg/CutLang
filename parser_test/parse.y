@@ -166,35 +166,24 @@ list : '{' particules { pnum=0; } ',' particules '}' {
 
                                                         }
      ;
-particules : particules particule { 
-        
-                                        
-                                                
+particules : particules particule {                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$2);
-                                                strcpy($$,s);
-
-                                        
-                                        
-                                        //free($2); MEMORY LEAK?
+                                                strcpy($$,s);                                       
 
                                         }
             | particule {if (pnum==0){
-                                                
                                                 $$=strdup($1);
-                                                pnum++;
-                                                
+                                                pnum++;                                                
                                         }
-                                        else{
-                                                
+                                        else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$1);
                                                 strcpy($$,s);
-
                                         }}
             ;
 particule : ELE '_' index {
