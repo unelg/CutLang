@@ -58,13 +58,27 @@
      NBF = 274,
      DR = 275,
      DPHI = 276,
-     NB = 277,
-     ID = 278,
-     SIN = 279,
-     COS = 280,
-     TAN = 281,
-     INT = 282,
-     Unary = 283
+     NELE = 277,
+     NMUO = 278,
+     NLEP = 279,
+     NPHO = 280,
+     NJET = 281,
+     NBJET = 282,
+     NQGJET = 283,
+     HT = 284,
+     METMWT = 285,
+     MWT = 286,
+     MET = 287,
+     ALL = 288,
+     LEPSF = 289,
+     FILLHISTOS = 290,
+     NB = 291,
+     ID = 292,
+     SIN = 293,
+     COS = 294,
+     TAN = 295,
+     INT = 296,
+     Unary = 297
    };
 #endif
 /* Tokens.  */
@@ -87,13 +101,27 @@
 #define NBF 274
 #define DR 275
 #define DPHI 276
-#define NB 277
-#define ID 278
-#define SIN 279
-#define COS 280
-#define TAN 281
-#define INT 282
-#define Unary 283
+#define NELE 277
+#define NMUO 278
+#define NLEP 279
+#define NPHO 280
+#define NJET 281
+#define NBJET 282
+#define NQGJET 283
+#define HT 284
+#define METMWT 285
+#define MWT 286
+#define MET 287
+#define ALL 288
+#define LEPSF 289
+#define FILLHISTOS 290
+#define NB 291
+#define ID 292
+#define SIN 293
+#define COS 294
+#define TAN 295
+#define INT 296
+#define Unary 297
 
 
 
@@ -106,7 +134,7 @@ typedef union YYSTYPE
 	char* s;
 }
 /* Line 1529 of yacc.c.  */
-#line 110 "b.hpp"
+#line 138 "b.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
