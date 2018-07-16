@@ -22,28 +22,12 @@ map<string,string> parts;
 }
 %token DEF
 %token CMD
-%token ELE
-%token MUO
-%token LEP
-%token PHO
-%token JET
-%token BJET
-%token QGJET
-%token NUMET
-%token METLV
-%token PHI
-%token ETA
-%token ABSETA
-%token PT
-%token PZ
-%token NBF
-%token DR
-%token DPHI
+%token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
+%token PHI ETA ABSETA PT PZ NBF DR DPHI //functions
+%token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token <real> NB
 %token <s> ID 
-%token SIN
-%token COS
-%token TAN
+%token SIN COS TAN
 %token <real> INT
 //TO ADD IN LEX see course
 // %token OR AND NOT
@@ -345,6 +329,8 @@ int main(void) {
         }
 			
                 }
+
+
                 //calculator
 // e : e '+' e  { $$ = $1 + $3 ;string s=$2;
 //                                         tmp="{ "+s+" }m";                        

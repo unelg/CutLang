@@ -3,7 +3,6 @@
 #include "stdlib.h"
 #include <string>
 #include <iostream>
-//#include "y.tab.h"
 #include "b.hpp"
 int i=0;
 %}
@@ -15,7 +14,7 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def" return DEF;//case sensitive in this case
 "cmd" return CMD;
-"ELE" return ELE;
+"ELE" return ELE;//particles
 "MUO" return MUO;
 "LEP" return LEP;
 "PHO" return PHO;
@@ -24,7 +23,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "QGJET" return QGJET;
 "NUMET" return NUMET;
 "METLV" return METLV;
-"Phi" return PHI;
+"Phi" return PHI;//functions
 "Eta" return ETA;
 "AbsEta" return ABSETA;
 "Pt" return PT;
@@ -32,12 +31,26 @@ vardef {varname}" "?":"" "?.*"\n"
 "nbf" return NBF;
 "dR" return DR;
 "dPhi" return DPHI;
+"nELE" return NELE;//no arg funcs
+"nMUO" return NMUO;
+"nLEP" return NLEP;
+"nPHO" return NPHO;
+"nJET" return NJET;
+"nBJET" return NBJET;
+"nQGJET" return NQGJET;
+"HT" return HT;
+"METMWT" return METMWT;
+"MWT" return MWT;
+"MET" return MET;
+"ALL" return ALL;
+"LEPsf" return LEPSF;
+"FillHistos" return FILLHISTOS;
 "#".*"\n" ;
 [ \t\n] ;
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
-{integer} sscanf(yytext, "%lf",&yylval.real);return INT;//to test
+{integer} sscanf(yytext, "%lf",&yylval.real);return INT;
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:{}_mqPE,] return *yytext;
 [a-zA-Z]+{integer}? yylval.s=strdup(yytext);return ID;

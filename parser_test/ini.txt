@@ -8,3 +8,4 @@ def       WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
 def       WHbR2 : {WH2 , JET_-4 }dPhi   # angular distance between W2 and b jet
 def       Wchi2 : { WH1 }m - tan(-80) / 2.1 ^ - 2 + { WH2 }m - 80.4 / 2.1 ^ 2  #chi2 for W finder
 def       topchi2 : mTopH1 - mTopH2 / 4.2 ^ -2  #chi2 for top finder
+
