@@ -1,3 +1,5 @@
+def Anna: MUO_2 JET_0
+def Ana: MUO_2 JET_0 Anna
 def       WH1 : JET_-1 JET_-1   # W boson of the first top
 def       WH2 : JET_-11 JET_-11   # W boson of the second top
 def       mWH1 : { WH1 }m   # mass of W boson of the first top
@@ -5,7 +7,11 @@ def       mWH2 : { WH2 }m   # mass of @ boson of the second top
 def       mTopH1 : { WH1 JET_-2 }m   # first top quark's mass
 def       mTopH2 : { WH2 JET_-4 }m   # second top quark's mass
 def       WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
-def       WHbR2 : {WH2 , JET_-4 }dPhi   # angular distance between W2 and b jet
-def       Wchi2 : { WH1 }m - tan(-80) / 2.1 ^ - 2 + { WH2 }m - 80.4 / 2.1 ^ 2  #chi2 for W finder
-def       topchi2 : mTopH1 - mTopH2 / 4.2 ^ -2  #chi2 for top finder
+def       WHbR2 : {WH2 , JET_-4 }dR   # angular distance between W2 and b jet
+def       Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2  #chi2 for W finder
+def       topchi2 : mTopH1 - mTopH2 / 4.2 ^ 2  #chi2 for top finder
 
+cmd      ALL            # to count all events
+cmd      2 <= 6      # events with 6 or more jets
+cmd {ELE_0 ELE_1}m <= 1+2 AND ({ELE_0 ELE_1}m+3 [] 2.2 3.4)
+cmd {ELE_0 ELE_1}m <= 1+2 OR {Anna}q>= 1 ?  ({ELE_0 ELE_1}m+3 [] 2.2 3.4) : ALL

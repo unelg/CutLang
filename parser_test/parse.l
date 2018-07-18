@@ -45,6 +45,16 @@ vardef {varname}" "?":"" "?.*"\n"
 "ALL" return ALL;
 "LEPsf" return LEPSF;
 "FillHistos" return FILLHISTOS;
+"=="|"EQ" return EQ;//comparison operators
+"!="|"NE" return NE;
+"<="|"LE" return LE;
+">="|"GE" return GE;
+"<"|"LT" return LT;
+">"|"GT" return GT;
+"[]" return IRG;
+"][" return ERG;
+"AND"|"&&" return AND;//logical ops
+"OR"|"||" return OR;
 "#".*"\n" ;
 [ \t\n] ;
 [tT][aA][nN] return TAN;
@@ -52,6 +62,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][oO][sS] return COS;
 {integer} sscanf(yytext, "%lf",&yylval.real);return INT;
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}_mqPE,] return *yytext;
+[-+*/()^:{}_mqPE,?] return *yytext;
 [a-zA-Z]+{integer}? yylval.s=strdup(yytext);return ID;
 %%

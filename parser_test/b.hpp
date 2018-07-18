@@ -78,7 +78,17 @@
      COS = 294,
      TAN = 295,
      INT = 296,
-     Unary = 297
+     OR = 297,
+     AND = 298,
+     LT = 299,
+     GT = 300,
+     LE = 301,
+     GE = 302,
+     EQ = 303,
+     NE = 304,
+     IRG = 305,
+     ERG = 306,
+     Unary = 307
    };
 #endif
 /* Tokens.  */
@@ -121,7 +131,17 @@
 #define COS 294
 #define TAN 295
 #define INT 296
-#define Unary 297
+#define OR 297
+#define AND 298
+#define LT 299
+#define GT 300
+#define LE 301
+#define GE 302
+#define EQ 303
+#define NE 304
+#define IRG 305
+#define ERG 306
+#define Unary 307
 
 
 
@@ -134,7 +154,7 @@ typedef union YYSTYPE
 	char* s;
 }
 /* Line 1529 of yacc.c.  */
-#line 138 "b.hpp"
+#line 158 "b.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
