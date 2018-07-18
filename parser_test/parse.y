@@ -1,5 +1,4 @@
 %{ 
-//#define YYSTYPE double
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -9,12 +8,13 @@
 extern int yylex();
 extern int yyparse();
 void yyerror(const char *s) { std::cout << s << std::endl; } 
-double result;
+int cutcount;
 using namespace std;
 string tmp;
 int pnum;
 map<string,string> vars;
 map<string,string> parts;
+map<int,string> cuts;
 %}
 %union {
 	double real;
@@ -29,19 +29,17 @@ map<string,string> parts;
 %token <s> ID 
 %token SIN COS TAN
 %token <real> INT
-//TO ADD IN LEX see course
-// %token OR AND NOT
-// %token LT GT LE GE EQ NEQ
-// %left OR
-// %left AND
-// %right NOT
-// %nonassoc LT GT LE GE EQ NEQ
+%token OR AND 
+%token LT GT LE GE EQ NE IRG ERG
+%left OR
+%left AND
+%nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
 %right Unary
 %right '^'
 %type <real> index
-%type <s> particule particules list function e
+%type <s> particule particules list function e condition action ifstatement
 %%
 input : definitions commands 
      ;
@@ -63,7 +61,7 @@ definition : DEF ID ':' particules {
                                          
                                          string phrase= $4;
                                          parts.insert(make_pair(name,phrase));
-                                         cout<<"\ndef "<<$2<<":"<<$4<<endl;
+                                         //cout<<"\ndef "<<$2<<":"<<$4<<endl;
                                          
 				}
             | DEF ID ':' e {
@@ -81,7 +79,7 @@ definition : DEF ID ':' particules {
                                          
                                          string phrase= $4;
                                          vars.insert(make_pair(name,phrase));
-                                         cout<<"\ndef "<<$2<<":"<<$4<<endl;
+                                         //cout<<"\ndef "<<$2<<":"<<$4<<endl;
                                          
 				}
         ;
@@ -248,8 +246,65 @@ index : '-' INT {$$=-$2;}
 commands : commands command 
         | 
         ;
-command : CMD {;} //to continue
+command : CMD condition {;} //to continue
+        | CMD ALL {;}
+        | CMD ifstatement {;}
 	;
+ifstatement : condition '?' action ':' action { string s1=$1; string s3=$3;string s4=$5;
+                        tmp=s1+" [] "+s3+" "+s4;   
+                        $$=strdup(tmp.c_str()); 
+                        } 
+            ;
+action : condition {$$=$1;}
+       | ALL {tmp= " all " ;
+                        $$=strdup(tmp.c_str());;}
+       | ifstatement {$$=$1;}
+       ;    
+condition : e LT e  { string s1=$1; string s3=$3;
+                        tmp=s1+" < "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }
+           | e GT e { string s1=$1; string s3=$3;
+                        tmp=s1+" > "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }
+           | e LE e { string s1=$1; string s3=$3;
+                        tmp=s1+" <= "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }  
+           | e GE e  { string s1=$1; string s3=$3;
+                        tmp=s1+" >= "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }
+           | e EQ e { string s1=$1; string s3=$3;
+                        tmp=s1+" == "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }
+           | e NE e { string s1=$1; string s3=$3;
+                        tmp=s1+" != "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        }  
+           | e IRG e e { string s1=$1; string s3=$3;string s4=$4;
+                        tmp=s1+" [] "+s3+" "+s4;   
+                        $$=strdup(tmp.c_str()); 
+                        }  
+           | e ERG e e { string s1=$1; string s3=$3;string s4=$4;
+                        tmp=s1+" ][ "+s3+" "+s4; 
+                        $$=strdup(tmp.c_str()); 
+                        }                            
+           | condition AND condition { string s1=$1; string s3=$3;
+                        tmp=s1+" and "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        } 
+           | condition OR condition { string s1=$1; string s3=$3;
+                        tmp=s1+" or "+s3;   
+                        $$=strdup(tmp.c_str()); 
+                        } 
+           | '(' condition ')' { string s3=$2;
+                                tmp=" ( "+s3+" ) ";   
+                                $$=strdup(tmp.c_str()); 
+                                } 
+            ;
 e : e '+' e  { string s1=$1; string s3=$3;
                tmp=s1+" + "+s3;   
                $$=strdup(tmp.c_str()); 
@@ -293,7 +348,7 @@ e : e '+' e  { string s1=$1; string s3=$3;
    | NB { tmp=to_string($1); $$=strdup(tmp.c_str()); } 
    | INT { tmp=to_string((int)$1); $$=strdup(tmp.c_str()); } 
    | function {$$=$1; pnum=0;}
-   // !!!!!!!!make the difference between ID + ID and ID ID in particules!!!!!!!!!!!->create two maps
+   //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well
                 map<string, string>::iterator it ;
                 it = vars.find($1);
@@ -327,11 +382,17 @@ int main(void) {
                 std::cout<<it->first<<" :: "<<it->second<<std::endl;
                 it++;
         }
-			
+	cout<<"\n CUTS : \n";
+	std::map<int, string>::iterator iter = cuts.begin();
+        while(iter != cuts.end())
+        {
+                cout<<iter->first<<" :: "<<iter->second<<endl;
+                iter++;
+        }		
                 }
 
 
-                //calculator
+                // simple calculator
 // e : e '+' e  { $$ = $1 + $3 ;string s=$2;
 //                                         tmp="{ "+s+" }m";                        
 //                                         $$=strdup(tmp.c_str()); }
