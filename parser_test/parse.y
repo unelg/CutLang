@@ -246,12 +246,27 @@ index : '-' INT {$$=-$2;}
 commands : commands command 
         | 
         ;
-command : CMD condition {;} //to continue
-        | CMD ALL {;}
-        | CMD ifstatement {;}
+command : CMD condition {                                         
+                                         string phrase= $2;
+                                         cuts.insert(make_pair(cutcount++,phrase));
+                                         cout<<"\ncut "<<$2<<endl;
+    
+				}
+        | CMD ALL {                                         
+                                         string phrase= " all ";
+                                         cuts.insert(make_pair(cutcount++,phrase));
+                                         cout<<"\ncut "<<"all"<<endl;
+    
+				}
+        | CMD ifstatement {                                         
+                                         string phrase= $2;
+                                         cuts.insert(make_pair(cutcount++,phrase));
+                                         cout<<"\ncut "<<$2<<endl;
+    
+				}
 	;
 ifstatement : condition '?' action ':' action { string s1=$1; string s3=$3;string s4=$5;
-                        tmp=s1+" [] "+s3+" "+s4;   
+                        tmp=s1+" ? "+s3+" : "+s4;   
                         $$=strdup(tmp.c_str()); 
                         } 
             ;
