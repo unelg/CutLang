@@ -249,19 +249,16 @@ commands : commands command
 command : CMD condition {                                         
                                          string phrase= $2;
                                          cuts.insert(make_pair(cutcount++,phrase));
-                                         cout<<"\ncut "<<$2<<endl;
     
 				}
         | CMD ALL {                                         
                                          string phrase= " all ";
                                          cuts.insert(make_pair(cutcount++,phrase));
-                                         cout<<"\ncut "<<"all"<<endl;
     
 				}
         | CMD ifstatement {                                         
                                          string phrase= $2;
                                          cuts.insert(make_pair(cutcount++,phrase));
-                                         cout<<"\ncut "<<$2<<endl;
     
 				}
 	;
