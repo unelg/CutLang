@@ -269,7 +269,7 @@ ifstatement : condition '?' action ':' action { string s1=$1; string s3=$3;strin
             ;
 action : condition {$$=$1;}
        | ALL {tmp= " all " ;
-                        $$=strdup(tmp.c_str());;}
+                        $$=strdup(tmp.c_str());}
        | ifstatement {$$=$1;}
        ;    
 condition : e LT e  { string s1=$1; string s3=$3;
