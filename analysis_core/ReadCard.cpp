@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
+#include <stdlib.h>
 
 #include "ReadCard.h"
 // If the variable cannot be found in the cardfile or the cardfile
@@ -24,7 +25,7 @@ double satof( std::string str ) {
   if ( tmp[0] == '0' && tmp[1] == 'b' &&  // if binary, handle differently
        str.find_last_of('b') == 1 ) {
     return (std::bitset<32>(tmp.substr(2))).to_ulong(); }
-  return ::atof(str.c_str());
+  return atof(str.c_str());
 }
 
 double ReadCard(const char *filename, const char *varname,
