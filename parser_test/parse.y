@@ -155,6 +155,71 @@ function : '{' particules '}' 'm' {
                                         s=s+"dPhi";                        
                                         $$=strdup(s.c_str());
                                 }
+        | NELE {    
+                                        
+                                        string s="NELE";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NMUO {    
+                                        
+                                        string s="NMUO";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NLEP {    
+                                        
+                                        string s="NLEP";                                                              
+                                        $$=strdup(s.c_str());
+                                }                        
+        | NPHO {    
+                                        
+                                        string s="NPHO";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NJET {    
+                                        
+                                        string s="NJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NBJET {    
+                                        
+                                        string s="NBJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NQGJET {    
+                                        
+                                        string s="NQGJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | HT {    
+                                        
+                                        string s="HT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | METMWT {    
+                                        
+                                        string s="METMWT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | MWT {    
+                                        
+                                        string s="MWT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | MET {    
+                                        
+                                        string s="MET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | ALL {    
+                                        
+                                        string s="ALL";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | LEPSF {    
+                                        
+                                        string s="LEPSF";                                                              
+                                        $$=strdup(s.c_str());
+                                }
         ;
 list : '{' particules { pnum=0; } ',' particules '}' { 
                                                         string s=$2;

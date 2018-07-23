@@ -1941,7 +1941,7 @@ yyreduce:
   case 42:
 #line 271 "parse.y"
     {tmp= " all " ;
-                        (yyval.s)=strdup(tmp.c_str());;;}
+                        (yyval.s)=strdup(tmp.c_str());;}
     break;
 
   case 43:
