@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <list>
 #include <iterator>
 extern int yylex();
 extern int yyparse();
@@ -13,7 +14,7 @@ using namespace std;
 string tmp;
 int pnum;
 map<string,string> vars;
-map<string,string> parts;
+map<string,string> parts; //this will be map names to list of particles
 map<int,string> cuts;
 %}
 %union {
