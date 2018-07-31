@@ -21,6 +21,7 @@ map<string,string> vars;
 list<string> parts; //for def of particles as given by user
 map<string,list<myParticle> > ListParts;//for particle definition
 list<myParticle> TmpParticle;
+list<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
 %}
 %union {
@@ -196,18 +197,56 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         list<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
-         | list DR {     
+         | list DR {     //create Node with TmpParticle1,TmpParticle
                                         
                                         string s=$1;                                       
                                         s=s+"dR";                        
                                         $$=strdup(s.c_str());
+                                        std::cout<<"\n DR TMP1 List: \n";
+                                                list<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle1.begin();
+                                                while (myiterator != TmpParticle1.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                                std::cout<<"\n DR TMP List: \n";
+                                                
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
                                         
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);
+                                        list<myParticle> newList1;
+                                        TmpParticle1.swap(newList1);
                                 }
-        | list DPHI {    //what to do here!!
+        | list DPHI {    //create Node with newlist1,newlist
                                         
                                         string s=$1;                                       
                                         s=s+"dPhi";                        
                                         $$=strdup(s.c_str());
+
+                                        std::cout<<"\n Dphi TMP1 List: \n";
+                                                list<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle1.begin();
+                                                while (myiterator != TmpParticle1.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                                std::cout<<"\n Dphi TMP List: \n";
+                                                
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+
+                                                list<myParticle> newList;
+                                                TmpParticle.swap(newList);
+                                                list<myParticle> newList1;
+                                                TmpParticle1.swap(newList1);
                                 }
         | NELE {    
                                         
@@ -275,7 +314,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         $$=strdup(s.c_str());
                                 }
         ;
-list : '{' particules { pnum=0; } ',' particules '}' { 
+list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
@@ -292,9 +331,7 @@ particules : particules particule {
 
                                         }
             | particule {if (pnum==0){
-                                                $$=strdup($1);
-                                                   
-                                                                                              
+                                                $$=strdup($1);                                                       
                                         }
                                         else{                                                
                                                 char s [512];
@@ -394,7 +431,6 @@ particule : ELE '_' index {
                         list<myParticle> newList= it->second ;
                         TmpParticle.splice(TmpParticle.end(), newList);
                         $$=$1;
-
                 }
 
                }
