@@ -19,9 +19,9 @@ struct myParticle{
 }; 
 map<string,string> vars;
 list<string> parts; //for def of particles as given by user
-map<string,list<myParticle> > ListParts;//for def
-map<int,string> cuts;
+map<string,list<myParticle> > ListParts;//for particle definition
 list<myParticle> TmpParticle;
+map<int,string> cuts;
 %}
 %union {
 	double real;
@@ -66,8 +66,7 @@ definition : DEF  ID  ':' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
-                                         
-                                        //string phrase= name+" : "+$4;
+                                        
                                         parts.push_back(name+" : "+$4);
                                         //List part 
                                         
@@ -75,7 +74,7 @@ definition : DEF  ID  ':' particules {
                                                 list<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
                                                 while (myiterator != TmpParticle.end()) {
-                                                std::cout << "Name: " << myiterator->type << " Grade: " << myiterator->index << endl;
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 myiterator++;
                                                 }
                                         
@@ -84,7 +83,7 @@ definition : DEF  ID  ':' particules {
                                         ListParts.insert(make_pair(name,newList));
                                                                                 
 				}
-            |  DEF ID  ':' e {
+            |  DEF ID  ':' e {//create node and insert it in map string->node
                                         pnum=0;
                                         map<string, string>::iterator it ;
                                         string name = $2;
@@ -110,15 +109,26 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                                 list<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
                                                 while (myiterator != TmpParticle.end()) {
-                                                std::cout << "Name: " << myiterator->type << " Grade: " << myiterator->index << endl;
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 myiterator++;
                                                 }
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
 
                                 }
          | '{' particules '}' 'q' {     
                                         string s=$2;
                                         tmp="{ "+s+" }q";                        
                                         $$=strdup(tmp.c_str());
+                                        std::cout<<"\n Q List: \n";
+                                                list<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
 
                                 }
          | '{' particules '}' 'P' {     
@@ -126,56 +136,74 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }P";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
+
                                 }
          | '{' particules '}' 'E' {     
                                         string s=$2;
                                         tmp="{ "+s+" }E";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PHI {     
                                         string s=$2;
                                         tmp="{ "+s+" }Phi";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ETA {     
                                         string s=$2;
                                         tmp="{ "+s+" }Eta";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ABSETA {     
                                         string s=$2;
                                         tmp="{ "+s+" }AbsEta";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PT {     
                                         string s=$2;
                                         tmp="{ "+s+" }Pt";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PZ {     
                                         string s=$2;
                                         tmp="{ "+s+" }Pz";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' NBF {     
                                         string s=$2;
                                         tmp="{ "+s+" }ndf";                        
                                         $$=strdup(tmp.c_str());
 
+                                        list<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | list DR {     
                                         
                                         string s=$1;                                       
                                         s=s+"dR";                        
                                         $$=strdup(s.c_str());
+                                        
                                 }
-        | list DPHI {    
+        | list DPHI {    //what to do here!!
                                         
                                         string s=$1;                                       
                                         s=s+"dPhi";                        
