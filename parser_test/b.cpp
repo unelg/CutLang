@@ -565,12 +565,12 @@ static const yytype_uint16 yyrline[] =
        0,    52,    52,    54,    55,    57,    87,   105,   120,   135,
      144,   152,   160,   168,   176,   184,   192,   200,   225,   251,
      256,   261,   266,   271,   276,   281,   286,   291,   296,   301,
-     306,   311,   317,   317,   325,   333,   347,   357,   365,   373,
-     381,   389,   397,   405,   413,   421,   441,   442,   444,   445,
-     447,   452,   457,   463,   468,   469,   470,   472,   476,   480,
-     484,   488,   492,   496,   500,   504,   508,   512,   517,   521,
-     525,   529,   533,   537,   541,   545,   549,   553,   557,   558,
-     559,   561
+     306,   311,   317,   317,   325,   333,   345,   355,   363,   371,
+     379,   387,   395,   403,   411,   419,   438,   439,   441,   442,
+     444,   449,   454,   460,   465,   466,   467,   469,   473,   477,
+     481,   485,   489,   493,   497,   501,   505,   509,   514,   518,
+     522,   526,   530,   534,   538,   542,   546,   550,   554,   555,
+     556,   558
 };
 #endif
 
@@ -1840,7 +1840,7 @@ yyreduce:
 
   case 18:
 #line 225 "parse.y"
-    {    //create Node with TmpParticle1,TmpParticle
+    {    //create Node with newlist1,newlist
                                         
                                         string s=(yyvsp[(1) - (2)].s);                                       
                                         s=s+"dPhi";                        
@@ -2016,9 +2016,7 @@ yyreduce:
   case 35:
 #line 333 "parse.y"
     {if (pnum==0){
-                                                (yyval.s)=strdup((yyvsp[(1) - (1)].s));
-                                                   
-                                                                                              
+                                                (yyval.s)=strdup((yyvsp[(1) - (1)].s));                                                       
                                         }
                                         else{                                                
                                                 char s [512];
@@ -2031,7 +2029,7 @@ yyreduce:
     break;
 
   case 36:
-#line 347 "parse.y"
+#line 345 "parse.y"
     {
                             //create particle add it to list of Particles
                                 myParticle a;
@@ -2045,7 +2043,7 @@ yyreduce:
     break;
 
   case 37:
-#line 357 "parse.y"
+#line 355 "parse.y"
     {       tmp="muo_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2057,7 +2055,7 @@ yyreduce:
     break;
 
   case 38:
-#line 365 "parse.y"
+#line 363 "parse.y"
     {       tmp="lep_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2069,7 +2067,7 @@ yyreduce:
     break;
 
   case 39:
-#line 373 "parse.y"
+#line 371 "parse.y"
     {       tmp="pho_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2081,7 +2079,7 @@ yyreduce:
     break;
 
   case 40:
-#line 381 "parse.y"
+#line 379 "parse.y"
     {       tmp="jet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2093,7 +2091,7 @@ yyreduce:
     break;
 
   case 41:
-#line 389 "parse.y"
+#line 387 "parse.y"
     {       tmp="bjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2105,7 +2103,7 @@ yyreduce:
     break;
 
   case 42:
-#line 397 "parse.y"
+#line 395 "parse.y"
     {       tmp="qgjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2117,7 +2115,7 @@ yyreduce:
     break;
 
   case 43:
-#line 405 "parse.y"
+#line 403 "parse.y"
     {       tmp="numet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2129,7 +2127,7 @@ yyreduce:
     break;
 
   case 44:
-#line 413 "parse.y"
+#line 411 "parse.y"
     {     tmp="metlv_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2141,7 +2139,7 @@ yyreduce:
     break;
 
   case 45:
-#line 421 "parse.y"
+#line 419 "parse.y"
     { //we want the original defintions as well -> put it in parts and put the rest in ListParts
                 
                 map<string,list<myParticle> >::iterator it;
@@ -2157,24 +2155,23 @@ yyreduce:
                         list<myParticle> newList= it->second ;
                         TmpParticle.splice(TmpParticle.end(), newList);
                         (yyval.s)=(yyvsp[(1) - (1)].s);
-
                 }
 
                ;}
     break;
 
   case 46:
-#line 441 "parse.y"
+#line 438 "parse.y"
     {(yyval.real)=-(yyvsp[(2) - (2)].real);;}
     break;
 
   case 47:
-#line 442 "parse.y"
+#line 439 "parse.y"
     {(yyval.real)= (yyvsp[(1) - (1)].real);;}
     break;
 
   case 50:
-#line 447 "parse.y"
+#line 444 "parse.y"
     {                                         
                                          string phrase= (yyvsp[(2) - (2)].s);
                                          cuts.insert(make_pair(cutcount++,phrase));
@@ -2183,7 +2180,7 @@ yyreduce:
     break;
 
   case 51:
-#line 452 "parse.y"
+#line 449 "parse.y"
     {                                         
                                          string phrase= " all ";
                                          cuts.insert(make_pair(cutcount++,phrase));
@@ -2192,7 +2189,7 @@ yyreduce:
     break;
 
   case 52:
-#line 457 "parse.y"
+#line 454 "parse.y"
     {                                         
                                          string phrase= (yyvsp[(2) - (2)].s);
                                          cuts.insert(make_pair(cutcount++,phrase));
@@ -2201,7 +2198,7 @@ yyreduce:
     break;
 
   case 53:
-#line 463 "parse.y"
+#line 460 "parse.y"
     { string s1=(yyvsp[(1) - (5)].s); string s3=(yyvsp[(3) - (5)].s);string s4=(yyvsp[(5) - (5)].s);
                         tmp=s1+" ? "+s3+" : "+s4;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2209,22 +2206,22 @@ yyreduce:
     break;
 
   case 54:
-#line 468 "parse.y"
+#line 465 "parse.y"
     {(yyval.s)=(yyvsp[(1) - (1)].s);;}
     break;
 
   case 55:
-#line 469 "parse.y"
+#line 466 "parse.y"
     {tmp= " all " ;(yyval.s)=strdup(tmp.c_str());;}
     break;
 
   case 56:
-#line 470 "parse.y"
+#line 467 "parse.y"
     {(yyval.s)=(yyvsp[(1) - (1)].s);;}
     break;
 
   case 57:
-#line 472 "parse.y"
+#line 469 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s); 
                         tmp=s1+" < "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2232,7 +2229,7 @@ yyreduce:
     break;
 
   case 58:
-#line 476 "parse.y"
+#line 473 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" > "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2240,7 +2237,7 @@ yyreduce:
     break;
 
   case 59:
-#line 480 "parse.y"
+#line 477 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" <= "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2248,7 +2245,7 @@ yyreduce:
     break;
 
   case 60:
-#line 484 "parse.y"
+#line 481 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" >= "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2256,7 +2253,7 @@ yyreduce:
     break;
 
   case 61:
-#line 488 "parse.y"
+#line 485 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" == "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2264,7 +2261,7 @@ yyreduce:
     break;
 
   case 62:
-#line 492 "parse.y"
+#line 489 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" != "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2272,7 +2269,7 @@ yyreduce:
     break;
 
   case 63:
-#line 496 "parse.y"
+#line 493 "parse.y"
     { string s1=(yyvsp[(1) - (4)].s); string s3=to_string((yyvsp[(3) - (4)].real));string s4=to_string((yyvsp[(4) - (4)].real));
                         tmp=s1+" [] "+s3+" "+s4;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2280,7 +2277,7 @@ yyreduce:
     break;
 
   case 64:
-#line 500 "parse.y"
+#line 497 "parse.y"
     { string s1=(yyvsp[(1) - (4)].s); string s3=to_string((yyvsp[(3) - (4)].real));string s4=to_string((yyvsp[(4) - (4)].real));
                         tmp=s1+" ][ "+s3+" "+s4; 
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2288,7 +2285,7 @@ yyreduce:
     break;
 
   case 65:
-#line 504 "parse.y"
+#line 501 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" and "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2296,7 +2293,7 @@ yyreduce:
     break;
 
   case 66:
-#line 508 "parse.y"
+#line 505 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                         tmp=s1+" or "+s3;   
                         (yyval.s)=strdup(tmp.c_str()); 
@@ -2304,7 +2301,7 @@ yyreduce:
     break;
 
   case 67:
-#line 512 "parse.y"
+#line 509 "parse.y"
     { string s3=(yyvsp[(2) - (3)].s);
                                 tmp=" ( "+s3+" ) ";   
                                 (yyval.s)=strdup(tmp.c_str()); 
@@ -2312,7 +2309,7 @@ yyreduce:
     break;
 
   case 68:
-#line 517 "parse.y"
+#line 514 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" + "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2320,7 +2317,7 @@ yyreduce:
     break;
 
   case 69:
-#line 521 "parse.y"
+#line 518 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" - "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2328,7 +2325,7 @@ yyreduce:
     break;
 
   case 70:
-#line 525 "parse.y"
+#line 522 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" * "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2336,7 +2333,7 @@ yyreduce:
     break;
 
   case 71:
-#line 529 "parse.y"
+#line 526 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" / "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2344,7 +2341,7 @@ yyreduce:
     break;
 
   case 72:
-#line 533 "parse.y"
+#line 530 "parse.y"
     { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
                tmp=s1+" ^ "+s3;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2352,7 +2349,7 @@ yyreduce:
     break;
 
   case 73:
-#line 537 "parse.y"
+#line 534 "parse.y"
     { string s1=(yyvsp[(2) - (2)].s);
                tmp=" -"+s1;   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2360,7 +2357,7 @@ yyreduce:
     break;
 
   case 74:
-#line 541 "parse.y"
+#line 538 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" cos( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2368,7 +2365,7 @@ yyreduce:
     break;
 
   case 75:
-#line 545 "parse.y"
+#line 542 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" sin( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2376,7 +2373,7 @@ yyreduce:
     break;
 
   case 76:
-#line 549 "parse.y"
+#line 546 "parse.y"
     { string s3=(yyvsp[(3) - (4)].s);
                tmp=" tan( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2384,7 +2381,7 @@ yyreduce:
     break;
 
   case 77:
-#line 553 "parse.y"
+#line 550 "parse.y"
     { string s3=(yyvsp[(2) - (3)].s);
                tmp=" ( "+s3+" ) ";   
                (yyval.s)=strdup(tmp.c_str()); 
@@ -2392,22 +2389,22 @@ yyreduce:
     break;
 
   case 78:
-#line 557 "parse.y"
+#line 554 "parse.y"
     { tmp=to_string((yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
     break;
 
   case 79:
-#line 558 "parse.y"
+#line 555 "parse.y"
     { tmp=to_string((int)(yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
     break;
 
   case 80:
-#line 559 "parse.y"
+#line 556 "parse.y"
     {(yyval.s)=(yyvsp[(1) - (1)].s); pnum=0;;}
     break;
 
   case 81:
-#line 561 "parse.y"
+#line 558 "parse.y"
     { //we want the original defintions as well
                 map<string, string>::iterator it ;
                 it = vars.find((yyvsp[(1) - (1)].s));
@@ -2427,7 +2424,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2431 "b.cpp"
+#line 2428 "b.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2641,7 +2638,7 @@ yyreturn:
 }
 
 
-#line 577 "parse.y"
+#line 574 "parse.y"
 
 int main(void) {
         yyparse(); 
