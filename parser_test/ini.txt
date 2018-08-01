@@ -1,6 +1,6 @@
 def Anna: MUO_2 JET_-1
 def Ana: MUO_2 JET_0 Anna
-def       WH1 : JET_-1 JET_-1   # W boson of the first top
+def       WH1 : JET_ JET_-1   # W boson of the first top
 def       WH2 : JET_-11 JET_-11  # W boson of the second top
 def       mWH1 : { WH1 }m   # mass of W boson of the first top
 def       mWH2 : { WH2 }m   # mass of @ boson of the second top
