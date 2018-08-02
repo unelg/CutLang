@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <vector>
 #include <iterator>
 extern int yylex();
 extern int yyparse();
@@ -19,14 +20,14 @@ struct myParticle{
 }; 
 map<string,string> vars;
 list<string> parts; //for def of particles as given by user
-map<string,list<myParticle> > ListParts;//for particle definition
-list<myParticle> TmpParticle;
-list<myParticle> TmpParticle1;//to be used for list of 2 particles
+map<string,vector<myParticle> > ListParts;//for particle definition
+vector<myParticle> TmpParticle;
+vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
 %}
 %union {
 	double real;
-	char* s;
+	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 %token DEF
 %token CMD
@@ -57,7 +58,7 @@ definitions : definitions definition
 definition : DEF  ID  ':' particules {
 
                                         pnum=0;
-                                        map<string,list<myParticle> >::iterator it ;
+                                        map<string,vector<myParticle> >::iterator it ;
                                         string name = $2;
                                         it = ListParts.find(name);
                         
@@ -72,14 +73,14 @@ definition : DEF  ID  ':' particules {
                                         //List part 
                                         
                                                 std::cout<<"\n TMP List: \n";
-                                                list<myParticle>::iterator myiterator;
+                                                vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
                                                 while (myiterator != TmpParticle.end()) {
                                                 std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 myiterator++;
                                                 }
                                         
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);
                                         ListParts.insert(make_pair(name,newList));
                                                                                 
@@ -107,14 +108,15 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }m";                        
                                         $$=strdup(tmp.c_str());
                                         std::cout<<"\n M List: \n";
-                                                list<myParticle>::iterator myiterator;
+                                                vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
                                                 while (myiterator != TmpParticle.end()) {
                                                 std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 myiterator++;
                                                 }
-                                        list<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);
+                                        //then add newList to node
 
                                 }
          | '{' particules '}' 'q' {     
@@ -122,13 +124,13 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }q";                        
                                         $$=strdup(tmp.c_str());
                                         std::cout<<"\n Q List: \n";
-                                                list<myParticle>::iterator myiterator;
+                                                vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
                                                 while (myiterator != TmpParticle.end()) {
                                                 std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 myiterator++;
                                                 }
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
 
                                 }
@@ -137,7 +139,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }P";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
 
                                 }
@@ -146,7 +148,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }E";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PHI {     
@@ -154,7 +156,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }Phi";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ETA {     
@@ -162,7 +164,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }Eta";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ABSETA {     
@@ -170,7 +172,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }AbsEta";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PT {     
@@ -178,7 +180,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }Pt";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PZ {     
@@ -186,7 +188,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }Pz";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' NBF {     
@@ -194,7 +196,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         tmp="{ "+s+" }ndf";                        
                                         $$=strdup(tmp.c_str());
 
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                 }
          | list DR {     //create Node with TmpParticle1,TmpParticle
@@ -203,7 +205,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         s=s+"dR";                        
                                         $$=strdup(s.c_str());
                                         std::cout<<"\n DR TMP1 List: \n";
-                                                list<myParticle>::iterator myiterator;
+                                                vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle1.begin();
                                                 while (myiterator != TmpParticle1.end()) {
                                                 std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
@@ -217,9 +219,9 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                                 myiterator++;
                                                 }
                                         
-                                        list<myParticle> newList;
+                                        vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        list<myParticle> newList1;
+                                        vector<myParticle> newList1;
                                         TmpParticle1.swap(newList1);
                                 }
         | list DPHI {    //create Node with newlist1,newlist
@@ -229,7 +231,7 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                         $$=strdup(s.c_str());
 
                                         std::cout<<"\n Dphi TMP1 List: \n";
-                                                list<myParticle>::iterator myiterator;
+                                                vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle1.begin();
                                                 while (myiterator != TmpParticle1.end()) {
                                                 std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
@@ -243,9 +245,9 @@ function : '{' particules '}' 'm' {     //have to empty list in here and ready t
                                                 myiterator++;
                                                 }
 
-                                                list<myParticle> newList;
+                                                vector<myParticle> newList;
                                                 TmpParticle.swap(newList);
-                                                list<myParticle> newList1;
+                                                vector<myParticle> newList1;
                                                 TmpParticle1.swap(newList1);
                                 }
         | NELE {    
@@ -343,7 +345,6 @@ particules : particules particule {
                                         pnum++;}
             ;
 particule : ELE '_' index {
-                            //create particle add it to list of Particles
                                 myParticle a;
                                 a.type = "ELE";
                                 a.index = (int)$3;
@@ -384,7 +385,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);  
                                 
                         }
-        | BJET '_' index {       tmp="bjet_"+to_string((int)$3);                        
+        | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
                                 a.type = "BJET";
@@ -392,7 +393,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);  
                                 
                         }
-        | QGJET '_' index {       tmp="qgjet_"+to_string((int)$3);                        
+        | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
                                 a.type = "QGJET";
@@ -416,9 +417,9 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);  
                                 
                         }
-        | ID { //we want the original defintions as well -> put it in parts and put the rest in ListParts
+        | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 
-                map<string,list<myParticle> >::iterator it;
+                map<string,vector<myParticle> >::iterator it;
                 it = ListParts.find($1);
      
                 if(it == ListParts.end()) {
@@ -428,8 +429,8 @@ particule : ELE '_' index {
                         
                 }
                 else {
-                        list<myParticle> newList= it->second ;
-                        TmpParticle.splice(TmpParticle.end(), newList);
+                        vector<myParticle> newList= it->second;
+                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
 
@@ -490,11 +491,11 @@ condition : e LT e  { string s1=$1; string s3=$3;
                         tmp=s1+" != "+s3;   
                         $$=strdup(tmp.c_str()); 
                         }  
-           | e IRG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);
+           | e IRG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
                         tmp=s1+" [] "+s3+" "+s4;   
                         $$=strdup(tmp.c_str()); 
                         }  
-           | e ERG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);
+           | e ERG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
                         tmp=s1+" ][ "+s3+" "+s4; 
                         $$=strdup(tmp.c_str()); 
                         }                            
@@ -569,6 +570,7 @@ e : e '+' e  { string s1=$1; string s3=$3;
                         tmp= it->second ;
                         $$=strdup(tmp.c_str());
                 }
+                //get the node from variable map
                }
    ;
 %%
@@ -577,10 +579,10 @@ int main(void) {
 
 cout<<"\n Particle Lists: \n";
         
-        for (map<string,list<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
+        for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
                 {
                 cout << it1->first << ": ";
-                for (list<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
+                for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
                 cout << lit->type << "_" << lit->index << " ";
                 cout << "\n";
                 }
