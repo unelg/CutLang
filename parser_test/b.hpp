@@ -151,7 +151,7 @@ typedef union YYSTYPE
 #line 28 "parse.y"
 {
 	double real;
-	char* s;
+	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 /* Line 1529 of yacc.c.  */
 #line 158 "b.hpp"
