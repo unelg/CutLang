@@ -21,7 +21,7 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate() override{
+    virtual double evaluate() {
         return (*f)(left->evaluate());
     }
     virtual ~UnaryAONode() {

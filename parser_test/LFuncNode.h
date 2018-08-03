@@ -28,7 +28,7 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate() override{
+    virtual double evaluate() {
         return (*f)(inputParticles1,inputParticles2);
     }
     virtual ~LFuncNode() {}

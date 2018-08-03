@@ -24,7 +24,7 @@ public:
         right=r;
     }
 
-    virtual double evaluate() override{
+    virtual double evaluate(){
             return (*f)(left->evaluate(),right->evaluate());
     }
     virtual ~BinaryNode() {
