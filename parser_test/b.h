@@ -155,7 +155,7 @@ typedef union YYSTYPE
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 /* Line 1529 of yacc.c.  */
-#line 159 "b.hpp"
+#line 159 "b.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

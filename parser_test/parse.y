@@ -1,9 +1,12 @@
 %{ 
+#include "NodeTree.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
 #include <string>
 #include <map>
+#include <list>
+#include <vector>
 #include <iterator>
 extern int yylex();
 extern int yyparse();
@@ -13,12 +16,17 @@ using namespace std;
 string tmp;
 int pnum;
 map<string,string> vars;
-map<string,string> parts;
+list<string> parts; //for def of particles as given by user
+map<string,vector<myParticle> > ListParts;//for particle definition
+vector<myParticle> TmpParticle;
+vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
+Node* result;
 %}
 %union {
+        Node* node;
 	double real;
-	char* s;
+	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 %token DEF
 %token CMD
@@ -46,25 +54,37 @@ input : definitions commands
 definitions : definitions definition 
             | 
             ;
-definition : DEF ID ':' particules {
+definition : DEF  ID  ':' particules {
+
                                         pnum=0;
-                                        map<string, string>::iterator it ;
+                                        map<string,vector<myParticle> >::iterator it ;
                                         string name = $2;
-                                        it = parts.find(name);
+                                        it = ListParts.find(name);
                         
-                                        if(it != parts.end()) {
+                                        if(it != ListParts.end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror("Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
-                                         
-                                         string phrase= $4;
-                                         parts.insert(make_pair(name,phrase));
-                                         //cout<<"\ndef "<<$2<<":"<<$4<<endl;
-                                         
+                                        
+                                        parts.push_back(name+" : "+$4);
+                                        //List part 
+                                        
+                                                std::cout<<"\n TMP List: \n";
+                                                vector<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                        
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);
+                                        ListParts.insert(make_pair(name,newList));
+                                                                                
 				}
-            | DEF ID ':' e {
+            |  DEF ID  ':' e {//create node and insert it in map string->node
                                         pnum=0;
                                         map<string, string>::iterator it ;
                                         string name = $2;
@@ -79,20 +99,38 @@ definition : DEF ID ':' particules {
                                          
                                          string phrase= $4;
                                          vars.insert(make_pair(name,phrase));
-                                         //cout<<"\ndef "<<$2<<":"<<$4<<endl;
                                          
 				}
         ;
-function : '{' particules '}' 'm' {     
+function : '{' particules '}' 'm' {     //have to empty list in here and ready to create the node
                                         string s=$2;
                                         tmp="{ "+s+" }m";                        
                                         $$=strdup(tmp.c_str());
+                                        std::cout<<"\n M List: \n";
+                                                vector<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);
+                                        //then add newList to node
 
                                 }
          | '{' particules '}' 'q' {     
                                         string s=$2;
                                         tmp="{ "+s+" }q";                        
                                         $$=strdup(tmp.c_str());
+                                        std::cout<<"\n Q List: \n";
+                                                vector<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
 
                                 }
          | '{' particules '}' 'P' {     
@@ -100,63 +138,184 @@ function : '{' particules '}' 'm' {
                                         tmp="{ "+s+" }P";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
+
                                 }
          | '{' particules '}' 'E' {     
                                         string s=$2;
                                         tmp="{ "+s+" }E";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PHI {     
                                         string s=$2;
                                         tmp="{ "+s+" }Phi";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ETA {     
                                         string s=$2;
                                         tmp="{ "+s+" }Eta";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' ABSETA {     
                                         string s=$2;
                                         tmp="{ "+s+" }AbsEta";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PT {     
                                         string s=$2;
                                         tmp="{ "+s+" }Pt";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' PZ {     
                                         string s=$2;
                                         tmp="{ "+s+" }Pz";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
          | '{' particules '}' NBF {     
                                         string s=$2;
                                         tmp="{ "+s+" }ndf";                        
                                         $$=strdup(tmp.c_str());
 
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);//then add newList to node
                                 }
-         | list DR {     
+         | list DR {     //create Node with TmpParticle1,TmpParticle
                                         
                                         string s=$1;                                       
                                         s=s+"dR";                        
                                         $$=strdup(s.c_str());
+                                        std::cout<<"\n DR TMP1 List: \n";
+                                                vector<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle1.begin();
+                                                while (myiterator != TmpParticle1.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                                std::cout<<"\n DR TMP List: \n";
+                                                
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                        
+                                        vector<myParticle> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle> newList1;
+                                        TmpParticle1.swap(newList1);
                                 }
-        | list DPHI {    
+        | list DPHI {    //create Node with newlist1,newlist
                                         
                                         string s=$1;                                       
                                         s=s+"dPhi";                        
                                         $$=strdup(s.c_str());
+
+                                        std::cout<<"\n Dphi TMP1 List: \n";
+                                                vector<myParticle>::iterator myiterator;
+                                                myiterator = TmpParticle1.begin();
+                                                while (myiterator != TmpParticle1.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+                                                std::cout<<"\n Dphi TMP List: \n";
+                                                
+                                                myiterator = TmpParticle.begin();
+                                                while (myiterator != TmpParticle.end()) {
+                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                myiterator++;
+                                                }
+
+                                                vector<myParticle> newList;
+                                                TmpParticle.swap(newList);
+                                                vector<myParticle> newList1;
+                                                TmpParticle1.swap(newList1);
+                                }
+        | NELE {    
+                                        
+                                        string s="NELE";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NMUO {    
+                                        
+                                        string s="NMUO";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NLEP {    
+                                        
+                                        string s="NLEP";                                                              
+                                        $$=strdup(s.c_str());
+                                }                        
+        | NPHO {    
+                                        
+                                        string s="NPHO";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NJET {    
+                                        
+                                        string s="NJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NBJET {    
+                                        
+                                        string s="NBJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | NQGJET {    
+                                        
+                                        string s="NQGJET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | HT {    
+                                        
+                                        string s="HT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | METMWT {    
+                                        
+                                        string s="METMWT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | MWT {    
+                                        
+                                        string s="MWT";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | MET {    
+                                        
+                                        string s="MET";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | ALL {    
+                                        
+                                        string s="ALL";                                                              
+                                        $$=strdup(s.c_str());
+                                }
+        | LEPSF {    
+                                        
+                                        string s="LEPSF";                                                              
+                                        $$=strdup(s.c_str());
                                 }
         ;
-list : '{' particules { pnum=0; } ',' particules '}' { 
+list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
@@ -173,8 +332,7 @@ particules : particules particule {
 
                                         }
             | particule {if (pnum==0){
-                                                $$=strdup($1);
-                                                pnum++;                                                
+                                                $$=strdup($1);                                                       
                                         }
                                         else{                                                
                                                 char s [512];
@@ -182,60 +340,97 @@ particules : particules particule {
                                                 strcat(s," ");
                                                 strcat(s,$1);
                                                 strcpy($$,s);
-                                        }}
+                                        }
+                                        pnum++;}
             ;
 particule : ELE '_' index {
-                            //do something with name and index? Maybe put them in lists
-                                                        
-                            tmp="ele_"+to_string((int)$3);                        
-                            $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "ELE";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);                            
+                                tmp="ele_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
                                                         
                             }
         | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "MUO";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "LEP";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "PHO";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "JET";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
-        | BJET '_' index {       tmp="bjet_"+to_string((int)$3);                        
+        | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "BJET";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
-        | QGJET '_' index {       tmp="qgjet_"+to_string((int)$3);                        
+        | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "QGJET";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "NUMET";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
-        | METLV '_' index {       tmp="metlv_"+to_string((int)$3);                        
+        | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
+                                myParticle a;
+                                a.type = "METLV";
+                                a.index = (int)$3;
+                                TmpParticle.push_back(a);  
                                 
                         }
-        | ID { //we want the original defintions as well
-                map<string, string>::iterator it ;
-                it = parts.find($1);
+        | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
+                
+                map<string,vector<myParticle> >::iterator it;
+                it = ListParts.find($1);
      
-                if(it == parts.end()) {
+                if(it == ListParts.end()) {
                         cout <<$1<<" : " ;
                         yyerror("Particule not defined");
-                        YYERROR;//stops parsing if variable not found
+                        YYERROR;//stops parsing if particle not found
                         
                 }
                 else {
-                        tmp= it->second ;
-                        $$=strdup(tmp.c_str());
+                        vector<myParticle> newList= it->second;
+                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                        $$=$1;
                 }
 
                }
@@ -268,11 +463,10 @@ ifstatement : condition '?' action ':' action { string s1=$1; string s3=$3;strin
                         } 
             ;
 action : condition {$$=$1;}
-       | ALL {tmp= " all " ;
-                        $$=strdup(tmp.c_str());}
+       | ALL {tmp= " all " ;$$=strdup(tmp.c_str());}
        | ifstatement {$$=$1;}
        ;    
-condition : e LT e  { string s1=$1; string s3=$3;
+condition : e LT e  { string s1=$1; string s3=$3; 
                         tmp=s1+" < "+s3;   
                         $$=strdup(tmp.c_str()); 
                         }
@@ -296,11 +490,11 @@ condition : e LT e  { string s1=$1; string s3=$3;
                         tmp=s1+" != "+s3;   
                         $$=strdup(tmp.c_str()); 
                         }  
-           | e IRG e e { string s1=$1; string s3=$3;string s4=$4;
+           | e IRG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
                         tmp=s1+" [] "+s3+" "+s4;   
                         $$=strdup(tmp.c_str()); 
                         }  
-           | e ERG e e { string s1=$1; string s3=$3;string s4=$4;
+           | e ERG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
                         tmp=s1+" ][ "+s3+" "+s4; 
                         $$=strdup(tmp.c_str()); 
                         }                            
@@ -375,25 +569,41 @@ e : e '+' e  { string s1=$1; string s3=$3;
                         tmp= it->second ;
                         $$=strdup(tmp.c_str());
                 }
+                //get the node from variable map
                }
    ;
 %%
 int main(void) {
         yyparse(); 
-        cout<<"\n Variables results: \n";
-	std::map<std::string, string>::iterator it = vars.begin();
-        while(it != vars.end())
-        {
-                std::cout<<it->first<<" :: "<<it->second<<std::endl;
-                it++;
-        }
-        cout<<"\n Particles results: \n";
-	 it = parts.begin();
+
+cout<<"\n Particle Lists: \n";
+        
+        for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
+                {
+                cout << it1->first << ": ";
+                for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
+                cout << lit->type << "_" << lit->index << " ";
+                cout << "\n";
+                }
+                
+        
+        cout<<"\n Particles defintions as given by user: \n";
+	 
+        std::list<std::string>::iterator it = parts.begin();
         while(it != parts.end())
         {
-                std::cout<<it->first<<" :: "<<it->second<<std::endl;
+                std::cout<<(*it)<<std::endl;
                 it++;
         }
+
+        cout<<"\n Variables results: \n";
+	map<string,string >::iterator itv = vars.begin();
+        while(itv != vars.end())
+        {
+                std::cout<<itv->first<<" :: "<<itv->second<<std::endl;
+                itv++;
+        }
+
 	cout<<"\n CUTS : \n";
 	std::map<int, string>::iterator iter = cuts.begin();
         while(iter != cuts.end())

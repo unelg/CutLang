@@ -1,10 +1,10 @@
 %option noyywrap
 %{
+class Node;
 #include "stdlib.h"
 #include <string>
 #include <iostream>
 #include "b.hpp"
-int i=0;
 %}
 integer [0-9]+
 exp [eE][+-]?{integer}
