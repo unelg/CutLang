@@ -1,4 +1,5 @@
 %{ 
+#include "NodeTree.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -14,18 +15,16 @@ int cutcount;
 using namespace std;
 string tmp;
 int pnum;
-struct myParticle{
-        string type;
-        int index;
-}; 
 map<string,string> vars;
 list<string> parts; //for def of particles as given by user
 map<string,vector<myParticle> > ListParts;//for particle definition
 vector<myParticle> TmpParticle;
 vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
+Node* result;
 %}
 %union {
+        Node* node;
 	double real;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }

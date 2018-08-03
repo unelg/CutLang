@@ -207,7 +207,7 @@ Node* result;
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 
 /* Enabling verbose error messages.  */
@@ -232,7 +232,7 @@ typedef union YYSTYPE
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 /* Line 193 of yacc.c.  */
-#line 236 "b.cpp"
+#line 236 "b.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -245,7 +245,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 249 "b.cpp"
+#line 249 "b.c"
 
 #ifdef short
 # undef short
@@ -2429,7 +2429,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2433 "b.cpp"
+#line 2433 "b.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
