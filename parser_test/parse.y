@@ -21,7 +21,6 @@ map<string,vector<myParticle> > ListParts;//for particle definition
 vector<myParticle> TmpParticle;
 vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
-Node* result;
 %}
 %union {
         Node* node;
