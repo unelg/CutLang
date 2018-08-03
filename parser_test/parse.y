@@ -15,6 +15,8 @@ int cutcount;
 using namespace std;
 string tmp;
 int pnum;
+//modify types to ints in myParticle
+//see how to give input to yyparse and get output
 //list<string> vars;
 list<string> parts; //for def of particles as given by user
 map<string,Node*> NodeVars;
