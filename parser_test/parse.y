@@ -15,12 +15,13 @@ int cutcount;
 using namespace std;
 string tmp;
 int pnum;
-map<string,string> vars;
+//list<string> vars;
 list<string> parts; //for def of particles as given by user
+map<string,Node*> NodeVars;
 map<string,vector<myParticle> > ListParts;//for particle definition
 vector<myParticle> TmpParticle;
 vector<myParticle> TmpParticle1;//to be used for list of 2 particles
-map<int,string> cuts;
+map<int,Node*> NodeCuts;
 %}
 %union {
         Node* node;
@@ -46,7 +47,8 @@ map<int,string> cuts;
 %right Unary
 %right '^'
 %type <real> index
-%type <s> particule particules list function e condition action ifstatement
+%type <node> e function condition
+%type <s> particule particules list action ifstatement
 %%
 input : definitions commands 
      ;
@@ -68,250 +70,194 @@ definition : DEF  ID  ':' particules {
                                         }
                                         
                                         parts.push_back(name+" : "+$4);
-                                        //List part 
                                         
-                                                std::cout<<"\n TMP List: \n";
-                                                vector<myParticle>::iterator myiterator;
-                                                myiterator = TmpParticle.begin();
-                                                while (myiterator != TmpParticle.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
+                                        
+                                                // std::cout<<"\n TMP List: \n";
+                                                // vector<myParticle>::iterator myiterator;
+                                                // myiterator = TmpParticle.begin();
+                                                // while (myiterator != TmpParticle.end()) {
+                                                // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                // myiterator++;
+                                                // }
                                         
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
                                         ListParts.insert(make_pair(name,newList));
                                                                                 
 				}
-            |  DEF ID  ':' e {//create node and insert it in map string->node
+            |  DEF ID  ':' e {
                                         pnum=0;
-                                        map<string, string>::iterator it ;
-                                        string name = $2;
-                                        it = vars.find(name);
+                                         map<string, Node*>::iterator it ;
+                                         string name = $2;
+                                         it = NodeVars.find(name);
                         
-                                        if(it != vars.end()) {
+                                        if(it != NodeVars.end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror("Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
-                                         
-                                         string phrase= $4;
-                                         vars.insert(make_pair(name,phrase));
-                                         
+                                        NodeVars.insert(make_pair(name,$4));
 				}
         ;
-function : '{' particules '}' 'm' {     //have to empty list in here and ready to create the node
+function : '{' particules '}' 'm' {     
                                         string s=$2;
                                         tmp="{ "+s+" }m";                        
-                                        $$=strdup(tmp.c_str());
-                                        std::cout<<"\n M List: \n";
-                                                vector<myParticle>::iterator myiterator;
-                                                myiterator = TmpParticle.begin();
-                                                while (myiterator != TmpParticle.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
+                                        //$$=strdup(tmp.c_str());
+                                        // std::cout<<"\n M List: \n";
+                                        //         vector<myParticle>::iterator myiterator;
+                                        //         myiterator = TmpParticle.begin();
+                                        //         while (myiterator != TmpParticle.end()) {
+                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                        //         myiterator++;
+                                        //         }
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        //then add newList to node
+                                        $$=new FuncNode(MASS,newList,"m");
 
                                 }
          | '{' particules '}' 'q' {     
                                         string s=$2;
                                         tmp="{ "+s+" }q";                        
-                                        $$=strdup(tmp.c_str());
-                                        std::cout<<"\n Q List: \n";
-                                                vector<myParticle>::iterator myiterator;
-                                                myiterator = TmpParticle.begin();
-                                                while (myiterator != TmpParticle.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
-
+                                        $$=new FuncNode(MASS,newList,"q");
                                 }
          | '{' particules '}' 'P' {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }P";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
-
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"p");
                                 }
          | '{' particules '}' 'E' {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }E";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"e");
                                 }
          | '{' particules '}' PHI {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }Phi";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"phi");
                                 }
          | '{' particules '}' ETA {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }Eta";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"eta");
                                 }
          | '{' particules '}' ABSETA {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }AbsEta";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"abseta");
                                 }
          | '{' particules '}' PT {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }Pt";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"pt");
                                 }
          | '{' particules '}' PZ {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }Pz";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"pz");
                                 }
          | '{' particules '}' NBF {     
-                                        string s=$2;
-                                        tmp="{ "+s+" }ndf";                        
-                                        $$=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MASS,newList,"nbf");
                                 }
-         | list DR {     //create Node with TmpParticle1,TmpParticle
-                                        
-                                        string s=$1;                                       
-                                        s=s+"dR";                        
-                                        $$=strdup(s.c_str());
-                                        std::cout<<"\n DR TMP1 List: \n";
-                                                vector<myParticle>::iterator myiterator;
-                                                myiterator = TmpParticle1.begin();
-                                                while (myiterator != TmpParticle1.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
-                                                std::cout<<"\n DR TMP List: \n";
+         | list DR { 
+                                        // std::cout<<"\n DR TMP1 List: \n";
+                                        //         vector<myParticle>::iterator myiterator;
+                                        //         myiterator = TmpParticle1.begin();
+                                        //         while (myiterator != TmpParticle1.end()) {
+                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                        //         myiterator++;
+                                        //         }
+                                        //         std::cout<<"\n DR TMP List: \n";
                                                 
-                                                myiterator = TmpParticle.begin();
-                                                while (myiterator != TmpParticle.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
+                                        //         myiterator = TmpParticle.begin();
+                                        //         while (myiterator != TmpParticle.end()) {
+                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                        //         myiterator++;
+                                        //         }
                                         
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle> newList1;
                                         TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dR,newList1,newList,"dR");
                                 }
-        | list DPHI {    //create Node with newlist1,newlist
-                                        
-                                        string s=$1;                                       
-                                        s=s+"dPhi";                        
-                                        $$=strdup(s.c_str());
-
-                                        std::cout<<"\n Dphi TMP1 List: \n";
-                                                vector<myParticle>::iterator myiterator;
-                                                myiterator = TmpParticle1.begin();
-                                                while (myiterator != TmpParticle1.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
-                                                std::cout<<"\n Dphi TMP List: \n";
-                                                
-                                                myiterator = TmpParticle.begin();
-                                                while (myiterator != TmpParticle.end()) {
-                                                std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                myiterator++;
-                                                }
-
+        | list DPHI { 
                                                 vector<myParticle> newList;
                                                 TmpParticle.swap(newList);
                                                 vector<myParticle> newList1;
                                                 TmpParticle1.swap(newList1);
+                                                $$=new LFuncNode(dR,newList1,newList,"dphi");
+
+
                                 }
         | NELE {    
                                         
                                         string s="NELE";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | NMUO {    
                                         
                                         string s="NMUO";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | NLEP {    
                                         
                                         string s="NLEP";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }                        
         | NPHO {    
                                         
                                         string s="NPHO";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | NJET {    
                                         
                                         string s="NJET";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | NBJET {    
                                         
                                         string s="NBJET";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | NQGJET {    
                                         
                                         string s="NQGJET";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | HT {    
                                         
                                         string s="HT";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | METMWT {    
                                         
                                         string s="METMWT";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | MWT {    
                                         
                                         string s="MWT";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | MET {    
                                         
                                         string s="MET";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         | ALL {    
                                         
-                                        string s="ALL";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,"all");
+
                                 }
         | LEPSF {    
                                         
                                         string s="LEPSF";                                                              
-                                        $$=strdup(s.c_str());
+                                        $$=new SFuncNode(all,s);
                                 }
         ;
 list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
@@ -440,133 +386,133 @@ index : '-' INT {$$=-$2;}
 commands : commands command 
         | 
         ;
-command : CMD condition {                                         
-                                         string phrase= $2;
-                                         cuts.insert(make_pair(cutcount++,phrase));
-    
+command : CMD condition { //find a way to print commands                                     
+                                         NodeCuts.insert(make_pair(++cutcount,$2));
 				}
         | CMD ALL {                                         
-                                         string phrase= " all ";
-                                         cuts.insert(make_pair(cutcount++,phrase));
-    
+                                        Node* a=new SFuncNode(all,"all");
+                                        NodeCuts.insert(make_pair(++cutcount,a));
 				}
         | CMD ifstatement {                                         
-                                         string phrase= $2;
-                                         cuts.insert(make_pair(cutcount++,phrase));
+                                        //NodeCuts.insert(make_pair(++cutcount,$2));
     
 				}
 	;
-ifstatement : condition '?' action ':' action { string s1=$1; string s3=$3;string s4=$5;
-                        tmp=s1+" ? "+s3+" : "+s4;   
-                        $$=strdup(tmp.c_str()); 
+ifstatement : condition '?' action ':' action { 
+                        // string s1=$1; string s3=$3;string s4=$5;
+                        // tmp=s1+" ? "+s3+" : "+s4;   
+                        // $$=strdup(tmp.c_str()); 
                         } 
             ;
-action : condition {$$=$1;}
-       | ALL {tmp= " all " ;$$=strdup(tmp.c_str());}
-       | ifstatement {$$=$1;}
+action : condition {
+                        //$$=$1;
+                        }
+       | ALL {
+               //tmp= " all " ;$$=strdup(tmp.c_str());
+               }
+       | ifstatement {
+                        //$$=$1;
+                        }
        ;    
-condition : e LT e  { string s1=$1; string s3=$3; 
-                        tmp=s1+" < "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }
-           | e GT e { string s1=$1; string s3=$3;
-                        tmp=s1+" > "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }
-           | e LE e { string s1=$1; string s3=$3;
-                        tmp=s1+" <= "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }  
-           | e GE e  { string s1=$1; string s3=$3;
-                        tmp=s1+" >= "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }
-           | e EQ e { string s1=$1; string s3=$3;
-                        tmp=s1+" == "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }
-           | e NE e { string s1=$1; string s3=$3;
-                        tmp=s1+" != "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        }  
-           | e IRG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
-                        tmp=s1+" [] "+s3+" "+s4;   
-                        $$=strdup(tmp.c_str()); 
-                        }  
-           | e ERG NB NB { string s1=$1; string s3=to_string($3);string s4=to_string($4);//combine 2 nodes
-                        tmp=s1+" ][ "+s3+" "+s4; 
-                        $$=strdup(tmp.c_str()); 
-                        }                            
-           | condition AND condition { string s1=$1; string s3=$3;
-                        tmp=s1+" and "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        } 
-           | condition OR condition { string s1=$1; string s3=$3;
-                        tmp=s1+" or "+s3;   
-                        $$=strdup(tmp.c_str()); 
-                        } 
-           | '(' condition ')' { string s3=$2;
-                                tmp=" ( "+s3+" ) ";   
-                                $$=strdup(tmp.c_str()); 
+condition : e LT e  { 
+                                        $$=new BinaryNode(lt,$1,$3,"<"); 
+                                        }
+           | e GT e { 
+                                        $$=new BinaryNode(gt,$1,$3,">"); 
+                                        }
+           | e LE e { 
+                                        $$=new BinaryNode(le,$1,$3,"<="); 
+                                        }  
+           | e GE e  { 
+                                        $$=new BinaryNode(ge,$1,$3,">="); 
+                                        }
+           | e EQ e { 
+                                        $$=new BinaryNode(eq,$1,$3,"=="); 
+                                        } 
+           | e NE e { 
+                                        $$=new BinaryNode(ne,$1,$3,"!="); 
+                                        }   
+           | e IRG e e {                Node* limit1=$3;
+                                        Node* limit2=$4;
+                                        Node* c1=new BinaryNode(ge,$1,limit1,">=");
+                                        Node* c2=new BinaryNode(le,$1,limit2,"<=");
+                                        $$=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
+                                        
+                                        } 
+           | e ERG e e {                Node* limit1=$3;
+                                        Node* limit2=$4;
+                                        Node* c1=new BinaryNode(gt,$1,limit1,">");
+                                        Node* c2=new BinaryNode(lt,$1,limit2,"<");
+                                        $$=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
+                                        
+                                        }                            
+           | condition AND condition { 
+                                        $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); 
+                                        } 
+           | condition OR condition { 
+                                        $$=new BinaryNode(LogicalOr,$1,$3,"OR"); 
+                                        }
+           | '(' condition ')' { 
+                                        $$=$2; 
                                 } 
             ;
-e : e '+' e  { string s1=$1; string s3=$3;
-               tmp=s1+" + "+s3;   
-               $$=strdup(tmp.c_str()); 
+e : e '+' e  { 
+                $$=new BinaryNode(add,$1,$3,"+"); 
                }
-   | e '-' e { string s1=$1; string s3=$3;
-               tmp=s1+" - "+s3;   
-               $$=strdup(tmp.c_str()); 
+   | e '-' e { 
+                $$=new BinaryNode(sub,$1,$3,"-"); 
                }
-   | e '*' e { string s1=$1; string s3=$3;
-               tmp=s1+" * "+s3;   
-               $$=strdup(tmp.c_str()); 
+   | e '*' e { 
+                $$=new BinaryNode(mult,$1,$3,"*"); 
                }
-   | e '/' e { string s1=$1; string s3=$3;
-               tmp=s1+" / "+s3;   
-               $$=strdup(tmp.c_str()); 
+   | e '/' e { 
+                $$=new BinaryNode(div,$1,$3,"/"); 
                }
-   | e '^' e { string s1=$1; string s3=$3;
-               tmp=s1+" ^ "+s3;   
-               $$=strdup(tmp.c_str()); 
+   | e '^' e {          
+               $$=new BinaryNode(pow,$1,$3,"^");
                } 	
-   |'-' e %prec Unary { string s1=$2;
-               tmp=" -"+s1;   
-               $$=strdup(tmp.c_str()); 
+   |'-' e %prec Unary { 
+                        $$=new UnaryAONode(unaryMinu,$2,"-");
                }
-   | COS '(' e ')' { string s3=$3;
-               tmp=" cos( "+s3+" ) ";   
-               $$=strdup(tmp.c_str()); 
+   | COS '(' e ')' {    
+                        $$=new UnaryAONode(cos,$3,"cos"); 
                }
-   | SIN '(' e ')' { string s3=$3;
-               tmp=" sin( "+s3+" ) ";   
-               $$=strdup(tmp.c_str()); 
+   | SIN '(' e ')' {    //string s3=$3;
+                        // tmp=" sin( "+s3+" ) ";   
+                        // $$=strdup(tmp.c_str()); 
+                        $$=new UnaryAONode(sin,$3,"sin");
                }
-   | TAN '(' e ')' { string s3=$3;
-               tmp=" tan( "+s3+" ) ";   
-               $$=strdup(tmp.c_str()); 
+   | TAN '(' e ')' {    //string s3=$3;
+                        //tmp=" tan( "+s3+" ) ";   
+                        //$$=strdup(tmp.c_str()); 
+                        $$=new UnaryAONode(tan,$3,"tan");
                }
-   |'(' e ')' { string s3=$2;
-               tmp=" ( "+s3+" ) ";   
-               $$=strdup(tmp.c_str()); 
+   |'(' e ')' {    //string s3=$2;
+                        //tmp=" ( "+s3+" ) ";   
+                        //$$=strdup(tmp.c_str()); 
+                        $$=$2;
                }
-   | NB { tmp=to_string($1); $$=strdup(tmp.c_str()); } 
-   | INT { tmp=to_string((int)$1); $$=strdup(tmp.c_str()); } 
+   | NB {       tmp=to_string($1); 
+                //$$=strdup(tmp.c_str()); MAKE A TMP STRING AND CONCAT 
+                $$=new ValueNode($1);
+                } 
+   | INT {  
+                $$=new ValueNode($1);
+                } 
    | function {$$=$1; pnum=0;}
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well
-                map<string, string>::iterator it ;
-                it = vars.find($1);
+                map<string, Node *>::iterator it ;
+                it = NodeVars.find($1);
      
-                if(it == vars.end()) {
+                if(it == NodeVars.end()) {
                         cout <<$1<<" : " ;
                         yyerror("Variable not defined");
                         YYERROR;//stops parsing if variable not found
                         
                 }
                 else {
-                        tmp= it->second ;
-                        $$=strdup(tmp.c_str());
+                        $$=it->second;
                 }
                 //get the node from variable map
                }
@@ -596,18 +542,22 @@ cout<<"\n Particle Lists: \n";
         }
 
         cout<<"\n Variables results: \n";
-	map<string,string >::iterator itv = vars.begin();
-        while(itv != vars.end())
+	map<string,Node* >::iterator itv = NodeVars.begin();
+        while(itv != NodeVars.end())
         {
-                std::cout<<itv->first<<" :: "<<itv->second<<std::endl;
+                std::cout<<"**************************** "<<itv->first<<" :: "<<itv->second->evaluate()<<endl;
+                itv->second->display();
+                std::cout<<std::endl;
                 itv++;
         }
 
 	cout<<"\n CUTS : \n";
-	std::map<int, string>::iterator iter = cuts.begin();
-        while(iter != cuts.end())
+	std::map<int, Node*>::iterator iter = NodeCuts.begin();
+        while(iter != NodeCuts.end())
         {
-                cout<<iter->first<<" :: "<<iter->second<<endl;
+                cout<<"**************************** CUT "<<iter->first<<" :: "<<(bool)iter->second->evaluate()<<endl;
+                iter->second->display();
+                std::cout<<endl;
                 iter++;
         }		
                 }

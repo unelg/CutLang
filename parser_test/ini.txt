@@ -10,9 +10,18 @@ def       WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
 def       WHbR2 : {WH2 , JET_-4 }dPhi   # angular distance between W2 and b jet
 def       Wchi2 : { WH1 }m - 80.4 / 2.1 ^ 2 + { WH2 }m - 80.4 / 2.1 ^ 2  #chi2 for W finder
 def       topchi2Bnn : mTopH1 - mTopH2 / 4.2 ^ 2  #chi2 for top finder
+def mLL : { LEP_1 LEP_0 }m
+def Zreco : LEP_0 LEP_1 
+def qLL : { Zreco }q #note the nested definition utilization
 
 
 cmd      ALL            # to count all events
-cmd      topchi2Bnn >= 6      # events with 6 or more jets
-cmd      topchi2Bnn >= 1      # events with 6 or more jets
-cmd      topchi2Bnn < 100      # fully hadronic events should have small MET
+cmd      { WH1 }m + 80.4 / 2.1 ^ 2 >= 6      # events with 6 or more jets
+cmd      { WH1 }m - cos(80.4) != 1      # events with 6 or more jets
+cmd      1 ][ 0 3      # fully hadronic events should have small MET
+cmd topchi2Bnn >= -1
+
+
+cmd nLEP == 2  # events with only leptons
+cmd qLL == 0  # reconstructed object should be neutral
+cmd mLL [] 70 120  # central mass for Z candidate
