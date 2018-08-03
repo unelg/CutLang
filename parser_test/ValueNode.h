@@ -21,7 +21,7 @@ public:
                 symbol=std::to_string(v);
             }
     
-     virtual double evaluate() override{
+     virtual double evaluate() {
         return value;
     }
     
