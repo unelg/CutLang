@@ -101,106 +101,19 @@ int BPdbxA:: readAnalysisParams() {
     string subdelimiter = ":";
     string seldelimiter = ",";
     string  opdelimiter = "_";
-    TString DefList2file="\n";
-    while (1){
-                  TString basedef="def";
-                          basedef+=kk++;
-                  string def0 = ReadCardString(CardName,basedef,"XXX");
-                  if (def0=="XXX") break;
-//                  cout << "==========-> def id:"<<kk-1<<") "<<def0<<endl;
-                  if ((apos=def0.find(subdelimiter)) != std::string::npos )  {
-                         std::string subtoken0, subtoken1;
-                         subtoken0 = def0.substr(0, apos); //
-                         subtoken1 = def0.substr(apos+subdelimiter.length(),std::string::npos); //
-                         subtoken1+=" ";
-//                       std::cout <<"DEFINE  "<<subtoken0<<" as "<<subtoken1<<std::endl;
-                         DefList2file+=subtoken0;
-                         DefList2file+=":";
-                         DefList2file+=subtoken1;
-                         DefList2file+="\n";
-                         TNamed *astr_tmp=new TNamed (subtoken0.data(), subtoken1.data());
-//                       TParameter<std::string> *astr_tmp=new TParameter<std::string> (subtoken0.data(), subtoken1,'f');
-//                                             astr_tmp->Write(); // can we overload merge on TName? or similar.
-//TParameter<std::string> is Foobar because of line 142 on TParameter.h :   fVal *= c->GetVal(); // can't be done with strings
-                         def_names[subtoken0]=subtoken1;
-                  } else{
-                  cout << "This def is problematic. STOP\n"; exit (3);
-                  }
-     }
+
+/*
      TText info(0,0,DefList2file.Data());
            info.SetName("CLA2defs");
            info.Write();
+*/
 
 // ****************************************
 //---------------------------DBX style analysis object definitions
 // ****************************************
      kk=1;
-     TString CutList2file="\n";
-     while (1){
-               TString basecut="obj";
-                       basecut+=kk++; 
-               string cut0 = ReadCardString(CardName,basecut,"XXX");
-               if (cut0=="XXX") break;
-               string subtoken0, subtoken1;
-               vector <string> nametokens;
-               if ((apos=cut0.find(subdelimiter)) != std::string::npos )  {
-                         subtoken0 = cut0.substr(0, apos); //
-                         std::string::iterator end_pos = std::remove(subtoken0.begin(), subtoken0.end(), ' ');
-                         subtoken0.erase(end_pos, subtoken0.end());
-                         subtoken1 = cut0.substr(apos+subdelimiter.length(),std::string::npos); //
-                                               end_pos = std::remove(subtoken1.begin(), subtoken1.end(), ' ');
-                         subtoken1.erase(end_pos, subtoken1.end());
-                         std::cout <<"Object "<<subtoken0<<" is "<<subtoken1<<". ";
-                         nametokens.push_back( subtoken1 ); // we keep what the new object will be
-               } else { std::cout <<"WRONG object definition!\n"; exit (1);}
 
-               CutList2file+=basecut;
-               CutList2file+=" : ";
-               CutList2file+=cut0;
-               CutList2file+="\n";
-               cout << "\n~******----> obj id:"<<kk-1<<") "<<cut0<<"\t";
-               int kj=1;
-               vector< vector<dbxCut*> > objSelList;
-               vector< vector<string>  > objOpeList;
-               while (1){
-                      basecut="cmd";
-                      basecut+=kk-1; 
-                      basecut+="-";
-                      basecut+=kj++; 
-                      string cut1 = ReadCardString(CardName,basecut,"XXX", false);
-                      if (cut1=="XXX") break;
-
-                      std::vector<dbxCut*> acutlist;
-                      acutlist.reserve(10);
-                      std::vector<std::string> q;
-                      q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                      objSelList.push_back(acutlist);
-                      objOpeList.push_back(q);
-
-
-                      if ((apos=cut1.find(seldelimiter)) != std::string::npos )  {  // take between , and close curly
-                        string pippo=cut1.substr(apos+subdelimiter.length(),std::string::npos);
-                        apos=pippo.find(opdelimiter);
-                        pippo=pippo.substr(0, apos);
-                        std::string::iterator jnk_pos = std::remove(pippo.begin(), pippo.end(), ' ');// delete whites and insert.
-                        pippo.erase(jnk_pos, pippo.end());
-                        nametokens.push_back(pippo);
-                      } else {
-// this is a single variable cut
-                        nametokens.push_back("XXX");
-                      }
-
-
-                      CutList2file+=basecut;
-                      CutList2file+=" : ";
-                      CutList2file+=cut1;
-                      CutList2file+="\n";
-                      cout << "\n~~~~~~~~~~->obj cmd id:"<<kj-1<<") "<<cut1<<"\t";
-               }// end of while 1 over cmds
-               pair< vector< vector<dbxCut*> >, vector< vector<string> > > anObjdef(objSelList, objOpeList);
-               obj_defs.insert(pair< string, pair< vector< vector<dbxCut*> >, vector< vector<string> > > >(subtoken0, anObjdef ) );
-               obj_names.insert ( pair<string,vector<string> >(subtoken0,nametokens) );
-     } // end of while 1 over objs
+//   TString CutList2file="\n";
 
 // ****************************************
 // ---------------------------DBX style cuts
@@ -217,15 +130,6 @@ int BPdbxA:: readAnalysisParams() {
                   string cut0 = ReadCardString(CardName,basecut,"XXX");
                   if (cut0=="XXX") break;
 
-                  for( map<string, vector<string> >::reverse_iterator it=obj_names.rbegin(); it!=obj_names.rend(); ++it) {
-                   std::size_t objfound =cut0.find(it->first);
-                   if (objfound !=std::string::npos) {
-                     DEBUG("using derived object "<< it->first<< " as "<<it->second[0] );
-                     obj2use.push_back(std::pair<string,string>(it->first, it->second[0]) );
-                   }
-                  }
-                  if (obj2use.size() > 0 ) levelObjectMap.insert( std::pair<int, vector<std::pair<string,string> > > (kk-1,obj2use)  );
-
                   CutList2file+=basecut;
                   CutList2file+=" : ";
                   CutList2file+=cut0;
@@ -234,142 +138,19 @@ int BPdbxA:: readAnalysisParams() {
 //                cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
                   TString newLabels = cut0.data();
                   eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
-                  string cut1;
-// loop over all chars. Put a space before and after each operator.
-                  for (int ic=0; ic<cut0.size(); ic++){
-                   if (cut0[ic] == '(' || cut0[ic] == ')' || cut0[ic] == '+' 
-                    || cut0[ic] == '-' || cut0[ic] == '^' || cut0[ic] == '/' 
-                    || cut0[ic] == '*' ) 
-                   {
-                    if (ic>0 && cut0[ic-1] != '_'){
-                       cut1.append(" ");
-                       cut1.append(cut0,ic,1);
-                       cut1.append(" ");
-                    }else { cut1.append(cut0,ic,1); }
-                   } else { cut1.append(cut0,ic,1); }
-                  }
 
-                  DEBUG("====>>>"<<cut1<<".\n");
-                  if (cut1.find("FillHistos")!=std::string::npos){ newLabels = "FillHistos-"+TString::Format("%d",++kFillHistos); }
+                  DEBUG("====>>>"<<cut0<<".\n");
+                  if (cut0.find("FillHistos")!=std::string::npos){ newLabels = "FillHistos-"+TString::Format("%d",++kFillHistos); }
 
-// do we have a definition?
-                 for( map<string,string>::reverse_iterator it=def_names.rbegin(); it!=def_names.rend(); ++it) {
-//                  cout << "\ndef:"<<it->first<<endl;
-                  std::size_t found =cut1.find(it->first);
-                  while ( found !=std::string::npos){
-//                  cout << "Replace with:"<<it->second<<"  ";
-                    cut1.replace(found,it->first.length(),it->second);
-//                    cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<" becomes ) "<<cut1<<"\t";
-                    found =cut1.find(it->first);
-                  }
-                 } 
-//----------------------TERNARIES-----------------------------
-                 if ((apos=cut1.find('?'))!=std::string::npos){ 
-                    std::vector<std::string> q;
-                    std::string subtok0, subtokT, subtokF, subtokTMP;
-                    std::string subtok0T, subtok0F;
-                    std::string subtokTT, subtokTF, subtokFT, subtokFF;
-                    subtok0 = cut1.substr(0, apos); // test condition
-                    subtokTMP = cut1.substr(apos+subdelimiter.length(), std::string::npos); // the rest...
-                    bpos=subtokTMP.find(':');
-                    cpos=subtokTMP.find('?'); // another, nested, ternary?
-                    DEBUG("****>>>We have a ternary operator @"<< apos <<"\n");
-
-                    std::vector<dbxCut*> acutlist; 
-                    acutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                    q=BPcutlist.cutTokenizer(subtok0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                    mycutlist.push_back(acutlist); myopelist.push_back(q);
-
-//do we have another nested ternary?
-                    if ( cpos!=std::string::npos){
-                     int terval=0;
-                     DEBUG("~~~~~~>We have a nested ternary operator @"<< cpos <<"\n");
-                     if ( cpos < bpos ) {// another ternary in true
-                         terval+=10;
-                         subtok0T = subtokTMP.substr(0, cpos); // test condition
-                         subtokTMP = subtokTMP.substr(cpos+subdelimiter.length(), std::string::npos); // the rest...
-                         bpos=subtokTMP.find(':');
-                         subtokTT = subtokTMP.substr(0, bpos); // test condition
-                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
-                         bpos=subtokTMP.find(':');
-                         subtokTF = subtokTMP.substr(0, bpos); // test condition
-                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
-                         DEBUG("****>>>true test:"<< subtok0T <<"\n");
-                         DEBUG("****>>>true true:"<< subtokTT <<"\n");
-                         DEBUG("****>>>true false:"<<subtokTF <<"\n");
-                         DEBUG("****>>>remaining: "<< subtokTMP <<"\n");
-//-----------------------
-                         std::vector<dbxCut*> acutlist, bcutlist, ccutlist; 
-                         acutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         q=BPcutlist.cutTokenizer(subtok0T, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistT.push_back(acutlist); terOpelistT.push_back(q); // to keep track of IDs
-                         q=BPcutlist.cutTokenizer(subtokTT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
-                         q=BPcutlist.cutTokenizer(subtokTF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
-
-                     } else {
-                         subtokTT = subtokTMP.substr(0, bpos); // test condition
-                         subtokTMP = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
-                         DEBUG("****>>>true "<< subtokTT <<"\n");
-                         std::vector<dbxCut*> bcutlist; 
-                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         q=BPcutlist.cutTokenizer(subtokTT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
-                     } 
-                     cpos=subtokTMP.find('?'); // another nested ternary
-                     if ( cpos!=std::string::npos){
-                      terval+=11;               // another ternary in false
-                      subtok0F = subtokTMP.substr(0, cpos); // test condition
-                      subtokTMP = subtokTMP.substr(cpos+subdelimiter.length(), std::string::npos); // the rest...
-                      bpos=subtokTMP.find(':');
-                      subtokFT = subtokTMP.substr(0, bpos); // test condition
-                      subtokFF = subtokTMP.substr(bpos+subdelimiter.length(), std::string::npos); // the rest...
-                      DEBUG("****>>>false test :"<< subtok0F <<"\n");
-                      DEBUG("****>>>false true :"<< subtokFT <<"\n");
-                      DEBUG("****>>>false false:"<<subtokFF <<"\n");
-//-----------------------
-                         std::vector<dbxCut*> acutlist, bcutlist, ccutlist; 
-                         acutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                         q=BPcutlist.cutTokenizer(subtok0F, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistF.push_back(acutlist); terOpelistF.push_back(q); // to keep track of IDs
-                         q=BPcutlist.cutTokenizer(subtokFT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
-                         q=BPcutlist.cutTokenizer(subtokFF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                         terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
-                     } else {
-                       subtokFT = subtokTMP; // test condition
-                     }
-                     isTernary.push_back(terval);
-                    } else { // simple ternary
-                            isTernary.push_back(1);
-                            subtokT = subtokTMP.substr(0,bpos); //
-                            subtokT+=" ";
-                            subtokF = subtokTMP.substr(bpos+subdelimiter.length(),std::string::npos); //
-                            subtokF+=" ";
-                            DEBUG("Test  "<<subtok0<<" |T:"<<subtokT<< "\n|F:"<<subtokF <<std::endl);
-                            std::vector<dbxCut*> bcutlist, ccutlist; 
-                            bcutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                            ccutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                            q=BPcutlist.cutTokenizer(subtokT, &bcutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                            terCutlistT.push_back(bcutlist); terOpelistT.push_back(q);
-                            q=BPcutlist.cutTokenizer(subtokF, &ccutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                            terCutlistF.push_back(ccutlist); terOpelistF.push_back(q);
-                    }
-
-                 } else { // normally we dont have ternaries
+//----------------------remember TERNARIES-----------------------------
                     isTernary.push_back(0);
                     std::vector<dbxCut*> acutlist; 
                     acutlist.reserve(10);     // including logics we can have max 10 operations in a line
                     std::vector<std::string> q;
-                    q=BPcutlist.cutTokenizer(cut1, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
+                    q=BPcutlist.cutTokenizer(cut0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
                     mycutlist.push_back(acutlist);
                     myopelist.push_back(q);
-                 }
+                 
 /////////DEBUG
 /*
                   for ( unsigned int ic=0; ic<acutlist.size(); ic++) {
@@ -389,6 +170,7 @@ int BPdbxA:: readAnalysisParams() {
                   cout<<endl;
 */
          } // end of while 1
+
          cout << "\nWe have "<<mycutlist.size() << " CutLang Cuts\n";
          if ( levelObjectMap.size() > 0) {
               map <int, vector<std::pair<string,string> > >::iterator it;
