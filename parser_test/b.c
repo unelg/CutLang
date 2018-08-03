@@ -192,13 +192,13 @@ int cutcount;
 using namespace std;
 string tmp;
 int pnum;
-map<string,string> vars;
+//list<string> vars;
 list<string> parts; //for def of particles as given by user
+map<string,Node*> NodeVars;
 map<string,vector<myParticle> > ListParts;//for particle definition
 vector<myParticle> TmpParticle;
 vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 map<int,string> cuts;
-Node* result;
 
 
 /* Enabling traces.  */
@@ -562,15 +562,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    52,    52,    54,    55,    57,    87,   105,   121,   136,
-     145,   153,   161,   169,   177,   185,   193,   201,   226,   252,
-     257,   262,   267,   272,   277,   282,   287,   292,   297,   302,
-     307,   312,   318,   318,   326,   334,   346,   355,   363,   371,
-     379,   387,   395,   403,   411,   419,   438,   439,   441,   442,
-     444,   449,   454,   460,   465,   466,   467,   469,   473,   477,
-     481,   485,   489,   493,   497,   501,   505,   509,   514,   518,
-     522,   526,   530,   534,   538,   542,   546,   550,   554,   555,
-     556,   558
+       0,    53,    53,    55,    56,    58,    88,   107,   123,   138,
+     143,   148,   153,   158,   163,   168,   173,   178,   204,   233,
+     238,   243,   248,   253,   258,   263,   268,   273,   278,   283,
+     288,   293,   299,   299,   307,   315,   327,   336,   344,   352,
+     360,   368,   376,   384,   392,   400,   419,   420,   422,   423,
+     425,   430,   435,   441,   447,   450,   453,   457,   460,   463,
+     466,   469,   472,   475,   482,   489,   492,   495,   499,   502,
+     505,   508,   511,   514,   517,   520,   525,   530,   535,   539,
+     541,   543
 };
 #endif
 
@@ -1620,7 +1620,7 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 57 "parse.y"
+#line 58 "parse.y"
     {
 
                                         pnum=0;
@@ -1654,32 +1654,33 @@ yyreduce:
     break;
 
   case 6:
-#line 87 "parse.y"
+#line 88 "parse.y"
     {//create node and insert it in map string->node
                                         pnum=0;
-                                        map<string, string>::iterator it ;
-                                        string name = (yyvsp[(2) - (4)].s);
-                                        it = vars.find(name);
+                                        // map<string, Node>::iterator it ;
+                                        // string name = $2;
+                                        // it = NodeVars.find(name);
                         
-                                        if(it != vars.end()) {
-                                                cout <<name<<" : " ;
-                                                yyerror("Variable already defined");
-                                                YYERROR;//stops parsing if variable already defined
+                                        // if(it != NodeVars.end()) {
+                                        //         cout <<name<<" : " ;
+                                        //         yyerror("Variable already defined");
+                                        //         YYERROR;//stops parsing if variable already defined
                                                 
-                                        }
-                                         
-                                         string phrase= (yyvsp[(4) - (4)].s);
-                                         vars.insert(make_pair(name,phrase));
-                                         
+                                        // }
+                                        // //  vars.push_back(name+" : "+$4);
+                                        // //  string phrase= $4;
+                                        //  NodeVars.insert(make_pair(name,$4));
+                                        cout<<(yyvsp[(2) - (4)].s)<<"   :\n";
+                                        ((yyvsp[(4) - (4)].node))->display();
 				;}
     break;
 
   case 7:
-#line 105 "parse.y"
-    {     //have to empty list in here and ready to create the node
+#line 107 "parse.y"
+    {     
                                         string s=(yyvsp[(2) - (4)].s);
                                         tmp="{ "+s+" }m";                        
-                                        (yyval.s)=strdup(tmp.c_str());
+                                        //$$=strdup(tmp.c_str());
                                         std::cout<<"\n M List: \n";
                                                 vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
@@ -1689,17 +1690,17 @@ yyreduce:
                                                 }
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        //then add newList to node
+                                        (yyval.node)=new FuncNode(MASS,newlist,"m");
 
                                 ;}
     break;
 
   case 8:
-#line 121 "parse.y"
+#line 123 "parse.y"
     {     
                                         string s=(yyvsp[(2) - (4)].s);
                                         tmp="{ "+s+" }q";                        
-                                        (yyval.s)=strdup(tmp.c_str());
+                                        //$$=strdup(tmp.c_str());
                                         std::cout<<"\n Q List: \n";
                                                 vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle.begin();
@@ -1709,114 +1710,89 @@ yyreduce:
                                                 }
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
-
+                                        (yyval.node)=new FuncNode(MASS,newlist,"q");
                                 ;}
     break;
 
   case 9:
-#line 136 "parse.y"
+#line 138 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }P";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
-
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"p");
                                 ;}
     break;
 
   case 10:
-#line 145 "parse.y"
+#line 143 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }E";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"e");
                                 ;}
     break;
 
   case 11:
-#line 153 "parse.y"
+#line 148 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }Phi";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"phi");
                                 ;}
     break;
 
   case 12:
-#line 161 "parse.y"
+#line 153 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }Eta";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"eta");
                                 ;}
     break;
 
   case 13:
-#line 169 "parse.y"
+#line 158 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }AbsEta";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"abseta");
                                 ;}
     break;
 
   case 14:
-#line 177 "parse.y"
+#line 163 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }Pt";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"pt");
                                 ;}
     break;
 
   case 15:
-#line 185 "parse.y"
+#line 168 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }Pz";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"pz");
                                 ;}
     break;
 
   case 16:
-#line 193 "parse.y"
+#line 173 "parse.y"
     {     
-                                        string s=(yyvsp[(2) - (4)].s);
-                                        tmp="{ "+s+" }ndf";                        
-                                        (yyval.s)=strdup(tmp.c_str());
-
                                         vector<myParticle> newList;
-                                        TmpParticle.swap(newList);//then add newList to node
+                                        TmpParticle.swap(newList);
+                                        (yyval.node)=new FuncNode(MASS,newlist,"nbf");
                                 ;}
     break;
 
   case 17:
-#line 201 "parse.y"
+#line 178 "parse.y"
     {     //create Node with TmpParticle1,TmpParticle
                                         
-                                        string s=(yyvsp[(1) - (2)].s);                                       
-                                        s=s+"dR";                        
-                                        (yyval.s)=strdup(s.c_str());
+                                        // string s=$1;                                       
+                                        // s=s+"dR";                        
+                                        // $$=strdup(s.c_str());
                                         std::cout<<"\n DR TMP1 List: \n";
                                                 vector<myParticle>::iterator myiterator;
                                                 myiterator = TmpParticle1.begin();
@@ -1836,16 +1812,17 @@ yyreduce:
                                         TmpParticle.swap(newList);
                                         vector<myParticle> newList1;
                                         TmpParticle1.swap(newList1);
+                                        (yyval.node)=new LFuncNode(dR,newList1,newList,"dR");
                                 ;}
     break;
 
   case 18:
-#line 226 "parse.y"
+#line 204 "parse.y"
     {    //create Node with newlist1,newlist
                                         
-                                        string s=(yyvsp[(1) - (2)].s);                                       
-                                        s=s+"dPhi";                        
-                                        (yyval.s)=strdup(s.c_str());
+                                        // string s=$1;                                       
+                                        // s=s+"dPhi";                        
+                                        // $$=strdup(s.c_str());
 
                                         std::cout<<"\n Dphi TMP1 List: \n";
                                                 vector<myParticle>::iterator myiterator;
@@ -1866,133 +1843,136 @@ yyreduce:
                                                 TmpParticle.swap(newList);
                                                 vector<myParticle> newList1;
                                                 TmpParticle1.swap(newList1);
+                                                (yyval.node)=new LFuncNode(dR,newList1,newList,"dphi");
+
+
                                 ;}
     break;
 
   case 19:
-#line 252 "parse.y"
+#line 233 "parse.y"
     {    
                                         
                                         string s="NELE";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 20:
-#line 257 "parse.y"
+#line 238 "parse.y"
     {    
                                         
                                         string s="NMUO";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 21:
-#line 262 "parse.y"
+#line 243 "parse.y"
     {    
                                         
                                         string s="NLEP";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 22:
-#line 267 "parse.y"
+#line 248 "parse.y"
     {    
                                         
                                         string s="NPHO";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 23:
-#line 272 "parse.y"
+#line 253 "parse.y"
     {    
                                         
                                         string s="NJET";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 24:
-#line 277 "parse.y"
+#line 258 "parse.y"
     {    
                                         
                                         string s="NBJET";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 25:
-#line 282 "parse.y"
+#line 263 "parse.y"
     {    
                                         
                                         string s="NQGJET";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 26:
-#line 287 "parse.y"
+#line 268 "parse.y"
     {    
                                         
                                         string s="HT";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 27:
-#line 292 "parse.y"
+#line 273 "parse.y"
     {    
                                         
                                         string s="METMWT";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 28:
-#line 297 "parse.y"
+#line 278 "parse.y"
     {    
                                         
                                         string s="MWT";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 29:
-#line 302 "parse.y"
+#line 283 "parse.y"
     {    
                                         
                                         string s="MET";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 30:
-#line 307 "parse.y"
+#line 288 "parse.y"
     {    
                                         
-                                        string s="ALL";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,"all");
+
                                 ;}
     break;
 
   case 31:
-#line 312 "parse.y"
+#line 293 "parse.y"
     {    
                                         
                                         string s="LEPSF";                                                              
-                                        (yyval.s)=strdup(s.c_str());
+                                        (yyval.node)=new SFuncNode(all,s);
                                 ;}
     break;
 
   case 32:
-#line 318 "parse.y"
+#line 299 "parse.y"
     { pnum=0; TmpParticle.swap(TmpParticle1); ;}
     break;
 
   case 33:
-#line 318 "parse.y"
+#line 299 "parse.y"
     { 
                                                         string s=(yyvsp[(2) - (6)].s);
                                                         string s2=(yyvsp[(5) - (6)].s);
@@ -2003,7 +1983,7 @@ yyreduce:
     break;
 
   case 34:
-#line 326 "parse.y"
+#line 307 "parse.y"
     {                                                 
                                                 char s [512];
                                                 strcpy(s,(yyval.s)); 
@@ -2015,7 +1995,7 @@ yyreduce:
     break;
 
   case 35:
-#line 334 "parse.y"
+#line 315 "parse.y"
     {if (pnum==0){
                                                 (yyval.s)=strdup((yyvsp[(1) - (1)].s));                                                       
                                         }
@@ -2030,7 +2010,7 @@ yyreduce:
     break;
 
   case 36:
-#line 346 "parse.y"
+#line 327 "parse.y"
     {
                                 myParticle a;
                                 a.type = "ELE";
@@ -2043,7 +2023,7 @@ yyreduce:
     break;
 
   case 37:
-#line 355 "parse.y"
+#line 336 "parse.y"
     {       tmp="muo_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2055,7 +2035,7 @@ yyreduce:
     break;
 
   case 38:
-#line 363 "parse.y"
+#line 344 "parse.y"
     {       tmp="lep_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2067,7 +2047,7 @@ yyreduce:
     break;
 
   case 39:
-#line 371 "parse.y"
+#line 352 "parse.y"
     {       tmp="pho_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2079,7 +2059,7 @@ yyreduce:
     break;
 
   case 40:
-#line 379 "parse.y"
+#line 360 "parse.y"
     {       tmp="jet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2091,7 +2071,7 @@ yyreduce:
     break;
 
   case 41:
-#line 387 "parse.y"
+#line 368 "parse.y"
     {      tmp="bjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2103,7 +2083,7 @@ yyreduce:
     break;
 
   case 42:
-#line 395 "parse.y"
+#line 376 "parse.y"
     {      tmp="qgjet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2115,7 +2095,7 @@ yyreduce:
     break;
 
   case 43:
-#line 403 "parse.y"
+#line 384 "parse.y"
     {       tmp="numet_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2127,7 +2107,7 @@ yyreduce:
     break;
 
   case 44:
-#line 411 "parse.y"
+#line 392 "parse.y"
     {     tmp="metlv_"+to_string((int)(yyvsp[(3) - (3)].real));                        
                                 (yyval.s)=strdup(tmp.c_str());
                                 myParticle a;
@@ -2139,7 +2119,7 @@ yyreduce:
     break;
 
   case 45:
-#line 419 "parse.y"
+#line 400 "parse.y"
     { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 
                 map<string,vector<myParticle> >::iterator it;
@@ -2161,271 +2141,275 @@ yyreduce:
     break;
 
   case 46:
-#line 438 "parse.y"
+#line 419 "parse.y"
     {(yyval.real)=-(yyvsp[(2) - (2)].real);;}
     break;
 
   case 47:
-#line 439 "parse.y"
+#line 420 "parse.y"
     {(yyval.real)= (yyvsp[(1) - (1)].real);;}
     break;
 
   case 50:
-#line 444 "parse.y"
+#line 425 "parse.y"
     {                                         
-                                         string phrase= (yyvsp[(2) - (2)].s);
-                                         cuts.insert(make_pair(cutcount++,phrase));
+                                        //  string phrase= $2;
+                                        //  cuts.insert(make_pair(cutcount++,phrase));
     
 				;}
     break;
 
   case 51:
-#line 449 "parse.y"
+#line 430 "parse.y"
     {                                         
-                                         string phrase= " all ";
-                                         cuts.insert(make_pair(cutcount++,phrase));
+                                        //  string phrase= " all ";
+                                        //  cuts.insert(make_pair(cutcount++,phrase));
     
 				;}
     break;
 
   case 52:
-#line 454 "parse.y"
+#line 435 "parse.y"
     {                                         
-                                         string phrase= (yyvsp[(2) - (2)].s);
-                                         cuts.insert(make_pair(cutcount++,phrase));
+                                        //  string phrase= $2;
+                                        //  cuts.insert(make_pair(cutcount++,phrase));
     
 				;}
     break;
 
   case 53:
-#line 460 "parse.y"
-    { string s1=(yyvsp[(1) - (5)].s); string s3=(yyvsp[(3) - (5)].s);string s4=(yyvsp[(5) - (5)].s);
-                        tmp=s1+" ? "+s3+" : "+s4;   
-                        (yyval.s)=strdup(tmp.c_str()); 
+#line 441 "parse.y"
+    { 
+                        // string s1=$1; string s3=$3;string s4=$5;
+                        // tmp=s1+" ? "+s3+" : "+s4;   
+                        // $$=strdup(tmp.c_str()); 
                         ;}
     break;
 
   case 54:
-#line 465 "parse.y"
-    {(yyval.s)=(yyvsp[(1) - (1)].s);;}
+#line 447 "parse.y"
+    {
+                        //$$=$1;
+                        ;}
     break;
 
   case 55:
-#line 466 "parse.y"
-    {tmp= " all " ;(yyval.s)=strdup(tmp.c_str());;}
+#line 450 "parse.y"
+    {
+               //tmp= " all " ;$$=strdup(tmp.c_str());
+               ;}
     break;
 
   case 56:
-#line 467 "parse.y"
-    {(yyval.s)=(yyvsp[(1) - (1)].s);;}
+#line 453 "parse.y"
+    {
+                        //$$=$1;
+                        ;}
     break;
 
   case 57:
-#line 469 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s); 
-                        tmp=s1+" < "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 457 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(lt,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"<"); 
+                                        ;}
     break;
 
   case 58:
-#line 473 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" > "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 460 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(gt,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),">"); 
+                                        ;}
     break;
 
   case 59:
-#line 477 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" <= "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 463 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(le,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"<="); 
+                                        ;}
     break;
 
   case 60:
-#line 481 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" >= "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 466 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(ge,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),">="); 
+                                        ;}
     break;
 
   case 61:
-#line 485 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" == "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 469 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(eq,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"=="); 
+                                        ;}
     break;
 
   case 62:
-#line 489 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" != "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 472 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(ne,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"!="); 
+                                        ;}
     break;
 
   case 63:
-#line 493 "parse.y"
-    { string s1=(yyvsp[(1) - (4)].s); string s3=to_string((yyvsp[(3) - (4)].real));string s4=to_string((yyvsp[(4) - (4)].real));//combine 2 nodes
-                        tmp=s1+" [] "+s3+" "+s4;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 475 "parse.y"
+    {              Node* limit1=new ValueNode((yyvsp[(3) - (4)].real));
+                                        Node* limit2=new ValueNode((yyvsp[(4) - (4)].real));
+                                        Node* c1=new BinaryNode(ge,(yyvsp[(1) - (4)].node),limit1,">=");
+                                        Node* c2=new BinaryNode(le,(yyvsp[(1) - (4)].node),limit2,"<=");
+                                        (yyval.node)=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
+                                        
+                                        ;}
     break;
 
   case 64:
-#line 497 "parse.y"
-    { string s1=(yyvsp[(1) - (4)].s); string s3=to_string((yyvsp[(3) - (4)].real));string s4=to_string((yyvsp[(4) - (4)].real));//combine 2 nodes
-                        tmp=s1+" ][ "+s3+" "+s4; 
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 482 "parse.y"
+    {              Node* limit1=new ValueNode((yyvsp[(3) - (4)].real));
+                                        Node* limit2=new ValueNode((yyvsp[(4) - (4)].real));
+                                        Node* c1=new BinaryNode(gt,(yyvsp[(1) - (4)].node),limit1,">");
+                                        Node* c2=new BinaryNode(lt,(yyvsp[(1) - (4)].node),limit2,"<");
+                                        (yyval.node)=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
+                                        
+                                        ;}
     break;
 
   case 65:
-#line 501 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" and "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 489 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(LogicalAnd,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"AND"); 
+                                        ;}
     break;
 
   case 66:
-#line 505 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-                        tmp=s1+" or "+s3;   
-                        (yyval.s)=strdup(tmp.c_str()); 
-                        ;}
+#line 492 "parse.y"
+    { 
+                                        (yyval.node)=new BinaryNode(LogicalOr,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"OR"); 
+                                        ;}
     break;
 
   case 67:
-#line 509 "parse.y"
-    { string s3=(yyvsp[(2) - (3)].s);
-                                tmp=" ( "+s3+" ) ";   
-                                (yyval.s)=strdup(tmp.c_str()); 
+#line 495 "parse.y"
+    { 
+                                        (yyval.node)=(yyvsp[(2) - (3)].node); 
                                 ;}
     break;
 
   case 68:
-#line 514 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-               tmp=s1+" + "+s3;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 499 "parse.y"
+    { 
+                (yyval.node)=new BinaryNode(add,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"+"); 
                ;}
     break;
 
   case 69:
-#line 518 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-               tmp=s1+" - "+s3;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 502 "parse.y"
+    { 
+                (yyval.node)=new BinaryNode(sub,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"-"); 
                ;}
     break;
 
   case 70:
-#line 522 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-               tmp=s1+" * "+s3;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 505 "parse.y"
+    { 
+                (yyval.node)=new BinaryNode(mult,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"*"); 
                ;}
     break;
 
   case 71:
-#line 526 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-               tmp=s1+" / "+s3;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 508 "parse.y"
+    { 
+                (yyval.node)=new BinaryNode(div,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"/"); 
                ;}
     break;
 
   case 72:
-#line 530 "parse.y"
-    { string s1=(yyvsp[(1) - (3)].s); string s3=(yyvsp[(3) - (3)].s);
-               tmp=s1+" ^ "+s3;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 511 "parse.y"
+    {          
+               (yyval.node)=new BinaryNode(pow,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node),"^");
                ;}
     break;
 
   case 73:
-#line 534 "parse.y"
-    { string s1=(yyvsp[(2) - (2)].s);
-               tmp=" -"+s1;   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 514 "parse.y"
+    { 
+                        (yyval.node)=new UnaryAONode(unaryMinu,(yyvsp[(2) - (2)].node),"-");
                ;}
     break;
 
   case 74:
-#line 538 "parse.y"
-    { string s3=(yyvsp[(3) - (4)].s);
-               tmp=" cos( "+s3+" ) ";   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 517 "parse.y"
+    {    
+                        (yyval.node)=new UnaryAONode(cos,(yyvsp[(3) - (4)].node),"cos"); 
                ;}
     break;
 
   case 75:
-#line 542 "parse.y"
-    { string s3=(yyvsp[(3) - (4)].s);
-               tmp=" sin( "+s3+" ) ";   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 520 "parse.y"
+    {    //string s3=$3;
+                        // tmp=" sin( "+s3+" ) ";   
+                        // $$=strdup(tmp.c_str()); 
+                        (yyval.node)=new UnaryAONode(sin,(yyvsp[(3) - (4)].node),"sin");
                ;}
     break;
 
   case 76:
-#line 546 "parse.y"
-    { string s3=(yyvsp[(3) - (4)].s);
-               tmp=" tan( "+s3+" ) ";   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 525 "parse.y"
+    {    //string s3=$3;
+                        //tmp=" tan( "+s3+" ) ";   
+                        //$$=strdup(tmp.c_str()); 
+                        (yyval.node)=new UnaryAONode(tan,(yyvsp[(3) - (4)].node),"tan");
                ;}
     break;
 
   case 77:
-#line 550 "parse.y"
-    { string s3=(yyvsp[(2) - (3)].s);
-               tmp=" ( "+s3+" ) ";   
-               (yyval.s)=strdup(tmp.c_str()); 
+#line 530 "parse.y"
+    {    //string s3=$2;
+                        //tmp=" ( "+s3+" ) ";   
+                        //$$=strdup(tmp.c_str()); 
+                        (yyval.node)=(yyvsp[(2) - (3)].node);
                ;}
     break;
 
   case 78:
-#line 554 "parse.y"
-    { tmp=to_string((yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
+#line 535 "parse.y"
+    {       tmp=to_string((yyvsp[(1) - (1)].real)); 
+                //$$=strdup(tmp.c_str()); MAKE A TMP STRING AND CONCAT 
+                (yyval.node)=new ValueNode((yyvsp[(1) - (1)].real));
+                ;}
     break;
 
   case 79:
-#line 555 "parse.y"
-    { tmp=to_string((int)(yyvsp[(1) - (1)].real)); (yyval.s)=strdup(tmp.c_str()); ;}
+#line 539 "parse.y"
+    { //tmp=to_string((int)$1); $$=strdup(tmp.c_str()); 
+                ;}
     break;
 
   case 80:
-#line 556 "parse.y"
-    {(yyval.s)=(yyvsp[(1) - (1)].s); pnum=0;;}
+#line 541 "parse.y"
+    {(yyval.node)=(yyvsp[(1) - (1)].node); pnum=0;;}
     break;
 
   case 81:
-#line 558 "parse.y"
+#line 543 "parse.y"
     { //we want the original defintions as well
-                map<string, string>::iterator it ;
-                it = vars.find((yyvsp[(1) - (1)].s));
+                // map<string, string>::iterator it ;
+                // it = vars.find($1);
      
-                if(it == vars.end()) {
-                        cout <<(yyvsp[(1) - (1)].s)<<" : " ;
-                        yyerror("Variable not defined");
-                        YYERROR;//stops parsing if variable not found
+                // if(it == vars.end()) {
+                //         cout <<$1<<" : " ;
+                //         yyerror("Variable not defined");
+                //         YYERROR;//stops parsing if variable not found
                         
-                }
-                else {
-                        tmp= it->second ;
-                        (yyval.s)=strdup(tmp.c_str());
-                }
+                // }
+                // else {
+                //         tmp= it->second ;
+                //         $$=strdup(tmp.c_str());
+                // }
                 //get the node from variable map
                ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2429 "b.c"
+#line 2413 "b.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2639,7 +2623,7 @@ yyreturn:
 }
 
 
-#line 575 "parse.y"
+#line 560 "parse.y"
 
 int main(void) {
         yyparse(); 
@@ -2665,20 +2649,20 @@ cout<<"\n Particle Lists: \n";
         }
 
         cout<<"\n Variables results: \n";
-	map<string,string >::iterator itv = vars.begin();
-        while(itv != vars.end())
-        {
-                std::cout<<itv->first<<" :: "<<itv->second<<std::endl;
-                itv++;
-        }
+	// map<string,string >::iterator itv = vars.begin();
+        // while(itv != vars.end())
+        // {
+        //         std::cout<<itv->first<<" :: "<<itv->second<<std::endl;
+        //         itv++;
+        // }
 
 	cout<<"\n CUTS : \n";
-	std::map<int, string>::iterator iter = cuts.begin();
-        while(iter != cuts.end())
-        {
-                cout<<iter->first<<" :: "<<iter->second<<endl;
-                iter++;
-        }		
+	// std::map<int, string>::iterator iter = cuts.begin();
+        // while(iter != cuts.end())
+        // {
+        //         cout<<iter->first<<" :: "<<iter->second<<endl;
+        //         iter++;
+        // }		
                 }
 
 
