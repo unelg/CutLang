@@ -586,11 +586,11 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "parse.l"
 #line 3 "parse.l"
+class Node;
 #include "stdlib.h"
 #include <string>
 #include <iostream>
 #include "b.hpp"
-int i=0;
 #line 595 "l.cpp"
 
 #define INITIAL 0
