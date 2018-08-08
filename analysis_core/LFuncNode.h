@@ -15,7 +15,7 @@ using namespace std;
 //takes care of functions with arguments
 class LFuncNode : public Node{
 private:
-    double (*f)(std::vector<myParticle>,std::vector<myParticle>);
+    double (*f)(std::vector<myParticle>,std::vector<myParticle>,AnalysisObjects* ao);
     std::vector<myParticle> inputParticles1;
     std::vector<myParticle> inputParticles2;
 public:
@@ -28,13 +28,13 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate() {
-        return (*f)(inputParticles1,inputParticles2);
+    virtual double evaluate(AnalysisObjects* ao) {
+        return (*f)(inputParticles1,inputParticles2,&ao);
     }
     virtual ~LFuncNode() {}
 };
 
-double dR(vector<myParticle> v,vector<myParticle> w){
+double dR(vector<myParticle> v,vector<myParticle> w,AnalysisObjects* ao){
     double mass1=0;
     for(vector<myParticle>::iterator i=v.begin();i!=v.end();i++){
         mass1+=i->index;
