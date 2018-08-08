@@ -18,6 +18,14 @@
 #include "dbx_jet.h"
 #include "analysis_core.h"
 
+struct AnalysisObjects {
+    std::vector<dbxMuon>     muos;
+    std::vector<dbxElectron> eles;
+    std::vector<dbxPhoton>   gams;
+    std::vector<dbxJet>      jets;
+    TVector2            met;
+    evt_data            evt;
+};
 //generic node interface
 class Node{
 protected:
@@ -39,14 +47,7 @@ public:
     }
 };
 
-struct AnalysisObjects {
-    std::vector<dbxMuon>     muos;
-    std::vector<dbxElectron> eles;
-    std::vector<dbxPhoton>   gams;
-    std::vector<dbxJet>      jets;
-    TVector2            met;
-    evt_data            evt;
-};
+
 
 
 #endif /* Node_h */
