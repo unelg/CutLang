@@ -24,7 +24,6 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 //avoid global variables
 //add histos -> DONE
 //view input
-
 %}
 %union {
         Node* node;

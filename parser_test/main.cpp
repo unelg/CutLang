@@ -10,14 +10,15 @@
 #include "Node.h"
 using namespace std;
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts);
-
+extern FILE* yyin;
 int main(void){
 
     list<string> parts; //for def of particles as given by user
     map<string,Node*> NodeVars;//for variable defintion
     map<string,vector<myParticle> > ListParts;//for particle definition
     map<int,Node*> NodeCuts;//cuts and histos
-
+    
+    yyin=fopen("ini.txt","r");
     yyparse(&parts,&NodeVars,&ListParts,&NodeCuts);
 
     cout<<"\n Particle Lists: \n";
