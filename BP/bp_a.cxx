@@ -161,7 +161,7 @@ int BPdbxA:: readAnalysisParams() {
     map<string,Node* >::iterator itv = NodeVars.begin();
     while(itv != NodeVars.end())
     {
-            std::cout<<"**************************** "<<itv->first<<" :: "<<itv->second->evaluate()<<endl;
+            std::cout<<"**************************** "<<itv->first<<endl;
             itv->second->display();
             std::cout<<std::endl;
             itv++;
@@ -171,7 +171,7 @@ int BPdbxA:: readAnalysisParams() {
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     while(iter != NodeCuts.end())
     {
-            cout<<"**************************** CUT "<<iter->first<<" :: "<<(bool)iter->second->evaluate()<<endl;
+            cout<<"**************************** CUT "<<iter->first<<endl;
             iter->second->display();
             std::cout<<endl;
             iter++;
@@ -470,8 +470,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 */
 
            DEBUG("Selecting: ");
-           //d=(bool)iter->second->evaluate(&a0); // execute the selection cut
-           d=(bool)iter->second->evaluate(); // execute the selection cut
+           d=(bool)iter->second->evaluate(&a0); // execute the selection cut
 
 /*
 //---------if this was a defining cut, we will store the results;
