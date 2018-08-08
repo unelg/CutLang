@@ -10,6 +10,14 @@
 #define Node_h
 #include <string>
 #include <iostream>
+
+#include "dbxParticle.h"
+#include "dbx_electron.h"
+#include "dbx_photon.h"
+#include "dbx_muon.h"
+#include "dbx_jet.h"
+#include "analysis_core.h"
+
 //generic node interface
 class Node{
 protected:

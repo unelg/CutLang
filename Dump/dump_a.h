@@ -6,9 +6,15 @@
 #include "ReadCard.h"
 #include <iostream>
 #include "analysis_core.h"
+#include "myParticle.h"
+#include "Node.h"
+
 #include "DBXNtuple.h"
 #include "TFile.h"
 #include "TTree.h"
+
+
+
 class DumpdbxA : public dbxA {
   public: 
       DumpdbxA(char *aname) : dbxA ( aname)

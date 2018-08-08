@@ -14,8 +14,10 @@
 #include "basic_parser.h"
 #include "analysis_core.h"
 #include "ReadCard.h"
+#include "myParticle.h"
+#include "Node.h"
 
-
+/*
 struct AnalysisObjects {
     std::vector<dbxMuon>     muos;
     std::vector<dbxElectron> eles;
@@ -24,7 +26,7 @@ struct AnalysisObjects {
     TVector2            met;
     evt_data            evt;
 };
-
+*/
 
 class dbxCut : public TObject  {
 
