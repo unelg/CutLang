@@ -43,6 +43,11 @@ endif
 CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) $(LIBS)
 
+b.o : parse.y
+	/usr/bin/bison -d -v -o b.cpp parse.y; $(CXX) $(INCLUDES) -std=c++11 -c b.cpp
+
+l.o : parse.l
+	flex -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 
 dbx_analysis : auxiliaries $(OBJS_2) softlinks
 	root -b -q -l -x makeSo.C

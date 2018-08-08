@@ -406,6 +406,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     {   
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
+/*
         if ( levelObjectMap.size() > 0) {
               map <int, vector<std::pair<string,string> > >::iterator it;
               it=levelObjectMap.find(k+1); 
@@ -433,7 +434,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                   DEBUG("\n" );
               }
         } 
-
+*/
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
 
@@ -469,7 +470,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 */
 
            DEBUG("Selecting: ");
-           d=(bool)iter->second->evaluate(&a0); // execute the selection cut
+           //d=(bool)iter->second->evaluate(&a0); // execute the selection cut
+           d=(bool)iter->second->evaluate(); // execute the selection cut
 
 /*
 //---------if this was a defining cut, we will store the results;
