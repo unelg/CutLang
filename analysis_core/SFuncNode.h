@@ -45,5 +45,8 @@ double nmuos(AnalysisObjects* ao){
 double nphos(AnalysisObjects* ao){
     return (ao->gams.size() );
 }
+double met(AnalysisObjects* ao){
+    return ( ao->met.Mod() );
+}
 
 #endif /* SFuncNode_h */

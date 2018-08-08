@@ -140,16 +140,21 @@ int BPdbxA:: readAnalysisParams() {
     while(iter != NodeCuts.end())
     {
             DEBUG(" CUT "<<iter->first<<" ");
-            iter->second->display();
+            //iter->second->display();
+            DEBUG("--->"<<iter->second->getStr()<<"\n");
+
+           TString newLabels=iter->second->getStr();
+/*
             TString newLabels="CUT";
                     newLabels+=iter->first;
-            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
+ */
+           eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
 
             DEBUG(std::endl);
             iter++;
     }
 
-#ifdef _CLV_
+#ifdef _CLV__
      cout<<"\n Particle Lists: \n";
 
      for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)

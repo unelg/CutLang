@@ -26,21 +26,27 @@ struct AnalysisObjects {
     TVector2            met;
     evt_data            evt;
 };
+
 //generic node interface
 class Node{
 protected:
     Node* left;
     Node* right;
     std::string symbol;
+    void getStr(TString *ss){
+        if(left!=NULL) left->getStr(ss); 
+               (*ss)+=" ";
+               (*ss)+=symbol;
+        if(right!=NULL) right->getStr(ss);
+    }
     void display(std::string indent){
-        if(left!=NULL) left->display(indent+"     ");
+        if(left!=NULL) left->display(indent+"     "); 
         std::cout<<indent+symbol<<std::endl;
         if(right!=NULL) right->display("\n"+indent+"     ");
     }
 public:
-    void display(){
-        this->display("");
-    }
+    void display(){ this->display(""); }
+    TString getStr(){ TString ss; this->getStr(&ss); return ss; }
     virtual double evaluate(AnalysisObjects* ao)=0;
     
     virtual ~ Node(){

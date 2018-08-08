@@ -280,7 +280,7 @@ function : '{' particules '}' 'm' {
         | MET {    
                                         
                                         string s="MET";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(met,s);
                                 }
         | ALL {    
                                         
