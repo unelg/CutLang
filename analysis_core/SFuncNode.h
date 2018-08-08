@@ -24,7 +24,7 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(&ao);
+        return (*f)(ao);
     }
     virtual ~SFuncNode() {}
 };

@@ -27,7 +27,7 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(inputParticles,&ao);
+        return (*f)(inputParticles,ao);
     }
     virtual ~FuncNode() {}
 };
