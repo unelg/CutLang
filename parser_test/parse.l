@@ -26,11 +26,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "maxmet" return MAXMET;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-"btag_lowthreshold_LVL0" return LVLO;  
+"btag_lowthreshold_LVL0" return LVLO;
 "btag_lowthreshold_ATLASOD" return ATLASOD;
-"btag_lowthreshold_CMSOD" return CMSOD;  
-"btag_lowthreshold_DELPHES" return DELPHES;  
-"btag_lowthreshold_FCC" return FCC;  
+"btag_lowthreshold_CMSOD" return CMSOD;
+"btag_lowthreshold_DELPHES" return DELPHES;
+"btag_lowthreshold_FCC" return FCC;
 "btag_lowthreshold_LHCO" return LHCO;
 "ELE" return ELE;//particles
 "MUO" return MUO;
