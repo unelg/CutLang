@@ -15,6 +15,10 @@
 #define DEBUG(a)
 #endif
 
+
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts);
+extern FILE* yyin;
+
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
 
 #ifdef _CLV_
@@ -113,75 +117,69 @@ int BPdbxA:: readAnalysisParams() {
 // ****************************************
      kk=1;
 
-//   TString CutList2file="\n";
+   TString CutList2file="\n";
 
 // ****************************************
 // ---------------------------DBX style cuts
-         CutList2file="\n";
-         BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
-         eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
-         int kFillHistos=0;
-         kk=1;
+       CutList2file="\n";
+       BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
+       eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+       int kFillHistos=0;
+       kk=1;
 
-         while (1){
-                  std::vector< std::pair<string,string> > obj2use;
-                  TString basecut="cmd";
-                          basecut+=kk++; 
-                  string cut0 = ReadCardString(CardName,basecut,"XXX");
-                  if (cut0=="XXX") break;
+       yyin=fopen(CardName,"r");
+       if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts);
+       if (retval){
+         cout << "\nSYNTAX error check the input file\n";
+         exit (99); 
+       }
+       cout << "\nWe have "<<NodeCuts.size() << " CutLang Cuts\n";
 
-                  CutList2file+=basecut;
-                  CutList2file+=" : ";
-                  CutList2file+=cut0;
-                  CutList2file+="\n";
 
-//                cout << "\n~~~~~~~~~~-> cut id:"<<kk-1<<") "<<cut0<<"\t";
-                  TString newLabels = cut0.data();
-                  eff->GetXaxis()->SetBinLabel(kk,newLabels); // labels
+#ifdef _CLV_
+   cout<<"\n Particle Lists: \n";
 
-                  DEBUG("====>>>"<<cut0<<".\n");
-                  if (cut0.find("FillHistos")!=std::string::npos){ newLabels = "FillHistos-"+TString::Format("%d",++kFillHistos); }
-
-//----------------------remember TERNARIES-----------------------------
-                    isTernary.push_back(0);
-                    std::vector<dbxCut*> acutlist; 
-                    acutlist.reserve(10);     // including logics we can have max 10 operations in a line
-                    std::vector<std::string> q;
-                    q=BPcutlist.cutTokenizer(cut0, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-                    mycutlist.push_back(acutlist);
-                    myopelist.push_back(q);
-                 
-/////////DEBUG
-/*
-                  for ( unsigned int ic=0; ic<acutlist.size(); ic++) {
-                      cout<<" name:"<<acutlist[ic]->getName()<<"\t";
-                  }
-                  cout<<endl;
-
-                  unsigned int jc=0;
-                  for ( unsigned int ic=0; ic<q.size(); ic++) {
-                    if (q[ic]=="x"){
-                      cout<<acutlist[jc++]->getName();
-                      cout<<q[ic];
-                    } else {
-                      cout<<q[ic];
+            for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
+                    {
+                    cout << it1->first << ": ";
+                    for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
+                    cout << lit->type << "_" << lit->index << " ";
+                    cout << "\n";
                     }
-                  }
-                  cout<<endl;
-*/
-         } // end of while 1
 
-         cout << "\nWe have "<<mycutlist.size() << " CutLang Cuts\n";
-         if ( levelObjectMap.size() > 0) {
-              map <int, vector<std::pair<string,string> > >::iterator it;
-              for (it=levelObjectMap.begin(); it!=levelObjectMap.end(); ++it) {
-                  std::cout <<"Cut:"<< it->first << "  ";
-                  for (int iobj=0; iobj<it->second.size(); iobj++){
-                     std::cout << it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second;
-                  }
-                  std::cout <<"\n";
-              }
-         }
+    cout<<"\n Particles defintions as given by user: \n";
+
+    std::list<std::string>::iterator it = parts.begin();
+    while(it != parts.end())
+    {
+            std::cout<<(*it)<<std::endl;
+            it++;
+    }
+
+    cout<<"\n Variables results: \n";
+    map<string,Node* >::iterator itv = NodeVars.begin();
+    while(itv != NodeVars.end())
+    {
+            std::cout<<"**************************** "<<itv->first<<" :: "<<itv->second->evaluate()<<endl;
+            itv->second->display();
+            std::cout<<std::endl;
+            itv++;
+    }
+
+    cout<<"\n CUTS : \n";
+    std::map<int, Node*>::iterator iter = NodeCuts.begin();
+    while(iter != NodeCuts.end())
+    {
+            cout<<"**************************** CUT "<<iter->first<<" :: "<<(bool)iter->second->evaluate()<<endl;
+            iter->second->display();
+            std::cout<<endl;
+            iter++;
+    }
+#endif
+
+//----------put into output file as text
+
          TText cinfo(0,0,CutList2file.Data());
                cinfo.SetName("CLA2cuts");
                cinfo.Write();
@@ -251,114 +249,7 @@ int BPdbxA:: bookAdditionalHistos() {
          CardName+="-card.txt";
          map < string, string > def_names;
          std::string subdelimiter = ":";
-         while (1){
-                  TString basedef="def";
-                          basedef+=kk++;
-                  string def0 = ReadCardString(CardName,basedef,"XXX");
-                  if (def0=="XXX") break;
-//                  cout << "==========-> def id:"<<kk-1<<") "<<def0<<endl;
-                  if ((apos=def0.find(subdelimiter)) != std::string::npos )  {
-                         std::string subtoken0, subtoken1;
-                         subtoken0 = def0.substr(0, apos); //
-                         subtoken1 = def0.substr(apos+subdelimiter.length(),std::string::npos); //
-                         subtoken1+=" ";
-//                       std::cout <<"DEFINE  "<<subtoken0<<" as "<<subtoken1<<std::endl;
-                         TNamed *astr_tmp=new TNamed (subtoken0.data(), subtoken1.data());
-//                       TParameter<std::string> *astr_tmp=new TParameter<std::string> (subtoken0.data(), subtoken1,'f');
-//                                             astr_tmp->Write(); // can we overload merge on TName? or similar.
-//TParameter<std::string> is Foobar because of line 142 on TParameter.h :   fVal *= c->GetVal(); // can't be done with strings
-                         def_names[subtoken0]=subtoken1;
-                  } else{
-                  cout << "This def is problematic. STOP\n"; exit (3);
-                  }
-        }
 
-        aa.push_back( make_pair(-1, aajunk) );
-        for (int dummy=0; dummy<9; dummy++) { histos_order.push_back( aa ); b_histos[dummy]=-1;}
-        kk=1;
-        while (1){
-                  TString basedef="histo";
-                          basedef+=kk++;
-                  string def0 = ReadCardString(HCardName,basedef,"XXX");
-                  if (def0=="XXX") break;
-                  string def1;
-// loop over all chars. Put a space before and after each operator.
-                  for (int ic=0; ic<def0.size(); ic++){
-                   if (def0[ic] == '(' 
-                    || def0[ic] == ')' 
-                    || def0[ic] == '+' 
-                    || def0[ic] == '-' 
-                    || def0[ic] == '^' 
-                    || def0[ic] == '/' 
-                    || def0[ic] == '*' ) 
-                   {
-                    if (ic>0 && def0[ic-1] != '_'){
-                       def1.append(" ");
-                       def1.append(def0,ic,1);
-                       def1.append(" ");
-                    }else { def1.append(def0,ic,1); }
-                   } else { def1.append(def0,ic,1); }
-                  }
-                  DEBUG("====>>>"<<def1<<".\n");
-
-// do we have a definition?
-                 for( map<string,string>::reverse_iterator it=def_names.rbegin(); it!=def_names.rend(); ++it) {
-                  std::size_t found =def1.find(it->first); 
-                  while ( found !=std::string::npos){
-//                    cout << "Replace with:"<<it->second<<"  ";
-                    def1.replace(found,it->first.length(),it->second);
-//                    cout << "\n+++=> histo id:"<<kk-1<<" becomes ) "<<def1<<"\t";
-                    found =def1.find(it->first);
-                  }
-                 }
-
-// ------- the rest of the histo definitions
-                  if ((apos=def1.find(Hsubdelimiter)) != std::string::npos )  {
-                         std::string subtoken0, subtoken1;
-                         int hnbin, horder;
-                         float hxmin, hxmax;
-                         string hargument;
-
-                         subtoken0 = def1.substr(0, apos); // histo name
-                         def1.erase(0, apos + Hsubdelimiter.length());
-                         apos=def1.find(Hsubdelimiter);     // histo title
-                         subtoken1 = def1.substr(0, apos); // histo title
-                         def1.erase(0, apos + Hsubdelimiter.length());
-                         apos=def1.find(Hsubdelimiter);     // histo nbins
-                         hnbin=atoi(def1.substr(0, apos).data());
-
-                         if (subtoken0.find("Basics") != std::string::npos  ) {
-                          cout << "\nBasics Histos @:"<<hnbin<<" using id:"<< atoi(subtoken1.data() ) << "  ";
-                          b_histos[hnbin]=atoi(subtoken1.data() );
-                         } else {
-
-                            def1.erase(0, apos + Hsubdelimiter.length());
-                            apos=def1.find(Hsubdelimiter);            //histo xmin
-                            hxmin=atof(def1.substr(0, apos).data()); //histo xmin
-                            def1.erase(0, apos + Hsubdelimiter.length());
-                            apos=def1.find(Hsubdelimiter);            //histo xmax
-                            hxmax=atof(def1.substr(0, apos).data()); //histo xmax
-                            def1.erase(0, apos + Hsubdelimiter.length());
-                            apos=def1.find(Hsubdelimiter);            //histo order
-                            horder=atoi(def1.substr(0, apos).data());//histo order
-                            def1.erase(0, apos + Hsubdelimiter.length());
-                            apos=def1.find(subdelimiter);     // histo argument
-                            hargument = def1.substr(0, apos); // histo argument
-
-          //                  std::cout <<"\nHISTO ---:  "<<subtoken0<<" name:"<<subtoken1<< "."<< " nbin:"<<hnbin<<" ["<<hxmin<<","<<hxmax<<"]" << " @:"<<horder<<" w/"<<hargument << " ";
-                            a_histos[kk-1]=new TH1F(subtoken0.data(), subtoken1.data(), hnbin, hxmin, hxmax);
-
-                            std::vector<dbxCut*> acutlist;
-                            acutlist.reserve(10);
-                            BPcutlist.cutTokenizer(hargument, &acutlist); //BPcutlist is not a real list, name change and also just a local variable TODO
-
-                            histos_order.at(horder-1).push_back( make_pair (kk-1, acutlist) );
-                         }
-
-                  } else{
-                  cout << "This histo is problematic. STOP\n"; exit (3);
-                  }
-        }
   return retval;
 }
 
@@ -510,7 +401,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 // *************************************
 
     unsigned int ternaryCount=0;
-    for (unsigned int k=0; k<mycutlist.size(); k++){
+    std::map<int, Node*>::iterator iter = NodeCuts.begin();
+    while(iter != NodeCuts.end())
+    {   
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
         if ( levelObjectMap.size() > 0) {
@@ -543,57 +436,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
-        if ( isTernary[k]>0 ) {  
-            DEBUG(" isTernarySize:"<<isTernary.size()<<"\t tc:" <<ternaryCount << "\t k:" << k <<" maxTC:"<<terCutlistT.size()<<"\n" );
-            DEBUG(" BEFORE CUT, solve TERNARY @Degree:"<< isTernary[k] <<"---------"); 
-            dt=mycutlist[k][j]->select(&a0); // execute the selection cut
-            DEBUG("L0 dt:"<<dt<<"\n"); 
 
-            if (isTernary[k]==10){ // ONE more ternary in T, F is a normal cut
-               if (dt > 0) { DEBUG("@L1, True\t");
-                 dt=terCutlistT[ternaryCount][j]->select(&a0); // execute the selection cut
-               }  else  {    DEBUG("@L1, False\t");
-                 ternaryCount++;
-               }
-            }
-            if (isTernary[k]==11){ // ONE more ternary in F, T is a normal cut
-               if (dt > 0) { DEBUG("@L1, True\t");
-                 ternaryCount++;
-               }  else  {    DEBUG("@L1, False\t");
-                 dt=terCutlistF[ternaryCount][j]->select(&a0); // execute the selection cut
-                 ternaryCount++;
-               }
-            }
-
-            if (isTernary[k]==21){ // TWO ternaries both in T and F
-               if (dt > 0) { DEBUG("@L1, True\t");
-                 dt=terCutlistT[ternaryCount][j]->select(&a0); // execute the selection cut
-                 ternaryCount++;
-               }  else  {    DEBUG("@L1, False\t");
-                  ternaryCount++;
-                  DEBUG(" cutName:"<<terCutlistF[ternaryCount][j]->getName()<< " cutOp:"<<terCutlistF[ternaryCount][j]->getOp()<<" #cutParts:"<<terCutlistF[ternaryCount][j]->getParticleType() );
-                  dt=terCutlistF[ternaryCount][j]->select(&a0); // execute the selection cut
-               }
-               DEBUG("L1 dt:"<<dt<<"\n");
-               ternaryCount++;// ternary skips true; moves to false
-            }
-
-            if (dt > 0) { DEBUG("Final True  @"<< ternaryCount <<"\t");
-                          DEBUG(" name of this cut:"<<terCutlistT[ternaryCount][j]->getName() );
-                          mycutlist[k].swap( terCutlistT[ternaryCount] );
-                          myopelist[k].swap( terOpelistT[ternaryCount] ); 
-            }  else  {    
-                          DEBUG("Final False @"<< ternaryCount <<"\t");
-                          DEBUG(" name of this cut:"<<terCutlistF[ternaryCount][j]->getName() );
-                          myopelist[k].swap(terOpelistF[ternaryCount] );
-                          mycutlist[k].swap(terCutlistF[ternaryCount] );
-            }
-            DEBUG(" Swapped.\n");
-        }
-
-
-        DEBUG("CUT:"<<k+1<< " "<<" # operations in this cut:"<<myopelist[k].size());
         DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
+/*
 //--------- we apply scale factors
         if (TRGe==2 || TRGm== 2) {
          if (mycutlist[k][j]->getName() == "LEPsf" ) evt_weight*=anevt.weight_leptonSF;
@@ -603,93 +448,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                 btagSF_counter++;
          } //TO BE IMPROVED
         }
-
-//----------------histogram filling
-        if (mycutlist[k][j]->getName() == "FillHistos") {
-           FillHistos_counter++;
-
-           switch ( FillHistos_counter ) {
-           case 1:
-                 anevt.mcevt_weight = evt_weight;//BG
-                 break;
-           case 2:
-                 anevt.mcevt_weight = evt_weight;//BG
-                 break;
-           case 3:
-                 break;
-
-// if it is not defined---------------
-          default:
-                //cout << "This PLOT section is NOT defined!!!!!!!!\n";
-                break;
-         }
-
-        // no need to calculate cut value, since this is only plotting facility
-        // continue; ---------TODO
-
-
-//---------fill cutlang type histos
-//      DEBUG("FillSet "<<FillHistos_counter<<endl);
-        for (int ij=1; ij<histos_order.at(FillHistos_counter-1).size(); ij++){
-           ahistid=histos_order.at(FillHistos_counter-1)[ij].first;
-           if (histos_order.at(FillHistos_counter-1)[ij].second.at(0)->isSearchable() ){
-//                  DEBUG("searchable histo.\t");
-                    dbxCut *histocut= histos_order.at(FillHistos_counter-1)[ij].second.at(0);
-                    ret_i.clear(); 
-                    ret_t.clear(); 
-                    find_idxtype_tobeused( histocut,  &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
-//                  DEBUG("#idxs to be used:"<< ret_i.size()<<endl);
-                    histos_order.at(FillHistos_counter-1)[ij].second.at(0)->setFoundVectors ( &ret_i, &ret_t, &found_idx_origs ); 
-           }
-//         DEBUG("calculating..\t");
-           ahistval=histos_order.at(FillHistos_counter-1)[ij].second.at(0)->calc(&a0); // calculate as before
-//         DEBUG("Histo ID:"<<ahistid<<" to be filled with:"<<ahistval<< " title:"<<   histos_order.at(FillHistos_counter-1)[ij].second.at(0)->getName()<<endl);
-           a_histos[ahistid]->Fill(ahistval, evt_weight);
-        }
-
-        if (b_histos[FillHistos_counter] != -1 ) { //was set at the initialization also we start @1.
-           dbxA::makeAnalysis (goodMuons, goodElectrons, goodJets, met, anevt, b_histos[FillHistos_counter]);
-        }
-
-        }// end of histogram filling command
-
-        if (myopelist[k].size()>1) { //more than one operator
-           std::ostringstream oss;
-           for ( unsigned int i=0; i<myopelist[k].size(); i++) { //loop over operations
-           if (myopelist[k][i]=="x"){   //something to be evaluated
-//             DEBUG("op:"<<mycutlist[k][j]->getOp()   <<"  "); // this operator
-               if (mycutlist[k][j]->isSearchable() ) {
-//                  DEBUG(mycutlist[k][j]->getName()<<" is searchable.\n");
-                    int found_res_size=found_idx_vecs.size();
-                    if (found_idx_vecs.size() >0) {// do we have any previous results we can use?
-                        ret_i.clear(); 
-                        ret_t.clear(); 
-                        find_idxtype_tobeused( mycutlist[k][j], &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
-//                      DEBUG("To be used idx_vec size:"<< ret_i.size()<<endl);
-                        if (ret_i.size() >0) { mycutlist[k][j]->setFoundVectors( &ret_i, &ret_t, &found_idx_origs); }
-                        forbidthese.clear();
-                        for (int ikk=0; ikk<found_res_size; ikk++){ 
-                             forbidthese.push_back( make_pair(found_idx_vecs[ikk],found_type_vecs[ikk]) );
-                        }
-                        mycutlist[k][j]->setForbiddenVector(&forbidthese);
-                    }
-               }// end searchable
-
-              oss<<mycutlist[k][j++]->select(&a0);
-           } else {
-              oss<<myopelist[k][i];
-           }
-           } // end of operations
-//           oss << "  "; // very very important to finish with space.
-           DEBUG("\n Total oper is:"<< oss.str()<<endl);
-
-//--------------we now have a logic operation to perform
-           basic_parser pars;
-           std::vector<std::string> rpn;
-           std::vector<std::string> tokens = pars.getExpressionTokens( oss.str() );
-           pars.infixToRPN( tokens, tokens.size(), &rpn );
-           d = pars.RPNtoDouble( rpn );
-	} else { //single operation
+*/
+/*
            if (mycutlist[k][j]->isSearchable() ) {
                DEBUG(mycutlist[k][j]->getName()<<" is searchable.\n");
                 int found_res_size=found_idx_vecs.size();
@@ -706,8 +466,12 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                   mycutlist[k][j]->setForbiddenVector(&forbidthese);
                 }
            }// end searchable
+*/
+
            DEBUG("Selecting: ");
-           d=mycutlist[k][j]->select(&a0); // execute the selection cut
+           d=(bool)iter->second->evaluate(&a0); // execute the selection cut
+
+/*
 //---------if this was a defining cut, we will store the results;
            if (mycutlist[k][j]->getOp()=="~=" || mycutlist[k][j]->getOp()=="!=") {
                 DEBUG("storing found vecs. Tot="<<(mycutlist[k][j]->getFoundVector()).size()); 
@@ -720,7 +484,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
            //   for (int iti=0; iti<found_idx_origs.size(); iti++) {DEBUG(" Oi:"<<found_idx_origs[iti]);}  DEBUG("\n");
            }
            j++;
-        }
+*/
+/*
         if ( isTernary[k] > 0){
             if (dt > 0) { 
                           mycutlist[k].swap( terCutlistT[ternaryCount] );
@@ -731,9 +496,10 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
             }
          ternaryCount++; // ternary skips 1 here, nested or not doesn't matter.
         }
+*/
         DEBUG("             Result = " << d << std::endl);
-        if (d==0) return k; // quit the event.
-        eff->Fill(k+2, evt_weight); // filling starts from 1 which is already filled.
+        if (d==0) return iter->first; // quit the event.
+        eff->Fill(iter->first+2, evt_weight); // filling starts from 1 which is already filled.
     } // loop over all cutlang cuts
     cur_cut+=mycutlist.size(); // we continue
 return 1;

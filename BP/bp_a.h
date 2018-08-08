@@ -5,6 +5,8 @@
 #include "ReadCard.h"
 #include <iostream>
 #include "analysis_core.h"
+#include "myParticle.h"
+#include "Node.h"
 
 
 class BPdbxA : public dbxA {
@@ -69,10 +71,14 @@ class BPdbxA : public dbxA {
         map < string, vector<string> > obj_names;
         map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> >  >  > obj_defs;
 
-
         std::vector<int> ret_i;
         std::vector<int> ret_t;
         vector <int>  found_type_vecs, found_idx_vecs, found_idx_origs;
- 
+
+        list<string> parts; //for def of particles as given by user
+        map<string,Node*> NodeVars;//for variable defintion
+        map<string,vector<myParticle> > ListParts;//for particle definition
+        map<int,Node*> NodeCuts;//cuts and histos
+
 };
 #endif

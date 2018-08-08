@@ -15,6 +15,23 @@ vardef {varname}" "?":"" "?.*"\n"
 "def" return DEF;//case sensitive in this case
 "cmd" return CMD;
 "histo" return HISTO;
+"minptm" return MINPTM;
+"minptg" return MINPTG;
+"minptj" return MINPTJ;
+"minpte" return MINPTE;
+"maxetam" return MAXETAM;
+"maxetae" return MAXETAE;
+"maxetag" return MAXETAG;
+"maxetaj" return MAXETAJ;
+"maxmet" return MAXMET;
+"TRGe" return TRGE;
+"TRGm" return TRGM;
+"btag_lowthreshold_LVL0" return LVLO;
+"btag_lowthreshold_ATLASOD" return ATLASOD;
+"btag_lowthreshold_CMSOD" return CMSOD;
+"btag_lowthreshold_DELPHES" return DELPHES;
+"btag_lowthreshold_FCC" return FCC;
+"btag_lowthreshold_LHCO" return LHCO;
 "ELE" return ELE;//particles
 "MUO" return MUO;
 "LEP" return LEP;
@@ -63,6 +80,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][oO][sS] return COS;
 {integer} sscanf(yytext, "%lf",&yylval.real);return INT;
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}_mqPE,?] return *yytext;
+[-+*/()^:{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]* yylval.s=strdup(yytext);return ID;
 %%
