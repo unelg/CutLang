@@ -9,7 +9,9 @@
 #include "myParticle.h"
 #include "Node.h"
 using namespace std;
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts,
+                        vector<double>* Initializations , vector<double>* DataFormats
+                );
 extern FILE* yyin;
 int main(void){
 
@@ -17,9 +19,14 @@ int main(void){
     map<string,Node*> NodeVars;//for variable defintion
     map<string,vector<myParticle> > ListParts;//for particle definition
     map<int,Node*> NodeCuts;//cuts and histos
-    
+    vector<double> Initializations=vector<double>(11);
+    vector<double> DataFormats=vector<double>(6);
     yyin=fopen("ini.txt","r");
-    yyparse(&parts,&NodeVars,&ListParts,&NodeCuts);
+    yyparse(&parts,&NodeVars,&ListParts,&NodeCuts,&Initializations,&DataFormats);
+        cout<<"\n Initializing : \n";
+        for (vector<double>::iterator a = Initializations.begin(); a  != Initializations.end(); a++){
+                cout<<*a<<endl;
+        }
 
     cout<<"\n Particle Lists: \n";
             

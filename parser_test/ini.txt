@@ -1,3 +1,10 @@
+minptg = 10.0 # min pt of photons
+minpte = 7.0 # min pt of electrons
+minptm = 6.0 # min pt of muons
+minptj = 20.0 # min pt of jets
+maxetag = 2.37 # max pseudorapidity ofs 
+maxetam = 2.70 # max pseudorapidity 
+
 def Anna: MUO_2 JET_-1
 def Ana: MUO_2 JET_0 Anna
 def       WH1 : JET_1 JET_-1   # W boson of the first top

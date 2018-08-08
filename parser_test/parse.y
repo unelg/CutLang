@@ -9,7 +9,10 @@
 #include <vector>
 #include <iterator>
 extern int yylex();
-void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts,const char *s) { std::cout << s << std::endl; } 
+void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,
+                map<int,Node*>* NodeCuts,
+                vector<double>* Initializations , vector<double>* DataFormats
+                ,const char *s) { std::cout << s << std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
@@ -34,8 +37,12 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %parse-param {map<string,Node*>* NodeVars} 
 %parse-param {map<string,vector<myParticle> >* ListParts} 
 %parse-param {map<int,Node*>* NodeCuts}
+%parse-param {vector<double>* Initializations}
+%parse-param {vector<double>* DataFormats}
 %token DEF CMD HISTO
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
+%token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
+%token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI //functions
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token <real> NB
@@ -55,8 +62,29 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %type <node> e function condition
 %type <s> particule particules list action ifstatement description
 %%
-input : definitions commands 
+input : initializations definitions commands 
      ;
+initializations : initializations initialization 
+        | 
+        ;
+initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
+                | MINPTM '=' NB {Initializations->at(1)=$3;}
+                | MINPTJ '=' NB {Initializations->at(2)=$3;}
+                | MINPTG '=' NB {Initializations->at(3)=$3;}
+                | MAXETAE '=' NB {Initializations->at(4)=$3;}
+                | MAXETAM '=' NB {Initializations->at(5)=$3;}
+                | MAXETAJ '=' NB {Initializations->at(6)=$3;}
+                | MAXETAG '=' NB {Initializations->at(7)=$3;}
+                | MAXMET '=' NB {Initializations->at(8)=$3;}
+                | TRGE  '=' INT {Initializations->at(9)=$3;}
+                | TRGM  '=' INT {Initializations->at(10)=$3;}
+                | LVLO '=' NB  {DataFormats->at(0)=$3;}
+                | ATLASOD '=' NB {DataFormats->at(1)=$3;}
+                | CMSOD '=' NB {DataFormats->at(2)=$3;}
+                | DELPHES '=' NB {DataFormats->at(3)=$3;}
+                | FCC '=' NB {DataFormats->at(4)=$3;}
+                | LHCO '=' NB {DataFormats->at(5)=$3;}
+                ;
 definitions : definitions definition 
             | 
             ;
@@ -69,7 +97,7 @@ definition : DEF  ID  ':' particules {
                         
                                         if(it != ListParts->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
@@ -98,7 +126,7 @@ definition : DEF  ID  ':' particules {
                         
                                         if(it != NodeVars->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,"Variable already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
@@ -373,7 +401,7 @@ particule : ELE '_' index {
      
                 if(it == ListParts->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(NULL,NULL,NULL,NULL,"Particule not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Particule not defined");
                         YYERROR;//stops parsing if particle not found
                         
                 }
@@ -409,7 +437,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 cout <<$12<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,"Variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                                 
                                         }
@@ -552,7 +580,7 @@ e : e '+' e  {
      
                 if(it == NodeVars->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(NULL,NULL,NULL,NULL,"Variable not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
                         
                 }
