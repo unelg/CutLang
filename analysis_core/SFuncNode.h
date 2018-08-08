@@ -16,7 +16,7 @@ private:
     //should add something related to trigger types
     double (*f)(AnalysisObjects* ao);
 public:
-    SFuncNode(double (*func)(),  std::string s ){
+    SFuncNode(double (*func)(AnalysisObjects* ao),  std::string s ){
         f=func;
         symbol=s;
         left=NULL;
