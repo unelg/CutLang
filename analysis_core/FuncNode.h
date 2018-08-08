@@ -18,7 +18,7 @@ private:
     double (*f)(std::vector<myParticle>,AnalysisObjects* ao);
     std::vector<myParticle> inputParticles;
 public:
-    FuncNode(double (*func)(std::vector<myParticle> ),std::vector<myParticle> input,  std::string s ){
+    FuncNode(double (*func)(std::vector<myParticle>,AnalysisObjects* ao ),std::vector<myParticle> input,  std::string s ){
         f=func;
         symbol=s;
         inputParticles=input;
