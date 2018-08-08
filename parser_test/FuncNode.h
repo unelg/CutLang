@@ -37,6 +37,7 @@ double MASS(vector<myParticle> v){
     for(vector<myParticle>::iterator i=v.begin();i!=v.end();i++){
         mass+=i->index;
     }
+    std::cout <<" m:"<<mass<<"\t";
     return mass;
 }
 //other functions to be added
