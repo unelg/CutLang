@@ -31,4 +31,14 @@ public:
     }
 };
 
+struct AnalysisObjects {
+    std::vector<dbxMuon>     muos;
+    std::vector<dbxElectron> eles;
+    std::vector<dbxPhoton>   gams;
+    std::vector<dbxJet>      jets;
+    TVector2            met;
+    evt_data            evt;
+};
+
+
 #endif /* Node_h */
