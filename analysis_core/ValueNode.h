@@ -21,7 +21,7 @@ public:
                 symbol=std::to_string(v);
             }
     
-     virtual double evaluate() {
+     virtual double evaluate(AnalysisObjects* ao) {
         return value;
     }
     

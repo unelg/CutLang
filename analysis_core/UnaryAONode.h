@@ -21,8 +21,8 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate() {
-        return (*f)(left->evaluate());
+    virtual double evaluate(AnalysisObjects* ao) {
+        return (*f)(left->evaluate(AnalysisObjects* ao));
     }
     virtual ~UnaryAONode() {
         if (left!=NULL) delete left;

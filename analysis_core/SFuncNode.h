@@ -14,7 +14,7 @@ using namespace std;
 class SFuncNode : public Node{
 private:
     //should add something related to trigger types
-    double (*f)();
+    double (*f)(AnalysisObjects* ao);
 public:
     SFuncNode(double (*func)(),  std::string s ){
         f=func;
@@ -23,13 +23,13 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate() {
-        return (*f)();
+    virtual double evaluate(AnalysisObjects* ao) {
+        return (*f)(&ao);
     }
     virtual ~SFuncNode() {}
 };
 
-double all(){
+double all(AnalysisObjects* ao){
     return 1;
 }
 

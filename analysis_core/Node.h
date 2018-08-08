@@ -33,7 +33,7 @@ public:
     void display(){
         this->display("");
     }
-    virtual double evaluate()=0;
+    virtual double evaluate(AnalysisObjects* ao)=0;
     
     virtual ~ Node(){
     }

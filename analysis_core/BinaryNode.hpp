@@ -24,8 +24,8 @@ public:
         right=r;
     }
 
-    virtual double evaluate(){
-            return (*f)(left->evaluate(),right->evaluate());
+    virtual double evaluate(AnalysisObjects* ao){
+            return (*f)(left->evaluate(&ao),right->evaluate(&ao));
     }
     virtual ~BinaryNode() {
 //        if (left!=NULL) delete left;
