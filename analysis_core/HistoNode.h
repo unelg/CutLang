@@ -31,7 +31,7 @@ public:
     
     virtual double evaluate(AnalysisObjects* ao) {
         std::cout<<"\nHisto should evaluate and fill ";
-        return left->evaluate(AnalysisObjects* ao);
+        return left->evaluate(ao);
 
     }
     virtual ~HistoNode() {

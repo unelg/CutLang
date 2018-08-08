@@ -22,7 +22,7 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(left->evaluate(AnalysisObjects* ao));
+        return (*f)(left->evaluate(ao));
     }
     virtual ~UnaryAONode() {
         if (left!=NULL) delete left;

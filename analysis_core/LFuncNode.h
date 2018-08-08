@@ -29,7 +29,7 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(inputParticles1,inputParticles2,&ao);
+        return (*f)(inputParticles1,inputParticles2,ao);
     }
     virtual ~LFuncNode() {}
 };
