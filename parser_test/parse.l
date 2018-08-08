@@ -14,6 +14,7 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def" return DEF;//case sensitive in this case
 "cmd" return CMD;
+"histo" return HISTO;
 "ELE" return ELE;//particles
 "MUO" return MUO;
 "LEP" return LEP;

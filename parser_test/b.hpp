@@ -41,121 +41,123 @@
    enum yytokentype {
      DEF = 258,
      CMD = 259,
-     ELE = 260,
-     MUO = 261,
-     LEP = 262,
-     PHO = 263,
-     JET = 264,
-     BJET = 265,
-     QGJET = 266,
-     NUMET = 267,
-     METLV = 268,
-     PHI = 269,
-     ETA = 270,
-     ABSETA = 271,
-     PT = 272,
-     PZ = 273,
-     NBF = 274,
-     DR = 275,
-     DPHI = 276,
-     NELE = 277,
-     NMUO = 278,
-     NLEP = 279,
-     NPHO = 280,
-     NJET = 281,
-     NBJET = 282,
-     NQGJET = 283,
-     HT = 284,
-     METMWT = 285,
-     MWT = 286,
-     MET = 287,
-     ALL = 288,
-     LEPSF = 289,
-     FILLHISTOS = 290,
-     NB = 291,
-     ID = 292,
-     SIN = 293,
-     COS = 294,
-     TAN = 295,
-     INT = 296,
-     OR = 297,
-     AND = 298,
-     LT = 299,
-     GT = 300,
-     LE = 301,
-     GE = 302,
-     EQ = 303,
-     NE = 304,
-     IRG = 305,
-     ERG = 306,
-     Unary = 307
+     HISTO = 260,
+     ELE = 261,
+     MUO = 262,
+     LEP = 263,
+     PHO = 264,
+     JET = 265,
+     BJET = 266,
+     QGJET = 267,
+     NUMET = 268,
+     METLV = 269,
+     PHI = 270,
+     ETA = 271,
+     ABSETA = 272,
+     PT = 273,
+     PZ = 274,
+     NBF = 275,
+     DR = 276,
+     DPHI = 277,
+     NELE = 278,
+     NMUO = 279,
+     NLEP = 280,
+     NPHO = 281,
+     NJET = 282,
+     NBJET = 283,
+     NQGJET = 284,
+     HT = 285,
+     METMWT = 286,
+     MWT = 287,
+     MET = 288,
+     ALL = 289,
+     LEPSF = 290,
+     FILLHISTOS = 291,
+     NB = 292,
+     ID = 293,
+     SIN = 294,
+     COS = 295,
+     TAN = 296,
+     INT = 297,
+     OR = 298,
+     AND = 299,
+     LT = 300,
+     GT = 301,
+     LE = 302,
+     GE = 303,
+     EQ = 304,
+     NE = 305,
+     IRG = 306,
+     ERG = 307,
+     Unary = 308
    };
 #endif
 /* Tokens.  */
 #define DEF 258
 #define CMD 259
-#define ELE 260
-#define MUO 261
-#define LEP 262
-#define PHO 263
-#define JET 264
-#define BJET 265
-#define QGJET 266
-#define NUMET 267
-#define METLV 268
-#define PHI 269
-#define ETA 270
-#define ABSETA 271
-#define PT 272
-#define PZ 273
-#define NBF 274
-#define DR 275
-#define DPHI 276
-#define NELE 277
-#define NMUO 278
-#define NLEP 279
-#define NPHO 280
-#define NJET 281
-#define NBJET 282
-#define NQGJET 283
-#define HT 284
-#define METMWT 285
-#define MWT 286
-#define MET 287
-#define ALL 288
-#define LEPSF 289
-#define FILLHISTOS 290
-#define NB 291
-#define ID 292
-#define SIN 293
-#define COS 294
-#define TAN 295
-#define INT 296
-#define OR 297
-#define AND 298
-#define LT 299
-#define GT 300
-#define LE 301
-#define GE 302
-#define EQ 303
-#define NE 304
-#define IRG 305
-#define ERG 306
-#define Unary 307
+#define HISTO 260
+#define ELE 261
+#define MUO 262
+#define LEP 263
+#define PHO 264
+#define JET 265
+#define BJET 266
+#define QGJET 267
+#define NUMET 268
+#define METLV 269
+#define PHI 270
+#define ETA 271
+#define ABSETA 272
+#define PT 273
+#define PZ 274
+#define NBF 275
+#define DR 276
+#define DPHI 277
+#define NELE 278
+#define NMUO 279
+#define NLEP 280
+#define NPHO 281
+#define NJET 282
+#define NBJET 283
+#define NQGJET 284
+#define HT 285
+#define METMWT 286
+#define MWT 287
+#define MET 288
+#define ALL 289
+#define LEPSF 290
+#define FILLHISTOS 291
+#define NB 292
+#define ID 293
+#define SIN 294
+#define COS 295
+#define TAN 296
+#define INT 297
+#define OR 298
+#define AND 299
+#define LT 300
+#define GT 301
+#define LE 302
+#define GE 303
+#define EQ 304
+#define NE 305
+#define IRG 306
+#define ERG 307
+#define Unary 308
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 26 "parse.y"
+#line 31 "parse.y"
 {
         Node* node;
 	double real;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 /* Line 1529 of yacc.c.  */
-#line 159 "b.h"
+#line 161 "b.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

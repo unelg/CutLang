@@ -1,0 +1,2579 @@
+Terminals which are not used
+
+   FILLHISTOS
+
+
+State 50 conflicts: 4 reduce/reduce
+State 155 conflicts: 2 reduce/reduce
+
+
+Grammar
+
+    0 $accept: input $end
+
+    1 input: definitions commands
+
+    2 definitions: definitions definition
+    3            | /* empty */
+
+    4 definition: DEF ID ':' particules
+    5           | DEF ID ':' e
+
+    6 function: '{' particules '}' 'm'
+    7         | '{' particules '}' 'q'
+    8         | '{' particules '}' 'P'
+    9         | '{' particules '}' 'E'
+   10         | '{' particules '}' PHI
+   11         | '{' particules '}' ETA
+   12         | '{' particules '}' ABSETA
+   13         | '{' particules '}' PT
+   14         | '{' particules '}' PZ
+   15         | '{' particules '}' NBF
+   16         | list DR
+   17         | list DPHI
+   18         | NELE
+   19         | NMUO
+   20         | NLEP
+   21         | NPHO
+   22         | NJET
+   23         | NBJET
+   24         | NQGJET
+   25         | HT
+   26         | METMWT
+   27         | MWT
+   28         | MET
+   29         | ALL
+   30         | LEPSF
+
+   31 @1: /* empty */
+
+   32 list: '{' particules @1 ',' particules '}'
+
+   33 particules: particules particule
+   34           | particule
+
+   35 particule: ELE '_' index
+   36          | MUO '_' index
+   37          | LEP '_' index
+   38          | PHO '_' index
+   39          | JET '_' index
+   40          | BJET '_' index
+   41          | QGJET '_' index
+   42          | NUMET '_' index
+   43          | METLV '_' index
+   44          | ID
+
+   45 index: '-' INT
+   46      | INT
+
+   47 commands: commands command
+   48         | /* empty */
+
+   49 command: CMD condition
+   50        | CMD ALL
+   51        | CMD ifstatement
+   52        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID
+
+   53 description: description ID
+   54            | ID
+
+   55 ifstatement: condition '?' action ':' action
+
+   56 action: condition
+   57       | ALL
+   58       | ifstatement
+
+   59 condition: e LT e
+   60          | e GT e
+   61          | e LE e
+   62          | e GE e
+   63          | e EQ e
+   64          | e NE e
+   65          | e IRG e e
+   66          | e ERG e e
+   67          | condition AND condition
+   68          | condition OR condition
+   69          | '(' condition ')'
+
+   70 e: e '+' e
+   71  | e '-' e
+   72  | e '*' e
+   73  | e '/' e
+   74  | e '^' e
+   75  | '-' e
+   76  | COS '(' e ')'
+   77  | SIN '(' e ')'
+   78  | TAN '(' e ')'
+   79  | '(' e ')'
+   80  | NB
+   81  | INT
+   82  | function
+   83  | ID
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 69 76 77 78 79
+')' (41) 69 76 77 78 79
+'*' (42) 72
+'+' (43) 70
+',' (44) 32 52
+'-' (45) 45 71 75
+'/' (47) 73
+':' (58) 4 5 55
+'?' (63) 55
+'E' (69) 9
+'P' (80) 8
+'^' (94) 74
+'_' (95) 35 36 37 38 39 40 41 42 43
+'m' (109) 6
+'q' (113) 7
+'{' (123) 6 7 8 9 10 11 12 13 14 15 32
+'}' (125) 6 7 8 9 10 11 12 13 14 15 32
+error (256)
+DEF (258) 4 5
+CMD (259) 49 50 51
+HISTO (260) 52
+ELE (261) 35
+MUO (262) 36
+LEP (263) 37
+PHO (264) 38
+JET (265) 39
+BJET (266) 40
+QGJET (267) 41
+NUMET (268) 42
+METLV (269) 43
+PHI (270) 10
+ETA (271) 11
+ABSETA (272) 12
+PT (273) 13
+PZ (274) 14
+NBF (275) 15
+DR (276) 16
+DPHI (277) 17
+NELE (278) 18
+NMUO (279) 19
+NLEP (280) 20
+NPHO (281) 21
+NJET (282) 22
+NBJET (283) 23
+NQGJET (284) 24
+HT (285) 25
+METMWT (286) 26
+MWT (287) 27
+MET (288) 28
+ALL (289) 29 50 57
+LEPSF (290) 30
+FILLHISTOS (291)
+NB (292) 80
+ID (293) 4 5 44 52 53 54 83
+SIN (294) 77
+COS (295) 76
+TAN (296) 78
+INT (297) 45 46 52 81
+OR (298) 68
+AND (299) 67
+LT (300) 59
+GT (301) 60
+LE (302) 61
+GE (303) 62
+EQ (304) 63
+NE (305) 64
+IRG (306) 65
+ERG (307) 66
+Unary (308)
+
+
+Nonterminals, with rules where they appear
+
+$accept (71)
+    on left: 0
+input (72)
+    on left: 1, on right: 0
+definitions (73)
+    on left: 2 3, on right: 1 2
+definition (74)
+    on left: 4 5, on right: 2
+function (75)
+    on left: 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    26 27 28 29 30, on right: 82
+list (76)
+    on left: 32, on right: 16 17
+@1 (77)
+    on left: 31, on right: 32
+particules (78)
+    on left: 33 34, on right: 4 6 7 8 9 10 11 12 13 14 15 32 33
+particule (79)
+    on left: 35 36 37 38 39 40 41 42 43 44, on right: 33 34
+index (80)
+    on left: 45 46, on right: 35 36 37 38 39 40 41 42 43
+commands (81)
+    on left: 47 48, on right: 1 47
+command (82)
+    on left: 49 50 51 52, on right: 47
+description (83)
+    on left: 53 54, on right: 52 53
+ifstatement (84)
+    on left: 55, on right: 51 58
+action (85)
+    on left: 56 57 58, on right: 55
+condition (86)
+    on left: 59 60 61 62 63 64 65 66 67 68 69, on right: 49 55 56 67
+    68 69
+e (87)
+    on left: 70 71 72 73 74 75 76 77 78 79 80 81 82 83,
+    on right: 5 59 60 61 62 63 64 65 66 70 71 72 73 74 75 76 77 78
+    79
+
+
+state 0
+
+    0 $accept: . input $end
+
+    $default  reduce using rule 3 (definitions)
+
+    input        go to state 1
+    definitions  go to state 2
+
+
+state 1
+
+    0 $accept: input . $end
+
+    $end  shift, and go to state 3
+
+
+state 2
+
+    1 input: definitions . commands
+    2 definitions: definitions . definition
+
+    DEF  shift, and go to state 4
+
+    $default  reduce using rule 48 (commands)
+
+    definition  go to state 5
+    commands    go to state 6
+
+
+state 3
+
+    0 $accept: input $end .
+
+    $default  accept
+
+
+state 4
+
+    4 definition: DEF . ID ':' particules
+    5           | DEF . ID ':' e
+
+    ID  shift, and go to state 7
+
+
+state 5
+
+    2 definitions: definitions definition .
+
+    $default  reduce using rule 2 (definitions)
+
+
+state 6
+
+    1 input: definitions commands .
+   47 commands: commands . command
+
+    CMD    shift, and go to state 8
+    HISTO  shift, and go to state 9
+
+    $default  reduce using rule 1 (input)
+
+    command  go to state 10
+
+
+state 7
+
+    4 definition: DEF ID . ':' particules
+    5           | DEF ID . ':' e
+
+    ':'  shift, and go to state 11
+
+
+state 8
+
+   49 command: CMD . condition
+   50        | CMD . ALL
+   51        | CMD . ifstatement
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 23
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function     go to state 34
+    list         go to state 35
+    ifstatement  go to state 36
+    condition    go to state 37
+    e            go to state 38
+
+
+state 9
+
+   52 command: HISTO . ID ',' description ',' INT ',' INT ',' INT ',' ID
+
+    ID  shift, and go to state 39
+
+
+state 10
+
+   47 commands: commands command .
+
+    $default  reduce using rule 47 (commands)
+
+
+state 11
+
+    4 definition: DEF ID ':' . particules
+    5           | DEF ID ':' . e
+
+    ELE     shift, and go to state 40
+    MUO     shift, and go to state 41
+    LEP     shift, and go to state 42
+    PHO     shift, and go to state 43
+    JET     shift, and go to state 44
+    BJET    shift, and go to state 45
+    QGJET   shift, and go to state 46
+    NUMET   shift, and go to state 47
+    METLV   shift, and go to state 48
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 50
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function    go to state 34
+    list        go to state 35
+    particules  go to state 52
+    particule   go to state 53
+    e           go to state 54
+
+
+state 12
+
+   18 function: NELE .
+
+    $default  reduce using rule 18 (function)
+
+
+state 13
+
+   19 function: NMUO .
+
+    $default  reduce using rule 19 (function)
+
+
+state 14
+
+   20 function: NLEP .
+
+    $default  reduce using rule 20 (function)
+
+
+state 15
+
+   21 function: NPHO .
+
+    $default  reduce using rule 21 (function)
+
+
+state 16
+
+   22 function: NJET .
+
+    $default  reduce using rule 22 (function)
+
+
+state 17
+
+   23 function: NBJET .
+
+    $default  reduce using rule 23 (function)
+
+
+state 18
+
+   24 function: NQGJET .
+
+    $default  reduce using rule 24 (function)
+
+
+state 19
+
+   25 function: HT .
+
+    $default  reduce using rule 25 (function)
+
+
+state 20
+
+   26 function: METMWT .
+
+    $default  reduce using rule 26 (function)
+
+
+state 21
+
+   27 function: MWT .
+
+    $default  reduce using rule 27 (function)
+
+
+state 22
+
+   28 function: MET .
+
+    $default  reduce using rule 28 (function)
+
+
+state 23
+
+   29 function: ALL .
+   50 command: CMD ALL .
+
+    $end      reduce using rule 50 (command)
+    CMD       reduce using rule 50 (command)
+    HISTO     reduce using rule 50 (command)
+    $default  reduce using rule 29 (function)
+
+
+state 24
+
+   30 function: LEPSF .
+
+    $default  reduce using rule 30 (function)
+
+
+state 25
+
+   80 e: NB .
+
+    $default  reduce using rule 80 (e)
+
+
+state 26
+
+   83 e: ID .
+
+    $default  reduce using rule 83 (e)
+
+
+state 27
+
+   77 e: SIN . '(' e ')'
+
+    '('  shift, and go to state 55
+
+
+state 28
+
+   76 e: COS . '(' e ')'
+
+    '('  shift, and go to state 56
+
+
+state 29
+
+   78 e: TAN . '(' e ')'
+
+    '('  shift, and go to state 57
+
+
+state 30
+
+   81 e: INT .
+
+    $default  reduce using rule 81 (e)
+
+
+state 31
+
+   75 e: '-' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 58
+
+
+state 32
+
+    6 function: '{' . particules '}' 'm'
+    7         | '{' . particules '}' 'q'
+    8         | '{' . particules '}' 'P'
+    9         | '{' . particules '}' 'E'
+   10         | '{' . particules '}' PHI
+   11         | '{' . particules '}' ETA
+   12         | '{' . particules '}' ABSETA
+   13         | '{' . particules '}' PT
+   14         | '{' . particules '}' PZ
+   15         | '{' . particules '}' NBF
+   32 list: '{' . particules @1 ',' particules '}'
+
+    ELE    shift, and go to state 40
+    MUO    shift, and go to state 41
+    LEP    shift, and go to state 42
+    PHO    shift, and go to state 43
+    JET    shift, and go to state 44
+    BJET   shift, and go to state 45
+    QGJET  shift, and go to state 46
+    NUMET  shift, and go to state 47
+    METLV  shift, and go to state 48
+    ID     shift, and go to state 59
+
+    particules  go to state 60
+    particule   go to state 53
+
+
+state 33
+
+   69 condition: '(' . condition ')'
+   79 e: '(' . e ')'
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function   go to state 34
+    list       go to state 35
+    condition  go to state 61
+    e          go to state 62
+
+
+state 34
+
+   82 e: function .
+
+    $default  reduce using rule 82 (e)
+
+
+state 35
+
+   16 function: list . DR
+   17         | list . DPHI
+
+    DR    shift, and go to state 63
+    DPHI  shift, and go to state 64
+
+
+state 36
+
+   51 command: CMD ifstatement .
+
+    $default  reduce using rule 51 (command)
+
+
+state 37
+
+   49 command: CMD condition .
+   55 ifstatement: condition . '?' action ':' action
+   67 condition: condition . AND condition
+   68          | condition . OR condition
+
+    OR   shift, and go to state 65
+    AND  shift, and go to state 66
+    '?'  shift, and go to state 67
+
+    $default  reduce using rule 49 (command)
+
+
+state 38
+
+   59 condition: e . LT e
+   60          | e . GT e
+   61          | e . LE e
+   62          | e . GE e
+   63          | e . EQ e
+   64          | e . NE e
+   65          | e . IRG e e
+   66          | e . ERG e e
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    LT   shift, and go to state 68
+    GT   shift, and go to state 69
+    LE   shift, and go to state 70
+    GE   shift, and go to state 71
+    EQ   shift, and go to state 72
+    NE   shift, and go to state 73
+    IRG  shift, and go to state 74
+    ERG  shift, and go to state 75
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+
+state 39
+
+   52 command: HISTO ID . ',' description ',' INT ',' INT ',' INT ',' ID
+
+    ','  shift, and go to state 81
+
+
+state 40
+
+   35 particule: ELE . '_' index
+
+    '_'  shift, and go to state 82
+
+
+state 41
+
+   36 particule: MUO . '_' index
+
+    '_'  shift, and go to state 83
+
+
+state 42
+
+   37 particule: LEP . '_' index
+
+    '_'  shift, and go to state 84
+
+
+state 43
+
+   38 particule: PHO . '_' index
+
+    '_'  shift, and go to state 85
+
+
+state 44
+
+   39 particule: JET . '_' index
+
+    '_'  shift, and go to state 86
+
+
+state 45
+
+   40 particule: BJET . '_' index
+
+    '_'  shift, and go to state 87
+
+
+state 46
+
+   41 particule: QGJET . '_' index
+
+    '_'  shift, and go to state 88
+
+
+state 47
+
+   42 particule: NUMET . '_' index
+
+    '_'  shift, and go to state 89
+
+
+state 48
+
+   43 particule: METLV . '_' index
+
+    '_'  shift, and go to state 90
+
+
+state 49
+
+   29 function: ALL .
+
+    $default  reduce using rule 29 (function)
+
+
+state 50
+
+   44 particule: ID .
+   83 e: ID .
+
+    $end      reduce using rule 44 (particule)
+    $end      [reduce using rule 83 (e)]
+    DEF       reduce using rule 44 (particule)
+    DEF       [reduce using rule 83 (e)]
+    CMD       reduce using rule 44 (particule)
+    CMD       [reduce using rule 83 (e)]
+    HISTO     reduce using rule 44 (particule)
+    HISTO     [reduce using rule 83 (e)]
+    '+'       reduce using rule 83 (e)
+    '-'       reduce using rule 83 (e)
+    '*'       reduce using rule 83 (e)
+    '/'       reduce using rule 83 (e)
+    '^'       reduce using rule 83 (e)
+    $default  reduce using rule 44 (particule)
+
+
+state 51
+
+   79 e: '(' . e ')'
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 91
+
+
+state 52
+
+    4 definition: DEF ID ':' particules .
+   33 particules: particules . particule
+
+    ELE    shift, and go to state 40
+    MUO    shift, and go to state 41
+    LEP    shift, and go to state 42
+    PHO    shift, and go to state 43
+    JET    shift, and go to state 44
+    BJET   shift, and go to state 45
+    QGJET  shift, and go to state 46
+    NUMET  shift, and go to state 47
+    METLV  shift, and go to state 48
+    ID     shift, and go to state 59
+
+    $default  reduce using rule 4 (definition)
+
+    particule  go to state 92
+
+
+state 53
+
+   34 particules: particule .
+
+    $default  reduce using rule 34 (particules)
+
+
+state 54
+
+    5 definition: DEF ID ':' e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 5 (definition)
+
+
+state 55
+
+   77 e: SIN '(' . e ')'
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 93
+
+
+state 56
+
+   76 e: COS '(' . e ')'
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 94
+
+
+state 57
+
+   78 e: TAN '(' . e ')'
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 95
+
+
+state 58
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   75  | '-' e .
+
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 75 (e)
+
+
+state 59
+
+   44 particule: ID .
+
+    $default  reduce using rule 44 (particule)
+
+
+state 60
+
+    6 function: '{' particules . '}' 'm'
+    7         | '{' particules . '}' 'q'
+    8         | '{' particules . '}' 'P'
+    9         | '{' particules . '}' 'E'
+   10         | '{' particules . '}' PHI
+   11         | '{' particules . '}' ETA
+   12         | '{' particules . '}' ABSETA
+   13         | '{' particules . '}' PT
+   14         | '{' particules . '}' PZ
+   15         | '{' particules . '}' NBF
+   32 list: '{' particules . @1 ',' particules '}'
+   33 particules: particules . particule
+
+    ELE    shift, and go to state 40
+    MUO    shift, and go to state 41
+    LEP    shift, and go to state 42
+    PHO    shift, and go to state 43
+    JET    shift, and go to state 44
+    BJET   shift, and go to state 45
+    QGJET  shift, and go to state 46
+    NUMET  shift, and go to state 47
+    METLV  shift, and go to state 48
+    ID     shift, and go to state 59
+    '}'    shift, and go to state 96
+
+    $default  reduce using rule 31 (@1)
+
+    @1         go to state 97
+    particule  go to state 92
+
+
+state 61
+
+   67 condition: condition . AND condition
+   68          | condition . OR condition
+   69          | '(' condition . ')'
+
+    OR   shift, and go to state 65
+    AND  shift, and go to state 66
+    ')'  shift, and go to state 98
+
+
+state 62
+
+   59 condition: e . LT e
+   60          | e . GT e
+   61          | e . LE e
+   62          | e . GE e
+   63          | e . EQ e
+   64          | e . NE e
+   65          | e . IRG e e
+   66          | e . ERG e e
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   79  | '(' e . ')'
+
+    LT   shift, and go to state 68
+    GT   shift, and go to state 69
+    LE   shift, and go to state 70
+    GE   shift, and go to state 71
+    EQ   shift, and go to state 72
+    NE   shift, and go to state 73
+    IRG  shift, and go to state 74
+    ERG  shift, and go to state 75
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+    ')'  shift, and go to state 99
+
+
+state 63
+
+   16 function: list DR .
+
+    $default  reduce using rule 16 (function)
+
+
+state 64
+
+   17 function: list DPHI .
+
+    $default  reduce using rule 17 (function)
+
+
+state 65
+
+   68 condition: condition OR . condition
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function   go to state 34
+    list       go to state 35
+    condition  go to state 100
+    e          go to state 38
+
+
+state 66
+
+   67 condition: condition AND . condition
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function   go to state 34
+    list       go to state 35
+    condition  go to state 101
+    e          go to state 38
+
+
+state 67
+
+   55 ifstatement: condition '?' . action ':' action
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 102
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function     go to state 34
+    list         go to state 35
+    ifstatement  go to state 103
+    action       go to state 104
+    condition    go to state 105
+    e            go to state 38
+
+
+state 68
+
+   59 condition: e LT . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 106
+
+
+state 69
+
+   60 condition: e GT . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 107
+
+
+state 70
+
+   61 condition: e LE . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 108
+
+
+state 71
+
+   62 condition: e GE . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 109
+
+
+state 72
+
+   63 condition: e EQ . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 110
+
+
+state 73
+
+   64 condition: e NE . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 111
+
+
+state 74
+
+   65 condition: e IRG . e e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 112
+
+
+state 75
+
+   66 condition: e ERG . e e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 113
+
+
+state 76
+
+   70 e: e '+' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 114
+
+
+state 77
+
+   71 e: e '-' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 115
+
+
+state 78
+
+   72 e: e '*' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 116
+
+
+state 79
+
+   73 e: e '/' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 117
+
+
+state 80
+
+   74 e: e '^' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 118
+
+
+state 81
+
+   52 command: HISTO ID ',' . description ',' INT ',' INT ',' INT ',' ID
+
+    ID  shift, and go to state 119
+
+    description  go to state 120
+
+
+state 82
+
+   35 particule: ELE '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 123
+
+
+state 83
+
+   36 particule: MUO '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 124
+
+
+state 84
+
+   37 particule: LEP '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 125
+
+
+state 85
+
+   38 particule: PHO '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 126
+
+
+state 86
+
+   39 particule: JET '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 127
+
+
+state 87
+
+   40 particule: BJET '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 128
+
+
+state 88
+
+   41 particule: QGJET '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 129
+
+
+state 89
+
+   42 particule: NUMET '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 130
+
+
+state 90
+
+   43 particule: METLV '_' . index
+
+    INT  shift, and go to state 121
+    '-'  shift, and go to state 122
+
+    index  go to state 131
+
+
+state 91
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   79  | '(' e . ')'
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+    ')'  shift, and go to state 99
+
+
+state 92
+
+   33 particules: particules particule .
+
+    $default  reduce using rule 33 (particules)
+
+
+state 93
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   77  | SIN '(' e . ')'
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+    ')'  shift, and go to state 132
+
+
+state 94
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   76  | COS '(' e . ')'
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+    ')'  shift, and go to state 133
+
+
+state 95
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   78  | TAN '(' e . ')'
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+    ')'  shift, and go to state 134
+
+
+state 96
+
+    6 function: '{' particules '}' . 'm'
+    7         | '{' particules '}' . 'q'
+    8         | '{' particules '}' . 'P'
+    9         | '{' particules '}' . 'E'
+   10         | '{' particules '}' . PHI
+   11         | '{' particules '}' . ETA
+   12         | '{' particules '}' . ABSETA
+   13         | '{' particules '}' . PT
+   14         | '{' particules '}' . PZ
+   15         | '{' particules '}' . NBF
+
+    PHI     shift, and go to state 135
+    ETA     shift, and go to state 136
+    ABSETA  shift, and go to state 137
+    PT      shift, and go to state 138
+    PZ      shift, and go to state 139
+    NBF     shift, and go to state 140
+    'm'     shift, and go to state 141
+    'q'     shift, and go to state 142
+    'P'     shift, and go to state 143
+    'E'     shift, and go to state 144
+
+
+state 97
+
+   32 list: '{' particules @1 . ',' particules '}'
+
+    ','  shift, and go to state 145
+
+
+state 98
+
+   69 condition: '(' condition ')' .
+
+    $default  reduce using rule 69 (condition)
+
+
+state 99
+
+   79 e: '(' e ')' .
+
+    $default  reduce using rule 79 (e)
+
+
+state 100
+
+   67 condition: condition . AND condition
+   68          | condition . OR condition
+   68          | condition OR condition .
+
+    AND  shift, and go to state 66
+
+    $default  reduce using rule 68 (condition)
+
+
+state 101
+
+   67 condition: condition . AND condition
+   67          | condition AND condition .
+   68          | condition . OR condition
+
+    $default  reduce using rule 67 (condition)
+
+
+state 102
+
+   29 function: ALL .
+   57 action: ALL .
+
+    $end      reduce using rule 57 (action)
+    CMD       reduce using rule 57 (action)
+    HISTO     reduce using rule 57 (action)
+    ':'       reduce using rule 57 (action)
+    $default  reduce using rule 29 (function)
+
+
+state 103
+
+   58 action: ifstatement .
+
+    $default  reduce using rule 58 (action)
+
+
+state 104
+
+   55 ifstatement: condition '?' action . ':' action
+
+    ':'  shift, and go to state 146
+
+
+state 105
+
+   55 ifstatement: condition . '?' action ':' action
+   56 action: condition .
+   67 condition: condition . AND condition
+   68          | condition . OR condition
+
+    OR   shift, and go to state 65
+    AND  shift, and go to state 66
+    '?'  shift, and go to state 67
+
+    $default  reduce using rule 56 (action)
+
+
+state 106
+
+   59 condition: e LT e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 59 (condition)
+
+
+state 107
+
+   60 condition: e GT e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 60 (condition)
+
+
+state 108
+
+   61 condition: e LE e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 61 (condition)
+
+
+state 109
+
+   62 condition: e GE e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 62 (condition)
+
+
+state 110
+
+   63 condition: e EQ e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 63 (condition)
+
+
+state 111
+
+   64 condition: e NE e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 64 (condition)
+
+
+state 112
+
+   65 condition: e IRG e . e
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '+'     shift, and go to state 76
+    '-'     shift, and go to state 147
+    '*'     shift, and go to state 78
+    '/'     shift, and go to state 79
+    '^'     shift, and go to state 80
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 148
+
+
+state 113
+
+   66 condition: e ERG e . e
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '+'     shift, and go to state 76
+    '-'     shift, and go to state 147
+    '*'     shift, and go to state 78
+    '/'     shift, and go to state 79
+    '^'     shift, and go to state 80
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 149
+
+
+state 114
+
+   70 e: e . '+' e
+   70  | e '+' e .
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 70 (e)
+
+
+state 115
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   71  | e '-' e .
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 71 (e)
+
+
+state 116
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   72  | e '*' e .
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 72 (e)
+
+
+state 117
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   73  | e '/' e .
+   74  | e . '^' e
+
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 73 (e)
+
+
+state 118
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   74  | e '^' e .
+
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 74 (e)
+
+
+state 119
+
+   54 description: ID .
+
+    $default  reduce using rule 54 (description)
+
+
+state 120
+
+   52 command: HISTO ID ',' description . ',' INT ',' INT ',' INT ',' ID
+   53 description: description . ID
+
+    ID   shift, and go to state 150
+    ','  shift, and go to state 151
+
+
+state 121
+
+   46 index: INT .
+
+    $default  reduce using rule 46 (index)
+
+
+state 122
+
+   45 index: '-' . INT
+
+    INT  shift, and go to state 152
+
+
+state 123
+
+   35 particule: ELE '_' index .
+
+    $default  reduce using rule 35 (particule)
+
+
+state 124
+
+   36 particule: MUO '_' index .
+
+    $default  reduce using rule 36 (particule)
+
+
+state 125
+
+   37 particule: LEP '_' index .
+
+    $default  reduce using rule 37 (particule)
+
+
+state 126
+
+   38 particule: PHO '_' index .
+
+    $default  reduce using rule 38 (particule)
+
+
+state 127
+
+   39 particule: JET '_' index .
+
+    $default  reduce using rule 39 (particule)
+
+
+state 128
+
+   40 particule: BJET '_' index .
+
+    $default  reduce using rule 40 (particule)
+
+
+state 129
+
+   41 particule: QGJET '_' index .
+
+    $default  reduce using rule 41 (particule)
+
+
+state 130
+
+   42 particule: NUMET '_' index .
+
+    $default  reduce using rule 42 (particule)
+
+
+state 131
+
+   43 particule: METLV '_' index .
+
+    $default  reduce using rule 43 (particule)
+
+
+state 132
+
+   77 e: SIN '(' e ')' .
+
+    $default  reduce using rule 77 (e)
+
+
+state 133
+
+   76 e: COS '(' e ')' .
+
+    $default  reduce using rule 76 (e)
+
+
+state 134
+
+   78 e: TAN '(' e ')' .
+
+    $default  reduce using rule 78 (e)
+
+
+state 135
+
+   10 function: '{' particules '}' PHI .
+
+    $default  reduce using rule 10 (function)
+
+
+state 136
+
+   11 function: '{' particules '}' ETA .
+
+    $default  reduce using rule 11 (function)
+
+
+state 137
+
+   12 function: '{' particules '}' ABSETA .
+
+    $default  reduce using rule 12 (function)
+
+
+state 138
+
+   13 function: '{' particules '}' PT .
+
+    $default  reduce using rule 13 (function)
+
+
+state 139
+
+   14 function: '{' particules '}' PZ .
+
+    $default  reduce using rule 14 (function)
+
+
+state 140
+
+   15 function: '{' particules '}' NBF .
+
+    $default  reduce using rule 15 (function)
+
+
+state 141
+
+    6 function: '{' particules '}' 'm' .
+
+    $default  reduce using rule 6 (function)
+
+
+state 142
+
+    7 function: '{' particules '}' 'q' .
+
+    $default  reduce using rule 7 (function)
+
+
+state 143
+
+    8 function: '{' particules '}' 'P' .
+
+    $default  reduce using rule 8 (function)
+
+
+state 144
+
+    9 function: '{' particules '}' 'E' .
+
+    $default  reduce using rule 9 (function)
+
+
+state 145
+
+   32 list: '{' particules @1 ',' . particules '}'
+
+    ELE    shift, and go to state 40
+    MUO    shift, and go to state 41
+    LEP    shift, and go to state 42
+    PHO    shift, and go to state 43
+    JET    shift, and go to state 44
+    BJET   shift, and go to state 45
+    QGJET  shift, and go to state 46
+    NUMET  shift, and go to state 47
+    METLV  shift, and go to state 48
+    ID     shift, and go to state 59
+
+    particules  go to state 153
+    particule   go to state 53
+
+
+state 146
+
+   55 ifstatement: condition '?' action ':' . action
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 102
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 33
+
+    function     go to state 34
+    list         go to state 35
+    ifstatement  go to state 103
+    action       go to state 154
+    condition    go to state 105
+    e            go to state 38
+
+
+state 147
+
+   71 e: e '-' . e
+   75  | '-' . e
+
+    NELE    shift, and go to state 12
+    NMUO    shift, and go to state 13
+    NLEP    shift, and go to state 14
+    NPHO    shift, and go to state 15
+    NJET    shift, and go to state 16
+    NBJET   shift, and go to state 17
+    NQGJET  shift, and go to state 18
+    HT      shift, and go to state 19
+    METMWT  shift, and go to state 20
+    MWT     shift, and go to state 21
+    MET     shift, and go to state 22
+    ALL     shift, and go to state 49
+    LEPSF   shift, and go to state 24
+    NB      shift, and go to state 25
+    ID      shift, and go to state 26
+    SIN     shift, and go to state 27
+    COS     shift, and go to state 28
+    TAN     shift, and go to state 29
+    INT     shift, and go to state 30
+    '-'     shift, and go to state 31
+    '{'     shift, and go to state 32
+    '('     shift, and go to state 51
+
+    function  go to state 34
+    list      go to state 35
+    e         go to state 155
+
+
+state 148
+
+   65 condition: e IRG e e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 65 (condition)
+
+
+state 149
+
+   66 condition: e ERG e e .
+   70 e: e . '+' e
+   71  | e . '-' e
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+
+    '+'  shift, and go to state 76
+    '-'  shift, and go to state 77
+    '*'  shift, and go to state 78
+    '/'  shift, and go to state 79
+    '^'  shift, and go to state 80
+
+    $default  reduce using rule 66 (condition)
+
+
+state 150
+
+   53 description: description ID .
+
+    $default  reduce using rule 53 (description)
+
+
+state 151
+
+   52 command: HISTO ID ',' description ',' . INT ',' INT ',' INT ',' ID
+
+    INT  shift, and go to state 156
+
+
+state 152
+
+   45 index: '-' INT .
+
+    $default  reduce using rule 45 (index)
+
+
+state 153
+
+   32 list: '{' particules @1 ',' particules . '}'
+   33 particules: particules . particule
+
+    ELE    shift, and go to state 40
+    MUO    shift, and go to state 41
+    LEP    shift, and go to state 42
+    PHO    shift, and go to state 43
+    JET    shift, and go to state 44
+    BJET   shift, and go to state 45
+    QGJET  shift, and go to state 46
+    NUMET  shift, and go to state 47
+    METLV  shift, and go to state 48
+    ID     shift, and go to state 59
+    '}'    shift, and go to state 157
+
+    particule  go to state 92
+
+
+state 154
+
+   55 ifstatement: condition '?' action ':' action .
+
+    $default  reduce using rule 55 (ifstatement)
+
+
+state 155
+
+   70 e: e . '+' e
+   71  | e . '-' e
+   71  | e '-' e .
+   72  | e . '*' e
+   73  | e . '/' e
+   74  | e . '^' e
+   75  | '-' e .
+
+    '^'  shift, and go to state 80
+
+    $end      reduce using rule 75 (e)
+    CMD       reduce using rule 75 (e)
+    HISTO     reduce using rule 75 (e)
+    OR        reduce using rule 75 (e)
+    AND       reduce using rule 75 (e)
+    '+'       reduce using rule 71 (e)
+    '+'       [reduce using rule 75 (e)]
+    '-'       reduce using rule 71 (e)
+    '-'       [reduce using rule 75 (e)]
+    '*'       reduce using rule 75 (e)
+    '/'       reduce using rule 75 (e)
+    ':'       reduce using rule 75 (e)
+    '?'       reduce using rule 75 (e)
+    ')'       reduce using rule 75 (e)
+    $default  reduce using rule 71 (e)
+
+
+state 156
+
+   52 command: HISTO ID ',' description ',' INT . ',' INT ',' INT ',' ID
+
+    ','  shift, and go to state 158
+
+
+state 157
+
+   32 list: '{' particules @1 ',' particules '}' .
+
+    $default  reduce using rule 32 (list)
+
+
+state 158
+
+   52 command: HISTO ID ',' description ',' INT ',' . INT ',' INT ',' ID
+
+    INT  shift, and go to state 159
+
+
+state 159
+
+   52 command: HISTO ID ',' description ',' INT ',' INT . ',' INT ',' ID
+
+    ','  shift, and go to state 160
+
+
+state 160
+
+   52 command: HISTO ID ',' description ',' INT ',' INT ',' . INT ',' ID
+
+    INT  shift, and go to state 161
+
+
+state 161
+
+   52 command: HISTO ID ',' description ',' INT ',' INT ',' INT . ',' ID
+
+    ','  shift, and go to state 162
+
+
+state 162
+
+   52 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' . ID
+
+    ID  shift, and go to state 163
+
+
+state 163
+
+   52 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID .
+
+    $default  reduce using rule 52 (command)
