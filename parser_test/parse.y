@@ -15,18 +15,16 @@ using namespace std;
 string tmp;
 int pnum;
 int dnum;
+vector<myParticle> TmpParticle;
+vector<myParticle> TmpParticle1;//to be used for list of 2 particles
+
 //modify types to ints in myParticle => codes?
-//see how to give input to yyparse and get output
+//see how to give input to yyparse and get output -> DONE
 //read file
 //avoid global variables
 //add histos -> DONE
 //view input
-//list<string> parts; //for def of particles as given by user
-//map<string,Node*> NodeVars;
-//map<string,vector<myParticle> > ListParts;//for particle definition
-vector<myParticle> TmpParticle;
-vector<myParticle> TmpParticle1;//to be used for list of 2 particles
-//map<int,Node*> NodeCuts;
+
 %}
 %union {
         Node* node;
