@@ -1,13 +1,14 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
+/* Skeleton interface for Bison's Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +16,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -30,96 +33,136 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_B_HPP_INCLUDED
-# define YY_YY_B_HPP_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    DEF = 258,
-    CMD = 259,
-    ELE = 260,
-    MUO = 261,
-    LEP = 262,
-    PHO = 263,
-    JET = 264,
-    BJET = 265,
-    QGJET = 266,
-    NUMET = 267,
-    METLV = 268,
-    PHI = 269,
-    ETA = 270,
-    ABSETA = 271,
-    PT = 272,
-    PZ = 273,
-    NBF = 274,
-    DR = 275,
-    DPHI = 276,
-    NELE = 277,
-    NMUO = 278,
-    NLEP = 279,
-    NPHO = 280,
-    NJET = 281,
-    NBJET = 282,
-    NQGJET = 283,
-    HT = 284,
-    METMWT = 285,
-    MWT = 286,
-    MET = 287,
-    ALL = 288,
-    LEPSF = 289,
-    FILLHISTOS = 290,
-    NB = 291,
-    ID = 292,
-    SIN = 293,
-    COS = 294,
-    TAN = 295,
-    INT = 296,
-    OR = 297,
-    AND = 298,
-    LT = 299,
-    GT = 300,
-    LE = 301,
-    GE = 302,
-    EQ = 303,
-    NE = 304,
-    IRG = 305,
-    ERG = 306,
-    Unary = 307
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     DEF = 258,
+     CMD = 259,
+     HISTO = 260,
+     ELE = 261,
+     MUO = 262,
+     LEP = 263,
+     PHO = 264,
+     JET = 265,
+     BJET = 266,
+     QGJET = 267,
+     NUMET = 268,
+     METLV = 269,
+     PHI = 270,
+     ETA = 271,
+     ABSETA = 272,
+     PT = 273,
+     PZ = 274,
+     NBF = 275,
+     DR = 276,
+     DPHI = 277,
+     NELE = 278,
+     NMUO = 279,
+     NLEP = 280,
+     NPHO = 281,
+     NJET = 282,
+     NBJET = 283,
+     NQGJET = 284,
+     HT = 285,
+     METMWT = 286,
+     MWT = 287,
+     MET = 288,
+     ALL = 289,
+     LEPSF = 290,
+     FILLHISTOS = 291,
+     NB = 292,
+     ID = 293,
+     SIN = 294,
+     COS = 295,
+     TAN = 296,
+     INT = 297,
+     OR = 298,
+     AND = 299,
+     LT = 300,
+     GT = 301,
+     LE = 302,
+     GE = 303,
+     EQ = 304,
+     NE = 305,
+     IRG = 306,
+     ERG = 307,
+     Unary = 308
+   };
 #endif
+/* Tokens.  */
+#define DEF 258
+#define CMD 259
+#define HISTO 260
+#define ELE 261
+#define MUO 262
+#define LEP 263
+#define PHO 264
+#define JET 265
+#define BJET 266
+#define QGJET 267
+#define NUMET 268
+#define METLV 269
+#define PHI 270
+#define ETA 271
+#define ABSETA 272
+#define PT 273
+#define PZ 274
+#define NBF 275
+#define DR 276
+#define DPHI 277
+#define NELE 278
+#define NMUO 279
+#define NLEP 280
+#define NPHO 281
+#define NJET 282
+#define NBJET 283
+#define NQGJET 284
+#define HT 285
+#define METMWT 286
+#define MWT 287
+#define MET 288
+#define ALL 289
+#define LEPSF 290
+#define FILLHISTOS 291
+#define NB 292
+#define ID 293
+#define SIN 294
+#define COS 295
+#define TAN 296
+#define INT 297
+#define OR 298
+#define AND 299
+#define LT 300
+#define GT 301
+#define LE 302
+#define GE 303
+#define EQ 304
+#define NE 305
+#define IRG 306
+#define ERG 307
+#define Unary 308
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+typedef union YYSTYPE
+#line 30 "parse.y"
 {
-#line 26 "parse.y" /* yacc.c:1909  */
-
         Node* node;
 	double real;
 	char* s;//ADD POINTER TO NODE unique_ptr?
-
-#line 113 "b.hpp" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 1529 of yacc.c.  */
+#line 161 "b.hpp"
+	YYSTYPE;
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
-
 
 extern YYSTYPE yylval;
 
-int yyparse (void);
-
-#endif /* !YY_YY_B_HPP_INCLUDED  */
