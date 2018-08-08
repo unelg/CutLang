@@ -1044,7 +1044,7 @@ return TRGM;
 case 15:
 YY_RULE_SETUP
 #line 29 "parse.l"
-LVLO;  
+LVLO;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
@@ -1054,17 +1054,17 @@ return ATLASOD;
 case 17:
 YY_RULE_SETUP
 #line 31 "parse.l"
-CMSOD;  
+CMSOD;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 32 "parse.l"
-DELPHES;  
+DELPHES;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 33 "parse.l"
-FCC;  
+FCC;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
