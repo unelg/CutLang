@@ -19,7 +19,7 @@ private:
     std::vector<myParticle> inputParticles1;
     std::vector<myParticle> inputParticles2;
 public:
-    LFuncNode(double (*func)(std::vector<myParticle>,std::vector<myParticle> ),std::vector<myParticle> input1,std::vector<myParticle> input2,std::string s ){
+    LFuncNode(double (*func)(std::vector<myParticle>,std::vector<myParticle>,AnalysisObjects* ao ),std::vector<myParticle> input1,std::vector<myParticle> input2,std::string s ){
         f=func;
         symbol=s;
         inputParticles1=input1;
