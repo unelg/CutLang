@@ -33,4 +33,17 @@ double all(AnalysisObjects* ao){
     return 1;
 }
 
+double njets(AnalysisObjects* ao){
+    return (ao->jets.size() );
+}
+double neles(AnalysisObjects* ao){
+    return (ao->eles.size() );
+}
+double nmuos(AnalysisObjects* ao){
+    return (ao->muos.size() );
+}
+double nphos(AnalysisObjects* ao){
+    return (ao->gams.size() );
+}
+
 #endif /* SFuncNode_h */

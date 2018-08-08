@@ -230,12 +230,12 @@ function : '{' particules '}' 'm' {
         | NELE {    
                                         
                                         string s="NELE";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(neles,s);
                                 }
         | NMUO {    
                                         
                                         string s="NMUO";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(nmuos,s);
                                 }
         | NLEP {    
                                         
@@ -245,12 +245,12 @@ function : '{' particules '}' 'm' {
         | NPHO {    
                                         
                                         string s="NPHO";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(nphos,s);
                                 }
         | NJET {    
                                         
                                         string s="NJET";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(njets,s);
                                 }
         | NBJET {    
                                         
