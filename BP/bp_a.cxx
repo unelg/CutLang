@@ -16,7 +16,7 @@
 #endif
 
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 extern FILE* yyin;
 
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
@@ -82,29 +82,10 @@ int BPdbxA:: readAnalysisParams() {
   TString CardName=cname;
           CardName+="-card.txt";
 
-   minptm     = ReadCard(CardName,"minptm",15.);
-   maxetam    = ReadCard(CardName,"maxetam",2.5);
-   minpte     = ReadCard(CardName,"minpte",15.);
-   maxetae    = ReadCard(CardName,"maxetae",2.5);
-   minptg     = ReadCard(CardName,"minptg",15.);
-   maxetag    = ReadCard(CardName,"maxetag",2.5);
-   minptj     = ReadCard(CardName,"minptj", 15.);
-   maxetaj    = ReadCard(CardName,"maxetaj",2.5);
-   maxmet     = ReadCard(CardName,"maxmet", 30.);
-
-   TRGe = ReadCard(CardName,"TRGe",1);
-   TRGm = ReadCard(CardName,"TRGm",1);
 
 // ---------------------------DBX style defs
     int kk=1;
     map < string, string > def_names;
-    size_t apos = 0;
-    size_t bpos = 0;
-    size_t cpos = 0;
-    size_t dpos = 0;
-    string subdelimiter = ":";
-    string seldelimiter = ",";
-    string  opdelimiter = "_";
 
 /*
      TText info(0,0,DefList2file.Data());
@@ -126,27 +107,58 @@ int BPdbxA:: readAnalysisParams() {
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        int kFillHistos=0;
        kk=1;
+    
+       std::vector<double> PtEtaInitializations(11);
+       PtEtaInitializations={15., 15., 15., 15., 15., 2.5, 2.5, 2.5, 2.5, 30, 1, 0};
+       vector<double> btagValues=vector<double>(6);
 
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &PtEtaInitializations, &btagValues);
        if (retval){
          cout << "\nSYNTAX error check the input file\n";
          exit (99); 
        }
        cout << "\nWe have "<<NodeCuts.size() << " CutLang Cuts\n";
 
+   minpte  = PtEtaInitializations[0];
+   minptm  = PtEtaInitializations[1];
+   minptj  = PtEtaInitializations[2];
+   minptg  = PtEtaInitializations[3];
+   maxetae = PtEtaInitializations[4];
+   maxetam = PtEtaInitializations[5];
+   maxetaj = PtEtaInitializations[6];
+   maxetag = PtEtaInitializations[7];
+   maxmet  = PtEtaInitializations[8];
+   TRGe    = PtEtaInitializations[9];
+   TRGm    = PtEtaInitializations[10];
+
+    eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+
+    DEBUG("CL CUTS: \n");
+    std::map<int, Node*>::iterator iter = NodeCuts.begin();
+    while(iter != NodeCuts.end())
+    {
+            DEBUG(" CUT "<<iter->first<<" ");
+            iter->second->display();
+            TString newLabels="CUT";
+                    newLabels+=iter->first;
+            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
+
+            DEBUG(std::endl);
+            iter++;
+    }
 
 #ifdef _CLV_
-   cout<<"\n Particle Lists: \n";
+     cout<<"\n Particle Lists: \n";
 
-            for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
-                    {
-                    cout << it1->first << ": ";
-                    for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
-                    cout << lit->type << "_" << lit->index << " ";
-                    cout << "\n";
-                    }
+     for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
+         {
+         cout << it1->first << ": ";
+         for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
+         cout << lit->type << "_" << lit->index << " ";
+         cout << "\n";
+         }
 
     cout<<"\n Particles defintions as given by user: \n";
 
@@ -167,15 +179,6 @@ int BPdbxA:: readAnalysisParams() {
             itv++;
     }
 
-    cout<<"\n CUTS : \n";
-    std::map<int, Node*>::iterator iter = NodeCuts.begin();
-    while(iter != NodeCuts.end())
-    {
-            cout<<"**************************** CUT "<<iter->first<<endl;
-            iter->second->display();
-            std::cout<<endl;
-            iter++;
-    }
 #endif
 
 //----------put into output file as text
@@ -186,15 +189,15 @@ int BPdbxA:: readAnalysisParams() {
 
 // PUT ANALYSIS PARAMETERS INTO .ROOT //////////////
 	
-	TParameter<double> *minpte_tmp=new TParameter<double> ("minpte", minpte);
-	TParameter<double> *maxetae_tmp=new TParameter<double> ("maxetae", maxetae);
-	TParameter<double> *minptm_tmp=new TParameter<double> ("minptm", minptm);
-	TParameter<double> *maxetam_tmp=new TParameter<double> ("maxetam", maxetam);
-	TParameter<double> *minptj_tmp=new TParameter<double> ("minptj", minptj);
-	TParameter<double> *maxetaj_tmp=new TParameter<double> ("maxetaj", maxetaj);
-	TParameter<double> *TRGe_tmp=new TParameter<double> ("TRGe", TRGe);
-	TParameter<double> *TRGm_tmp=new TParameter<double> ("TRGm", TRGm);
-	
+    TParameter<double> *minpte_tmp=new TParameter<double> ("minpte", minpte);
+    TParameter<double> *maxetae_tmp=new TParameter<double> ("maxetae", maxetae);
+    TParameter<double> *minptm_tmp=new TParameter<double> ("minptm", minptm);
+    TParameter<double> *maxetam_tmp=new TParameter<double> ("maxetam", maxetam);
+    TParameter<double> *minptj_tmp=new TParameter<double> ("minptj", minptj);
+    TParameter<double> *maxetaj_tmp=new TParameter<double> ("maxetaj", maxetaj);
+    TParameter<double> *TRGe_tmp=new TParameter<double> ("TRGe", TRGe);
+    TParameter<double> *TRGm_tmp=new TParameter<double> ("TRGm", TRGm);
+
     minpte_tmp->Write("minpte");
     maxetae_tmp->Write("maxetae");
     minptm_tmp->Write("minptm");
@@ -225,7 +228,6 @@ int BPdbxA:: bookAdditionalHistos() {
         int kk=1;
         std::string Hsubdelimiter = ",";
         char HCardName[64];
-        size_t apos = 0;
 
 // read histo defitions from file
         sprintf(HCardName,"%s-histos.txt",cname);
@@ -248,7 +250,6 @@ int BPdbxA:: bookAdditionalHistos() {
  TString CardName=cname;
          CardName+="-card.txt";
          map < string, string > def_names;
-         std::string subdelimiter = ":";
 
   return retval;
 }
@@ -257,7 +258,6 @@ int BPdbxA:: bookAdditionalHistos() {
 int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector <dbxPhoton> photons,
                                vector<dbxJet> jets, TVector2 met, evt_data anevt) {
   int retval=0;
-  int cur_cut=1;
 
   vector<dbxElectron>  goodElectrons;
   vector<dbxMuon>      goodMuons;
@@ -308,8 +308,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
 
         if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
-        eff->Fill(cur_cut, 1);
-        cur_cut++;
+        eff->Fill(1, 1);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
@@ -438,7 +437,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
         double d, dt=-1;
 
-        DEBUG(" name of this cut:"<<mycutlist[k][j]->getName() <<"    ");
 /*
 //--------- we apply scale factors
         if (TRGe==2 || TRGm== 2) {
@@ -469,8 +467,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
            }// end searchable
 */
 
-           DEBUG("Selecting: ");
-           d=(bool)iter->second->evaluate(&a0); // execute the selection cut
+           DEBUG("Selecting: "<<iter->first<<" |");
+           d=iter->second->evaluate(&a0); // execute the selection cut
 
 /*
 //---------if this was a defining cut, we will store the results;
@@ -498,10 +496,11 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
          ternaryCount++; // ternary skips 1 here, nested or not doesn't matter.
         }
 */
-        DEBUG("             Result = " << d << std::endl);
+        DEBUG(" Result = " << d << std::endl);
         if (d==0) return iter->first; // quit the event.
-        eff->Fill(iter->first+2, evt_weight); // filling starts from 1 which is already filled.
+        eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
+        iter++;
     } // loop over all cutlang cuts
-    cur_cut+=mycutlist.size(); // we continue
+    DEBUG("   EOE\n     ");
 return 1;
 }
