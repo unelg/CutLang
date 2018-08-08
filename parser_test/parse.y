@@ -9,7 +9,7 @@
 #include <vector>
 #include <iterator>
 extern int yylex();
-void yyerror(int *nastiness,const char *s) { std::cout << s << std::endl; } 
+void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts,const char *s) { std::cout << s << std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
@@ -18,24 +18,26 @@ int dnum;
 //modify types to ints in myParticle => codes?
 //see how to give input to yyparse and get output
 //read file
+//avoid global variables
 //add histos -> DONE
 //view input
-list<string> parts; //for def of particles as given by user
-map<string,Node*> NodeVars;
-map<string,vector<myParticle> > ListParts;//for particle definition
+//list<string> parts; //for def of particles as given by user
+//map<string,Node*> NodeVars;
+//map<string,vector<myParticle> > ListParts;//for particle definition
 vector<myParticle> TmpParticle;
 vector<myParticle> TmpParticle1;//to be used for list of 2 particles
-map<int,Node*> NodeCuts;
+//map<int,Node*> NodeCuts;
 %}
 %union {
         Node* node;
 	double real;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
-%parse-param {int *nastiness} 
-%token DEF
-%token CMD
-%token HISTO
+%parse-param {list<string> *parts} 
+%parse-param {map<string,Node*>* NodeVars} 
+%parse-param {map<string,vector<myParticle> >* ListParts} 
+%parse-param {map<int,Node*>* NodeCuts}
+%token DEF CMD HISTO
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token PHI ETA ABSETA PT PZ NBF DR DPHI //functions
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
@@ -58,7 +60,7 @@ map<int,Node*> NodeCuts;
 %%
 input : definitions commands 
      ;
-definitions : definitions definition {*nastiness += 1;}
+definitions : definitions definition 
             | 
             ;
 definition : DEF  ID  ':' particules {
@@ -66,16 +68,16 @@ definition : DEF  ID  ':' particules {
                                         pnum=0;
                                         map<string,vector<myParticle> >::iterator it ;
                                         string name = $2;
-                                        it = ListParts.find(name);
+                                        it = ListParts->find(name);
                         
-                                        if(it != ListParts.end()) {
+                                        if(it != ListParts->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(nastiness,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
                                         
-                                        parts.push_back(name+" : "+$4);
+                                        parts->push_back(name+" : "+$4);
                                         
                                         
                                                 // std::cout<<"\n TMP List: \n";
@@ -88,22 +90,22 @@ definition : DEF  ID  ':' particules {
                                         
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        ListParts.insert(make_pair(name,newList));
+                                        ListParts->insert(make_pair(name,newList));
                                                                                 
 				}
             |  DEF ID  ':' e {
                                         pnum=0;
                                          map<string, Node*>::iterator it ;
                                          string name = $2;
-                                         it = NodeVars.find(name);
+                                         it = NodeVars->find(name);
                         
-                                        if(it != NodeVars.end()) {
+                                        if(it != NodeVars->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(nastiness,"Variable already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
-                                        NodeVars.insert(make_pair(name,$4));
+                                        NodeVars->insert(make_pair(name,$4));
 				}
         ;
 function : '{' particules '}' 'm' {     
@@ -370,11 +372,11 @@ particule : ELE '_' index {
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 
                 map<string,vector<myParticle> >::iterator it;
-                it = ListParts.find($1);
+                it = ListParts->find($1);
      
-                if(it == ListParts.end()) {
+                if(it == ListParts->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(nastiness,"Particule not defined");
+                        yyerror(NULL,NULL,NULL,NULL,"Particule not defined");
                         YYERROR;//stops parsing if particle not found
                         
                 }
@@ -393,31 +395,31 @@ commands : commands command
         | 
         ;
 command : CMD condition { //find a way to print commands                                     
-                                         NodeCuts.insert(make_pair(++cutcount,$2));
+                                         NodeCuts->insert(make_pair(++cutcount,$2));
 				}
         | CMD ALL {                                         
                                         Node* a=new SFuncNode(all,"all");
-                                        NodeCuts.insert(make_pair(++cutcount,a));
+                                        NodeCuts->insert(make_pair(++cutcount,a));
 				}
         | CMD ifstatement {                                         
-                                        //NodeCuts.insert(make_pair(++cutcount,$2));
+                                        //NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-                                        it = NodeVars.find($12);
+                                        it = NodeVars->find($12);
                         
-                                        if(it == NodeVars.end()) {
+                                        if(it == NodeVars->end()) {
                                                 cout <<$12<<" : " ;
-                                                yyerror(nastiness,"Variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,"Variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                                 
                                         }
                                         else {
                                                 Node* child=it->second;
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
-                                                NodeCuts.insert(make_pair(++cutcount,h));
+                                                NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 
                                         
@@ -549,11 +551,11 @@ e : e '+' e  {
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well
                 map<string, Node *>::iterator it ;
-                it = NodeVars.find($1);
+                it = NodeVars->find($1);
      
-                if(it == NodeVars.end()) {
+                if(it == NodeVars->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(nastiness,"Variable not defined");
+                        yyerror(NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
                         
                 }
@@ -564,69 +566,5 @@ e : e '+' e  {
                }
    ;
 %%
-// int main(void) {
-//         int nastiness=1000;
-  
-//   int value = yyparse (&nastiness);
-//   cout<<"\n Parse Value!!!!!!!!!!!!!!!!!!!!!: \t "<<to_string(nastiness)<<endl;
-//         //yyparse(); 
-
-// cout<<"\n Particle Lists: \n";
-        
-//         for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
-//                 {
-//                 cout << it1->first << ": ";
-//                 for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
-//                 cout << lit->type << "_" << lit->index << " ";
-//                 cout << "\n";
-//                 }
-                
-        
-//         cout<<"\n Particles defintions as given by user: \n";
-	 
-//         std::list<std::string>::iterator it = parts.begin();
-//         while(it != parts.end())
-//         {
-//                 std::cout<<(*it)<<std::endl;
-//                 it++;
-//         }
-
-//         cout<<"\n Variables results: \n";
-// 	map<string,Node* >::iterator itv = NodeVars.begin();
-//         while(itv != NodeVars.end())
-//         {
-//                 std::cout<<"**************************** "<<itv->first<<" :: "<<itv->second->evaluate()<<endl;
-//                 itv->second->display();
-//                 std::cout<<std::endl;
-//                 itv++;
-//         }
-
-// 	cout<<"\n CUTS : \n";
-// 	std::map<int, Node*>::iterator iter = NodeCuts.begin();
-//         while(iter != NodeCuts.end())
-//         {
-//                 cout<<"**************************** CUT "<<iter->first<<" :: "<<(bool)iter->second->evaluate()<<endl;
-//                 iter->second->display();
-//                 std::cout<<endl;
-//                 iter++;
-//         }		
-//                 }
 
 
-                // simple calculator
-// e : e '+' e  { $$ = $1 + $3 ;string s=$2;
-//                                         tmp="{ "+s+" }m";                        
-//                                         $$=strdup(tmp.c_str()); }
-//    | e '-' e { $$ = $1 - $3 ; }
-//    | e '*' e { $$ = $1 * $3 ; }
-//    | e '/' e { $$ = $1 / $3*1.0 ; }
-//    | e '^' e { $$ = pow($1,$3) ;  } 	
-//    |'-' e %prec Unary { $$ = - $2 ; }
-//    | COS '(' e ')' { $$ = cos($3) ;}
-//    | SIN '(' e ')' { $$ = sin($3) ;}
-//    | TAN '(' e ')' { $$ = tan($3) ;}
-//    |'(' e ')' { $$ = $2 ;}
-//    | NB { $$ = $1 ;} 
-//    | INT { $$ = $1 ;}	
-//    | function 
-//    ;
