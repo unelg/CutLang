@@ -28,7 +28,7 @@ GLIBS         = $(ROOTGLIBS)
 
 ANLOBJS       = bp_a.o dump_a.o 
 OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o
-OBJS_2        = CLA.o
+OBJS_2        = CLA.o b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
 	cpargs = -pHr

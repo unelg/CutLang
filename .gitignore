@@ -1,2 +1,7 @@
 parser_test/main
 .DS_Store
+parser_test/b.cpp
+parser_test/b.hpp
+parser_test/b.output
+parser_test/l.cpp
+
