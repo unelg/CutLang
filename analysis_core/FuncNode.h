@@ -26,6 +26,7 @@ class FuncNode : public Node{
 private:
     double (*f)(dbxParticle* apart);
     std::vector<myParticle> inputParticles;
+    const std::vector<myParticle> originalParticles;
     dbxParticle myPart;
     float v_eta;
     TLorentzVector ametlv;
@@ -35,6 +36,7 @@ public:
         f=func;
         symbol=s;
         inputParticles=input;
+        originalParticles=input;
         left=NULL;
         right=NULL;
     }
@@ -45,8 +47,21 @@ public:
                     for (size_t jj=0; jj<ao->jets.size(); jj++) if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
                     return rjets;
     }
+void setParticleIndex(int order, int newIndex){
+        inputParticles->at(order).index=newIndex;
+}
 
-dbxParticle partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
+void resetParticleIndex(){
+        for(int i=0;i<originalParticles.size();i++){
+                inputParticles[i]=originalParticles[i];
+        }
+}
+
+std::vector<myParticle>* getParticles(){
+        return &inputParticles;
+} 
+
+void partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
     myPart.Reset();
     for(vector<myParticle>::iterator i=input.begin();i!=input.end();i++){
                int atype=i->type;
@@ -92,10 +107,10 @@ dbxParticle partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
                                                     break;
                              } // end of case
     }// end of for
-  return myPart;
+  
 }
     virtual double evaluate(AnalysisObjects* ao) {
-        myPart= partConstruct(ao, inputParticles);
+        partConstruct(ao, inputParticles);
         return (*f)(&myPart );
     }
     virtual ~FuncNode() {}
