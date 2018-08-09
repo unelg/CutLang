@@ -9,7 +9,7 @@
 #ifndef myParticle_h
 #define myParticle_h
 struct myParticle{
-    std::string type;
+    int type;
     int index;
 };
 #endif /* myParticle_h */

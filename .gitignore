@@ -5,3 +5,7 @@ parser_test/b.hpp
 parser_test/b.output
 parser_test/l.cpp
 
+CLA/b.cpp
+CLA/b.hpp
+CLA/b.output
+CLA/l.cpp
