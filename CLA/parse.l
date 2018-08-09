@@ -64,7 +64,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "LEPsf" return LEPSF;
 "FillHistos" return FILLHISTOS;
 "=="|"EQ" return EQ;//comparison operators
-"!="|"NE" return NE;
+"<>"|"NE" return NE;
+"!=" return MAXIMIZE;
+"~=" return MINIMIZE;
 "<="|"LE" return LE;
 ">="|"GE" return GE;
 "<"|"LT" return LT;

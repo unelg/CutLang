@@ -45,6 +45,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI //functions
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
+%token MINIMIZE MAXIMIZE
 %token <real> NB
 %token <s> ID 
 %token SIN COS TAN
@@ -83,12 +84,7 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                                         else {
                                                 if(($3==1 || $3==2) && Initializations->at(10)==0) Initializations->at(9)=$3;
                                                 else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE if(Initializations->at(10)>0){
-                                                $$=new SFuncNode(nmuos,s);
-                                                                        }
-                                        else{
-                                                $$=new SFuncNode(neles,s);
-                                        }Value not acceptable");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE Value not acceptable");
                                                 YYERROR;
                                                                 
                                                 }
