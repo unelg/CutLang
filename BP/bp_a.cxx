@@ -18,7 +18,7 @@
 
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 extern FILE* yyin;
-
+/*
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
 
 #ifdef _CLV_
@@ -60,7 +60,7 @@ void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <
      DEBUG(": previous finder--\n");
      return ;
 }   
-
+*/
 
 int BPdbxA::plotVariables(int sel) {
  return 0;  
@@ -103,7 +103,7 @@ int BPdbxA:: readAnalysisParams() {
 // ****************************************
 // ---------------------------DBX style cuts
        CutList2file="\n";
-       BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
+       //BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        int kFillHistos=0;
        kk=1;
@@ -236,8 +236,6 @@ int BPdbxA:: bookAdditionalHistos() {
 
 // read histo defitions from file
         sprintf(HCardName,"%s-histos.txt",cname);
-        vector <pair <int, std::vector<dbxCut*> > > aa; 
-        std::vector<dbxCut*> aajunk;
 
 #ifdef __VERBOSE3__
 	// Sezen's handmade histograms
@@ -336,6 +334,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // do we have other objects?
+/*
          if ( obj_names.size() > 0) { // remove the if and check...
             for( map<string, vector<string> >::iterator newdef=obj_names.begin(); newdef!=obj_names.end(); ++newdef) {
               DEBUG("-----will now define:"<<newdef->first <<" using "<< newdef->second[0] <<endl);
@@ -374,7 +373,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
               }//valid cutset for current object
             }//end of object definition loop
          }// any obj def?
-
+*/
 #ifdef _CLV_
          for( map<string, vector<dbxJet> >::iterator apart=jet_sets.begin(); apart!=jet_sets.end(); ++apart) 
           cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
@@ -394,11 +393,14 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
 //    std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"  ";
 
+/*
     found_type_vecs.clear(); found_idx_vecs.clear(); found_idx_origs.clear();
     for (unsigned int k=0; k<mycutlist.size(); k++){
            if (mycutlist[k][0]->getOp()=="~=" || mycutlist[k][0]->getOp()=="!=")  // closest to or far away from
               mycutlist[k][0]->clearFoundVector(); //---- clear previous events findings.
     }
+*/
+
 
 // *************************************
 /// CutLang execution starts-------here*

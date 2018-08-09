@@ -7,6 +7,8 @@
 #include "analysis_core.h"
 #include "myParticle.h"
 #include "Node.h"
+#include <list>
+
 
 
 class BPdbxA : public dbxA {
@@ -37,7 +39,6 @@ class BPdbxA : public dbxA {
 
       TH1F *a_histos[99];
        int  b_histos[9];
-      vector < vector < pair<int, std::vector<dbxCut*>  > > > histos_order;
       map <int, vector<std::pair<string,string> > > levelObjectMap;
 
 
@@ -58,23 +59,18 @@ class BPdbxA : public dbxA {
       int TRGe, TRGm;
  
 //DBXcut relevant variables
-        std::vector< std::vector<dbxCut*>     > mycutlist;
         std::vector< std::vector<std::string> > myopelist;
-        std::vector< std::vector<dbxCut*>     > terCutlistT;
         std::vector< std::vector<std::string> > terOpelistT;
-        std::vector< std::vector<dbxCut*>     > terCutlistF;
         std::vector< std::vector<std::string> > terOpelistF;
-        dbxCutList                              BPcutlist;
         std::vector<   int                    > isTernary;
         std::vector< pair< int , int >        > forbidthese;
   
         map < string, vector<string> > obj_names;
-        map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> >  >  > obj_defs;
 
         std::vector<int> ret_i;
         std::vector<int> ret_t;
         vector <int>  found_type_vecs, found_idx_vecs, found_idx_origs;
-
+//-------------------------anna
         list<string> parts; //for def of particles as given by user
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle> > ListParts;//for particle definition

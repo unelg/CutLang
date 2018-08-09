@@ -15,7 +15,6 @@
 #include "dbx_photon.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
-#include "dbxCut.h"
 
 using namespace std;
 
