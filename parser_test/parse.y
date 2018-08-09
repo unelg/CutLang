@@ -23,8 +23,8 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 
 //modify types to ints in myParticle => codes?
 //see how to give input to yyparse and get output -> DONE
-//read file
-//avoid global variables
+//read file -> DONE
+//avoid global variables -> DONE
 //add histos -> DONE
 //view input
 %}
@@ -39,7 +39,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %parse-param {map<int,Node*>* NodeCuts}
 %parse-param {vector<double>* Initializations}
 %parse-param {vector<double>* DataFormats}
-%token DEF CMD HISTO
+%token DEF CMD HISTO OBJ ALGO
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -62,7 +62,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %type <node> e function condition
 %type <s> particule particules list action ifstatement description
 %%
-input : initializations definitions commands 
+input : initializations definitions objects commands 
      ;
 initializations : initializations initialization 
         | 
@@ -133,6 +133,27 @@ definition : DEF  ID  ':' particules {
                                         NodeVars->insert(make_pair(name,$4));
 				}
         ;
+objects : objectBlocs ALGO
+        | 
+        ;
+objectBlocs : objectBlocs objectBloc
+            | objectBloc
+            ;
+objectBloc : OBJ ID ':' ID criteria
+           | OBJ ID ':' ELE criteria
+           | OBJ ID ':' MUO criteria
+           | OBJ ID ':' LEP criteria
+           | OBJ ID ':' PHO criteria
+           | OBJ ID ':' JET criteria
+           | OBJ ID ':' BJET criteria
+           | OBJ ID ':' QGJET criteria
+           | OBJ ID ':' NUMET criteria
+           | OBJ ID ':' METLV criteria     
+           ;
+criteria : criteria criterion
+         | criterion
+         ;
+criterion : CMD            
 function : '{' particules '}' 'm' {     
                                         string s=$2;
                                         tmp="{ "+s+" }m";                        
@@ -197,21 +218,7 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(MASS,newList,"nbf");
                                 }
          | list DR { 
-                                        // std::cout<<"\n DR TMP1 List: \n";
-                                        //         vector<myParticle>::iterator myiterator;
-                                        //         myiterator = TmpParticle1.begin();
-                                        //         while (myiterator != TmpParticle1.end()) {
-                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                        //         myiterator++;
-                                        //         }
-                                        //         std::cout<<"\n DR TMP List: \n";
-                                                
-                                        //         myiterator = TmpParticle.begin();
-                                        //         while (myiterator != TmpParticle.end()) {
-                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                        //         myiterator++;
-                                        //         }
-                                        
+
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle> newList1;
@@ -225,10 +232,8 @@ function : '{' particules '}' 'm' {
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dR,newList1,newList,"dphi");
 
-
                                 }
-        | NELE {    
-                                        
+        | NELE {                                            
                                         string s="NELE";                                                              
                                         $$=new SFuncNode(all,s);
                                 }
@@ -247,13 +252,11 @@ function : '{' particules '}' 'm' {
                                         string s="NPHO";                                                              
                                         $$=new SFuncNode(all,s);
                                 }
-        | NJET {    
-                                        
+        | NJET {                                           
                                         string s="NJET";                                                              
                                         $$=new SFuncNode(all,s);
                                 }
-        | NBJET {    
-                                        
+        | NBJET {                                            
                                         string s="NBJET";                                                              
                                         $$=new SFuncNode(all,s);
                                 }
