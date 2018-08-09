@@ -39,12 +39,12 @@ public:
         right=NULL;
     }
 
-std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype)
-{                   
+    std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype)
+    {                   
                     std::vector<dbxJet>      rjets;
                     for (size_t jj=0; jj<ao->jets.size(); jj++) if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
                     return rjets;
-}
+    }
 
 dbxParticle partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
     myPart.Reset();
