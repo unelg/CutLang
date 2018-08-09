@@ -13,31 +13,44 @@
 #include "Node.h"
 using namespace std;
 
+//#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
 //takes care of functions with arguments
 class FuncNode : public Node{
 private:
-    double (*f)(std::vector<myParticle>,AnalysisObjects* ao);
+    double (*f)(dbxParticle* apart);
     std::vector<myParticle> inputParticles;
+    dbxParticle myPart;
+    float v_eta;
+    TLorentzVector ametlv;
+
 public:
-    FuncNode(double (*func)(std::vector<myParticle>,AnalysisObjects* ao ),std::vector<myParticle> input,  std::string s ){
+    FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle> input,  std::string s ){
         f=func;
         symbol=s;
         inputParticles=input;
         left=NULL;
         right=NULL;
     }
-    
-    virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(inputParticles,ao);
-    }
-    virtual ~FuncNode() {}
-};
 
-double MASS(vector<myParticle> v,AnalysisObjects* ao){
-    double mass=0;
-    dbxParticle myPart;
-    for(vector<myParticle>::iterator i=v.begin();i!=v.end();i++){
-               switch (i->type) { 
+std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype)
+{                   
+                    std::vector<dbxJet>      rjets;
+                    for (size_t jj=0; jj<ao->jets.size(); jj++) if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
+                    return rjets;
+}
+
+dbxParticle partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
+    myPart.Reset();
+    for(vector<myParticle>::iterator i=input.begin();i!=input.end();i++){
+               int atype=i->type;
+               switch (atype) { 
                                             case 0: myPart.setTlv(  myPart.lv()+ao->muos[ i->index ].lv() ); // 0 is muon
                                                     myPart.setCharge(myPart.q()+ao->muos[ i->index ].q()  );
                                                     myPart.setIsTight(ao->muos[ i->index ].isZCand()); // i am overloading the isTight
@@ -78,9 +91,21 @@ double MASS(vector<myParticle> v,AnalysisObjects* ao){
                                            default: std::cout<<"No such object! ERROR\n";
                                                     break;
                              } // end of case
+    }// end of for
+  return myPart;
+}
+    virtual double evaluate(AnalysisObjects* ao) {
+        myPart= partConstruct(ao, inputParticles);
+        return (*f)(&myPart );
     }
-    m=myPart.lv().M();
-    std::cout <<" m:"<<mass<<"\t";
+    virtual ~FuncNode() {}
+};
+
+
+double MASS( dbxParticle* apart){
+    double mass=0;
+    mass=(apart->lv()).M();
+    DEBUG(" m:"<<mass<<"\t");
     return mass;
 }
 //other functions to be added
