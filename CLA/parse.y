@@ -83,7 +83,12 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                                         else {
                                                 if(($3==1 || $3==2) && Initializations->at(10)==0) Initializations->at(9)=$3;
                                                 else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE Value not acceptable");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE if(Initializations->at(10)>0){
+                                                $$=new SFuncNode(nmuos,s);
+                                                                        }
+                                        else{
+                                                $$=new SFuncNode(neles,s);
+                                        }Value not acceptable");
                                                 YYERROR;
                                                                 
                                                 }
@@ -262,9 +267,15 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(nmuos,s);
                                 }
         | NLEP {    
-                                        /////////////////////TEST TRIGGER
-                                        string s="NLEP";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        string s="NLEP";
+                                        if(Initializations->at(10)>0){
+                                                $$=new SFuncNode(nmuos,s);
+                                                                        }
+                                        else{
+                                                $$=new SFuncNode(neles,s);
+                                        }
+                                                                                                      
+                                        
                                 }                        
         | NPHO {    
                                         
@@ -292,14 +303,29 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,s);
                                 }
         | METMWT {    
-                                        ////////////TEST TRIGGER
-                                        string s="METMWT";                                                            
-                                        $$=new SFuncNode(all,s);
+                                        
+                                        string s;                                                            
+                                        
+                                        if(Initializations->at(10)>0){
+                                                s="m-METMWT";
+                                                $$=new SFuncNode(mmetmwt,s);
+                                                                        }
+                                        else{
+                                                s="e-METMWT";
+                                                $$=new SFuncNode(emetmwt,s);
+                                        }
                                 }
         | MWT {    
-                                        //TRIGGER TYPE
-                                        string s="MWT";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        string s;
+
+                                        if(Initializations->at(10)>0){
+                                                s="M-MWT";
+                                                $$=new SFuncNode(mmwt,s);
+                                                                        }
+                                        else{
+                                                s="E-MWT";
+                                                $$=new SFuncNode(emwt,s);
+                                        }
                                 }
         | MET {    
                                         
@@ -410,7 +436,12 @@ particule : ELE '_' index {
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = 5;
+                                if(Initializations->at(10)>0){
+                                        a.type = 5;
+                                }
+                                else{
+                                        a.type = 6;
+                                }
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 

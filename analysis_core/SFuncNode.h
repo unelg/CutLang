@@ -49,4 +49,41 @@ double met(AnalysisObjects* ao){
     return ( ao->met.Mod() );
 }
 
+double emwt(AnalysisObjects* ao){
+    double theLeptonTrkPhi = ao->eles.at(0).lv().Phi();
+    double           leppt = ao->eles.at(0).lv().Pt();
+    double dphi_e_et = fabs(theLeptonTrkPhi - ao->met.Phi());
+    if (dphi_e_et>M_PI) dphi_e_et=2*M_PI-dphi_e_et;
+    float mwt=sqrt(2*leppt*ao->met.Mod()*(1-cos(dphi_e_et)));
+    return (mwt);
+} 
+
+double mmwt(AnalysisObjects* ao){
+    double theLeptonTrkPhi = ao->muos.at(0).lv().Phi();
+    double           leppt = ao->muos.at(0).lv().Pt();
+    double dphi_e_et = fabs(theLeptonTrkPhi - ao->met.Phi());
+    if (dphi_e_et>M_PI) dphi_e_et=2*M_PI-dphi_e_et;
+    float mwt=sqrt(2*leppt*ao->met.Mod()*(1-cos(dphi_e_et)));
+    return (mwt);
+} 
+
+double mmetmwt(AnalysisObjects* ao){
+    double theLeptonTrkPhi = ao->muos.at(0).lv().Phi();
+    double           leppt = ao->muos.at(0).lv().Pt();
+    double dphi_e_et = fabs(theLeptonTrkPhi - ao->met.Phi());
+    if (dphi_e_et>M_PI) dphi_e_et=2*M_PI-dphi_e_et;
+    float mwt=sqrt(2*leppt*ao->met.Mod()*(1-cos(dphi_e_et)));
+    return (mwt+ao->met.Mod() );
+}
+
+double emetmwt(AnalysisObjects* ao){
+    double theLeptonTrkPhi = ao->eles.at(0).lv().Phi();
+    double           leppt = ao->eles.at(0).lv().Pt();
+    double dphi_e_et = fabs(theLeptonTrkPhi - ao->met.Phi());
+    if (dphi_e_et>M_PI) dphi_e_et=2*M_PI-dphi_e_et;
+    float mwt=sqrt(2*leppt*ao->met.Mod()*(1-cos(dphi_e_et)));
+    return (mwt+ao->met.Mod() );
+}
+
+
 #endif /* SFuncNode_h */
