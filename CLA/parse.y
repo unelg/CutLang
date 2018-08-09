@@ -76,8 +76,32 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                 | MAXETAJ '=' NB {Initializations->at(6)=$3;}
                 | MAXETAG '=' NB {Initializations->at(7)=$3;}
                 | MAXMET '=' NB {Initializations->at(8)=$3;}
-                | TRGE  '=' INT {Initializations->at(9)=$3;}
-                | TRGM  '=' INT {Initializations->at(10)=$3;}
+                | TRGE  '=' INT {
+                                        if($3==0){
+                                                if(Initializations->at(10)!=0) Initializations->at(9)=0;
+                                        }
+                                        else {
+                                                if(($3==1 || $3==2) && Initializations->at(10)==0) Initializations->at(9)=$3;
+                                                else{
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE Value not acceptable");
+                                                YYERROR;
+                                                                
+                                                }
+                                        }
+                                                        }
+                | TRGM  '=' INT {
+                                        if($3==0){
+                                                if(Initializations->at(9)!=0) Initializations->at(10)=0;
+                                        }
+                                        else {
+                                                if(($3==1 || $3==2) && Initializations->at(9)==0) Initializations->at(10)=$3;
+                                                else{
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGM Value not acceptable");
+                                                YYERROR;
+                                                                
+                                                }
+                                        }
+                                                        }
                 | LVLO '=' NB  {DataFormats->at(0)=$3;}
                 | ATLASOD '=' NB {DataFormats->at(1)=$3;}
                 | CMSOD '=' NB {DataFormats->at(2)=$3;}
@@ -238,7 +262,7 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(nmuos,s);
                                 }
         | NLEP {    
-                                        
+                                        /////////////////////TEST TRIGGER
                                         string s="NLEP";                                                              
                                         $$=new SFuncNode(all,s);
                                 }                        
@@ -268,12 +292,12 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,s);
                                 }
         | METMWT {    
-                                        
-                                        string s="METMWT";                                                              
+                                        ////////////TEST TRIGGER
+                                        string s="METMWT";                                                            
                                         $$=new SFuncNode(all,s);
                                 }
         | MWT {    
-                                        
+                                        //TRIGGER TYPE
                                         string s="MWT";                                                              
                                         $$=new SFuncNode(all,s);
                                 }
@@ -323,7 +347,7 @@ particules : particules particule {
             ;
 particule : ELE '_' index {
                                 myParticle a;
-                                a.type = "ELE";
+                                a.type =1;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
@@ -333,7 +357,7 @@ particule : ELE '_' index {
         | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "MUO";
+                                a.type = 0;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -341,7 +365,12 @@ particule : ELE '_' index {
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "LEP";
+                                if(Initializations->at(10)>0){
+                                        a.type = 0;
+                                }
+                                else{
+                                        a.type = 1;
+                                }
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -349,7 +378,7 @@ particule : ELE '_' index {
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "PHO";
+                                a.type = 8;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -357,7 +386,7 @@ particule : ELE '_' index {
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "JET";
+                                a.type = 2;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -365,7 +394,7 @@ particule : ELE '_' index {
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "BJET";
+                                a.type = 3;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -373,7 +402,7 @@ particule : ELE '_' index {
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "QGJET";
+                                a.type = 4;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -381,7 +410,7 @@ particule : ELE '_' index {
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "NUMET";
+                                a.type = 5;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -389,7 +418,7 @@ particule : ELE '_' index {
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "METLV";
+                                a.type = 7;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
