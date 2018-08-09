@@ -54,6 +54,4 @@ public:
 };
 
 
-
-
 #endif /* Node_h */
