@@ -252,7 +252,7 @@ function : '{' particules '}' 'm' {
                                                 TmpParticle.swap(newList);
                                                 vector<myParticle> newList1;
                                                 TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dR,newList1,newList,"dphi");
+                                                $$=new LFuncNode(dR,newList1,newList,"dphi to be added");
 
 
                                 }
