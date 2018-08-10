@@ -59,7 +59,7 @@ virtual int getParticleIndex(int order){
         return inputParticles.at(order).index;
 }
 
-virtual void resetParticleIndex(){
+virtual void Reset(){
         for(int i=0;i<originalParticles.size();i++){
                 inputParticles[i]=originalParticles[i];
         }
