@@ -51,9 +51,12 @@ public:
                                 return rjets;
     }
     
-
 virtual void setParticleIndex(int order, int newIndex){
         inputParticles.at(order).index=newIndex;
+}
+
+virtual int getParticleIndex(int order){
+        return inputParticles.at(order).index;
 }
 
 virtual void resetParticleIndex(){
