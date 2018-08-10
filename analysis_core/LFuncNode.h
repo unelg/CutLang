@@ -13,38 +13,55 @@
 #include "Node.h"
 using namespace std;
 //takes care of functions with arguments
-class LFuncNode : public Node{
+class LFuncNode : public FuncNode{
 private:
-    double (*f)(std::vector<myParticle>,std::vector<myParticle>,AnalysisObjects* ao);
-    std::vector<myParticle> inputParticles1;
+    double (*f2)(dbxParticle* part1,dbxParticle* part2);
+    
     std::vector<myParticle> inputParticles2;
+    std::vector<myParticle> originalParticles2;
+    dbxParticle myPart2;
+
 public:
-    LFuncNode(double (*func)(std::vector<myParticle>,std::vector<myParticle>,AnalysisObjects* ao ),std::vector<myParticle> input1,std::vector<myParticle> input2,std::string s ){
-        f=func;
-        symbol=s;
-        inputParticles1=input1;
+    LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle> input1,std::vector<myParticle> input2,std::string s )
+    : FuncNode(NULL,input1,s) {
+        f2=func;
         inputParticles2=input2;
-        left=NULL;
-        right=NULL;
+        originalParticles2=input2;      
     }
     
+    virtual void setParticleIndex(int order, int newIndex){
+        if(order<inputParticles.size()){
+            inputParticles.at(order).index=newIndex;
+        }
+        else{
+            inputParticles2.at(order-inputParticles.size()).index=newIndex;
+        }
+    }
+
+    virtual void resetParticleIndex(){
+            for(int i=0;i<originalParticles.size();i++){
+                    inputParticles[i]=originalParticles[i];
+            }
+            for(int i=0;i<originalParticles2.size();i++){
+                    inputParticles2[i]=originalParticles2[i];
+            }
+    }
+
+    virtual std::vector<myParticle>* getParticles(){
+            return &inputParticles;
+    }
     virtual double evaluate(AnalysisObjects* ao) {
-        return (*f)(inputParticles1,inputParticles2,ao);
+        partConstruct(ao, inputParticles,&myPart);
+        partConstruct(ao, inputParticles2,&myPart2);
+        return (*f2)(&myPart,&myPart2);
     }
     virtual ~LFuncNode() {}
 };
 
-double dR(vector<myParticle> v,vector<myParticle> w,AnalysisObjects* ao){
-    double mass1=0;
-    for(vector<myParticle>::iterator i=v.begin();i!=v.end();i++){
-        mass1+=i->index;
-    }
-    double mass2=0;
-    for(vector<myParticle>::iterator i=w.begin();i!=w.end();i++){
-        mass2+=i->index;
-    }
+double dR(dbxParticle* apart,dbxParticle* apart2){
+    std::cout<<"FILL THIS FUNCTION!\n";
 
-    return mass1-mass2;
+    return 0;
 }
 
 #endif /* LFuncNode_h */
