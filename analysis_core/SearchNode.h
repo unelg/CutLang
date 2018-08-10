@@ -18,7 +18,7 @@ public:
     }
 
     virtual double evaluate(AnalysisObjects* ao){
-            std::vector<myParticle>* particles=left->getParticles();
+            std::vector<myParticle>* particles; //=left->getParticles();
             list<int> indices;
             for(int i=0;i<particles->size();i++){
                 if(particles->at(i).index<0) indices.push_back(i);
@@ -35,3 +35,4 @@ public:
     }
 
 };
+#endif
