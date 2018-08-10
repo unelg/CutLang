@@ -47,6 +47,7 @@ protected:
 public:
     void display(){ this->display(""); }
     TString getStr(){ TString ss; this->getStr(&ss); return ss; }
+    
     virtual double evaluate(AnalysisObjects* ao)=0;
     
     virtual ~ Node(){
