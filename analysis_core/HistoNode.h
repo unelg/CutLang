@@ -10,6 +10,9 @@
 #define HistoNode_h
 #include "Node.h"
 #include <string>
+#include "TH1F.h"
+#include "TH2F.h"
+
 class HistoNode : public Node{
 private:
     std::string id;
@@ -17,6 +20,7 @@ private:
     int lowerLimit;
     int upperLimit;
     int bins;
+    TH1D *ahisto;
 public:
     HistoNode( std::string id,std::string desc,int l1,int l2,int n,Node* l){
         this->id=id;
@@ -25,14 +29,15 @@ public:
         upperLimit=l2;
         bins=n;
         symbol="histo "+id+","+Desciption+","+std::to_string(l1)+","+std::to_string(l2)+","+std::to_string(n);
+        ahisto = new TH1D(id.data(), Desciption.data(), bins, lowerLimit, upperLimit);
         left=l;
         right=NULL;
     }
     
     virtual double evaluate(AnalysisObjects* ao) {
-        std::cout<<"\nHisto should evaluate and fill ";
-        return left->evaluate(ao);
-
+        double value=left->evaluate(ao);
+        ahisto->Fill(value, 1.);
+        return 1;
     }
     virtual ~HistoNode() {
         if (left!=NULL) delete left;
