@@ -47,7 +47,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token MINIMIZE MAXIMIZE
 %token <real> NB
-%token <s> ID 
+%token <s> ID HID 
 %token SIN COS TAN
 %token <real> INT
 %token OR AND 
@@ -483,15 +483,15 @@ command : CMD condition { //find a way to print commands
     
 				}
 	;
-description : description ID {                                                 
+description : description HID {                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
 
-                                        }
-            | ID {if (dnum==0){
+                             }
+            | HID {if (dnum==0){
                                                 $$=strdup($1);                                                       
                                         }
                                         else{                                                

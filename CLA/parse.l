@@ -84,4 +84,5 @@ vardef {varname}" "?":"" "?.*"\n"
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]* yylval.s=strdup(yytext);return ID;
+"\"".*"\"" yylval.s=strdup(yytext);return HID;
 %%
