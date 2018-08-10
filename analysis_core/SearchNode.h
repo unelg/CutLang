@@ -65,16 +65,16 @@ public:
             
             DEBUG("Evaluate\n");
             FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
-            std::vector<myParticle>* particles=funcnode->getParticles();
+            std::vector<myParticle *>* particles=funcnode->getParticles();
             vector<int> indices;
             for(int i=0;i<particles->size();i++){
-                if(particles->at(i).index<0) indices.push_back(i);
+                if(particles->at(i)->index<0) indices.push_back(i);
             }
 
             int MaxDepth=indices.size();//number of nested loops needed
             DEBUG("Depth:"<<MaxDepth<<"\n");
            
-            int type=particles->at(indices[0]).type;
+            int type=particles->at(indices[0])->type;
             int Max;
             switch(type){
                 case 0: Max=ao->muos.size();break;

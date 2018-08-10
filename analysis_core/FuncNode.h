@@ -30,12 +30,12 @@ private:
 
 protected:
     
-    std::vector<myParticle> inputParticles;
-    std::vector<myParticle> originalParticles;
+    std::vector<myParticle*> inputParticles;
+    std::vector<myParticle*> originalParticles;
     dbxParticle myPart;
     
 public:
-    FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle> input,  std::string s ){
+    FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
         f=func;
         symbol=s;
         inputParticles=input;
@@ -52,11 +52,11 @@ public:
     }
     
 virtual void setParticleIndex(int order, int newIndex){
-        inputParticles.at(order).index=newIndex;
+        inputParticles.at(order)->index=newIndex;
 }
 
 virtual int getParticleIndex(int order){
-        return inputParticles.at(order).index;
+        return inputParticles.at(order)->index;
 }
 
 virtual void ResetParticles(){
@@ -65,40 +65,40 @@ virtual void ResetParticles(){
         }
 }
 
-virtual std::vector<myParticle>* getParticles(){
+virtual std::vector<myParticle*>* getParticles(){
         return &inputParticles;
 } 
 
-void partConstruct(AnalysisObjects *ao, std::vector<myParticle> input, dbxParticle* inputPart){
+void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> input, dbxParticle* inputPart){
     inputPart->Reset();
-    for(vector<myParticle>::iterator i=input.begin();i!=input.end();i++){
-               int atype=i->type;
+    for(vector<myParticle*>::iterator i=input.begin();i!=input.end();i++){
+               int atype=(*i)->type;
                switch (atype) { 
-                                            case 0: inputPart->setTlv(  inputPart->lv()+ao->muos[ i->index ].lv() ); // 0 is muon
-                                                    inputPart->setCharge(inputPart->q()+ao->muos[ i->index ].q()  );
-                                                    inputPart->setIsTight(ao->muos[ i->index ].isZCand()); // i am overloading the isTight
-                                                    DEBUG("muon:"<<i->index <<" ");
+                                            case 0: inputPart->setTlv(  inputPart->lv()+ao->muos[ (*i)->index ].lv() ); // 0 is muon
+                                                    inputPart->setCharge(inputPart->q()+ao->muos[ (*i)->index ].q()  );
+                                                    inputPart->setIsTight(ao->muos[ (*i)->index ].isZCand()); // i am overloading the isTight
+                                                    DEBUG("muon:"<<(*i)->index <<" ");
                                                     break;
-                                            case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ i->index ].lv() ); // 1 is electron
-                                                    inputPart->setCharge(inputPart->q()+ao->eles[ i->index ].q()  );
-                                                    inputPart->setIsTight(ao->eles[ i->index ].isZCand()); // i am overloading the isTight
-                                                    DEBUG("electron:"<<i->index<<"  ");
+                                            case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ (*i)->index ].lv() ); // 1 is electron
+                                                    inputPart->setCharge(inputPart->q()+ao->eles[ (*i)->index ].q()  );
+                                                    inputPart->setIsTight(ao->eles[ (*i)->index ].isZCand()); // i am overloading the isTight
+                                                    DEBUG("electron:"<<(*i)->index<<"  ");
                                                     break;
-                                           case 2:  DEBUG("jet:"<<i->index<<" ");
-                                                    inputPart->setTlv(inputPart->lv()   +   ao->jets[ i->index ].lv() ); // 2 is any jet
+                                           case 2:  DEBUG("jet:"<<(*i)->index<<" ");
+                                                    inputPart->setTlv(inputPart->lv()   +   ao->jets[ (*i)->index ].lv() ); // 2 is any jet
                                                     break;
-                                            case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ i->index ].lv() ); // 3 is a b jet
-                                                    DEBUG("b-jet:"<<i->index<<"  ");
+                                            case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
+                                                    DEBUG("b-jet:"<<(*i)->index<<"  ");
                                                     break;
-                                            case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0)[ i->index ].lv()); // 4 is light jet
-                                                    DEBUG("qgjet:"<<i->index<<" ");
+                                            case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0)[ (*i)->index ].lv()); // 4 is light jet
+                                                    DEBUG("qgjet:"<<(*i)->index<<" ");
                                                     break;
-                                            case 5: v_eta=ao->muos[i->index].lv().Eta();
+                                            case 5: v_eta=ao->muos[(*i)->index].lv().Eta();
                                                     ametlv.SetPtEtaPhiM(ao->met.Mod(), v_eta,ao->met.Phi(),0);
                                                     inputPart->setTlv(inputPart->lv()+ametlv); // met4v is v from MET using same eta approx.
                                                     DEBUG("muMET ");
                                                     break;
-                                            case 6: v_eta=ao->eles[ i->index ].lv().Eta();
+                                            case 6: v_eta=ao->eles[ (*i)->index ].lv().Eta();
                                                     ametlv.SetPtEtaPhiM(ao->met.Mod(), v_eta,ao->met.Phi(),0);
                                                     inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
                                                     DEBUG("eleMET ");
@@ -107,8 +107,8 @@ void partConstruct(AnalysisObjects *ao, std::vector<myParticle> input, dbxPartic
                                                     ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
                                                     inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
                                                     break;
-                                            case 8: DEBUG("gamma:"<< i->index <<" ");
-                                                    inputPart->setTlv(inputPart->lv()+ao->gams[ i->index ].lv()); // 8 is gammas
+                                            case 8: DEBUG("gamma:"<< (*i)->index <<" ");
+                                                    inputPart->setTlv(inputPart->lv()+ao->gams[ (*i)->index ].lv()); // 8 is gammas
                                                     break;
 
                                            default: std::cout<<"No such object! ERROR\n";

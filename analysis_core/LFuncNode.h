@@ -17,12 +17,12 @@ class LFuncNode : public FuncNode{
 private:
     double (*f2)(dbxParticle* part1,dbxParticle* part2);
     
-    std::vector<myParticle> inputParticles2;
-    std::vector<myParticle> originalParticles2;
+    std::vector<myParticle*> inputParticles2;
+    std::vector<myParticle*> originalParticles2;
     dbxParticle myPart2;
 
 public:
-    LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle> input1,std::vector<myParticle> input2,std::string s )
+    LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s )
     : FuncNode(NULL,input1,s) {
         f2=func;
         inputParticles2=input2;
@@ -31,10 +31,10 @@ public:
     
     virtual void setParticleIndex(int order, int newIndex){
         if(order<inputParticles.size()){
-            inputParticles.at(order).index=newIndex;
+            inputParticles.at(order)->index=newIndex;
         }
         else{
-            inputParticles2.at(order-inputParticles.size()).index=newIndex;
+            inputParticles2.at(order-inputParticles.size())->index=newIndex;
         }
     }
 
@@ -47,7 +47,7 @@ public:
             }
     }
 
-    virtual std::vector<myParticle>* getParticles(){
+    virtual std::vector<myParticle*>* getParticles(){
             return &inputParticles;
     }
     virtual double evaluate(AnalysisObjects* ao) {

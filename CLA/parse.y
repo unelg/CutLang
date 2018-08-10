@@ -9,7 +9,7 @@
 #include <vector>
 #include <iterator>
 extern int yylex();
-void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,
+void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
                 ,const char *s) { std::cout << s << std::endl; } 
@@ -18,8 +18,8 @@ using namespace std;
 string tmp;
 int pnum;
 int dnum;
-vector<myParticle> TmpParticle;
-vector<myParticle> TmpParticle1;//to be used for list of 2 particles
+vector<myParticle*> TmpParticle;
+vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 
 //modify types to ints in myParticle => codes?
 //see how to give input to yyparse and get output -> DONE
@@ -35,7 +35,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 }
 %parse-param {list<string> *parts} 
 %parse-param {map<string,Node*>* NodeVars} 
-%parse-param {map<string,vector<myParticle> >* ListParts} 
+%parse-param {map<string,vector<myParticle*> >* ListParts} 
 %parse-param {map<int,Node*>* NodeCuts}
 %parse-param {vector<double>* Initializations}
 %parse-param {vector<double>* DataFormats}
@@ -92,7 +92,7 @@ definitions : definitions definition
 definition : DEF  ID  ':' particules {
 
                                         pnum=0;
-                                        map<string,vector<myParticle> >::iterator it ;
+                                        map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
                         
@@ -107,14 +107,14 @@ definition : DEF  ID  ':' particules {
                                         
                                         
                                                 // std::cout<<"\n TMP List: \n";
-                                                // vector<myParticle>::iterator myiterator;
+                                                // vector<myParticle*>::iterator myiterator;
                                                 // myiterator = TmpParticle.begin();
                                                 // while (myiterator != TmpParticle.end()) {
                                                 // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 // myiterator++;
                                                 // }
                                         
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
                                                                                 
@@ -139,13 +139,13 @@ function : '{' particules '}' 'm' {
                                         tmp="{ "+s+" }m";                        
                                         //$$=strdup(tmp.c_str());
                                         // std::cout<<"\n M List: \n";
-                                        //         vector<myParticle>::iterator myiterator;
+                                        //         vector<myParticle*>::iterator myiterator;
                                         //         myiterator = TmpParticle.begin();
                                         //         while (myiterator != TmpParticle.end()) {
                                         //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                         //         myiterator++;
                                         //         }
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Mof,newList,"m");
 
@@ -153,53 +153,53 @@ function : '{' particules '}' 'm' {
          | '{' particules '}' 'q' {     
                                         string s=$2;
                                         tmp="{ "+s+" }q";                        
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);//then add newList to node
                                         $$=new FuncNode(Qof,newList,"q");
                                 }
          | '{' particules '}' 'P' {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pof,newList,"p");
                                 }
          | '{' particules '}' 'E' {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
                                 }
          | '{' particules '}' PHI {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                 }
          | '{' particules '}' ETA {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                 }
          | '{' particules '}' ABSETA {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                 }
          | '{' particules '}' PT {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
                                 }
          | '{' particules '}' PZ {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
                                 }
          | '{' particules '}' NBF {     
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                 }
          | list DR { 
                                         // std::cout<<"\n DR TMP1 List: \n";
-                                        //         vector<myParticle>::iterator myiterator;
+                                        //         vector<myParticle*>::iterator myiterator;
                                         //         myiterator = TmpParticle1.begin();
                                         //         while (myiterator != TmpParticle1.end()) {
                                         //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
@@ -213,16 +213,16 @@ function : '{' particules '}' 'm' {
                                         //         myiterator++;
                                         //         }
                                         
-                                        vector<myParticle> newList;
+                                        vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        vector<myParticle> newList1;
+                                        vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                                 }
         | list DPHI { 
-                                                vector<myParticle> newList;
+                                                vector<myParticle*> newList;
                                                 TmpParticle.swap(newList);
-                                                vector<myParticle> newList1;
+                                                vector<myParticle*> newList1;
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dR,newList1,newList,"dphi to be added");
 
@@ -344,9 +344,9 @@ particules : particules particule {
                                         pnum++;}
             ;
 particule : ELE '_' index {
-                                myParticle a;
-                                a.type =1;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type =1;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -354,81 +354,81 @@ particule : ELE '_' index {
                             }
         | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 0;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 0;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 if(Initializations->at(10)>0){
-                                        a.type = 0;
+                                        a->type = 0;
                                 }
                                 else{
-                                        a.type = 1;
+                                        a->type = 1;
                                 }
-                                a.index = (int)$3;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 8;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 8;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 2;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 2;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 3;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 3;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 4;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 4;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 if(Initializations->at(10)>0){
-                                        a.type = 5;
+                                        a->type = 5;
                                 }
                                 else{
-                                        a.type = 6;
+                                        a->type = 6;
                                 }
-                                a.index = (int)$3;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                myParticle a;
-                                a.type = 7;
-                                a.index = (int)$3;
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 7;
+                                a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
                         }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 
-                map<string,vector<myParticle> >::iterator it;
+                map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
                 if(it == ListParts->end()) {
@@ -438,7 +438,7 @@ particule : ELE '_' index {
                         
                 }
                 else {
-                        vector<myParticle> newList= it->second;
+                        vector<myParticle*> newList= it->second;
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
