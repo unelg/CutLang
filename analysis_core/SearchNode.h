@@ -7,6 +7,16 @@
 #include "Node.h"
 #define _CLV_
 
+
+
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
 //takes care of Minimizing/Maximizing
 class SearchNode : public Node{
 private:
@@ -56,6 +66,7 @@ public:
 
     virtual double evaluate(AnalysisObjects* ao){
             
+            DEBUG("Evaluate\n");
             FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
             std::vector<myParticle>* particles=funcnode->getParticles();
             vector<int> indices;
@@ -64,6 +75,7 @@ public:
             }
 
             int MaxDepth=indices.size();//number of nested loops needed
+            DEBUG("Depth:"<<MaxDepth<<"\n");
            
             int type=particles->at(indices[0]).type;
             int Max;
@@ -76,12 +88,13 @@ public:
             }
             vector<int> v;
             double current_difference =1000;
+            DEBUG("Before nesting\n");
             runNestedLoop( 0, Max, 0, MaxDepth, v,indices,current_difference,ao);
 
-            cout<<"Replacing with BestIndices\n"<<endl;
+            DEBUG("Now use BestIndices \n");
             for(int i=0;i<bestIndices.size();i++){
                 funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
+                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ";
             }
             
             return 1;
