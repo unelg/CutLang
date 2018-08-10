@@ -81,7 +81,7 @@ public:
             cout<<"Replacing with BestIndices\n"<<endl;
             for(int i=0;i<bestIndices.size();i++){
                 funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
+                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ";
             }
             
             return 1;
