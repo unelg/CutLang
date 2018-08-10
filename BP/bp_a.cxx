@@ -15,7 +15,6 @@
 #define DEBUG(a)
 #endif
 
-
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 extern FILE* yyin;
 /*
@@ -503,7 +502,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
          ternaryCount++; // ternary skips 1 here, nested or not doesn't matter.
         }
 */
-        DEBUG(" Result = " << d << std::endl);
+        DEBUG(" Result : " << d << std::endl);
         if (d==0) return iter->first; // quit the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++;

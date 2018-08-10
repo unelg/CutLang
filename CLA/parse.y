@@ -77,32 +77,8 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                 | MAXETAJ '=' NB {Initializations->at(6)=$3;}
                 | MAXETAG '=' NB {Initializations->at(7)=$3;}
                 | MAXMET '=' NB {Initializations->at(8)=$3;}
-                | TRGE  '=' INT {
-                                        if($3==0){
-                                                if(Initializations->at(10)!=0) Initializations->at(9)=0;
-                                        }
-                                        else {
-                                                if(($3==1 || $3==2) && Initializations->at(10)==0) Initializations->at(9)=$3;
-                                                else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE Value not acceptable");
-                                                YYERROR;
-                                                                
-                                                }
-                                        }
-                                                        }
-                | TRGM  '=' INT {
-                                        if($3==0){
-                                                if(Initializations->at(9)!=0) Initializations->at(10)=0;
-                                        }
-                                        else {
-                                                if(($3==1 || $3==2) && Initializations->at(9)==0) Initializations->at(10)=$3;
-                                                else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGM Value not acceptable");
-                                                YYERROR;
-                                                                
-                                                }
-                                        }
-                                                        }
+                | TRGE  '=' INT {Initializations->at(9)=$3; }
+                | TRGM  '=' INT {Initializations->at(10)=$3; }
                 | LVLO '=' NB  {DataFormats->at(0)=$3;}
                 | ATLASOD '=' NB {DataFormats->at(1)=$3;}
                 | CMSOD '=' NB {DataFormats->at(2)=$3;}
