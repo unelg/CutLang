@@ -188,10 +188,5 @@ double nbfof( dbxParticle* apart){
 
 
 
-
-
-
-
-
 //other functions to be added
 #endif /* FuncNode_h */
