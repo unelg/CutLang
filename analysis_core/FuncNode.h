@@ -26,7 +26,7 @@ class FuncNode : public Node{
 private:
     double (*f)(dbxParticle* apart);
     std::vector<myParticle> inputParticles;
-    const std::vector<myParticle> originalParticles;
+    std::vector<myParticle> originalParticles;
     dbxParticle myPart;
     float v_eta;
     TLorentzVector ametlv;
@@ -48,7 +48,7 @@ public:
                     return rjets;
     }
 void setParticleIndex(int order, int newIndex){
-        inputParticles->at(order).index=newIndex;
+        inputParticles.at(order).index=newIndex;
 }
 
 void resetParticleIndex(){
@@ -117,11 +117,75 @@ void partConstruct(AnalysisObjects *ao, std::vector<myParticle> input){
 };
 
 
-double MASS( dbxParticle* apart){
-    double mass=0;
-    mass=(apart->lv()).M();
+double Qof( dbxParticle* apart){
+    double charge=apart->q();
+    DEBUG(" q:"<charge<<"\t");
+    return charge;
+}
+
+double Mof( dbxParticle* apart){
+    double mass=(apart->lv()).M();
     DEBUG(" m:"<<mass<<"\t");
     return mass;
 }
+
+double Eof( dbxParticle* apart){
+    double energy=(apart->lv()).E();
+    DEBUG(" E:"<<energy<<"\t");
+    return energy;
+}
+
+double Pof( dbxParticle* apart){
+    double p=(apart->lv()).P();
+    DEBUG(" P:"<<p<<"\t");
+    return p;
+}
+
+double Pzof( dbxParticle* apart){
+    double pz=(apart->lv()).Pz();
+    DEBUG(" Pz:"<<pz<<"\t");
+    return pz;
+}
+double Ptof( dbxParticle* apart){
+    double pt=(apart->lv()).Pt();
+    DEBUG(" Pt:"<<pt<<"\t");
+    return pt;
+}
+
+double AbsEtaof( dbxParticle* apart){
+    double aeta=fabs((apart->lv()).Eta() );
+    DEBUG(" AEta:"<<aeta<<"\t");
+    return aeta;
+}
+
+double Etaof( dbxParticle* apart){
+    double eta=(apart->lv()).Eta();
+    DEBUG(" Eta:"<<eta<<"\t");
+    return eta;
+}
+
+double Phiof( dbxParticle* apart){
+    double phi=(apart->lv()).Phi();
+    DEBUG(" phi:"<<phi<<"\t");
+    return phi;
+}
+
+
+double nbfof( dbxParticle* apart){
+    double phi=(apart->lv()).Phi();
+    DEBUG(" CORRECT ME phi:"<<phi<<"\t");
+    return phi;
+}
+
+
+
+
+
+
+
+
+
+
+
 //other functions to be added
 #endif /* FuncNode_h */

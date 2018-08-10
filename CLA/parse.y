@@ -171,7 +171,7 @@ function : '{' particules '}' 'm' {
                                         //         }
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"m");
+                                        $$=new FuncNode(Mof,newList,"m");
 
                                 }
          | '{' particules '}' 'q' {     
@@ -179,47 +179,47 @@ function : '{' particules '}' 'm' {
                                         tmp="{ "+s+" }q";                        
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);//then add newList to node
-                                        $$=new FuncNode(MASS,newList,"q");
+                                        $$=new FuncNode(Qof,newList,"q");
                                 }
          | '{' particules '}' 'P' {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"p");
+                                        $$=new FuncNode(Pof,newList,"p");
                                 }
          | '{' particules '}' 'E' {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"e");
+                                        $$=new FuncNode(Eof,newList,"e");
                                 }
          | '{' particules '}' PHI {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"phi");
+                                        $$=new FuncNode(Phiof,newList,"phi");
                                 }
          | '{' particules '}' ETA {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"eta");
+                                        $$=new FuncNode(Etaof,newList,"eta");
                                 }
          | '{' particules '}' ABSETA {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"abseta");
+                                        $$=new FuncNode(AbsEtaof,newList,"abseta");
                                 }
          | '{' particules '}' PT {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"pt");
+                                        $$=new FuncNode(Ptof,newList,"pt");
                                 }
          | '{' particules '}' PZ {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"pz");
+                                        $$=new FuncNode(Pzof,newList,"pz");
                                 }
          | '{' particules '}' NBF {     
                                         vector<myParticle> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(MASS,newList,"nbf");
+                                        $$=new FuncNode(nbfof,newList,"nbf");
                                 }
          | list DR { 
                                         // std::cout<<"\n DR TMP1 List: \n";
