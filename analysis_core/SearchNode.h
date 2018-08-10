@@ -5,7 +5,7 @@
 #include <math.h>
 #include <list>
 #include "Node.h"
-#define _CLV_
+//#define _CLV_
 
 
 
@@ -26,10 +26,9 @@ private:
     void performInnerOperation(vector<int> v,vector<int> indices, double current_difference,AnalysisObjects* ao){
         FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
             
-        cout<<"Replacing\n"<<endl;
         for(int i=0;i<v.size();i++){
             funcnode->setParticleIndex(indices[i],v[i]);
-            cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
+            DEBUG(funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ");
         }
         double tmpval=left->evaluate(ao);
         double diff=right->evaluate(ao)-tmpval;
@@ -38,8 +37,6 @@ private:
             current_difference = fabs(diff);
             bestIndices=v;
         }
-        cout<<"eND\n\n"<<endl;
-    ;
     }
 
     void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double curr_diff,AnalysisObjects* ao) {
@@ -88,20 +85,18 @@ public:
             }
             vector<int> v;
             double current_difference =1000;
-            DEBUG("Before nesting\n");
             runNestedLoop( 0, Max, 0, MaxDepth, v,indices,current_difference,ao);
 
-            DEBUG("Now use BestIndices \n");
             for(int i=0;i<bestIndices.size();i++){
                 funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ";
+                DEBUG(funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ");
             }
             
             return 1;
    
     }
     virtual void Reset(){
-            left->Reset();
+            ((FuncNode*)left)->ResetParticles();
     }
 
     virtual ~SearchNode() {

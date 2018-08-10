@@ -409,6 +409,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     while(iter != NodeCuts.end())
     {   
+        iter->second->Reset();
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
 /*

@@ -13,7 +13,7 @@
 #include "Node.h"
 using namespace std;
 
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -59,7 +59,7 @@ virtual int getParticleIndex(int order){
         return inputParticles.at(order).index;
 }
 
-virtual void Reset(){
+virtual void ResetParticles(){
         for(int i=0;i<originalParticles.size();i++){
                 inputParticles[i]=originalParticles[i];
         }
@@ -130,7 +130,7 @@ virtual ~FuncNode() {}
 
 double Qof( dbxParticle* apart){
     double charge=apart->q();
-    DEBUG(" q:"<charge<<"\t");
+    DEBUG(" q:"<<charge<<"\t");
     return charge;
 }
 
