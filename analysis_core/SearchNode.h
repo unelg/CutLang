@@ -28,7 +28,8 @@ private:
             current_difference = fabs(diff);
             bestIndices=v;
         }
-        cout<<"END"<<endl;
+        cout<<"eND\n\n"<<endl;
+    ;
     }
 
     void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double curr_diff,AnalysisObjects* ao) {
@@ -80,11 +81,14 @@ public:
             cout<<"Replacing with BestIndices\n"<<endl;
             for(int i=0;i<bestIndices.size();i++){
                 funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ";
+                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
             }
             
             return 1;
    
+    }
+    virtual void Reset(){
+            left->Reset();
     }
 
     virtual ~SearchNode() {
