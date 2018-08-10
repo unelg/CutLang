@@ -45,8 +45,12 @@ protected:
         if(right!=NULL) right->display("\n"+indent+"     ");
     }
 public:
+
+    virtual void Reset(){}
+    
     void display(){ this->display(""); }
-    TString getStr(){ TString ss; this->getStr(&ss); return ss; }
+
+    virtual TString getStr(){ TString ss; this->getStr(&ss); return ss; }
     
     virtual double evaluate(AnalysisObjects* ao)=0;
     
