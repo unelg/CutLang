@@ -47,7 +47,7 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token MINIMIZE MAXIMIZE
 %token <real> NB
-%token <s> ID 
+%token <s> ID HID 
 %token SIN COS TAN
 %token <real> INT
 %token OR AND 
@@ -77,32 +77,8 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                 | MAXETAJ '=' NB {Initializations->at(6)=$3;}
                 | MAXETAG '=' NB {Initializations->at(7)=$3;}
                 | MAXMET '=' NB {Initializations->at(8)=$3;}
-                | TRGE  '=' INT {
-                                        if($3==0){
-                                                if(Initializations->at(10)!=0) Initializations->at(9)=0;
-                                        }
-                                        else {
-                                                if(($3==1 || $3==2) && Initializations->at(10)==0) Initializations->at(9)=$3;
-                                                else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGE Value not acceptable");
-                                                YYERROR;
-                                                                
-                                                }
-                                        }
-                                                        }
-                | TRGM  '=' INT {
-                                        if($3==0){
-                                                if(Initializations->at(9)!=0) Initializations->at(10)=0;
-                                        }
-                                        else {
-                                                if(($3==1 || $3==2) && Initializations->at(9)==0) Initializations->at(10)=$3;
-                                                else{
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"TRGM Value not acceptable");
-                                                YYERROR;
-                                                                
-                                                }
-                                        }
-                                                        }
+                | TRGE  '=' INT {Initializations->at(9)=$3; }
+                | TRGM  '=' INT {Initializations->at(10)=$3; }
                 | LVLO '=' NB  {DataFormats->at(0)=$3;}
                 | ATLASOD '=' NB {DataFormats->at(1)=$3;}
                 | CMSOD '=' NB {DataFormats->at(2)=$3;}
@@ -507,15 +483,15 @@ command : CMD condition { //find a way to print commands
     
 				}
 	;
-description : description ID {                                                 
+description : description HID {                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
 
-                                        }
-            | ID {if (dnum==0){
+                             }
+            | HID {if (dnum==0){
                                                 $$=strdup($1);                                                       
                                         }
                                         else{                                                

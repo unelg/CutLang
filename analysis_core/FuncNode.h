@@ -173,11 +173,9 @@ double Phiof( dbxParticle* apart){
 
 double nbfof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();
-    DEBUG(" CORRECT ME phi:"<<phi<<"\t");
+    DEBUG(" CORRECT ME NBF:"<<phi<<"\t");
     return phi;
 }
-
-
 
 
 
