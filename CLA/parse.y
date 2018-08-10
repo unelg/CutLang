@@ -519,24 +519,14 @@ action : condition {
                         //$$=$1;
                         }
        ;    
-condition : e LT e  { 
-                                        $$=new BinaryNode(lt,$1,$3,"<"); 
-                                        }
-           | e GT e { 
-                                        $$=new BinaryNode(gt,$1,$3,">"); 
-                                        }
-           | e LE e { 
-                                        $$=new BinaryNode(le,$1,$3,"<="); 
-                                        }  
-           | e GE e  { 
-                                        $$=new BinaryNode(ge,$1,$3,">="); 
-                                        }
-           | e EQ e { 
-                                        $$=new BinaryNode(eq,$1,$3,"=="); 
-                                        } 
-           | e NE e { 
-                                        $$=new BinaryNode(ne,$1,$3,"!="); 
-                                        }   
+condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
+           | e GT e { $$=new BinaryNode(gt,$1,$3,">");  }
+           | e LE e { $$=new BinaryNode(le,$1,$3,"<="); }  
+           | e GE e { $$=new BinaryNode(ge,$1,$3,">="); }
+           | e EQ e { $$=new BinaryNode(eq,$1,$3,"=="); } 
+           | e NE e { $$=new BinaryNode(ne,$1,$3,"<>"); }   
+           | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
+           | e MAXIMIZE e { $$=new SearchNode(maxim,$1,$3,"!="); }
            | e IRG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
                                         Node* c1=new BinaryNode(ge,$1,limit1,">=");
