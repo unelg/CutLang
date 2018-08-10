@@ -28,12 +28,7 @@ private:
         float v_eta;
         TLorentzVector ametlv;
 
-        std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype)
-                {                   
-                                std::vector<dbxJet>      rjets;
-                                for (size_t jj=0; jj<ao->jets.size(); jj++) if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
-                                return rjets;
-                }
+        
 protected:
     
     std::vector<myParticle> inputParticles;
@@ -50,10 +45,19 @@ public:
         right=NULL;
     }
 
-    
+std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype)
+                {                   
+                                std::vector<dbxJet>      rjets;
+                                for (size_t jj=0; jj<ao->jets.size(); jj++) if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
+                                return rjets;
+                }    
 
 virtual void setParticleIndex(int order, int newIndex){
         inputParticles.at(order).index=newIndex;
+}
+
+virtual int getParticleIndex(int order){
+        return inputParticles.at(order).index;
 }
 
 virtual void resetParticleIndex(){

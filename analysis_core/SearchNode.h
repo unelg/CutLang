@@ -11,27 +11,42 @@
 class SearchNode : public Node{
 private:
     double (*f)(double, double);
+    vector<int> bestIndices;
 
-    void performInnerOperation(vector<int> v){
-        for(auto i=v.begin();i!=v.end();i++){
-            cout<<*i<<" ";
+    void performInnerOperation(vector<int> v,vector<int> indices, double current_difference,AnalysisObjects* ao){
+        FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
+            
+        cout<<"Replacing\n"<<endl;
+        for(int i=0;i<v.size();i++){
+            funcnode->setParticleIndex(indices[i],v[i]);
+            cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
         }
-        cout<<"eND"<<endl;
+        double tmpval=left->evaluate(ao);
+        double diff=right->evaluate(ao)-tmpval;
+            
+        if ( (*f)(diff,current_difference) ) {
+            current_difference = fabs(diff);
+            bestIndices=v;
+        }
+        cout<<"eND\n\n"<<endl;
     ;
     }
 
-    void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v) {
-    if(level==maxDepth) performInnerOperation (v);
+    void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double curr_diff,AnalysisObjects* ao) {
+    if(level==maxDepth) performInnerOperation (v,indices,curr_diff,ao);
     else{
         for (int x = start; x <= N; x++ ) {
             //check if particle x is forbidden
             v.push_back(x); //add the current value
-            runNestedLoop( x+1 , N, level + 1, maxDepth, v );
+            runNestedLoop( x+1 , N, level + 1, maxDepth, v,indices, curr_diff,ao );
             v.pop_back();//remove the value
         }
     }
 }
+
+
 public:
+
     SearchNode(double (*func)(double, double), Node* l, Node* r, std::string s){
         f=func;
         symbol=s;
@@ -40,32 +55,36 @@ public:
     }
 
     virtual double evaluate(AnalysisObjects* ao){
-            //std::vector<myParticle>* particles=((FuncNode*)left)->getParticles();
+            
             FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
             std::vector<myParticle>* particles=funcnode->getParticles();
-            list<int> indices;
+            vector<int> indices;
             for(int i=0;i<particles->size();i++){
                 if(particles->at(i).index<0) indices.push_back(i);
             }
+
             int MaxDepth=indices.size();//number of nested loops needed
+           
+            int type=particles->at(indices[0]).type;
+            int Max;
+            switch(type){
+                case 0: Max=ao->muos.size();break;
+                case 1: Max=ao->eles.size();break;
+                case 2: Max=ao->jets.size();break;
+                case 3: Max=funcnode->tagJets(ao,1).size();break;
+                case 4: Max=funcnode->tagJets(ao,0).size();break;
+            }
+            vector<int> v;
+            double current_difference =1000;
+            runNestedLoop( 0, Max, 0, MaxDepth, v,indices,current_difference,ao);
 
+            cout<<"Replacing with BestIndices\n"<<endl;
+            for(int i=0;i<bestIndices.size();i++){
+                funcnode->setParticleIndex(indices[i],bestIndices[i]);
+                cout<<funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ";
+            }
             
-
-
-
-//-------------replace negative indices
-              tmpval=evaluate(ao);
-
-           if ( (*f)() ) {
-              current_difference = fabs(target-tmpval);
-              save_current_indices;
-           }
-
-
-//------------LOOPS end here
-
-            
-            return (*f)(left->evaluate(ao),right->evaluate(ao));
+            return 1;
    
     }
 
@@ -76,12 +95,12 @@ public:
 
 };
 
-double maxim( double tmpval, double current_difference){
-    return (fabs(target-tmpval) > current_difference );
+double maxim( double difference, double current_difference){
+    return (fabs(difference) > current_difference );
 }
 
-double minim( double tmpval, double current_difference){
-    return (fabs(target-tmpval) < current_difference );
+double minim( double difference, double current_difference){
+    return fabs(difference) < current_difference ;
 }
 
 #endif
