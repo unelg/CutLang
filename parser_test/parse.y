@@ -326,7 +326,7 @@ particules : particules particule {
             ;
 particule : ELE '_' index {
                                 myParticle a;
-                                a.type = "ELE";
+                                a.type = 1;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
@@ -336,7 +336,7 @@ particule : ELE '_' index {
         | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "MUO";
+                                a.type = 0;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -344,7 +344,7 @@ particule : ELE '_' index {
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "LEP";
+                                a.type = 9;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -352,7 +352,7 @@ particule : ELE '_' index {
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "PHO";
+                                a.type = 8;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -360,7 +360,7 @@ particule : ELE '_' index {
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "JET";
+                                a.type = 2;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -368,7 +368,7 @@ particule : ELE '_' index {
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "BJET";
+                                a.type = 3;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -376,7 +376,7 @@ particule : ELE '_' index {
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "QGJET";
+                                a.type = 4;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -384,7 +384,7 @@ particule : ELE '_' index {
         | NUMET '_' index {       tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "NUMET";
+                                a.type = 5;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
@@ -392,7 +392,7 @@ particule : ELE '_' index {
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle a;
-                                a.type = "METLV";
+                                a.type = 6;
                                 a.index = (int)$3;
                                 TmpParticle.push_back(a);  
                                 
