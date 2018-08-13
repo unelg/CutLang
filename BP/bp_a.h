@@ -73,7 +73,7 @@ class BPdbxA : public dbxA {
 //-------------------------anna
         list<string> parts; //for def of particles as given by user
         map<string,Node*> NodeVars;//for variable defintion
-        map<string,vector<myParticle> > ListParts;//for particle definition
+        map<string,vector<myParticle*> > ListParts;//for particle definition
         map<int,Node*> NodeCuts;//cuts and histos
 
 };

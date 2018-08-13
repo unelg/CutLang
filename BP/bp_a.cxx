@@ -15,7 +15,7 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 extern FILE* yyin;
 /*
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
@@ -156,11 +156,11 @@ int BPdbxA:: readAnalysisParams() {
 #ifdef _CLV__
      cout<<"\n Particle Lists: \n";
 
-     for (map<string,vector<myParticle> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
+     for (map<string,vector<myParticle*> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
          {
-         cout << it1->first << ": ";
-         for (vector<myParticle>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
-         cout << lit->type << "_" << lit->index << " ";
+         cout << (*it1)->first << ": ";
+         for (vector<myParticle*>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
+         cout << (*lit)->type << "_" << (*lit)->index << " ";
          cout << "\n";
          }
 
