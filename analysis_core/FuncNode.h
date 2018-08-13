@@ -13,7 +13,7 @@
 #include "Node.h"
 using namespace std;
 
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -31,7 +31,7 @@ private:
 protected:
     
     std::vector<myParticle*> inputParticles;
-    std::vector<myParticle*> originalParticles;
+    std::vector<myParticle> originalParticles;
     dbxParticle myPart;
     
 public:
@@ -39,7 +39,13 @@ public:
         f=func;
         symbol=s;
         inputParticles=input;
-        originalParticles=input;
+        myParticle apart;
+      for (int i=0; i<input.size(); i++){
+       DEBUG("orig i:"<<input[i]->index);
+       apart.index=input[i]->index;
+       apart.type=input[i]->type;
+       originalParticles.push_back(apart);
+      }
         left=NULL;
         right=NULL;
     }
@@ -60,9 +66,10 @@ virtual int getParticleIndex(int order){
 }
 
 virtual void ResetParticles(){
-        for(int i=0;i<originalParticles.size();i++){
-                inputParticles[i]=originalParticles[i];
-        }
+      for(int i=0;i<originalParticles.size();i++){
+       DEBUG("Recall orig i:"<<originalParticles[i].index);
+               *(inputParticles[i])=originalParticles[i];
+      }
 }
 
 virtual std::vector<myParticle*>* getParticles(){
@@ -77,7 +84,7 @@ void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> input, dbxParti
                                             case 0: inputPart->setTlv(  inputPart->lv()+ao->muos[ (*i)->index ].lv() ); // 0 is muon
                                                     inputPart->setCharge(inputPart->q()+ao->muos[ (*i)->index ].q()  );
                                                     inputPart->setIsTight(ao->muos[ (*i)->index ].isZCand()); // i am overloading the isTight
-                                                    DEBUG("muon:"<<(*i)->index <<" ");
+                                                    DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ (*i)->index ].q()<<"  ");
                                                     break;
                                             case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ (*i)->index ].lv() ); // 1 is electron
                                                     inputPart->setCharge(inputPart->q()+ao->eles[ (*i)->index ].q()  );

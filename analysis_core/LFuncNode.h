@@ -18,7 +18,7 @@ private:
     double (*f2)(dbxParticle* part1,dbxParticle* part2);
     
     std::vector<myParticle*> inputParticles2;
-    std::vector<myParticle*> originalParticles2;
+    std::vector<myParticle> originalParticles2;
     dbxParticle myPart2;
 
 public:
@@ -26,7 +26,12 @@ public:
     : FuncNode(NULL,input1,s) {
         f2=func;
         inputParticles2=input2;
-        originalParticles2=input2;      
+        myParticle apart2;
+        for (int i=0; i<input2.size(); i++){
+           apart2.index=input2[i]->index;
+           apart2.type=input2[i]->type;
+         originalParticles2.push_back(apart2);
+        }
     }
     
     virtual void setParticleIndex(int order, int newIndex){
@@ -39,12 +44,14 @@ public:
     }
 
     virtual void resetParticleIndex(){
-            for(int i=0;i<originalParticles.size();i++){
-                    inputParticles[i]=originalParticles[i];
-            }
-            for(int i=0;i<originalParticles2.size();i++){
-                    inputParticles2[i]=originalParticles2[i];
-            }
+          for(int i=0;i<originalParticles.size();i++){
+                *(inputParticles[i])=originalParticles[i];
+
+          }
+          for(int i=0;i<originalParticles2.size();i++){
+              *(inputParticles2[i])=originalParticles2[i];
+
+          }
     }
 
     virtual std::vector<myParticle*>* getParticles(){

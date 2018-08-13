@@ -5,10 +5,8 @@
 #include <math.h>
 #include <list>
 #include "Node.h"
+
 //#define _CLV_
-
-
-
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -23,7 +21,7 @@ private:
     double (*f)(double, double);
     vector<int> bestIndices;
 
-    void performInnerOperation(vector<int> v,vector<int> indices, double current_difference,AnalysisObjects* ao){
+    void performInnerOperation(vector<int> v,vector<int> indices, double *current_difference,AnalysisObjects* ao){
         FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
             
         for(int i=0;i<v.size();i++){
@@ -33,16 +31,17 @@ private:
         double tmpval=left->evaluate(ao);
         double diff=right->evaluate(ao)-tmpval;
             
-        if ( (*f)(diff,current_difference) ) {
-            current_difference = fabs(diff);
+        if ( (*f)(diff,*current_difference) ) {
+            DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
+            *current_difference = fabs(diff);
             bestIndices=v;
         }
     }
 
-    void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double curr_diff,AnalysisObjects* ao) {
+    void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double *curr_diff,AnalysisObjects* ao) {
     if(level==maxDepth) performInnerOperation (v,indices,curr_diff,ao);
     else{
-        for (int x = start; x <= N; x++ ) {
+        for (int x = start; x < N; x++ ) {
             //check if particle x is forbidden
             v.push_back(x); //add the current value
             runNestedLoop( x+1 , N, level + 1, maxDepth, v,indices, curr_diff,ao );
@@ -68,12 +67,13 @@ public:
             std::vector<myParticle *>* particles=funcnode->getParticles();
             vector<int> indices;
             for(int i=0;i<particles->size();i++){
+                DEBUG("Part:"<<i<<"  idx:"<<particles->at(i)->index<<"\n");
                 if(particles->at(i)->index<0) indices.push_back(i);
             }
 
             int MaxDepth=indices.size();//number of nested loops needed
             DEBUG("Depth:"<<MaxDepth<<"\n");
-           
+            
             int type=particles->at(indices[0])->type;
             int Max;
             switch(type){
@@ -85,13 +85,13 @@ public:
             }
             vector<int> v;
             double current_difference =1000;
-            runNestedLoop( 0, Max, 0, MaxDepth, v,indices,current_difference,ao);
+            runNestedLoop( 0, Max, 0, MaxDepth, v,indices, &current_difference,ao);
 
             for(int i=0;i<bestIndices.size();i++){
                 funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                DEBUG(funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ");
+                DEBUG("BEST"<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ");
             }
-            
+            DEBUG("\n");
             return 1;
    
     }
