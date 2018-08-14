@@ -459,7 +459,7 @@ command : CMD condition { //find a way to print commands
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
         | CMD ifstatement {                                         
-                                        //NodeCuts->insert(make_pair(++cutcount,$2));
+                                        NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
@@ -505,6 +505,7 @@ description : description HID {
         ;
 ifstatement : condition '?' action ':' action { 
                         $$=new IfNode($1,$3,$5,"if");
+
                         } 
             ;
 action : condition {
