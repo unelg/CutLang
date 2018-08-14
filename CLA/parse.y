@@ -60,8 +60,8 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 %right Unary
 %right '^'
 %type <real> index
-%type <node> e function condition
-%type <s> particule particules list action ifstatement description
+%type <node> e function condition action ifstatement
+%type <s> particule particules list description
 %%
 input : initializations definitions commands 
      ;
@@ -504,19 +504,17 @@ description : description HID {
                                         dnum++;}
         ;
 ifstatement : condition '?' action ':' action { 
-                        // string s1=$1; string s3=$3;string s4=$5;
-                        // tmp=s1+" ? "+s3+" : "+s4;   
-                        // $$=strdup(tmp.c_str()); 
+                        $$=new IfNode($1,$3,$5,"if");
                         } 
             ;
 action : condition {
-                        //$$=$1;
+                        $$=$1;
                         }
        | ALL {
-               //tmp= " all " ;$$=strdup(tmp.c_str());
+               $$=new SFuncNode(all,"all");
                }
        | ifstatement {
-                        //$$=$1;
+                        $$=$1;
                         }
        ;    
 condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
