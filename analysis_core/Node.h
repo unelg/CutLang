@@ -46,10 +46,17 @@ protected:
     }
 public:
 
-    virtual void Reset(){}
+    virtual void Reset()=0;
+    virtual void getParticles(std::vector<myParticle *>* particles)=0;
     void display(){ this->display(""); }
     virtual TString getStr(){ TString ss; this->getStr(&ss); return ss; }
     virtual double evaluate(AnalysisObjects* ao)=0;
+    std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype) {                   
+                                std::vector<dbxJet>      rjets;
+                                for (size_t jj=0; jj<ao->jets.size(); jj++) 
+                                  if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
+                                return rjets;
+    }
     virtual ~ Node(){
     }
 };
