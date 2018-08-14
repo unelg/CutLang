@@ -54,11 +54,13 @@ double met(AnalysisObjects* ao){
 }
 
 double nbjets(AnalysisObjects* ao){
-    return (tagJets(ao, 1).size() );
+    ValueNode abc=ValueNode();
+    return (abc.tagJets(ao, 1).size() );
 }
 
 double nljets(AnalysisObjects* ao){
-    return (tagJets(ao, 0).size() );
+    ValueNode abc=ValueNode();
+    return (abc.tagJets(ao, 0).size() );
 }
 
 double ht(AnalysisObjects* ao){

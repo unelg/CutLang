@@ -119,7 +119,6 @@ public:
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        cout<<"Calling getParticles on an FuncNode------Adding particle pointers to input\n";
         for (int i=0; i<inputParticles.size(); i++){
             particles->push_back(inputParticles[i]);
             }    

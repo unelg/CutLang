@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __VERBOSE3__
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -139,7 +139,7 @@ int BPdbxA:: readAnalysisParams() {
     while(iter != NodeCuts.end())
     {
             DEBUG(" CUT "<<iter->first<<" ");
-            //iter->second->display();
+            iter->second->display();
             DEBUG("--->"<<iter->second->getStr()<<"\n");
 
            TString newLabels=iter->second->getStr();
@@ -407,9 +407,19 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
     unsigned int ternaryCount=0;
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
+    DEBUG("Start resetting cuts\n");
+//----------------------reset 
     while(iter != NodeCuts.end())
     {   
-      //  iter->second->Reset();
+        iter->second->Reset();
+        iter++;
+     }
+     DEBUG("RESet ALL cuts\n");
+    iter = NodeCuts.begin();
+
+//----------------------execute
+    while(iter != NodeCuts.end())
+    {   
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
 /*
@@ -442,67 +452,11 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         } 
 */
         unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
-        double d, dt=-1;
+        double d;
 
-/*
-//--------- we apply scale factors
-        if (TRGe==2 || TRGm== 2) {
-         if (mycutlist[k][j]->getName() == "LEPsf" ) evt_weight*=anevt.weight_leptonSF;
-         if (mycutlist[k][j]->getName() == "nBJET" || mycutlist[k][j]->getName()=="}nbj" ) {
-                evt_weight*=anevt.weight_bTagSF_77;
-                anevt.mcevt_weight = evt_weight;
-                btagSF_counter++;
-         } //TO BE IMPROVED
-        }
-*/
-/*
-           if (mycutlist[k][j]->isSearchable() ) {
-               DEBUG(mycutlist[k][j]->getName()<<" is searchable.\n");
-                int found_res_size=found_idx_vecs.size();
-                if (found_res_size >0) {// do we have any previous results we can use?
-                  ret_i.clear(); 
-                  ret_t.clear(); 
-                  find_idxtype_tobeused( mycutlist[k][j], &found_idx_vecs, &found_type_vecs, &found_idx_origs, &ret_i, &ret_t );
-                  DEBUG("To be used idx_vec size:"<< ret_i.size()<<endl);
-                  if (ret_i.size() >0) { mycutlist[k][j]->setFoundVectors( &ret_i, &ret_t, &found_idx_origs); }
-                  forbidthese.clear();
-                  for (int ikk=0; ikk<found_res_size; ikk++){ 
-                     forbidthese.push_back( make_pair(found_idx_vecs[ikk],found_type_vecs[ikk]) );
-                  }
-                  mycutlist[k][j]->setForbiddenVector(&forbidthese);
-                }
-           }// end searchable
-*/
+        DEBUG("Selecting: "<<iter->first<<" |");
+        d=iter->second->evaluate(&a0); // execute the selection cut
 
-           DEBUG("Selecting: "<<iter->first<<" |");
-           d=iter->second->evaluate(&a0); // execute the selection cut
-
-/*
-//---------if this was a defining cut, we will store the results;
-           if (mycutlist[k][j]->getOp()=="~=" || mycutlist[k][j]->getOp()=="!=") {
-                DEBUG("storing found vecs. Tot="<<(mycutlist[k][j]->getFoundVector()).size()); 
-                for (int iti=0; iti<(mycutlist[k][j]->getFoundVector()).size(); iti++) {
-                      found_idx_vecs.push_back ( mycutlist[k][j]->getFoundVector()[iti]  );
-                      found_type_vecs.push_back( mycutlist[k][j]->getFoundType(iti) );
-                      found_idx_origs.push_back( mycutlist[k][j]->getOrigFoundIndexes(iti) );
-                }
-           //   DEBUG(" TOT#found:"<<found_idx_vecs.size()<<" tot#Oi:"<<found_idx_origs.size() <<" \n ");
-           //   for (int iti=0; iti<found_idx_origs.size(); iti++) {DEBUG(" Oi:"<<found_idx_origs[iti]);}  DEBUG("\n");
-           }
-           j++;
-*/
-/*
-        if ( isTernary[k] > 0){
-            if (dt > 0) { 
-                          mycutlist[k].swap( terCutlistT[ternaryCount] );
-                          myopelist[k].swap( terOpelistT[ternaryCount] ); 
-            }  else  {    
-                          myopelist[k].swap(terOpelistF[ternaryCount] );
-                          mycutlist[k].swap(terCutlistF[ternaryCount] );
-            }
-         ternaryCount++; // ternary skips 1 here, nested or not doesn't matter.
-        }
-*/
         DEBUG(" Result : " << d << std::endl);
         if (d==0) return iter->first; // quit the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
