@@ -119,8 +119,21 @@ public:
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
+        int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
-            particles->push_back(inputParticles[i]);
+            
+            bool found=false;
+            for(int j=0;j<size;j++){
+                if (inputParticles[i]->index==particles->at(j)->index)
+                {
+                    found=true;break;
+                }
+            }
+
+            if(!found){
+                particles->push_back(inputParticles[i]);
+            }
+
             }    
     }
 

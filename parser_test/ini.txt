@@ -17,4 +17,6 @@ cmd mWH1 == 2  # events with only leptons
 histo Anna , Hello World reco , 50, 50, 150, mWH1 
 cmd mWH1 [] 70 120  # central mass for Z candidate
 histo aaaa , Hadronic W re123co , 50, 50, 150, mWH1 
+cmd 1>2 ? 10>20 ? 20==10 : 3>20 : 1>2 
+#cmd 1>2 ? (10>20 ? 20==10 : 3>20) : (1>2)
 

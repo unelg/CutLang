@@ -25,6 +25,7 @@ public:
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
+        //might need switching right and left 
         right->getParticles(particles);
         left->getParticles(particles);
     }
