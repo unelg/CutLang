@@ -49,6 +49,21 @@ double met(AnalysisObjects* ao){
     return ( ao->met.Mod() );
 }
 
+double nbjets(AnalysisObjects* ao){
+    return (tagJets(ao, 1).size() );
+}
+
+double nljets(AnalysisObjects* ao){
+    return (tagJets(ao, 0).size() );
+}
+
+double ht(AnalysisObjects* ao){
+    double sum_htjet=0;
+    for (UInt_t i=0; i<ao->jets.size(); i++) sum_htjet+=ao->jets.at(i).lv().Pt();
+    return (sum_htjet  );       
+}
+
+
 double emwt(AnalysisObjects* ao){
     double theLeptonTrkPhi = ao->eles.at(0).lv().Phi();
     double           leppt = ao->eles.at(0).lv().Pt();
