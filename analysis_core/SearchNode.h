@@ -6,7 +6,7 @@
 #include <list>
 #include "Node.h"
 
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -62,9 +62,11 @@ public:
 
     virtual double evaluate(AnalysisObjects* ao){
             
-            DEBUG("Evaluate\n");
+            DEBUG("Evaluate 1\n");
             FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
+            DEBUG("Evaluate 2\n");
             std::vector<myParticle *>* particles=funcnode->getParticles();
+            DEBUG("Evaluate 3\n");
             vector<int> indices;
             for(int i=0;i<particles->size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles->at(i)->index<<"\n");
@@ -73,7 +75,7 @@ public:
 
             int MaxDepth=indices.size();//number of nested loops needed
             DEBUG("Depth:"<<MaxDepth<<"\n");
-            
+                      
             int type=particles->at(indices[0])->type;
             int Max;
             switch(type){

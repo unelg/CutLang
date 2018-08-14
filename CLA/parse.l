@@ -49,6 +49,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "nbf" return NBF;
 "dR" return DR;
 "dPhi" return DPHI;
+"dEta" return DETA;
 "nELE" return NELE;//no arg funcs
 "nMUO" return NMUO;
 "nLEP" return NLEP;
