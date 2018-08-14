@@ -267,17 +267,17 @@ function : '{' particules '}' 'm' {
         | NBJET {    
                                         
                                         string s="NBJET";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(nbjets,s);
                                 }
         | NQGJET {    
                                         
                                         string s="NQGJET";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(nljets,s);
                                 }
         | HT {    
                                         
                                         string s="HT";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(ht,s);
                                 }
         | METMWT {    
                                         
