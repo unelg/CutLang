@@ -26,7 +26,8 @@ public:
         this->display("");
     }
     virtual double evaluate()=0;
-    
+    virtual void Reset(){}
+    virtual void getParticles(std::vector<myParticle *>* particles){}
     virtual ~ Node(){
     }
 };

@@ -18,6 +18,7 @@
 #include "LFuncNode.h"
 #include "SFuncNode.h"
 #include "HistoNode.h"
+#include "IfNode.h"
 //Delete Nodes
 //Print Nodes As Defined by User
 #endif /* NodeTree_h */
