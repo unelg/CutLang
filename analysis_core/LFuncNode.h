@@ -12,7 +12,7 @@
 #include "myParticle.h"
 #include "Node.h"
 using namespace std;
-//takes care of functions with arguments
+//takes care of functions with two arguments
 class LFuncNode : public FuncNode{
 private:
     double (*f2)(dbxParticle* part1,dbxParticle* part2);
@@ -20,7 +20,27 @@ private:
     std::vector<myParticle*> inputParticles2;
     std::vector<myParticle> originalParticles2;
     dbxParticle myPart2;
+protected:
+    virtual void ResetParticles() override{
+          for(int i=0;i<originalParticles.size();i++){
+                *(inputParticles[i])=originalParticles[i];
 
+          }
+          for(int i=0;i<originalParticles2.size();i++){
+              *(inputParticles2[i])=originalParticles2[i];
+
+          }
+    }
+
+    virtual void setParticleIndex(int order, int newIndex) override{
+        if(order<inputParticles.size()){
+            inputParticles.at(order)->index=newIndex;
+        }
+        else{
+            inputParticles2.at(order-inputParticles.size())->index=newIndex;
+        }
+    }
+    
 public:
     LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s )
     : FuncNode(NULL,input1,s) {
@@ -34,30 +54,19 @@ public:
         }
     }
     
-    virtual void setParticleIndex(int order, int newIndex){
-        if(order<inputParticles.size()){
-            inputParticles.at(order)->index=newIndex;
-        }
-        else{
-            inputParticles2.at(order-inputParticles.size())->index=newIndex;
-        }
+    
+
+    virtual void getParticles(std::vector<myParticle *>* particles) override{
+        cout<<"Calling getParticles on an ListFuncNode------Adding particle pointers to input\n";
+        for (int i=0; i<inputParticles.size(); i++){
+            particles->push_back(inputParticles[i]);
+            }   
+        for (int i=0; i<inputParticles2.size(); i++){
+            particles->push_back(inputParticles2[i]);
+            } 
     }
-
-    virtual void resetParticleIndex(){
-          for(int i=0;i<originalParticles.size();i++){
-                *(inputParticles[i])=originalParticles[i];
-
-          }
-          for(int i=0;i<originalParticles2.size();i++){
-              *(inputParticles2[i])=originalParticles2[i];
-
-          }
-    }
-
-    virtual std::vector<myParticle*>* getParticles(){
-            return &inputParticles;
-    }
-    virtual double evaluate(AnalysisObjects* ao) {
+    
+    virtual double evaluate(AnalysisObjects* ao)  override{
         partConstruct(ao, inputParticles,&myPart);
         partConstruct(ao, inputParticles2,&myPart2);
         return (*f2)(&myPart,&myPart2);

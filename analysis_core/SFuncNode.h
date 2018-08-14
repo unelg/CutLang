@@ -23,9 +23,13 @@ public:
         right=NULL;
     }
     
-    virtual double evaluate(AnalysisObjects* ao) {
+    virtual double evaluate(AnalysisObjects* ao) override {
         return (*f)(ao);
     }
+
+    virtual void Reset() override{}
+    virtual void getParticles(std::vector<myParticle *>* particles) override{}
+
     virtual ~SFuncNode() {}
 };
 
