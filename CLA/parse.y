@@ -43,7 +43,7 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
-%token PHI ETA ABSETA PT PZ NBF DR DPHI //functions
+%token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token MINIMIZE MAXIMIZE
 %token <real> NB
@@ -224,9 +224,14 @@ function : '{' particules '}' 'm' {
                                                 TmpParticle.swap(newList);
                                                 vector<myParticle*> newList1;
                                                 TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dR,newList1,newList,"dphi to be added");
-
-
+                                                $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
+                                }
+        | list DETA { 
+                                                vector<myParticle*> newList;
+                                                TmpParticle.swap(newList);
+                                                vector<myParticle*> newList1;
+                                                TmpParticle1.swap(newList1);
+                                                $$=new LFuncNode(dEta,newList1,newList,"dEta");
                                 }
         | NELE {    
                                         
