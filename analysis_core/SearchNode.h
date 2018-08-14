@@ -24,12 +24,10 @@ private:
 
 
     void performInnerOperation(vector<int> v,vector<int> indices, double *current_difference,AnalysisObjects* ao){
-        FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
-            
+          
         for(int i=0;i<v.size();i++){
+            DEBUG(v[i]<<" ");
             particles.at(indices[i])->index=v[i];
-            //funcnode->setParticleIndex(indices[i],v[i]);
-            DEBUG(particles.at(indices[i])->index<<" : "<<v[i]<<" ");
         }
         double tmpval=left->evaluate(ao);
         double diff=right->evaluate(ao)-tmpval;
@@ -38,16 +36,23 @@ private:
             DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
             *current_difference = fabs(diff);
             bestIndices=v;
-        }
-    }
+        } else { DEBUG("\n");}
+      }
 
     void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double *curr_diff,AnalysisObjects* ao) {
     if(level==maxDepth) performInnerOperation (v,indices,curr_diff,ao);
     else{
+        bool skip=false;
         for (int x = start; x < N; x++ ) {
+            skip=false;
+            for (int kk=0; kk<v.size(); kk++){
+             if (v[kk]==x) {skip=true; break;}
+            }
+            if (skip) continue;
             //check if particle x is forbidden
             v.push_back(x); //add the current value
-            runNestedLoop( x+1 , N, level + 1, maxDepth, v,indices, curr_diff,ao );
+            
+            runNestedLoop( start, N, level + 1, maxDepth, v,indices, curr_diff, ao );
             v.pop_back();//remove the value
         }
     }
@@ -66,7 +71,7 @@ public:
     virtual double evaluate(AnalysisObjects* ao) override{
             
             DEBUG("Evaluate\n");
-            
+            particles.clear();
             left->getParticles(&particles);//should fill with particles pointers no more cast needed
 
             vector<int> indices;
