@@ -75,9 +75,20 @@ public:
 };
 
 double dR(dbxParticle* apart,dbxParticle* apart2){
-    std::cout<<"FILL THIS FUNCTION!\n";
-
-    return 0;
+    double deltaR=apart->lv().DeltaR(apart2->lv() );
+    DEBUG(" dR:"<<deltaR<<"\t");
+    return deltaR;
 }
 
+double dPhi(dbxParticle* apart,dbxParticle* apart2){
+    double deltaPhi=fabs(apart->lv().DeltaPhi(apart2->lv() ) );
+    DEBUG(" dPhi:"<<deltaPhi<<"\t");
+    return deltaPhi;
+}
+
+double dEta(dbxParticle* apart,dbxParticle* apart2){
+    double deltaEta=fabs(apart->lv().Eta() - apart2->lv().Eta() );
+    DEBUG(" dEta:"<<deltaEta<<"\t");
+    return deltaEta;
+}
 #endif /* LFuncNode_h */
