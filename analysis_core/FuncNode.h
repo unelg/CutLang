@@ -13,7 +13,7 @@
 #include "Node.h"
 using namespace std;
 
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -186,7 +186,6 @@ double Phiof( dbxParticle* apart){
     DEBUG(" phi:"<<phi<<"\t");
     return phi;
 }
-
 
 double nbfof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();

@@ -6,7 +6,7 @@
 #include <list>
 #include "Node.h"
 
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -65,11 +65,19 @@ public:
 
     virtual double evaluate(AnalysisObjects* ao) override{
             
+<<<<<<< HEAD
             DEBUG("Evaluate\n");
             
             //std::vector<myParticle *> particles;//can't be a pointer anymore
             left->getParticles(&particles);//should fill with particles pointers no more cast needed
 
+=======
+            DEBUG("Evaluate 1\n");
+            FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
+            DEBUG("Evaluate 2\n");
+            std::vector<myParticle *>* particles=funcnode->getParticles();
+            DEBUG("Evaluate 3\n");
+>>>>>>> 2125ba256521827162a8daf6ae885201ca12fc6d
             vector<int> indices;
             for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<<"\n");
@@ -78,6 +86,7 @@ public:
 
             int MaxDepth=indices.size();//number of nested loops needed
             DEBUG("Depth:"<<MaxDepth<<"\n");
+<<<<<<< HEAD
             if(indices.size()==0){
 
                     int type=particles.at(indices[0])->type;
@@ -98,6 +107,17 @@ public:
                         //funcnode->setParticleIndex(indices[i],bestIndices[i]);
                         DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<" ");
                     }
+=======
+                      
+            int type=particles->at(indices[0])->type;
+            int Max;
+            switch(type){
+                case 0: Max=ao->muos.size();break;
+                case 1: Max=ao->eles.size();break;
+                case 2: Max=ao->jets.size();break;
+                case 3: Max=funcnode->tagJets(ao,1).size();break;
+                case 4: Max=funcnode->tagJets(ao,0).size();break;
+>>>>>>> 2125ba256521827162a8daf6ae885201ca12fc6d
             }
             else{
                 cout<<"No negative index found... Returning\n";
