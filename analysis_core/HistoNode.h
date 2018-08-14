@@ -33,8 +33,16 @@ public:
         left=l;
         right=NULL;
     }
-    
-    virtual double evaluate(AnalysisObjects* ao) {
+
+    virtual void Reset() override{
+        cout<<"Calling Reset on an HistoNode------doing nothing\n";    
+    }
+
+    virtual void getParticles(std::vector<myParticle *>* particles) override{
+        cout<<"Calling getParticles on an HistoNode------doing nothing to input\n";    
+    }
+
+    virtual double evaluate(AnalysisObjects* ao) override {
         double value=left->evaluate(ao);
         ahisto->Fill(value, 1.);
         return 1;

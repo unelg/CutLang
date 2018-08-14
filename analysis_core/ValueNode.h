@@ -21,7 +21,9 @@ public:
                 symbol=std::to_string(v);
             }
     
-     virtual double evaluate(AnalysisObjects* ao) {
+    virtual void getParticles(std::vector<myParticle *>* particles) override{}
+    virtual void Reset() override{}
+    virtual double evaluate(AnalysisObjects* ao) override {
         return value;
     }
     

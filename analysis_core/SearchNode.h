@@ -20,13 +20,16 @@ class SearchNode : public Node{
 private:
     double (*f)(double, double);
     vector<int> bestIndices;
+    std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed
+
 
     void performInnerOperation(vector<int> v,vector<int> indices, double *current_difference,AnalysisObjects* ao){
         FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
             
         for(int i=0;i<v.size();i++){
-            funcnode->setParticleIndex(indices[i],v[i]);
-            DEBUG(funcnode->getParticleIndex(indices[i])<<" : "<<v[i]<<" ");
+            particles.at(indices[i])->index=v[i];
+            //funcnode->setParticleIndex(indices[i],v[i]);
+            DEBUG(particles.at(indices[i])->index<<" : "<<v[i]<<" ");
         }
         double tmpval=left->evaluate(ao);
         double diff=right->evaluate(ao)-tmpval;
@@ -60,43 +63,55 @@ public:
         right=r;
     }
 
-    virtual double evaluate(AnalysisObjects* ao){
+    virtual double evaluate(AnalysisObjects* ao) override{
             
             DEBUG("Evaluate\n");
-            FuncNode* funcnode=dynamic_cast<FuncNode*>(left);
-            std::vector<myParticle *>* particles=funcnode->getParticles();
+            
+            //std::vector<myParticle *> particles;//can't be a pointer anymore
+            left->getParticles(&particles);//should fill with particles pointers no more cast needed
+
             vector<int> indices;
-            for(int i=0;i<particles->size();i++){
-                DEBUG("Part:"<<i<<"  idx:"<<particles->at(i)->index<<"\n");
-                if(particles->at(i)->index<0) indices.push_back(i);
+            for(int i=0;i<particles.size();i++){
+                DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<<"\n");
+                if(particles.at(i)->index<0) indices.push_back(i);
             }
 
             int MaxDepth=indices.size();//number of nested loops needed
             DEBUG("Depth:"<<MaxDepth<<"\n");
-            
-            int type=particles->at(indices[0])->type;
-            int Max;
-            switch(type){
-                case 0: Max=ao->muos.size();break;
-                case 1: Max=ao->eles.size();break;
-                case 2: Max=ao->jets.size();break;
-                case 3: Max=funcnode->tagJets(ao,1).size();break;
-                case 4: Max=funcnode->tagJets(ao,0).size();break;
-            }
-            vector<int> v;
-            double current_difference =1000;
-            runNestedLoop( 0, Max, 0, MaxDepth, v,indices, &current_difference,ao);
+            if(indices.size()==0){
 
-            for(int i=0;i<bestIndices.size();i++){
-                funcnode->setParticleIndex(indices[i],bestIndices[i]);
-                DEBUG("BEST"<<funcnode->getParticleIndex(indices[i])<<" : "<<bestIndices[i]<<" ");
+                    int type=particles.at(indices[0])->type;
+                    int Max;
+                    switch(type){//assuming all particles have the same type
+                        case 0: Max=ao->muos.size();break;
+                        case 1: Max=ao->eles.size();break;
+                        case 2: Max=ao->jets.size();break;
+                        case 3: Max=left->tagJets(ao,1).size();break;
+                        case 4: Max=left->tagJets(ao,0).size();break;
+                    }
+                    vector<int> v;//--------------------why not pass it by reference?!
+                    double current_difference =1000;
+                    runNestedLoop( 0, Max, 0, MaxDepth, v,indices, &current_difference,ao);
+
+                    for(int i=0;i<bestIndices.size();i++){
+                        particles.at(indices[i])->index=bestIndices[i];//directly changing the concerned particle
+                        //funcnode->setParticleIndex(indices[i],bestIndices[i]);
+                        DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<" ");
+                    }
+            }
+            else{
+                cout<<"No negative index found... Returning\n";
             }
             DEBUG("\n");
             return 1;
    
     }
-    virtual void Reset(){
-            ((FuncNode*)left)->ResetParticles();
+    virtual void Reset() override{
+            left->Reset();//assuming right doesnt need a Reset because it's a value Node
+    }
+
+    virtual void getParticles(std::vector<myParticle *>* particles) override{
+        cout<<"Calling getParticles on an SearchNode------doing nothing to input";    
     }
 
     virtual ~SearchNode() {

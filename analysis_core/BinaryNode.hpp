@@ -24,7 +24,15 @@ public:
         right=r;
     }
 
-    virtual double evaluate(AnalysisObjects* ao){
+    virtual void getParticles(std::vector<myParticle *>* particles) override{
+        right->getParticles(particles);
+        left->getParticles(particles);
+    }
+    virtual void Reset() override{
+        left->Reset();
+        right->Reset();
+    }
+    virtual double evaluate(AnalysisObjects* ao) override{
             return (*f)(left->evaluate(ao),right->evaluate(ao));
     }
     virtual ~BinaryNode() {
