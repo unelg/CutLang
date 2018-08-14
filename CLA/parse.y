@@ -57,6 +57,7 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
+%right '?'
 %right Unary
 %right '^'
 %type <real> index
@@ -503,7 +504,7 @@ description : description HID {
                                         }
                                         dnum++;}
         ;
-ifstatement : condition '?' action ':' action { 
+ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
 
                         } 
