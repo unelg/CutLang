@@ -59,8 +59,8 @@ vector<myParticle> TmpParticle1;//to be used for list of 2 particles
 %right Unary
 %right '^'
 %type <real> index
-%type <node> e function condition
-%type <s> particule particules list action ifstatement description
+%type <node> e function condition action ifstatement
+%type <s> particule particules list description
 %%
 input : initializations definitions objects commands 
      ;
