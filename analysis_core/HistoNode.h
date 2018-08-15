@@ -35,11 +35,9 @@ public:
     }
 
     virtual void Reset() override{
-        cout<<"Calling Reset on an HistoNode------doing nothing\n";    
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        cout<<"Calling getParticles on an HistoNode------doing nothing to input\n";    
     }
 
     virtual double evaluate(AnalysisObjects* ao) override {

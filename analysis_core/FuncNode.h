@@ -13,7 +13,7 @@
 #include "Node.h"
 using namespace std;
 
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -41,9 +41,10 @@ protected:
             }
         }
     
-    void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> input, dbxParticle* inputPart){
+    void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
-        for(vector<myParticle*>::iterator i=input.begin();i!=input.end();i++){
+        
+        for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
                 switch (atype) { 
                                                 case 0: inputPart->setTlv(  inputPart->lv()+ao->muos[ (*i)->index ].lv() ); // 0 is muon
@@ -56,8 +57,9 @@ protected:
                                                         inputPart->setIsTight(ao->eles[ (*i)->index ].isZCand()); // i am overloading the isTight
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
-                                            case 2:  DEBUG("jet:"<<(*i)->index<<" ");
+                                            	case 2: DEBUG("jet:"<<(*i)->index<<" ");
                                                         inputPart->setTlv(inputPart->lv()   +   ao->jets[ (*i)->index ].lv() ); // 2 is any jet
+                                                        //inputPart->setTlv( ao->jets[ (*i)->index ].lv() ); // 2 is any jet
                                                         break;
                                                 case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
                                                         DEBUG("b-jet:"<<(*i)->index<<"  ");
@@ -138,7 +140,7 @@ public:
     }
 
     virtual double evaluate(AnalysisObjects* ao) override{
-    partConstruct(ao, inputParticles,&myPart);
+    partConstruct(ao, &inputParticles,&myPart);
     return (*f)(&myPart );
     }
 

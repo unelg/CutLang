@@ -67,8 +67,8 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao)  override{
-        partConstruct(ao, inputParticles,&myPart);
-        partConstruct(ao, inputParticles2,&myPart2);
+        partConstruct(ao, &inputParticles,&myPart);
+        partConstruct(ao, &inputParticles2,&myPart2);
         return (*f2)(&myPart,&myPart2);
     }
     virtual ~LFuncNode() {}
