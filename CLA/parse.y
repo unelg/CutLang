@@ -20,7 +20,7 @@ int pnum;
 int dnum;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
-
+std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 //modify types to ints in myParticle => codes?
 //see how to give input to yyparse and get output -> DONE
 //read file
