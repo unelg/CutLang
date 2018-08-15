@@ -57,7 +57,7 @@ public:
     
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        cout<<"Calling getParticles on an ListFuncNode------Adding particle pointers to input\n";
+        cout<<"MODIFY TO CHECK FOR EXISTING INDICES in ListFuncNode------\n";
         for (int i=0; i<inputParticles.size(); i++){
             particles->push_back(inputParticles[i]);
             }   
