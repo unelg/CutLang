@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __VERBOSE3__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -409,11 +409,13 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     DEBUG("Start resetting cuts\n");
 //----------------------reset 
+
     while(iter != NodeCuts.end())
     {   
         iter->second->Reset();
         iter++;
      }
+
      DEBUG("RESet ALL cuts\n");
     iter = NodeCuts.begin();
 

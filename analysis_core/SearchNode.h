@@ -6,7 +6,7 @@
 #include <list>
 #include "Node.h"
 
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -22,37 +22,108 @@ private:
     vector<int> bestIndices;
     std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed
 
-
-    void performInnerOperation(vector<int> v,vector<int> indices, double *current_difference,AnalysisObjects* ao){
+    void performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao){
           
-        for(int i=0;i<v.size();i++){
+        for(int i=0;i<v->size();i++){
             DEBUG(v[i]<<" ");
-            particles.at(indices[i])->index=v[i];
+            particles.at(indices->at(i))->index=v->at(i);
         }
-        double tmpval=left->evaluate(ao);
-        double diff=right->evaluate(ao)-tmpval;
+
+//-------~1min in 25k events
+      double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+      double diff=right->evaluate(ao)-tmpval;
+
             
         if ( (*f)(diff,*current_difference) ) {
             DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
             *current_difference = fabs(diff);
-            bestIndices=v;
+            bestIndices=*v;
         } else { DEBUG("\n");}
       }
 
-    void runNestedLoop( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double *curr_diff,AnalysisObjects* ao) {
-    if(level==maxDepth) performInnerOperation (v,indices,curr_diff,ao);
+    void runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao) 
+      {
+      // loops start ~~~~~~~~~~~
+          const int unk_MAX=6;
+          int ip_N[unk_MAX]={N,N,N,N,N,N}; 
+          int ip2_min=0, ip3_min=0, ip4_min=0, ip5_min=0, ip6_min=0;
+
+          for (int ip1=0; ip1< ip_N[0]; ip1++) {
+           if (ip1> 0 ) if (ip1==ip_N[0]) continue; // upper limit
+//           if (isForbidden(ip1, search_types[0])) continue;
+
+           for (int ip2=ip2_min; ip2<=ip_N[1]; ip2++) {
+            if (ip_N[1]>0 && (ip2==ip1)) continue;
+            if (ip2> 0 ) if (ip2==ip_N[1]) continue; // upper limit
+//            if (isForbidden(ip2, search_types[1])) continue;
+
+            for (int ip3=ip3_min; ip3< ip_N[2]; ip3++) {
+              if (ip_N[2]>0 && (ip3==ip1 || ip3==ip2)) continue;
+              if (ip3> 0 ) if (ip3==ip_N[2]) continue; // upper limit
+//              if (isForbidden(ip3, search_types[2])) continue;
+
+              for (int ip4=ip4_min; ip4< ip_N[3]; ip4++) {
+                if (ip_N[3]>0 && (ip4==ip1 || ip4==ip2 || ip4==ip3)) continue;
+                if (ip4> 0 ) if (ip4==ip_N[3]) continue; // upper limit
+//                if (isForbidden(ip4, search_types[3])) continue;
+
+               for (int ip5=ip5_min; ip5< ip_N[4]; ip5++) {
+                if (ip_N[4]>0 && (ip5==ip1 || ip5==ip2 || ip5==ip3 || ip5==ip4)) continue;
+                if (ip5>0 )  if (ip5==ip_N[4]) continue; // upper limit
+//                if (isForbidden(ip5, search_types[4])) continue;
+
+               for (int ip6=ip6_min; ip6< ip_N[5]; ip6++) {
+                 if (ip_N[5]>0 &&(ip6==ip1 || ip6==ip2 || ip6==ip3 || ip6==ip4 || ip6==ip5)) continue;
+                 if (ip6> 0 ) if (ip6==ip_N[5]) continue; // upper limit
+//                 if (isForbidden(ip6, search_types[5])) continue;
+
+                  ;//1.3s
+
+                  v->push_back(ip1);
+                  v->push_back(ip2);
+                  v->push_back(ip3);
+                  v->push_back(ip4);
+                  v->push_back(ip5);
+                  v->push_back(ip6);
+                  //performInnerOperation (v,indices,curr_diff,ao); //2.3s without this call
+
+        for(int i=0;i<v->size();i++){
+            DEBUG(v[i]<<" ");
+            particles.at(indices->at(i))->index=v->at(i);
+        }
+
+//-------~1min in 25k events
+      double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+      double diff=right->evaluate(ao)-tmpval;
+
+
+        if ( (*f)(diff,*curr_diff) ) {
+            DEBUG("diff:"<<diff<<" c_diff:"<<*curr_diff<<"\n");
+            *curr_diff = fabs(diff);
+            bestIndices=*v;
+        } else { DEBUG("\n");}
+
+              
+                  v->clear();
+                }}}}}} //all iN loops end
+
+    }
+    void runNestedLoopRec( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double *curr_diff,AnalysisObjects* ao) {
+    if(level==maxDepth)  performInnerOperation (&v,&indices,curr_diff,ao); //18 without this function call
     else{
         bool skip=false;
         for (int x = start; x < N; x++ ) {
+
             skip=false;
             for (int kk=0; kk<v.size(); kk++){
              if (v[kk]==x) {skip=true; break;}
             }
             if (skip) continue;
+
             //check if particle x is forbidden
             v.push_back(x); //add the current value
             
-            runNestedLoop( start, N, level + 1, maxDepth, v,indices, curr_diff, ao );
+            runNestedLoopRec( start, N, level + 1, maxDepth, v,indices, curr_diff, ao );
             v.pop_back();//remove the value
         }
     }
@@ -94,12 +165,11 @@ public:
                         case 4: Max=left->tagJets(ao,0).size();break;
                     }
                     vector<int> v;//--------------------why not pass it by reference?!
-                    double current_difference =1000;
-                    runNestedLoop( 0, Max, 0, MaxDepth, v,indices, &current_difference,ao);
+                    double current_difference =9999999999.9;
+                    runNestedLoopBarb( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao);
 
                     for(int i=0;i<bestIndices.size();i++){
                         particles.at(indices[i])->index=bestIndices[i];//directly changing the concerned particle
-                        //funcnode->setParticleIndex(indices[i],bestIndices[i]);
                         DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<" ");
                     }
             }
@@ -115,7 +185,6 @@ public:
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        cout<<"Calling getParticles on an SearchNode------doing nothing to input";    
     }
 
     virtual ~SearchNode() {

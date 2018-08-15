@@ -25,11 +25,9 @@ public:
     }
     
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        cout<<"Calling getParticles on an IfNode------doing nothing to input\n";    
     }
 
     virtual void Reset() override{
-        cout<<"Calling Rest on an IfNode------doing nothing\n";    
     }
     
     virtual double evaluate(AnalysisObjects* ao) override{
