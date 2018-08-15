@@ -79,7 +79,7 @@ private:
                  if (ip6> 0 ) if (ip6==ip_N[5]) continue; // upper limit
 //                 if (isForbidden(ip6, search_types[5])) continue;
 
-                  ;//1.3s
+//                  ;//1.3s
 
                   v->push_back(ip1);
                   v->push_back(ip2);
@@ -96,8 +96,7 @@ private:
 
 //-------~1min in 25k events
       double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
-      double diff=right->evaluate(ao)-tmpval;
-
+      double diff=right->evaluate(ao) -tmpval;
 
         if ( (*f)(diff,*curr_diff) ) {
             DEBUG("diff:"<<diff<<" c_diff:"<<*curr_diff<<"\n");
@@ -105,7 +104,6 @@ private:
             bestIndices=*v;
         } else { DEBUG("\n");}
 
-              
                   v->clear();
                 }}}}}} //all iN loops end
 
