@@ -1,0 +1,33 @@
+###### PARTICLE THRESHOLDS
+minpte = 15.0 # min pt of electrons
+minptm = 15.0 # min pt of muons
+minptj = 15.0 # min pt of jets
+maxetae = 2.47 # max pseudorapidity of electrons
+maxetam = 2.5 # max pseudorapidity of muons
+maxetaj = 5.5 # max pseudorapidity of jets
+TRGe = 0 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGm = 1 # muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+
+###### USER DEFINITIONS
+def     WH1  : JET_-1 JET_-1   # W boson of the first top
+def     WH2  : JET_-11 JET_-11   # W boson of the second top
+def     mWH1 : { WH1 }m   # mass of W boson of the first top
+def     mWH2 : { WH2 }m   # mass of @ boson of the second top
+def     mTopH1 : { WH1 JET_-2 }m   # first top quark's mass
+def     mTopH2 : { WH2 JET_-4 }m   # second top quark's mass
+def     WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
+def     WHbR2 : {WH2 , JET_-4 }dR   # angular distance between W2 and b jet
+def     Wchi2 : (( { WH1 }m - 80.4 ) / 2.1) ^ 2 + (( { WH2 }m - 80.4) / 2.1) ^ 2  #chi2 for W finder
+def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2) ^ 2  #chi2 for top finder
+
+
+###### EVENT SELECTION
+cmd     ALL            # to count all events
+cmd     nJET >= 6      # events with 6 or more jets
+cmd     MET < 110      # fully hadronic events should have small MET
+#cmd    nJET > 5 ?  nJET == 6 ? MET < 120 : MET < 140  : MET < 150                         # events with 6 or more jets
+cmd     topchi2 + Wchi2 ~= 0
+#cmd     { WH1 }m [] 75 85          #why
+#cmd     { WH2 }m [] 75 85          #why
+
+
