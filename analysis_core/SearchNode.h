@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <list>
-#include <algorithm>
+#include <unordered_set>
 #include "Node.h"
 
 #define _CLV_
@@ -19,7 +19,7 @@
 //takes care of Minimizing/Maximizing
 class SearchNode : public Node{
 private:
-    static vector<int> FORBIDDEN_INDICES;
+    static unordered_set<int> FORBIDDEN_INDICES;
     double (*f)(double, double);
     vector<int> bestIndices;
     std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed
@@ -51,7 +51,7 @@ private:
              if (v[kk]==x) {
                  skip=true; break;}
              //check if particle x is forbidden
-             if ( find(FORBIDDEN_INDICES.begin(), FORBIDDEN_INDICES.end(), x) != FORBIDDEN_INDICES.end() )//true if element is present
+             if ( FORBIDDEN_INDICES.find(x)!=FORBIDDEN_INDICES.end() )//true if element is present
                     {skip=true; break;}
             }
             if (skip) continue;
@@ -83,8 +83,7 @@ public:
             for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);
-                //------------CHECK LOGIC
-                else FORBIDDEN_INDICES.push_back(particles.at(i)->index);
+                else FORBIDDEN_INDICES.insert(particles.at(i)->index);
             }
 
             int MaxDepth=indices.size();//number of nested loops needed
@@ -107,7 +106,7 @@ public:
                     for(int i=0;i<bestIndices.size();i++){
                         particles.at(indices[i])->index=bestIndices[i];//directly changing the concerned particle
                         //-------------------add found indices to FORBIDDEN
-                        FORBIDDEN_INDICES.push_back(bestIndices[i]);
+                        FORBIDDEN_INDICES.insert(bestIndices[i]);
                         DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<" ");
                     }
             }
