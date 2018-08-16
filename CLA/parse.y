@@ -39,7 +39,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 %parse-param {map<int,Node*>* NodeCuts}
 %parse-param {vector<double>* Initializations}
 %parse-param {vector<double>* DataFormats}
-%token DEF CMD HISTO
+%token DEF CMD HISTO OBJ ALGO
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -101,11 +101,9 @@ definition : DEF  ID  ':' particules {
                                                 cout <<name<<" : " ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
-                                                
                                         }
                                         
                                         parts->push_back(name+" : "+$4);
-                                        
                                         
                                                 // std::cout<<"\n TMP List: \n";
                                                 // vector<myParticle*>::iterator myiterator;
@@ -453,10 +451,36 @@ particule : ELE '_' index {
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
+      |     {$$= 6213;}
       ; 
 commands : commands command 
         | 
         ;
+objects : objectBlocs ALGO
+        |
+        ;
+objectBlocs : objectBlocs objectBloc
+            | objectBloc
+            ;
+objectBloc : OBJ ID ':' ID criteria
+           | OBJ ID ':' ELE criteria
+           | OBJ ID ':' MUO criteria
+           | OBJ ID ':' LEP criteria
+           | OBJ ID ':' PHO criteria
+           | OBJ ID ':' JET criteria
+           | OBJ ID ':' BJET criteria
+           | OBJ ID ':' QGJET criteria
+           | OBJ ID ':' NUMET criteria
+           | OBJ ID ':' METLV criteria
+           ;
+criteria : criteria criterion
+         | criterion
+         ;
+
+criterion : CMD condition { //find a way to print commands                                     
+                                         NodeCuts->insert(make_pair(++cutcount,$2));
+				}
+
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
@@ -484,8 +508,6 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
-
-                                        
     
 				}
 	;
