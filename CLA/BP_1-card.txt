@@ -19,15 +19,19 @@ def     WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
 def     WHbR2 : {WH2 , JET_-4 }dR   # angular distance between W2 and b jet
 def     Wchi2 : (( { WH1 }m - 80.4 ) / 2.1) ^ 2 + (( { WH2 }m - 80.4) / 2.1) ^ 2  #chi2 for W finder
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2) ^ 2  #chi2 for top finder
+def     Meff : MET + HT 
+def     Meff1j : MET +  { JET_0 }Pt
+
+######## OBJECT SELECTION 
+#obj JETclean : JET  
+#cmd {JET_ ,ELE_ }dR >= 0.2
 
 
 ###### EVENT SELECTION
 cmd     ALL            # to count all events
-cmd     nJET >= 6      # events with 6 or more jets
-cmd     MET < 110      # fully hadronic events should have small MET
+cmd     nJET == 6      # events with 6 or more jets
+cmd     MET < 100      # fully hadronic events should have small MET
 #cmd    nJET > 5 ?  nJET == 6 ? MET < 120 : MET < 140  : MET < 150                         # events with 6 or more jets
-cmd     topchi2 + Wchi2 ~= 0
-#cmd     { WH1 }m [] 75 85          #why
-#cmd     { WH2 }m [] 75 85          #why
+#cmd     topchi2 + Wchi2 ~= 0
 
-
+cmd     Meff1j > 200 

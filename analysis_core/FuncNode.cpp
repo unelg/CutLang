@@ -1,7 +1,6 @@
 #include "FuncNode.h"
 
 
-
      void FuncNode::ResetParticles(){
             for(int i=0;i<originalParticles.size();i++){
             DEBUG("Recall orig i:"<<originalParticles[i].index);
