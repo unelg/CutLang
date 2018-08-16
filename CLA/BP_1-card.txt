@@ -35,4 +35,4 @@ cmd     MET < 100      # fully hadronic events should have small MET
 #cmd    nJET > 5 ?  nJET == 6 ? MET < 120 : MET < 140  : MET < 150                         # events with 6 or more jets
 #cmd     topchi2 + Wchi2 ~= 0
 
-#cmd     Meff1j > 200 
+#cmd     Meff ( JETclean  MUOclean ) > 200 

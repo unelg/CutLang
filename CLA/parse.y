@@ -454,9 +454,6 @@ index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
       |     {$$= 6213;}
       ; 
-commands : commands command 
-        | 
-        ;
 objects : objectBlocs ALGO
         |
         | ALGO
@@ -482,7 +479,9 @@ criteria : criteria criterion
 criterion : CMD condition { //find a way to print commands                                     
                                          ObjectCuts->insert(make_pair(++cutcount,$2));
 				}
-
+commands : commands command 
+        | 
+        ;
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}

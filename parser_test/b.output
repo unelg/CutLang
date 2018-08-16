@@ -4,7 +4,7 @@ Terminals which are not used
 
 
 State 96 conflicts: 5 reduce/reduce
-State 239 conflicts: 2 reduce/reduce
+State 240 conflicts: 2 reduce/reduce
 
 
 Grammar
@@ -60,7 +60,7 @@ Grammar
    39 criteria: criteria criterion
    40         | criterion
 
-   41 criterion: CMD
+   41 criterion: CMD condition
 
    42 function: '{' particules '}' 'm'
    43         | '{' particules '}' 'q'
@@ -108,68 +108,69 @@ Grammar
 
    81 index: '-' INT
    82      | INT
+   83      | /* empty */
 
-   83 commands: commands command
-   84         | /* empty */
+   84 commands: commands command
+   85         | /* empty */
 
-   85 command: CMD condition
-   86        | CMD ALL
-   87        | CMD ifstatement
-   88        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID
+   86 command: CMD condition
+   87        | CMD ALL
+   88        | CMD ifstatement
+   89        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID
 
-   89 description: description ID
-   90            | ID
+   90 description: description ID
+   91            | ID
 
-   91 ifstatement: condition '?' action ':' action
+   92 ifstatement: condition '?' action ':' action
 
-   92 action: condition
-   93       | ALL
-   94       | ifstatement
+   93 action: condition
+   94       | ALL
+   95       | ifstatement
 
-   95 condition: e LT e
-   96          | e GT e
-   97          | e LE e
-   98          | e GE e
-   99          | e EQ e
-  100          | e NE e
-  101          | e IRG e e
-  102          | e ERG e e
-  103          | condition AND condition
-  104          | condition OR condition
-  105          | '(' condition ')'
+   96 condition: e LT e
+   97          | e GT e
+   98          | e LE e
+   99          | e GE e
+  100          | e EQ e
+  101          | e NE e
+  102          | e IRG e e
+  103          | e ERG e e
+  104          | condition AND condition
+  105          | condition OR condition
+  106          | '(' condition ')'
 
-  106 e: e '+' e
-  107  | e '-' e
-  108  | e '*' e
-  109  | e '/' e
-  110  | e '^' e
-  111  | '-' e
-  112  | COS '(' e ')'
-  113  | SIN '(' e ')'
-  114  | TAN '(' e ')'
-  115  | '(' e ')'
-  116  | NB
-  117  | INT
-  118  | function
-  119  | ID
+  107 e: e '+' e
+  108  | e '-' e
+  109  | e '*' e
+  110  | e '/' e
+  111  | e '^' e
+  112  | '-' e
+  113  | COS '(' e ')'
+  114  | SIN '(' e ')'
+  115  | TAN '(' e ')'
+  116  | '(' e ')'
+  117  | NB
+  118  | INT
+  119  | function
+  120  | ID
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 105 112 113 114 115
-')' (41) 105 112 113 114 115
-'*' (42) 108
-'+' (43) 106
-',' (44) 68 88
-'-' (45) 81 107 111
-'/' (47) 109
-':' (58) 23 24 29 30 31 32 33 34 35 36 37 38 91
+'(' (40) 106 113 114 115 116
+')' (41) 106 113 114 115 116
+'*' (42) 109
+'+' (43) 107
+',' (44) 68 89
+'-' (45) 81 108 112
+'/' (47) 110
+':' (58) 23 24 29 30 31 32 33 34 35 36 37 38 92
 '=' (61) 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-'?' (63) 91
+'?' (63) 92
 'E' (69) 45
 'P' (80) 44
-'^' (94) 110
+'^' (94) 111
 '_' (95) 71 72 73 74 75 76 77 78 79
 'm' (109) 42
 'q' (113) 43
@@ -177,8 +178,8 @@ $end (0) 0
 '}' (125) 42 43 44 45 46 47 48 49 50 51 68
 error (256)
 DEF (258) 23 24
-CMD (259) 41 85 86 87
-HISTO (260) 88
+CMD (259) 41 86 87 88
+HISTO (260) 89
 OBJ (261) 29 30 31 32 33 34 35 36 37 38
 ALGO (262) 25
 ELE (263) 30 71
@@ -226,25 +227,25 @@ HT (304) 61
 METMWT (305) 62
 MWT (306) 63
 MET (307) 64
-ALL (308) 65 86 93
+ALL (308) 65 87 94
 LEPSF (309) 66
 FILLHISTOS (310)
-NB (311) 4 5 6 7 8 9 10 11 12 15 16 17 18 19 20 116
-ID (312) 23 24 29 30 31 32 33 34 35 36 37 38 80 88 89 90 119
-SIN (313) 113
-COS (314) 112
-TAN (315) 114
-INT (316) 13 14 81 82 88 117
-OR (317) 104
-AND (318) 103
-LT (319) 95
-GT (320) 96
-LE (321) 97
-GE (322) 98
-EQ (323) 99
-NE (324) 100
-IRG (325) 101
-ERG (326) 102
+NB (311) 4 5 6 7 8 9 10 11 12 15 16 17 18 19 20 117
+ID (312) 23 24 29 30 31 32 33 34 35 36 37 38 80 89 90 91 120
+SIN (313) 114
+COS (314) 113
+TAN (315) 115
+INT (316) 13 14 81 82 89 118
+OR (317) 105
+AND (318) 104
+LT (319) 96
+GT (320) 97
+LE (321) 98
+GE (322) 99
+EQ (323) 100
+NE (324) 101
+IRG (325) 102
+ERG (326) 103
 Unary (327)
 
 
@@ -275,7 +276,7 @@ criterion (101)
     on left: 41, on right: 39 40
 function (102)
     on left: 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
-    60 61 62 63 64 65 66, on right: 118
+    60 61 62 63 64 65 66, on right: 119
 list (103)
     on left: 68, on right: 52 53
 @1 (104)
@@ -285,24 +286,24 @@ particules (105)
 particule (106)
     on left: 71 72 73 74 75 76 77 78 79 80, on right: 69 70
 index (107)
-    on left: 81 82, on right: 71 72 73 74 75 76 77 78 79
+    on left: 81 82 83, on right: 71 72 73 74 75 76 77 78 79
 commands (108)
-    on left: 83 84, on right: 1 83
+    on left: 84 85, on right: 1 84
 command (109)
-    on left: 85 86 87 88, on right: 83
+    on left: 86 87 88 89, on right: 84
 description (110)
-    on left: 89 90, on right: 88 89
+    on left: 90 91, on right: 89 90
 ifstatement (111)
-    on left: 91, on right: 87 94
+    on left: 92, on right: 88 95
 action (112)
-    on left: 92 93 94, on right: 91
+    on left: 93 94 95, on right: 92
 condition (113)
-    on left: 95 96 97 98 99 100 101 102 103 104 105,
-    on right: 85 91 92 103 104 105
+    on left: 96 97 98 99 100 101 102 103 104 105 106,
+    on right: 41 86 92 93 104 105 106
 e (114)
-    on left: 106 107 108 109 110 111 112 113 114 115 116 117 118 119,
-    on right: 24 95 96 97 98 99 100 101 102 106 107 108 109 110 111
-    112 113 114 115
+    on left: 107 108 109 110 111 112 113 114 115 116 117 118 119 120,
+    on right: 24 96 97 98 99 100 101 102 103 107 108 109 110 111 112
+    113 114 115 116
 
 
 state 0
@@ -654,7 +655,7 @@ state 43
 
     1 input: initializations definitions objects . commands
 
-    $default  reduce using rule 84 (commands)
+    $default  reduce using rule 85 (commands)
 
     commands  go to state 65
 
@@ -823,7 +824,7 @@ state 64
 state 65
 
     1 input: initializations definitions objects commands .
-   83 commands: commands . command
+   84 commands: commands . command
 
     CMD    shift, and go to state 70
     HISTO  shift, and go to state 71
@@ -918,9 +919,9 @@ state 69
 
 state 70
 
-   85 command: CMD . condition
-   86        | CMD . ALL
-   87        | CMD . ifstatement
+   86 command: CMD . condition
+   87        | CMD . ALL
+   88        | CMD . ifstatement
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -954,16 +955,16 @@ state 70
 
 state 71
 
-   88 command: HISTO . ID ',' description ',' INT ',' INT ',' INT ',' ID
+   89 command: HISTO . ID ',' description ',' INT ',' INT ',' INT ',' ID
 
     ID  shift, and go to state 125
 
 
 state 72
 
-   83 commands: commands command .
+   84 commands: commands command .
 
-    $default  reduce using rule 83 (commands)
+    $default  reduce using rule 84 (commands)
 
 
 state 73
@@ -1122,65 +1123,65 @@ state 94
 
 state 95
 
-  116 e: NB .
+  117 e: NB .
 
-    $default  reduce using rule 116 (e)
+    $default  reduce using rule 117 (e)
 
 
 state 96
 
    80 particule: ID .
-  119 e: ID .
+  120 e: ID .
 
     $end      reduce using rule 80 (particule)
-    $end      [reduce using rule 119 (e)]
+    $end      [reduce using rule 120 (e)]
     DEF       reduce using rule 80 (particule)
-    DEF       [reduce using rule 119 (e)]
+    DEF       [reduce using rule 120 (e)]
     CMD       reduce using rule 80 (particule)
-    CMD       [reduce using rule 119 (e)]
+    CMD       [reduce using rule 120 (e)]
     HISTO     reduce using rule 80 (particule)
-    HISTO     [reduce using rule 119 (e)]
+    HISTO     [reduce using rule 120 (e)]
     OBJ       reduce using rule 80 (particule)
-    OBJ       [reduce using rule 119 (e)]
-    '+'       reduce using rule 119 (e)
-    '-'       reduce using rule 119 (e)
-    '*'       reduce using rule 119 (e)
-    '/'       reduce using rule 119 (e)
-    '^'       reduce using rule 119 (e)
+    OBJ       [reduce using rule 120 (e)]
+    '+'       reduce using rule 120 (e)
+    '-'       reduce using rule 120 (e)
+    '*'       reduce using rule 120 (e)
+    '/'       reduce using rule 120 (e)
+    '^'       reduce using rule 120 (e)
     $default  reduce using rule 80 (particule)
 
 
 state 97
 
-  113 e: SIN . '(' e ')'
+  114 e: SIN . '(' e ')'
 
     '('  shift, and go to state 135
 
 
 state 98
 
-  112 e: COS . '(' e ')'
+  113 e: COS . '(' e ')'
 
     '('  shift, and go to state 136
 
 
 state 99
 
-  114 e: TAN . '(' e ')'
+  115 e: TAN . '(' e ')'
 
     '('  shift, and go to state 137
 
 
 state 100
 
-  117 e: INT .
+  118 e: INT .
 
-    $default  reduce using rule 117 (e)
+    $default  reduce using rule 118 (e)
 
 
 state 101
 
-  111 e: '-' . e
+  112 e: '-' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1241,7 +1242,7 @@ state 102
 
 state 103
 
-  115 e: '(' . e ')'
+  116 e: '(' . e ')'
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1273,9 +1274,9 @@ state 103
 
 state 104
 
-  118 e: function .
+  119 e: function .
 
-    $default  reduce using rule 118 (e)
+    $default  reduce using rule 119 (e)
 
 
 state 105
@@ -1318,11 +1319,11 @@ state 107
 state 108
 
    24 definition: DEF ID ':' e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -1436,25 +1437,25 @@ state 118
 state 119
 
    65 function: ALL .
-   86 command: CMD ALL .
+   87 command: CMD ALL .
 
-    $end      reduce using rule 86 (command)
-    CMD       reduce using rule 86 (command)
-    HISTO     reduce using rule 86 (command)
+    $end      reduce using rule 87 (command)
+    CMD       reduce using rule 87 (command)
+    HISTO     reduce using rule 87 (command)
     $default  reduce using rule 65 (function)
 
 
 state 120
 
-  119 e: ID .
+  120 e: ID .
 
-    $default  reduce using rule 119 (e)
+    $default  reduce using rule 120 (e)
 
 
 state 121
 
-  105 condition: '(' . condition ')'
-  115 e: '(' . e ')'
+  106 condition: '(' . condition ')'
+  116 e: '(' . e ')'
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1487,40 +1488,40 @@ state 121
 
 state 122
 
-   87 command: CMD ifstatement .
+   88 command: CMD ifstatement .
 
-    $default  reduce using rule 87 (command)
+    $default  reduce using rule 88 (command)
 
 
 state 123
 
-   85 command: CMD condition .
-   91 ifstatement: condition . '?' action ':' action
-  103 condition: condition . AND condition
-  104          | condition . OR condition
+   86 command: CMD condition .
+   92 ifstatement: condition . '?' action ':' action
+  104 condition: condition . AND condition
+  105          | condition . OR condition
 
     OR   shift, and go to state 164
     AND  shift, and go to state 165
     '?'  shift, and go to state 166
 
-    $default  reduce using rule 85 (command)
+    $default  reduce using rule 86 (command)
 
 
 state 124
 
-   95 condition: e . LT e
-   96          | e . GT e
-   97          | e . LE e
-   98          | e . GE e
-   99          | e . EQ e
-  100          | e . NE e
-  101          | e . IRG e e
-  102          | e . ERG e e
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+   96 condition: e . LT e
+   97          | e . GT e
+   98          | e . LE e
+   99          | e . GE e
+  100          | e . EQ e
+  101          | e . NE e
+  102          | e . IRG e e
+  103          | e . ERG e e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     LT   shift, and go to state 167
     GT   shift, and go to state 168
@@ -1539,7 +1540,7 @@ state 124
 
 state 125
 
-   88 command: HISTO ID . ',' description ',' INT ',' INT ',' INT ',' ID
+   89 command: HISTO ID . ',' description ',' INT ',' INT ',' INT ',' ID
 
     ','  shift, and go to state 175
 
@@ -1551,6 +1552,8 @@ state 126
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
 
+    $default  reduce using rule 83 (index)
+
     index  go to state 178
 
 
@@ -1560,6 +1563,8 @@ state 127
 
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
+
+    $default  reduce using rule 83 (index)
 
     index  go to state 179
 
@@ -1571,6 +1576,8 @@ state 128
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
 
+    $default  reduce using rule 83 (index)
+
     index  go to state 180
 
 
@@ -1580,6 +1587,8 @@ state 129
 
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
+
+    $default  reduce using rule 83 (index)
 
     index  go to state 181
 
@@ -1591,6 +1600,8 @@ state 130
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
 
+    $default  reduce using rule 83 (index)
+
     index  go to state 182
 
 
@@ -1600,6 +1611,8 @@ state 131
 
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
+
+    $default  reduce using rule 83 (index)
 
     index  go to state 183
 
@@ -1611,6 +1624,8 @@ state 132
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
 
+    $default  reduce using rule 83 (index)
+
     index  go to state 184
 
 
@@ -1620,6 +1635,8 @@ state 133
 
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
+
+    $default  reduce using rule 83 (index)
 
     index  go to state 185
 
@@ -1631,12 +1648,14 @@ state 134
     INT  shift, and go to state 176
     '-'  shift, and go to state 177
 
+    $default  reduce using rule 83 (index)
+
     index  go to state 186
 
 
 state 135
 
-  113 e: SIN '(' . e ')'
+  114 e: SIN '(' . e ')'
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1668,7 +1687,7 @@ state 135
 
 state 136
 
-  112 e: COS '(' . e ')'
+  113 e: COS '(' . e ')'
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1700,7 +1719,7 @@ state 136
 
 state 137
 
-  114 e: TAN '(' . e ')'
+  115 e: TAN '(' . e ')'
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1732,16 +1751,16 @@ state 137
 
 state 138
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  111  | '-' e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  112  | '-' e .
 
     '^'  shift, and go to state 149
 
-    $default  reduce using rule 111 (e)
+    $default  reduce using rule 112 (e)
 
 
 state 139
@@ -1786,12 +1805,12 @@ state 140
 
 state 141
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  115  | '(' e . ')'
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  116  | '(' e . ')'
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -1824,7 +1843,7 @@ state 144
 
 state 145
 
-  106 e: e '+' . e
+  107 e: e '+' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1856,7 +1875,7 @@ state 145
 
 state 146
 
-  107 e: e '-' . e
+  108 e: e '-' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1888,7 +1907,7 @@ state 146
 
 state 147
 
-  108 e: e '*' . e
+  109 e: e '*' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1920,7 +1939,7 @@ state 147
 
 state 148
 
-  109 e: e '/' . e
+  110 e: e '/' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1952,7 +1971,7 @@ state 148
 
 state 149
 
-  110 e: e '^' . e
+  111 e: e '^' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -1984,185 +2003,7 @@ state 149
 
 state 150
 
-   41 criterion: CMD .
-
-    $default  reduce using rule 41 (criterion)
-
-
-state 151
-
-   30 objectBloc: OBJ ID ':' ELE criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 30 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 152
-
-   40 criteria: criterion .
-
-    $default  reduce using rule 40 (criteria)
-
-
-state 153
-
-   31 objectBloc: OBJ ID ':' MUO criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 31 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 154
-
-   32 objectBloc: OBJ ID ':' LEP criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 32 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 155
-
-   33 objectBloc: OBJ ID ':' PHO criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 33 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 156
-
-   34 objectBloc: OBJ ID ':' JET criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 34 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 157
-
-   35 objectBloc: OBJ ID ':' BJET criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 35 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 158
-
-   36 objectBloc: OBJ ID ':' QGJET criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 36 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 159
-
-   37 objectBloc: OBJ ID ':' NUMET criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 37 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 160
-
-   38 objectBloc: OBJ ID ':' METLV criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 38 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 161
-
-   29 objectBloc: OBJ ID ':' ID criteria .
-   39 criteria: criteria . criterion
-
-    CMD  shift, and go to state 150
-
-    $default  reduce using rule 29 (objectBloc)
-
-    criterion  go to state 198
-
-
-state 162
-
-  103 condition: condition . AND condition
-  104          | condition . OR condition
-  105          | '(' condition . ')'
-
-    OR   shift, and go to state 164
-    AND  shift, and go to state 165
-    ')'  shift, and go to state 199
-
-
-state 163
-
-   95 condition: e . LT e
-   96          | e . GT e
-   97          | e . LE e
-   98          | e . GE e
-   99          | e . EQ e
-  100          | e . NE e
-  101          | e . IRG e e
-  102          | e . ERG e e
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  115  | '(' e . ')'
-
-    LT   shift, and go to state 167
-    GT   shift, and go to state 168
-    LE   shift, and go to state 169
-    GE   shift, and go to state 170
-    EQ   shift, and go to state 171
-    NE   shift, and go to state 172
-    IRG  shift, and go to state 173
-    ERG  shift, and go to state 174
-    '+'  shift, and go to state 145
-    '-'  shift, and go to state 146
-    '*'  shift, and go to state 147
-    '/'  shift, and go to state 148
-    '^'  shift, and go to state 149
-    ')'  shift, and go to state 192
-
-
-state 164
-
-  104 condition: condition OR . condition
+   41 criterion: CMD . condition
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2189,13 +2030,184 @@ state 164
 
     function   go to state 104
     list       go to state 105
-    condition  go to state 200
+    condition  go to state 198
     e          go to state 124
 
 
-state 165
+state 151
 
-  103 condition: condition AND . condition
+   30 objectBloc: OBJ ID ':' ELE criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 30 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 152
+
+   40 criteria: criterion .
+
+    $default  reduce using rule 40 (criteria)
+
+
+state 153
+
+   31 objectBloc: OBJ ID ':' MUO criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 31 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 154
+
+   32 objectBloc: OBJ ID ':' LEP criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 32 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 155
+
+   33 objectBloc: OBJ ID ':' PHO criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 33 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 156
+
+   34 objectBloc: OBJ ID ':' JET criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 34 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 157
+
+   35 objectBloc: OBJ ID ':' BJET criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 35 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 158
+
+   36 objectBloc: OBJ ID ':' QGJET criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 36 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 159
+
+   37 objectBloc: OBJ ID ':' NUMET criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 37 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 160
+
+   38 objectBloc: OBJ ID ':' METLV criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 38 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 161
+
+   29 objectBloc: OBJ ID ':' ID criteria .
+   39 criteria: criteria . criterion
+
+    CMD  shift, and go to state 150
+
+    $default  reduce using rule 29 (objectBloc)
+
+    criterion  go to state 199
+
+
+state 162
+
+  104 condition: condition . AND condition
+  105          | condition . OR condition
+  106          | '(' condition . ')'
+
+    OR   shift, and go to state 164
+    AND  shift, and go to state 165
+    ')'  shift, and go to state 200
+
+
+state 163
+
+   96 condition: e . LT e
+   97          | e . GT e
+   98          | e . LE e
+   99          | e . GE e
+  100          | e . EQ e
+  101          | e . NE e
+  102          | e . IRG e e
+  103          | e . ERG e e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  116  | '(' e . ')'
+
+    LT   shift, and go to state 167
+    GT   shift, and go to state 168
+    LE   shift, and go to state 169
+    GE   shift, and go to state 170
+    EQ   shift, and go to state 171
+    NE   shift, and go to state 172
+    IRG  shift, and go to state 173
+    ERG  shift, and go to state 174
+    '+'  shift, and go to state 145
+    '-'  shift, and go to state 146
+    '*'  shift, and go to state 147
+    '/'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    ')'  shift, and go to state 192
+
+
+state 164
+
+  105 condition: condition OR . condition
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2226,44 +2238,9 @@ state 165
     e          go to state 124
 
 
-state 166
+state 165
 
-   91 ifstatement: condition '?' . action ':' action
-
-    NELE    shift, and go to state 82
-    NMUO    shift, and go to state 83
-    NLEP    shift, and go to state 84
-    NPHO    shift, and go to state 85
-    NJET    shift, and go to state 86
-    NBJET   shift, and go to state 87
-    NQGJET  shift, and go to state 88
-    HT      shift, and go to state 89
-    METMWT  shift, and go to state 90
-    MWT     shift, and go to state 91
-    MET     shift, and go to state 92
-    ALL     shift, and go to state 202
-    LEPSF   shift, and go to state 94
-    NB      shift, and go to state 95
-    ID      shift, and go to state 120
-    SIN     shift, and go to state 97
-    COS     shift, and go to state 98
-    TAN     shift, and go to state 99
-    INT     shift, and go to state 100
-    '-'     shift, and go to state 101
-    '{'     shift, and go to state 102
-    '('     shift, and go to state 121
-
-    function     go to state 104
-    list         go to state 105
-    ifstatement  go to state 203
-    action       go to state 204
-    condition    go to state 205
-    e            go to state 124
-
-
-state 167
-
-   95 condition: e LT . e
+  104 condition: condition AND . condition
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2286,16 +2263,52 @@ state 167
     INT     shift, and go to state 100
     '-'     shift, and go to state 101
     '{'     shift, and go to state 102
-    '('     shift, and go to state 103
+    '('     shift, and go to state 121
 
-    function  go to state 104
-    list      go to state 105
-    e         go to state 206
+    function   go to state 104
+    list       go to state 105
+    condition  go to state 202
+    e          go to state 124
 
 
-state 168
+state 166
 
-   96 condition: e GT . e
+   92 ifstatement: condition '?' . action ':' action
+
+    NELE    shift, and go to state 82
+    NMUO    shift, and go to state 83
+    NLEP    shift, and go to state 84
+    NPHO    shift, and go to state 85
+    NJET    shift, and go to state 86
+    NBJET   shift, and go to state 87
+    NQGJET  shift, and go to state 88
+    HT      shift, and go to state 89
+    METMWT  shift, and go to state 90
+    MWT     shift, and go to state 91
+    MET     shift, and go to state 92
+    ALL     shift, and go to state 203
+    LEPSF   shift, and go to state 94
+    NB      shift, and go to state 95
+    ID      shift, and go to state 120
+    SIN     shift, and go to state 97
+    COS     shift, and go to state 98
+    TAN     shift, and go to state 99
+    INT     shift, and go to state 100
+    '-'     shift, and go to state 101
+    '{'     shift, and go to state 102
+    '('     shift, and go to state 121
+
+    function     go to state 104
+    list         go to state 105
+    ifstatement  go to state 204
+    action       go to state 205
+    condition    go to state 206
+    e            go to state 124
+
+
+state 167
+
+   96 condition: e LT . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2325,9 +2338,9 @@ state 168
     e         go to state 207
 
 
-state 169
+state 168
 
-   97 condition: e LE . e
+   97 condition: e GT . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2357,9 +2370,9 @@ state 169
     e         go to state 208
 
 
-state 170
+state 169
 
-   98 condition: e GE . e
+   98 condition: e LE . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2389,9 +2402,9 @@ state 170
     e         go to state 209
 
 
-state 171
+state 170
 
-   99 condition: e EQ . e
+   99 condition: e GE . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2421,9 +2434,9 @@ state 171
     e         go to state 210
 
 
-state 172
+state 171
 
-  100 condition: e NE . e
+  100 condition: e EQ . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2453,9 +2466,9 @@ state 172
     e         go to state 211
 
 
-state 173
+state 172
 
-  101 condition: e IRG . e e
+  101 condition: e NE . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2485,9 +2498,9 @@ state 173
     e         go to state 212
 
 
-state 174
+state 173
 
-  102 condition: e ERG . e e
+  102 condition: e IRG . e e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -2517,13 +2530,45 @@ state 174
     e         go to state 213
 
 
+state 174
+
+  103 condition: e ERG . e e
+
+    NELE    shift, and go to state 82
+    NMUO    shift, and go to state 83
+    NLEP    shift, and go to state 84
+    NPHO    shift, and go to state 85
+    NJET    shift, and go to state 86
+    NBJET   shift, and go to state 87
+    NQGJET  shift, and go to state 88
+    HT      shift, and go to state 89
+    METMWT  shift, and go to state 90
+    MWT     shift, and go to state 91
+    MET     shift, and go to state 92
+    ALL     shift, and go to state 93
+    LEPSF   shift, and go to state 94
+    NB      shift, and go to state 95
+    ID      shift, and go to state 120
+    SIN     shift, and go to state 97
+    COS     shift, and go to state 98
+    TAN     shift, and go to state 99
+    INT     shift, and go to state 100
+    '-'     shift, and go to state 101
+    '{'     shift, and go to state 102
+    '('     shift, and go to state 103
+
+    function  go to state 104
+    list      go to state 105
+    e         go to state 214
+
+
 state 175
 
-   88 command: HISTO ID ',' . description ',' INT ',' INT ',' INT ',' ID
+   89 command: HISTO ID ',' . description ',' INT ',' INT ',' INT ',' ID
 
-    ID  shift, and go to state 214
+    ID  shift, and go to state 215
 
-    description  go to state 215
+    description  go to state 216
 
 
 state 176
@@ -2537,7 +2582,7 @@ state 177
 
    81 index: '-' . INT
 
-    INT  shift, and go to state 216
+    INT  shift, and go to state 217
 
 
 state 178
@@ -2605,29 +2650,12 @@ state 186
 
 state 187
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  113  | SIN '(' e . ')'
-
-    '+'  shift, and go to state 145
-    '-'  shift, and go to state 146
-    '*'  shift, and go to state 147
-    '/'  shift, and go to state 148
-    '^'  shift, and go to state 149
-    ')'  shift, and go to state 217
-
-
-state 188
-
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  112  | COS '(' e . ')'
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  114  | SIN '(' e . ')'
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2637,14 +2665,14 @@ state 188
     ')'  shift, and go to state 218
 
 
-state 189
+state 188
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  114  | TAN '(' e . ')'
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  113  | COS '(' e . ')'
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2652,6 +2680,23 @@ state 189
     '/'  shift, and go to state 148
     '^'  shift, and go to state 149
     ')'  shift, and go to state 219
+
+
+state 189
+
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  115  | TAN '(' e . ')'
+
+    '+'  shift, and go to state 145
+    '-'  shift, and go to state 146
+    '*'  shift, and go to state 147
+    '/'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    ')'  shift, and go to state 220
 
 
 state 190
@@ -2667,56 +2712,40 @@ state 190
    50         | '{' particules '}' . PZ
    51         | '{' particules '}' . NBF
 
-    PHI     shift, and go to state 220
-    ETA     shift, and go to state 221
-    ABSETA  shift, and go to state 222
-    PT      shift, and go to state 223
-    PZ      shift, and go to state 224
-    NBF     shift, and go to state 225
-    'm'     shift, and go to state 226
-    'q'     shift, and go to state 227
-    'P'     shift, and go to state 228
-    'E'     shift, and go to state 229
+    PHI     shift, and go to state 221
+    ETA     shift, and go to state 222
+    ABSETA  shift, and go to state 223
+    PT      shift, and go to state 224
+    PZ      shift, and go to state 225
+    NBF     shift, and go to state 226
+    'm'     shift, and go to state 227
+    'q'     shift, and go to state 228
+    'P'     shift, and go to state 229
+    'E'     shift, and go to state 230
 
 
 state 191
 
    68 list: '{' particules @1 . ',' particules '}'
 
-    ','  shift, and go to state 230
+    ','  shift, and go to state 231
 
 
 state 192
 
-  115 e: '(' e ')' .
+  116 e: '(' e ')' .
 
-    $default  reduce using rule 115 (e)
+    $default  reduce using rule 116 (e)
 
 
 state 193
 
-  106 e: e . '+' e
-  106  | e '+' e .
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-
-    '*'  shift, and go to state 147
-    '/'  shift, and go to state 148
-    '^'  shift, and go to state 149
-
-    $default  reduce using rule 106 (e)
-
-
-state 194
-
-  106 e: e . '+' e
-  107  | e . '-' e
-  107  | e '-' e .
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  107 e: e . '+' e
+  107  | e '+' e .
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '*'  shift, and go to state 147
     '/'  shift, and go to state 148
@@ -2725,148 +2754,158 @@ state 194
     $default  reduce using rule 107 (e)
 
 
-state 195
+state 194
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  108  | e '*' e .
-  109  | e . '/' e
-  110  | e . '^' e
+  107 e: e . '+' e
+  108  | e . '-' e
+  108  | e '-' e .
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
+    '*'  shift, and go to state 147
+    '/'  shift, and go to state 148
     '^'  shift, and go to state 149
 
     $default  reduce using rule 108 (e)
 
 
-state 196
+state 195
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  109  | e '/' e .
-  110  | e . '^' e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  109  | e '*' e .
+  110  | e . '/' e
+  111  | e . '^' e
 
     '^'  shift, and go to state 149
 
     $default  reduce using rule 109 (e)
 
 
-state 197
+state 196
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  110  | e '^' e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  110  | e '/' e .
+  111  | e . '^' e
 
     '^'  shift, and go to state 149
 
     $default  reduce using rule 110 (e)
 
 
+state 197
+
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  111  | e '^' e .
+
+    '^'  shift, and go to state 149
+
+    $default  reduce using rule 111 (e)
+
+
 state 198
+
+   41 criterion: CMD condition .
+  104 condition: condition . AND condition
+  105          | condition . OR condition
+
+    OR   shift, and go to state 164
+    AND  shift, and go to state 165
+
+    $default  reduce using rule 41 (criterion)
+
+
+state 199
 
    39 criteria: criteria criterion .
 
     $default  reduce using rule 39 (criteria)
 
 
-state 199
-
-  105 condition: '(' condition ')' .
-
-    $default  reduce using rule 105 (condition)
-
-
 state 200
 
-  103 condition: condition . AND condition
-  104          | condition . OR condition
-  104          | condition OR condition .
+  106 condition: '(' condition ')' .
 
-    AND  shift, and go to state 165
-
-    $default  reduce using rule 104 (condition)
+    $default  reduce using rule 106 (condition)
 
 
 state 201
 
-  103 condition: condition . AND condition
-  103          | condition AND condition .
-  104          | condition . OR condition
+  104 condition: condition . AND condition
+  105          | condition . OR condition
+  105          | condition OR condition .
 
-    $default  reduce using rule 103 (condition)
+    AND  shift, and go to state 165
+
+    $default  reduce using rule 105 (condition)
 
 
 state 202
 
-   65 function: ALL .
-   93 action: ALL .
+  104 condition: condition . AND condition
+  104          | condition AND condition .
+  105          | condition . OR condition
 
-    $end      reduce using rule 93 (action)
-    CMD       reduce using rule 93 (action)
-    HISTO     reduce using rule 93 (action)
-    ':'       reduce using rule 93 (action)
-    $default  reduce using rule 65 (function)
+    $default  reduce using rule 104 (condition)
 
 
 state 203
 
-   94 action: ifstatement .
+   65 function: ALL .
+   94 action: ALL .
 
-    $default  reduce using rule 94 (action)
+    $end      reduce using rule 94 (action)
+    CMD       reduce using rule 94 (action)
+    HISTO     reduce using rule 94 (action)
+    ':'       reduce using rule 94 (action)
+    $default  reduce using rule 65 (function)
 
 
 state 204
 
-   91 ifstatement: condition '?' action . ':' action
+   95 action: ifstatement .
 
-    ':'  shift, and go to state 231
+    $default  reduce using rule 95 (action)
 
 
 state 205
 
-   91 ifstatement: condition . '?' action ':' action
-   92 action: condition .
-  103 condition: condition . AND condition
-  104          | condition . OR condition
+   92 ifstatement: condition '?' action . ':' action
+
+    ':'  shift, and go to state 232
+
+
+state 206
+
+   92 ifstatement: condition . '?' action ':' action
+   93 action: condition .
+  104 condition: condition . AND condition
+  105          | condition . OR condition
 
     OR   shift, and go to state 164
     AND  shift, and go to state 165
     '?'  shift, and go to state 166
 
-    $default  reduce using rule 92 (action)
-
-
-state 206
-
-   95 condition: e LT e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-
-    '+'  shift, and go to state 145
-    '-'  shift, and go to state 146
-    '*'  shift, and go to state 147
-    '/'  shift, and go to state 148
-    '^'  shift, and go to state 149
-
-    $default  reduce using rule 95 (condition)
+    $default  reduce using rule 93 (action)
 
 
 state 207
 
-   96 condition: e GT e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+   96 condition: e LT e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2879,12 +2918,12 @@ state 207
 
 state 208
 
-   97 condition: e LE e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+   97 condition: e GT e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2897,12 +2936,12 @@ state 208
 
 state 209
 
-   98 condition: e GE e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+   98 condition: e LE e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2915,12 +2954,12 @@ state 209
 
 state 210
 
-   99 condition: e EQ e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+   99 condition: e GE e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2933,12 +2972,12 @@ state 210
 
 state 211
 
-  100 condition: e NE e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  100 condition: e EQ e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -2951,53 +2990,30 @@ state 211
 
 state 212
 
-  101 condition: e IRG e . e
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  101 condition: e NE e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
-    NELE    shift, and go to state 82
-    NMUO    shift, and go to state 83
-    NLEP    shift, and go to state 84
-    NPHO    shift, and go to state 85
-    NJET    shift, and go to state 86
-    NBJET   shift, and go to state 87
-    NQGJET  shift, and go to state 88
-    HT      shift, and go to state 89
-    METMWT  shift, and go to state 90
-    MWT     shift, and go to state 91
-    MET     shift, and go to state 92
-    ALL     shift, and go to state 93
-    LEPSF   shift, and go to state 94
-    NB      shift, and go to state 95
-    ID      shift, and go to state 120
-    SIN     shift, and go to state 97
-    COS     shift, and go to state 98
-    TAN     shift, and go to state 99
-    INT     shift, and go to state 100
-    '+'     shift, and go to state 145
-    '-'     shift, and go to state 232
-    '*'     shift, and go to state 147
-    '/'     shift, and go to state 148
-    '^'     shift, and go to state 149
-    '{'     shift, and go to state 102
-    '('     shift, and go to state 103
+    '+'  shift, and go to state 145
+    '-'  shift, and go to state 146
+    '*'  shift, and go to state 147
+    '/'  shift, and go to state 148
+    '^'  shift, and go to state 149
 
-    function  go to state 104
-    list      go to state 105
-    e         go to state 233
+    $default  reduce using rule 101 (condition)
 
 
 state 213
 
-  102 condition: e ERG e . e
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  102 condition: e IRG e . e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -3019,7 +3035,7 @@ state 213
     TAN     shift, and go to state 99
     INT     shift, and go to state 100
     '+'     shift, and go to state 145
-    '-'     shift, and go to state 232
+    '-'     shift, and go to state 233
     '*'     shift, and go to state 147
     '/'     shift, and go to state 148
     '^'     shift, and go to state 149
@@ -3033,119 +3049,160 @@ state 213
 
 state 214
 
-   90 description: ID .
+  103 condition: e ERG e . e
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
-    $default  reduce using rule 90 (description)
+    NELE    shift, and go to state 82
+    NMUO    shift, and go to state 83
+    NLEP    shift, and go to state 84
+    NPHO    shift, and go to state 85
+    NJET    shift, and go to state 86
+    NBJET   shift, and go to state 87
+    NQGJET  shift, and go to state 88
+    HT      shift, and go to state 89
+    METMWT  shift, and go to state 90
+    MWT     shift, and go to state 91
+    MET     shift, and go to state 92
+    ALL     shift, and go to state 93
+    LEPSF   shift, and go to state 94
+    NB      shift, and go to state 95
+    ID      shift, and go to state 120
+    SIN     shift, and go to state 97
+    COS     shift, and go to state 98
+    TAN     shift, and go to state 99
+    INT     shift, and go to state 100
+    '+'     shift, and go to state 145
+    '-'     shift, and go to state 233
+    '*'     shift, and go to state 147
+    '/'     shift, and go to state 148
+    '^'     shift, and go to state 149
+    '{'     shift, and go to state 102
+    '('     shift, and go to state 103
+
+    function  go to state 104
+    list      go to state 105
+    e         go to state 235
 
 
 state 215
 
-   88 command: HISTO ID ',' description . ',' INT ',' INT ',' INT ',' ID
-   89 description: description . ID
+   91 description: ID .
 
-    ID   shift, and go to state 235
-    ','  shift, and go to state 236
+    $default  reduce using rule 91 (description)
 
 
 state 216
+
+   89 command: HISTO ID ',' description . ',' INT ',' INT ',' INT ',' ID
+   90 description: description . ID
+
+    ID   shift, and go to state 236
+    ','  shift, and go to state 237
+
+
+state 217
 
    81 index: '-' INT .
 
     $default  reduce using rule 81 (index)
 
 
-state 217
-
-  113 e: SIN '(' e ')' .
-
-    $default  reduce using rule 113 (e)
-
-
 state 218
 
-  112 e: COS '(' e ')' .
-
-    $default  reduce using rule 112 (e)
-
-
-state 219
-
-  114 e: TAN '(' e ')' .
+  114 e: SIN '(' e ')' .
 
     $default  reduce using rule 114 (e)
 
 
+state 219
+
+  113 e: COS '(' e ')' .
+
+    $default  reduce using rule 113 (e)
+
+
 state 220
+
+  115 e: TAN '(' e ')' .
+
+    $default  reduce using rule 115 (e)
+
+
+state 221
 
    46 function: '{' particules '}' PHI .
 
     $default  reduce using rule 46 (function)
 
 
-state 221
+state 222
 
    47 function: '{' particules '}' ETA .
 
     $default  reduce using rule 47 (function)
 
 
-state 222
+state 223
 
    48 function: '{' particules '}' ABSETA .
 
     $default  reduce using rule 48 (function)
 
 
-state 223
+state 224
 
    49 function: '{' particules '}' PT .
 
     $default  reduce using rule 49 (function)
 
 
-state 224
+state 225
 
    50 function: '{' particules '}' PZ .
 
     $default  reduce using rule 50 (function)
 
 
-state 225
+state 226
 
    51 function: '{' particules '}' NBF .
 
     $default  reduce using rule 51 (function)
 
 
-state 226
+state 227
 
    42 function: '{' particules '}' 'm' .
 
     $default  reduce using rule 42 (function)
 
 
-state 227
+state 228
 
    43 function: '{' particules '}' 'q' .
 
     $default  reduce using rule 43 (function)
 
 
-state 228
+state 229
 
    44 function: '{' particules '}' 'P' .
 
     $default  reduce using rule 44 (function)
 
 
-state 229
+state 230
 
    45 function: '{' particules '}' 'E' .
 
     $default  reduce using rule 45 (function)
 
 
-state 230
+state 231
 
    68 list: '{' particules @1 ',' . particules '}'
 
@@ -3160,13 +3217,13 @@ state 230
     METLV  shift, and go to state 81
     ID     shift, and go to state 139
 
-    particules  go to state 237
+    particules  go to state 238
     particule   go to state 107
 
 
-state 231
+state 232
 
-   91 ifstatement: condition '?' action ':' . action
+   92 ifstatement: condition '?' action ':' . action
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -3179,7 +3236,7 @@ state 231
     METMWT  shift, and go to state 90
     MWT     shift, and go to state 91
     MET     shift, and go to state 92
-    ALL     shift, and go to state 202
+    ALL     shift, and go to state 203
     LEPSF   shift, and go to state 94
     NB      shift, and go to state 95
     ID      shift, and go to state 120
@@ -3193,16 +3250,16 @@ state 231
 
     function     go to state 104
     list         go to state 105
-    ifstatement  go to state 203
-    action       go to state 238
-    condition    go to state 205
+    ifstatement  go to state 204
+    action       go to state 239
+    condition    go to state 206
     e            go to state 124
 
 
-state 232
+state 233
 
-  107 e: e '-' . e
-  111  | '-' . e
+  108 e: e '-' . e
+  112  | '-' . e
 
     NELE    shift, and go to state 82
     NMUO    shift, and go to state 83
@@ -3229,35 +3286,17 @@ state 232
 
     function  go to state 104
     list      go to state 105
-    e         go to state 239
-
-
-state 233
-
-  101 condition: e IRG e e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-
-    '+'  shift, and go to state 145
-    '-'  shift, and go to state 146
-    '*'  shift, and go to state 147
-    '/'  shift, and go to state 148
-    '^'  shift, and go to state 149
-
-    $default  reduce using rule 101 (condition)
+    e         go to state 240
 
 
 state 234
 
-  102 condition: e ERG e e .
-  106 e: e . '+' e
-  107  | e . '-' e
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
+  102 condition: e IRG e e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
     '+'  shift, and go to state 145
     '-'  shift, and go to state 146
@@ -3270,19 +3309,37 @@ state 234
 
 state 235
 
-   89 description: description ID .
+  103 condition: e ERG e e .
+  107 e: e . '+' e
+  108  | e . '-' e
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
 
-    $default  reduce using rule 89 (description)
+    '+'  shift, and go to state 145
+    '-'  shift, and go to state 146
+    '*'  shift, and go to state 147
+    '/'  shift, and go to state 148
+    '^'  shift, and go to state 149
+
+    $default  reduce using rule 103 (condition)
 
 
 state 236
 
-   88 command: HISTO ID ',' description ',' . INT ',' INT ',' INT ',' ID
+   90 description: description ID .
 
-    INT  shift, and go to state 240
+    $default  reduce using rule 90 (description)
 
 
 state 237
+
+   89 command: HISTO ID ',' description ',' . INT ',' INT ',' INT ',' ID
+
+    INT  shift, and go to state 241
+
+
+state 238
 
    68 list: '{' particules @1 ',' particules . '}'
    69 particules: particules . particule
@@ -3297,98 +3354,100 @@ state 237
     NUMET  shift, and go to state 80
     METLV  shift, and go to state 81
     ID     shift, and go to state 139
-    '}'    shift, and go to state 241
+    '}'    shift, and go to state 242
 
     particule  go to state 144
 
 
-state 238
-
-   91 ifstatement: condition '?' action ':' action .
-
-    $default  reduce using rule 91 (ifstatement)
-
-
 state 239
 
-  106 e: e . '+' e
-  107  | e . '-' e
-  107  | e '-' e .
-  108  | e . '*' e
-  109  | e . '/' e
-  110  | e . '^' e
-  111  | '-' e .
+   92 ifstatement: condition '?' action ':' action .
 
-    '^'  shift, and go to state 149
-
-    $end      reduce using rule 111 (e)
-    CMD       reduce using rule 111 (e)
-    HISTO     reduce using rule 111 (e)
-    OR        reduce using rule 111 (e)
-    AND       reduce using rule 111 (e)
-    '+'       reduce using rule 107 (e)
-    '+'       [reduce using rule 111 (e)]
-    '-'       reduce using rule 107 (e)
-    '-'       [reduce using rule 111 (e)]
-    '*'       reduce using rule 111 (e)
-    '/'       reduce using rule 111 (e)
-    ':'       reduce using rule 111 (e)
-    '?'       reduce using rule 111 (e)
-    ')'       reduce using rule 111 (e)
-    $default  reduce using rule 107 (e)
+    $default  reduce using rule 92 (ifstatement)
 
 
 state 240
 
-   88 command: HISTO ID ',' description ',' INT . ',' INT ',' INT ',' ID
+  107 e: e . '+' e
+  108  | e . '-' e
+  108  | e '-' e .
+  109  | e . '*' e
+  110  | e . '/' e
+  111  | e . '^' e
+  112  | '-' e .
 
-    ','  shift, and go to state 242
+    '^'  shift, and go to state 149
+
+    $end      reduce using rule 112 (e)
+    CMD       reduce using rule 112 (e)
+    HISTO     reduce using rule 112 (e)
+    OBJ       reduce using rule 112 (e)
+    ALGO      reduce using rule 112 (e)
+    OR        reduce using rule 112 (e)
+    AND       reduce using rule 112 (e)
+    '+'       reduce using rule 108 (e)
+    '+'       [reduce using rule 112 (e)]
+    '-'       reduce using rule 108 (e)
+    '-'       [reduce using rule 112 (e)]
+    '*'       reduce using rule 112 (e)
+    '/'       reduce using rule 112 (e)
+    ':'       reduce using rule 112 (e)
+    '?'       reduce using rule 112 (e)
+    ')'       reduce using rule 112 (e)
+    $default  reduce using rule 108 (e)
 
 
 state 241
+
+   89 command: HISTO ID ',' description ',' INT . ',' INT ',' INT ',' ID
+
+    ','  shift, and go to state 243
+
+
+state 242
 
    68 list: '{' particules @1 ',' particules '}' .
 
     $default  reduce using rule 68 (list)
 
 
-state 242
-
-   88 command: HISTO ID ',' description ',' INT ',' . INT ',' INT ',' ID
-
-    INT  shift, and go to state 243
-
-
 state 243
 
-   88 command: HISTO ID ',' description ',' INT ',' INT . ',' INT ',' ID
+   89 command: HISTO ID ',' description ',' INT ',' . INT ',' INT ',' ID
 
-    ','  shift, and go to state 244
+    INT  shift, and go to state 244
 
 
 state 244
 
-   88 command: HISTO ID ',' description ',' INT ',' INT ',' . INT ',' ID
+   89 command: HISTO ID ',' description ',' INT ',' INT . ',' INT ',' ID
 
-    INT  shift, and go to state 245
+    ','  shift, and go to state 245
 
 
 state 245
 
-   88 command: HISTO ID ',' description ',' INT ',' INT ',' INT . ',' ID
+   89 command: HISTO ID ',' description ',' INT ',' INT ',' . INT ',' ID
 
-    ','  shift, and go to state 246
+    INT  shift, and go to state 246
 
 
 state 246
 
-   88 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' . ID
+   89 command: HISTO ID ',' description ',' INT ',' INT ',' INT . ',' ID
 
-    ID  shift, and go to state 247
+    ','  shift, and go to state 247
 
 
 state 247
 
-   88 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID .
+   89 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' . ID
 
-    $default  reduce using rule 88 (command)
+    ID  shift, and go to state 248
+
+
+state 248
+
+   89 command: HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID .
+
+    $default  reduce using rule 89 (command)
