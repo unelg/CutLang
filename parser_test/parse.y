@@ -153,7 +153,9 @@ objectBloc : OBJ ID ':' ID criteria
 criteria : criteria criterion
          | criterion
          ;
-criterion : CMD            
+criterion : CMD condition {cout<<"CRITERION!!!!!!!!!!!!\n";
+                                $2->display();}
+        ;           
 function : '{' particules '}' 'm' {     
                                         string s=$2;
                                         tmp="{ "+s+" }m";                        
@@ -415,9 +417,11 @@ particule : ELE '_' index {
                 }
 
                }
+               
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
+      | {$$=6213;}
       ; 
 commands : commands command 
         | 
@@ -574,7 +578,7 @@ e : e '+' e  {
                 $$=new ValueNode($1);
                 } 
    | function {$$=$1; pnum=0;}
-   //to make the difference between ID + ID and ID ID in particules ->create two maps
+   
    | ID { //we want the original defintions as well
                 map<string, Node *>::iterator it ;
                 it = NodeVars->find($1);
