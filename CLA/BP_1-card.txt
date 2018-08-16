@@ -24,6 +24,7 @@ def     Meff1j : MET +  { JET_0 }Pt
 
 ######## OBJECT SELECTION 
 obj JETclean : JET  
+cmd  {JET_0 }Pt > 1
 cmd {JET_ , ELE_ }dR >= 0.2
 
 algo

@@ -15,7 +15,7 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<int,Node*>* ObjectCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 extern FILE* yyin;
 /*
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
@@ -113,12 +113,12 @@ int BPdbxA:: readAnalysisParams() {
 
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &PtEtaInitializations, &btagValues);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
        if (retval){
          cout << "\nSYNTAX error check the input file\n";
          exit (99); 
        }
-       cout << "\nWe have "<<NodeCuts.size() << " CutLang Cuts\n";
+       cout << "\nWe have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
 
    minpte  = PtEtaInitializations[0];
    minptm  = PtEtaInitializations[1];
