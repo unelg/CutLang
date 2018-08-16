@@ -23,11 +23,11 @@ def     Meff : MET + HT
 def     Meff1j : MET +  { JET_0 }Pt
 
 ######## OBJECT SELECTION 
-#obj JETclean : JET  
-#cmd {JET_ ,ELE_ }dR >= 0.2
+obj JETclean : JET  
+cmd {JET_ ,ELE_ }dR >= 0.2
 
 
-###### EVENT SELECTION
+algo
 cmd     ALL            # to count all events
 cmd     nJET == 6      # events with 6 or more jets
 cmd     MET < 100      # fully hadronic events should have small MET

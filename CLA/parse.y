@@ -64,7 +64,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 %type <node> e function condition action ifstatement
 %type <s> particule particules list description
 %%
-input : initializations definitions commands 
+input : initializations definitions objects commands 
      ;
 initializations : initializations initialization 
         | 
@@ -453,9 +453,6 @@ index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
       |     {$$= 6213;}
       ; 
-commands : commands command 
-        | 
-        ;
 objects : objectBlocs ALGO
         |
         ;
@@ -480,7 +477,9 @@ criteria : criteria criterion
 criterion : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
-
+commands : commands command 
+        | 
+        ;
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
