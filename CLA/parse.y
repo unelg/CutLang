@@ -10,7 +10,7 @@
 #include <iterator>
 extern int yylex();
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
-                map<int,Node*>* NodeCuts,
+                map<int,Node*>* NodeCuts, map<int,Node*>* ObjectCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
                 ,const char *s) { std::cout << s << std::endl; } 
 int cutcount;
@@ -37,6 +37,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 %parse-param {map<string,Node*>* NodeVars} 
 %parse-param {map<string,vector<myParticle*> >* ListParts} 
 %parse-param {map<int,Node*>* NodeCuts}
+%parse-param {map<int,Node*>* ObjectCuts}
 %parse-param {vector<double>* Initializations}
 %parse-param {vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO
@@ -99,7 +100,7 @@ definition : DEF  ID  ':' particules {
                         
                                         if(it != ListParts->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         
@@ -126,7 +127,7 @@ definition : DEF  ID  ':' particules {
                         
                                         if(it != NodeVars->end()) {
                                                 cout <<name<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable already defined");
+                                                yyerror(NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                                 
                                         }
@@ -437,7 +438,7 @@ particule : ELE '_' index {
      
                 if(it == ListParts->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Particule not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule not defined");
                         YYERROR;//stops parsing if particle not found
                         
                 }
@@ -479,7 +480,7 @@ criteria : criteria criterion
          ;
 
 criterion : CMD condition { //find a way to print commands                                     
-                                         NodeCuts->insert(make_pair(++cutcount,$2));
+                                         ObjectCuts->insert(make_pair(++cutcount,$2));
 				}
 
 command : CMD condition { //find a way to print commands                                     
@@ -500,7 +501,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 cout <<$12<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                                 
                                         }
@@ -630,7 +631,7 @@ e : e '+' e  {
      
                 if(it == NodeVars->end()) {
                         cout <<$1<<" : " ;
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
                         
                 }
