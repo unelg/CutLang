@@ -455,6 +455,7 @@ index : '-' INT {$$=-$2;}
       ; 
 objects : objectBlocs ALGO
         |
+        | ALGO
         ;
 objectBlocs : objectBlocs objectBloc
             | objectBloc
