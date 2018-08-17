@@ -10,7 +10,7 @@
 #include <iterator>
 extern int yylex();
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
-                map<int,Node*>* NodeCuts, map<int,Node*>* ObjectCuts,
+                map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
                 ,const char *s) { std::cout << s << std::endl; } 
 int cutcount;
@@ -20,8 +20,9 @@ int pnum;
 int dnum;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
+vector<Node*> TmpCriteria;
 std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
-//modify types to ints in myParticle => codes?
+//modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
 //avoid global variables
@@ -37,7 +38,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 %parse-param {map<string,Node*>* NodeVars} 
 %parse-param {map<string,vector<myParticle*> >* ListParts} 
 %parse-param {map<int,Node*>* NodeCuts}
-%parse-param {map<int,Node*>* ObjectCuts}
+%parse-param {map<string,Node*>* ObjectCuts}
 %parse-param {vector<double>* Initializations}
 %parse-param {vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO
@@ -461,7 +462,13 @@ objects : objectBlocs ALGO
 objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
-objectBloc : OBJ ID ':' ID criteria
+objectBloc : OBJ ID ':' ID criteria {
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        //find previous object from ObjectCuts
+                                        Node* obj=new ObjectNode();
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                        }
            | OBJ ID ':' ELE criteria
            | OBJ ID ':' MUO criteria
            | OBJ ID ':' LEP criteria
@@ -475,9 +482,8 @@ objectBloc : OBJ ID ':' ID criteria
 criteria : criteria criterion
          | criterion
          ;
-
-criterion : CMD condition { //find a way to print commands                                     
-                                         ObjectCuts->insert(make_pair(++cutcount,$2));
+criterion : CMD condition { //find a way to print commands                                                                            
+                                         TmpCriteria.push_back($2);
 				}
 commands : commands command 
         | 
