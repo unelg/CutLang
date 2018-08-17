@@ -36,8 +36,10 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 }
 double ObjectNode::evaluate(AnalysisObjects* ao){
+    //test if the AO thing not null=> then avoid function call
     if(left!=NULL) left->evaluate(ao);//modify ao accordingly
     (*createNewSet)(ao,&criteria,&particles);//modify analysis object based on criteria here
+    //Save AO somewhere to return in next time
     return 1;
 }
 
