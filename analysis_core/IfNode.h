@@ -27,6 +27,9 @@ public:
     virtual void getParticles(std::vector<myParticle *>* particles) override{
     }
 
+    virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{
+
+    }
     virtual void Reset() override{
     }
     

@@ -14,20 +14,27 @@
 using namespace std;
 //takes care of user defined objects
 class ObjectNode : public Node{
-private:
-    //not sure if we need to use it---------ObjectNode* previous;
-    //vector<dbxParticle> newParticles;
-    vector<Node*> criteria;
-    
-public:
-    ObjectNode(ObjectNode* previous,vector<Node*> criteria,  std::string s );
-    
-    virtual void Reset() override;
-    
-    virtual void getParticles(std::vector<myParticle *>* particles) override;
-    
-    virtual double evaluate(AnalysisObjects* ao) override;
-    
-    virtual ~ObjectNode();
+    private:
+        //not sure if we need to use it---------ObjectNode* previous;
+        vector<Node*> criteria;
+        string name;
+        std::vector<myParticle *> particles;//used to collect particle pointers to be changed
+    protected:
+        void (* createNewSet) (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
+    public:
+        ObjectNode(string id,Node* previous, 
+        void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
+        std::vector<myParticle *>* particles ), vector<Node*> criteria,  
+        std::string s );
+        
+        virtual void Reset() override;
+        
+        virtual void getParticles(std::vector<myParticle *>* particles) override;
+        virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
+        virtual double evaluate(AnalysisObjects* ao) override;
+        
+        virtual ~ObjectNode();
 };
+
+void createNewJet (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
 #endif /* ObjectNode_hpp */

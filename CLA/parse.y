@@ -466,14 +466,40 @@ objectBloc : OBJ ID ':' ID criteria {
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         //find previous object from ObjectCuts
-                                        Node* obj=new ObjectNode();
-                                        ObjectCuts->insert(make_pair($2,obj));
+
+                                        map<string, Node *>::iterator it ;
+                                        it = ObjectCuts->find($4);
+                        
+                                        if(it == ObjectCuts->end()) {
+                                                cout <<$4<<" : " ;
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                YYERROR;
+                                                
+                                        }
+                                        else {
+                                                Node* previous=it->second;
+                                                Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
+                                                ObjectCuts->insert(make_pair($2,obj));
+                                        }
+
+                                        
                                         }
            | OBJ ID ':' ELE criteria
            | OBJ ID ':' MUO criteria
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria
-           | OBJ ID ':' JET criteria
+           | OBJ ID ':' JET criteria {
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        
+                                        Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+
+                                        }
+
+                                        
+                                        
            | OBJ ID ':' BJET criteria
            | OBJ ID ':' QGJET criteria
            | OBJ ID ':' NUMET criteria
