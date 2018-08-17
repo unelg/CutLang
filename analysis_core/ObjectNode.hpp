@@ -17,11 +17,12 @@ class ObjectNode : public Node{
     private:
         //not sure if we need to use it---------ObjectNode* previous;
         vector<Node*> criteria;
-        string name;
+        
         std::vector<myParticle *> particles;//used to collect particle pointers to be changed
     protected:
         void (* createNewSet) (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
     public:
+        string name;
         ObjectNode(string id,Node* previous, 
         void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
         std::vector<myParticle *>* particles ), vector<Node*> criteria,  
