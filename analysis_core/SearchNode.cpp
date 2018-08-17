@@ -168,6 +168,9 @@ using namespace std;
 
     void SearchNode::getParticles(std::vector<myParticle *>* particles) {
     }
+    void SearchNode::getParticlesAt(std::vector<myParticle *>* particles, int index) {
+        
+    }
 
     SearchNode::~SearchNode() {
 //        if (left!=NULL) delete left;

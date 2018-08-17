@@ -40,6 +40,7 @@ public:
 
     virtual void Reset()=0;
     virtual void getParticles(std::vector<myParticle *>* particles)=0;
+    virtual void getParticlesAt(std::vector<myParticle *>* particles,int index)=0;
     void display();
     virtual TString getStr();
     virtual double evaluate(AnalysisObjects* ao)=0;

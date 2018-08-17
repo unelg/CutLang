@@ -63,11 +63,6 @@
                 inputParticles.at(order)->index=newIndex;
         }
 
-     int FuncNode::getParticleIndex(int order){
-            return inputParticles.at(order)->index;
-    }
-
-
     FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
         f=func;
         symbol=s;
@@ -104,6 +99,10 @@
             }
 
             }    
+    }
+
+    void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
+        particles->push_back(inputParticles[index]);
     }
 
      double FuncNode::evaluate(AnalysisObjects* ao) {

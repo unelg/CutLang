@@ -35,12 +35,12 @@ private:
 public:
 
     SearchNode(double (*func)(double, double), Node* l, Node* r, std::string s);
-
+    
     virtual double evaluate(AnalysisObjects* ao) override;
     virtual void Reset() override;
 
     virtual void getParticles(std::vector<myParticle *>* particles) override;
-
+    virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
     virtual ~SearchNode() ;
 
 };
