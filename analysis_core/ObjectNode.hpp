@@ -17,7 +17,7 @@ class ObjectNode : public Node{
     private:
         //not sure if we need to use it---------ObjectNode* previous;
         vector<Node*> criteria;
-        
+        //still need to add something to save the modifed AO
         std::vector<myParticle *> particles;//used to collect particle pointers to be changed
     protected:
         void (* createNewSet) (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
