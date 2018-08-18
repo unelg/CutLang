@@ -139,7 +139,7 @@ int BPdbxA:: readAnalysisParams() {
     while(iter != NodeCuts.end())
     {
             DEBUG(" CUT "<<iter->first<<" ");
-            iter->second->display();
+  //          iter->second->display();
             DEBUG("--->"<<iter->second->getStr()<<"\n");
 
            TString newLabels=iter->second->getStr();

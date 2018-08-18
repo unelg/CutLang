@@ -1,16 +1,25 @@
 #include "FuncNode.h"
 
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
 
-     void FuncNode::ResetParticles(){
+void FuncNode::ResetParticles(){
             for(int i=0;i<originalParticles.size();i++){
             DEBUG("Recall orig i:"<<originalParticles[i].index);
                     *(inputParticles[i])=originalParticles[i];
             }
-        }
+}
     
-    void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
+void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
         
+        for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
+         DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<   "\n");
+        }
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
                 switch (atype) { 
@@ -57,18 +66,18 @@
                                 } // end of case
         }// end of for
   
-    }
+}
 
-     void FuncNode::setParticleIndex(int order, int newIndex){
+void FuncNode::setParticleIndex(int order, int newIndex){
                 inputParticles.at(order)->index=newIndex;
-        }
+}
 
-     int FuncNode::getParticleIndex(int order){
+int FuncNode::getParticleIndex(int order){
             return inputParticles.at(order)->index;
-    }
+}
 
 
-    FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
+FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
         f=func;
         symbol=s;
         inputParticles=input;
@@ -81,11 +90,11 @@
       }
         left=NULL;
         right=NULL;
-    }
+}
     
-     void FuncNode::Reset() {
+void FuncNode::Reset() {
         this->ResetParticles();
-    }
+}
 
      void FuncNode::getParticles(std::vector<myParticle *>* particles) {
         int size=particles->size();
@@ -106,9 +115,10 @@
             }    
     }
 
-     double FuncNode::evaluate(AnalysisObjects* ao) {
-    partConstruct(ao, &inputParticles,&myPart);
-    return (*f)(&myPart );
+    double FuncNode::evaluate(AnalysisObjects* ao) {
+     partConstruct(ao, &inputParticles,&myPart);
+     DEBUG(" constructed \t");
+     return (*f)(&myPart );
     }
 
      FuncNode::~FuncNode() {}

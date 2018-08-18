@@ -8,13 +8,7 @@
 #include "myParticle.h"
 #include "Node.h"
 
-//#define _CLV_
 
-#ifdef _CLV_
-#define DEBUG(a) std::cout<<a
-#else
-#define DEBUG(a)
-#endif
 using namespace std;
 
 //takes care of Minimizing/Maximizing
@@ -28,8 +22,7 @@ private:
     void performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao);
 
     void runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao) ;
-
-    void runNestedLoopRec( int start, int N, int level, int maxDepth, vector<int> v,vector<int> indices,double *curr_diff,AnalysisObjects* ao) ;
+    void runNestedLoopRec ( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao) ;
 
 
 public:
