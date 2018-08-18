@@ -11,11 +11,16 @@ TRGm = 1 # muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger
 ###### USER DEFINITIONS
 def     WH1  : JET_-1 JET_-1   # W boson of the first top
 def     WH2  : JET_-11 JET_-11   # W boson of the second top
-def     mTopH1 : { WH1 JET_-2 }m   # first top quark's mass
-def     mTopH2 : { WH2 JET_-4 }m   # second top quark's mass
-def     WHbR1 : {WH1 , JET_-2 }dR   # angular distance between W1 and b jet
-def     WHbR2 : {WH2 , JET_-4 }dR   # angular distance between W2 and b jet
-def     Wchi2 : (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2  #chi2 for W finder
+def     WH3  : JET_-6 JET_-6   # W boson of the second top
+def     ajet : JET_-2
+def     bjet : JET_-4
+def     mTopH1 : { WH1 ajet }m   # first top quark's mass
+def     mTopH2 : { WH2 bjet }m   # second top quark's mass
+def     WHbR1 : {WH1 , ajet }dR   # angular distance between W1 and b jet
+def     WHbR2 : {WH2 , bjet }dR   # angular distance between W2 and b jet
+def     Wchi3 : (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 + (( {WH3 }m - 80.4) / 2.1) ^ 2 #chi2 for W finder
+def     Wchi2 : (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 #chi2 for W finder
+def     jchi2 : (( {WH3 }m - 72) / 4.2 ) ^ 2  #junk chi2 
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 
 
@@ -23,9 +28,26 @@ def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 cmd      ALL            # to count all events
 cmd      nJET >= 6      # events with 6 or more jets
 cmd      MET < 100      # fully hadronic events should have small MET
-cmd     (( { WH1 JET_-2 }m - { WH2 JET_-4 }m ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
+#cmd      { JET_0 }Pt > 120 
+#cmd      { JET_1 }Pt > 100 
+#cmd      { JET_2 }Pt > 90 
+#cmd      { JET_3 }Pt > 80 
+#cmd      { JET_4 }Pt > 70 
+#cmd      { JET_0 JET_1 }m > 190 
+#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+#cmd      (( { JET_1 JET_0 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+#cmd      (( { JET_1 JET_0 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_2 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_5 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
+
+#cmd     (( { WH1 ajet }m - { WH2 bjet }m ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
 #cmd     (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
-#cmd     topchi2 + Wchi2 ~= 0
-cmd      WHbR1 > 0.1 
-cmd      WHbR2 > 0.1 
+#cmd       Wchi2 + topchi2 ~= 0
+cmd       topchi2 + Wchi2  ~= 0
+
+cmd      { WH1 }m [] 50 120  
+cmd      { WH2 }m [] 50 120 
+cmd      { WH1 , ajet }dR > 0.35 
+cmd      { WH2 , bjet }dR > 0.35 
 

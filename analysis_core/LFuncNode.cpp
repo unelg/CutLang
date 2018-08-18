@@ -1,6 +1,10 @@
 #include "LFuncNode.h"
 
-
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
 
     void LFuncNode::ResetParticles() {
           for(int i=0;i<originalParticles.size();i++){

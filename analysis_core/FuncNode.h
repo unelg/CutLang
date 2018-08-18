@@ -13,14 +13,6 @@
 #include "Node.h"
 
 using namespace std;
-//#define _CLV_
-
-#ifdef _CLV_
-#define DEBUG(a) std::cout<<a
-#else
-#define DEBUG(a)
-#endif
-using namespace std;
 //takes care of functions with arguments
 class FuncNode : public Node{
 private:
@@ -56,22 +48,16 @@ public:
 
 
 double Qof( dbxParticle* apart);
-
 double Mof( dbxParticle* apart);
-
 double Eof( dbxParticle* apart);
-
 double Pof( dbxParticle* apart);
-
 double Pzof( dbxParticle* apart);
 double Ptof( dbxParticle* apart);
-
 double AbsEtaof( dbxParticle* apart);
-
 double Etaof( dbxParticle* apart);
-
 double Phiof( dbxParticle* apart);
 
 double nbfof( dbxParticle* apart);
+
 //other functions to be added
 #endif /* FuncNode_h */
