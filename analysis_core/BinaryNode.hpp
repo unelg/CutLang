@@ -25,9 +25,14 @@ public:
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-        //might need switching right and left 
-        right->getParticles(particles);
         left->getParticles(particles);
+        right->getParticles(particles);
+        
+    }
+
+    virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{
+        left->getParticlesAt(particles,index);
+        right->getParticlesAt(particles,index);
     }
     virtual void Reset() override{
         left->Reset();

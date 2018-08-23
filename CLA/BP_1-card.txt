@@ -23,8 +23,14 @@ def     Wchi2 : (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 #c
 def     jchi2 : (( {WH3 }m - 72) / 4.2 ) ^ 2  #junk chi2 
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 
+obj    JETclean : JET 
+cmd    {JET_ , ELE_ }dR >= 0.2
+
+obj    JETsr : JETclean 
+cmd    {JETclean_ }Pt > 30
 
 ###### EVENT SELECTION
+algo    
 cmd      ALL            # to count all events
 cmd      nJET >= 6      # events with 6 or more jets
 cmd      MET < 100      # fully hadronic events should have small MET
@@ -34,12 +40,6 @@ cmd      MET < 100      # fully hadronic events should have small MET
 #cmd      { JET_3 }Pt > 80 
 #cmd      { JET_4 }Pt > 70 
 #cmd      { JET_0 JET_1 }m > 190 
-#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
-#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
-#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
-#cmd      (( { JET_0 JET_1 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
-#cmd      (( { JET_1 JET_0 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_0 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_3 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
-#cmd      (( { JET_1 JET_0 JET_2 }m - { JET_3 JET_4 JET_5 }m ) / 4.2 ) ^ 2 + (({ JET_2 JET_1 }m - 80.4 ) / 2.1 )^ 2 + (({ JET_5 JET_4 }m - 80.4 ) / 2.1 ) ^ 2 < 11390 
 
 #cmd     (( { WH1 ajet }m - { WH2 bjet }m ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
 #cmd     (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0

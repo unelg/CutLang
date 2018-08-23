@@ -27,6 +27,7 @@ protected:
 public:
     LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s );
     virtual void getParticles(std::vector<myParticle *>* particles) override;
+    virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
     virtual double evaluate(AnalysisObjects* ao)  override;
     virtual ~LFuncNode() ;
 };

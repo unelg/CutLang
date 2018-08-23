@@ -15,7 +15,8 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<int,Node*>* ObjectCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
+
 extern FILE* yyin;
 /*
 void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){

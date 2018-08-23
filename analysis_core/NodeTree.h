@@ -20,6 +20,7 @@
 #include "HistoNode.h"
 #include "SearchNode.h"
 #include "IfNode.h"
+#include "ObjectNode.hpp"
 //Delete Nodes
 //Print Nodes As Defined by User
 #endif /* NodeTree_h */
