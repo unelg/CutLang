@@ -72,12 +72,12 @@ void FuncNode::setParticleIndex(int order, int newIndex){
                 inputParticles.at(order)->index=newIndex;
 }
 
-int FuncNode::getParticleIndex(int order){
-            return inputParticles.at(order)->index;
-}
+//int FuncNode::getParticleIndex(int order){
+//            return inputParticles.at(order)->index;
+//}
 
 
-FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
+    FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
         f=func;
         symbol=s;
         inputParticles=input;
@@ -96,7 +96,7 @@ void FuncNode::Reset() {
         this->ResetParticles();
 }
 
-     void FuncNode::getParticles(std::vector<myParticle *>* particles) {
+void FuncNode::getParticles(std::vector<myParticle *>* particles) {
         int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
             
@@ -113,15 +113,19 @@ void FuncNode::Reset() {
             }
 
             }    
-    }
+}
 
-    double FuncNode::evaluate(AnalysisObjects* ao) {
+void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
+        particles->push_back(inputParticles[index]);
+}
+
+double FuncNode::evaluate(AnalysisObjects* ao) {
      partConstruct(ao, &inputParticles,&myPart);
      DEBUG(" constructed \t");
      return (*f)(&myPart );
-    }
+}
 
-     FuncNode::~FuncNode() {}
+FuncNode::~FuncNode() {}
 
 
 

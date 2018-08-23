@@ -25,6 +25,10 @@ public:
          left->getParticles(particles);
     }
 
+    virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{
+        left->getParticlesAt(particles,index);
+    }
+
     virtual void Reset() override{
         left->Reset();
     }

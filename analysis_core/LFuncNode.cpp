@@ -50,6 +50,11 @@
             particles->push_back(inputParticles2[i]);
             } 
     }
+
+    void LFuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
+        particles->push_back(inputParticles[index]);
+        particles->push_back(inputParticles2[index]);
+    }
     
     double LFuncNode::evaluate(AnalysisObjects* ao)  {
         partConstruct(ao, &inputParticles,&myPart);

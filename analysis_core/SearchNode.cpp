@@ -65,13 +65,18 @@ using namespace std;
                for (ip[4]=ip4_min; ip[4]<ip_N[4]; ip[4]++) {
                 if (ip_N[5]>1){
                  if (ip_N[4]>0 && (ip[4]==ip[0] || ip[4]==ip[1] || ip[4]==ip[2] || ip[4]==ip[3])) continue;
+                 if ( ( oi[3] == oi[4]) &&(ip[3]>ip[4]) )  continue;
                 }
                for (ip[5]=ip5_min; ip[5]<ip_N[5]; ip[5]++) {
                  if (ip_N[5]>1){
                   if (ip_N[5]>0 &&(ip[5]==ip[0] || ip[5]==ip[1] || ip[5]==ip[2] || ip[5]==ip[3] || ip[5]==ip[4])) continue;
                   if ( ( oi[4] == oi[5]) &&(ip[4]>ip[5]) )  continue;
                  }
+
+                if ( (oi[3]== (-10+oi[0]) ) && (ip[0]>ip[3]) ) continue;
+          
  //                DEBUG(ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\n");
+                 //std::cout<<ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\t";
                  for (int i=0; i<maxDepth; i++) v->push_back(ip[i]);
 
                   for(int i=0;i<v->size();i++){
@@ -82,6 +87,7 @@ using namespace std;
 //-------~1min in 25k events
                  double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
                  double diff=right->evaluate(ao)-tmpval;
+                 //cout << tmpval<<"\n";
                  if ( (*f)(diff,*curr_diff) ) {
                        DEBUG("diff:"<<diff<<" c_diff:"<<*curr_diff<<"\n");
                        *curr_diff = fabs(diff);
@@ -175,6 +181,9 @@ using namespace std;
     }
 
     void SearchNode::getParticles(std::vector<myParticle *>* particles) {
+    }
+    void SearchNode::getParticlesAt(std::vector<myParticle *>* particles, int index) {
+        
     }
 
     SearchNode::~SearchNode() {
