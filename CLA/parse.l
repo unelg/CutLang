@@ -3,7 +3,11 @@
 class Node;
 #include "stdlib.h"
 #include <string>
+#include <map>
+#include <list>
+#include <vector>
 #include <iostream>
+#include "myParticle.h"
 #include "b.hpp"
 %}
 integer [0-9]+
