@@ -433,23 +433,29 @@ particule : ELE '_' index {
                                 
                         }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-                
+                //ngu
+
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
                 if(it == ListParts->end()) {
-                        cout <<$1<<" : " ;
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule not defined");
-                        YYERROR;//stops parsing if particle not found
-                        
+
+                       map<string,Node*>::iterator ito;
+                       ito=ObjectCuts->find($1);
+                       cout <<$1<<" : ";
+
+                       if(ito != ObjectCuts->end()) {
+                        cout <<" "<<$1<<" is a user object\n ";
+                       }
+                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                       YYERROR;//stops parsing if particle not found 
                 }
                 else {
                         vector<myParticle*> newList= it->second;
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
-
-               }
+             }
         ;
 index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
@@ -463,6 +469,7 @@ objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
 objectBloc : OBJ ID ':' ID criteria {
+                                       cout<< " 2:"<<$2<<"  4:"<<$4<<"++++++++++++++++++++\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         //find previous object from ObjectCuts
@@ -474,31 +481,26 @@ objectBloc : OBJ ID ':' ID criteria {
                                                 cout <<$4<<" : " ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
-                                                
                                         }
                                         else {
                                                 Node* previous=it->second;
                                                 Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
-
-                                        
-                                        }
+                                    }
            | OBJ ID ':' ELE criteria
            | OBJ ID ':' MUO criteria
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria
            | OBJ ID ':' JET criteria {
+                                       cout<< " 2:"<<$2<<"-------------------\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         
                                         Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
-
-                                        }
-
-                                        
+                                      }
                                         
            | OBJ ID ':' BJET criteria
            | OBJ ID ':' QGJET criteria
