@@ -34,13 +34,13 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
 	double real;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
-%parse-param {list<string> *parts} 
-%parse-param {map<string,Node*>* NodeVars} 
-%parse-param {map<string,vector<myParticle*> >* ListParts} 
-%parse-param {map<int,Node*>* NodeCuts}
-%parse-param {map<string,Node*>* ObjectCuts}
-%parse-param {vector<double>* Initializations}
-%parse-param {vector<double>* DataFormats}
+%parse-param {std::list<std::string> *parts}
+%parse-param {std::map<std::string,Node*>* NodeVars}
+%parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
+%parse-param {std::map<int,Node*>* NodeCuts}
+%parse-param {std::map<std::string,Node*>* ObjectCuts}
+%parse-param {std::vector<double>* Initializations}
+%parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
