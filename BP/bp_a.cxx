@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __VERBOSE3__
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -18,49 +18,8 @@
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
 
 extern FILE* yyin;
-/*
-void find_idxtype_tobeused( dbxCut *acut, vector <int> *found_idx_vecs, vector <int> *found_type_vecs, vector <int> *found_idx_origs,  vector <int> *ret_i, vector <int> *ret_t ){
+extern int cutcount;
 
-#ifdef _CLV_
-     DEBUG( "--previous finder:  ");
-     DEBUG( acut->getName()<<" Found idx: "); for (int qq=0; qq<found_idx_vecs->size(); qq++) DEBUG(found_idx_vecs->at(qq)<<" "); DEBUG("\t");
-     DEBUG("found type<>origs:"); for (int qq=0; qq<found_type_vecs->size(); qq++) DEBUG(found_type_vecs->at(qq)<<"<>"<< found_idx_origs->at(qq)<<" "); DEBUG("\n");
-     DEBUG(" searchable types in this cut: "); 
-     for (int qq=0; qq<acut->getSearchableType(); qq++) DEBUG( acut->getSearchableType(qq)<<" "); DEBUG("  ");
-     DEBUG("ALL idxs in this cut: "); for (int qq=0; qq<acut->getParticleIndex(); qq++) DEBUG(acut->getParticleIndex(qq)<<" "); DEBUG("\t");
-#endif
-
-     if (found_idx_vecs->size() == 0) {cerr << "Found idx vector empty!!\n"; exit (23);}
-     vector <int> alreadyused; // store already used found idx
-     vector<int>::iterator it;
-     vector<int> local_part_idxs;
-
-     for (int ipd=0; ipd< acut->getParticleIndex(); ipd++)  // this cut needs // loop over indices remove 999
-          if ( acut->getParticleIndex(ipd) < 0) local_part_idxs.push_back(acut->getParticleIndex(ipd));
-              
-     for (int ipd=0; ipd< acut->getSearchableType(); ipd++)  // this cut needs // loop over indices MUST
-        for (unsigned int itk=0; itk<found_idx_vecs->size(); itk++){ // read from found list.
-//             DEBUG (local_part_idxs[ipd]<<" -vs- "<< found_idx_vecs->at(itk) << "\n");
-             if ( found_type_vecs->at(itk) == acut->getSearchableType(ipd)  // types match
-               && ( local_part_idxs[ipd]  < 0 )                             // searchable type.
-               && found_idx_origs->at(itk) == local_part_idxs[ipd]          // idx match 
-               ) {
-               DEBUG(" useI:"<<found_idx_vecs->at(itk)<<"\n");
-               it=find(alreadyused.begin(), alreadyused.end(), itk);
-               if ( it == alreadyused.end() ) { // not previously used
-                  ret_i->push_back(found_idx_vecs->at(itk));
-                  ret_t->push_back(found_type_vecs->at(itk));
-                  alreadyused.push_back(itk);
-               }
-             }
-     }// loop over all previously found idx
-     for (int ipd=0; ipd< ret_i->size(); ipd++){
-      DEBUG(" ridx:"<<ret_i->at(ipd)<< "  rtyp:"<<ret_t->at(ipd)<<"\n");
-     }
-     DEBUG(": previous finder--\n");
-     return ;
-}   
-*/
 
 int BPdbxA::plotVariables(int sel) {
  return 0;  
@@ -114,6 +73,7 @@ int BPdbxA:: readAnalysisParams() {
 
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
+       cutcount=0;
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
        if (retval){
          cout << "\nSYNTAX error check the input file\n";
@@ -267,7 +227,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
   vector<dbxJet>       goodJets;
   vector<dbxPhoton>    goodPhotons;
 
-  DEBUG("--------------------------------------------------------------------\n");
+  DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
 //----------------------selection of good gams-----------------
         for (UInt_t i=0; i<photons.size(); i++) {
                TLorentzVector gam4p = photons.at(i).lv();
@@ -374,6 +334,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
             }//end of object definition loop
          }// any obj def?
 */
+/*
 #ifdef _CLV_
          for( map<string, vector<dbxJet> >::iterator apart=jet_sets.begin(); apart!=jet_sets.end(); ++apart) 
           cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
@@ -384,7 +345,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
          for( map<string, vector<dbxPhoton> >::iterator apart=pho_sets.begin(); apart!=pho_sets.end(); ++apart) 
           cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
 #endif
-
+*/
     unsigned int btagSF_counter=0;
     unsigned int FillHistos_counter=0;
              int ahistid;
@@ -408,7 +369,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
     unsigned int ternaryCount=0;
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
-    DEBUG("Start resetting cuts\n");
+    DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
 //----------------------reset 
 
     while(iter != NodeCuts.end())
