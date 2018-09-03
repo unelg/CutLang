@@ -44,10 +44,10 @@ cmd      MET < 100      # fully hadronic events should have small MET
 #cmd     (( { WH1 ajet }m - { WH2 bjet }m ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
 #cmd     (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2 + (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 ~= 0
 #cmd       Wchi2 + topchi2 ~= 0
-cmd       topchi2 + Wchi2  ~= 0
+#cmd       topchi2 + Wchi2  ~= 0
 
-cmd      { WH1 }m [] 50 120  
-cmd      { WH2 }m [] 50 120 
-cmd      { WH1 , ajet }dR > 0.35 
-cmd      { WH2 , bjet }dR > 0.35 
+#cmd      { WH1 }m [] 50 120  
+#cmd      { WH2 }m [] 50 120 
+#cmd      { WH1 , ajet }dR > 0.35 
+#cmd      { WH2 , bjet }dR > 0.35 
 

@@ -9,8 +9,6 @@
 #include "Node.h"
 #include <list>
 
-
-
 class BPdbxA : public dbxA {
   public: 
       BPdbxA(char *aname) : dbxA ( aname)
