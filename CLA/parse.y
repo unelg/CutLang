@@ -461,8 +461,8 @@ index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
       |     {$$= 6213;}
       ; 
-objects : objectBlocs ALGO
-        |
+objects : objectBlocs ALGO ID { cout << "AlgoID: " << $3; }
+        | ALGO ID { cout << "AlgoID: " << $2; }
         | ALGO
         ;
 objectBlocs : objectBlocs objectBloc
@@ -564,7 +564,8 @@ description : description HID {
                                                 strcat(s,$1);
                                                 strcpy($$,s);
                                         }
-                                        dnum++;}
+                                        //dnum++;
+                                        }
         ;
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
