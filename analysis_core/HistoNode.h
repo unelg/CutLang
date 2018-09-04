@@ -22,7 +22,7 @@ private:
     int bins;
     TH1D *ahisto;
 public:
-    HistoNode( std::string id,std::string desc,int l1,int l2,int n,Node* l){
+    HistoNode( std::string id,std::string desc,int n, int l1,int l2,Node* l){
         this->id=id;
         Desciption=desc;
         lowerLimit=l1;
