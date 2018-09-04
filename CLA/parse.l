@@ -1,4 +1,5 @@
 %option noyywrap
+%option yylineno
 %{
 class Node;
 #include "stdlib.h"

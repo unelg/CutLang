@@ -1,3 +1,4 @@
+%error-verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -9,10 +10,11 @@
 #include <vector>
 #include <iterator>
 extern int yylex();
+extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
-                ,const char *s) { std::cout << s << std::endl; } 
+                ,const char *s) { std::cerr << s << std::endl << "line: " << yylineno <<  std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
