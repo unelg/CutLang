@@ -248,22 +248,23 @@ function : '{' particules '}' 'm' {
                                         string s="NLEP";
                                         if(Initializations->at(10)>0){
                                                 $$=new SFuncNode(nmuos,s);
-                                                                        }
+                                        }
                                         else{
                                                 $$=new SFuncNode(neles,s);
                                         }
-                                                                                                      
-                                        
                                 }                        
         | NPHO {    
-                                        
                                         string s="NPHO";                                                              
                                         $$=new SFuncNode(nphos,s);
                                 }
         | NJET {    
-                                        
                                         string s="NJET";                                                              
                                         $$=new SFuncNode(njets,s);
+                                }
+        | NJET '(' ID  ')' {    
+                                       cout <<"\n NET will use: " << $3<<"\n"; 
+                                       string s="NJET";                                                              
+                                       $$=new SFuncNode(njets,s);
                                 }
         | NBJET {    
                                         
@@ -461,9 +462,9 @@ index : '-' INT {$$=-$2;}
       | INT {$$= $1;}
       |     {$$= 6213;}
       ; 
-objects : objectBlocs ALGO
-        |
+objects : objectBlocs ALGO ID
         | ALGO
+        | ALGO ID { cout << "Alg:\n"; }
         ;
 objectBlocs : objectBlocs objectBloc
             | objectBloc
@@ -488,20 +489,25 @@ objectBloc : OBJ ID ':' ID criteria {
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
                                     }
-           | OBJ ID ':' ELE criteria
+           | OBJ ID ':' ELE criteria {
+                                        cout<< " 2:"<<$2<<" is a new EleSet\n";
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Ele",NULL,createNewJet,newList,"obj Ele" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
            | OBJ ID ':' MUO criteria
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria
            | OBJ ID ':' JET criteria {
-                                       cout<< " 2:"<<$2<<"-------------------\n";
+                                       cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        
                                         Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
-                                        
            | OBJ ID ':' BJET criteria
            | OBJ ID ':' QGJET criteria
            | OBJ ID ':' NUMET criteria
@@ -530,16 +536,17 @@ command : CMD condition { //find a way to print commands
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
+                                        std::cout << "\nID:"<< $12 <<"\n";
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
                                                 cout <<$12<<" : " ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                                                 YYERROR;//stops parsing if variable not found
-                                                
                                         }
                                         else {
                                                 Node* child=it->second;
+                                                std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -564,8 +571,10 @@ description : description HID {
                                                 strcat(s,$1);
                                                 strcpy($$,s);
                                         }
-                                        dnum++;}
+                                //        dnum++;
+                                }
         ;
+//--------------------------------------------------------------------------
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
 
