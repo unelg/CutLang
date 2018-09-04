@@ -571,8 +571,8 @@ description : description HID {
                                                 strcat(s,$1);
                                                 strcpy($$,s);
                                         }
-                                //        dnum++;
-                                }
+                                        //dnum++;
+                                        }
         ;
 //--------------------------------------------------------------------------
 ifstatement : condition '?' action ':' action %prec '?' { 

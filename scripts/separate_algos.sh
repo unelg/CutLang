@@ -28,20 +28,19 @@ for an_algo in $algo_list ; do
  this_region_name=`echo $thisline | cut -f2 -d ' '`
  next_rline=`cat _algos.ini | grep -n -m $(( 1 + iregion )) algo | tail -1| cut -f1 -d":"`
  if [ $next_rline == $an_algo ]; then
-   next_rline=`wc -l _algos.ini |  awk '{ print $1 }'`
+   next_rline=`wc -l _algos.ini |  awk '{ print $1+1 }'`
  fi
  printf 'A region named:%20s \t defined in lines from %d to %d\n' "[$this_region_name]" "$an_algo" "$next_rline"
 
- if [[ $nextline == "__"* ]]; then
+ if [[ $nextline != "cmd"* ]]; then
   echo "   this region depends on:"  $nextline
   cat $nextline > $this_region_name
-  awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart+1 && NR <= lfinish' _algos.ini >> $this_region_name 
+  awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart+1 && NR < lfinish' _algos.ini >> $this_region_name 
   
  else
   awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart && NR < lfinish' _algos.ini > $this_region_name 
  fi
  cat _head.ini > BP_${iregion}-card.ini
+ echo $thisline >> BP_${iregion}-card.ini
  cat $this_region_name >> BP_${iregion}-card.ini
 done
-
-
