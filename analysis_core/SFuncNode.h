@@ -11,21 +11,26 @@
 #include "Node.h"
 using namespace std;
 //takes care of functions with arguments
-class SFuncNode : public Node{
+class SFuncNode : public Node {
 private:
     //should add something related to trigger types
-    double (*f)(AnalysisObjects* ao);
-    // string vector to define user objects
-    std::vector<string> userObjs; 
+    Node* userObject;
+    double (*f)(AnalysisObjects*);
 public:
-    SFuncNode(double (*func)(AnalysisObjects* ao),  std::string s ){
+    SFuncNode(double (*func)(AnalysisObjects* ao),
+              std::string s,
+              Node *objectNode = NULL) {
         f=func;
         symbol=s;
         left=NULL;
         right=NULL;
+        userObject = objectNode;
     }
     
     virtual double evaluate(AnalysisObjects* ao) override {
+        if(userObject) {
+            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+        }
         return (*f)(ao);
     }
 
@@ -38,19 +43,8 @@ public:
 double all(AnalysisObjects* ao){
     return 1;
 }
-
-double njets(AnalysisObjects* ao, map<string,Node*>* ObjectCuts){ // mi acaba?
-//-------elimde string var. bir de map var
-/* ------------------------BURAYI YAP
-  astring in userObjs
-  find astrign in map<string,Node*>* ObjectCuts
-  if true
-         evaluate the associated objectCut Node* // elimde artik yeni user objs var
-                                                 // yani, ao degisti.
-  else 
-    return (ao->jets.size() );
-*/
-    return (ao->jets.size() );
+double njets(AnalysisObjects* ao) {
+    return (ao->jets.size());
 }
 double neles(AnalysisObjects* ao){
     return (ao->eles.size() );
@@ -64,7 +58,6 @@ double nphos(AnalysisObjects* ao){
 double met(AnalysisObjects* ao){
     return ( ao->met.Mod() );
 }
-
 double nbjets(AnalysisObjects* ao){
     ValueNode abc=ValueNode();
     return (abc.tagJets(ao, 1).size() );

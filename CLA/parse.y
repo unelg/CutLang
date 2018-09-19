@@ -14,7 +14,7 @@ extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
-                ,const char *s) { std::cerr << s << std::endl << "line: " << yylineno <<  std::endl; } 
+                ,const char *s) { std::cerr << "Error: " << s << std::endl << "line: " << yylineno <<  std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
@@ -264,9 +264,18 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(njets,s);
                                 }
         | NJET '(' ID  ')' {    
-                                       cout <<"\n NET will use: " << $3<<"\n"; 
-                                       string s="NJET";                                                              
-                                       $$=new SFuncNode(njets,s);
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       }
+                                       else {
+                                           string s="NJET";
+                                           cout << "Found user defined object " << it->first << endl;
+                                           $$=new SFuncNode(njets, s, it->second);
+                                       }
                                 }
         | NBJET {    
                                         
@@ -686,5 +695,3 @@ e : e '+' e  {
                }
    ;
 %%
-
-
