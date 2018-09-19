@@ -15,6 +15,8 @@ class SFuncNode : public Node{
 private:
     //should add something related to trigger types
     double (*f)(AnalysisObjects* ao);
+    // string vector to define user objects
+    std::vector<string> userObjs; 
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao),  std::string s ){
         f=func;
@@ -37,7 +39,17 @@ double all(AnalysisObjects* ao){
     return 1;
 }
 
-double njets(AnalysisObjects* ao){
+double njets(AnalysisObjects* ao, map<string,Node*>* ObjectCuts){ // mi acaba?
+//-------elimde string var. bir de map var
+/* ------------------------BURAYI YAP
+  astring in userObjs
+  find astrign in map<string,Node*>* ObjectCuts
+  if true
+         evaluate the associated objectCut Node* // elimde artik yeni user objs var
+                                                 // yani, ao degisti.
+  else 
+    return (ao->jets.size() );
+*/
     return (ao->jets.size() );
 }
 double neles(AnalysisObjects* ao){

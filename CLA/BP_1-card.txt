@@ -25,7 +25,7 @@ def     Wchi2 : (( mWH1 - 80.4) / 2.1) ^ 2 + (( mWH2 - 80.4) / 2.1) ^ 2 #chi2 fo
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 
 obj    aJETclean : JET 
-cmd    {JET_ , ELE_ }dR >= 0.2
+#cmd    {JET_ , ELE_ }dR >= 0.2
 cmd    {JET_ }Pt >= 25
 
 obj    cleanELE : ELE
