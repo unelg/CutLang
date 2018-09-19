@@ -219,7 +219,7 @@ int BPdbxA:: bookAdditionalHistos() {
 
 /////////////////////////
 int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector <dbxPhoton> photons,
-                               vector<dbxJet> jets, TVector2 met, evt_data anevt) {
+                         vector<dbxJet> jets, TVector2 met, evt_data anevt) {
   int retval=0;
 
   vector<dbxElectron>  goodElectrons;
@@ -275,93 +275,10 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~cutLang style preselection
-         map < string, vector<dbxElectron> > ele_sets;
-         map < string, vector<dbxMuon>     > muo_sets;
-         map < string, vector<dbxJet>      > jet_sets;
-         map < string, vector<dbxPhoton>   > pho_sets;
-
-// basic analysis objects---- are they needed?
-         ele_sets["ELE"]=goodElectrons;
-         muo_sets["MUO"]=goodMuons;
-         pho_sets["PHO"]=goodPhotons;
-         jet_sets["JET"]=goodJets;
-
-         map <string, vector<dbxJet> >::iterator tmpjet;
-         map <string, vector<dbxElectron> >::iterator tmpele;
-         map <string, vector<dbxMuon> >::iterator tmpmuo;
-         map <string, vector<dbxPhoton> >::iterator tmpgam;
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// do we have other objects?
-/*
-         if ( obj_names.size() > 0) { // remove the if and check...
-            for( map<string, vector<string> >::iterator newdef=obj_names.begin(); newdef!=obj_names.end(); ++newdef) {
-              DEBUG("-----will now define:"<<newdef->first <<" using "<< newdef->second[0] <<endl);
-              map < string,  pair< vector< std::vector<dbxCut*> >, vector< vector<string> > > >::iterator acutset;
-              acutset=obj_defs.find(newdef->first);
-              if (acutset != obj_defs.end()){
-               for (unsigned int k=0; k<(acutset->second).first.size(); k++){
-                 switch ( newdef->second[1+k][0] ){
-                     case 'J': tmpjet=jet_sets.find(newdef->second[1+k]); 
-                            DEBUG("~~~Will use "<< newdef->second[1+k] <<"~~~~\n");
-	           	    if (tmpjet != jet_sets.end()){ a0.jets=tmpjet->second; }
-	           	    break;
-                     case 'E': tmpele=ele_sets.find(newdef->second[1+k]); 
-	           	    if (tmpele != ele_sets.end()){ a0.eles=tmpele->second; }
-	           	    break;
-                     case 'M': tmpmuo=muo_sets.find(newdef->second[1+k]); 
-	           	    if (tmpmuo != muo_sets.end()){ a0.muos=tmpmuo->second; }
-	           	    break;
-                     case 'G': tmpgam=pho_sets.find(newdef->second[1+k]); 
-	           	    if (tmpgam != pho_sets.end()){ a0.gams=tmpgam->second; }
-	           	    break;
-                 }
-                 DEBUG(newdef->second[1+k]<<" a0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
-                 unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase
-                 DEBUG("Obj def sel:"<<((acutset->second).first)[k][j]->getName() <<"    \n");
-                 ((acutset->second).first)[k][j]->select(&a0); // execute the selection cut
-                 DEBUG("b0  #J:"<<a0.jets.size()<<" #E:"<<a0.eles.size()<<" #M:"<<a0.muos.size()<<"  #G:"<<a0.gams.size()<<"\n");
-               }//loop over definition cuts
-               switch ( newdef->second[0][0] ){
-                     case 'J': jet_sets.insert (pair<string, vector<dbxJet>      >(newdef->first, a0.jets) ); break;
-                     case 'E': ele_sets.insert (pair<string, vector<dbxElectron> >(newdef->first, a0.eles) ); break;
-                     case 'M': muo_sets.insert (pair<string, vector<dbxMuon>     >(newdef->first, a0.muos) ); break;
-                     case 'G': pho_sets.insert (pair<string, vector<dbxPhoton>   >(newdef->first, a0.gams) ); break;
-               }
-
-              }//valid cutset for current object
-            }//end of object definition loop
-         }// any obj def?
-*/
-/*
-#ifdef _CLV_
-         for( map<string, vector<dbxJet> >::iterator apart=jet_sets.begin(); apart!=jet_sets.end(); ++apart) 
-          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
-         for( map<string, vector<dbxElectron> >::iterator apart=ele_sets.begin(); apart!=ele_sets.end(); ++apart) 
-          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
-         for( map<string, vector<dbxMuon> >::iterator apart=muo_sets.begin(); apart!=muo_sets.end(); ++apart) 
-          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
-         for( map<string, vector<dbxPhoton> >::iterator apart=pho_sets.begin(); apart!=pho_sets.end(); ++apart) 
-          cout << apart->first<<" is defined with " << (apart->second).size()<< " elements\n";
-#endif
-*/
-    unsigned int btagSF_counter=0;
-    unsigned int FillHistos_counter=0;
-             int ahistid;
-           float ahistval;
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 
 //    std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"  ";
-
-/*
-    found_type_vecs.clear(); found_idx_vecs.clear(); found_idx_origs.clear();
-    for (unsigned int k=0; k<mycutlist.size(); k++){
-           if (mycutlist[k][0]->getOp()=="~=" || mycutlist[k][0]->getOp()=="!=")  // closest to or far away from
-              mycutlist[k][0]->clearFoundVector(); //---- clear previous events findings.
-    }
-*/
-
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -376,9 +293,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     {   
         iter->second->Reset();
         iter++;
-     }
+    }
 
-     DEBUG("RESet ALL cuts\n");
+    DEBUG("RESet ALL cuts\n");
     iter = NodeCuts.begin();
 
 //----------------------execute
@@ -386,45 +303,12 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     {   
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
 
-/*
-        if ( levelObjectMap.size() > 0) {
-              map <int, vector<std::pair<string,string> > >::iterator it;
-              it=levelObjectMap.find(k+1); 
-              if (it != levelObjectMap.end()){
-                  DEBUG("cut predef:"<< it->first << "  ");
-                  for (int iobj=0; iobj<it->second.size(); iobj++){
-                     DEBUG( it->second.at(iobj).first << " will be used as "<< it->second.at(iobj).second );
-//--------here we must replace      e.g.                JETclean will be used as JET
-                     switch ( it->second.at(iobj).second[0] ){
-                     case 'J': tmpjet=jet_sets.find(it->second.at(iobj).first); 
-                            DEBUG("~~~Will use "<< it->second.at(iobj).first <<"~~~~\t");
-                            if (tmpjet != jet_sets.end()){ a0.jets=tmpjet->second; }
-                            break;
-                     case 'E': tmpele=ele_sets.find(it->second.at(iobj).first); 
-                            if (tmpele != ele_sets.end()){ a0.eles=tmpele->second; }
-                            break;
-                     case 'M': tmpmuo=muo_sets.find(it->second.at(iobj).first); 
-                            if (tmpmuo != muo_sets.end()){ a0.muos=tmpmuo->second; }
-                            break;
-                     case 'G': tmpgam=pho_sets.find(it->second.at(iobj).first); 
-                            if (tmpgam != pho_sets.end()){ a0.gams=tmpgam->second; }
-                            break;
-                     }
-                  }
-                  DEBUG("\n" );
-              }
-        } 
-*/
-        unsigned int j=0; // j=0 is the first cut in that line, if we have more, like ANDs and ORs, j will increase 
-        double d;
-
         DEBUG("Selecting: "<<iter->first<<" |");
-        d=iter->second->evaluate(&a0); // execute the selection cut
-
+        double d=iter->second->evaluate(&a0); // execute the selection cut
         DEBUG(" Result : " << d << std::endl);
-        if (d==0) return iter->first; // quit the event.
+        if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
-        iter++;
+        iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
 return 1;
