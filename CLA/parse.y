@@ -241,11 +241,41 @@ function : '{' particules '}' 'm' {
                                         string s="NELE";                                                              
                                         $$=new SFuncNode(neles,s);
                                 }
+
+        | NELE '(' ID ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       }
+                                       else {
+                                           string s="NELE";
+                                           $$=new SFuncNode(neles, s, it->second);
+                                       }
+                                        
+                           }
         | NMUO {    
                                         
                                         string s="NMUO";                                                              
                                         $$=new SFuncNode(nmuos,s);
-                                }
+               }
+        
+        | NMUO '(' ID ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       }
+                                       else {
+                                           string s="NMUO";
+                                           $$=new SFuncNode(nmuos, s, it->second);
+                                       }
+                                        
+                           }
         | NLEP {    
                                         string s="NLEP";
                                         if(Initializations->at(10)>0){
@@ -504,15 +534,23 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new EleSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Ele",NULL,createNewJet,newList,"obj Ele" );
+                                        Node* previous=new ObjectNode("Ele",NULL,createNewEle,newList,"obj Ele" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
-                                      }
-           | OBJ ID ':' MUO criteria
+                                     }
+           
+           | OBJ ID ':' MUO criteria {
+                                        cout<< " 2:"<<$2<<" is a new MuoSet\n";
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Muo",NULL,createNewMuo,newList,"obj Muo" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria
            | OBJ ID ':' JET criteria {
-                                       cout<< " 2:"<<$2<<" is a new JetSet\n";
+                                        cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" );
