@@ -5,10 +5,9 @@
 //  Created by Anna-Monica  on 8/16/18.
 //  Copyright © 2018 Anna-Monica. All rights reserved.
 //
-
 #include "ObjectNode.hpp"
 
-ObjectNode::ObjectNode(string id,Node* previous, void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,std::vector<myParticle *>* particles ), vector<Node*> criteria,  std::string s ){
+ObjectNode::ObjectNode(string id, Node* previous, void (* func) (AnalysisObjects* ao, vector<Node*>* criteria, std::vector<myParticle *>* particles), vector<Node*> criteria, std::string s){
     
     symbol=s;
     name=id;//this is useless because symbol already has name of the particle
@@ -45,16 +44,13 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 
  ObjectNode::~ObjectNode(){}
 
- void createNewJet (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles){
-    
+void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles){
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
-         
-         
-        int ipart_max;
-        ipart_max=ao->jets.size();
 
+        int ipart_max = ao->jets.size();
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
+        
         if(particles->size()==1){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 //setParticleIndex(0, ipart);----must be same as instrcution below
@@ -62,14 +58,55 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 //DEBUG("\n tested:"<<ipart<< " passed =>"<< ppassed <<"\n");
                 if (!ppassed) ao->jets.erase(ao->jets.begin()+ipart);
+            }
+        }
+        else if(particles->size()==2){
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               cout<<"!!!Case of two parameter function to be implemented!!!\n";
+            }
+        }
+    }
+}
 
+void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles) {
+    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
+        int ipart_max = ao->eles.size();
+        particles->clear();
+        (*cutIterator)->getParticlesAt(particles,0);
+        
+        if(particles->size()==1){
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                //setParticleIndex(0, ipart);----must be same as instrcution below
+                particles->at(0)->index=ipart;
+                bool ppassed=(*cutIterator)->evaluate(ao);
+                //DEBUG("\n tested:"<<ipart<< " passed =>"<< ppassed <<"\n");
+                if (!ppassed) ao->eles.erase(ao->eles.begin()+ipart);
                 }
             }
-
         else if(particles->size()==2){
             cout<<"!!!Case of two parameter function to be implemented!!!\n";
         }
     }
 }
 
-//functions for ele,muo,etc... to be added             
+void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles) {
+    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
+        int ipart_max = ao->muos.size();
+        particles->clear();
+        (*cutIterator)->getParticlesAt(particles,0);
+        
+        if(particles->size()==1){
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                //setParticleIndex(0, ipart);----must be same as instrcution below
+                particles->at(0)->index=ipart;
+                bool ppassed=(*cutIterator)->evaluate(ao);
+                //DEBUG("\n tested:"<<ipart<< " passed =>"<< ppassed <<"\n");
+                if (!ppassed) ao->muos.erase(ao->muos.begin()+ipart);
+                }
+            }
+        else if(particles->size()==2){
+            cout<<"!!!Case of two parameter function to be implemented!!!\n";
+        }
+    }
+}
+//functions for ele,muo,etc... to be added

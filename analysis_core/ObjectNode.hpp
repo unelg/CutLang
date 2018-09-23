@@ -38,4 +38,6 @@ class ObjectNode : public Node{
 };
 
 void createNewJet (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
+void createNewEle (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
+void createNewMuo (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
 #endif /* ObjectNode_hpp */
