@@ -25,8 +25,8 @@ def     Wchi2 : (( mWH1 - 80.4) / 2.1) ^ 2 + (( mWH2 - 80.4) / 2.1) ^ 2 #chi2 fo
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 
 obj    aJETclean : JET 
-#cmd    {JET_ , ELE_ }dR >= 0.2
 cmd    {JET_ }Pt >= 25
+cmd    {JET_ , ELE_ }dR >= 0.8
 
 obj    cleanELE : ELE
 cmd    {ELE_ }Pt > 30
@@ -34,14 +34,16 @@ cmd    {ELE_ }Pt > 30
 ###### EVENT SELECTION
 algo    testtopchi
 cmd      ALL            # to count all events
-cmd      nJET ( aJETclean ) >= 6      # events with 6 or more jets
 cmd      MET < 100      # fully hadronic events should have small MET
-#cmd       Wchi2 + topchi2 ~= 0
-cmd       topchi2 + Wchi2  ~= 0
-cmd       mWH1 [] 50 120  
-cmd       mWH2 [] 50 120 
-cmd      { WH1 , ajet }dR > 0.35 
-cmd      { WH2 , bjet }dR > 0.35 
-histo    h1 , "w histogram", 50, 50, 150, mWH1 
-histo    h2 , "anot histogram", 50, 50, 150, mWH2 
+cmd      nJET ( aJETclean ) >= 6      # events with 6 or more jets
 
+#cmd      nJET ( aJETclean ) >= 6  AND nJET ( aJETclean ) < 9   # test 12 3 to be verfied
+#cmd       Wchi2 + topchi2 ~= 0
+#cmd       topchi2 + Wchi2  ~= 0
+#cmd       mWH1 [] 50 120  
+#cmd       mWH2 [] 50 120 
+#cmd      { WH1 , ajet }dR > 0.35 
+#cmd      { WH2 , bjet }dR > 0.35 
+#histo    h1 , "w histogram", 50, 50, 150, mWH1 
+#histo    h2 , "anot histogram", 50, 50, 150, mWH2 
+#
