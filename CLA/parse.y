@@ -236,11 +236,11 @@ function : '{' particules '}' 'm' {
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dEta,newList1,newList,"dEta");
                                 }
+//------------------------------------------
         | NELE {    
-                                        
                                         string s="NELE";                                                              
                                         $$=new SFuncNode(neles,s);
-                                }
+               }
 
         | NELE '(' ID ')' {
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -254,10 +254,9 @@ function : '{' particules '}' 'm' {
                                            string s="NELE";
                                            $$=new SFuncNode(neles, s, it->second);
                                        }
-                                        
                            }
+//------------------------------------------
         | NMUO {    
-                                        
                                         string s="NMUO";                                                              
                                         $$=new SFuncNode(nmuos,s);
                }
@@ -274,8 +273,8 @@ function : '{' particules '}' 'm' {
                                            string s="NMUO";
                                            $$=new SFuncNode(nmuos, s, it->second);
                                        }
-                                        
                            }
+//------------------------------------------
         | NLEP {    
                                         string s="NLEP";
                                         if(Initializations->at(10)>0){
@@ -284,15 +283,31 @@ function : '{' particules '}' 'm' {
                                         else{
                                                 $$=new SFuncNode(neles,s);
                                         }
-                                }                        
+               }                        
+//------------------------------------------
         | NPHO {    
                                         string s="NPHO";                                                              
                                         $$=new SFuncNode(nphos,s);
-                                }
+               }
+        | NPHO '(' ID  ')' {    
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           string s="NPHO";
+                                           cout << "Found user defined object " << it->first << endl;
+                                           $$=new SFuncNode(nphos, s, it->second);
+                                       }
+                           }
+//------------------------------------------
+
         | NJET {    
                                         string s="NJET";                                                              
                                         $$=new SFuncNode(njets,s);
-                                }
+               }
         | NJET '(' ID  ')' {    
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if(it == ObjectCuts->end()) {
@@ -300,32 +315,69 @@ function : '{' particules '}' 'm' {
                                            message += $3;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
-                                       }
-                                       else {
+                                       } else {
                                            string s="NJET";
                                            cout << "Found user defined object " << it->first << endl;
                                            $$=new SFuncNode(njets, s, it->second);
                                        }
-                                }
+                           }
+//------------------------------------------
         | NBJET {    
-                                        
                                         string s="NBJET";                                                              
                                         $$=new SFuncNode(nbjets,s);
-                                }
+                }
+        | NBJET '(' ID  ')' {    
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           string s="NBJET";
+                                           cout << "Found user defined object " << it->first << endl;
+                                           $$=new SFuncNode(nbjets, s, it->second);
+                                       }
+                            }
+//------------------------------------------
         | NQGJET {    
-                                        
                                         string s="NQGJET";                                                              
                                         $$=new SFuncNode(nljets,s);
-                                }
+                 }
+        | NQGJET '(' ID  ')' {    
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           string s="NQGJET";
+                                           cout << "Found user defined object " << it->first << endl;
+                                           $$=new SFuncNode(nljets, s, it->second);
+                                       }
+                            }
+//------------------------------------------
         | HT {    
-                                        
                                         string s="HT";                                                              
                                         $$=new SFuncNode(ht,s);
-                                }
+             }
+        | HT '(' ID  ')' {    
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           string s="HT";
+                                           cout << "Found user defined object " << it->first << endl;
+                                           $$=new SFuncNode(ht, s, it->second);
+                                       }
+                         }
+//------------------------------------------
         | METMWT {    
-                                        
                                         string s;                                                            
-                                        
                                         if(Initializations->at(10)>0){
                                                 s="m-METMWT";
                                                 $$=new SFuncNode(mmetmwt,s);
@@ -334,10 +386,10 @@ function : '{' particules '}' 'm' {
                                                 s="e-METMWT";
                                                 $$=new SFuncNode(emetmwt,s);
                                         }
-                                }
+                 }
+//------------------------------------------
         | MWT {    
                                         string s;
-
                                         if(Initializations->at(10)>0){
                                                 s="M-MWT";
                                                 $$=new SFuncNode(mmwt,s);
@@ -346,23 +398,28 @@ function : '{' particules '}' 'm' {
                                                 s="E-MWT";
                                                 $$=new SFuncNode(emwt,s);
                                         }
-                                }
+              }
+//------------------------------------------
         | MET {    
                                         
                                         string s="MET";                                                              
                                         $$=new SFuncNode(met,s);
-                                }
+              }
+//------------------------------------------
         | ALL {    
                                         
                                         $$=new SFuncNode(all,"all");
 
-                                }
+              }
+//------------------------------------------
         | LEPSF {    
                                         
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,s);
-                                }
+                }
         ;
+//------------------------------------------
+//------------------------------------------
 list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
                                                         string s2=$5;
