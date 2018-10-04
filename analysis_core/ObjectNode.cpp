@@ -6,6 +6,7 @@
 //  Copyright © 2018 Anna-Monica. All rights reserved.
 //
 #include "ObjectNode.hpp"
+#include "ValueNode.h"
 
 ObjectNode::ObjectNode(string id,
                        Node* previous,
@@ -172,13 +173,20 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
             }
 
         else if(particles->size()==2){
+            ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 switch(particles->at(1)->type){
+                    case 0: ipart2_max=ao->muos.size();
+                        break;
                     case 1: ipart2_max=ao->eles.size();
                         break;
                     case 2: ipart2_max=ao->jets.size();
+                        break;
+                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+                        break;
+                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
                         break;
                     case 8: ipart2_max = ao->gams.size();
                         break;
@@ -193,8 +201,8 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         ao->muos.erase(ao->muos.begin()+ipart);
                         break;
                     }
-                }
-            }
-        }
-    }
+                } // second particle set
+            }// first particle set
+        }// end of two particles
+    }// end of cutIterator
 }
