@@ -62,7 +62,6 @@ int BPdbxA:: readAnalysisParams() {
 // ****************************************
 // ---------------------------DBX style cuts
        CutList2file="\n";
-       //BPcutlist.setTrigType( TRGm+(TRGe<<2) );//bitwise left shift by 2 for TRGe
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        int kFillHistos=0;
        kk=1;

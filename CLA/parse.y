@@ -392,13 +392,30 @@ function : '{' particules '}' 'm' {
                                         string s;
                                         if(Initializations->at(10)>0){
                                                 s="M-MWT";
-                                                $$=new SFuncNode(mmwt,s);
-                                                                        }
-                                        else{
+                                                $$=new SFuncNode(mmwt, s);
+                                        }else{
                                                 s="E-MWT";
                                                 $$=new SFuncNode(emwt,s);
                                         }
               }
+        | MWT '(' ID ')' {    
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                        string s;
+                                        if(Initializations->at(10)>0){
+                                                s="M-MWT";
+                                                $$=new SFuncNode(mmwt,s, it->second);
+                                        }else{
+                                                s="E-MWT";
+                                                $$=new SFuncNode(emwt,s, it->second);
+                                        }
+                                       }
+                          }
 //------------------------------------------
         | MET {    
                                         
