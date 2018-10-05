@@ -5,8 +5,8 @@ minptj = 15.0 # min pt of jets
 maxetae = 2.47 # max pseudorapidity of electrons
 maxetam = 2.5 # max pseudorapidity of muons
 maxetaj = 5.5 # max pseudorapidity of jets
-TRGe = 0 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGm = 1 # muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGm = 0 # muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
 
 ###### USER DEFINITIONS
 def     WH1  : JET_-1 JET_-1   # W boson of the first top
@@ -46,12 +46,16 @@ cmd      ALL                          # to count all events
 cmd      MET < 100                    # fully hadronic events should have small MET
 cmd      nJET  >= 4                   # events with n or more jets
 cmd      nJET ( aJETclean ) >= 4      # events with n or more clean jets
-cmd      nELE  >= 1                   # events with 6 or more jets
-cmd      nELE ( cleanELE ) >= 1       # events with 6 or more jets
-cmd      nELE ( srELE ) >= 1       # events with 6 or more jets
-cmd      nELE ( testELE ) >= 1       # events with 6 or more jets
-cmd      HT >= 200       # events with 6 or more jets
-cmd      HT ( aJETclean ) >= 200       # events with 6 or more jets
+cmd      nELE == 1                   # events with 6 or more jets
+cmd      MWT > 120
+cmd      nELE ( cleanELE ) == 1       # events with 6 or more jets
+cmd       MWT ( cleanELE ) > 120
+
+#cmd      nELE ( srELE ) == 1       # events with 6 or more jets
+#cmd      nELE ( testELE ) == 1       # events with 6 or more jets
+#cmd      HT >= 200       # events with 6 or more jets
+#cmd      HT ( aJETclean ) >= 200       # events with 6 or more jets
+
 
 #cmd      nJET ( aJETclean ) >= 6  AND nJET ( aJETclean ) < 9   # test 12 3 to be verfied
 #cmd       Wchi2 + topchi2 ~= 0
