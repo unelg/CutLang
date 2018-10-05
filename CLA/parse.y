@@ -605,12 +605,19 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
            | OBJ ID ':' LEP criteria
-           | OBJ ID ':' PHO criteria
+           | OBJ ID ':' PHO criteria {
+                                        cout<< " 2:"<<$2<<" is a new PhoSet\n";
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Pho",NULL,createNewPho,newList,"obj Pho" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
            | OBJ ID ':' JET criteria {
                                         cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" );
+                                        Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }

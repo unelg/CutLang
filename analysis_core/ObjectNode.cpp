@@ -220,3 +220,52 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }// end of two particles
     }// end of cutIterator
 }
+void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles) {
+    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
+        int ipart_max = ao->gams.size();
+        particles->clear();
+        (*cutIterator)->getParticlesAt(particles,0);
+        
+        if(particles->size()==1){
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;
+                bool ppassed=(*cutIterator)->evaluate(ao);
+                //DEBUG("\n tested:"<<ipart<< " passed =>"<< ppassed <<"\n");
+                if (!ppassed) ao->gams.erase(ao->gams.begin()+ipart);
+                }
+            }
+
+        else if(particles->size()==2){
+            ValueNode abc=ValueNode();
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;  // 6213
+                int ipart2_max;
+                switch(particles->at(1)->type){
+                    case 0: ipart2_max=ao->muos.size();
+                        break;
+                    case 1: ipart2_max=ao->eles.size();
+                        break;
+                    case 2: ipart2_max=ao->jets.size();
+                        break;
+                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+                        break;
+                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
+                        break;
+                    case 8: ipart2_max = ao->gams.size();
+                        break;
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE!" << std::endl;
+                        break;
+                }
+                for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                    particles->at(1)->index=kpart;
+                    bool ppassed=(*cutIterator)->evaluate(ao);
+                    if (!ppassed) {
+                        ao->gams.erase(ao->gams.begin()+ipart);
+                        break;
+                    }
+                } // second particle set
+            }// first particle set
+        }// end of two particles
+    }// end of cutIterator
+}
