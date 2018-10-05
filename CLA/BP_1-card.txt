@@ -31,14 +31,25 @@ cmd    {JET_ , ELE_ }dR >= 0.8
 obj    cleanELE : ELE
 cmd    {ELE_ }Pt > 30
 
+obj    srELE : cleanELE
+cmd    {ELE_, JET_ }dR > 1.1
+
+obj    testELE : ELE
+cmd    {ELE_ }Pt > 30
+cmd    {ELE_, JET_ }dR > 1.1
+
+
+
 ###### EVENT SELECTION
 algo    testtopchi
 cmd      ALL                          # to count all events
 cmd      MET < 100                    # fully hadronic events should have small MET
-cmd      nJET  >= 4                   # events with 6 or more jets
-cmd      nJET ( aJETclean ) >= 4      # events with 6 or more jets
+cmd      nJET  >= 4                   # events with n or more jets
+cmd      nJET ( aJETclean ) >= 4      # events with n or more clean jets
 cmd      nELE  >= 1                   # events with 6 or more jets
 cmd      nELE ( cleanELE ) >= 1       # events with 6 or more jets
+cmd      nELE ( srELE ) >= 1       # events with 6 or more jets
+cmd      nELE ( testELE ) >= 1       # events with 6 or more jets
 cmd      HT >= 200       # events with 6 or more jets
 cmd      HT ( aJETclean ) >= 200       # events with 6 or more jets
 
