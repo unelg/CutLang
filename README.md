@@ -1,5 +1,5 @@
 # CutLang
-This is the repository for CutLang
+This is the repository for CutLang V3 
 
 1/ Directory structure for CutLang
 
