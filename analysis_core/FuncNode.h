@@ -19,32 +19,28 @@ private:
         double (*f)(dbxParticle* apart);
         float v_eta;
         TLorentzVector ametlv;
+        Node* userObjectA;
+        Node* userObjectB;
+        Node* userObjectC;
+        Node* userObjectD;
+
 
 protected:
-    
     std::vector<myParticle*> inputParticles;
     std::vector<myParticle> originalParticles;
     dbxParticle myPart;
 
     virtual void ResetParticles();
-    
     void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart);
-
     virtual void setParticleIndex(int order, int newIndex);
 
-     
-
 public:
-    FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s );
-    
+    FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s,  
+             Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual void Reset() override;
-
     virtual void getParticles(std::vector<myParticle *>* particles) override;
-
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
-
     virtual double evaluate(AnalysisObjects* ao) override;
-
     virtual ~FuncNode();
 };
 
