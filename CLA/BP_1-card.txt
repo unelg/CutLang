@@ -24,9 +24,9 @@ def     Wchi3 : (( {WH1 }m - 80.4) / 2.1) ^ 2 + (( {WH2 }m - 80.4) / 2.1) ^ 2 + 
 def     Wchi2 : (( mWH1 - 80.4) / 2.1) ^ 2 + (( mWH2 - 80.4) / 2.1) ^ 2 #chi2 for W finder
 def     topchi2 : (( mTopH1 - mTopH2 ) / 4.2 ) ^ 2  #chi2 for top finder
 
-obj    aJETclean : JET 
-cmd    {JET_ }Pt >= 25
-cmd    {JET_ , ELE_ }dR >= 0.8
+obj    cleanJET : JET 
+cmd    {JET_0 }Pt > 20
+cmd    {JET_ , ELE_ }dR >= 1.1
 
 obj    cleanELE : ELE
 cmd    {ELE_ }Pt > 30
@@ -39,25 +39,35 @@ cmd    {ELE_ }Pt > 30
 cmd    {ELE_, JET_ }dR > 1.1
 
 
-
 ###### EVENT SELECTION
 algo    testtopchi
 cmd      ALL                          # to count all events
 cmd      MET < 100                    # fully hadronic events should have small MET
-cmd      nJET  >= 4                   # events with n or more jets
-cmd      nJET ( aJETclean ) >= 4      # events with n or more clean jets
-cmd      nELE == 1                   # events with 6 or more jets
-cmd      MWT > 120
+cmd      nJET  >= 1                   # events with n or more jets
+cmd      nJET ( cleanJET ) >= 1      # events with n or more clean jets
+
+#cmd      nELE == 1                   # events with 6 or more jets
+#cmd      MWT > 120
 cmd      nELE ( cleanELE ) == 1       # events with 6 or more jets
-cmd       MWT ( cleanELE ) > 120
+#cmd       MWT ( cleanELE ) > 120
 
 #cmd      nELE ( srELE ) == 1       # events with 6 or more jets
 #cmd      nELE ( testELE ) == 1       # events with 6 or more jets
 #cmd      HT >= 200       # events with 6 or more jets
-#cmd      HT ( aJETclean ) >= 200       # events with 6 or more jets
+#cmd      HT ( cleanJET ) >= 200       # events with 6 or more jets
+
+#cmd      { JET_0 }Pt ( cleanJET ) > 100 
+cmd      { JET_0 }Pt ( cleanJET )  > 60 
+cmd      { JET_0 }m ( cleanJET ) > 10 
+#cmd      { JET_0 }m > 10 
+cmd      { cleanJET_0 }m > 10  ######### same as { JET_0 }m > 10     needs work
+cmd      { JET_0 ELE_0 }m ( cleanJET ) > 10 
+cmd      { JET_0 ELE_0 }m ( cleanJET , cleanELE ) > 10 
+cmd      { JET_0 ELE_0 }m ( cleanELE , cleanJET ) > 10 
+#cmd      { aJETclean_0 }Pt  >= 150 
 
 
-#cmd      nJET ( aJETclean ) >= 6  AND nJET ( aJETclean ) < 9   # test 12 3 to be verfied
+#cmd      nJET ( cleanJET ) >= 6  AND nJET ( cleanJET ) < 9   # test 12 3 to be verfied
 #cmd       Wchi2 + topchi2 ~= 0
 #cmd       topchi2 + Wchi2  ~= 0
 #cmd       mWH1 [] 50 120  

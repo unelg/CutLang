@@ -72,16 +72,17 @@ void FuncNode::setParticleIndex(int order, int newIndex){
                 inputParticles.at(order)->index=newIndex;
 }
 
-//int FuncNode::getParticleIndex(int order){
-//            return inputParticles.at(order)->index;
-//}
 
-
-    FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s ){
+FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input, std::string s, Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
         f=func;
         symbol=s;
         inputParticles=input;
         myParticle apart;
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+
       for (int i=0; i<input.size(); i++){
        DEBUG("orig i:"<<input[i]->index);
        apart.index=input[i]->index;
@@ -120,6 +121,11 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
+     if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+
      partConstruct(ao, &inputParticles,&myPart);
      DEBUG(" constructed \t");
      return (*f)(&myPart );

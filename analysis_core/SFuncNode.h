@@ -17,9 +17,8 @@ private:
     Node* userObject;
     double (*f)(AnalysisObjects*);
 public:
-    SFuncNode(double (*func)(AnalysisObjects* ao),
-              std::string s,
-              Node *objectNode = NULL) {
+    SFuncNode(double (*func)(AnalysisObjects* ao), std::string s, Node *objectNode = NULL) 
+    {
         f=func;
         symbol=s;
         left=NULL;
