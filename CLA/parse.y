@@ -734,6 +734,15 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);
                         }
+                        else if (ito->first.find("PHO") !=std::string::npos ) {
+                           cout <<"which is a MUO\n";
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 8;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);
+                        }
 
 
                        } else {
