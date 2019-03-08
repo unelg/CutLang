@@ -14,7 +14,7 @@ INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC
 # allow Make to use the same include directories as locations of the sources of various files
 VPATH = $(subst -I,:,$(INCLUDES))
 
-CXX           = $(shell root-config --cxx) -O3 -D__GRID__  -D__STANDALONE__  
+CXX           = $(shell root-config --cxx) -g -O3 -D__GRID__  -D__STANDALONE__  
 #-D_CLV_
 #-D__DEBUG__
 CXXFLAGS      =$(INCLUDES) -Wall -fPIC
@@ -27,7 +27,7 @@ LIBS          = $(ROOTLIBS) -lMinuit -L. -lDBXNtuple_cpp  -ldbx_muon_h -ldbx_ele
 GLIBS         = $(ROOTGLIBS)
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o  AtlMin.o
 OBJS_2        = CLA.o b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
@@ -41,17 +41,13 @@ endif
 .PHONY: clean cleanall auxiliaries softlinks
 
 CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) -lProof $(LIBS)
 
 b.o : parse.y
 	/usr/bin/bison -d -v -o b.cpp parse.y; $(CXX) $(INCLUDES) -std=c++11 -c b.cpp
 
 l.o : parse.l
 	flex -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
-
-dbx_analysis : auxiliaries $(OBJS_2) softlinks
-	root -b -q -l -x makeSo.C
-	$(CXX) -g -o $@ $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) -lProof $(LIBS) dbxAna_C.so
 
 auxiliaries:
 	$(MAKE) -C $(SUBDIRLOC)analysis_core

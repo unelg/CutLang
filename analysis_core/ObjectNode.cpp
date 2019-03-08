@@ -104,7 +104,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                     case 8: ipart2_max = ao->gams.size();
                         break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE!" << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try Jets:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
@@ -155,7 +155,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                     case 8: ipart2_max = ao->gams.size();
                         break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE!" << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try ELE:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
@@ -205,7 +205,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                     case 8: ipart2_max = ao->gams.size();
                         break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE!" << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try MUO:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
@@ -254,7 +254,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                     case 8: ipart2_max = ao->gams.size();
                         break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE!" << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){

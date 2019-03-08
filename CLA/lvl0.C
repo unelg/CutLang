@@ -59,7 +59,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    syst_names["21_jvt"]                     = 2;
     
 
-
     
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);

@@ -29,42 +29,113 @@ int BPdbxA::plotVariables(int sel) {
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
 
-/* --- we should do this whenever we can't find the txt file but if the ini file is around
-  string i2tconverter="./ini2txt.sh ";
-         i2tconverter+=cname;
-  retval=system(i2tconverter.data());
-  if (retval==0) cout<<"ini to txt convestion OK for:"<< cname <<"\n";
-
-*/
-
   dbxA::ChangeDir(cname);
   TString CardName=cname;
-          CardName+="-card.txt";
+          CardName+="-card.ini";
 
+  ifstream cardfile(CardName);
+  if ( ! cardfile.good()) {
+    cerr << "The cardfile " << CardName << " file has problems... " << endl;
+    return -1;
+  }
 
-// ---------------------------DBX style defs
+// ---------------------------DBX style defs, objects and cuts
     int kk=1;
-    map < string, string > def_names;
 
-/*
-     TText info(0,0,DefList2file.Data());
-           info.SetName("CLA2defs");
-           info.Write();
-*/
+    string tempLine;
+    string tempS1, tempS2;
+    string subdelimiter = " ";
+    string hashdelimiter = "#";
+    size_t found;
+    bool foundInFile(false);
+    TString DefList2file="\n";
+    TString CutList2file="\n";
+    TString ObjList2file="\n";
+    std:vector<TString> effCL;
 
-// ****************************************
-//---------------------------DBX style analysis object definitions
-// ****************************************
-     kk=1;
 
-   TString CutList2file="\n";
+    bool algorithmnow=false;
+
+    while ( ! cardfile.eof() ) {
+       getline( cardfile, tempLine );
+       if ( tempLine[0] == '#' ) continue; // skip comment lines
+//---------obj
+       found = tempLine.find("obj ");
+       if (found!=std::string::npos) {
+           ObjList2file+=tempLine;
+           ObjList2file+="\n";
+           continue;
+       }
+
+//---------algo
+       found = tempLine.find("algo ");
+       if (found!=std::string::npos) {
+           algorithmnow=true;
+           continue;
+       }
+//---------defs
+       found = tempLine.find("def ");
+       if (found!=std::string::npos) {
+           DefList2file+=tempLine;
+           DefList2file+="\n";
+           continue;
+       }
+//---------cmds
+       found=tempLine.find("cmd ");
+       if (found!=std::string::npos) {
+           if (algorithmnow) {
+              CutList2file+=tempLine;
+              CutList2file+="\n";
+              size_t apos=tempLine.find(hashdelimiter);
+              tempS1 = tempLine.substr(4, apos-4);
+              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+              cout <<tempS1<<"\n";
+              effCL.push_back(tempS1);
+           } else {
+              ObjList2file+=tempLine;
+              ObjList2file+="\n";
+           }
+           continue;
+       }
+//---------histos
+       found=tempLine.find("histo ");
+       if (found!=std::string::npos) {
+           CutList2file+=tempLine;
+           CutList2file+="\n";
+           size_t apos=tempLine.find(hashdelimiter);
+           tempS1 = tempLine.substr(6, apos-6); // without the comments
+           apos=tempS1.find_first_of('"');
+           size_t bpos=tempS1.find_last_of('"');
+           tempS1 = tempS1.substr(apos+1, bpos-apos-1); // without the comments
+           tempS2 = "[Histo] ";
+           tempS2 += tempS1;
+           cout <<tempS2<<"\n";
+           effCL.push_back(tempS2);
+           continue;
+       }
+
+    } 
+
+//----------put into output file as text
+    TText cinfo(0,0,CutList2file.Data());
+          cinfo.SetName("CLA2cuts");
+          cinfo.Write();
+
+    TText info(0,0,DefList2file.Data());
+          info.SetName("CLA2defs");
+          info.Write();
+
+    TText oinfo(0,0,ObjList2file.Data());
+          oinfo.SetName("CLA2Objs");
+          oinfo.Write();
+
+
+
 
 // ****************************************
 // ---------------------------DBX style cuts
-       CutList2file="\n";
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        int kFillHistos=0;
-       kk=1;
     
        std::vector<double> PtEtaInitializations(11);
        PtEtaInitializations={15., 15., 15., 15., 15., 2.5, 2.5, 2.5, 2.5, 30, 1, 0};
@@ -99,10 +170,10 @@ int BPdbxA:: readAnalysisParams() {
     while(iter != NodeCuts.end())
     {
             DEBUG(" CUT "<<iter->first<<" ");
-  //          iter->second->display();
             DEBUG("--->"<<iter->second->getStr()<<"\n");
 
-           TString newLabels=iter->second->getStr();
+//           TString newLabels=iter->second->getStr();
+           TString newLabels=effCL[ iter->first -1];
 /*
             TString newLabels="CUT";
                     newLabels+=iter->first;
@@ -110,7 +181,7 @@ int BPdbxA:: readAnalysisParams() {
            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
 
             DEBUG(std::endl);
-            iter++;
+            iter++; 
     }
 
 #ifdef _CLV__
@@ -145,11 +216,6 @@ int BPdbxA:: readAnalysisParams() {
 
 #endif
 
-//----------put into output file as text
-
-         TText cinfo(0,0,CutList2file.Data());
-               cinfo.SetName("CLA2cuts");
-               cinfo.Write();
 
 // PUT ANALYSIS PARAMETERS INTO .ROOT //////////////
 	
@@ -189,12 +255,6 @@ int BPdbxA:: initGRL() {
 int BPdbxA:: bookAdditionalHistos() {
         int retval=0;
         dbxA::ChangeDir(cname);
-        int kk=1;
-        std::string Hsubdelimiter = ",";
-        char HCardName[64];
-
-// read histo defitions from file
-        sprintf(HCardName,"%s-histos.txt",cname);
 
 #ifdef __VERBOSE3__
 	// Sezen's handmade histograms
@@ -209,9 +269,6 @@ int BPdbxA:: bookAdditionalHistos() {
 #endif
 
 // ---------------------------DBX style defs from the main file
- TString CardName=cname;
-         CardName+="-card.txt";
-         map < string, string > def_names;
 
   return retval;
 }

@@ -151,6 +151,7 @@ function : '{' particules '}' 'm' {
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
+                                        cout <<"aaa\n";
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Mof,newList,"m", it->second);
@@ -346,26 +347,26 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
          | list DR { 
-                                        // std::cout<<"\n DR TMP1 List: \n";
-                                        //         vector<myParticle*>::iterator myiterator;
-                                        //         myiterator = TmpParticle1.begin();
-                                        //         while (myiterator != TmpParticle1.end()) {
-                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                        //         myiterator++;
-                                        //         }
-                                        //         std::cout<<"\n DR TMP List: \n";
-                                                
-                                        //         myiterator = TmpParticle.begin();
-                                        //         while (myiterator != TmpParticle.end()) {
-                                        //         std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                        //         myiterator++;
-                                        //         }
-                                        
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
+                   }
+         | list DR  '(' ID  ')' {  //-----------with user objects
+                                       map<string,Node*>::iterator it = ObjectCuts->find($4);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "User object not defined: "; message += $4;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dR,newList1,newList,"dR", it->second);
+                                       }
+
                                 }
         | list DPHI { 
                                                 vector<myParticle*> newList;
@@ -786,7 +787,8 @@ index : '-' INT {$$=-$2;}
       ; 
 objects : objectBlocs ALGO ID
         | ALGO
-        | ALGO ID { cout << "Alg:\n"; }
+        | ALGO ID { // cout << "Alg:\n"; 
+                  }
         ;
 objectBlocs : objectBlocs objectBloc
             | objectBloc
@@ -873,7 +875,7 @@ command : CMD condition { //find a way to print commands
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-                                        std::cout << "\nID:"<< $12 <<"\n";
+//                                        std::cout << "\nID:"<< $12 <<"\n";
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
@@ -883,7 +885,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                                std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -1019,6 +1021,20 @@ e : e '+' e  {
                         $$=it->second;
                 }
                 //get the node from variable map
-               }
+        }
+    | ID '(' ID ')' {
+                map<string, Node *>::iterator it ;
+                it = NodeVars->find($1);
+     
+                if(it == NodeVars->end()) {
+                        cout <<$1<<" : " ;
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                        YYERROR;//stops parsing if variable not found
+                        
+                }
+                else {
+                        $$=it->second;
+                }
+    } 
    ;
 %%

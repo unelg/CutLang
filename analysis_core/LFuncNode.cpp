@@ -27,18 +27,21 @@
     }
     
 
-    LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s )
-    : FuncNode(NULL,input1,s) {
+    LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea, objectNodeb, objectNodec, objectNoded) {
         f2=func;
         inputParticles2=input2;
         myParticle apart2;
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+
         for (int i=0; i<input2.size(); i++){
            apart2.index=input2[i]->index;
            apart2.type=input2[i]->type;
          originalParticles2.push_back(apart2);
         }
     }
-    
     
 
     void LFuncNode::getParticles(std::vector<myParticle *>* particles) {
@@ -57,6 +60,11 @@
     }
     
     double LFuncNode::evaluate(AnalysisObjects* ao)  {
+        if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+        if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+        if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+        if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+
         partConstruct(ao, &inputParticles,&myPart);
         partConstruct(ao, &inputParticles2,&myPart2);
         return (*f2)(&myPart,&myPart2);

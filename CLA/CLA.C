@@ -4,10 +4,14 @@
 #include "cmsod.h"
 #include "delphes.h"
 #include "lvl0.h"
+#include "AtlMin.h"
 #include "dbxParticle.h"
+//#include "dbxAna.h"
 #include <TH2.h>
 #include <TError.h>
 #include <TApplication.h>
+#include "TDSet.h"
+#include <TProof.h>
 
 #include <iostream>
 #include <cstring>
@@ -45,38 +49,27 @@ int main(int argc, char*argv[])
  bool use_delphes=false;
  bool use_atlasod=false;
  bool use_cmsod=false;
+ bool use_proof=false;
 
  string inptype;
  char *username=NULL;
 
- cout << "CLA v2.1.0\n";
+ cout << "CLA v2.2.0\n";
 
 for (int i = 2; i < argc; i++) {
      if (i + 1 != argc) // Check that we haven't finished parsing already
          if        (std::string(argv[i]) == "-FF")  { // FF
              aselect.FFcount = atoi(argv[i + 1]);   i++;
-         } else if (std::string(argv[i]) == "-N4")  { // N4
-             aselect.N4count = atoi(argv[i + 1]);   i++;
-         } else if (std::string(argv[i]) == "-Skeleton")  { //Skeleton                                   
-             aselect.Skeletoncount = atoi(argv[i + 1]);   i++;
          } else if (std::string(argv[i]) == "-D")  { // Dump                  
              aselect.Dumpcount = atoi(argv[i + 1]);   i++;
-         } else if (std::string(argv[i]) == "-MCH") { // MCH
-             aselect.MCHcount = atoi(argv[i + 1]);  i++;
-         } else if (std::string(argv[i]) == "-DCH") { // DCH
-             aselect.DCHcount = atoi(argv[i + 1]);  i++;
-         } else if (std::string(argv[i]) == "-E61") { // E61
-             aselect.E61count = atoi(argv[i + 1]);  i++;
-         } else if (std::string(argv[i]) == "-E62") { // E62
-             aselect.E62count = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-BP") { // BP 
              aselect.BPcount = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-S") { // systematics
              aselect.dosystematics = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-Q") { // do QCD
              aselect.doQCD = atoi(argv[i + 1]);  i++;
-         } else if (std::string(argv[i]) == "-HF") { // heavy flavour
-             aselect.doHF = atoi(argv[i + 1]);  i++;
+         } else if (std::string(argv[i]) == "-P") { // use proof
+             use_proof=true;  
          } else if (std::string(argv[i]) == "-UN") { // username to be added to histoname
              username = argv[i + 1];  i++;
          } else if (std::string(argv[i]) == "-V") { // verbosity frequency in #events
@@ -86,19 +79,18 @@ for (int i = 2; i < argc; i++) {
          } else if (std::string(argv[i]) == "-inp") { // use LHCO format input
              inptype = argv[i + 1];  i++;
          } else {
-             std::cout << "invalid arguments, please try again:\n";
-             exit(-1);
+             std::cout << "invalid arguments, please read the help below.\n";
      }
  }
  
 
  std::cout << "#BP  runs is "<< aselect.BPcount<<std::endl;
  std::cout << "#Dump runs is "<< aselect.Dumpcount<<std::endl;
- if (aselect.FFcount+aselect.MCHcount+aselect.DCHcount+aselect.E61count+aselect.E62count+aselect.BPcount+aselect.TPcount+aselect.N4count+aselect.Skeletoncount+aselect.Dumpcount < 1) {
+ if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " d3pd.root \n"
                        << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASOD | CMSOD]\n"  
-                       << " [-BP #] [-D 1|0] \n"
+                       << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"  
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
   exit(-2);
@@ -114,6 +106,78 @@ for (int i = 2; i < argc; i++) {
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
  }
+
+/*
+TProof* proof;
+#define PROPT TProof::EUploadPackageOpt::kRemoveOld
+
+      if (use_proof) {
+
+
+        cout << "Making the cards package"<<endl;
+        gSystem->Exec("mkdir cards; mkdir cards/PROOF-INF");
+        gSystem->Exec("cp *-*.txt cards");
+        gSystem->Exec("echo \"Int_t SETUP(){return 0;}\" > cards/PROOF-INF/SETUP.C");
+        gSystem->Exec("tar czhf cards.par cards");
+        gSystem->Exec("rm -rf cards");
+        cout << "cards prepared.\n";
+
+        cout << "Making the libs package"<<endl;
+        gSystem->Exec("mkdir libs");
+        gSystem->Exec("mkdir libs/PROOF-INF");
+        gSystem->Exec("cp ../CLA/*.so* libs");
+        gSystem->Exec("cp ../analysis_core/* libs");
+        gSystem->Exec("cat ../analysis_core/SETUP.C | grep -v BAT | grep -v KLFitter > libs/PROOF-INF/SETUP.C");
+        gSystem->Exec("tar czhf libs.par libs");
+        gSystem->Exec("rm -rf libs");
+        cout << "libs prepared\n";
+
+        proof = TProof::Open("");
+        proof->ClearCache();
+
+        proof->UploadPackage("cards", PROPT );
+        proof->EnablePackage("cards",1);
+        proof->UploadPackage("libs", PROPT ); 
+        proof->EnablePackage("libs",1);
+        proof->ShowPackages();
+        proof->Exec(".! uname -a");
+        cout << "___________________________________________"<<endl;
+
+       proof->Load("../CLA/dbxAna.C");
+
+       dbxAna anAna;
+       vector<string> tnames;
+       tnames.push_back("nominal");
+       TString          runname_tmp="107705";
+       TString  runfile=runname_tmp;
+                runfile+=".txt";
+
+       vector<string>::iterator aniter;
+       for (aniter = tnames.begin(); aniter < tnames.end(); aniter++){
+          cout << "will work on Tree:"<<aniter->data()<< " From following files:"<<endl;
+          TDSet *aset = new TDSet ("TTree",aniter->data() );
+          string item_name;
+          ifstream nameFileout;
+                   nameFileout.open(runfile);
+            while (nameFileout >> item_name) {
+                     std::cout << item_name<<"\n";
+             aset->Add(item_name.data());
+            }
+
+        cout << "----------------------------------------"<<endl;
+//        proof->Process(aset, &anAna, " ", 0);
+       
+//      proof->Process(aset, "dbxAna", " -BP 1 -S 0 -AtlMin 1 ", 0); // the real execution
+        aset->Process("dbxAna.C"," -BP 1 -S 0 -AtlMin 1 ",0); // the real execution
+      }
+
+
+
+       proof->Close();
+       std::cout << "proof run finished\n";
+       exit (0);
+      }
+*/
 
 int ival=atoi(argv[1]);
 if (ival==0) {
@@ -184,6 +248,9 @@ if (ival==0) {
   } 
 
   cout << "finished."<<endl;
+
+
+
   } else {
     std::cout <<"WARNING: No events found in files " << std::endl;
   }
