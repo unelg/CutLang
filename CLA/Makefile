@@ -14,6 +14,8 @@ INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC
 # allow Make to use the same include directories as locations of the sources of various files
 VPATH = $(subst -I,:,$(INCLUDES))
 
+JUPY	      = $(shell uname -n | grep -c 'jupyter')
+
 CXX           = $(shell root-config --cxx) -g -O3 -D__GRID__  -D__STANDALONE__  
 #-D_CLV_
 #-D__DEBUG__
@@ -23,8 +25,13 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS) -lMinuit -L. -lDBXNtuple_cpp  -ldbx_muon_h -ldbx_electron_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -lz
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_muon_h -ldbx_electron_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -lz
 GLIBS         = $(ROOTGLIBS)
+
+
+ifneq (0, ${JUPY})
+	 LIBS += -lCling -lpng
+endif
 
 ANLOBJS       = bp_a.o dump_a.o 
 OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o  AtlMin.o
@@ -44,7 +51,7 @@ CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) -lProof $(LIBS)
 
 b.o : parse.y
-	/usr/bin/bison -d -v -o b.cpp parse.y; $(CXX) $(INCLUDES) -std=c++11 -c b.cpp
+	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 
 l.o : parse.l
 	flex -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
