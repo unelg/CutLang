@@ -24,16 +24,18 @@ private:
     std::vector<myParticle*> inputParticles2;
     std::vector<myParticle> originalParticles2;
     dbxParticle myPart2;
+
 protected:
     virtual void ResetParticles() override;
-
     virtual void setParticleIndex(int order, int newIndex) override;
+
 public:
     LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,
               Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual void getParticles(std::vector<myParticle *>* particles) override;
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
     virtual double evaluate(AnalysisObjects* ao)  override;
+    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual ~LFuncNode() ;
 };
 

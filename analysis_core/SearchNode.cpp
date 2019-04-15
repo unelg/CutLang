@@ -9,7 +9,8 @@
 #endif
 
 using namespace std;
-    void SearchNode::performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao){
+
+void SearchNode::performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao){
           
         for(int i=0;i<v->size();i++){
             DEBUG(v->at(i)<<" ");
@@ -28,8 +29,8 @@ using namespace std;
                 } else { DEBUG("\n");}
       }
 
-    void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao) 
-      {
+void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,
+                                    vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type) {
       const int unk_MAX=6;
       int ip_N[unk_MAX]={N,N,N,N,N,N}; 
       int ip[unk_MAX]; 
@@ -38,24 +39,23 @@ using namespace std;
 
 
 //------------if less than 6, no other loops
-       for (int i=maxDepth; i<6; i++) ip_N[i]=1;
-
+      for (int i=maxDepth; i<6; i++) ip_N[i]=1;
 
       for(int i=0;i<particles.size();i++){
                     oi[i]=particles.at(i)->index;
                       DEBUG(" oi:"<<oi[i]<<" ");
       }
-      DEBUG(" -|:"<<maxDepth<<"\n");
+      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #Fi:"<<FORBIDDEN_INDICES[type].size()<<"\n");
       // loops start ~~~~~~~~~~~
 
        DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n ");
 
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {
            DEBUG("0:"<<ip[0]<<"\n");
-           if ( FORBIDDEN_INDICES.find( ip[0] )!=FORBIDDEN_INDICES.end() ) continue;        
+           if ( FORBIDDEN_INDICES[type].find( ip[0] )!=FORBIDDEN_INDICES[type].end() ) continue;        
            for (ip[1]=ip1_min; ip[1]<ip_N[1]; ip[1]++) {
            DEBUG("1:"<<ip[1]<<"\n");
-            if ( FORBIDDEN_INDICES.find( ip[1] )!=FORBIDDEN_INDICES.end() ) continue;        
+            if ( FORBIDDEN_INDICES[type].find( ip[1] )!=FORBIDDEN_INDICES[type].end() ) continue;        
             if (ip_N[1]>0 && (ip[1]==ip[0])) continue;
             if ( (oi[0] == oi[1]) && (ip[0]>ip[1]) ) continue;
 
@@ -63,13 +63,13 @@ using namespace std;
                 DEBUG("2:"<< ip[2]<<"\n");
                 if ( maxDepth>2 ){ 
                    if ( ip_N[2]>0 && (ip[2]==ip[0] || ip[2]==ip[1])) continue;
-                   if ( FORBIDDEN_INDICES.find( ip[2] )!=FORBIDDEN_INDICES.end() ) continue;        
+                   if ( FORBIDDEN_INDICES[type].find( ip[2] )!=FORBIDDEN_INDICES[type].end() ) continue;        
                 }
                 for (ip[3]=ip3_min; ip[3]<ip_N[3]; ip[3]++) {
                   DEBUG("3: "<< ip[0] << " " << ip[1] << " " <<ip[2] <<" "<<ip[3]<<"\n" );
                   if ( maxDepth>3){ 
                      if ( ip_N[3]>0 && (ip[3]==ip[0] || ip[3]==ip[1] || ip[3]==ip[2])) continue;
-                     if ( FORBIDDEN_INDICES.find( ip[3] )!=FORBIDDEN_INDICES.end() ) continue;        
+                     if ( FORBIDDEN_INDICES[type].find( ip[3] )!=FORBIDDEN_INDICES[type].end() ) continue;        
                      if ( (oi[2]==oi[3]) && (ip[2]>ip[3]) ) continue;
                   }
                   for (ip[4]=ip4_min; ip[4]<ip_N[4]; ip[4]++) {
@@ -77,7 +77,7 @@ using namespace std;
                     //if (ip_N[5]>1)
                     if ( maxDepth>4)  {
                      if ( ip_N[4]>0 && (ip[4]==ip[0] || ip[4]==ip[1] || ip[4]==ip[2] || ip[4]==ip[3])) continue;
-                     if ( FORBIDDEN_INDICES.find( ip[4] )!=FORBIDDEN_INDICES.end() ) continue;        
+                     if ( FORBIDDEN_INDICES[type].find( ip[4] )!=FORBIDDEN_INDICES[type].end() ) continue;        
                      if ( ( oi[3] == oi[4]) &&(ip[3]>ip[4]) )  continue;
                     }
                      for (ip[5]=ip5_min; ip[5]<ip_N[5]; ip[5]++) {
@@ -85,7 +85,7 @@ using namespace std;
                       //if (ip_N[5]>1)
                       if (maxDepth>5) {
                        if ( ip_N[5]>0 &&(ip[5]==ip[0] || ip[5]==ip[1] || ip[5]==ip[2] || ip[5]==ip[3] || ip[5]==ip[4])) continue;
-                       if ( FORBIDDEN_INDICES.find( ip[5] )!=FORBIDDEN_INDICES.end() ) continue;        
+                       if ( FORBIDDEN_INDICES[type].find( ip[5] )!=FORBIDDEN_INDICES[type].end() ) continue;        
                        if ( ( oi[4] == oi[5]) &&(ip[4]>ip[5]) )  continue;
                       }
 
@@ -113,7 +113,9 @@ using namespace std;
              }}}} //all iN loops end
 
     }
-    void SearchNode::runNestedLoopRec( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao) {
+
+   void SearchNode::runNestedLoopRec( int start, int N, int level, int maxDepth, vector<int> *v,
+                                     vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type) {
     if(level==maxDepth)  performInnerOperation (v,indices,curr_diff,ao); //18 without this function call
     else{
         bool skip=false;
@@ -124,13 +126,13 @@ using namespace std;
              if (v->at(kk)==x) {
                  skip=true; break;}
              //check if particle x is forbidden
-             if ( FORBIDDEN_INDICES.find(x)!=FORBIDDEN_INDICES.end() )//true if element is present
+             if ( FORBIDDEN_INDICES[type].find(x)!=FORBIDDEN_INDICES[type].end() )//true if element is present
                     {skip=true; break;}
             }
             if (skip) continue;
 
             v->push_back(x); //add the current value
-            runNestedLoopRec( start, N, level + 1, maxDepth, v,indices, curr_diff, ao );
+            runNestedLoopRec( start, N, level + 1, maxDepth, v,indices, curr_diff, ao, type);
             v->pop_back();//remove the value
         }
     }
@@ -145,22 +147,23 @@ using namespace std;
     }
 
     double SearchNode::evaluate(AnalysisObjects* ao) {
-            
-           
-            particles.clear();
-            left->getParticles(&particles);//should fill with particles pointers no more cast needed
+         
+        left->evaluate(ao);
 
-            vector<int> indices;
-            DEBUG("\n");
-            for(int i=0;i<particles.size();i++){
+        particles.clear();
+        left->getParticles(&particles);//should fill with particles pointers no more cast needed
+
+        vector<int> indices;
+        DEBUG("\n");
+        for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);
-                else FORBIDDEN_INDICES.insert(particles.at(i)->index);
-            }
+                else FORBIDDEN_INDICES[particles.at(i)->type].insert(particles.at(i)->index);
+        }
 
-            int MaxDepth=indices.size();//number of nested loops needed
-            DEBUG("Depth:"<<MaxDepth<<"\n");
-            if(indices.size()>0){
+        int MaxDepth=indices.size();//number of nested loops needed
+        DEBUG("Depth:"<<MaxDepth<<"\n");
+        if(indices.size()>0){
 
                     int type=particles.at(indices[0])->type;
                     int Max;
@@ -173,17 +176,16 @@ using namespace std;
                     }
                     vector<int> v;//--------------------why not pass it by reference?!
                     double current_difference =9999999999.9;
-                    runNestedLoopBarb( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao);
-                   // runNestedLoopRec( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao);
+                    runNestedLoopBarb( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao, type);
+                   // runNestedLoopRec( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao, type);
 
                     for(int i=0;i<bestIndices.size();i++){
                         particles.at(indices[i])->index=bestIndices[i];//directly changing the concerned particle
                         //-------------------add found indices to FORBIDDEN
-                        FORBIDDEN_INDICES.insert(bestIndices[i]);
+                        FORBIDDEN_INDICES[type].insert(bestIndices[i]);
                         DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<"@"<<indices[i] <<" type:"<<particles.at(indices[i])->type<<"  addr:"<<particles.at(indices[i]) <<" \n");
                     }
-            }
-            else{
+        } else{
                 DEBUG("No negative index found... Returning\n");
             }
             DEBUG("\n");
@@ -191,7 +193,11 @@ using namespace std;
     }
 
     void SearchNode::Reset() {
-            FORBIDDEN_INDICES.clear();
+            FORBIDDEN_INDICES[0].clear();
+            FORBIDDEN_INDICES[1].clear();
+            FORBIDDEN_INDICES[2].clear();
+            FORBIDDEN_INDICES[3].clear();
+            FORBIDDEN_INDICES[4].clear();
             left->Reset();//assuming right doesnt need a Reset because it's a value Node
     }
 

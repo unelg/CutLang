@@ -17,8 +17,7 @@ private:
     Node* userObject;
     double (*f)(AnalysisObjects*);
 public:
-    SFuncNode(double (*func)(AnalysisObjects* ao), std::string s, Node *objectNode = NULL) 
-    {
+    SFuncNode(double (*func)(AnalysisObjects* ao), std::string s, Node *objectNode = NULL) {
         f=func;
         symbol=s;
         left=NULL;
@@ -28,7 +27,10 @@ public:
     
     virtual double evaluate(AnalysisObjects* ao) override {
         if(userObject) {
-            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+//           cout <<"BEFORE:"<<ao->jets.size()<<"\n";
+//           cout<<"UOs EVALUATED:"<< getStr() <<"\n";
+           userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+//           cout <<"AFTER:"<<ao->jets.size()<<"\n";
         }
         return (*f)(ao);
     }

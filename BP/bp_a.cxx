@@ -88,7 +88,7 @@ int BPdbxA:: readAnalysisParams() {
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
               tempS1 = tempLine.substr(4, apos-4);
-              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+           //   tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
               cout <<tempS1<<"\n";
               effCL.push_back(tempS1);
            } else {
@@ -146,10 +146,10 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
        if (retval){
-         cout << "\nSYNTAX error check the input file\n";
+         cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
        }
-       cout << "\nWe have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
+       cout << "We have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
 
    minpte  = PtEtaInitializations[0];
    minptm  = PtEtaInitializations[1];
@@ -171,6 +171,7 @@ int BPdbxA:: readAnalysisParams() {
     {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
+            cout<<" CUT "<<iter->first<<"--->"<<iter->second->getStr()<<"\n";
 
 //           TString newLabels=iter->second->getStr();
            TString newLabels=effCL[ iter->first -1];
@@ -310,13 +311,24 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         }
 
 //------------selection of good jets----------------------------------
+        bool jetok=true;
         for (UInt_t i=0; i<jets.size(); i++) {
                TLorentzVector jet4p = jets.at(i).lv();
                if (   (fabs(jet4p.Pt())  > minptj ) // this corresponds to min PT cut
                     && (jet4p.E() >= 0)
                     && (fabs(jet4p.Eta())<= maxetaj) 
                    )
-                   goodJets.push_back(jets.at(i) );
+                   jetok=true;
+/*
+                   for (UInt_t ie=0; ie<goodElectrons.size(); ie++) {
+                    if (jets.at(i).lv().DeltaR( goodElectrons.at(ie).lv())  < 0.5) {
+                       jetok= false;
+//                       break;
+                    }
+                   }
+*/                   
+
+                   if (jetok) goodJets.push_back(jets.at(i) );
         }
 
 ///////
@@ -334,7 +346,7 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 
-//    std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"  ";
+ //  std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"\n";
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -358,7 +370,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != NodeCuts.end())
     {   
         a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
-
         DEBUG("Selecting: "<<iter->first<<" |");
         double d=iter->second->evaluate(&a0); // execute the selection cut
         DEBUG(" Result : " << d << std::endl);

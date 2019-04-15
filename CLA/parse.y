@@ -23,7 +23,7 @@ int dnum;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
-std::unordered_set<int> SearchNode::FORBIDDEN_INDICES;
+std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -143,6 +143,7 @@ function : '{' particules '}' 'm' {
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
+                                       cout << "Mass function\n";
                                   }
          | '{' particules '}' 'm' '(' ID ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
@@ -151,7 +152,7 @@ function : '{' particules '}' 'm' {
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                        cout <<"aaa\n";
+                                        cout << "Mass function with "<< $6<<"\n";
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Mof,newList,"m", it->second);
@@ -880,16 +881,45 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 cout <<$12<<" : " ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                                std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
     
+				}
+        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+//                                        std::cout << "\nID:"<< $12 <<"\n";
+                                        it = NodeVars->find($12);
+                        
+                                        if(it == NodeVars->end()) {
+                                                cout <<$12<<" : " ;
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+    
+				}
+        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
+//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
+        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
+//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
 				}
 	;
 description : description HID {                                                 
@@ -902,8 +932,7 @@ description : description HID {
                              }
             | HID {if (dnum==0){
                                                 $$=strdup($1);                                                       
-                                        }
-                                        else{                                                
+                                } else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
@@ -911,7 +940,7 @@ description : description HID {
                                                 strcpy($$,s);
                                         }
                                         //dnum++;
-                                        }
+                  }
         ;
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
@@ -937,6 +966,17 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e EQ e { $$=new BinaryNode(eq,$1,$3,"=="); } 
            | e NE e { $$=new BinaryNode(ne,$1,$3,"<>"); }   
            | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
+//         | e '(' ID ')' MINIMIZE e { 
+//                                    map<string,Node*>::iterator ito = ObjectCuts->find($3);
+//                                    if(ito == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $3;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                    } else {
+//                                         cout <<ito->first <<" recognized for search.\n";
+//                                         $$=new SearchNode(minim,$1,$6,"~=",ito); 
+//                                    }
+//                                   }
            | e MAXIMIZE e { $$=new SearchNode(maxim,$1,$3,"!="); }
            | e IRG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
@@ -1015,7 +1055,6 @@ e : e '+' e  {
                         cout <<$1<<" : " ;
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
-                        
                 }
                 else {
                         $$=it->second;
@@ -1030,11 +1069,21 @@ e : e '+' e  {
                         cout <<$1<<" : " ;
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
-                        
                 }
                 else {
-                        $$=it->second;
+                        cout <<it->first <<" recognized.\t";
+                        cout <<it->second->getStr()<<"\n";
                 }
+                map<string,Node*>::iterator ito = ObjectCuts->find($3);
+                                      if(ito == ObjectCuts->end()) {
+                                           std::string message = "User object not defined: "; message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                      } else {
+                                        cout <<ito->first <<" recognized.\n";
+                                        it->second->setUserObjects(ito->second);
+                                      }
+                        $$=it->second;
     } 
    ;
 %%
