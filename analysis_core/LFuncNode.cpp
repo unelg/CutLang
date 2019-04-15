@@ -6,7 +6,7 @@
 #define DEBUG(a)
 #endif
 
-    void LFuncNode::ResetParticles() {
+void LFuncNode::ResetParticles() {
           for(int i=0;i<originalParticles.size();i++){
                 *(inputParticles[i])=originalParticles[i];
 
@@ -17,7 +17,7 @@
           }
     }
 
-    void LFuncNode::setParticleIndex(int order, int newIndex) {
+void LFuncNode::setParticleIndex(int order, int newIndex) {
         if(order<inputParticles.size()){
             inputParticles.at(order)->index=newIndex;
         }
@@ -27,7 +27,7 @@
     }
     
 
-    LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea, objectNodeb, objectNodec, objectNoded) {
+LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea, objectNodeb, objectNodec, objectNoded) {
         f2=func;
         inputParticles2=input2;
         myParticle apart2;
@@ -44,7 +44,7 @@
     }
     
 
-    void LFuncNode::getParticles(std::vector<myParticle *>* particles) {
+void LFuncNode::getParticles(std::vector<myParticle *>* particles) {
         cout<<"MODIFY TO CHECK FOR EXISTING INDICES in ListFuncNode------\n";
         for (int i=0; i<inputParticles.size(); i++){
             particles->push_back(inputParticles[i]);
@@ -54,12 +54,21 @@
             } 
     }
 
-    void LFuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
+void LFuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
         particles->push_back(inputParticles[index]);
         particles->push_back(inputParticles2[index]);
-    }
-    
-    double LFuncNode::evaluate(AnalysisObjects* ao)  {
+}
+
+void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
+       cout <<"Adding UOs 2 LF\n";
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+}
+
+   
+double LFuncNode::evaluate(AnalysisObjects* ao)  {
         if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
@@ -68,8 +77,9 @@
         partConstruct(ao, &inputParticles,&myPart);
         partConstruct(ao, &inputParticles2,&myPart2);
         return (*f2)(&myPart,&myPart2);
-    }
-    LFuncNode::~LFuncNode() {}
+}
+
+LFuncNode::~LFuncNode() {}
     
 
 

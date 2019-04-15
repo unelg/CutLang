@@ -33,6 +33,10 @@ class Node{
 protected:
     Node* left;
     Node* right;
+    Node* userObjectA;
+    Node* userObjectB;
+    Node* userObjectC;
+    Node* userObjectD;
     std::string symbol;
     void getStr(TString *ss);
     void display(std::string indent);
@@ -43,7 +47,24 @@ public:
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index)=0;
     void display();
     virtual TString getStr();
-    virtual double evaluate(AnalysisObjects* ao)=0;
+    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL){std::cout<<"Mother adds UOs.\n";
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+     };
+
+  virtual double evaluate(AnalysisObjects* ao){
+   //  std::cout <<"BEFORE M:"<<ao->jets.size()<<"\n";
+     if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+     if ( userObjectA || userObjectB || userObjectC || userObjectD ) std::cout<<"UOs EVALUATED:"<< getStr() <<"\n";
+   //  std::cout <<"AFTER M:"<<ao->jets.size()<<"\n";
+
+    return 0;
+  }
     virtual ~ Node();
     std::vector<dbxJet> tagJets(AnalysisObjects *ao, int jtype) ;
 

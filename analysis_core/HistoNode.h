@@ -17,12 +17,12 @@ class HistoNode : public Node{
 private:
     std::string id;
     std::string Desciption;
-    int lowerLimit;
-    int upperLimit;
+    float lowerLimit;
+    float upperLimit;
     int bins;
     TH1D *ahisto;
 public:
-    HistoNode( std::string id,std::string desc,int n, int l1,int l2,Node* l){
+    HistoNode( std::string id,std::string desc,int n, float l1, float l2,Node* l){
         this->id=id;
         Desciption=desc;
         lowerLimit=l1;

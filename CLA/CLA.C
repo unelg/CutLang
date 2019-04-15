@@ -4,6 +4,7 @@
 #include "cmsod.h"
 #include "delphes.h"
 #include "lvl0.h"
+#include "VLLMin.h"
 #include "AtlMin.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
@@ -49,18 +50,17 @@ int main(int argc, char*argv[])
  bool use_delphes=false;
  bool use_atlasod=false;
  bool use_cmsod=false;
+ bool use_vllmin=false;
  bool use_proof=false;
 
  string inptype;
  char *username=NULL;
 
- cout << "CLA v2.2.0\n";
+ cout << "CLA v02.02.00\n";
 
 for (int i = 2; i < argc; i++) {
      if (i + 1 != argc) // Check that we haven't finished parsing already
-         if        (std::string(argv[i]) == "-FF")  { // FF
-             aselect.FFcount = atoi(argv[i + 1]);   i++;
-         } else if (std::string(argv[i]) == "-D")  { // Dump                  
+         if        (std::string(argv[i]) == "-D")  { // Dump                  
              aselect.Dumpcount = atoi(argv[i + 1]);   i++;
          } else if (std::string(argv[i]) == "-BP") { // BP 
              aselect.BPcount = atoi(argv[i + 1]);  i++;
@@ -89,7 +89,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " d3pd.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASOD | CMSOD]\n"  
+                       << " [-inp LVL0 | VLL | LHCO | FCC | DELPHES | ATLASOD | CMSOD]\n"  
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"  
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -101,6 +101,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
+ else if (inptype == "VLL")     { use_vllmin =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
@@ -209,6 +210,9 @@ if (ival==0) {
   }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("mini");
+  }else if (use_vllmin){
+   cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
+   chain = new TChain("/physics/nominal");
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
    chain = new TChain("Delphes");
@@ -239,6 +243,9 @@ if (ival==0) {
    } else if (use_atlasod){
     atlasopen *atlasoda=new atlasopen("XXX",chain);
                atlasoda->Loop(aselect, username);
+   } else if (use_vllmin){
+     VLLMin *vllmina=new VLLMin("XXX",chain);
+             vllmina->Loop(aselect, username);
    } else if (use_fcc){
     fcc *fcca=new fcc("XXX",chain);
          fcca->Loop(aselect, username);

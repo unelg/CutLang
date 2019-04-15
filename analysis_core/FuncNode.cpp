@@ -73,6 +73,14 @@ void FuncNode::setParticleIndex(int order, int newIndex){
 }
 
 
+void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
+    cout <<"Adding UOs 2 FN\n";
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+}
+
 FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input, std::string s, Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
         f=func;
         symbol=s;
@@ -121,19 +129,20 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
+    // cout <<"BEFORE F:"<<ao->jets.size()<<"\n";
+     
      if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-
+     if ( userObjectA || userObjectB || userObjectC || userObjectD ) cout<<"UOs EVALUATED:"<< getStr() <<"\n";
+    // cout <<"AFTER F:"<<ao->jets.size()<<"\n";
      partConstruct(ao, &inputParticles,&myPart);
      DEBUG(" constructed \t");
      return (*f)(&myPart );
 }
 
 FuncNode::~FuncNode() {}
-
-
 
 double Qof( dbxParticle* apart){
     double charge=apart->q();
