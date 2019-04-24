@@ -34,7 +34,7 @@ ifneq (0, ${JUPY})
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o  AtlMin.o VLLMin.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o  AtlMin.o VLLMin.o CMSnanoAOD.o
 OBJS_2        = CLA.o b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
@@ -54,7 +54,7 @@ b.o : parse.y
 	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 
 l.o : parse.l
-	flex -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
+	flex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 
 auxiliaries:
 	$(MAKE) -C $(SUBDIRLOC)analysis_core

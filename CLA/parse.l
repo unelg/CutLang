@@ -11,16 +11,16 @@ class Node;
 #include "myParticle.h"
 #include "b.hpp"
 %}
-integer [-]?[0-9]+
-exp [eE][+-]?{integer}
-real {integer}("."{integer})?{exp}?
+integer [0-9]+
+exp `[eE][+-]?{integer}'
+real {integer}("."{integer})
 varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%
-"def" return DEF;//case sensitive in this case
-"cmd" return CMD;
-"obj" return OBJ;
-"algo" return ALGO;
+"def"|"define" return DEF;//case sensitive in this case
+"cmd"|"cut"|"select"|"command" return CMD;
+"obj"|"object" return OBJ;
+"algo"|"region"|"algorithm" return ALGO;
 "histo" return HISTO;
 "minptm" return MINPTM;
 "minptg" return MINPTG;
@@ -39,8 +39,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "btag_lowthreshold_DELPHES" return DELPHES;
 "btag_lowthreshold_FCC" return FCC;
 "btag_lowthreshold_LHCO" return LHCO;
-"ELE" return ELE;//particles
-"MUO" return MUO;
+"ELE"|"ELECTRON" return ELE;//particles
+"MUO"|"MUON"|"Muon" return MUO;
 "LEP" return LEP;
 "PHO" return PHO;
 "JET" return JET;
@@ -88,9 +88,13 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
-{integer} sscanf(yytext, "%lf",&yylval.real);return INT;
+[aA][bB][sS] return ABS;
+[sS][oO][rR][tT] return SORT;
+[cC][oO][mM][bB] return COMB;
+[pP][eE][rR][mM] return PERM;
+{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-[-+*/()^:{}_mqPE,?=] return *yytext;
-[a-zA-Z]+{integer}?[a-zA-Z]* yylval.s=strdup(yytext);return ID;
+[-+*/()^:\[\]{}_mqPE,?=] return *yytext;
+[a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\"".*"\"" yylval.s=strdup(yytext);return HID;
 %%
