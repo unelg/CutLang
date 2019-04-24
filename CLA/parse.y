@@ -33,7 +33,8 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %}
 %union {
         Node* node;
-	double real;
+       double real;
+          int integer;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
 %parse-param {std::list<std::string> *parts}
@@ -50,10 +51,11 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token MINIMIZE MAXIMIZE
+%token PERM COMB SORT
 %token <real> NB
+%token <integer> INT
 %token <s> ID HID 
-%token SIN COS TAN
-%token <real> INT
+%token SIN COS TAN ABS
 %token OR AND 
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
@@ -64,7 +66,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %right '?'
 %right Unary
 %right '^'
-%type <real> index
+%type <integer> index
 %type <node> e function condition action ifstatement
 %type <s> particule particules list description
 %%
@@ -83,7 +85,7 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
                 | MAXETAG '=' NB {Initializations->at(7)=$3;}
                 | MAXMET '=' NB {Initializations->at(8)=$3;}
                 | TRGE  '=' INT {Initializations->at(9)=$3; }
-                | TRGM  '=' INT {Initializations->at(10)=$3; }
+                | TRGM  '=' INT {Initializations->at(10)=0.0; }
                 | LVLO '=' NB  {DataFormats->at(0)=$3;}
                 | ATLASOD '=' NB {DataFormats->at(1)=$3;}
                 | CMSOD '=' NB {DataFormats->at(2)=$3;}
@@ -140,6 +142,12 @@ definition : DEF  ID  ':' particules {
 //---------------------------------------
 //---------------------------------------
 function : '{' particules '}' 'm' {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);
+                                       $$=new FuncNode(Mof,newList,"m");
+                                       cout << "Mass function\n";
+                                  }
+         | 'm' '(' particules ')' {     
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
@@ -257,6 +265,11 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
+         | PHI '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Phiof,newList,"phi");
+                                  }
          | '{' particules '}' PHI '(' ID  ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
                                        if(it == ObjectCuts->end()) {
@@ -271,6 +284,11 @@ function : '{' particules '}' 'm' {
                                 }
 //---------------------------------------
          | '{' particules '}' ETA {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Etaof,newList,"eta");
+                                  }
+         | ETA '(' particules ')' {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
@@ -311,6 +329,11 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
                                  }
+         | PT '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Ptof,newList,"pt");
+                                 }
          | '{' particules '}' PT '(' ID  ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
                                        if(it == ObjectCuts->end()) {
@@ -325,6 +348,11 @@ function : '{' particules '}' 'm' {
                                 }
 //---------------------------------------
          | '{' particules '}' PZ {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Pzof,newList,"pz");
+                                 }
+         | PZ '(' particules ')' {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
@@ -354,6 +382,13 @@ function : '{' particules '}' 'm' {
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
+         | DR list { 
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dR,newList1,newList,"dR");
+                   }
          | list DR  '(' ID  ')' {  //-----------with user objects
                                        map<string,Node*>::iterator it = ObjectCuts->find($4);
                                        if(it == ObjectCuts->end()) {
@@ -375,14 +410,28 @@ function : '{' particules '}' 'm' {
                                                 vector<myParticle*> newList1;
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
-                                }
+                    }
+        | DPHI list { 
+                                                vector<myParticle*> newList;
+                                                TmpParticle.swap(newList);
+                                                vector<myParticle*> newList1;
+                                                TmpParticle1.swap(newList1);
+                                                $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
+                    }
         | list DETA { 
                                                 vector<myParticle*> newList;
                                                 TmpParticle.swap(newList);
                                                 vector<myParticle*> newList1;
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dEta,newList1,newList,"dEta");
-                                }
+                    }
+        | DETA list { 
+                                                vector<myParticle*> newList;
+                                                TmpParticle.swap(newList);
+                                                vector<myParticle*> newList1;
+                                                TmpParticle1.swap(newList1);
+                                                $$=new LFuncNode(dEta,newList1,newList,"dEta");
+                    }
 //------------------------------------------
         | NELE {    
                                         string s="NELE";                                                              
@@ -581,6 +630,23 @@ function : '{' particules '}' 'm' {
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,s);
                 }
+        | COMB '(' particules  ')' {
+                                        VECTOR<MYPARTICLE*> NEWLIST;
+                                        TMPPARTICLE.SWAP(NEWLIST);
+                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+//           | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
+
+                                    }
+        | PERM '(' particules  ')' {
+                                        VECTOR<MYPARTICLE*> NEWLIST;
+                                        TMPPARTICLE.SWAP(NEWLIST);
+                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+                                    }
+        | SORT '(' particules  ')' {
+                                        VECTOR<MYPARTICLE*> NEWLIST;
+                                        TMPPARTICLE.SWAP(NEWLIST);
+                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+                                    }
         ;
 //------------------------------------------
 //------------------------------------------
@@ -589,7 +655,12 @@ list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
                                                         $$=strdup(s.c_str());
-
+                                                        }
+     | '(' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules ')' {
+                                                        string s=$2;
+                                                        string s2=$5;
+                                                        s="{ "+s+" , "+s2+" }";
+                                                        $$=strdup(s.c_str());
                                                         }
      ;
 particules : particules particule {                                                 
@@ -598,9 +669,8 @@ particules : particules particule {
                                                 strcat(s," ");
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
-
-                                        }
-            | particule {if (pnum==0){
+                                  }
+            | particule {   if (pnum==0){
                                                 $$=strdup($1);                                                       
                                         }
                                         else{                                                
@@ -610,7 +680,20 @@ particules : particules particule {
                                                 strcat(s,$1);
                                                 strcpy($$,s);
                                         }
-                                        pnum++;}
+                                        pnum++;
+                         }
+            | particule '+' {   if (pnum==0){
+                                                $$=strdup($1);                                                       
+                                        }
+                                        else{                                                
+                                                char s [512];
+                                                strcpy(s,$$); 
+                                                strcat(s," ");
+                                                strcat(s,$1);
+                                                strcpy($$,s);
+                                        }
+                                        pnum++;
+                         }
             ;
 particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
@@ -620,7 +703,16 @@ particule : ELE '_' index {
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
-        | MUO '_' index {       tmp="muo_"+to_string((int)$3);                        
+        | MUO '[' index ']' {   cout <<"HERE ------------------------------------------1!\n";
+                                tmp="muo_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 0;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
+        | MUO '_' index {       cout <<"HERE ------------------------------------------0!\n";
+				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 0;
@@ -694,7 +786,7 @@ particule : ELE '_' index {
                         }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-
+                cout<<"ID ------------------------\n";
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -783,8 +875,8 @@ particule : ELE '_' index {
              }
         ;
 index : '-' INT {$$=-$2;}
-      | INT {$$= $1;}
-      |     {$$= 6213;}
+          | INT {$$= $1;}
+          | {$$= 6213;} // NGU
       ; 
 objects : objectBlocs ALGO ID
         | ALGO
@@ -928,8 +1020,7 @@ description : description HID {
                                                 strcat(s," ");
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
-
-                             }
+                              }
             | HID {if (dnum==0){
                                                 $$=strdup($1);                                                       
                                 } else{                                                
@@ -1019,6 +1110,9 @@ e : e '+' e  {
                } 	
    |'-' e %prec Unary { 
                         $$=new UnaryAONode(unaryMinu,$2,"-");
+               }
+   | ABS '(' e ')' {    
+                        $$=new UnaryAONode(cos,$3,"fabs"); 
                }
    | COS '(' e ')' {    
                         $$=new UnaryAONode(cos,$3,"cos"); 

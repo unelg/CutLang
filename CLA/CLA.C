@@ -5,6 +5,7 @@
 #include "delphes.h"
 #include "lvl0.h"
 #include "VLLMin.h"
+#include "CMSnanoAOD.h"
 #include "AtlMin.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
@@ -50,6 +51,7 @@ int main(int argc, char*argv[])
  bool use_delphes=false;
  bool use_atlasod=false;
  bool use_cmsod=false;
+ bool use_cmsnano=false;
  bool use_vllmin=false;
  bool use_proof=false;
 
@@ -89,7 +91,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " d3pd.root \n"
-                       << " [-inp LVL0 | VLL | LHCO | FCC | DELPHES | ATLASOD | CMSOD]\n"  
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO]\n"  
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"  
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -99,10 +101,11 @@ for (int i = 2; i < argc; i++) {
       if (inptype == "LHCO")    { use_lhco =true;}
  else if (inptype == "FCC" )    { use_fcc  =true;}
  else if (inptype == "LVL0")    { use_lvl0 =true;}
+ else if (inptype == "DELPHES") { use_delphes =true;}
+ else if (inptype == "ATLASVLL"){ use_vllmin =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
- else if (inptype == "VLL")     { use_vllmin =true;}
- else if (inptype == "DELPHES") { use_delphes =true;}
+ else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
@@ -207,6 +210,9 @@ if (ival==0) {
   }else if (use_cmsod){
    cout << "~Now using CMS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("events");
+  }else if (use_cmsnano){
+   cout << "~Now using CMS NanoAOD files.~~~~~~ beta!\n";
+   chain = new TChain("Events");
   }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("mini");
@@ -237,6 +243,9 @@ if (ival==0) {
    } else if (use_lvl0){
     lvl0 *lvl0a=new lvl0("XXX",chain);
           lvl0a->Loop(aselect, username);
+   } else if (use_cmsnano){
+    CMSnanoAOD *CMSnanoAODa=new CMSnanoAOD("XXX",chain);
+                CMSnanoAODa->Loop(aselect, username);
    } else if (use_cmsod){
     cmsod *cmsoda=new cmsod("XXX",chain);
            cmsoda->Loop(aselect, username);

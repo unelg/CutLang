@@ -139,14 +139,14 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
 }
 
 
-    SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::string s){
+SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::string s){
         f=func;
         symbol=s;
         left=l;
         right=r;
-    }
+}
 
-    double SearchNode::evaluate(AnalysisObjects* ao) {
+double SearchNode::evaluate(AnalysisObjects* ao) {
          
         left->evaluate(ao);
 

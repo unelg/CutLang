@@ -47,6 +47,7 @@ int BPdbxA:: readAnalysisParams() {
     string subdelimiter = " ";
     string hashdelimiter = "#";
     size_t found;
+    size_t foundp;
     bool foundInFile(false);
     TString DefList2file="\n";
     TString CutList2file="\n";
@@ -68,8 +69,15 @@ int BPdbxA:: readAnalysisParams() {
        }
 
 //---------algo
-       found = tempLine.find("algo ");
+       found =tempLine.find("algo ") ;
        if (found!=std::string::npos) {
+           cout <<"ALGO\n";
+           algorithmnow=true;
+           continue;
+       }
+       found =tempLine.find("region ") ;
+       if (found!=std::string::npos) {
+           cout <<"REG\n";
            algorithmnow=true;
            continue;
        }
@@ -81,15 +89,17 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 //---------cmds
-       found=tempLine.find("cmd ");
-       if (found!=std::string::npos) {
+       found=tempLine.find("cmd ")  ;
+       foundp=tempLine.find("select ")  ;
+       if ((found!=std::string::npos) ||(foundp!=std::string::npos)) {
            if (algorithmnow) {
+              cout <<"CUT "<<tempLine<<"\n";
               CutList2file+=tempLine;
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
-              tempS1 = tempLine.substr(4, apos-4);
+              if (found!=std::string::npos) { tempS1 = tempLine.substr(found, apos-found);}
+              else                          { tempS1 = tempLine.substr(foundp, apos-foundp); }
            //   tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
-              cout <<tempS1<<"\n";
               effCL.push_back(tempS1);
            } else {
               ObjList2file+=tempLine;
@@ -144,6 +154,7 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
+       cout <<"================parsing===================\n";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
