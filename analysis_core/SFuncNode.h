@@ -9,16 +9,22 @@
 #ifndef SFuncNode_h
 #define SFuncNode_h
 #include "Node.h"
+
 using namespace std;
 //takes care of functions with arguments
 class SFuncNode : public Node {
 private:
     //should add something related to trigger types
     Node* userObject;
-    double (*f)(AnalysisObjects*);
+    double (*f)(AnalysisObjects*, string, int);
+    int type;
 public:
-    SFuncNode(double (*func)(AnalysisObjects* ao), std::string s, Node *objectNode = NULL) {
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id), 
+                      int id, 
+               std::string s, 
+               Node *objectNode = NULL) {
         f=func;
+        type=id;
         symbol=s;
         left=NULL;
         right=NULL;
@@ -26,13 +32,12 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) override {
+        cout <<"In SF Eval\n"; 
         if(userObject) {
-//           cout <<"BEFORE:"<<ao->jets.size()<<"\n";
-//           cout<<"UOs EVALUATED:"<< getStr() <<"\n";
+           cout <<"\t a user obj\n"; 
            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-//           cout <<"AFTER:"<<ao->jets.size()<<"\n";
         }
-        return (*f)(ao);
+        return (*f)(ao, symbol, type);
     }
 
     virtual void Reset() override{}
@@ -41,32 +46,41 @@ public:
     virtual ~SFuncNode() {}
 };
 
-double all(AnalysisObjects* ao){
+double all(AnalysisObjects* ao, string s, int id){
     return 1;
 }
-double njets(AnalysisObjects* ao) {
-    return (ao->jets.size());
+double count(AnalysisObjects* ao, string s, int id) {
+    particleType pid = (particleType)id;
+    cout << "STR:"<<s<<" Type:"<<id<<"\n";
+    cout << "#J types:"<<ao->jets.size() <<"\n";
+    map <string, std::vector<dbxJet>  >::iterator it;
+    for (it=ao->jets.begin();it!=ao->jets.end();it++){
+     cout << "\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n";
+    }
+
+
+    switch (pid) {
+     case muon_t:     return (ao->muos[s].size()); break;
+     case electron_t: return (ao->eles[s].size()); break;
+     case jet_t:      return (ao->jets[s].size()); break;
+     default:         return (-1); break;
+    }
+    return (-1);
 }
-double neles(AnalysisObjects* ao){
-    return (ao->eles.size() );
-}
-double nmuos(AnalysisObjects* ao){
-    return (ao->muos.size() );
-}
-double nphos(AnalysisObjects* ao){
-    return (ao->gams.size() );
-}
+/*
 double met(AnalysisObjects* ao){
-    return ( ao->met.Mod() );
+    return ( ao->met["MET"].Mod() );
 }
 double nbjets(AnalysisObjects* ao){
     ValueNode abc=ValueNode();
-    return (abc.tagJets(ao, 1).size() );
+//    return (abc.tagJets(ao, 1).size() );
+    return (1);
 }
 
 double nljets(AnalysisObjects* ao){
     ValueNode abc=ValueNode();
-    return (abc.tagJets(ao, 0).size() );
+//    return (abc.tagJets(ao, 0).size() );
+    return (1);
 }
 
 double ht(AnalysisObjects* ao){
@@ -74,7 +88,6 @@ double ht(AnalysisObjects* ao){
     for (UInt_t i=0; i<ao->jets.size(); i++) sum_htjet+=ao->jets.at(i).lv().Pt();
     return (sum_htjet  );       
 }
-
 
 double emwt(AnalysisObjects* ao){
     double theLeptonTrkPhi = ao->eles.at(0).lv().Phi();
@@ -111,6 +124,6 @@ double emetmwt(AnalysisObjects* ao){
     float mwt=sqrt(2*leppt*ao->met.Mod()*(1-cos(dphi_e_et)));
     return (mwt+ao->met.Mod() );
 }
-
+*/
 
 #endif /* SFuncNode_h */

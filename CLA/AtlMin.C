@@ -27,6 +27,17 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxElectron> electrons;
    vector<dbxPhoton>   photons;
    vector<dbxJet>      jets;
+   vector<dbxLJet>    ljets;
+   vector<dbxTruth>   truth;
+
+   map<string, vector<dbxMuon>     > muos_map;
+   map<string, vector<dbxElectron> > eles_map;
+   map<string, vector<dbxPhoton>   > gams_map;
+   map<string, vector<dbxJet>      > jets_map;
+   map<string, vector<dbxLJet>     >ljets_map;
+   map<string, vector<dbxTruth>    >truth_map;
+   map<string, TVector2            >  met_map;
+
    evt_data anevt;
    int extra_analysis_count=1;
    int year=2015;
@@ -200,8 +211,15 @@ std::cout << "MET OK"<<std::endl;
 std::cout << "Filling finished"<<std::endl;
 #endif
 
-   *a0={muons, electrons, photons, jets, met, anevt};
+       muos_map.insert( pair <string,vector<dbxMuon>     > ("Delphes_Muon",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("Delphes_Electron", electrons) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("Delphes_Photon",     photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("Delphes_Jet",           jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("Delphes_Fatjet",       ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Delphes_Truth",        truth) );
+         met_map.insert( pair <string,TVector2>             ("Delphes_MET",            met) );
 
+        *a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
 }
 
 //--------------------------------------------------------LOOP

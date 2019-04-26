@@ -166,13 +166,14 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         if(indices.size()>0){
 
                     int type=particles.at(indices[0])->type;
+                    string ac=particles.at(indices[0])->collection;
                     int Max;
                     switch(type){//assuming all particles have the same type
-                        case 0: Max=ao->muos.size();break;
-                        case 1: Max=ao->eles.size();break;
-                        case 2: Max=ao->jets.size();break;
-                        case 3: Max=left->tagJets(ao,1).size();break;
-                        case 4: Max=left->tagJets(ao,0).size();break;
+                        case 0: Max=ao->muos[ac].size();break;
+                        case 1: Max=ao->eles[ac].size();break;
+                        case 2: Max=ao->jets[ac].size();break;
+                        case 3: Max=left->tagJets(ao,1,ac).size();break;
+                        case 4: Max=left->tagJets(ao,0,ac).size();break;
                     }
                     vector<int> v;//--------------------why not pass it by reference?!
                     double current_difference =9999999999.9;

@@ -34,7 +34,6 @@ public:
 };
 
 double maxim( double difference, double current_difference);
-
 double minim( double difference, double current_difference);
 
 #endif

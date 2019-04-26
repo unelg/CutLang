@@ -20,13 +20,12 @@ class ObjectNode : public Node{
         //still need to add something to save the modifed AO
         std::vector<myParticle *> particles;//used to collect particle pointers to be changed
     protected:
-        void (* createNewSet) (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
+        void (* createNewSet) (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
     public:
         string name;
-        ObjectNode(string id,Node* previous, 
-        void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
-        std::vector<myParticle *>* particles ), vector<Node*> criteria,  
-        std::string s );
+           int type;
+        ObjectNode(string id,Node* previous, void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
+                   std::vector<myParticle *>* particles, std::string name, std::string basename ), vector<Node*> criteria,  std::string s );
         
         virtual void Reset() override;
         
@@ -37,8 +36,8 @@ class ObjectNode : public Node{
         virtual ~ObjectNode();
 };
 
-void createNewJet (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
-void createNewEle (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
-void createNewMuo (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
-void createNewPho (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles);
+void createNewJet (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
+void createNewEle (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
+void createNewMuo (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
+void createNewPho (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 #endif /* ObjectNode_hpp */

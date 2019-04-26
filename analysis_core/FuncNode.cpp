@@ -1,6 +1,6 @@
 #include "FuncNode.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -18,47 +18,51 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
         inputPart->Reset();
         
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
-         DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<   "\n");
+         DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\n");
+         DEBUG("name:"<<(*i)->collection <<"\n"); // burada STR de print et
         }
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
-                switch (atype) { 
-                                                case 0: inputPart->setTlv(  inputPart->lv()+ao->muos[ (*i)->index ].lv() ); // 0 is muon
-                                                        inputPart->setCharge(inputPart->q()+ao->muos[ (*i)->index ].q()  );
-                                                        inputPart->setIsTight(ao->muos[ (*i)->index ].isZCand()); // i am overloading the isTight
-                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ (*i)->index ].q()<<"  ");
+                int ai=(*i)->index;
+             string ac=(*i)->collection;
+                switch (atype) {  //----burada STR ile mapda find ediliyor
+                                                case 0: //ao->muons_map-->find...
+                                                        inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
+                                                        inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
+                                                        inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  ");
                                                         break;
-                                                case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ (*i)->index ].lv() ); // 1 is electron
-                                                        inputPart->setCharge(inputPart->q()+ao->eles[ (*i)->index ].q()  );
-                                                        inputPart->setIsTight(ao->eles[ (*i)->index ].isZCand()); // i am overloading the isTight
+                                                case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
+                                                        inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
+                                                        inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
                                             	case 2: DEBUG("jet:"<<(*i)->index<<" ");
-                                                        inputPart->setTlv(inputPart->lv()   +   ao->jets[ (*i)->index ].lv() ); // 2 is any jet
-                                                        //inputPart->setTlv( ao->jets[ (*i)->index ].lv() ); // 2 is any jet
+                                                        inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
                                                         break;
-                                                case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
-                                                        DEBUG("b-jet:"<<(*i)->index<<"  ");
-                                                        break;
-                                                case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0)[ (*i)->index ].lv()); // 4 is light jet
-                                                        DEBUG("qgjet:"<<(*i)->index<<" ");
-                                                        break;
-                                                case 5: v_eta=ao->muos[(*i)->index].lv().Eta();
-                                                        ametlv.SetPtEtaPhiM(ao->met.Mod(), v_eta,ao->met.Phi(),0);
+///                                             case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
+///                                                     DEBUG("b-jet:"<<(*i)->index<<"  ");
+///                                                     break;
+///                                             case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0)[ (*i)->index ].lv()); // 4 is light jet
+///                                                     DEBUG("qgjet:"<<(*i)->index<<" ");
+///                                                     break;
+/// --------------------------------------------std::map<std::string, TVector2                 > met;
+                                                case 5: v_eta=ao->muos[ac].at(ai).lv().Eta();
+                                                        ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
                                                         inputPart->setTlv(inputPart->lv()+ametlv); // met4v is v from MET using same eta approx.
                                                         DEBUG("muMET ");
                                                         break;
-                                                case 6: v_eta=ao->eles[ (*i)->index ].lv().Eta();
-                                                        ametlv.SetPtEtaPhiM(ao->met.Mod(), v_eta,ao->met.Phi(),0);
+                                                case 6: v_eta=ao->eles[ac].at(ai).lv().Eta();
+                                                        ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
                                                         inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
                                                         DEBUG("eleMET ");
                                                         break;
                                                 case 7: DEBUG("MET LV\n ");
-                                                        ametlv.SetPxPyPzE(ao->met.Px(), ao->met.Py(), 0, ao->met.Mod());
+                                                        ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                                                         inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
                                                         break;
                                                 case 8: DEBUG("gamma:"<< (*i)->index <<" ");
-                                                        inputPart->setTlv(inputPart->lv()+ao->gams[ (*i)->index ].lv()); // 8 is gammas
+                                                        inputPart->setTlv(inputPart->lv()+ao->gams[ac].at(ai).lv()); // 8 is gammas
                                                         break;
 
                                             default: std::cout<<"No such object! ERROR\n";
@@ -81,10 +85,11 @@ void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *object
         userObjectD=objectNoded;
 }
 
-FuncNode::FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input, std::string s, Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
+FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*> input, std::string s, 
+                         Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
         f=func;
         symbol=s;
-        inputParticles=input;
+        inputParticles=input; // type, index, string=ELE, crELE, ELEsr... ve/veya Node*objectNode
         myParticle apart;
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
@@ -129,15 +134,17 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
-    // cout <<"BEFORE F:"<<ao->jets.size()<<"\n";
-     
+     cout <<"In function Node evaluate\n";
+// all objects in *ao are as they were read from the file     
      if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
      if ( userObjectA || userObjectB || userObjectC || userObjectD ) cout<<"UOs EVALUATED:"<< getStr() <<"\n";
-    // cout <<"AFTER F:"<<ao->jets.size()<<"\n";
-     partConstruct(ao, &inputParticles,&myPart);
+// now *ao is enhanced with new collections
+
+//   diyelim multi layered ao yapildi... her parcacik icin STR de var.
+     partConstruct(ao, &inputParticles, &myPart);
      DEBUG(" constructed \t");
      return (*f)(&myPart );
 }

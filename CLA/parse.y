@@ -49,7 +49,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NELE NMUO NLEP NPHO NJET NBJET NQGJET HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT
 %token <real> NB
@@ -166,45 +166,46 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(Mof,newList,"m", it->second);
                                        }
                                 }
-         | '{' particules '}' 'm' '(' ID ',' ID ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       map<string,Node*>::iterator kt = ObjectCuts->find($8);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else if(kt == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $8;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Mof,newList,"m", it->second, kt->second);
-                                       }
-                                }
-         | '{' particules '}' 'm' '(' ID ',' ID ',' ID ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       map<string,Node*>::iterator kt = ObjectCuts->find($8);
-                                       map<string,Node*>::iterator lt = ObjectCuts->find($10);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else if(kt == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $8;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else if(lt == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $10;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Mof,newList,"m", it->second, kt->second, lt->second);
-                                       }
-                                }
+//---------------------------------------
+//       | '{' particules '}' 'm' '(' ID ',' ID ')' {     
+//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
+//                                     map<string,Node*>::iterator kt = ObjectCuts->find($8);
+//                                     if(it == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $6;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else if(kt == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $8;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else {
+//                                      vector<myParticle*> newList;
+//                                      TmpParticle.swap(newList);
+//                                      $$=new FuncNode(Mof,newList,"m", it->second, kt->second);
+//                                     }
+//                              }
+//       | '{' particules '}' 'm' '(' ID ',' ID ',' ID ')' {     
+//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
+//                                     map<string,Node*>::iterator kt = ObjectCuts->find($8);
+//                                     map<string,Node*>::iterator lt = ObjectCuts->find($10);
+//                                     if(it == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $6;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else if(kt == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $8;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else if(lt == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $10;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else {
+//                                      vector<myParticle*> newList;
+//                                      TmpParticle.swap(newList);
+//                                      $$=new FuncNode(Mof,newList,"m", it->second, kt->second, lt->second);
+//                                     }
+//                              }
 //---------------------------------------
          | '{' particules '}' 'q' {     
                                        vector<myParticle*> newList;
@@ -343,7 +344,7 @@ function : '{' particules '}' 'm' {
                                        } else {
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(Ptof,newList,"pt", it->second);
+                                        $$=new FuncNode(Ptof,newList,"pt", it->second, it->first); // NGUUUUUUUUUUUUUUUUU
                                        }
                                 }
 //---------------------------------------
@@ -432,13 +433,7 @@ function : '{' particules '}' 'm' {
                                                 TmpParticle1.swap(newList1);
                                                 $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
-//------------------------------------------
-        | NELE {    
-                                        string s="NELE";                                                              
-                                        $$=new SFuncNode(neles,s);
-               }
-
-        | NELE '(' ID ')' {
+        | NUMOF '(' ID ')'  {      
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if(it == ObjectCuts->end()) {
                                            std::string message = "Object not defined: ";
@@ -447,206 +442,50 @@ function : '{' particules '}' 'm' {
                                            YYERROR;
                                        }
                                        else {
-                                           string s="NELE";
-                                           $$=new SFuncNode(neles, s, it->second);
+                                            int id=((ObjectNode*)it->second)->type;
+                                            $$=new SFuncNode(count,id, it->first, it->second);
                                        }
                            }
-//------------------------------------------
-        | NMUO {    
-                                        string s="NMUO";                                                              
-                                        $$=new SFuncNode(nmuos,s);
-               }
-        
-        | NMUO '(' ID ')' {
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       }
-                                       else {
-                                           string s="NMUO";
-                                           $$=new SFuncNode(nmuos, s, it->second);
-                                       }
-                           }
-//------------------------------------------
-        | NLEP {    
-                                        string s="NLEP";
-                                        if(Initializations->at(10)>0){
-                                                $$=new SFuncNode(nmuos,s);
-                                        }
-                                        else{
-                                                $$=new SFuncNode(neles,s);
-                                        }
-               }                        
-//------------------------------------------
-        | NPHO {    
-                                        string s="NPHO";                                                              
-                                        $$=new SFuncNode(nphos,s);
-               }
-        | NPHO '(' ID  ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           string s="NPHO";
-                                           cout << "Found user defined object " << it->first << endl;
-                                           $$=new SFuncNode(nphos, s, it->second);
-                                       }
-                           }
-//------------------------------------------
-
-        | NJET {    
-                                        string s="NJET";                                                              
-                                        $$=new SFuncNode(njets,s);
-               }
-        | NJET '(' ID  ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           string s="NJET";
-                                           cout << "Found user defined object " << it->first << endl;
-                                           $$=new SFuncNode(njets, s, it->second);
-                                       }
-                           }
-//------------------------------------------
-        | NBJET {    
-                                        string s="NBJET";                                                              
-                                        $$=new SFuncNode(nbjets,s);
-                }
-        | NBJET '(' ID  ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           string s="NBJET";
-                                           cout << "Found user defined object " << it->first << endl;
-                                           $$=new SFuncNode(nbjets, s, it->second);
-                                       }
+        | NUMOF '(' ELE ')' {       
+                                           string s="ELE";
+                                           $$=new SFuncNode(count, 1, s);
                             }
-//------------------------------------------
-        | NQGJET {    
-                                        string s="NQGJET";                                                              
-                                        $$=new SFuncNode(nljets,s);
-                 }
-        | NQGJET '(' ID  ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           string s="NQGJET";
-                                           cout << "Found user defined object " << it->first << endl;
-                                           $$=new SFuncNode(nljets, s, it->second);
-                                       }
+        | NUMOF '(' MUO ')' {       
+                                           string s="MUO";
+                                           $$=new SFuncNode(count, 0, s);
                             }
-//------------------------------------------
-        | HT {    
-                                        string s="HT";                                                              
-                                        $$=new SFuncNode(ht,s);
-             }
-        | HT '(' ID  ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           string s="HT";
-                                           cout << "Found user defined object " << it->first << endl;
-                                           $$=new SFuncNode(ht, s, it->second);
-                                       }
-                         }
-//------------------------------------------
-        | METMWT {    
-                                        string s;                                                            
-                                        if(Initializations->at(10)>0){
-                                                s="m-METMWT";
-                                                $$=new SFuncNode(mmetmwt,s);
-                                                                        }
-                                        else{
-                                                s="e-METMWT";
-                                                $$=new SFuncNode(emetmwt,s);
-                                        }
-                 }
-//------------------------------------------
-        | MWT {    
-                                        string s;
-                                        if(Initializations->at(10)>0){
-                                                s="M-MWT";
-                                                $$=new SFuncNode(mmwt, s);
-                                        }else{
-                                                s="E-MWT";
-                                                $$=new SFuncNode(emwt,s);
-                                        }
-              }
-        | MWT '(' ID ')' {    
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        string s;
-                                        if(Initializations->at(10)>0){
-                                                s="M-MWT";
-                                                $$=new SFuncNode(mmwt,s, it->second);
-                                        }else{
-                                                s="E-MWT";
-                                                $$=new SFuncNode(emwt,s, it->second);
-                                        }
-                                       }
-                          }
-//------------------------------------------
-        | MET {    
-                                        
-                                        string s="MET";                                                              
-                                        $$=new SFuncNode(met,s);
-              }
+        | NUMOF '(' JET ')' {       
+                                           string s="JET";
+                                           $$=new SFuncNode(count, 2, s);
+                            }
 //------------------------------------------
         | ALL {    
                                         
-                                        $$=new SFuncNode(all,"all");
+                                        $$=new SFuncNode(all,0, "all");
 
               }
 //------------------------------------------
         | LEPSF {    
                                         
                                         string s="LEPSF";                                                              
-                                        $$=new SFuncNode(all,s);
+                                        $$=new SFuncNode(all,0,s);
                 }
-        | COMB '(' particules  ')' {
-                                        VECTOR<MYPARTICLE*> NEWLIST;
-                                        TMPPARTICLE.SWAP(NEWLIST);
-                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+//      | COMB '(' particules  ')' {
+//                                      VECTOR<MYPARTICLE*> NEWLIST;
+//                                      TMPPARTICLE.SWAP(NEWLIST);
+//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"C");
 //           | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
-
-                                    }
-        | PERM '(' particules  ')' {
-                                        VECTOR<MYPARTICLE*> NEWLIST;
-                                        TMPPARTICLE.SWAP(NEWLIST);
-                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
-                                    }
-        | SORT '(' particules  ')' {
-                                        VECTOR<MYPARTICLE*> NEWLIST;
-                                        TMPPARTICLE.SWAP(NEWLIST);
-                                        $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
-                                    }
+//                                  }
+//      | PERM '(' particules  ')' {
+//                                      VECTOR<MYPARTICLE*> NEWLIST;
+//                                      TMPPARTICLE.SWAP(NEWLIST);
+//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+//                                  }
+//      | SORT '(' particules ',' condition ')' {
+//                                      VECTOR<MYPARTICLE*> NEWLIST;
+//                                      TMPPARTICLE.SWAP(NEWLIST);
+//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
+//                                  }
         ;
 //------------------------------------------
 //------------------------------------------
@@ -880,7 +719,7 @@ index : '-' INT {$$=-$2;}
       ; 
 objects : objectBlocs ALGO ID
         | ALGO
-        | ALGO ID { // cout << "Alg:\n"; 
+        | ALGO ID {  cout << "Alg:\n"; 
                   }
         ;
 objectBlocs : objectBlocs objectBloc
@@ -910,16 +749,15 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new EleSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Ele",NULL,createNewEle,newList,"obj Ele" );
+                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           
            | OBJ ID ':' MUO criteria {
                                         cout<< " 2:"<<$2<<" is a new MuoSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Muo",NULL,createNewMuo,newList,"obj Muo" );
+                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
@@ -928,7 +766,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new PhoSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Pho",NULL,createNewPho,newList,"obj Pho" );
+                                        Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
@@ -936,7 +774,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("Jet",NULL,createNewJet,newList,"obj Jet" ); //
+                                        Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
@@ -958,7 +796,7 @@ command : CMD condition { //find a way to print commands
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
         | CMD ALL {                                         
-                                        Node* a=new SFuncNode(all,"all");
+                                        Node* a=new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
         | CMD ifstatement {                                         
@@ -1044,7 +882,7 @@ action : condition {
                         $$=$1;
                         }
        | ALL {
-               $$=new SFuncNode(all,"all");
+               $$=new SFuncNode(all,0,"all");
                }
        | ifstatement {
                         $$=$1;

@@ -4,6 +4,7 @@ gROOT->LoadMacro("dbx_muon.h+");
 gROOT->LoadMacro("dbx_electron.h+");
 gROOT->LoadMacro("dbx_photon.h+");
 gROOT->LoadMacro("dbx_jet.h+");
+gROOT->LoadMacro("dbx_ljet.h+");
+gROOT->LoadMacro("dbx_truth.h+");
 gROOT->LoadMacro("DBXNtuple.cpp+");
-//gROOT->LoadMacro("dbxCut.cpp+");
 }

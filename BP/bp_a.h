@@ -24,8 +24,7 @@ class BPdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                               vector<dbxJet> jets, TVector2 met, evt_data anevt); 
+      int makeAnalysis(AnalysisObjects ao ); 
       int saveHistos() {
         int r = dbxA::saveHistos();
         return r;

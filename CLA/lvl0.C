@@ -82,11 +82,28 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        vector<dbxJet> jets_jer_pos, jets_jer_neg, jets_jespileup_neg, jets_jesbjetescale_neg;
        vector<dbxJet> jesu_jets_Down [16];
        vector<dbxJet> jesu_jets_Up   [16];
+
+       vector<dbxMuon>     muons;
+       vector<dbxElectron> electrons;
+       vector<dbxPhoton>   photons;
+       vector<dbxJet>      jets;
+       vector<dbxLJet>    ljets;
+       vector<dbxTruth>   truth;
+
+       map<string, vector<dbxMuon>     > muos_map;
+       map<string, vector<dbxElectron> > eles_map;
+       map<string, vector<dbxPhoton>   > gams_map;
+       map<string, vector<dbxJet>      > jets_map;
+       map<string, vector<dbxLJet>     >ljets_map;
+       map<string, vector<dbxTruth>    >truth_map;
+       map<string, TVector2            >  met_map;
+
        std::vector<double> scale_mus_msup, scale_mus_mslow, scale_mus_idup, scale_mus_idlow;
        std::vector<double> scale_mus_sfup, scale_mus_sflow, scale_ele_rescaleup, scale_ele_rescalelow;
        std::vector<double> scale_ele_sfup, scale_ele_sflow;
        evt_data anevtlarup, anevtlardown;
        bool is_mc=true;
+       TVector2 met;
        TVector2 met_jesp, met_jesn, met_jerp, met_jern, met_jespileupp, met_jespileupn, met_jesbjetp, met_jesbjetn;//Jets
        TVector2 met_escalerp, met_escalern, met_esfp, met_esfn;//Electrons
        TVector2 met_msfp, met_msfn, met_mmsp, met_mmsn, met_midp, met_midn; //Muons
@@ -116,11 +133,13 @@ void lvl0::Loop(analy_struct aselect, char *extname)
     }
 
 // empty vectors
-    vector <dbxMuon> mu0; vector<dbxElectron> el0; vector<dbxJet> je0; TVector2 me0; evt_data ev0; vector<dbxPhoton> ga0;
+    evt_data ev0; 
 
 // analysis using info from lvl0 file
-    AnalysisObjects a0={event->nt_muos, event->nt_eles, ga0, event->nt_jets, event->nt_met, event->nt_evt};
-
+    muons=event->nt_muos; 
+    electrons=event->nt_eles; 
+    jets=event->nt_jets; 
+    met=event->nt_met;
 
 // take a copy of the event info
    ev0=event->nt_evt;
@@ -133,7 +152,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 */
    int km=0; // this is to count number of systematics
    map < string,   AnalysisObjects > analysis_objs_map;
-      
+/*      
   if (aselect.dosystematics) {
 #ifdef __DEBUG__
    cout << "Running with systematics.\n";
@@ -225,10 +244,21 @@ void lvl0::Loop(analy_struct aselect, char *extname)
       
 
   }
-
+  aCtrl.RunTasks(a0, analysis_objs_map);
+// ---------no systematics for now
+*/
 
 // now run
-    aCtrl.RunTasks(a0, analysis_objs_map);
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("LVL0_Muon",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("LVL0_Electron", electrons) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("LVL0_Photon",     photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("LVL0_Jet",           jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("LVL0_Fatjet",       ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("LVL0_Truth",        truth) );
+         met_map.insert( pair <string,TVector2>             ("LVL0_MET",            met) );
+
+        AnalysisObjects a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+        aCtrl.RunTasks(a0);
 
    } // end of event loop
    aCtrl.Finalize();
