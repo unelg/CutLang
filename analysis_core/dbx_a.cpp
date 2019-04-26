@@ -39,9 +39,9 @@ int dbxA:: addRunLumiInfo(int rn, int lbn) {  // to keep track of the lumi
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                        vector<dbxJet> jets, TVector2 met, evt_data anevt, int idx) {
+int dbxA:: makeAnalysis(AnalysisObjects ao, int idx) {
   int retval=0;
+/*
 //  cout << "e:"<<electrons.size() << " m:"<<muons.size()<<   " p:"<<photons.size()  <<" j:"<<jets.size()<<endl;
    
     double evt_weight = anevt.mcevt_weight; //BG
@@ -103,6 +103,7 @@ int dbxA:: makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, ve
  hmetphi_err[idx]->Fill( met.Phi_mpi_pi(met.Phi()) , evt_weight*evt_weight);
 
 //  cout << "done.\n"<<endl;
+*/
   return retval;
 }
 

@@ -11,15 +11,7 @@
 
 
 struct analy_struct {   // Declare analysis types
-	int FFcount;
-	int N4count;
-	int MCHcount;
-	int DCHcount;
-	int E61count;
-	int E62count;
 	int BPcount;
-	int TPcount;
-	int Skeletoncount; //Merve's addition
 	int Dumpcount;
 	int maxEvents;
 	int verbfreq;

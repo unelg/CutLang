@@ -55,6 +55,17 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxElectron> electrons;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
+       vector<dbxLJet>    ljets;
+       vector<dbxTruth>   truth;
+
+       map<string, vector<dbxMuon>     > muos_map;
+       map<string, vector<dbxElectron> > eles_map;
+       map<string, vector<dbxPhoton>   > gams_map;
+       map<string, vector<dbxJet>      > jets_map;
+       map<string, vector<dbxLJet>     >ljets_map;
+       map<string, vector<dbxTruth>    >truth_map;
+       map<string, TVector2            >  met_map;
+
 
 //temporary variables
        TLorentzVector  alv;
@@ -200,8 +211,18 @@ std::cout << "MET OK"<<std::endl;
 std::cout << "Filling finished"<<std::endl;
 #endif
 
-	AnalysisObjects a0={muons, electrons, photons, jets, met, anevt};
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("FCC_Muon",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("FCC_Electron", electrons) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("FCC_Photon",     photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("FCC_Jet",           jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FCC_Fatjet",       ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("FCC_Truth",        truth) );
+         met_map.insert( pair <string,TVector2>             ("FCC_MET",            met) );
+
+        AnalysisObjects a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+
   	aCtrl.RunTasks(a0);
+
 #ifdef __DEBUG__
 std::cout << "An event finished"<<std::endl;
 #endif

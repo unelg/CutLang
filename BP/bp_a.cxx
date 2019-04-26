@@ -6,8 +6,8 @@
 #include "analysis_core.h"
 #include "dbx_a.h"
 
-//#define __VERBOSE3__
-//#define _CLV_
+//#define __SEZEN__
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -156,6 +156,7 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        cout <<"================parsing===================\n";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
+       cout <<"================finised===================\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
@@ -182,7 +183,6 @@ int BPdbxA:: readAnalysisParams() {
     {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
-            cout<<" CUT "<<iter->first<<"--->"<<iter->second->getStr()<<"\n";
 
 //           TString newLabels=iter->second->getStr();
            TString newLabels=effCL[ iter->first -1];
@@ -192,7 +192,6 @@ int BPdbxA:: readAnalysisParams() {
  */
            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
 
-            DEBUG(std::endl);
             iter++; 
     }
 
@@ -268,7 +267,7 @@ int BPdbxA:: bookAdditionalHistos() {
         int retval=0;
         dbxA::ChangeDir(cname);
 
-#ifdef __VERBOSE3__
+#ifdef __SEZEN__
 	// Sezen's handmade histograms
 	mWHh1 = new TH1D("mWHh1", "Hadronic W best combi (GeV)", 50, 50, 150);
 	mWHh2 = new TH1D("mHWh2", "Hadronic W best combi (GeV)", 50, 50, 150);
@@ -286,8 +285,14 @@ int BPdbxA:: bookAdditionalHistos() {
 }
 
 /////////////////////////
-int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector <dbxPhoton> photons,
-                         vector<dbxJet> jets, TVector2 met, evt_data anevt) {
+int BPdbxA::makeAnalysis( AnalysisObjects ao ){
+  vector<dbxMuon>        muons = ao.muos.begin()->second;
+  vector<dbxElectron> electrons= ao.eles.begin()->second; 
+  vector <dbxPhoton>    photons= ao.gams.begin()->second;
+  vector<dbxJet>           jets= ao.jets.begin()->second;
+  TVector2 met = ao.met.begin()->second;
+  evt_data anevt = ao.evt;
+
   int retval=0;
 
   vector<dbxElectron>  goodElectrons;
@@ -353,11 +358,15 @@ int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, v
         eff->Fill(1, 1);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
+//    AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
+//   ao.muos.insert( std::pair<string, vector<dbxMuon>     >("MUO", goodMuons) );
+//   ao.eles.insert( std::pair<string, vector<dbxElectron> >("ELE", goodElectrons) );
+//   ao.jets.insert( std::pair<string, vector<dbxJet>      >("JET", goodJets) );
+//   ao.gams.insert( std::pair<string, vector<dbxPhoton>   >("GAM", goodPhotons) );
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 
- //  std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"\n";
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -374,15 +383,16 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         iter++;
     }
 
-    DEBUG("RESet ALL cuts\n");
+    DEBUG("RESET ALL cuts\n");
     iter = NodeCuts.begin();
 
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
-        a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
-        DEBUG("Selecting: "<<iter->first<<" |");
-        double d=iter->second->evaluate(&a0); // execute the selection cut
+
+     //   a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
+        DEBUG("Selecting: "<<iter->first<<" |"<<"\t");
+        double d=iter->second->evaluate(&ao); // execute the selection cut
         DEBUG(" Result : " << d << std::endl);
         if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.

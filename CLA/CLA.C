@@ -29,16 +29,8 @@ int main(int argc, char*argv[])
 
 /** select analysis */
  analy_struct aselect;
- aselect.FFcount=0;
- aselect.N4count=0;
- aselect.Skeletoncount=0;
  aselect.Dumpcount=0;
- aselect.E61count=0;
- aselect.E62count=0;
  aselect.BPcount=1;
- aselect.TPcount=0;
- aselect.MCHcount=0;
- aselect.DCHcount=0;
  aselect.dosystematics=false;
  aselect.doQCD=false;
  aselect.doHF=false;

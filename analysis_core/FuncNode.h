@@ -36,12 +36,11 @@ protected:
 
 public:
     FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s,  
-             Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
+             Node *objectNodea = NULL, std::string as="", Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual void Reset() override;
     virtual void getParticles(std::vector<myParticle *>* particles) override;
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
-    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded
-= NULL);
+    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual double evaluate(AnalysisObjects* ao) override;
     virtual ~FuncNode();
 };

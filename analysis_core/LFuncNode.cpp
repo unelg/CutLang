@@ -27,7 +27,8 @@ void LFuncNode::setParticleIndex(int order, int newIndex) {
     }
     
 
-LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea, objectNodeb, objectNodec, objectNoded) {
+LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea,"", objectNodeb, objectNodec, objectNoded) {
+//after objnodea the correct string needs to be put, NGU-----
         f2=func;
         inputParticles2=input2;
         myParticle apart2;

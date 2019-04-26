@@ -43,7 +43,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "MUO"|"MUON"|"Muon" return MUO;
 "LEP" return LEP;
 "PHO" return PHO;
-"JET" return JET;
+"JET"|"Jet" return JET;
 "BJET" return BJET;
 "QGJET" return QGJET;
 "NUMET" return NUMET;
@@ -57,13 +57,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "dR" return DR;
 "dPhi" return DPHI;
 "dEta" return DETA;
-"nELE" return NELE;//no arg funcs
-"nMUO" return NMUO;
-"nLEP" return NLEP;
-"nPHO" return NPHO;
-"nJET" return NJET;
-"nBJET" return NBJET;
-"nQGJET" return NQGJET;
+"Size"|"Count"|"NumberOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
