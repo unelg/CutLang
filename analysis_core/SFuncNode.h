@@ -10,6 +10,12 @@
 #define SFuncNode_h
 #include "Node.h"
 
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
 using namespace std;
 //takes care of functions with arguments
 class SFuncNode : public Node {
@@ -32,9 +38,9 @@ public:
     }
     
     virtual double evaluate(AnalysisObjects* ao) override {
-        cout <<"In SF Eval\n"; 
+        DEBUG("In SF Eval\n"); 
         if(userObject) {
-           cout <<"\t a user obj\n"; 
+           DEBUG("\t a user obj\n"); 
            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         }
         return (*f)(ao, symbol, type);
@@ -51,11 +57,11 @@ double all(AnalysisObjects* ao, string s, int id){
 }
 double count(AnalysisObjects* ao, string s, int id) {
     particleType pid = (particleType)id;
-    cout << "STR:"<<s<<" Type:"<<id<<"\n";
-    cout << "#J types:"<<ao->jets.size() <<"\n";
+
+    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() <<"\n");
     map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
-     cout << "\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n";
+      DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
 
 

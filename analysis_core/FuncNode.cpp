@@ -1,6 +1,6 @@
 #include "FuncNode.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -18,8 +18,8 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
         inputPart->Reset();
         
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
-         DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\n");
-         DEBUG("name:"<<(*i)->collection <<"\n"); // burada STR de print et
+         DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
+         if (((*i)->collection).size() < 1) cerr << "Object name SHOULD NOT be empty.\n"; 
         }
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
@@ -78,7 +78,6 @@ void FuncNode::setParticleIndex(int order, int newIndex){
 
 
 void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
-    cout <<"Adding UOs 2 FN\n";
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
         userObjectC=objectNodec;
@@ -100,6 +99,7 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
        DEBUG("orig i:"<<input[i]->index);
        apart.index=input[i]->index;
        apart.type=input[i]->type;
+       apart.collection=input[i]->collection;
        originalParticles.push_back(apart);
       }
         left=NULL;
@@ -134,18 +134,30 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
-     cout <<"In function Node evaluate\n";
-// all objects in *ao are as they were read from the file     
-     if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-     if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-     if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-     if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-     if ( userObjectA || userObjectB || userObjectC || userObjectD ) cout<<"UOs EVALUATED:"<< getStr() <<"\n";
-// now *ao is enhanced with new collections
+     DEBUG("In function Node evaluate\n");
+// all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
+     if(userObjectA) { userObjectA->evaluate(ao); 
+                       int thistype=((ObjectNode*)userObjectA)->type;
+                       string realname=((ObjectNode*)userObjectA)->name;
+                       DEBUG("t,n:"<<thistype<<" , "<< realname <<"\n");
+                       for (int ipa=0; ipa<inputParticles.size(); ipa++){
+                        if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
+                       }
+                     } // replace collection if needed
+     if(userObjectB) { userObjectB->evaluate(ao);
+                       int thistype=((ObjectNode*)userObjectB)->type;
+                       string realname=((ObjectNode*)userObjectB)->name;
+                       DEBUG("t,n:"<<thistype<<" , "<< realname <<"\n");
+                       for (int ipa=0; ipa<inputParticles.size(); ipa++){
+                        if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
+                       }
+                     } 
+     if(userObjectC)  userObjectC->evaluate(ao); 
+     if(userObjectD)  userObjectD->evaluate(ao); 
+     if ( userObjectA || userObjectB || userObjectC || userObjectD ) DEBUG("UOs EVALUATED:"<< getStr() <<"\n");
 
-//   diyelim multi layered ao yapildi... her parcacik icin STR de var.
      partConstruct(ao, &inputParticles, &myPart);
-     DEBUG(" constructed \t");
+     DEBUG("Particle constructed \t");
      return (*f)(&myPart );
 }
 

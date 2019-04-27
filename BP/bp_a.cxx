@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __SEZEN__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -89,18 +89,18 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 //---------cmds
-       found=tempLine.find("cmd ")  ;
+        found=tempLine.find("cmd ")  ;
        foundp=tempLine.find("select ")  ;
        if ((found!=std::string::npos) ||(foundp!=std::string::npos)) {
            if (algorithmnow) {
-              cout <<"CUT "<<tempLine<<"\n";
               CutList2file+=tempLine;
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
-              if (found!=std::string::npos) { tempS1 = tempLine.substr(found, apos-found);}
-              else                          { tempS1 = tempLine.substr(foundp, apos-foundp); }
+              if (found!=std::string::npos) { tempS1 = tempLine.substr(4, apos-4);}
+              else                          { tempS1 = tempLine.substr(7, apos-7); }
            //   tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
               effCL.push_back(tempS1);
+              cout <<tempS1<<"\n";
            } else {
               ObjList2file+=tempLine;
               ObjList2file+="\n";
@@ -138,9 +138,6 @@ int BPdbxA:: readAnalysisParams() {
     TText oinfo(0,0,ObjList2file.Data());
           oinfo.SetName("CLA2Objs");
           oinfo.Write();
-
-
-
 
 // ****************************************
 // ---------------------------DBX style cuts
@@ -295,84 +292,21 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
 
   int retval=0;
 
-  vector<dbxElectron>  goodElectrons;
-  vector<dbxMuon>      goodMuons;
-  vector<dbxJet>       goodJets;
-  vector<dbxPhoton>    goodPhotons;
-
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-//----------------------selection of good gams-----------------
-        for (UInt_t i=0; i<photons.size(); i++) {
-               TLorentzVector gam4p = photons.at(i).lv();
-               if (    (gam4p.Pt()  > minptg)
-                    && (fabs(gam4p.Eta()) < maxetag)
-                  )
-                  goodPhotons.push_back(photons.at(i));
-        }
-//----------------------selection of good electrons-----------------
-        for (UInt_t i=0; i<electrons.size(); i++) {
-               if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
-                  &&(electrons.at(i).lv().Eta() < maxetae )  // and maximum eta.
-                  )
-                  goodElectrons.push_back( electrons.at(i) );
-        }
+  double theLeptonWeight = 1;
+  double theFourJetWeight = 1;
+  unsigned int njets;
+  double evt_weight = 1;
 
-//----------------------selection of good muons-----------------
-        for (UInt_t i=0; i<muons.size(); i++) {
-               TLorentzVector mu4p = muons.at(i).lv();
-               if (    (mu4p.Pt()  > minptm)
-                    && (fabs(mu4p.Eta()) < maxetam)
-                  )
-                  goodMuons.push_back(muons.at(i));
-        }
-
-//------------selection of good jets----------------------------------
-        bool jetok=true;
-        for (UInt_t i=0; i<jets.size(); i++) {
-               TLorentzVector jet4p = jets.at(i).lv();
-               if (   (fabs(jet4p.Pt())  > minptj ) // this corresponds to min PT cut
-                    && (jet4p.E() >= 0)
-                    && (fabs(jet4p.Eta())<= maxetaj) 
-                   )
-                   jetok=true;
-/*
-                   for (UInt_t ie=0; ie<goodElectrons.size(); ie++) {
-                    if (jets.at(i).lv().DeltaR( goodElectrons.at(ie).lv())  < 0.5) {
-                       jetok= false;
-//                       break;
-                    }
-                   }
-*/                   
-
-                   if (jetok) goodJets.push_back(jets.at(i) );
-        }
-
-///////
-        double theLeptonWeight = 1;
-        double theFourJetWeight = 1;
-        unsigned int njets;
-        double evt_weight = 1;
-
-        if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
+  if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//    AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
-//   ao.muos.insert( std::pair<string, vector<dbxMuon>     >("MUO", goodMuons) );
-//   ao.eles.insert( std::pair<string, vector<dbxElectron> >("ELE", goodElectrons) );
-//   ao.jets.insert( std::pair<string, vector<dbxJet>      >("JET", goodJets) );
-//   ao.gams.insert( std::pair<string, vector<dbxPhoton>   >("GAM", goodPhotons) );
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
-
 
 // *************************************
 /// CutLang execution starts-------here*
 // *************************************
 
-    unsigned int ternaryCount=0;
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
 //----------------------reset 
@@ -390,10 +324,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != NodeCuts.end())
     {   
 
-     //   a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
-        DEBUG("Selecting: "<<iter->first<<" |"<<"\t");
+        DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
         double d=iter->second->evaluate(&ao); // execute the selection cut
-        DEBUG(" Result : " << d << std::endl);
+        DEBUG("\t****Result : " << d << std::endl);
         if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut

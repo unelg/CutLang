@@ -11,6 +11,7 @@
 #include <vector>
 #include "myParticle.h"
 #include "Node.h"
+#include "ObjectNode.hpp"
 
 using namespace std;
 //takes care of functions with arguments

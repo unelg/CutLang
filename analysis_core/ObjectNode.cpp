@@ -8,6 +8,12 @@
 #include "ObjectNode.hpp"
 #include "ValueNode.h"
 
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
 ObjectNode::ObjectNode(std::string id,
                        Node* previous,
                        void (* func) (AnalysisObjects* ao, vector<Node*>* criteria, std::vector<myParticle *>* particles, std::string  name, std::string basename),
@@ -29,19 +35,20 @@ ObjectNode::ObjectNode(std::string id,
     left=previous;
     right=NULL;
 
-    std::cout<<" I search:\n";
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
-    while (anode->left != NULL) { cout<<".\n"; anode=(ObjectNode*)anode->left; }
+    while (anode->left != NULL) { anode=(ObjectNode*)anode->left; }
       if (anode->name == "JET" ) type=2;
       if (anode->name == "MUO" ) type=0;
       if (anode->name == "ELE" ) type=1;
-    std::cout<<" I found:" << anode->name<<" t:"<<type<<"\n";
+      if (anode->name == "PHO" ) type=8;
+      DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
     } else {
       if (id == "JET" ) type=2;
       if (id == "MUO" ) type=0;
       if (id == "ELE" ) type=1;
-      std::cout<<" I have:"<<id<<" t:"<<type<<"\n";
+      if (id == "PHO" ) type=8;
+      DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
     }
 }
 
@@ -66,34 +73,36 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
-    cout <<"In ObjNode Eval #JETt:"<< ao->jets.size() <<" working for:"<<name << "  type:"<<type<<"\n";
+    DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
  
     std::string basename="xxx";
     bool keepworking=true;
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
-      cout << "previous:"<<anode->name<<"\n";
+      DEBUG("previous:"<<anode->name<<"\n");
 // is it in the map list?
        basename=anode->name;
        switch (type) {
         case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
-                		cout << basename<<" is not computed\n";    
                			anode->evaluate(ao);
-                                cout << " Muos evaluated.\n";
+                                DEBUG(" Muos evaluated.\n");
                       } else keepworking=false;
                       break;
 
         case 1:       if (ao->eles.find(basename)==ao->eles.end()  ){
-                		cout << basename<<" is not computed\n";    
                			anode->evaluate(ao);
-                                cout << " Eles evaluated.\n";
+                                DEBUG(" Eles evaluated.\n");
                       } else keepworking=false;
                       break;
 
         case 2:       if (ao->jets.find(basename)==ao->jets.end()  ){
-                		cout << basename<<" is not computed\n";    
                			anode->evaluate(ao);
-                                cout << " Jets evaluated.\n";
+                                DEBUG(" Jets evaluated.\n");
+               	      } else keepworking=false;
+                      break;
+        case 8:       if (ao->gams.find(basename)==ao->gams.end()  ){
+               			anode->evaluate(ao);
+                                DEBUG(" Phos evaluated.\n");
                	      } else keepworking=false;
                       break;
 
@@ -101,11 +110,30 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        }
        anode=(ObjectNode*)anode->left;
       }
+    DEBUG("#particles:"<< particles.size()<<"\n");
+    map <string, std::vector<dbxJet>  >::iterator itj;
+    for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
+     if (itj->first == name) return 1;
+    }
+    map <string, std::vector<dbxElectron>  >::iterator ite;
+    for (ite=ao->eles.begin();ite!=ao->eles.end();ite++){
+     if (ite->first == name) return 1;
+    }
+    map <string, std::vector<dbxMuon>  >::iterator itm;
+    for (itm=ao->muos.begin();itm!=ao->muos.end();itm++){
+     if (itm->first == name) return 1;
+    }
+    map <string, std::vector<dbxPhoton>  >::iterator itp;
+    for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
+     if (itp->first == name) return 1;
+    }
       
-    cout <<"before new set #JETtypes:"<< ao->jets.size()<< "#particles:"<< particles.size()<<"\n";
-
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
-    cout <<"After new set #JETtypes:"<< ao->jets.size() <<"\n"; 
+    DEBUG("After new set #types: J, E, M, P"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+
+    for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
+      DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
+    }
     //Save AO somewhere to return in next time
     return 1;
 }
@@ -121,27 +149,19 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 // PHO     8
 
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
-    cout << "Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<<"\n";
-    int dodo=0;
-
-    cout << "Duplicating:"<<basename<<"\n";
+    DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
     ao->jets.insert( std::pair<string, vector<dbxJet> >(name, (ao->jets)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
-        cout <<"JET DODO:"<<dodo<<"\n";
-        dodo++;
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
 //--------get the string name from the particles, as base collection, the new name is in "name"
         int ipart_max = (ao->jets)[name].size();
 
-        cout << "size before loop:"<< ipart_max<<"\n";
         if(particles->size()==1){                            //-----------I have 1 particle set such as ELEs, JETs...
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                 particles->at(0)->index=ipart;             //----the index was originally 6213
                 particles->at(0)->collection=name;             
-                cout << "before cutIterator:"<<(*cutIterator)->getStr()<<" \n";
                 bool ppassed=(*cutIterator)->evaluate(ao);
-                cout << "after cutIterator evalutate\n";
                 if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
         }
@@ -152,8 +172,6 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 particles->at(0)->collection=name;             
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                cout << "loop2 type:"<< particles->at(1)->type<<"\n";
-                cout << "loop2 name:"<< base_collection2<<"\n";
                 switch(particles->at(1)->type){
                     case 0: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
@@ -174,9 +192,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
                     particles->at(1)->collection=base_collection2;      
-                cout << "before cutIterator:"<<(*cutIterator)->getStr()<<" \n";
                     bool ppassed=(*cutIterator)->evaluate(ao);
-                cout << "after cutIterator evalutate\n";
                     if (!ppassed) {
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                         break; // we can quit at first mismatch.
@@ -185,11 +201,11 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
             } // loop over 1st particle type
         }
     } // end of cutIterator loop
-   cout<<"created\n";
+   DEBUG("created\n");
 }
 
 void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-    cout << "Creating new ELE obj now\n";
+    DEBUG("Creating new ELEtype named:"<<name<<" #Etypes:"<<ao->eles.size()<< " Duplicating:"<<basename<<"\n");
     ao->eles.insert( std::pair<string, vector<dbxElectron> >(name, (ao->eles)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();

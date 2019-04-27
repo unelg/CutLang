@@ -44,7 +44,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
-%token DEF CMD HISTO OBJ ALGO
+%token DEF CMD HISTO OBJ ALGO 
 %token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -139,7 +139,6 @@ definition : DEF  ID  ':' particules {
                                         NodeVars->insert(make_pair(name,$4));
 				}
         ;
-//---------------------------------------
 //---------------------------------------
 function : '{' particules '}' 'm' {     
                                        vector<myParticle*> newList;
@@ -543,7 +542,16 @@ particule : ELE '_' index {
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
-        | MUO '[' index ']' {   cout <<"HERE ------------------------------------------1!\n";
+        | ELE '[' index ']' {
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type =1;
+                                a->index = (int)$3;
+                                a->collection = "ELE";
+                                TmpParticle.push_back(a);
+                                tmp="ele_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                            }
+        | MUO '[' index ']' {   
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
@@ -552,7 +560,7 @@ particule : ELE '_' index {
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
-        | MUO '_' index {       cout <<"HERE ------------------------------------------0!\n";
+        | MUO '_' index {       
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
@@ -578,6 +586,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 8;
                                 a->index = (int)$3;
+                                a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                                 
                         }
@@ -641,8 +650,6 @@ particule : ELE '_' index {
 
                        if(ito != ObjectCuts->end()) {
                         cout <<" "<<$1<<" is a user particle, ";
-// {std::map<std::string,Node*>* ObjectCuts}
-//                        cout << ito->first <<"-------- \t";
 
                         if (ito->first.find("JET") !=std::string::npos ) {
                            cout <<"which is a JET\n";
@@ -651,6 +658,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 2;
                                 a->index = (int)$3;
+                                a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (ito->first.find("ELE") !=std::string::npos ) {
@@ -660,6 +668,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 1;
                                 a->index = (int)$3;
+                                a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (ito->first.find("MUO") !=std::string::npos ) {
@@ -669,6 +678,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 0;
                                 a->index = (int)$3;
+                                a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (ito->first.find("PHO") !=std::string::npos ) {
@@ -678,6 +688,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 8;
                                 a->index = (int)$3;
+                                a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
 
@@ -723,14 +734,13 @@ index : '-' INT {$$=-$2;}
       ; 
 objects : objectBlocs ALGO ID
         | ALGO
-        | ALGO ID {  cout << "Alg:\n"; 
+        | ALGO ID {  cout << "++++++++++++++++++++++++Alg:\n"; 
                   }
         ;
 objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
 objectBloc : OBJ ID ':' ID criteria {
-                                       cout<< " 2:"<<$2<<"  4:"<<$4<<"++++++++++++++++++++\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         //find previous object from ObjectCuts
@@ -778,9 +788,9 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
-                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
-                                        ObjectCuts->insert(make_pair($2,obj));
+                                    /// Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
+                                    /// Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                    /// ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' BJET criteria
            | OBJ ID ':' QGJET criteria
@@ -959,23 +969,16 @@ e : e '+' e  {
    | COS '(' e ')' {    
                         $$=new UnaryAONode(cos,$3,"cos"); 
                }
-   | SIN '(' e ')' {    //string s3=$3;
-                        // tmp=" sin( "+s3+" ) ";   
-                        // $$=strdup(tmp.c_str()); 
+   | SIN '(' e ')' {    
                         $$=new UnaryAONode(sin,$3,"sin");
                }
-   | TAN '(' e ')' {    //string s3=$3;
-                        //tmp=" tan( "+s3+" ) ";   
-                        //$$=strdup(tmp.c_str()); 
+   | TAN '(' e ')' {    
                         $$=new UnaryAONode(tan,$3,"tan");
                }
-   |'(' e ')' {    //string s3=$2;
-                        //tmp=" ( "+s3+" ) ";   
-                        //$$=strdup(tmp.c_str()); 
+   |'(' e ')' {   
                         $$=$2;
                }
    | NB {       tmp=to_string($1); 
-                //$$=strdup(tmp.c_str()); MAKE A TMP STRING AND CONCAT 
                 $$=new ValueNode($1);
                 } 
    | INT {  
