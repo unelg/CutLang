@@ -169,13 +169,13 @@ std::cout << "MET OK"<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
 #endif
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("Delphes_Muon",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("Delphes_Electron", electrons) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("Delphes_Photon",     photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("Delphes_Jet",           jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("Delphes_Fatjet",       ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Delphes_Truth",        truth) );
-         met_map.insert( pair <string,TVector2>             ("Delphes_MET",            met) );
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
         AnalysisObjects a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
 
