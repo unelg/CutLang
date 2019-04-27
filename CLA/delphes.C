@@ -174,7 +174,6 @@ std::cout << "MET OK"<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
 #endif
-
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );

@@ -69,17 +69,36 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     cout <<"In ObjNode Eval #JETt:"<< ao->jets.size() <<" working for:"<<name << "  type:"<<type<<"\n";
  
     std::string basename="xxx";
-    while(left!=NULL) {
-      
+    bool keepworking=true;
+    while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
       cout << "previous:"<<anode->name<<"\n";
 // is it in the map list?
        basename=anode->name;
-       if (ao->jets.find(basename)==ao->jets.end()  ){
- 			cout << basename<<" is not computed\n";    
-       			anode->evaluate(ao);
-                        cout << "evaluated.\n";
-       } else break;
+       switch (type) {
+        case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
+                		cout << basename<<" is not computed\n";    
+               			anode->evaluate(ao);
+                                cout << " Muos evaluated.\n";
+                      } else keepworking=false;
+                      break;
+
+        case 1:       if (ao->eles.find(basename)==ao->eles.end()  ){
+                		cout << basename<<" is not computed\n";    
+               			anode->evaluate(ao);
+                                cout << " Eles evaluated.\n";
+                      } else keepworking=false;
+                      break;
+
+        case 2:       if (ao->jets.find(basename)==ao->jets.end()  ){
+                		cout << basename<<" is not computed\n";    
+               			anode->evaluate(ao);
+                                cout << " Jets evaluated.\n";
+               	      } else keepworking=false;
+                      break;
+
+        default:  break;
+       }
        anode=(ObjectNode*)anode->left;
       }
       
@@ -90,7 +109,6 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     //Save AO somewhere to return in next time
     return 1;
 }
-
 
 // MUO     0
 // ELE     1
@@ -125,15 +143,17 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 cout << "after cutIterator evalutate\n";
                 if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
-                cout << "maybe removed\n";
             }
         }
         else if(particles->size()==2){
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
+                particles->at(0)->collection=name;             
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
+                cout << "loop2 type:"<< particles->at(1)->type<<"\n";
+                cout << "loop2 name:"<< base_collection2<<"\n";
                 switch(particles->at(1)->type){
                     case 0: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
@@ -152,8 +172,11 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
-                    particles->at(1)->index=kpart;             //6213
+                    particles->at(1)->index=kpart;             
+                    particles->at(1)->collection=base_collection2;      
+                cout << "before cutIterator:"<<(*cutIterator)->getStr()<<" \n";
                     bool ppassed=(*cutIterator)->evaluate(ao);
+                cout << "after cutIterator evalutate\n";
                     if (!ppassed) {
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                         break; // we can quit at first mismatch.
@@ -167,20 +190,20 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
 
 void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     cout << "Creating new ELE obj now\n";
+    ao->eles.insert( std::pair<string, vector<dbxElectron> >(name, (ao->eles)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
-        ao->eles.insert( std::pair<string, vector<dbxElectron> >(name, (ao->eles)[basename]) );
-        int ipart_max = (ao->jets)[basename].size();
+        int ipart_max = (ao->eles)[name].size();
 
         if(particles->size()==1){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
+                particles->at(0)->collection=name;
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
-                }
             }
-        
+        }
         else if(particles->size()==2){
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -218,21 +241,20 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 }
 
 void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    ao->muos.insert( std::pair<string, vector<dbxMuon> >(name, (ao->muos)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
-        string base_collection=particles->at(0)->collection;
-        ao->muos.insert( std::pair<string, vector<dbxMuon> >(name, (ao->muos)[basename]) );
-        int ipart_max = (ao->muos)[basename].size();
+        int ipart_max = (ao->muos)[name].size();
         
         if(particles->size()==1){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
+                particles->at(0)->collection=name;
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
-                }
             }
-
+        }
         else if(particles->size()==2){
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -269,20 +291,20 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     }// end of cutIterator
 }
 void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    ao->gams.insert( std::pair<string, vector<dbxPhoton> >(name, (ao->gams)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
-        ao->gams.insert( std::pair<string, vector<dbxPhoton> >(name, (ao->gams)[basename]) );
-        int ipart_max = (ao->gams)[basename].size();
+        int ipart_max = (ao->gams)[name].size();
         
         if(particles->size()==1){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
+                particles->at(0)->collection=name;
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
-                }
             }
-
+        }
         else if(particles->size()==2){
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){

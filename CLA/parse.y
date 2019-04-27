@@ -538,6 +538,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type =1;
                                 a->index = (int)$3;
+                                a->collection = "ELE";
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -548,6 +549,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 0;
                                 a->index = (int)$3;
+                                a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
         | MUO '_' index {       cout <<"HERE ------------------------------------------0!\n";
@@ -556,6 +558,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 0;
                                 a->index = (int)$3;
+                                a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
@@ -583,6 +586,7 @@ particule : ELE '_' index {
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 2;
                                 a->index = (int)$3;
+                                a->collection = "JET";
                                 TmpParticle.push_back(a);  
                                 
                         }
