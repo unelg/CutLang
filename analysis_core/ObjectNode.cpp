@@ -8,6 +8,7 @@
 #include "ObjectNode.hpp"
 #include "ValueNode.h"
 
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -77,11 +78,14 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
  
     std::string basename="xxx";
     bool keepworking=true;
+
+    DEBUG("inital sets #types: J, E, M, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
-      DEBUG("previous:"<<anode->name<<"\n");
+      basename=anode->name;
+      DEBUG("previous:"<< basename<< "  type:"<<type<<"\n");
 // is it in the map list?
-       basename=anode->name;
        switch (type) {
         case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
@@ -102,13 +106,14 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                       break;
         case 8:       if (ao->gams.find(basename)==ao->gams.end()  ){
                			anode->evaluate(ao);
-                                DEBUG(" Phos evaluated.\n");
+                                DEBUG(" *****Phos evaluated.\n");
                	      } else keepworking=false;
                       break;
 
         default:  break;
        }
        anode=(ObjectNode*)anode->left;
+       DEBUG("~~~~~~~~~~~~~~MOVED LEFT\n");
       }
     DEBUG("#particles:"<< particles.size()<<"\n");
     map <string, std::vector<dbxJet>  >::iterator itj;
@@ -128,8 +133,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
      if (itp->first == name) return 1;
     }
       
+    DEBUG("Before new set #types: J, E, M, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
-    DEBUG("After new set #types: J, E, M, P"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+    DEBUG("After new set #types: J, E, M, P: "<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
@@ -156,8 +162,13 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         (*cutIterator)->getParticlesAt(particles,0);
 //--------get the string name from the particles, as base collection, the new name is in "name"
         int ipart_max = (ao->jets)[name].size();
+        bool simpleloop=true;
+ 
+        if ( particles->size()==0) continue;
+        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
 
-        if(particles->size()==1){                            //-----------I have 1 particle set such as ELEs, JETs...
+        if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                 particles->at(0)->index=ipart;             //----the index was originally 6213
                 particles->at(0)->collection=name;             
@@ -165,7 +176,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
         }
-        else if(particles->size()==2){
+        else {
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -183,10 +194,12 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
 //                        break;
 //                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                        break;
+                    case 7: ipart2_max=1;
+                        break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
                         break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try Jets:"<<particles->at(1)->type << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
@@ -211,8 +224,13 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->eles)[name].size();
+        bool simpleloop=true;
+ 
+        if ( particles->size()==0) continue;
+        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
 
-        if(particles->size()==1){
+        if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
                 particles->at(0)->collection=name;
@@ -220,7 +238,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
             }
         }
-        else if(particles->size()==2){
+        else {
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -262,8 +280,13 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->muos)[name].size();
+        bool simpleloop=true;
+ 
+        if ( particles->size()==0) continue;
+        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
         
-        if(particles->size()==1){
+        if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
                 particles->at(0)->collection=name;
@@ -271,7 +294,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 if (!ppassed) (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
             }
         }
-        else if(particles->size()==2){
+        else {
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -307,13 +330,23 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     }// end of cutIterator
 }
 void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new PHOtype named:"<<name<<" #Ptypes:"<<ao->gams.size()<< " Duplicating:"<<basename<<"\n");
     ao->gams.insert( std::pair<string, vector<dbxPhoton> >(name, (ao->gams)[basename]) );
+    DEBUG(" #Ptypes:"<<ao->gams.size()<< " Duplicated.\n");
+
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
+        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
         int ipart_max = (ao->gams)[name].size();
-        
-        if(particles->size()==1){
+        bool simpleloop=true;
+ 
+        if ( particles->size()==0) continue;
+        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
+       
+        if(simpleloop){
+            DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;
                 particles->at(0)->collection=name;
@@ -321,7 +354,8 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
             }
         }
-        else if(particles->size()==2){
+        else {
+            DEBUG("size=2\n");
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -355,4 +389,5 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
             }// first particle set
         }// end of two particles
     }// end of cutIterator
+   DEBUG("PHOTONS created\n");
 }

@@ -10,6 +10,7 @@
 #define SFuncNode_h
 #include "Node.h"
 
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -42,6 +43,7 @@ public:
         if(userObject) {
            DEBUG("\t a user obj\n"); 
            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+           DEBUG("user obj done.\n"); 
         }
         return (*f)(ao, symbol, type);
     }
@@ -58,25 +60,40 @@ double all(AnalysisObjects* ao, string s, int id){
 double count(AnalysisObjects* ao, string s, int id) {
     particleType pid = (particleType)id;
 
-    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() <<"\n");
+    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #P types:"<<ao->gams.size()<<"\n");
     map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
+    map <string, std::vector<dbxPhoton>  >::iterator itp;
+    for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
+      DEBUG("\t #Ptypename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+    }
 
 
     switch (pid) {
-     case muon_t:     return (ao->muos[s].size()); break;
-     case electron_t: return (ao->eles[s].size()); break;
-     case jet_t:      return (ao->jets[s].size()); break;
+     case muon_t:     return (ao->muos.at(s).size()); break;
+     case electron_t: return (ao->eles.at(s).size()); break;
+     case jet_t:      return (ao->jets.at(s).size()); break;
+     case photon_t:   return (ao->gams.at(s).size()); break;
      default:         return (-1); break;
     }
     return (-1);
 }
-/*
-double met(AnalysisObjects* ao){
+double met(AnalysisObjects* ao, string s, int id){
+     DEBUG("MET:" << ao->met["MET"].Mod() <<"\n");
     return ( ao->met["MET"].Mod() );
 }
+
+double ht(AnalysisObjects* ao, string s, int id){
+    double sum_htjet=0;
+//     cout<<"HT of:" << s << " #J"<< ao->jets.at(s).size()<<"\n";
+//    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) cout <<"J:"<< ao->jets.at(s).at(i).lv().Pt() <<"\n";
+    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();
+    return (sum_htjet  );       
+}
+
+/*
 double nbjets(AnalysisObjects* ao){
     ValueNode abc=ValueNode();
 //    return (abc.tagJets(ao, 1).size() );
@@ -89,11 +106,6 @@ double nljets(AnalysisObjects* ao){
     return (1);
 }
 
-double ht(AnalysisObjects* ao){
-    double sum_htjet=0;
-    for (UInt_t i=0; i<ao->jets.size(); i++) sum_htjet+=ao->jets.at(i).lv().Pt();
-    return (sum_htjet  );       
-}
 
 double emwt(AnalysisObjects* ao){
     double theLeptonTrkPhi = ao->eles.at(0).lv().Phi();

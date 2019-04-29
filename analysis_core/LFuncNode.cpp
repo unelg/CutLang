@@ -61,7 +61,6 @@ void LFuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
-       cout <<"Adding UOs 2 LF\n";
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
         userObjectC=objectNodec;
@@ -70,7 +69,7 @@ void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objec
 
    
 double LFuncNode::evaluate(AnalysisObjects* ao)  {
-     cout <<"In L function Node evaluate\n";
+        DEBUG("In L function Node evaluate\n");
 
         if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
