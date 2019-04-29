@@ -19,12 +19,14 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
         
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
          DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
-         if (((*i)->collection).size() < 1) cerr << "Object name SHOULD NOT be empty.\n"; 
+         if (((*i)->collection).size() < 1 && (*i)->type!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type<<" idx:"<<(*i)->index <<"\n"; 
         }
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
+             if (atype==7) ac="MET";
+
                 switch (atype) {  //----burada STR ile mapda find ediliyor
                                                 case 0: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
@@ -134,7 +136,7 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
-     DEBUG("In function Node evaluate\n");
+     DEBUG("\nIn function Node evaluate\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
      if(userObjectA) { userObjectA->evaluate(ao); 
                        int thistype=((ObjectNode*)userObjectA)->type;
@@ -159,6 +161,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      partConstruct(ao, &inputParticles, &myPart);
      DEBUG("Particle constructed \t");
      return (*f)(&myPart );
+     DEBUG("\n");
 }
 
 FuncNode::~FuncNode() {}

@@ -446,26 +446,38 @@ function : '{' particules '}' 'm' {
                                        }
                            }
         | NUMOF '(' ELE ')' {       
-                                           string s="ELE";
-                                           $$=new SFuncNode(count, 1, s);
+                                           $$=new SFuncNode(count, 1, "ELE");
                             }
         | NUMOF '(' MUO ')' {       
-                                           string s="MUO";
-                                           $$=new SFuncNode(count, 0, s);
+                                           $$=new SFuncNode(count, 0, "MUO");
                             }
         | NUMOF '(' JET ')' {       
-                                           string s="JET";
-                                           $$=new SFuncNode(count, 2, s);
+                                           $$=new SFuncNode(count, 2, "JET");
                             }
 //------------------------------------------
+        | HT {
+                                        $$=new SFuncNode(ht,0,"JET");
+             }
+        | HT '(' ID  ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           int id=((ObjectNode*)it->second)->type;
+                                           $$=new SFuncNode(ht,id, it->first, it->second);
+                                       }
+                         }
+       | MET {
+                                        $$=new SFuncNode(met,0, "MET");
+              }
         | ALL {    
-                                        
                                         $$=new SFuncNode(all,0, "all");
-
               }
 //------------------------------------------
         | LEPSF {    
-                                        
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,0,s);
                 }
@@ -788,9 +800,9 @@ objectBloc : OBJ ID ':' ID criteria {
                                         cout<< " 2:"<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                    /// Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
-                                    /// Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
-                                    /// ObjectCuts->insert(make_pair($2,obj));
+                                        Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' BJET criteria
            | OBJ ID ':' QGJET criteria
@@ -930,9 +942,9 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
                                         } 
            | e ERG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
-                                        Node* c1=new BinaryNode(gt,$1,limit1,">");
-                                        Node* c2=new BinaryNode(lt,$1,limit2,"<");
-                                        $$=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
+                                        Node* c1=new BinaryNode(le,$1,limit1,"<=");
+                                        Node* c2=new BinaryNode(ge,$1,limit2,">=");
+                                        $$=new BinaryNode(LogicalOr,c1,c2,"OR"); 
                                         
                                         }                            
            | condition AND condition { 
