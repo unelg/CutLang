@@ -71,6 +71,8 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %type <s> particule particules list description
 %%
 input : initializations definitions objects commands 
+      | initializations objects definitions  commands 
+      | initializations definitions objects definitions  commands 
      ;
 initializations : initializations initialization 
         | 
@@ -745,8 +747,9 @@ index : '-' INT {$$=-$2;}
           | {$$= 6213;} // NGU
       ; 
 objects : objectBlocs ALGO ID
+        | objectBlocs DEF  ID
         | ALGO
-        | ALGO ID {  cout << "++++++++++++++++++++++++Alg:\n"; 
+        | ALGO ID {  cout << "++++++++++++++++++++++++ as Alg:\n"; 
                   }
         ;
 objectBlocs : objectBlocs objectBloc
@@ -821,6 +824,8 @@ commands : commands command
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
+        | ALGO ID {  cout << " runing Algo:"<< $2<<"\n";
+                  }
         | CMD ALL {                                         
                                         Node* a=new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
@@ -1022,7 +1027,7 @@ e : e '+' e  {
                         YYERROR;//stops parsing if variable not found
                 }
                 else {
-                        cout <<it->first <<" recognized.\t";
+                        cout <<it->first <<" node ID recognized.\t";
                         cout <<it->second->getStr()<<"\n";
                 }
                 map<string,Node*>::iterator ito = ObjectCuts->find($3);
@@ -1031,7 +1036,7 @@ e : e '+' e  {
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                       } else {
-                                        cout <<ito->first <<" recognized.\n";
+                                        cout <<ito->first <<" OBJ id recognized.\n";
                                         it->second->setUserObjects(ito->second);
                                       }
                         $$=it->second;
