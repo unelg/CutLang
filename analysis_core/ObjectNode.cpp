@@ -79,7 +79,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     std::string basename="xxx";
     bool keepworking=true;
 
-    DEBUG("inital sets #types: J, E, M, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+    DEBUG("inital sets #types: J, E, M, T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size() <<"\n"); 
 
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
@@ -96,6 +96,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
         case 1:       if (ao->eles.find(basename)==ao->eles.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Eles evaluated.\n");
+                      } else keepworking=false;
+                      break;
+       case 11:       if (ao->taus.find(basename)==ao->taus.end()  ){
+               			anode->evaluate(ao);
+                                DEBUG(" Taus evaluated.\n");
                       } else keepworking=false;
                       break;
 
@@ -128,14 +133,18 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itm=ao->muos.begin();itm!=ao->muos.end();itm++){
      if (itm->first == name) return 1;
     }
+    map <string, std::vector<dbxTau>  >::iterator itt;
+    for (itt=ao->taus.begin();itt!=ao->taus.end();itt++){
+     if (itt->first == name) return 1;
+    }
     map <string, std::vector<dbxPhoton>  >::iterator itp;
     for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
      if (itp->first == name) return 1;
     }
       
-    DEBUG("Before new set #types: J, E, M, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+    DEBUG("Before new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<"ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
-    DEBUG("After new set #types: J, E, M, P: "<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->gams.size() <<"\n"); 
+    DEBUG("After new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<"ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
@@ -153,6 +162,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 // NUMET_E 6
 // METLV   7
 // PHO     8
+// Tau    11 
 
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
@@ -197,6 +207,8 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                     case 7: ipart2_max=1;
                         break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
+                        break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
                         break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE:"<<particles->at(1)->type << std::endl;
@@ -257,6 +269,8 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                      break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
                         break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
+                        break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE! Try ELE:"<<particles->at(1)->type << std::endl;
                         break;
@@ -312,6 +326,8 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
+                        break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
                         break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE! Try MUO:"<<particles->at(1)->type << std::endl;
@@ -373,6 +389,8 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
+                        break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
                         break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;

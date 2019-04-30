@@ -39,6 +39,11 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
+                                               case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 1 is electron
+                                                        inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
+                           //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        DEBUG("TAU:"<<(*i)->index<<"  ");
+                                                        break;
                                             	case 2: DEBUG("jet:"<<(*i)->index<<" ");
                                                         inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
                                                         break;

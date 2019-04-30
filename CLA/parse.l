@@ -43,6 +43,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "MUO"|"MUON"|"Muon" return MUO;
 "LEP" return LEP;
 "PHO" return PHO;
+"Tau"|"TAU" return TAU;
 "JET"|"Jet" return JET;
 "BJET" return BJET;
 "QGJET" return QGJET;
