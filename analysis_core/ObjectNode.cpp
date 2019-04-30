@@ -43,12 +43,14 @@ ObjectNode::ObjectNode(std::string id,
       if (anode->name == "MUO" ) type=0;
       if (anode->name == "ELE" ) type=1;
       if (anode->name == "PHO" ) type=8;
+      if (anode->name == "TAU" ) type=11;
       DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
     } else {
       if (id == "JET" ) type=2;
       if (id == "MUO" ) type=0;
       if (id == "ELE" ) type=1;
       if (id == "PHO" ) type=8;
+      if (id == "TAU" ) type=11;
       DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
     }
 }
@@ -408,4 +410,68 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }// end of two particles
     }// end of cutIterator
    DEBUG("PHOTONS created\n");
+}
+void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new TAUtype named:"<<name<<" #Ttypes:"<<ao->taus.size()<< " Duplicating:"<<basename<<"\n");
+    ao->taus.insert( std::pair<string, vector<dbxTau> >(name, (ao->taus)[basename]) );
+    DEBUG(" #Ttypes:"<<ao->taus.size()<< " Duplicated.\n");
+
+    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
+        particles->clear();
+        (*cutIterator)->getParticlesAt(particles,0);
+        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
+        int ipart_max = (ao->taus)[name].size();
+        bool simpleloop=true;
+ 
+        if ( particles->size()==0) continue;
+        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
+       
+        if(simpleloop){
+            DEBUG("size=1\n");
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;
+                particles->at(0)->collection=name;
+                bool ppassed=(*cutIterator)->evaluate(ao);
+                if (!ppassed) (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
+            }
+        }
+        else {
+            DEBUG("size=2\n");
+            ValueNode abc=ValueNode();
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;  // 6213
+                int ipart2_max;
+                string base_collection2=particles->at(1)->collection;
+                switch(particles->at(1)->type){
+                    case 0: ipart2_max=(ao->muos)[base_collection2].size();
+                        break;
+                    case 1: ipart2_max=(ao->eles)[base_collection2].size();
+                        break;
+                    case 2: ipart2_max=(ao->jets)[base_collection2].size();
+                        break;
+//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+//                      break;
+//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
+//                      break;
+                    case 8: ipart2_max=(ao->gams)[base_collection2].size();
+                        break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
+                        break;
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
+                        break;
+                }
+                for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                    particles->at(1)->index=kpart;
+                    bool ppassed=(*cutIterator)->evaluate(ao);
+                    if (!ppassed) {
+                        (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
+                        break;
+                    }
+                } // second particle set
+            }// first particle set
+        }// end of two particles
+    }// end of cutIterator
+   DEBUG("TAUS created\n");
 }
