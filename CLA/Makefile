@@ -62,6 +62,7 @@ auxiliaries:
 # it might be good to handle the creation of all the necessary softlinks here
 softlinks: auxiliaries
 	test -r libdbx_muon_h.so       || ( ln -s $(SUBDIRLOC)analysis_core/dbx_muon_h.so      libdbx_muon_h.so     ; ln -s libdbx_muon_h.so dbx_muon_h.so )
+	test -r libdbx_tau_h.so        || ( ln -s $(SUBDIRLOC)analysis_core/dbx_tau_h.so      libdbx_tau_h.so     ; ln -s libdbx_tau_h.so dbx_tau_h.so )
 	test -r libdbx_electron_h.so   || ( ln -s $(SUBDIRLOC)analysis_core/dbx_electron_h.so  libdbx_electron_h.so ; ln -s libdbx_electron_h.so dbx_electron_h.so )
 	test -r libdbx_photon_h.so     || ( ln -s $(SUBDIRLOC)analysis_core/dbx_photon_h.so    libdbx_photon_h.so   ; ln -s libdbx_photon_h.so dbx_photon_h.so )
 	test -r libdbx_jet_h.so        || ( ln -s $(SUBDIRLOC)analysis_core/dbx_jet_h.so       libdbx_jet_h.so      ; ln -s libdbx_jet_h.so dbx_jet_h.so )

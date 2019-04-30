@@ -75,6 +75,7 @@ double count(AnalysisObjects* ao, string s, int id) {
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
      case jet_t:      return (ao->jets.at(s).size()); break;
+     case tau_t:      return (ao->taus.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      default:         return (-1); break;
     }

@@ -16,6 +16,7 @@
 #include "dbx_electron.h"
 #include "dbx_photon.h"
 #include "dbx_muon.h"
+#include "dbx_tau.h"
 #include "dbx_jet.h"
 #include "dbx_jet.h"
 #include "dbx_ljet.h"
@@ -26,6 +27,7 @@
 struct AnalysisObjects {
     std::map<std::string, std::vector<dbxMuon>     > muos;
     std::map<std::string, std::vector<dbxElectron> > eles;
+    std::map<std::string, std::vector<dbxTau>      > taus;
     std::map<std::string, std::vector<dbxPhoton>   > gams;
     std::map<std::string, std::vector<dbxJet>      > jets;
     std::map<std::string, std::vector<dbxLJet>     >ljets;
@@ -45,7 +47,8 @@ enum particleType{
  pureV_t=7,
  photon_t=8,
  fatjet_t=9,
- truth_t=10
+ truth_t=10,
+ tau_t=11
 };
 
 
