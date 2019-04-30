@@ -45,7 +45,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO 
-%token ELE MUO LEP PHO JET BJET QGJET NUMET METLV //particle types
+%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
@@ -453,6 +453,9 @@ function : '{' particules '}' 'm' {
         | NUMOF '(' MUO ')' {       
                                            $$=new SFuncNode(count, 0, "MUO");
                             }
+        | NUMOF '(' TAU ')' {       
+                                           $$=new SFuncNode(count, 0, "TAU");
+                            }
         | NUMOF '(' JET ')' {       
                                            $$=new SFuncNode(count, 2, "JET");
                             }
@@ -583,6 +586,24 @@ particule : ELE '_' index {
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
+        | TAU '[' index ']' {   
+                                tmp="tau_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 11;
+                                a->index = (int)$3;
+                                a->collection = "TAU";
+                                TmpParticle.push_back(a);  
+                        }
+        | TAU '_' index {       
+				tmp="tau_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 11;
+                                a->index = (int)$3;
+                                a->collection = "TAU";
+                                TmpParticle.push_back(a);  
+                        }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
@@ -695,6 +716,16 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
+                        else if (ito->first.find("TAU") !=std::string::npos ) {
+                           cout <<"which is a TAU\n";
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 11;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
                         else if (ito->first.find("PHO") !=std::string::npos ) {
                            cout <<"which is a MUO\n";
                            tmp="jet_"+to_string((int)$3);
@@ -705,8 +736,6 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-
-
                        } else {
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
@@ -787,6 +816,14 @@ objectBloc : OBJ ID ':' ID criteria {
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
+           | OBJ ID ':' TAU criteria {
+                                        cout<< " 2:"<<$2<<" is a new TauSet\n";
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
