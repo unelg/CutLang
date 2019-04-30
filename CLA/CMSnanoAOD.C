@@ -8,6 +8,8 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_ljet.h"
+#include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -52,6 +54,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
        vector<dbxLJet>    ljets;
+       vector<dbxTau>     taus;
        vector<dbxTruth>   truth;
 
        map<string, vector<dbxMuon>     > muos_map;
@@ -59,6 +62,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        map<string, vector<dbxPhoton>   > gams_map;
        map<string, vector<dbxJet>      > jets_map;
        map<string, vector<dbxLJet>     >ljets_map;
+       map<string, vector<dbxTau>      > taus_map;
        map<string, vector<dbxTruth>    >truth_map;
        map<string, TVector2            >  met_map;
 
@@ -68,6 +72,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
+       dbxTau      *adbxt;
        dbxPhoton   *adbxp;
 
 #ifdef __DEBUG__
@@ -129,6 +134,19 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
         }
 #ifdef __DEBUG__
 std::cout << "Jets:"<<Jet_<<std::endl;
+#endif
+//TAUS
+        for (unsigned int i=0; i<nTau; i++) {
+                alv.SetPtEtaPhiM( Tau_pt[i], Tau_eta[i], Tau_phi[i], Tau_mass[i] ); // all  in GeV
+                adbxt= new dbxTau(alv);
+                adbxt->setCharge(-99);
+                adbxt->setParticleIndx(i);
+                adbxt->setIsolation(Tau_idMVAnewDM2017v2[i] );
+                taus.push_back(*adbxtau);
+                delete adbxt;
+        }
+#ifdef __DEBUG__
+std::cout << "Taus:"<<Tau_<<std::endl;
 #endif
 //MET
         met.SetMagPhi( MET_pt,  MET_phi);
