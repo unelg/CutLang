@@ -142,9 +142,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
      if (itp->first == name) return 1;
     }
       
-    DEBUG("Before new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<"ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
+    DEBUG("Before new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
-    DEBUG("After new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<"ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
+    DEBUG("After new set #types: J, E, M,T, P:"<< ao->jets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size()<<"," <<ao->gams.size() <<"\n"); 
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
