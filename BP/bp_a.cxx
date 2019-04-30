@@ -98,7 +98,7 @@ int BPdbxA:: readAnalysisParams() {
               size_t apos=tempLine.find(hashdelimiter);
               if (found!=std::string::npos) { tempS1 = tempLine.substr(4, apos-4);}
               else                          { tempS1 = tempLine.substr(7, apos-7); }
-           //   tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
               effCL.push_back(tempS1);
               cout <<tempS1<<"\n";
            } else {
