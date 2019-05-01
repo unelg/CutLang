@@ -84,6 +84,10 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->setCharge(Muon_charge[i] );
 //                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
 //                adbxm->setPtCone(Muon_IsolationVar[i]        );
+                adbxm->addAttribute( Muon_dz[i]);
+                adbxm->addAttribute( Muon_dxy[i]     );
+                adbxm->addAttribute( Muon_miniPFRelIso_all[i]     );
+                adbxm->addAttribute( Muon_softId[i]     );
                 adbxm->setParticleIndx(i);
                 muons.push_back(*adbxm);
                 delete adbxm;
@@ -98,7 +102,9 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_charge[i] );
                 adbxe->setParticleIndx(i);
-//                adbxe->setClusterE(Electron_EhadOverEem[i] );
+                adbxe->addAttribute( Electron_dz[i]);
+                adbxe->addAttribute( Electron_dxy[i]     );
+                adbxe->addAttribute( Electron_miniPFRelIso_all[i]     );
                 electrons.push_back(*adbxe);
                 delete adbxe;
         }
@@ -112,7 +118,6 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
                 adbxp= new dbxPhoton(alv);
                 adbxp->setCharge(0);
                 adbxp->setParticleIndx(i);
-//                adbxp->setClusterE(Photon_EhadOverEem[i] );
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
@@ -159,6 +164,7 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->setCharge(-99);
                 adbxt->setParticleIndx(i);
                 adbxt->setIsolation(Tau_idMVAnewDM2017v2[i] );
+                adbxt->addAttribute(Tau_idMVAnewDM2017v2[i] );
                 taus.push_back(*adbxt);
                 delete adbxt;
         }

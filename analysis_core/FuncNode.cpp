@@ -33,16 +33,22 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        ka=ao->muos[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  ");
                                                         break;
                                                 case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        ka=ao->eles[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
                                                case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 11 is tau
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        ka=ao->taus[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
                                                         DEBUG("TAU:"<<(*i)->index<<"  ");
                                                         break;
                                             	case 2: DEBUG("jet:"<<(*i)->index<<" ");
