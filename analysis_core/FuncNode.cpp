@@ -275,7 +275,7 @@ double relisoof( dbxParticle* apart){
    DEBUG(" relisoof:"<<v<<"\t");
    return v;
 }
-double softidof( dbxParticle* apart){
+double softIdof( dbxParticle* apart){
    double v=apart->Attribute(3);
    DEBUG(" softidof:"<<v<<"\t");
    return v;
