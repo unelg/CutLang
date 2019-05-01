@@ -50,6 +50,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
+%token DEEPB FJET MSOFTD // razor additions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT
 %token <real> NB
@@ -262,6 +263,29 @@ function : '{' particules '}' 'm' {
                                        }
                                 }
 //---------------------------------------
+//---------------------------------------
+         | '{' particules '}' DEEPB {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(DeepBof,newList,"deepB");
+                                  }
+         | DEEPB '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(DeepBof,newList,"deepB");
+                                  }
+         | '{' particules '}' MSOFTD {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MsoftDof,newList,"msoftD");
+                                  }
+         | MSOFTD '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(MsoftDof,newList,"msoftD");
+                                  }
+//---------------------------------------
+//---------------------------------------
          | '{' particules '}' PHI {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -459,6 +483,9 @@ function : '{' particules '}' 'm' {
         | NUMOF '(' JET ')' {       
                                            $$=new SFuncNode(count, 2, "JET");
                             }
+        | NUMOF '(' FJET ')' {       
+                                           $$=new SFuncNode(count, 2, "FJET");
+                            }
 //------------------------------------------
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");
@@ -616,6 +643,14 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+        | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 8;
+                                a->index = (int)$3;
+                                a->collection = "PHO";
+                                TmpParticle.push_back(a);  
+                        }
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
@@ -623,7 +658,14 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 a->collection = "PHO";
                                 TmpParticle.push_back(a);  
-                                
+                        }
+        | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 2;
+                                a->index = (int)$3;
+                                a->collection = "JET";
+                                TmpParticle.push_back(a);  
                         }
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -632,7 +674,6 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 a->collection = "JET";
                                 TmpParticle.push_back(a);  
-                                
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -640,7 +681,34 @@ particule : ELE '_' index {
                                 a->type = 3;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
-                                
+                        }
+        | BJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 3;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
+        | FJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 9;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
+        | FJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 9;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
+        | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 4;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
                         }
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -648,7 +716,6 @@ particule : ELE '_' index {
                                 a->type = 4;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
-                                
                         }
         | NUMET '_' index {     tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -661,7 +728,6 @@ particule : ELE '_' index {
                                 }
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
-                                
                         }
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -669,7 +735,6 @@ particule : ELE '_' index {
                                 a->type = 7;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
-                                
                         }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
@@ -727,11 +792,21 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         }
                         else if (ito->first.find("PHO") !=std::string::npos ) {
-                           cout <<"which is a MUO\n";
+                           cout <<"which is a PHO\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
                                 a->type = 8;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (ito->first.find("FJET") !=std::string::npos ) {
+                           cout <<"which is a FatJET\n";
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                a->type = 9;
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
@@ -841,6 +916,14 @@ objectBloc : OBJ ID ':' ID criteria {
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
+           | OBJ ID ':' FJET criteria {
+                                        cout<< " 2:"<<$2<<" is a new FatJetSet\n";
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }

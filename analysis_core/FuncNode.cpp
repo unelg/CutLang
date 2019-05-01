@@ -223,6 +223,18 @@ double Phiof( dbxParticle* apart){
     DEBUG(" phi:"<<phi<<"\t");
     return phi;
 }
+double MsoftDof( dbxParticle* apart){
+    double MsoftD=(apart->lv()).Phi();
+    DEBUG(" MsoftD:"<<MsoftD<<"\t");
+    return MsoftD;
+}
+double DeepBof( dbxParticle* apart){
+    double DeepB=(apart->lv()).Phi();
+    DEBUG(" DeepB:"<<DeepB<<"\t");
+    return DeepB;
+}
+
+
 
 double nbfof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();

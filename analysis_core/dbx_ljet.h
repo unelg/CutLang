@@ -1,11 +1,7 @@
 #ifndef DBX_LJET_H
 #define DBX_LJET_H
 
-#ifdef VLQLIGHT
-#include "VLQLight/dbxParticle.h"
-#else
 #include "dbxParticle.h"
-#endif
 
 class dbxLJet: public dbxParticle {
  public:
