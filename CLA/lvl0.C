@@ -8,6 +8,7 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -85,6 +86,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
+       vector<dbxTau>      taus;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
        vector<dbxLJet>    ljets;
@@ -92,6 +94,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 
        map<string, vector<dbxMuon>     > muos_map;
        map<string, vector<dbxElectron> > eles_map;
+       map<string, vector<dbxTau>      > taus_map;
        map<string, vector<dbxPhoton>   > gams_map;
        map<string, vector<dbxJet>      > jets_map;
        map<string, vector<dbxLJet>     >ljets_map;
@@ -249,15 +252,17 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 */
 
 // now run
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("LVL0_Muon",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("LVL0_Electron", electrons) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("LVL0_Photon",     photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("LVL0_Jet",           jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("LVL0_Fatjet",       ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("LVL0_Truth",        truth) );
-         met_map.insert( pair <string,TVector2>             ("LVL0_MET",            met) );
 
-        AnalysisObjects a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
+
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map,  anevt};
         aCtrl.RunTasks(a0);
 
    } // end of event loop

@@ -8,6 +8,7 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -25,6 +26,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;
+   vector<dbxTau>      taus;
    vector<dbxPhoton>   photons;
    vector<dbxJet>      jets;
    vector<dbxLJet>    ljets;
@@ -32,6 +34,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
    map<string, vector<dbxMuon>     > muos_map;
    map<string, vector<dbxElectron> > eles_map;
+   map<string, vector<dbxTau>      > taus_map;
    map<string, vector<dbxPhoton>   > gams_map;
    map<string, vector<dbxJet>      > jets_map;
    map<string, vector<dbxLJet>     >ljets_map;
@@ -50,6 +53,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
+       //dbxTau      *adbxt;
        dbxPhoton   *adbxp;
 
 #ifdef __DEBUG__
@@ -211,15 +215,16 @@ std::cout << "MET OK"<<std::endl;
 std::cout << "Filling finished"<<std::endl;
 #endif
 
-       muos_map.insert( pair <string,vector<dbxMuon>     > ("Delphes_Muon",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("Delphes_Electron", electrons) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("Delphes_Photon",     photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("Delphes_Jet",           jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("Delphes_Fatjet",       ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Delphes_Truth",        truth) );
-         met_map.insert( pair <string,TVector2>             ("Delphes_MET",            met) );
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        *a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
 }
 
 //--------------------------------------------------------LOOP
