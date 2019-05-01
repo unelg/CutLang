@@ -50,7 +50,8 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
-%token DEEPB FJET MSOFTD // razor additions
+%token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
+%token RELISO TAUISO DXY DZ SOFTID
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT
 %token <real> NB
@@ -283,6 +284,87 @@ function : '{' particules '}' 'm' {
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(MsoftDof,newList,"msoftD");
+                                  }
+         | '{' particules '}' TAU1 {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau1of,newList,"tau1");
+                                  }
+         | TAU1 '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau1of,newList,"tau1");
+                                  }
+         | '{' particules '}' TAU2 {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau2of,newList,"tau2");
+                                  }
+         | TAU2 '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau2of,newList,"tau2");
+                                  }
+         | '{' particules '}' TAU3 {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau3of,newList,"tau3");
+                                  }
+         | TAU3 '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tau3of,newList,"tau3");
+                                  }
+
+         | '{' particules '}' DXY {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(dxyof,newList,"dxy");
+                                  }
+         | DXY '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(dxyof,newList,"dxy");
+                                  }
+         | '{' particules '}' DZ {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(dzof,newList,"dz");
+                                  }
+         | DZ '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(dzof,newList,"dz");
+                                  }
+         | '{' particules '}' RELISO {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
+                                  }
+         | RELISO '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
+                                  }
+         | '{' particules '}' SOFTID {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(softIdof,newList,"softId");
+                                  }
+         | SOFTID '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(softIdof,newList,"softId");
+                                  }
+         | '{' particules '}' TAUISO {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
+                                  }
+         | TAUISO '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
                                   }
 //---------------------------------------
 //---------------------------------------

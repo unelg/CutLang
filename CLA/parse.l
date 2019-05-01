@@ -48,6 +48,14 @@ vardef {varname}" "?":"" "?.*"\n"
 "FJET"|"FatJet" return FJET;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
+"tau1" return TAU1;
+"tau2" return TAU2;
+"tau3" return TAU3;
+"miniPFRelIsoAll" return RELISO;
+"dxy" return DXY;
+"dz" return DZ;
+"dMVAnewDM2017v2" return TAUISO;
+"softid" return SOFTID;
 "BJET" return BJET;
 "QGJET" return QGJET;
 "NUMET" return NUMET;
