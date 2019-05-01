@@ -8,6 +8,7 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -20,11 +21,13 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     vector<dbxElectron> electrons;
     vector<dbxPhoton>   photons;
     vector<dbxJet>      jets;
+    vector<dbxTau>      taus;
     vector<dbxLJet>     ljets;
     vector<dbxTruth>    truth;
 
     map<string, vector<dbxMuon>     > muos_map;
     map<string, vector<dbxElectron> > eles_map;
+    map<string, vector<dbxTau>      > taus_map;
     map<string, vector<dbxPhoton>   > gams_map;
     map<string, vector<dbxJet>      > jets_map;
     map<string, vector<dbxLJet>     >ljets_map;
@@ -205,14 +208,15 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 #endif
 
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE", electrons) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("DelphesPhoton",     photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",           jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("DelphesFatjet",       ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("DelphesTruth",        truth) );
-         met_map.insert( pair <string,TVector2>             ("DelphesMET",            met) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        *a0={muos_map, eles_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
 }
 
 

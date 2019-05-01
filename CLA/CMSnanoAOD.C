@@ -51,10 +51,10 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
 
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
+       vector<dbxTau>     taus;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
        vector<dbxLJet>    ljets;
-       vector<dbxTau>     taus;
        vector<dbxTruth>   truth;
 
        map<string, vector<dbxMuon>     > muos_map;
@@ -142,7 +142,7 @@ std::cout << "Jets:"<<Jet_<<std::endl;
                 adbxt->setCharge(-99);
                 adbxt->setParticleIndx(i);
                 adbxt->setIsolation(Tau_idMVAnewDM2017v2[i] );
-                taus.push_back(*adbxtau);
+                taus.push_back(*adbxt);
                 delete adbxt;
         }
 #ifdef __DEBUG__
@@ -178,10 +178,10 @@ std::cout << "Filling finished"<<std::endl;
 #endif
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-        taus_map.insert( pair <string,vector<dbxElectron> > ("TAU",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("Fatjet",      ljets) );
+	ljets_map.insert( pair <string,vector<dbxLJet>    > ("Fatjet",      ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
