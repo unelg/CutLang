@@ -47,20 +47,26 @@ public:
 };
 
 
-double Qof( dbxParticle* apart);
-double Mof( dbxParticle* apart);
-double Eof( dbxParticle* apart);
-double Pof( dbxParticle* apart);
-double Pzof( dbxParticle* apart);
-double Ptof( dbxParticle* apart);
+double      Qof( dbxParticle* apart);
+double      Mof( dbxParticle* apart);
+double      Eof( dbxParticle* apart);
+double      Pof( dbxParticle* apart);
+double     Pzof( dbxParticle* apart);
+double     Ptof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
-double Etaof( dbxParticle* apart);
-double Phiof( dbxParticle* apart);
+double    Etaof( dbxParticle* apart);
+double    Phiof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
-double DeepBof( dbxParticle* apart);
-double tau1( dbxParticle* apart);
-double tau2( dbxParticle* apart);
-double tau3( dbxParticle* apart);
+double  DeepBof( dbxParticle* apart);
+double   tau1of( dbxParticle* apart);
+double   tau2of( dbxParticle* apart);
+double   tau3of( dbxParticle* apart);
+double    dxyof( dbxParticle* apart);
+double     dzof( dbxParticle* apart);
+double relisoof( dbxParticle* apart);
+double tauisoof( dbxParticle* apart);
+double softidof( dbxParticle* apart);
+
 
 double nbfof( dbxParticle* apart);
 
