@@ -22,7 +22,7 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     vector<dbxPhoton>   photons;
     vector<dbxJet>      jets;
     vector<dbxTau>      taus;
-    vector<dbxLJet>     ljets;
+    vector<dbxJet>     ljets;
     vector<dbxTruth>    truth;
 
     map<string, vector<dbxMuon>     > muos_map;
@@ -30,7 +30,7 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     map<string, vector<dbxTau>      > taus_map;
     map<string, vector<dbxPhoton>   > gams_map;
     map<string, vector<dbxJet>      > jets_map;
-    map<string, vector<dbxLJet>     >ljets_map;
+    map<string, vector<dbxJet>     >ljets_map;
     map<string, vector<dbxTruth>    >truth_map;
     map<string, TVector2            >  met_map;
     evt_data anevt;
@@ -212,7 +212,7 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxLJet>     > ("FJET",        ljets) );
+       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 

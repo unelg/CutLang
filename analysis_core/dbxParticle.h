@@ -2,6 +2,7 @@
 #define DBX_PARTICLE_H
 
 #include "TLorentzVector.h"
+#include <iostream>
 #define CHMAX 256
 
 
@@ -196,11 +197,13 @@ public:
 	void dump();
 	void dump_b ();
 	void dumpLHCO(std::ofstream&  );
+
 	int setCharge( int);
 	int setEtCone( double );
 	int setPtCone( double );
 	int setFlavor ( double );
 	int setIsTight ( int );
+
 	int setParticleIndx ( int );
 	int setTlv( TLorentzVector );
        void setPPPE(float px, float py, float pz, float Ee ){p_lvector.SetPxPyPzE(px, py, pz, Ee ); }
@@ -228,8 +231,16 @@ public:
 	int scaleLorentzVector ( double );
 	int setZ0 (double );
         void setPt_Uncorrected(double v){p_Pt_Uncorrected=v;}
+	void setAttribute(int k, double v) {  
+                  if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
+                  } else { p_attribute[k]=v; } 
+        }
+	void addAttribute(double v) {p_attribute.push_back(v);} 
 
 	int q()  { return p_charge; }
+	double Attribute(int k)  { if (k>(int)p_attribute.size()){ 
+                                 std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
+	int nAttribute() { return p_attribute.size(); }
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }
 	double Flavor()  { return p_flavor; }
@@ -258,6 +269,7 @@ public:
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
 private:
+        std::vector<double> p_attribute;
 	int p_charge;
 	double p_et_cone;
 	double p_pt_cone;
