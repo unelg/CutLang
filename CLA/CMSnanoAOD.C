@@ -8,7 +8,6 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
-#include "dbx_ljet.h"
 #include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
@@ -54,17 +53,17 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        vector<dbxTau>     taus;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
-       vector<dbxLJet>    ljets;
+       vector<dbxJet>     ljets;
        vector<dbxTruth>   truth;
 
-       map<string, vector<dbxMuon>     > muos_map;
-       map<string, vector<dbxElectron> > eles_map;
-       map<string, vector<dbxTau>      > taus_map;
-       map<string, vector<dbxPhoton>   > gams_map;
-       map<string, vector<dbxJet>      > jets_map;
-       map<string, vector<dbxLJet>     >ljets_map;
-       map<string, vector<dbxTruth>    >truth_map;
-       map<string, TVector2            >  met_map;
+       map<string, vector<dbxMuon>     >  muos_map;
+       map<string, vector<dbxElectron> >  eles_map;
+       map<string, vector<dbxTau>      >  taus_map;
+       map<string, vector<dbxPhoton>   >  gams_map;
+       map<string, vector<dbxJet>      >  jets_map;
+       map<string, vector<dbxJet>      > ljets_map;
+       map<string, vector<dbxTruth>    > truth_map;
+       map<string, TVector2            >   met_map;
 
 //temporary variables
        TLorentzVector  alv;
@@ -133,7 +132,25 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 delete adbxj;
         }
 #ifdef __DEBUG__
-std::cout << "Jets:"<<Jet_<<std::endl;
+std::cout << "Jets:"<<nJet<<std::endl;
+#endif
+//LJETS---------------------FATJET--------------------------------------
+        for (unsigned int i=0; i<nFatJet; i++) {
+                alv.SetPtEtaPhiM( FatJet_pt[i], FatJet_eta[i], FatJet_phi[i], FatJet_mass[i] ); // all in GeV
+                adbxj= new dbxJet(alv);
+                adbxj->setCharge(-99);
+                adbxj->setParticleIndx(i);
+                adbxj->setFlavor(FatJet_btagDeepB[i] );
+                adbxj->set_isbtagged_77( (FatJet_btagDeepB[i]>0.8) ); // 5 is btag
+                adbxj->addAttribute( FatJet_msoftdrop[i]);
+                adbxj->addAttribute( FatJet_tau1[i]     );
+                adbxj->addAttribute( FatJet_tau2[i]     );
+                adbxj->addAttribute( FatJet_tau3[i]     );
+                ljets.push_back(*adbxj);
+                delete adbxj;
+        }
+#ifdef __DEBUG__
+std::cout << "FatJets:"<<nFatJet<<std::endl;
 #endif
 //TAUS
         for (unsigned int i=0; i<nTau; i++) {
@@ -181,7 +198,7 @@ std::cout << "Filling finished"<<std::endl;
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-	ljets_map.insert( pair <string,vector<dbxLJet>    > ("FJET",        ljets) );
+       ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 

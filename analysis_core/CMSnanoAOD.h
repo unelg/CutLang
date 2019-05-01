@@ -25,7 +25,8 @@
 using namespace std;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
-const Int_t nElectron_ = 12;
+const Int_t nElectron_ = 14;
+const Int_t nFatJet_   = 14; // SEZEN beni unutma
 
 
 class CMSnanoAOD {

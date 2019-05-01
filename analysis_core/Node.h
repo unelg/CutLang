@@ -18,7 +18,6 @@
 #include "dbx_muon.h"
 #include "dbx_tau.h"
 #include "dbx_jet.h"
-#include "dbx_ljet.h"
 #include "dbx_truth.h"
 #include "analysis_core.h"
 #include "myParticle.h"
@@ -29,7 +28,7 @@ struct AnalysisObjects {
     std::map<std::string, std::vector<dbxTau>      > taus;
     std::map<std::string, std::vector<dbxPhoton>   > gams;
     std::map<std::string, std::vector<dbxJet>      > jets;
-    std::map<std::string, std::vector<dbxLJet>     >ljets;
+    std::map<std::string, std::vector<dbxJet>      >ljets;
     std::map<std::string, std::vector<dbxTruth>    > truth;
     std::map<std::string, TVector2                 > met;
     evt_data            evt;

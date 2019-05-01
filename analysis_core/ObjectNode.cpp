@@ -150,7 +150,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
      if (itp->first == name) return 1;
     }
-    map <string, std::vector<dbxLJet>  >::iterator itfj;
+    map <string, std::vector<dbxJet>  >::iterator itfj;
     for (itfj=ao->ljets.begin();itfj!=ao->ljets.end();itfj++){
      if (itfj->first == name) return 1;
     }
@@ -432,7 +432,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 }
 void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     DEBUG("Creating new FATJETtype named:"<<name<<" #Ttypes:"<<ao->ljets.size()<< " Duplicating:"<<basename<<"\n");
-    ao->ljets.insert( std::pair<string, vector<dbxLJet> >(name, (ao->ljets)[basename]) );
+    ao->ljets.insert( std::pair<string, vector<dbxJet> >(name, (ao->ljets)[basename]) );
     DEBUG(" #Ttypes:"<<ao->ljets.size()<< " Duplicated.\n");
 
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {

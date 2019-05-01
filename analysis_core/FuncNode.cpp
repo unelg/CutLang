@@ -21,6 +21,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
          DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
          if (((*i)->collection).size() < 1 && (*i)->type!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type<<" idx:"<<(*i)->index <<"\n"; 
         }
+        int ka;
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
                 int ai=(*i)->index;
@@ -39,13 +40,16 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
-                                               case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 1 is electron
+                                               case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 11 is tau
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         DEBUG("TAU:"<<(*i)->index<<"  ");
                                                         break;
                                             	case 2: DEBUG("jet:"<<(*i)->index<<" ");
                                                         inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
+                                                        inputPart->setFlavor( ao->ljets[ac].at(ai).Flavor()   );
+                                                        ka=ao->jets[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
 ///                                             case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
 ///                                                     DEBUG("b-jet:"<<(*i)->index<<"  ");
@@ -70,6 +74,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                 case 8: DEBUG("gamma:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+ao->gams[ac].at(ai).lv()); // 8 is gammas
+                                                        break;
+                                                case 9: DEBUG("FatJet:"<< (*i)->index <<" ");
+                                                        inputPart->setTlv(inputPart->lv()+ao->ljets[ac].at(ai).lv()); // 9 is gammas
+                                                        inputPart->setFlavor( ao->ljets[ac].at(ai).Flavor()   );
+                                                        ka=ao->ljets[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
                                                         break;
 
                                             default: std::cout<<"No such object! ERROR\n";
@@ -223,16 +233,35 @@ double Phiof( dbxParticle* apart){
     DEBUG(" phi:"<<phi<<"\t");
     return phi;
 }
+//NGU
 double MsoftDof( dbxParticle* apart){
-    double MsoftD=(apart->lv()).Phi();
+    double MsoftD=apart->Attribute(0) ;
     DEBUG(" MsoftD:"<<MsoftD<<"\t");
     return MsoftD;
 }
 double DeepBof( dbxParticle* apart){
-    double DeepB=(apart->lv()).Phi();
+    double DeepB=apart->Flavor();
     DEBUG(" DeepB:"<<DeepB<<"\t");
     return DeepB;
 }
+double tau1of( dbxParticle* apart){
+    double tau1=apart->Attribute(1) ;
+    DEBUG(" tau1:"<<tau1<<"\t");
+    return tau1;
+}
+double tau2of( dbxParticle* apart){
+    double tau2=apart->Attribute(2) ;
+    DEBUG(" tau2:"<<tau2<<"\t");
+    return tau2;
+}
+double tau3of( dbxParticle* apart){
+    double tau3=apart->Attribute(3) ;
+    DEBUG(" tau3:"<<tau3<<"\t");
+    return tau3;
+}
+
+
+
 
 
 
