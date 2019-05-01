@@ -259,7 +259,34 @@ double tau3of( dbxParticle* apart){
     DEBUG(" tau3:"<<tau3<<"\t");
     return tau3;
 }
+//----------for electron and muons
+double dzof( dbxParticle* apart){
+    double dz=apart->Attribute(0) ;
+    DEBUG(" dz:"<<dz<<"\t");
+    return dz;
+}
+double dxyof( dbxParticle* apart){
+    double dxy=apart->Attribute(1);
+    DEBUG(" dxy:"<<dxy<<"\t");
+    return dxy;
+}
+double relisoof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" relisoof:"<<v<<"\t");
+   return v;
+}
+double softidof( dbxParticle* apart){
+   double v=apart->Attribute(3);
+   DEBUG(" softidof:"<<v<<"\t");
+   return v;
+}
 
+//---------tau only........
+double tauisoof( dbxParticle* apart){
+   double v=apart->Attribute(0);
+   DEBUG(" Tau iso of:"<<v<<"\t");
+   return v;
+}
 
 
 
