@@ -9,6 +9,7 @@
 #ifndef SFuncNode_h
 #define SFuncNode_h
 #include "Node.h"
+#include "Razorfunc.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -19,24 +20,47 @@
 
 using namespace std;
 //takes care of functions with arguments
+
 class SFuncNode : public Node {
 private:
     //should add something related to trigger types
     Node* userObject;
     double (*f)(AnalysisObjects*, string, int);
+    double (*g)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
+    std::vector<TLorentzVector> (*h)(std::vector<TLorentzVector>);
     int type;
+    bool ext;
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id), 
                       int id, 
                std::string s, 
                Node *objectNode = NULL) {
         f=func;
+        g=NULL;
+        ext=false;
         type=id;
         symbol=s;
         left=NULL;
         right=NULL;
         userObject = objectNode;
     }
+//-------------------------
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets)),
+              std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets),
+                      int id, 
+               std::string s, 
+               Node *objectNode = NULL) {
+        f=NULL;
+        g=func;
+        h=tunc;
+        ext=false;
+        type=id;
+        symbol=s;
+        left=NULL;
+        right=NULL;
+        userObject = objectNode;
+    }
+    
     
     virtual double evaluate(AnalysisObjects* ao) override {
         DEBUG("In SF Eval\n"); 
@@ -45,6 +69,8 @@ public:
            userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
            DEBUG("user obj done.\n"); 
         }
+        std::vector<TLorentzVector> ajets;  
+        if(g != NULL) (*g)(ao, symbol, type, h );
         return (*f)(ao, symbol, type);
     }
 
@@ -70,12 +96,12 @@ double count(AnalysisObjects* ao, string s, int id) {
       DEBUG("\t #Ptypename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
     }
 
-
     switch (pid) {
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
-     case jet_t:      return (ao->jets.at(s).size()); break;
      case tau_t:      return (ao->taus.at(s).size()); break;
+     case jet_t:      return (ao->jets.at(s).size()); break;
+     case ljet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      default:         return (-1); break;
     }
@@ -88,11 +114,29 @@ double met(AnalysisObjects* ao, string s, int id){
 
 double ht(AnalysisObjects* ao, string s, int id){
     double sum_htjet=0;
-//     cout<<"HT of:" << s << " #J"<< ao->jets.at(s).size()<<"\n";
-//    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) cout <<"J:"<< ao->jets.at(s).at(i).lv().Pt() <<"\n";
     for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();
     return (sum_htjet  );       
 }
+
+
+double userfunc(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets ) ){
+// string contains what to send
+// id contains the particle type
+
+  // assume id=jet type,
+   std::vector<TLorentzVector> myjets;
+   for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+   std::vector<TLorentzVector> retjets= (*func)(myjets);
+
+    return (1);       
+}
+
+
+
+
+
+
+
 
 /*
 double nbjets(AnalysisObjects* ao){

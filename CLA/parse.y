@@ -52,6 +52,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID
+%token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT
 %token <real> NB
@@ -549,8 +550,8 @@ function : '{' particules '}' 'm' {
                                            YYERROR;
                                        }
                                        else {
-                                            int id=((ObjectNode*)it->second)->type;
-                                            $$=new SFuncNode(count,id, it->first, it->second);
+                                            int type=((ObjectNode*)it->second)->type;
+                                            $$=new SFuncNode(count,            type, it->first, it->second);
                                        }
                            }
         | NUMOF '(' ELE ')' {       
@@ -560,14 +561,27 @@ function : '{' particules '}' 'm' {
                                            $$=new SFuncNode(count, 0, "MUO");
                             }
         | NUMOF '(' TAU ')' {       
-                                           $$=new SFuncNode(count, 0, "TAU");
+                                           $$=new SFuncNode(count, 11, "TAU");
                             }
         | NUMOF '(' JET ')' {       
                                            $$=new SFuncNode(count, 2, "JET");
                             }
         | NUMOF '(' FJET ')' {       
-                                           $$=new SFuncNode(count, 2, "FJET");
+                                           $$=new SFuncNode(count, 9, "FJET");
                             }
+//------------------------------------------
+        | FMEGAJETS '(' ID  ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                           $$=new SFuncNode(userfunc, fmegajets, type, it->first, it->second);
+                                       }
+                         }
 //------------------------------------------
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");

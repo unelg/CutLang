@@ -3,26 +3,6 @@
 //   https://twiki.cern.ch/twiki/bin/view/CMSPublic/RazorLikelihoodHowTo
 #include "TLorentzVector.h"
 
-namespace Razor {
-  
-  // deltaR:
-  double fdeltaR(double eta1, double phi1, double eta2, double phi2) {
-    double deltaphi = fabs(phi1 - phi2);
-    if (deltaphi > TMath::Pi())
-      deltaphi = TMath::TwoPi() - deltaphi;
-    double deltaeta = fabs(eta1 - eta2);
-    double deltaR = sqrt(deltaphi*deltaphi + deltaeta*deltaeta);
-    return deltaR;
-  }
-  
-  // deltaPhi:
-  double fdeltaPhi(double phi1, double phi2) {
-    double deltaphi = fabs(phi1 - phi2);
-    if (deltaphi > TMath::Pi())
-      deltaphi = TMath::TwoPi() - deltaphi;
-    return deltaphi;
-  }
-  
   // Hemispheres:
   std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets) {
     std::vector<TLorentzVector> mynewjets;
@@ -103,10 +83,4 @@ namespace Razor {
     return sqrt( 2 * lepton.Pt() * pfmet.Pt() * ( 1 - cos( pfmet.Phi() - lepton.Phi() ) ) );
   }
 
-  // Mll
-  double fMll(TLorentzVector lep1, TLorentzVector lep2){
-    TLorentzVector Z = lep1 + lep2;
-    return Z.M();
-  }
-  
-}
+
