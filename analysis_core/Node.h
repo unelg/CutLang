@@ -18,7 +18,6 @@
 #include "dbx_muon.h"
 #include "dbx_tau.h"
 #include "dbx_jet.h"
-#include "dbx_jet.h"
 #include "dbx_ljet.h"
 #include "dbx_truth.h"
 #include "analysis_core.h"

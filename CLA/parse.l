@@ -45,6 +45,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "PHO" return PHO;
 "Tau"|"TAU" return TAU;
 "JET"|"Jet" return JET;
+"FJET"|"FatJet" return FJET;
+"btagDeepB" return DEEPB;
+"msoftdrop" return MSOFTD;
 "BJET" return BJET;
 "QGJET" return QGJET;
 "NUMET" return NUMET;

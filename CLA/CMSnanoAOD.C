@@ -181,7 +181,7 @@ std::cout << "Filling finished"<<std::endl;
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-	ljets_map.insert( pair <string,vector<dbxLJet>    > ("Fatjet",      ljets) );
+	ljets_map.insert( pair <string,vector<dbxLJet>    > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
