@@ -65,7 +65,7 @@ double    dxyof( dbxParticle* apart);
 double     dzof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
-double softidof( dbxParticle* apart);
+double softIdof( dbxParticle* apart);
 
 
 double nbfof( dbxParticle* apart);
