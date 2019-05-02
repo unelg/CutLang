@@ -4,7 +4,7 @@
 #include "TLorentzVector.h"
 
   // Hemispheres:
-  std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets) {
+std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets) {
     std::vector<TLorentzVector> mynewjets;
     TLorentzVector j1, j2;
     //bool foundGood = false;
@@ -45,10 +45,10 @@
     mynewjets.push_back(j1);
     mynewjets.push_back(j2);
     return mynewjets;
-  }
+}
   
   // MR
-  double fMR(std::vector<TLorentzVector> j){
+double fMR(std::vector<TLorentzVector> j){
     TLorentzVector ja = j[0];
     TLorentzVector jb = j[1];
     double A = ja.P();
@@ -66,21 +66,21 @@
     //gamma times MRstar
     temp *= mygamma;
     return temp;
-  }
+}
   
   // MTR
-  double fMTR(std::vector<TLorentzVector> j, TVector3 met){
+double fMTR(std::vector<TLorentzVector> j, TVector3 met){
     TLorentzVector ja = j[0];
     TLorentzVector jb = j[1];
     double temp = met.Mag()*(ja.Pt()+jb.Pt()) - met.Dot(ja.Vect()+jb.Vect());
     temp /= 2.;
     temp = sqrt(temp);
     return temp;
-  }
+}
   
   // MT
-  double fMT(TLorentzVector lepton, TLorentzVector pfmet){
+double fMT(TLorentzVector lepton, TLorentzVector pfmet){
     return sqrt( 2 * lepton.Pt() * pfmet.Pt() * ( 1 - cos( pfmet.Phi() - lepton.Phi() ) ) );
-  }
+}
 
 

@@ -77,6 +77,7 @@ fi
 
  
 rm histoOut-BP_*.root
+echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 if [ $? -eq 0 ]; then
   rm _*
