@@ -716,7 +716,7 @@ particules : particules particule {
                          }
             ;
 particule : ELE '_' index {
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type =1;
                                 a->index = (int)$3;
                                 a->collection = "ELE";
@@ -725,7 +725,7 @@ particule : ELE '_' index {
                                 $$=strdup(tmp.c_str());
                           }
         | ELE '[' index ']' {
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type =1;
                                 a->index = (int)$3;
                                 a->collection = "ELE";
@@ -736,7 +736,7 @@ particule : ELE '_' index {
         | MUO '[' index ']' {   
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 0;
                                 a->index = (int)$3;
                                 a->collection = "MUO";
@@ -745,7 +745,7 @@ particule : ELE '_' index {
         | MUO '_' index {       
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 0;
                                 a->index = (int)$3;
                                 a->collection = "MUO";
@@ -754,7 +754,7 @@ particule : ELE '_' index {
         | TAU '[' index ']' {   
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 11;
                                 a->index = (int)$3;
                                 a->collection = "TAU";
@@ -763,7 +763,7 @@ particule : ELE '_' index {
         | TAU '_' index {       
 				tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 11;
                                 a->index = (int)$3;
                                 a->collection = "TAU";
@@ -771,7 +771,7 @@ particule : ELE '_' index {
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 if(Initializations->at(10)>0){
                                         a->type = 0;
                                 }
@@ -783,7 +783,7 @@ particule : ELE '_' index {
                         }
         | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 8;
                                 a->index = (int)$3;
                                 a->collection = "PHO";
@@ -791,7 +791,7 @@ particule : ELE '_' index {
                         }
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 8;
                                 a->index = (int)$3;
                                 a->collection = "PHO";
@@ -799,7 +799,7 @@ particule : ELE '_' index {
                         }
         | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 2;
                                 a->index = (int)$3;
                                 a->collection = "JET";
@@ -807,7 +807,7 @@ particule : ELE '_' index {
                         }
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 2;
                                 a->index = (int)$3;
                                 a->collection = "JET";
@@ -815,49 +815,49 @@ particule : ELE '_' index {
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 3;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | BJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 3;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | FJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 9;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 9;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 4;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 4;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
         | NUMET '_' index {     tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 if(Initializations->at(10)>0){
                                         a->type = 5;
                                 }
@@ -869,7 +869,7 @@ particule : ELE '_' index {
                         }
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 7;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
@@ -894,7 +894,7 @@ particule : ELE '_' index {
                            cout <<"which is a JET\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 2;
                                 a->index = (int)$3;
                                 a->collection = $1;
@@ -904,7 +904,7 @@ particule : ELE '_' index {
                            cout <<"which is a ELE\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 1;
                                 a->index = (int)$3;
                                 a->collection = $1;
@@ -914,7 +914,7 @@ particule : ELE '_' index {
                            cout <<"which is a MUO\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 0;
                                 a->index = (int)$3;
                                 a->collection = $1;
@@ -924,7 +924,7 @@ particule : ELE '_' index {
                            cout <<"which is a TAU\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 11;
                                 a->index = (int)$3;
                                 a->collection = $1;
@@ -934,7 +934,7 @@ particule : ELE '_' index {
                            cout <<"which is a PHO\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 8;
                                 a->index = (int)$3;
                                 a->collection = $1;
@@ -944,7 +944,7 @@ particule : ELE '_' index {
                            cout <<"which is a FatJET\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
-                                struct myParticle* a =(struct myParticle*)malloc(sizeof(struct myParticle));
+                                myParticle* a = new myParticle;
                                 a->type = 9;
                                 a->index = (int)$3;
                                 a->collection = $1;
