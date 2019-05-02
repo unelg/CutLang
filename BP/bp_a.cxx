@@ -97,7 +97,7 @@ int BPdbxA:: readAnalysisParams() {
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
               if (found!=std::string::npos) { tempS1 = tempLine.substr(4, apos-4);}
-              else                          { tempS1 = tempLine.substr(7, apos-7); }
+              else                          { tempS1 = tempLine.substr(8, apos-8); }
               tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
               effCL.push_back(tempS1);
               cout <<tempS1<<"\n";

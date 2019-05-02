@@ -32,7 +32,9 @@ public:
 
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{
         left->getParticlesAt(particles,index);
+        std::cout<<"L**: "<<left->getStr()<<"\n";
         right->getParticlesAt(particles,index);
+        std::cout<<"R**: "<<right->getStr()<<"\n";
     }
     virtual void Reset() override{
         left->Reset();

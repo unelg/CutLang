@@ -975,7 +975,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         }
                                     }
            | OBJ ID ':' ELE criteria {
-                                        cout<< " 2:"<<$2<<" is a new EleSet\n";
+                                        cout<< " "<<$2<<" is a new EleSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
@@ -983,7 +983,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
            | OBJ ID ':' MUO criteria {
-                                        cout<< " 2:"<<$2<<" is a new MuoSet\n";
+                                        cout<< " "<<$2<<" is a new MuoSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
@@ -991,7 +991,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
            | OBJ ID ':' TAU criteria {
-                                        cout<< " 2:"<<$2<<" is a new TauSet\n";
+                                        cout<<" "<<$2<<" is a new TauSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
@@ -1000,7 +1000,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                      }
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria {
-                                        cout<< " 2:"<<$2<<" is a new PhoSet\n";
+                                        cout<< " "<<$2<<" is a new PhoSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
@@ -1008,7 +1008,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' JET criteria {
-                                        cout<< " 2:"<<$2<<" is a new JetSet\n";
+                                        cout<< " "<<$2<<" is a new JetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
@@ -1016,7 +1016,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' FJET criteria {
-                                        cout<< " 2:"<<$2<<" is a new FatJetSet\n";
+                                        cout<< " "<<$2<<" is a new FatJetSet\n";
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //

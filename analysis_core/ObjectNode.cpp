@@ -8,7 +8,7 @@
 #include "ObjectNode.hpp"
 #include "ValueNode.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -73,7 +73,7 @@ void ObjectNode::getParticles(std::vector<myParticle *>* particles){
 }
 
 void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
-
+  cout<<"Calling get particlesAT on ObjectNode-----doing nothing\n";
 }
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
@@ -84,6 +84,8 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     bool keepworking=true;
 
     DEBUG("inital sets #types: J, FJ, E, M, T, P:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size() <<"\n"); 
+    DEBUG("# iparticles:"<< particles.size()<<"\n");
+    if (particles.size() >0) DEBUG("type:"<< particles[0]->type<<"\t"<<particles[0]->collection<<"\n" );
 
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
@@ -180,11 +182,15 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
     ao->jets.insert( std::pair<string, vector<dbxJet> >(name, (ao->jets)[basename]) );
+    DEBUG("new J inserted.\t");
+    DEBUG("of size:"<<(ao->jets)[basename].size()<<"\n");
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
         particles->clear();
+        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
         (*cutIterator)->getParticlesAt(particles,0);
-//--------get the string name from the particles, as base collection, the new name is in "name"
+        DEBUG("Cleared.\n");
         int ipart_max = (ao->jets)[name].size();
+        DEBUG("ipartMAX:"<<ipart_max<<"\n");
         bool simpleloop=true;
  
         if ( particles->size()==0) continue;
@@ -192,6 +198,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
 
         if(simpleloop){
+            DEBUG("Simple J eval.\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                 particles->at(0)->index=ipart;             //----the index was originally 6213
                 particles->at(0)->collection=name;             
@@ -437,8 +444,9 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
 
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
+        DEBUG("CutIte 1:"<<(*cutIterator)->getStr() <<"\n");
         (*cutIterator)->getParticlesAt(particles,0);
-        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
+        DEBUG("CutIte 2:"<<(*cutIterator)->getStr() <<"\n");
         int ipart_max = (ao->ljets)[name].size();
         bool simpleloop=true;
  
