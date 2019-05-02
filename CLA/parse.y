@@ -443,6 +443,7 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
                                  }
+
          | '{' particules '}' PT '(' ID  ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
                                        if(it == ObjectCuts->end()) {
@@ -570,18 +571,58 @@ function : '{' particules '}' 'm' {
                                            $$=new SFuncNode(count, 9, "FJET");
                             }
 //------------------------------------------
-        | FMEGAJETS '(' ID  ')' {
-                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
-                                           message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
-                                           $$=new SFuncNode(userfunc, fmegajets, type, it->first, it->second);
-                                       }
-                         }
+      | FMEGAJETS '(' ID ')' {
+                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                     if(it == ObjectCuts->end()) {
+                                         std::string message = "Object not defined: ";
+                                         message += $3;
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         YYERROR;
+                                     } else {
+                                         int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                         $$=new SFuncNode(userfuncA, fmegajets, type, "MEGAJETS" , it->second);
+                                     }
+                       }
+      | FMR '(' ID ')' {
+                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                     if(it == ObjectCuts->end()) {
+                                         std::string message = "Object not defined: ";
+                                         message += $3;
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         YYERROR;
+                                     } else {
+                                         int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                         $$=new SFuncNode(userfuncB, fMR, type, $3 , it->second);
+                                     }
+                       }
+
+      | FMTR '(' ID ',' MET ')'{
+                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                     if (it == ObjectCuts->end()) {
+                                         std::string message = "Object not defined: ";
+                                         message += $3;
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         YYERROR;
+                                     } else {
+                                         int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                         $$=new SFuncNode(userfuncC, fMTR, type, $3 , it->second);
+                                     }
+                       }
+      | FMTR '(' ID ',' ID ')'{
+                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                     map<string,Node*>::iterator it2 = ObjectCuts->find($5);
+                                     if ((it == ObjectCuts->end()) || (it2 == ObjectCuts->end()) ) {
+                                         std::string message = "Object not defined: ";
+                                         message += $3;
+                                         message += "   OR  ";
+                                         message += $5;
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         YYERROR;
+                                     } else {
+                                         int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                         $$=new SFuncNode(userfuncC, fMTR, type, $3 , it->second,  it2->second);
+                                     }
+                       }
 //------------------------------------------
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");
@@ -632,6 +673,7 @@ list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
+                                                        cout <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<s<<"\n";
                                                         $$=strdup(s.c_str());
                                                         }
      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules ')' {
@@ -845,9 +887,10 @@ particule : ELE '_' index {
                        cout <<$1<<" : "; //------------new ID
 
                        if(ito != ObjectCuts->end()) {
-                        cout <<" "<<$1<<" is a user particle, ";
+                        cout <<" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ";
+                        int otype=((ObjectNode*) ito->second)->type;  
 
-                        if (ito->first.find("JET") !=std::string::npos ) {
+                        if (otype == 2 ) {
                            cout <<"which is a JET\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -857,7 +900,7 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
-                        else if (ito->first.find("ELE") !=std::string::npos ) {
+                        else if (otype == 1 ) {
                            cout <<"which is a ELE\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -867,7 +910,7 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (ito->first.find("MUO") !=std::string::npos ) {
+                        else if (otype==0 ) {
                            cout <<"which is a MUO\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -877,7 +920,7 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (ito->first.find("TAU") !=std::string::npos ) {
+                        else if (otype==11 ) {
                            cout <<"which is a TAU\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -887,7 +930,7 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (ito->first.find("PHO") !=std::string::npos ) {
+                        else if (otype==8 ) {
                            cout <<"which is a PHO\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -897,7 +940,7 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (ito->first.find("FJET") !=std::string::npos ) {
+                        else if (otype==9 ) {
                            cout <<"which is a FatJET\n";
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -911,8 +954,7 @@ particule : ELE '_' index {
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
-                }
-                else {
+                } else {
                         vector<myParticle*> newList= it->second;
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
@@ -944,7 +986,7 @@ particule : ELE '_' index {
         ;
 index : '-' INT {$$=-$2;}
           | INT {$$= $1;}
-          | {$$= 6213;} // NGU
+          | {$$= 62;} // NGU
       ; 
 objects : objectBlocs ALGO ID
         | objectBlocs DEF  ID
@@ -956,9 +998,9 @@ objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
 objectBloc : OBJ ID ':' ID criteria {
-                                        vector<Node*> newList;
+                                        cout << "\nOBJ OBJ OBJ  "<<$2<<" : "<< $4 <<"\n";
+                                        vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
-                                        //find previous object from ObjectCuts
 
                                         map<string, Node *>::iterator it ;
                                         it = ObjectCuts->find($4);
@@ -970,6 +1012,17 @@ objectBloc : OBJ ID ':' ID criteria {
                                         }
                                         else {
                                                 Node* previous=it->second;
+                                                std::string str=newList[0]->getStr().Data();
+                                                cout<<"@@@@@@@@@@"<<str<<"\n";
+                                                if ((str.find("MEGAJETS") != std::string::npos)
+                                                  ||(str.find("MR")  != std::string::npos)
+                                                  ||(str.find("MTR") != std::string::npos))
+                                                 {
+                                                  Node *anode=newList[0];
+                                                  while(anode->left!=NULL){ anode=anode->left; }
+
+                                                 ((SFuncNode*)anode)->setSymbol($2);
+                                                }
                                                 Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }

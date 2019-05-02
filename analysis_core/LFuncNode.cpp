@@ -40,6 +40,7 @@ LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::
         for (int i=0; i<input2.size(); i++){
            apart2.index=input2[i]->index;
            apart2.type=input2[i]->type;
+           apart2.collection=input2[i]->collection;
          originalParticles2.push_back(apart2);
         }
     }
