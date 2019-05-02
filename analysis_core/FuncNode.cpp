@@ -117,9 +117,10 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
         userObjectB=objectNodeb;
         userObjectC=objectNodec;
         userObjectD=objectNoded;
+       DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
 
       for (int i=0; i<input.size(); i++){
-       DEBUG("orig i:"<<input[i]->index);
+       DEBUG(" orig i:"<<input[i]->index);
        apart.index=input[i]->index;
        apart.type=input[i]->type;
        apart.collection=input[i]->collection;
@@ -153,6 +154,7 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
 }
 
 void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
+        DEBUG("function particleAt giver, size: "<< inputParticles.size()<<" idx:"<<index<<"\n");
         particles->push_back(inputParticles[index]);
 }
 

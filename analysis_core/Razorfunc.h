@@ -45,6 +45,7 @@ std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets) {
     mynewjets.push_back(j1);
     mynewjets.push_back(j2);
     return mynewjets;
+
 }
   
   // MR
@@ -69,7 +70,9 @@ double fMR(std::vector<TLorentzVector> j){
 }
   
   // MTR
-double fMTR(std::vector<TLorentzVector> j, TVector3 met){
+double fMTR(std::vector<TLorentzVector> j, TVector2 amet){
+    TVector3  met;
+              met.SetXYZ(amet.Px(), amet.Py(), 0);
     TLorentzVector ja = j[0];
     TLorentzVector jb = j[1];
     double temp = met.Mag()*(ja.Pt()+jb.Pt()) - met.Dot(ja.Vect()+jb.Vect());
@@ -79,7 +82,9 @@ double fMTR(std::vector<TLorentzVector> j, TVector3 met){
 }
   
   // MT
-double fMT(TLorentzVector lepton, TLorentzVector pfmet){
+double fMT(std::vector<TLorentzVector> v){
+    TLorentzVector lepton=v[0];
+    TLorentzVector pfmet=v[1];
     return sqrt( 2 * lepton.Pt() * pfmet.Pt() * ( 1 - cos( pfmet.Phi() - lepton.Phi() ) ) );
 }
 

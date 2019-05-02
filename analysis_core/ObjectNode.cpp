@@ -182,26 +182,26 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
     ao->jets.insert( std::pair<string, vector<dbxJet> >(name, (ao->jets)[basename]) );
-    DEBUG("new J inserted.\t");
-    DEBUG("of size:"<<(ao->jets)[basename].size()<<"\n");
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
         particles->clear();
-        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
         (*cutIterator)->getParticlesAt(particles,0);
-        DEBUG("Cleared.\n");
         int ipart_max = (ao->jets)[name].size();
-        DEBUG("ipartMAX:"<<ipart_max<<"\n");
         bool simpleloop=true;
  
-        if ( particles->size()==0) continue;
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
 
         if(simpleloop){
-            DEBUG("Simple J eval.\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                 particles->at(0)->index=ipart;             //----the index was originally 6213
                 particles->at(0)->collection=name;             
+                DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
@@ -379,7 +379,6 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
-        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
         int ipart_max = (ao->gams)[name].size();
         bool simpleloop=true;
  
@@ -444,9 +443,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
 
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
-        DEBUG("CutIte 1:"<<(*cutIterator)->getStr() <<"\n");
         (*cutIterator)->getParticlesAt(particles,0);
-        DEBUG("CutIte 2:"<<(*cutIterator)->getStr() <<"\n");
         int ipart_max = (ao->ljets)[name].size();
         bool simpleloop=true;
  
@@ -512,7 +509,6 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
-        DEBUG("CutIte:"<<(*cutIterator)->getStr() <<"\n");
         int ipart_max = (ao->taus)[name].size();
         bool simpleloop=true;
  

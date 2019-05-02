@@ -11,7 +11,7 @@
 #include "Node.h"
 #include "Razorfunc.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -24,55 +24,119 @@ using namespace std;
 class SFuncNode : public Node {
 private:
     //should add something related to trigger types
-    Node* userObject;
+    Node* userObjectA;
+    Node* userObjectB;
     double (*f)(AnalysisObjects*, string, int);
-    double (*g)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
-    std::vector<TLorentzVector> (*h)(std::vector<TLorentzVector>);
+    double (*g1)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
+    double (*g2)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>));
+    double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 met));
+    std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>);
+               double (*h2)(std::vector<TLorentzVector>);
+               double (*h3)(std::vector<TLorentzVector>, TVector2 );
     int type;
     bool ext;
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id), 
                       int id, 
                std::string s, 
-               Node *objectNode = NULL) {
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         f=func;
-        g=NULL;
+        g1=NULL;
+        g2=NULL;
+        g3=NULL;
         ext=false;
         type=id;
         symbol=s;
         left=NULL;
         right=NULL;
-        userObject = objectNode;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
     }
-//-------------------------
+//-------------------------extern.........
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets),
                       int id, 
                std::string s, 
-               Node *objectNode = NULL) {
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
+        DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
         f=NULL;
-        g=func;
-        h=tunc;
-        ext=false;
+        g3=NULL;
+        g2=NULL;
+        g1=func;
+        h1=tunc;
+        ext=true;
         type=id;
         symbol=s;
         left=NULL;
         right=NULL;
-        userObject = objectNode;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
     }
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets)),
+              double (*tunc) (std::vector<TLorentzVector> jets),
+                      int id, 
+               std::string s, 
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
+        DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
+        f=NULL;
+        g3=NULL;
+        g1=NULL;
+        g2=func;
+        h2=tunc;
+        ext=true;
+        type=id;
+        symbol=s;
+        left=NULL;
+        right=NULL;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+    }
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets, TVector2 amet)),
+              double (*tunc) (std::vector<TLorentzVector> jets, TVector2 amet),
+                      int id, 
+               std::string s, 
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
+        DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
+        f=NULL;
+        g1=NULL;
+        g2=NULL;
+        g3=func;
+        h3=tunc;
+        ext=true;
+        type=id;
+        symbol=s;
+        left=NULL;
+        right=NULL;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+    }
+
+
+//---------------------------end of externs
+virtual void setSymbol(string s) { symbol=s; }
     
-    
-    virtual double evaluate(AnalysisObjects* ao) override {
-        DEBUG("In SF Eval\n"); 
-        if(userObject) {
+virtual double evaluate(AnalysisObjects* ao) override {
+        DEBUG("*******In SF Eval TF:"<< ext <<"\n"); 
+        if(userObjectA && !ext) {
            DEBUG("\t a user obj\n"); 
-           userObject->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+           userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
            DEBUG("user obj done.\n"); 
         }
-        std::vector<TLorentzVector> ajets;  
-        if(g != NULL) (*g)(ao, symbol, type, h );
+        if(userObjectB && !ext) {
+           DEBUG("\t b user obj\n"); 
+           userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+           DEBUG("user obj done.\n"); 
+        }
+
+        DEBUG("*****************EXTERN TF eval:"<< ext <<"\n");
+        if(ext) { 
+               DEBUG("external user function evaluate\n");
+              if (g1 != NULL) return (*g1)(ao, symbol, type, h1 );
+              if (g2 != NULL) return (*g2)(ao, symbol, type, h2 );
+              if (g3 != NULL) return (*g3)(ao, symbol, type, h3 );
+        }
         return (*f)(ao, symbol, type);
-    }
+}
 
     virtual void Reset() override{}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
@@ -118,17 +182,52 @@ double ht(AnalysisObjects* ao, string s, int id){
     return (sum_htjet  );       
 }
 
+//                                                           double                  sin   (            double x           );
 
-double userfunc(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets ) ){
+double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets ) ){
 // string contains what to send
-// id contains the particle type
+// id contains the particle type ASSUME ID=JET TYPE,
 
-  // assume id=jet type,
+   DEBUG("Userfunction g1 :"<<s<<"\n");
+
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+   DEBUG("evaluating external function :"<<s<<"\n");
    std::vector<TLorentzVector> retjets= (*func)(myjets);
-
+   DEBUG("external function Done. size:"<<retjets.size()<<"\n");
+   for (int ipart=ao->jets.at(s).size()-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
+     if (ipart > (retjets.size()-1) ) { 
+         (ao->jets).find(s)->second.erase( (ao->jets).find(s)->second.begin()+ipart);
+     } else {
+          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
+     } 
+   }
     return (1);       
+}
+double userfuncB(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets ) ){
+// string contains what to send
+// id contains the particle type ASSUME ID=JET TYPE,
+
+   DEBUG("Userfunction g2 :"<<s<<"\n");
+
+   std::vector<TLorentzVector> myjets;
+   for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+   DEBUG("evaluating external function :"<<s<<"\n");
+   double retvalue= (*func)(myjets);
+   return (retvalue);       
+}
+double userfuncC(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets, TVector2 amet ) ){
+// string contains what to send
+// id contains the particle type ASSUME ID=JET TYPE,
+
+   DEBUG("Userfunction g3 :"<<s<<"\n");
+
+   std::vector<TLorentzVector> myjets;
+        TVector2 mymet=ao->met["MET"];
+   for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+   DEBUG("evaluating external function :"<<s<<"\n");
+   double retvalue= (*func)(myjets, mymet);
+   return (retvalue);       
 }
 
 

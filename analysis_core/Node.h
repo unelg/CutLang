@@ -53,8 +53,6 @@ enum particleType{
 //generic node interface
 class Node{
 protected:
-    Node* left;
-    Node* right;
     Node* userObjectA;
     Node* userObjectB;
     Node* userObjectC;
@@ -64,6 +62,8 @@ protected:
     void display(std::string indent);
 public:
 
+    Node* right;
+    Node* left;
     virtual void Reset()=0;
     virtual void getParticles(std::vector<myParticle *>* particles)=0;
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index)=0;
