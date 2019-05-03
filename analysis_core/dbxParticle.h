@@ -193,7 +193,7 @@ public:
 	static double deltaPhi(dbxParticle,dbxParticle);	
 	//dbxParticle  operator-() const;
 	static bool comparePt(dbxParticle lhs, dbxParticle rhs) { return (lhs.lv().Pt() > rhs.lv().Pt()); }
-	void Reset(){  p_charge=0; p_lvector.SetPtEtaPhiM(0, 0, 0, 0); }
+	void Reset(){  p_charge=0; p_lvector.SetPtEtaPhiM(0, 0, 0, 0); p_attribute.clear(); }
 	void dump();
 	void dump_b ();
 	void dumpLHCO(std::ofstream&  );

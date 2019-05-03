@@ -1,6 +1,6 @@
 #include "FuncNode.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -164,7 +164,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      if(userObjectA) { userObjectA->evaluate(ao); 
                        int thistype=((ObjectNode*)userObjectA)->type;
                        string realname=((ObjectNode*)userObjectA)->name;
-                       DEBUG("t,n:"<<thistype<<" , "<< realname <<"\n");
+                       DEBUG("A t,n:"<<thistype<<" , "<< realname <<"\n");
                        for (int ipa=0; ipa<inputParticles.size(); ipa++){
                         if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
                        }
@@ -172,7 +172,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      if(userObjectB) { userObjectB->evaluate(ao);
                        int thistype=((ObjectNode*)userObjectB)->type;
                        string realname=((ObjectNode*)userObjectB)->name;
-                       DEBUG("t,n:"<<thistype<<" , "<< realname <<"\n");
+                       DEBUG("B t,n:"<<thistype<<" , "<< realname <<"\n");
                        for (int ipa=0; ipa<inputParticles.size(); ipa++){
                         if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
                        }
