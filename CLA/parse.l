@@ -98,6 +98,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
 [aA][bB][sS] return ABS;
+[sS][qQ][rR][tT] return SQRT;
 [sS][oO][rR][tT] return SORT;
 [cC][oO][mM][bB] return COMB;
 [pP][eE][rR][mM] return PERM;

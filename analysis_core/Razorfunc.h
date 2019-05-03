@@ -80,6 +80,16 @@ double fMTR(std::vector<TLorentzVector> j, TVector2 amet){
     temp = sqrt(temp);
     return temp;
 }
+double fMTR2(std::vector<TLorentzVector> j, TLorentzVector amet){
+    TVector3  met;
+              met.SetXYZ(amet.Px(), amet.Py(), 0);
+    TLorentzVector ja = j[0];
+    TLorentzVector jb = j[1];
+    double temp = met.Mag()*(ja.Pt()+jb.Pt()) - met.Dot(ja.Vect()+jb.Vect());
+    temp /= 2.;
+    temp = sqrt(temp);
+    return temp;
+}
   
   // MT
 double fMT(std::vector<TLorentzVector> v){
