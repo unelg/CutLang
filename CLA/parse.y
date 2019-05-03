@@ -1169,12 +1169,14 @@ description : description HID {
 //--------------------------------------------------------------------------
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
-
                         } 
+            | condition 't' action 'e' action  %prec '?' {
+                        $$=new IfNode($1,$3,$5,"if");
+             } 
             ;
 action : condition {
                         $$=$1;
-                        }
+                   }
        | ALL {
                $$=new SFuncNode(all,0,"all");
                }
