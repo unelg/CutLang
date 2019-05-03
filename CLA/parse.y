@@ -9,6 +9,15 @@
 #include <list>
 #include <vector>
 #include <iterator>
+
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
 extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
@@ -107,7 +116,7 @@ definition : DEF  ID  ':' particules {
                                         string name = $2;
                                         it = ListParts->find(name);
                                         if(it != ListParts->end()) {
-                                                cout <<name<<" : " ;
+                                                DEBUG(name<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
@@ -129,7 +138,7 @@ definition : DEF  ID  ':' particules {
                                         string name = $2;
                                         it = NodeVars->find(name);
                                         if(it != NodeVars->end()) {
-                                                cout <<name<<" : " ;
+                                                DEBUG(name<<" : ");
                                                 yyerror(NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
@@ -141,13 +150,13 @@ function : '{' particules '}' 'm' {
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       cout << "Mass function\n";
+                                       DEBUG("Mass function\n");
                                   }
          | 'm' '(' particules ')' {     
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       cout << "Mass function\n";
+                                       DEBUG("Mass function\n");
                                   }
          | '{' particules '}' 'm' '(' ID ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
@@ -156,7 +165,7 @@ function : '{' particules '}' 'm' {
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                        cout << "Mass function with "<< $6<<"\n";
+                                        DEBUG("Mass function with "<< $6<<"\n");
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Mof,newList,"m", it->second);
@@ -562,6 +571,9 @@ function : '{' particules '}' 'm' {
         | NUMOF '(' FJET ')' {       
                                            $$=new SFuncNode(count, 9, "FJET");
                             }
+        | NUMOF '(' PHO ')' {       
+                                           $$=new SFuncNode(count, 8, "PHO");
+                            }
 //------------------------------------------
       | FMEGAJETS '(' ID ')' {
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -669,7 +681,6 @@ list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
-                                                        cout <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<s<<"\n";
                                                         $$=strdup(s.c_str());
                                                         }
      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules ')' {
@@ -872,7 +883,7 @@ particule : ELE '_' index {
                         }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                cout<<"ID -------\t";
+                DEBUG("ID -------\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -880,14 +891,14 @@ particule : ELE '_' index {
 
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
-                       cout <<$1<<" : "; //------------new ID
+                       DEBUG($1<<" : "); //------------new ID
 
                        if(ito != ObjectCuts->end()) {
-                        cout <<" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ";
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
                         int otype=((ObjectNode*) ito->second)->type;  
 
                         if (otype == 2 ) {
-                           cout <<"which is a JET\n";
+                           DEBUG("which is a JET\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1170,9 +1181,9 @@ description : description HID {
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
                         } 
-            | condition 't' action 'e' action  %prec '?' {
-                        $$=new IfNode($1,$3,$5,"if");
-             } 
+//            | condition 'ise' action 'yoksa' action  %prec '?' {
+//                        $$=new IfNode($1,$3,$5,"if");
+//             } 
             ;
 action : condition {
                         $$=$1;

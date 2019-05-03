@@ -194,8 +194,18 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
+//---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
+        int t1=-1; int t2=-1; int t3=1;
+        if ( particles->size()>=2) {
+             for (int jp=0; jp<particles->size(); jp++){
+                if (t1<0) {t1=particles->at(jp)->type;
+                 }else if ((t2<0) && (t1!=particles->at(jp)->type) ) {t2=particles->at(jp)->type;
+               } else if ((t1!=particles->at(jp)->type) &&(t2 != particles->at(jp)->type ) ) {
+                 cerr <<" 3 TYPE particle selection is not allowed in this version!\n"; t3=-99; exit(1);
+               }
+             }// end of loop over particles
+          if (t3) { simpleloop=false; }
+        }
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
@@ -241,6 +251,11 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
                     particles->at(1)->collection=base_collection2;      
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -268,9 +283,19 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
-
+//---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
+        int t1=-1; int t2=-1; int t3=1;
+        if ( particles->size()>=2) { 
+             for (int jp=0; jp<particles->size(); jp++){
+                if (t1<0) {t1=particles->at(jp)->type;
+                 }else if ((t2<0) && (t1!=particles->at(jp)->type) ) {t2=particles->at(jp)->type;
+               } else if ((t1!=particles->at(jp)->type) &&(t2 != particles->at(jp)->type ) ) {
+                 cerr <<" 3 TYPE particle selection is not allowed in this version!\n"; t3=-99; exit(1);
+               } 
+             }// end of loop over particles
+          if (t3) { simpleloop=false; }
+        }           
+ 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                for (int jp=0; jp<particles->size(); jp++){
@@ -282,9 +307,11 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
             }
         }
         else {
+//################################# I have >=2 particles which should have the same index
             ValueNode abc=ValueNode();
-            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over ALL electrons of the base class
                 particles->at(0)->index=ipart;  // 6213
+                particles->at(0)->collection=name;
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
@@ -310,6 +337,11 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+                    particles->at(1)->collection=base_collection2;
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
@@ -388,7 +420,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     }// end of cutIterator
 }
 void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-    DEBUG("Creating new PHOtype named:"<<name<<" #Ptypes:"<<ao->gams.size()<< " Duplicating:"<<basename<<"\n");
+    DEBUG("Creating new PHOtype named:"<<name<<" #Ptypes:"<<ao->gams.size()<< " Duplicating:"<<basename<<"\t");
     ao->gams.insert( std::pair<string, vector<dbxPhoton> >(name, (ao->gams)[basename]) );
     DEBUG(" #Ptypes:"<<ao->gams.size()<< " Duplicated.\n");
 

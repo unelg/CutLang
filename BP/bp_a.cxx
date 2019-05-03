@@ -20,7 +20,6 @@ extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,ve
 extern FILE* yyin;
 extern int cutcount;
 
-
 int BPdbxA::plotVariables(int sel) {
  return 0;  
 }
@@ -96,9 +95,10 @@ int BPdbxA:: readAnalysisParams() {
               CutList2file+=tempLine;
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
-              if (found!=std::string::npos) { tempS1 = tempLine.substr(4, apos-4);}
-              else                          { tempS1 = tempLine.substr(8, apos-8); }
-              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+              if (found!=std::string::npos) { tempS1 = tempLine.substr(found+4, apos);}
+              else                          { tempS1 = tempLine.substr(foundp+7, apos); }
+//              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+              tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
               effCL.push_back(tempS1);
               cout <<tempS1<<"\n";
            } else {
@@ -113,7 +113,7 @@ int BPdbxA:: readAnalysisParams() {
            CutList2file+=tempLine;
            CutList2file+="\n";
            size_t apos=tempLine.find(hashdelimiter);
-           tempS1 = tempLine.substr(6, apos-6); // without the comments
+           tempS1 = tempLine.substr(found+5, apos); // without the comments
            apos=tempS1.find_first_of('"');
            size_t bpos=tempS1.find_last_of('"');
            tempS1 = tempS1.substr(apos+1, bpos-apos-1); // without the comments

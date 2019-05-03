@@ -56,7 +56,10 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 #echo VERBOSE  = "${VERBOSE}"
 
 
-Nalgo=`cat ${INIFILE} | grep "^algo" | wc -l`
+cat ${INIFILE} | grep -v '#' | grep "region " > pippo
+cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
+Nalgo=`cat pippo | wc -l`
+rm pippo
 
 if [ $Nalgo -gt 1 ]; then
  echo Analysis with Multiple Regions
