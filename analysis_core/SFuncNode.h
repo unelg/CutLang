@@ -29,12 +29,15 @@ private:
     double (*f)(AnalysisObjects*, string, int);
     double (*g1)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
     double (*g2)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>));
-    double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 met));
+    double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 ));
+    double (*g4)(AnalysisObjects*, string, int,   TLorentzVector,    double (*func)(std::vector<TLorentzVector>, TLorentzVector ));
     std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>);
                double (*h2)(std::vector<TLorentzVector>);
                double (*h3)(std::vector<TLorentzVector>, TVector2 );
+               double (*h4)(std::vector<TLorentzVector>, TLorentzVector );
     int type;
     bool ext;
+    std::vector<myParticle*> inputParticles;
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id), 
                       int id, 
@@ -44,6 +47,7 @@ public:
         g1=NULL;
         g2=NULL;
         g3=NULL;
+        g4=NULL;
         ext=false;
         type=id;
         symbol=s;
@@ -62,6 +66,7 @@ public:
         f=NULL;
         g3=NULL;
         g2=NULL;
+        g4=NULL;
         g1=func;
         h1=tunc;
         ext=true;
@@ -79,6 +84,7 @@ public:
                Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
         f=NULL;
+        g4=NULL;
         g3=NULL;
         g1=NULL;
         g2=func;
@@ -100,6 +106,7 @@ public:
         f=NULL;
         g1=NULL;
         g2=NULL;
+        g4=NULL;
         g3=func;
         h3=tunc;
         ext=true;
@@ -107,6 +114,28 @@ public:
         symbol=s;
         left=NULL;
         right=NULL;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+    }
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*gunc) (std::vector<TLorentzVector> jets, TLorentzVector amet)),
+              double (*tunc) (std::vector<TLorentzVector> jets, TLorentzVector amet),
+                      int id, 
+               std::string s,
+               std::vector<myParticle*> input, 
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
+        DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
+        f=NULL;
+        g1=NULL;
+        g2=NULL;
+        g3=NULL;
+        g4=func;
+        h4=tunc;
+        ext=true;
+        type=id;
+        symbol=s;
+        left=NULL;
+        right=NULL;
+        inputParticles=input;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
@@ -127,14 +156,48 @@ virtual double evaluate(AnalysisObjects* ao) override {
            userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
            DEBUG("user obj done.\n"); 
         }
+        dbxParticle *aPart= new dbxParticle;
 
+        if ( inputParticles.size()>0 ){
+           aPart->Reset();
+           TLorentzVector ametlv;
+           DEBUG("\t input particles \n"); 
+           for(vector<myParticle*>::iterator i=inputParticles.begin();i!=inputParticles.end();i++){
+               DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
+              int atype=(*i)->type;
+                int ai=(*i)->index;
+             string ac=(*i)->collection;
+             if (atype==7) ac="MET";
+
+               switch (atype) { 
+                   case 0:  aPart->setTlv(  aPart->lv()+ao->muos[ac].at(ai).lv() );   break;
+                   case 1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
+                  case 11:  aPart->setTlv(  aPart->lv()+ao->taus[ac].at(ai).lv() );   break;
+                   case 2:  aPart->setTlv(  aPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                   case 9:  aPart->setTlv(  aPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
+                   case 8:  aPart->setTlv(  aPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+                   case 7: DEBUG("MET LV\n ");
+                            ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
+                            aPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
+                            break;
+                   default: std::cout<<"No such object! ERROR\n";
+                            break;
+
+               } // end of switch
+           }// end of for
+
+           DEBUG("aPart constructed \t");
+        }
+
+        std::vector<TLorentzVector> abc;       
         DEBUG("*****************EXTERN TF eval:"<< ext <<"\n");
         if(ext) { 
                DEBUG("external user function evaluate\n");
               if (g1 != NULL) return (*g1)(ao, symbol, type, h1 );
               if (g2 != NULL) return (*g2)(ao, symbol, type, h2 );
               if (g3 != NULL) return (*g3)(ao, symbol, type, h3 );
-        }
+              if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4);
+        }               
         return (*f)(ao, symbol, type);
 }
 
@@ -230,6 +293,18 @@ double userfuncC(AnalysisObjects* ao, string s, int id, double (*func)(std::vect
    return (retvalue);       
 }
 
+double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*func)(std::vector<TLorentzVector> jets, TLorentzVector amet ) ){
+// string contains what to send
+// id contains the particle type ASSUME ID=JET TYPE,
+
+   DEBUG("Userfunction g4 :"<<s<<"\n");
+
+   std::vector<TLorentzVector> myjets;
+   for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+   DEBUG("evaluating external function :"<<s<<"\n");
+   double retvalue= (*func)(myjets, alv);
+   return (retvalue);       
+}
 
 
 

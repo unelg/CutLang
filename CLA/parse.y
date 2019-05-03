@@ -58,7 +58,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
-%token SIN COS TAN ABS
+%token SIN COS TAN ABS SQRT
 %token OR AND 
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
@@ -102,20 +102,16 @@ definitions : definitions definition
             | 
             ;
 definition : DEF  ID  ':' particules {
-
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
-                        
                                         if(it != ListParts->end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
-                                        
                                         parts->push_back(name+" : "+$4);
-                                        
                                                 // std::cout<<"\n TMP List: \n";
                                                 // vector<myParticle*>::iterator myiterator;
                                                 // myiterator = TmpParticle.begin();
@@ -123,23 +119,19 @@ definition : DEF  ID  ':' particules {
                                                 // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
                                                 // myiterator++;
                                                 // }
-                                        
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
-                                                                                
 				}
             |  DEF ID  ':' e {
                                         pnum=0;
-                                         map<string, Node*>::iterator it ;
-                                         string name = $2;
-                                         it = NodeVars->find(name);
-                        
+                                        map<string, Node*>::iterator it ;
+                                        string name = $2;
+                                        it = NodeVars->find(name);
                                         if(it != NodeVars->end()) {
                                                 cout <<name<<" : " ;
                                                 yyerror(NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
-                                                
                                         }
                                         NodeVars->insert(make_pair(name,$4));
 				}
@@ -607,20 +599,24 @@ function : '{' particules '}' 'm' {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
                                          $$=new SFuncNode(userfuncC, fMTR, type, $3 , it->second);
                                      }
-                       }
+                               }
       | FMTR '(' ID ',' ID ')'{
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                     map<string,Node*>::iterator it2 = ObjectCuts->find($5);
-                                     if ((it == ObjectCuts->end()) || (it2 == ObjectCuts->end()) ) {
+                                     map<string,vector<myParticle*> >::iterator it2 = ListParts->find($5);
+                                     if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         message += "   OR  ";
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         YYERROR;
+                                     } else if (it2 == ListParts->end() ) {
+                                         std::string message = "Particle not defined: ";
                                          message += $5;
                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
-                                     } else {
+                                     } 
+                                      else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
-                                         $$=new SFuncNode(userfuncC, fMTR, type, $3 , it->second,  it2->second);
+                                         $$=new SFuncNode(userfuncD, fMTR2, type, $3 , it2->second,  it->second);
                                      }
                        }
 //------------------------------------------
@@ -1248,7 +1244,10 @@ e : e '+' e  {
                         $$=new UnaryAONode(unaryMinu,$2,"-");
                }
    | ABS '(' e ')' {    
-                        $$=new UnaryAONode(cos,$3,"fabs"); 
+                        $$=new UnaryAONode(abs,$3,"fabs"); 
+               }
+   | SQRT '(' e ')' {    
+                        $$=new UnaryAONode(sqrt,$3,"sqrt"); 
                }
    | COS '(' e ')' {    
                         $$=new UnaryAONode(cos,$3,"cos"); 
