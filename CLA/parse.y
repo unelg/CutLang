@@ -876,7 +876,7 @@ particule : ELE '_' index {
                         }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                cout<<"ID ------------------------\n";
+                cout<<"ID -------\t";
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -986,7 +986,7 @@ particule : ELE '_' index {
         ;
 index : '-' INT {$$=-$2;}
           | INT {$$= $1;}
-          | {$$= 62;} // NGU
+          | {$$= 6213;} // NGU
       ; 
 objects : objectBlocs ALGO ID
         | objectBlocs DEF  ID
@@ -998,7 +998,6 @@ objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
 objectBloc : OBJ ID ':' ID criteria {
-                                        cout << "\nOBJ OBJ OBJ  "<<$2<<" : "<< $4 <<"\n";
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
 
@@ -1013,7 +1012,6 @@ objectBloc : OBJ ID ':' ID criteria {
                                         else {
                                                 Node* previous=it->second;
                                                 std::string str=newList[0]->getStr().Data();
-                                                cout<<"@@@@@@@@@@"<<str<<"\n";
                                                 if ((str.find("MEGAJETS") != std::string::npos)
                                                   ||(str.find("MR")  != std::string::npos)
                                                   ||(str.find("MTR") != std::string::npos))

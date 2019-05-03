@@ -8,7 +8,7 @@
 #include "ObjectNode.hpp"
 #include "ValueNode.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -199,8 +199,10 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
-                particles->at(0)->index=ipart;             //----the index was originally 6213
-                particles->at(0)->collection=name;             
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
                 DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -260,14 +262,21 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->eles)[name].size();
         bool simpleloop=true;
  
-        if ( particles->size()==0) continue;
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;
-                particles->at(0)->collection=name;
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
             }
@@ -320,16 +329,23 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->muos)[name].size();
         bool simpleloop=true;
  
-        if ( particles->size()==0) continue;
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
         
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;
-                particles->at(0)->collection=name;
-                bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               if (!ppassed) (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
             }
         }
         else {
@@ -382,17 +398,24 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->gams)[name].size();
         bool simpleloop=true;
  
-        if ( particles->size()==0) continue;
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
        
         if(simpleloop){
             DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;
-                particles->at(0)->collection=name;
-                bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
             }
         }
         else {
@@ -437,27 +460,35 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
    DEBUG("PHOTONS created\n");
 }
 void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-    DEBUG("Creating new FATJETtype named:"<<name<<" #Ttypes:"<<ao->ljets.size()<< " Duplicating:"<<basename<<"\n");
+    DEBUG("Creating new FATJETtype named:"<<name<<" #Ttypes:"<<ao->ljets.size()<< " Duplicating:"<<basename<<"\t");
     ao->ljets.insert( std::pair<string, vector<dbxJet> >(name, (ao->ljets)[basename]) );
-    DEBUG(" #Ttypes:"<<ao->ljets.size()<< " Duplicated.\n");
+    DEBUG(" #Ttypes became:"<<ao->ljets.size()<< " \n");
 
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->ljets)[name].size();
         bool simpleloop=true;
+
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
  
-        if ( particles->size()==0) continue;
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
        
         if(simpleloop){
-            DEBUG("size=1\n");
+            DEBUG("Simple Loop\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;
-                particles->at(0)->collection=name;
-                bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               if (!ppassed) (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
             }
         }
         else {
@@ -512,7 +543,12 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->taus)[name].size();
         bool simpleloop=true;
  
-        if ( particles->size()==0) continue;
+        DEBUG("Psize:"<<particles->size() <<"\n");
+        if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
         if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
        
