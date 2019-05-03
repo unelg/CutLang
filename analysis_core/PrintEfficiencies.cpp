@@ -30,13 +30,13 @@ void PrintEfficiencies(TH1F* effh) {
     if (strlen(effh->GetXaxis()->GetBinLabel(s)) <1) break;
     cout << setw(66) << effh->GetXaxis()->GetBinLabel(s)
 	 << " = "  << setw(6) << setprecision(4) << eff
-	 << " +- " << setw(9) << setprecision(4) << err 
+	 << " +- " << setw(9) << setprecision(3) << err 
          << setw(6) <<" evt: "<<setw(8)<< setprecision(10)<<effh->GetBinContent(s) <<endl; 
   }
   eff = effh->GetBinContent(s-1) / effh->GetBinContent(2);
   err = sqrt(eff*(1-eff)/effh->GetBinContent(2));
   cout << "\t\t\t\t\t --> Overall efficiency\t = "
-       << setw(6) << setprecision(4) << eff*100.
+       << setw(6) << setprecision(3) << eff*100.
        << " % +- " << setw(6) << setprecision(3) << err*100. << " %" <<endl; 
   return;
 }
