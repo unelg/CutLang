@@ -52,12 +52,14 @@ int BPdbxA:: readAnalysisParams() {
     TString ObjList2file="\n";
     std:vector<TString> effCL;
 
-    char algoname[CHMAX];
     bool algorithmnow=false;
 
     while ( ! cardfile.eof() ) {
        getline( cardfile, tempLine );
        if ( tempLine[0] == '#' ) continue; // skip comment lines
+       if (tempLine.find_first_of("#") != std::string::npos ){
+         tempLine.erase(tempLine.find_first_of("#"));
+       }
 //---------obj
        found = tempLine.find("obj ");
        if (found!=std::string::npos) {
@@ -69,18 +71,18 @@ int BPdbxA:: readAnalysisParams() {
 //---------algo
        found =tempLine.find("algo ") ;
        if (found!=std::string::npos) {
-           tempS1 = tempLine.substr(found+4, std::string::npos );
-           tempS1.erase(tempS1.find_last_not_of(" #\n\r\t")+1);
-           cout <<"ALGO:"<< tempS1 <<"\n";
+           tempS1 = tempLine.substr(found+5, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           cout <<"\t ALGO:"<< tempS1 <<"\n";
            algorithmnow=true;
            sprintf (algoname,"%s",tempS1.c_str());
            continue;
        }
        found =tempLine.find("region ") ;
        if (found!=std::string::npos) {
-           tempS1 = tempLine.substr(found+6, std::string::npos );
-           tempS1.erase(tempS1.find_last_not_of(" #\n\r\t")+1);
-           cout <<"REGION:"<< tempS1 <<"\n";
+           tempS1 = tempLine.substr(found+7, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           cout <<"\t REGION:"<< tempS1 <<"\n";
            algorithmnow=true;
            sprintf (algoname,"%s",tempS1.c_str());
            continue;
@@ -102,10 +104,9 @@ int BPdbxA:: readAnalysisParams() {
               size_t apos=tempLine.find(hashdelimiter);
               if (found!=std::string::npos) { tempS1 = tempLine.substr(found+4, apos);}
               else                          { tempS1 = tempLine.substr(foundp+7, apos); }
-//              tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
               tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
               effCL.push_back(tempS1);
-              cout <<tempS1<<"\n";
+//              cout <<tempS1<<"\n";
            } else {
               ObjList2file+=tempLine;
               ObjList2file+="\n";
@@ -124,7 +125,7 @@ int BPdbxA:: readAnalysisParams() {
            tempS1 = tempS1.substr(apos+1, bpos-apos-1); // without the comments
            tempS2 = "[Histo] ";
            tempS2 += tempS1;
-           cout <<tempS2<<"\n";
+//           cout <<tempS2<<"\n";
            effCL.push_back(tempS2);
            continue;
        }
@@ -166,9 +167,9 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
-       cout <<"================parsing started===================\n";
+//       cout <<"==parsing started==\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
-       cout <<"================parsing finished===================\n";
+       cout <<" parsing finished.  ";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
@@ -264,9 +265,9 @@ int BPdbxA:: readAnalysisParams() {
 }
 
 int BPdbxA:: printEfficiencies() {
-  int retval=0;
+  cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
   PrintEfficiencies(eff);
-  return retval;
+  return 0;
 }
 
 int BPdbxA:: initGRL() {

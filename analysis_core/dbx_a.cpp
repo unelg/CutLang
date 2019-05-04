@@ -197,7 +197,7 @@ int dbxA:: plotVariables(int uselect ) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA:: saveHistos() {
   int retval=0;
-  cout << "saving... ";
+  cout << "saving...\n";
   histoOut->Write();
   return 0;
 }

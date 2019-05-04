@@ -1098,7 +1098,7 @@ commands : commands command
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
-        | ALGO ID {  cout << "THIS IS ALGO: "<< $2<<"\n";
+        | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
         | CMD ALL {                                         
                                         Node* a=new SFuncNode(all,0, "all");
