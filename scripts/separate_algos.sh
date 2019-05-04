@@ -36,7 +36,7 @@ for an_algo in $algo_list ; do
  this_region_name=`echo $thisline | cut -f2 -d ' '`
  next_rline=`cat _algos.ini | grep -n -m $(( 1 + iregion )) algo | tail -1| cut -f1 -d":"`
  if [ $next_rline == $an_algo ]; then
-   next_rline=`wc -l _algos.ini |  awk '{ print $1+1 }'`
+   next_rline=`wc -l _algos.ini |  awk '{ print $1 }'`
  fi
  printf 'A region named:%20s \t defined in lines from %d to %d\n' "[$this_region_name]" "$an_algo" "$next_rline"
 
