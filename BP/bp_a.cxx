@@ -28,7 +28,6 @@ int BPdbxA::plotVariables(int sel) {
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
 
-  dbxA::ChangeDir(cname);
   TString CardName=cname;
           CardName+="-card.ini";
 
@@ -53,7 +52,7 @@ int BPdbxA:: readAnalysisParams() {
     TString ObjList2file="\n";
     std:vector<TString> effCL;
 
-
+    char algoname[CHMAX];
     bool algorithmnow=false;
 
     while ( ! cardfile.eof() ) {
@@ -70,14 +69,20 @@ int BPdbxA:: readAnalysisParams() {
 //---------algo
        found =tempLine.find("algo ") ;
        if (found!=std::string::npos) {
-           cout <<"ALGO\n";
+           tempS1 = tempLine.substr(found+4, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" #\n\r\t")+1);
+           cout <<"ALGO:"<< tempS1 <<"\n";
            algorithmnow=true;
+           sprintf (algoname,"%s",tempS1.c_str());
            continue;
        }
        found =tempLine.find("region ") ;
        if (found!=std::string::npos) {
-           cout <<"REG\n";
+           tempS1 = tempLine.substr(found+6, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" #\n\r\t")+1);
+           cout <<"REGION:"<< tempS1 <<"\n";
            algorithmnow=true;
+           sprintf (algoname,"%s",tempS1.c_str());
            continue;
        }
 //---------defs
@@ -125,6 +130,16 @@ int BPdbxA:: readAnalysisParams() {
        }
 
     } 
+//-----create the relevant output directory
+    if (!algorithmnow) {
+       int r=dbxA::setDir(cname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(cname);
+    } else {
+       int r=dbxA::setDir(algoname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(algoname);
+    }
 
 //----------put into output file as text
     TText cinfo(0,0,CutList2file.Data());
@@ -262,7 +277,7 @@ int BPdbxA:: initGRL() {
 
 int BPdbxA:: bookAdditionalHistos() {
         int retval=0;
-        dbxA::ChangeDir(cname);
+//        dbxA::ChangeDir(cname);
 
 #ifdef __SEZEN__
 	// Sezen's handmade histograms

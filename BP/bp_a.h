@@ -14,8 +14,8 @@ class BPdbxA : public dbxA {
       BPdbxA(char *aname) : dbxA ( aname)
          {
          sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-         int r=dbxA::setDir(cname);  // make the relevant root directory
-         if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+//         int r=dbxA::setDir(cname);  // make the relevant root directory
+//         if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
          //grl_cut=false;
          }
 
