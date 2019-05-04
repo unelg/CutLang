@@ -164,6 +164,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
     }
+    for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
+      DEBUG("\t #Ptypename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+    }
     //Save AO somewhere to return in next time
     return 1;
 }
@@ -223,30 +226,28 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
                 particles->at(0)->collection=name;             
-                int ipart2_max;
+                int ipart2_max=-1;
                 string base_collection2=particles->at(1)->collection;
+                try {
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size();
-                        break;
-                    case 1: ipart2_max=(ao->eles)[base_collection2].size();
-                        break;
-                    case 2: ipart2_max=(ao->jets)[base_collection2].size();
-                        break;
+                    case 0: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+                    case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
+                    case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
 //                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
 //                        break;
 //                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                        break;
-                    case 7: ipart2_max=1;
-                        break;
-                    case 8: ipart2_max=(ao->gams)[base_collection2].size();
-                        break;
-                    case 9: ipart2_max=(ao->ljets)[base_collection2].size();
-                        break;
-                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
-                        break;
+                    case 7: ipart2_max=1; break;
+                    case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
+                    case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
+                   case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE:"<<particles->at(1)->type << std::endl;
                         break;
+                }
+                } catch(...) {
+                            std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n"; 
+                            _Exit(-1);
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
