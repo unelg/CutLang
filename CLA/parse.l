@@ -72,7 +72,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "dR" return DR;
 "dPhi" return DPHI;
 "dEta" return DETA;
-"Size"|"Count"|"NumberOf" return NUMOF;//no arg funcs
+"Size"|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
