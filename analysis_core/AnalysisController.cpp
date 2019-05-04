@@ -2,7 +2,13 @@
 #include "ReadCard.h"
 #include <string>
 
-//#define __DEBUG__
+//#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string, int> systematics) 
 {
@@ -89,50 +95,35 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
          }
         }
        
-        if (sysnam.size()< 1){
-             if (!aDumper){
-#ifdef __DEBUG__
-                cout << dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl;
-#endif
-	        evret=dbxAnalyses[k]->makeAnalysis(a0.muos, a0.eles, a0.gams, a0.jets, a0.met, a0.evt); // regular analysis
-             } else {
-#ifdef __DEBUG__
-                cout << dbxAnalyses[k]->getName()<<" to be executed with Dumper specials"<<endl;
-#endif
+        if (sysnam.size()< 1){ // not a systematics run condition
+             if (!aDumper){ //not a dumper, i.e. BP run
+                DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
+	        evret=dbxAnalyses[k]->makeAnalysis(a0); // regular analysis
+             } else {      // the below is a dumper
+                DEBUG(dbxAnalyses[k]->getName()<<" to be executed with Dumper specials"<<endl);
 		std::map <int, TVector2> metsmap;
 		int kmet=1;
 		for ( std::map<string, AnalysisObjects>::iterator anit=analysis_objs_map.begin(); anit!=analysis_objs_map.end(); ++anit){
 			AnalysisObjects these_objs= anit->second;
-			TVector2        a_met     = these_objs.met ;
+			TVector2        a_met     = these_objs.met.begin()->second ;
 			metsmap.insert ( std::pair<int, TVector2> (kmet, a_met));
 			kmet++;
 		}
-		evret=dbxAnalyses[k]->makeAnalysis(a0.muos, a0.eles, a0.gams, a0.jets, a0.met, a0.evt,metsmap, m_quad_unc);
+		evret=dbxAnalyses[k]->makeAnalysis(a0,metsmap, m_quad_unc);
              }
         } else {
              map<string, AnalysisObjects>::iterator il=analysis_objs_map.find(sysnam);
              if (il==analysis_objs_map.end()) {cout<<"Systematics name mismatch. "<<sysnam<<" not found, MAJOR error\n"; exit (888);};
-#ifdef __DEBUG__
-                cout << k<<" "<<dbxAnalyses[k]->getName()<<" also known as "<< il->first<<" to be executed with systematics"<<endl;
-#endif
+                DEBUG( k<<" "<<dbxAnalyses[k]->getName()<<" also known as "<< il->first<<" to be executed with systematics"<<endl );
 		AnalysisObjects these_objs=il->second;
-		std::vector<dbxMuon> a_muons    = (these_objs.muos.size()>0) ? these_objs.muos : a0.muos;
-		std::vector<dbxElectron> a_eles = (these_objs.eles.size()>0) ? these_objs.eles : a0.eles;
-		std::vector<dbxPhoton>   a_gams = (these_objs.gams.size()>0) ? these_objs.gams : a0.gams;
-		std::vector<dbxJet> a_jets      = (these_objs.jets.size()>0) ? these_objs.jets : a0.jets;
-		TVector2 a_met      = (these_objs.met.Mod()>0  ) ? these_objs.met  : a0.met ;
-		evt_data a_evt      = these_objs.evt;
-		evret=dbxAnalyses[k]->makeAnalysis(a_muons, a_eles, a_gams, a_jets, a_met, a_evt); // generic
-#ifdef __DEBUG__
-                  cout<<"retval=:"<<evret<<endl;
-#endif
+		evret=dbxAnalyses[k]->makeAnalysis(these_objs); // generic
+                DEBUG("retval=:"<<evret<<endl);
         }
    }
 
-#ifdef __DEBUG__
-	std::cout << "An Event finished." <<std::endl;
-#endif
+	DEBUG("An Event finished." <<std::endl);
 }
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void AnalysisController::SetJetUncs(vector <double> uncs){
 	m_quad_unc.clear();

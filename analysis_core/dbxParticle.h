@@ -2,6 +2,7 @@
 #define DBX_PARTICLE_H
 
 #include "TLorentzVector.h"
+#include <iostream>
 #define CHMAX 256
 
 
@@ -11,15 +12,7 @@
 
 
 struct analy_struct {   // Declare analysis types
-	int FFcount;
-	int N4count;
-	int MCHcount;
-	int DCHcount;
-	int E61count;
-	int E62count;
 	int BPcount;
-	int TPcount;
-	int Skeletoncount; //Merve's addition
 	int Dumpcount;
 	int maxEvents;
 	int verbfreq;
@@ -200,15 +193,17 @@ public:
 	static double deltaPhi(dbxParticle,dbxParticle);	
 	//dbxParticle  operator-() const;
 	static bool comparePt(dbxParticle lhs, dbxParticle rhs) { return (lhs.lv().Pt() > rhs.lv().Pt()); }
-	void Reset(){  p_charge=0; p_lvector.SetPtEtaPhiM(0, 0, 0, 0); }
+	void Reset(){  p_charge=0; p_lvector.SetPtEtaPhiM(0, 0, 0, 0); p_attribute.clear(); }
 	void dump();
 	void dump_b ();
 	void dumpLHCO(std::ofstream&  );
+
 	int setCharge( int);
 	int setEtCone( double );
 	int setPtCone( double );
 	int setFlavor ( double );
 	int setIsTight ( int );
+
 	int setParticleIndx ( int );
 	int setTlv( TLorentzVector );
        void setPPPE(float px, float py, float pz, float Ee ){p_lvector.SetPxPyPzE(px, py, pz, Ee ); }
@@ -236,8 +231,16 @@ public:
 	int scaleLorentzVector ( double );
 	int setZ0 (double );
         void setPt_Uncorrected(double v){p_Pt_Uncorrected=v;}
+	void setAttribute(int k, double v) {  
+                  if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
+                  } else { p_attribute[k]=v; } 
+        }
+	void addAttribute(double v) {p_attribute.push_back(v);} 
 
 	int q()  { return p_charge; }
+	double Attribute(int k)  { if (k>(int)p_attribute.size()){ 
+                                 std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
+	int nAttribute() { return p_attribute.size(); }
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }
 	double Flavor()  { return p_flavor; }
@@ -266,6 +269,7 @@ public:
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
 private:
+        std::vector<double> p_attribute;
 	int p_charge;
 	double p_et_cone;
 	double p_pt_cone;

@@ -7,6 +7,14 @@ if [ $# == 1 ]; then
  INIFILE=$1
 fi
 
+cat $INIFILE | grep -v '^#' > _inifile
+#-------remove all lines starting with a #
+INIFILE=_inifile
+
+# replace all region keyword with algo
+sed 's/region /algo /g'  $INIFILE > pippo
+mv  pippo _inifile 
+
 inihead=`cat ${INIFILE} | grep -n -m 1 algo | cut -f1 -d":"`
 initot=`wc -l ${INIFILE} |  awk '{ print $1 }'` 
 
@@ -30,9 +38,9 @@ for an_algo in $algo_list ; do
  if [ $next_rline == $an_algo ]; then
    next_rline=`wc -l _algos.ini |  awk '{ print $1+1 }'`
  fi
- printf 'A region named:%20s \t defined in lines from %d to %d\n' "[$this_region_name]" "$an_algo" "$next_rline"
+ printf 'A region named:%20s \t is defined in lines from %d to %d\n' "[$this_region_name]" "$an_algo" "$next_rline"
 
- if [[ $nextline != "cmd"* ]]; then
+ if [[ $nextline != *"cmd "* ]] && [[ $nextline != *"select "* ]] && [[ $nextline != *"histo "* ]]; then
   echo "   this region depends on:"  $nextline
   cat $nextline > $this_region_name
   awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart+1 && NR < lfinish' _algos.ini >> $this_region_name 

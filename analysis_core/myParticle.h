@@ -11,5 +11,6 @@
 struct myParticle{
     int type;
     int index;
+    std::string collection;
 };
 #endif /* myParticle_h */

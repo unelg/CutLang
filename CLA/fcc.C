@@ -8,6 +8,7 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_tau.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -53,8 +54,21 @@ std::cout << "Read Event"<<std::endl;
        int RunNumber=137;
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
+       vector<dbxTau>      taus;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
+       vector<dbxJet>    ljets;
+       vector<dbxTruth>   truth;
+
+       map<string, vector<dbxMuon>     > muos_map;
+       map<string, vector<dbxElectron> > eles_map;
+       map<string, vector<dbxTau>      > taus_map;
+       map<string, vector<dbxPhoton>   > gams_map;
+       map<string, vector<dbxJet>      > jets_map;
+       map<string, vector<dbxJet>     >ljets_map;
+       map<string, vector<dbxTruth>    >truth_map;
+       map<string, TVector2            >  met_map;
+
 
 //temporary variables
        TLorentzVector  alv;
@@ -200,8 +214,19 @@ std::cout << "MET OK"<<std::endl;
 std::cout << "Filling finished"<<std::endl;
 #endif
 
-	AnalysisObjects a0={muons, electrons, photons, jets, met, anevt};
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
+
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map,  anevt};
+
   	aCtrl.RunTasks(a0);
+
 #ifdef __DEBUG__
 std::cout << "An event finished"<<std::endl;
 #endif

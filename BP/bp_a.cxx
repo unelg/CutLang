@@ -6,7 +6,7 @@
 #include "analysis_core.h"
 #include "dbx_a.h"
 
-//#define __VERBOSE3__
+//#define __SEZEN__
 //#define _CLV_
 
 #ifdef _CLV_
@@ -20,7 +20,6 @@ extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,ve
 extern FILE* yyin;
 extern int cutcount;
 
-
 int BPdbxA::plotVariables(int sel) {
  return 0;  
 }
@@ -29,7 +28,6 @@ int BPdbxA::plotVariables(int sel) {
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
 
-  dbxA::ChangeDir(cname);
   TString CardName=cname;
           CardName+="-card.ini";
 
@@ -54,12 +52,14 @@ int BPdbxA:: readAnalysisParams() {
     TString ObjList2file="\n";
     std:vector<TString> effCL;
 
-
     bool algorithmnow=false;
 
     while ( ! cardfile.eof() ) {
        getline( cardfile, tempLine );
        if ( tempLine[0] == '#' ) continue; // skip comment lines
+       if (tempLine.find_first_of("#") != std::string::npos ){
+         tempLine.erase(tempLine.find_first_of("#"));
+       }
 //---------obj
        found = tempLine.find("obj ");
        if (found!=std::string::npos) {
@@ -71,14 +71,20 @@ int BPdbxA:: readAnalysisParams() {
 //---------algo
        found =tempLine.find("algo ") ;
        if (found!=std::string::npos) {
-           cout <<"ALGO\n";
+           tempS1 = tempLine.substr(found+5, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           cout <<"\t ALGO:"<< tempS1 <<"\n";
            algorithmnow=true;
+           sprintf (algoname,"%s",tempS1.c_str());
            continue;
        }
        found =tempLine.find("region ") ;
        if (found!=std::string::npos) {
-           cout <<"REG\n";
+           tempS1 = tempLine.substr(found+7, std::string::npos );
+           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           cout <<"\t REGION:"<< tempS1 <<"\n";
            algorithmnow=true;
+           sprintf (algoname,"%s",tempS1.c_str());
            continue;
        }
 //---------defs
@@ -89,18 +95,18 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 //---------cmds
-       found=tempLine.find("cmd ")  ;
+        found=tempLine.find("cmd ")  ;
        foundp=tempLine.find("select ")  ;
        if ((found!=std::string::npos) ||(foundp!=std::string::npos)) {
            if (algorithmnow) {
-              cout <<"CUT "<<tempLine<<"\n";
               CutList2file+=tempLine;
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
-              if (found!=std::string::npos) { tempS1 = tempLine.substr(found, apos-found);}
-              else                          { tempS1 = tempLine.substr(foundp, apos-foundp); }
-           //   tempS1.erase(remove_if(tempS1.begin(), tempS1.end(), ::isspace), tempS1.end());
+              if (found!=std::string::npos) { tempS1 = tempLine.substr(found+4, apos);}
+              else                          { tempS1 = tempLine.substr(foundp+7, apos); }
+              tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
               effCL.push_back(tempS1);
+//              cout <<tempS1<<"\n";
            } else {
               ObjList2file+=tempLine;
               ObjList2file+="\n";
@@ -113,18 +119,28 @@ int BPdbxA:: readAnalysisParams() {
            CutList2file+=tempLine;
            CutList2file+="\n";
            size_t apos=tempLine.find(hashdelimiter);
-           tempS1 = tempLine.substr(6, apos-6); // without the comments
+           tempS1 = tempLine.substr(found+5, apos); // without the comments
            apos=tempS1.find_first_of('"');
            size_t bpos=tempS1.find_last_of('"');
            tempS1 = tempS1.substr(apos+1, bpos-apos-1); // without the comments
            tempS2 = "[Histo] ";
            tempS2 += tempS1;
-           cout <<tempS2<<"\n";
+//           cout <<tempS2<<"\n";
            effCL.push_back(tempS2);
            continue;
        }
 
     } 
+//-----create the relevant output directory
+    if (!algorithmnow) {
+       int r=dbxA::setDir(cname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(cname);
+    } else {
+       int r=dbxA::setDir(algoname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(algoname);
+    }
 
 //----------put into output file as text
     TText cinfo(0,0,CutList2file.Data());
@@ -139,9 +155,6 @@ int BPdbxA:: readAnalysisParams() {
           oinfo.SetName("CLA2Objs");
           oinfo.Write();
 
-
-
-
 // ****************************************
 // ---------------------------DBX style cuts
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
@@ -154,8 +167,9 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
-       cout <<"================parsing===================\n";
+//       cout <<"==parsing started==\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
+       cout <<" parsing finished.  ";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
@@ -182,7 +196,6 @@ int BPdbxA:: readAnalysisParams() {
     {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
-            cout<<" CUT "<<iter->first<<"--->"<<iter->second->getStr()<<"\n";
 
 //           TString newLabels=iter->second->getStr();
            TString newLabels=effCL[ iter->first -1];
@@ -192,7 +205,6 @@ int BPdbxA:: readAnalysisParams() {
  */
            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
 
-            DEBUG(std::endl);
             iter++; 
     }
 
@@ -253,9 +265,9 @@ int BPdbxA:: readAnalysisParams() {
 }
 
 int BPdbxA:: printEfficiencies() {
-  int retval=0;
+  cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
   PrintEfficiencies(eff);
-  return retval;
+  return 0;
 }
 
 int BPdbxA:: initGRL() {
@@ -266,9 +278,9 @@ int BPdbxA:: initGRL() {
 
 int BPdbxA:: bookAdditionalHistos() {
         int retval=0;
-        dbxA::ChangeDir(cname);
+//        dbxA::ChangeDir(cname);
 
-#ifdef __VERBOSE3__
+#ifdef __SEZEN__
 	// Sezen's handmade histograms
 	mWHh1 = new TH1D("mWHh1", "Hadronic W best combi (GeV)", 50, 50, 150);
 	mWHh2 = new TH1D("mHWh2", "Hadronic W best combi (GeV)", 50, 50, 150);
@@ -286,84 +298,32 @@ int BPdbxA:: bookAdditionalHistos() {
 }
 
 /////////////////////////
-int BPdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector <dbxPhoton> photons,
-                         vector<dbxJet> jets, TVector2 met, evt_data anevt) {
+int BPdbxA::makeAnalysis( AnalysisObjects ao ){
+  vector<dbxMuon>        muons = ao.muos.begin()->second;
+  vector<dbxElectron> electrons= ao.eles.begin()->second; 
+  vector <dbxPhoton>    photons= ao.gams.begin()->second;
+  vector<dbxJet>           jets= ao.jets.begin()->second;
+  TVector2 met = ao.met.begin()->second;
+  evt_data anevt = ao.evt;
+
   int retval=0;
 
-  vector<dbxElectron>  goodElectrons;
-  vector<dbxMuon>      goodMuons;
-  vector<dbxJet>       goodJets;
-  vector<dbxPhoton>    goodPhotons;
-
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-//----------------------selection of good gams-----------------
-        for (UInt_t i=0; i<photons.size(); i++) {
-               TLorentzVector gam4p = photons.at(i).lv();
-               if (    (gam4p.Pt()  > minptg)
-                    && (fabs(gam4p.Eta()) < maxetag)
-                  )
-                  goodPhotons.push_back(photons.at(i));
-        }
-//----------------------selection of good electrons-----------------
-        for (UInt_t i=0; i<electrons.size(); i++) {
-               if ( (electrons.at(i).lv().Pt()  > minpte)    // the electrons should have a minimum PT
-                  &&(electrons.at(i).lv().Eta() < maxetae )  // and maximum eta.
-                  )
-                  goodElectrons.push_back( electrons.at(i) );
-        }
+  double theLeptonWeight = 1;
+  double theFourJetWeight = 1;
+  unsigned int njets;
+  double evt_weight = 1;
 
-//----------------------selection of good muons-----------------
-        for (UInt_t i=0; i<muons.size(); i++) {
-               TLorentzVector mu4p = muons.at(i).lv();
-               if (    (mu4p.Pt()  > minptm)
-                    && (fabs(mu4p.Eta()) < maxetam)
-                  )
-                  goodMuons.push_back(muons.at(i));
-        }
-
-//------------selection of good jets----------------------------------
-        bool jetok=true;
-        for (UInt_t i=0; i<jets.size(); i++) {
-               TLorentzVector jet4p = jets.at(i).lv();
-               if (   (fabs(jet4p.Pt())  > minptj ) // this corresponds to min PT cut
-                    && (jet4p.E() >= 0)
-                    && (fabs(jet4p.Eta())<= maxetaj) 
-                   )
-                   jetok=true;
-/*
-                   for (UInt_t ie=0; ie<goodElectrons.size(); ie++) {
-                    if (jets.at(i).lv().DeltaR( goodElectrons.at(ie).lv())  < 0.5) {
-                       jetok= false;
-//                       break;
-                    }
-                   }
-*/                   
-
-                   if (jetok) goodJets.push_back(jets.at(i) );
-        }
-
-///////
-        double theLeptonWeight = 1;
-        double theFourJetWeight = 1;
-        unsigned int njets;
-        double evt_weight = 1;
-
-        if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
+  if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    AnalysisObjects a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt};
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
-
- //  std::cout<<"\n--------------Starting New Event: "<<anevt.event_no<<"\n";
+//cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
 /// CutLang execution starts-------here*
 // *************************************
 
-    unsigned int ternaryCount=0;
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
 //----------------------reset 
@@ -374,16 +334,16 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         iter++;
     }
 
-    DEBUG("RESet ALL cuts\n");
+    DEBUG("RESET ALL cuts\n");
     iter = NodeCuts.begin();
 
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
-        a0={goodMuons, goodElectrons, goodPhotons, goodJets, met, anevt}; // we start from good ones.
-        DEBUG("Selecting: "<<iter->first<<" |");
-        double d=iter->second->evaluate(&a0); // execute the selection cut
-        DEBUG(" Result : " << d << std::endl);
+
+        DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
+        double d=iter->second->evaluate(&ao); // execute the selection cut
+        DEBUG("\t****Result : " << d << std::endl);
         if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut

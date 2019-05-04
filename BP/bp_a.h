@@ -14,8 +14,8 @@ class BPdbxA : public dbxA {
       BPdbxA(char *aname) : dbxA ( aname)
          {
          sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-         int r=dbxA::setDir(cname);  // make the relevant root directory
-         if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+//         int r=dbxA::setDir(cname);  // make the relevant root directory
+//         if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
          //grl_cut=false;
          }
 
@@ -24,8 +24,7 @@ class BPdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                               vector<dbxJet> jets, TVector2 met, evt_data anevt); 
+      int makeAnalysis(AnalysisObjects ao ); 
       int saveHistos() {
         int r = dbxA::saveHistos();
         return r;
@@ -34,10 +33,7 @@ class BPdbxA : public dbxA {
    private:
       bool grl_cut;
       char cname[CHMAX];
-
-      TH1F *a_histos[99];
-       int  b_histos[9];
-      map <int, vector<std::pair<string,string> > > levelObjectMap;
+      char algoname[CHMAX];
 
 
       // Sezen's handmade histograms

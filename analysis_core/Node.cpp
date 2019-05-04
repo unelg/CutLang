@@ -19,12 +19,12 @@ void Node::display(){ this->display(""); }
      TString Node::getStr(){ TString ss; this->getStr(&ss); return ss; 
 }
      
-Node::~ Node(){
-    }
-std::vector<dbxJet> Node::tagJets(AnalysisObjects *ao, int jtype) {                   
+Node::~ Node(){ }
+
+std::vector<dbxJet> Node::tagJets(AnalysisObjects *ao, int jtype, std::string cn) {                   
                                 std::vector<dbxJet>      rjets;
-                                for (size_t jj=0; jj<ao->jets.size(); jj++) 
-                                  if (ao->jets.at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets.at(jj)); }
+                                for (size_t jj=0; jj<ao->jets[cn].size(); jj++) 
+                                       if (ao->jets[cn].at(jj).isbtagged_77() == jtype) {rjets.push_back(ao->jets[cn].at(jj)); }
                                 return rjets;
 }
 
