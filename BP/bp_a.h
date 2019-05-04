@@ -33,10 +33,7 @@ class BPdbxA : public dbxA {
    private:
       bool grl_cut;
       char cname[CHMAX];
-
-      TH1F *a_histos[99];
-       int  b_histos[9];
-      map <int, vector<std::pair<string,string> > > levelObjectMap;
+      char algoname[CHMAX];
 
 
       // Sezen's handmade histograms
