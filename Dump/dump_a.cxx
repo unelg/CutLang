@@ -72,20 +72,22 @@ int DumpdbxA:: getInputs() {
 }
 
 /////////////////////////do not call this for this analysis//////////////////////
-int DumpdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                            vector<dbxJet> jets, TVector2 met, evt_data anevt) {
+int DumpdbxA::makeAnalysis(AnalysisObjects ao) {
     map < int, TVector2 > mymap;
     TVector2 a; 
     mymap[1]=a;      
     vector <double> b;
-    return makeAnalysis(muons,electrons,photons,jets,met,anevt,mymap, b); 
+    return makeAnalysis(ao, mymap, b); 
 }
 /////////////////////////////Analysis for Dump/////////////////////////////////
-int DumpdbxA::makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-         vector<dbxJet> jets, TVector2 met, evt_data anevt,map < int, TVector2 > met_syst_map, vector <double> uncs) {
+int DumpdbxA::makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_map, vector <double> uncs ){
+  vector<dbxMuon>        muons = ao.muos.begin()->second;
+  vector<dbxElectron> electrons= ao.eles.begin()->second;
+  vector <dbxPhoton>    photons= ao.gams.begin()->second;
+  vector<dbxJet>           jets= ao.jets.begin()->second;
+  TVector2 met = ao.met.begin()->second;
+  evt_data anevt = ao.evt;
 
-
-         
 //      here we save the DBXNTuple
 ntsave->Clean();
 ntsave->nEle=electrons.size();
@@ -165,7 +167,7 @@ ttsave->Fill();
 //cout <<"Before calling mother class.\n";
 
 // ............ do NOT remove .....
-  dbxA::makeAnalysis (muons, electrons, photons, jets, met, anevt);
+  dbxA::makeAnalysis (ao);
 // ............ do NOT remove .....
 
 for (int k=cur_cut; k<=eff->GetNbinsX(); k++) eff->Fill(k,anevt.mcevt_weight);

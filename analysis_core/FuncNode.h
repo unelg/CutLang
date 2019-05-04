@@ -11,6 +11,7 @@
 #include <vector>
 #include "myParticle.h"
 #include "Node.h"
+#include "ObjectNode.hpp"
 
 using namespace std;
 //takes care of functions with arguments
@@ -36,26 +37,36 @@ protected:
 
 public:
     FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s,  
-             Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
+             Node *objectNodea = NULL, std::string as="", Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual void Reset() override;
     virtual void getParticles(std::vector<myParticle *>* particles) override;
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override;
-    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded
-= NULL);
+    virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL);
     virtual double evaluate(AnalysisObjects* ao) override;
     virtual ~FuncNode();
 };
 
 
-double Qof( dbxParticle* apart);
-double Mof( dbxParticle* apart);
-double Eof( dbxParticle* apart);
-double Pof( dbxParticle* apart);
-double Pzof( dbxParticle* apart);
-double Ptof( dbxParticle* apart);
+double      Qof( dbxParticle* apart);
+double      Mof( dbxParticle* apart);
+double      Eof( dbxParticle* apart);
+double      Pof( dbxParticle* apart);
+double     Pzof( dbxParticle* apart);
+double     Ptof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
-double Etaof( dbxParticle* apart);
-double Phiof( dbxParticle* apart);
+double    Etaof( dbxParticle* apart);
+double    Phiof( dbxParticle* apart);
+double MsoftDof( dbxParticle* apart);
+double  DeepBof( dbxParticle* apart);
+double   tau1of( dbxParticle* apart);
+double   tau2of( dbxParticle* apart);
+double   tau3of( dbxParticle* apart);
+double    dxyof( dbxParticle* apart);
+double     dzof( dbxParticle* apart);
+double relisoof( dbxParticle* apart);
+double tauisoof( dbxParticle* apart);
+double softIdof( dbxParticle* apart);
+
 
 double nbfof( dbxParticle* apart);
 

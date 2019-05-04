@@ -43,7 +43,22 @@ vardef {varname}" "?":"" "?.*"\n"
 "MUO"|"MUON"|"Muon" return MUO;
 "LEP" return LEP;
 "PHO" return PHO;
-"JET" return JET;
+"Tau"|"TAU" return TAU;
+"JET"|"Jet" return JET;
+"FJET"|"FatJet" return FJET;
+"btagDeepB" return DEEPB;
+"msoftdrop" return MSOFTD;
+"tau1" return TAU1;
+"tau2" return TAU2;
+"tau3" return TAU3;
+"fmegajets" return FMEGAJETS;
+"fMR" return FMR;
+"fMTR" return FMTR;
+"miniPFRelIsoAll" return RELISO;
+"dxy" return DXY;
+"dz" return DZ;
+"dMVAnewDM2017v2" return TAUISO;
+"softId" return SOFTID;
 "BJET" return BJET;
 "QGJET" return QGJET;
 "NUMET" return NUMET;
@@ -57,13 +72,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "dR" return DR;
 "dPhi" return DPHI;
 "dEta" return DETA;
-"nELE" return NELE;//no arg funcs
-"nMUO" return NMUO;
-"nLEP" return NLEP;
-"nPHO" return NPHO;
-"nJET" return NJET;
-"nBJET" return NBJET;
-"nQGJET" return NQGJET;
+"Size"|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
@@ -89,6 +98,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
 [aA][bB][sS] return ABS;
+[sS][qQ][rR][tT] return SQRT;
 [sS][oO][rR][tT] return SORT;
 [cC][oO][mM][bB] return COMB;
 [pP][eE][rR][mM] return PERM;

@@ -60,8 +60,8 @@ if not delete:
 
 class dbxCut%(name)s : public dbxCut {
  public:
-      dbxCut%(name)s: dbxCut("}%(name)s"){}
-      dbxCut%(name)s(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("}s(name)s",ts,is,v){}
+      dbxCut%(name)s: dbxCut("%(name)s"){}
+      dbxCut%(name)s(std::vector<int> ts, std::vector<int> is, int v ): dbxCut("s(name)s",ts,is,v){}
 
       bool select(AnalysisObjects *ao){
           float result;

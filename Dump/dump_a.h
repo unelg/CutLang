@@ -31,11 +31,8 @@ class DumpdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                               vector<dbxJet> jets, TVector2 met, evt_data anevt); 
-      int makeAnalysis(vector<dbxMuon> muons, vector<dbxElectron> electrons, vector<dbxPhoton> photons,
-                               vector<dbxJet> jets, TVector2 met, evt_data anevt,
-                               map < int, TVector2 > met_syst_map, vector <double> uncs);
+      int makeAnalysis(AnalysisObjects ao);
+      int makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_map, vector <double> uncs);
 
       int saveHistos() {
         Finalize();

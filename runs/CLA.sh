@@ -56,7 +56,10 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 #echo VERBOSE  = "${VERBOSE}"
 
 
-Nalgo=`cat ${INIFILE} | grep "^algo" | wc -l`
+cat ${INIFILE} | grep -v '#' | grep "region " > pippo
+cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
+Nalgo=`cat pippo | wc -l`
+rm pippo
 
 if [ $Nalgo -gt 1 ]; then
  echo Analysis with Multiple Regions
@@ -75,8 +78,8 @@ if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../CLA/
 fi
 
- 
 rm histoOut-BP_*.root
+echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 if [ $? -eq 0 ]; then
   rm _*

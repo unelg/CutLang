@@ -27,7 +27,8 @@ void LFuncNode::setParticleIndex(int order, int newIndex) {
     }
     
 
-LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea, objectNodeb, objectNodec, objectNoded) {
+LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::vector<myParticle*> input1,std::vector<myParticle*> input2,std::string s,  Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded ) : FuncNode(NULL,input1,s, objectNodea,"", objectNodeb, objectNodec, objectNoded) {
+//after objnodea the correct string needs to be put, NGU-----
         f2=func;
         inputParticles2=input2;
         myParticle apart2;
@@ -39,6 +40,7 @@ LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::
         for (int i=0; i<input2.size(); i++){
            apart2.index=input2[i]->index;
            apart2.type=input2[i]->type;
+           apart2.collection=input2[i]->collection;
          originalParticles2.push_back(apart2);
         }
     }
@@ -60,7 +62,6 @@ void LFuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
-       cout <<"Adding UOs 2 LF\n";
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
         userObjectC=objectNodec;
@@ -69,6 +70,8 @@ void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objec
 
    
 double LFuncNode::evaluate(AnalysisObjects* ao)  {
+        DEBUG("In L function Node evaluate\n");
+
         if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp

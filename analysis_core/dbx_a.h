@@ -15,6 +15,7 @@
 #include "dbx_photon.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "Node.h"
 
 using namespace std;
 
@@ -28,12 +29,9 @@ public:
 	dbxA( char*);
 	~dbxA();
 
-   virtual int makeAnalysis(vector<dbxMuon>,   vector<dbxElectron>,    vector<dbxPhoton>,    vector<dbxJet>,    TVector2,    evt_data, int);
-   virtual int makeAnalysis(vector<dbxMuon>ms, vector<dbxElectron> es,                       vector<dbxJet> js, TVector2 mt, evt_data et, int lv){ vector<dbxPhoton>f; return makeAnalysis(ms, es, f, js, mt, et, lv); }
-   virtual int makeAnalysis(vector<dbxMuon>ms, vector<dbxElectron> es,                       vector<dbxJet> js, TVector2 mt, evt_data et)        { vector<dbxPhoton>f; return makeAnalysis(ms, es, f, js, mt, et,0); }
-   virtual int makeAnalysis(vector<dbxMuon>ms, vector<dbxElectron> es, vector<dbxPhoton> ps, vector<dbxJet> js, TVector2 mt, evt_data et) { return makeAnalysis(ms, es, ps, js, mt, et, 0); }
-   virtual int makeAnalysis(vector<dbxMuon>,   vector<dbxElectron>,    vector<dbxPhoton>,    vector<dbxJet>,    TVector2,    evt_data, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
-   virtual int makeAnalysis(vector<dbxMuon>,   vector<dbxElectron>,                          vector<dbxJet>,    TVector2,    evt_data, map <int, TVector2>, vector <double>){std::cout<<"3RR0R!\n"; return 0;}
+   virtual int makeAnalysis(AnalysisObjects ao, int);
+   virtual int makeAnalysis(AnalysisObjects ao) { return makeAnalysis(ao,0); }
+   virtual int makeAnalysis(AnalysisObjects ao, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
 
    virtual int plotVariables(int); // the detail level and save is controlled here
    virtual int saveHistos();
