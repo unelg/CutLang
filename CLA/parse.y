@@ -212,6 +212,11 @@ function : '{' particules '}' 'm' {
 //                                     }
 //                              }
 //---------------------------------------
+         | 'q' '(' particules ')' {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(Qof,newList,"q");
+                                  }
          | '{' particules '}' 'q' {     
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -235,6 +240,11 @@ function : '{' particules '}' 'm' {
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
                                   }
+         | 'P' '(' particules ')' {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);
+                                       $$=new FuncNode(Pof,newList,"p");
+                                  }
          | '{' particules '}' 'P' '(' ID  ')' {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($6);
                                        if(it == ObjectCuts->end()) {
@@ -249,6 +259,11 @@ function : '{' particules '}' 'm' {
                                 }
 //---------------------------------------
          | '{' particules '}' 'E' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Eof,newList,"e");
+                                  }
+         | 'E' '(' particules ')' {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
@@ -416,6 +431,11 @@ function : '{' particules '}' 'm' {
                                        }
                                 }
 //---------------------------------------
+         | ABSETA '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(AbsEtaof,newList,"abseta");
+                                     }
          | '{' particules '}' ABSETA {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -788,6 +808,18 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+        | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                if(Initializations->at(10)>0){
+                                        a->type = 0;
+                                }
+                                else{
+                                        a->type = 1;
+                                }
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
         | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -874,6 +906,13 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+        | METLV '[' index ']' { tmp="metlv_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 7;
+                                a->index = (int)$3;
+                                TmpParticle.push_back(a);  
+                        }
         | METLV '_' index {     tmp="metlv_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -881,6 +920,92 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+        | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
+                //ngu
+                DEBUG("ID -------\t");
+                map<string,vector<myParticle*> >::iterator it;
+                it = ListParts->find($1);
+     
+                if(it == ListParts->end()) {
+
+                       map<string,Node*>::iterator ito;
+                       ito=ObjectCuts->find($1);
+                       DEBUG($1<<" : "); //------------new ID
+
+                       if(ito != ObjectCuts->end()) {
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
+                        int otype=((ObjectNode*) ito->second)->type;  
+
+                        if (otype == 2 ) {
+                           DEBUG("which is a JET\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 2;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
+                        else if (otype == 1 ) {
+                           DEBUG("which is a ELE\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 1;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==0 ) {
+                           DEBUG("which is a MUO\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 0;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==11 ) {
+                           DEBUG("which is a TAU\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 11;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==8 ) {
+                           DEBUG("which is a PHO\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 8;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==9 ) {
+                           DEBUG("which is a FatJET\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 9;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                       } else {
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        YYERROR;//stops parsing if particle not found 
+                       }
+                } else {
+                        vector<myParticle*> newList= it->second;
+                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                        $$=$1;
+                }
+             }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
                 DEBUG("ID -------\t");
