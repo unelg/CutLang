@@ -834,14 +834,14 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
-        | FJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
+        | FJET '_' index {      tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 9;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
-        | FJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
+        | FJET '[' index ']' {  tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 9;
@@ -908,7 +908,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 1 ) {
-                           cout <<"which is a ELE\n";
+                           DEBUG("which is a ELE\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -918,7 +918,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==0 ) {
-                           cout <<"which is a MUO\n";
+                           DEBUG("which is a MUO\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -928,7 +928,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
-                           cout <<"which is a TAU\n";
+                           DEBUG("which is a TAU\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -938,7 +938,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
-                           cout <<"which is a PHO\n";
+                           DEBUG("which is a PHO\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -948,7 +948,7 @@ particule : ELE '_' index {
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
-                           cout <<"which is a FatJET\n";
+                           DEBUG("which is a FatJET\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -976,10 +976,10 @@ particule : ELE '_' index {
 
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
-                       cout <<$1<<" : "; //------------new ID
+                       DEBUG($1<<" : "); //------------new ID
 
                        if(ito != ObjectCuts->end()) {
-                        cout <<" "<<$1<<" is a user particle\n ";
+                        DEBUG(" "<<$1<<" is a user particle\n ");
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1012,7 +1012,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         it = ObjectCuts->find($4);
                         
                                         if(it == ObjectCuts->end()) {
-                                                cout <<$4<<" : " ;
+                                                DEBUG($4<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
@@ -1033,7 +1033,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         }
                                     }
            | OBJ ID ':' ELE criteria {
-                                        cout<< " "<<$2<<" is a new EleSet\n";
+                                        DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
@@ -1041,7 +1041,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
            | OBJ ID ':' MUO criteria {
-                                        cout<< " "<<$2<<" is a new MuoSet\n";
+                                        DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
@@ -1049,7 +1049,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
            | OBJ ID ':' TAU criteria {
-                                        cout<<" "<<$2<<" is a new TauSet\n";
+                                        DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
@@ -1058,7 +1058,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                      }
            | OBJ ID ':' LEP criteria
            | OBJ ID ':' PHO criteria {
-                                        cout<< " "<<$2<<" is a new PhoSet\n";
+                                        DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
@@ -1066,7 +1066,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' JET criteria {
-                                        cout<< " "<<$2<<" is a new JetSet\n";
+                                        DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
@@ -1074,7 +1074,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
            | OBJ ID ':' FJET criteria {
-                                        cout<< " "<<$2<<" is a new FatJetSet\n";
+                                        DEBUG(" "<<$2<<" is a new FatJetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //
@@ -1098,7 +1098,7 @@ commands : commands command
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 				}
-        | ALGO ID {  cout << " runing Algo:"<< $2<<"\n";
+        | ALGO ID {  cout << "THIS IS ALGO: "<< $2<<"\n";
                   }
         | CMD ALL {                                         
                                         Node* a=new SFuncNode(all,0, "all");
@@ -1111,17 +1111,17 @@ command : CMD condition { //find a way to print commands
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        std::cout << "\nID:"<< $12 <<"\n";
+//                                      DEBUG( "\nID:"<< $12 <<"\n");
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
-                                                cout <<$12<<" : " ;
+                                                DEBUG($12<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -1130,29 +1130,29 @@ command : CMD condition { //find a way to print commands
         | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        std::cout << "\nID:"<< $12 <<"\n";
+//                                        DEBUG( "\nID:"<< $12 <<"\n");
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
-                                                cout <<$12<<" : " ;
+                                                DEBUG($12<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
     
 				}
         | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
-//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
-//                                              std::cout << "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n";
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
@@ -1209,7 +1209,7 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
 //                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
 //                                         YYERROR;
 //                                    } else {
-//                                         cout <<ito->first <<" recognized for search.\n";
+//                                         DEBUG(ito->first <<" recognized for search.\n";
 //                                         $$=new SearchNode(minim,$1,$6,"~=",ito); 
 //                                    }
 //                                   }
@@ -1287,7 +1287,7 @@ e : e '+' e  {
                 it = NodeVars->find($1);
      
                 if(it == NodeVars->end()) {
-                        cout <<$1<<" : " ;
+                        DEBUG($1<<" : ");
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
                 }
@@ -1301,13 +1301,13 @@ e : e '+' e  {
                 it = NodeVars->find($1);
      
                 if(it == NodeVars->end()) {
-                        cout <<$1<<" : " ;
+                        DEBUG($1<<" : ");
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
                         YYERROR;//stops parsing if variable not found
                 }
                 else {
-                        cout <<it->first <<" node ID recognized.\t";
-                        cout <<it->second->getStr()<<"\n";
+                        DEBUG(it->first <<" node ID recognized.\t");
+                        DEBUG(it->second->getStr()<<"\n");
                 }
                 map<string,Node*>::iterator ito = ObjectCuts->find($3);
                                       if(ito == ObjectCuts->end()) {
@@ -1315,7 +1315,7 @@ e : e '+' e  {
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                       } else {
-                                        cout <<ito->first <<" OBJ id recognized.\n";
+                                        DEBUG(ito->first <<" OBJ id recognized.\n");
                                         it->second->setUserObjects(ito->second);
                                       }
                         $$=it->second;
