@@ -68,6 +68,12 @@ int BPdbxA:: readAnalysisParams() {
            ObjList2file+="\n";
            continue;
        }
+       found = tempLine.find("object ");
+       if (found!=std::string::npos) {
+           ObjList2file+=tempLine;
+           ObjList2file+="\n";
+           continue;
+       }
 
 //---------algo
        found =tempLine.find("algo ") ;
@@ -97,6 +103,13 @@ int BPdbxA:: readAnalysisParams() {
            DefList2file+="\n";
            continue;
        }
+       found = tempLine.find("define ");
+       if (found!=std::string::npos) {
+           DefList2file+=tempLine;
+           DefList2file+="\n";
+           continue;
+       }
+
 //---------cmds
         found=tempLine.find("cmd ")  ;
        foundp=tempLine.find("select ")  ;
@@ -242,27 +255,6 @@ int BPdbxA:: readAnalysisParams() {
     }
 
 #endif
-
-
-// PUT ANALYSIS PARAMETERS INTO .ROOT //////////////
-	
-    TParameter<double> *minpte_tmp=new TParameter<double> ("minpte", minpte);
-    TParameter<double> *maxetae_tmp=new TParameter<double> ("maxetae", maxetae);
-    TParameter<double> *minptm_tmp=new TParameter<double> ("minptm", minptm);
-    TParameter<double> *maxetam_tmp=new TParameter<double> ("maxetam", maxetam);
-    TParameter<double> *minptj_tmp=new TParameter<double> ("minptj", minptj);
-    TParameter<double> *maxetaj_tmp=new TParameter<double> ("maxetaj", maxetaj);
-    TParameter<double> *TRGe_tmp=new TParameter<double> ("TRGe", TRGe);
-    TParameter<double> *TRGm_tmp=new TParameter<double> ("TRGm", TRGm);
-
-    minpte_tmp->Write("minpte");
-    maxetae_tmp->Write("maxetae");
-    minptm_tmp->Write("minptm");
-    maxetam_tmp->Write("maxetam");
-    minptj_tmp->Write("minptj");
-    maxetaj_tmp->Write("maxetaj");
-    TRGe_tmp->Write("TRGe");
-    TRGm_tmp->Write("TRGm");
 
   return retval;
 }

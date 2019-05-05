@@ -82,7 +82,6 @@ rm histoOut-BP_*.root
 echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
 if [ $? -eq 0 ]; then
-  rm _*
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   rm   histoOut-${rbase}.root 
   hadd histoOut-${rbase}.root histoOut-BP_*.root
