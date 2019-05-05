@@ -2,7 +2,7 @@
 
 cd CLA
 make 
-make 
 cd ../runs
 for f in ../analysis_core/*.pcm; do ln -s $f .
 ls
+
