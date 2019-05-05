@@ -198,7 +198,7 @@ int dbxA:: plotVariables(int uselect ) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA:: saveHistos() {
   int retval=0;
-  cout << "saving...\n";
+  cout << "saving...\t";
   histoOut->Write();
   cout << "saved.\n";
   return retval;
@@ -206,7 +206,6 @@ int dbxA:: saveHistos() {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA:: ChangeDir(char *dn) {
- cout <<"Going to "<<dn<<".\n";
  histoOut->cd(dn);
  return 0;
 }
@@ -217,7 +216,6 @@ int dbxA:: setDir(char *dn) {
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
-  cout << "Made dir:"<<dn<<".\n";
   eff= new TH1F("eff","selection efficiencies ",30,0.5,30.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   char hname[64];

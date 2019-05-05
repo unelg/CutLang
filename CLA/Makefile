@@ -30,7 +30,7 @@ GLIBS         = $(ROOTGLIBS)
 
 
 ifneq (0, ${JUPY})
-	 LIBS += -lCling -lpng
+	 LIBS += -lCling -lpng -ltbb -lssl -lcrypto
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
@@ -69,6 +69,7 @@ softlinks: auxiliaries
 	test -r libdbx_truth_h.so      || ( ln -s $(SUBDIRLOC)analysis_core/dbx_truth_h.so     libdbx_truth_h.so    ; ln -s libdbx_truth_h.so dbx_truth_h.so )
 	test -r libdbxParticle_cpp.so  || ( ln -s $(SUBDIRLOC)analysis_core/dbxParticle_cpp.so libdbxParticle_cpp.so; ln -s libdbxParticle_cpp.so dbxParticle_cpp.so )
 	test -r libDBXNtuple_cpp.so    || ( ln -s $(SUBDIRLOC)analysis_core/DBXNtuple_cpp.so   libDBXNtuple_cpp.so  ; ln -s libDBXNtuple_cpp.so DBXNtuple_cpp.so )
+	cd ../runs; for f in ../analysis_core/*.pcm; do ln -s $f . ; done; cd -
 
 $(ANLOBJS): %.o : %.cxx
 	$(CXX) -c $< -o $@ $(CXXFLAGS)

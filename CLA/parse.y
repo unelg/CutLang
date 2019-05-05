@@ -1123,7 +1123,7 @@ index : '-' INT {$$=-$2;}
 objects : objectBlocs ALGO ID
         | objectBlocs 
         | ALGO
-        | ALGO ID {  cout << "++++++++++++++++++++++++ as Alg:\n"; 
+        | ALGO ID {  DEBUG("Alg is:"<< $2 <<"\n"); 
                   }
         ;
 objectBlocs : objectBlocs objectBloc
