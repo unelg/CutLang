@@ -29,7 +29,7 @@ void PrintEfficiencies(TH1F* effh) {
     err = sqrt(eff*(1-eff)/effh->GetBinContent(s-1));
     if (strlen(effh->GetXaxis()->GetBinLabel(s)) <1) break;
     cout << setw(66) << effh->GetXaxis()->GetBinLabel(s)
-	 << " = "  << setw(6) << setprecision(4) << eff
+	 << " : "  << setw(6) << setprecision(4) << eff
 	 << " +- " << setw(9) << setprecision(3) << err 
          << setw(6) <<" evt: "<<setw(8)<< setprecision(10)<<effh->GetBinContent(s) <<endl; 
   }

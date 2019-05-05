@@ -147,14 +147,13 @@ SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::st
 }
 
 double SearchNode::evaluate(AnalysisObjects* ao) {
-         
-        left->evaluate(ao);
-
+        DEBUG("---------------"<<getStr()<<"\n"); 
         particles.clear();
+        DEBUG(" LoopF2:\n");
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
+        DEBUG(" LoopF3:\n");
 
         vector<int> indices;
-        DEBUG("\n");
         for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);

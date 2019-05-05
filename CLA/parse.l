@@ -41,11 +41,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "btag_lowthreshold_LHCO" return LHCO;
 "ELE"|"ELECTRON" return ELE;//particles
 "MUO"|"MUON"|"Muon" return MUO;
-"LEP" return LEP;
-"PHO" return PHO;
 "Tau"|"TAU" return TAU;
+"PHO"|"PHOTON" return PHO;
 "JET"|"Jet" return JET;
 "FJET"|"FatJet" return FJET;
+"LEP" return LEP;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
@@ -79,7 +79,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "MET" return MET;
 "ALL" return ALL;
 "LEPsf" return LEPSF;
-"FillHistos" return FILLHISTOS;
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
