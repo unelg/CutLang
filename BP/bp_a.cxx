@@ -28,6 +28,7 @@ int BPdbxA::plotVariables(int sel) {
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
 
+//  dbxA::ChangeDir(cname);
   TString CardName=cname;
           CardName+="-card.ini";
 
@@ -73,6 +74,7 @@ int BPdbxA:: readAnalysisParams() {
        if (found!=std::string::npos) {
            tempS1 = tempLine.substr(found+5, std::string::npos );
            tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           if (tempS1[0]==' ') tempS1 = tempS1.substr(tempS1.find_first_not_of(" \n\r\t"), std::string::npos );
            cout <<"\t ALGO:"<< tempS1 <<"\n";
            algorithmnow=true;
            sprintf (algoname,"%s",tempS1.c_str());
@@ -82,6 +84,7 @@ int BPdbxA:: readAnalysisParams() {
        if (found!=std::string::npos) {
            tempS1 = tempLine.substr(found+7, std::string::npos );
            tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
+           if (tempS1[0]==' ') tempS1 = tempS1.substr(tempS1.find_first_not_of(" "), std::string::npos );
            cout <<"\t REGION:"<< tempS1 <<"\n";
            algorithmnow=true;
            sprintf (algoname,"%s",tempS1.c_str());

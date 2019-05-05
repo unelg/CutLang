@@ -3,6 +3,7 @@
 #include <iostream>
 #include "TRandom3.h"
 
+
 dbxA:: ~dbxA() {}
 
 dbxA:: dbxA(char *aname) {
@@ -199,11 +200,13 @@ int dbxA:: saveHistos() {
   int retval=0;
   cout << "saving...\n";
   histoOut->Write();
-  return 0;
+  cout << "saved.\n";
+  return retval;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA:: ChangeDir(char *dn) {
+ cout <<"Going to "<<dn<<".\n";
  histoOut->cd(dn);
  return 0;
 }
@@ -214,9 +217,11 @@ int dbxA:: setDir(char *dn) {
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
+  cout << "Made dir:"<<dn<<".\n";
   eff= new TH1F("eff","selection efficiencies ",30,0.5,30.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   char hname[64];
+  if (0)
   for (int k=0; k<m_idx; k++ ) {
     sprintf (hname,"metx%i",k); metx[k]= new TH1F (hname, "met x (GeV)",50,-12,12);
     sprintf (hname,"mety%i",k); mety[k]= new TH1F (hname, "met y (MeV)",50,-12,12);
