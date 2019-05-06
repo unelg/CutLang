@@ -1,0 +1,8 @@
+#CLA ADL example2
+
+region   test
+  select      ALL              # to count all events
+  select      Size (ELE) >= 2  # events with 2 or more electrons 
+  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+  select      {ELE[0] ELE[1] }q == 0   # Z is neutral
+  histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
