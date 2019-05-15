@@ -21,6 +21,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "cmd"|"cut"|"select"|"command" return CMD;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
+"take"|"using" return TAKE;
 "histo" return HISTO;
 "minptm" return MINPTM;
 "minptg" return MINPTG;

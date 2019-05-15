@@ -10,7 +10,7 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -63,7 +63,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token RELISO TAUISO DXY DZ SOFTID
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token PERM COMB SORT
+%token PERM COMB SORT TAKE
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -1129,7 +1129,7 @@ objects : objectBlocs ALGO ID
 objectBlocs : objectBlocs objectBloc
             | objectBloc
             ;
-objectBloc : OBJ ID ':' ID criteria {
+objectBloc : OBJ ID TAKE ID criteria {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
 
@@ -1157,11 +1157,27 @@ objectBloc : OBJ ID ':' ID criteria {
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
                                     }
+           | OBJ ID TAKE ELE criteria {
+                                        DEBUG(" "<<$2<<" is a new EleSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
            | OBJ ID ':' ELE criteria {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
+           | OBJ ID TAKE MUO criteria {
+                                        DEBUG(" "<<$2<<" is a new MuoSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
@@ -1173,6 +1189,14 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
+           | OBJ ID TAKE TAU criteria {
+                                        DEBUG(" "<<$2<<" is a new TauSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
            | OBJ ID ':' TAU criteria {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
@@ -1181,12 +1205,20 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID ':' LEP criteria
-           | OBJ ID ':' PHO criteria {
+           | OBJ ID TAKE LEP criteria
+           | OBJ ID TAKE PHO criteria {
                                         DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
+           | OBJ ID TAKE JET criteria {
+                                        DEBUG(" "<<$2<<" is a new JetSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
@@ -1198,6 +1230,14 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
+           | OBJ ID TAKE FJET criteria {
+                                        DEBUG(" "<<$2<<" is a new FatJetSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
            | OBJ ID ':' FJET criteria {
                                         DEBUG(" "<<$2<<" is a new FatJetSet\n");
                                         vector<Node*> newList;
@@ -1206,10 +1246,10 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
-           | OBJ ID ':' BJET criteria
-           | OBJ ID ':' QGJET criteria
-           | OBJ ID ':' NUMET criteria
-           | OBJ ID ':' METLV criteria
+//           | OBJ ID ':' BJET criteria
+//           | OBJ ID ':' QGJET criteria
+//           | OBJ ID ':' NUMET criteria
+//           | OBJ ID ':' METLV criteria
            ;
 criteria : criteria criterion
          | criterion
