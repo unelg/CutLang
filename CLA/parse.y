@@ -1132,10 +1132,8 @@ objectBlocs : objectBlocs objectBloc
 objectBloc : OBJ ID TAKE ID criteria {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
-
                                         map<string, Node *>::iterator it ;
                                         it = ObjectCuts->find($4);
-                        
                                         if(it == ObjectCuts->end()) {
                                                 DEBUG($4<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
@@ -1150,7 +1148,31 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                  {
                                                   Node *anode=newList[0];
                                                   while(anode->left!=NULL){ anode=anode->left; }
-
+                                                 ((SFuncNode*)anode)->setSymbol($2);
+                                                }
+                                                Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
+                                                ObjectCuts->insert(make_pair($2,obj));
+                                        }
+                                    }
+objectBloc : OBJ ID ':' ID criteria {
+                                        vector<Node*> newList; //empty
+                                        TmpCriteria.swap(newList);
+                                        map<string, Node *>::iterator it ;
+                                        it = ObjectCuts->find($4);
+                                        if(it == ObjectCuts->end()) {
+                                                DEBUG($4<<" : ") ;
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                YYERROR;
+                                        }
+                                        else {
+                                                Node* previous=it->second;
+                                                std::string str=newList[0]->getStr().Data();
+                                                if ((str.find("MEGAJETS") != std::string::npos)
+                                                  ||(str.find("MR")  != std::string::npos)
+                                                  ||(str.find("MTR") != std::string::npos))
+                                                 {
+                                                  Node *anode=newList[0];
+                                                  while(anode->left!=NULL){ anode=anode->left; }
                                                  ((SFuncNode*)anode)->setSymbol($2);
                                                 }
                                                 Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
@@ -1205,8 +1227,15 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID TAKE LEP criteria
            | OBJ ID TAKE PHO criteria {
+                                        DEBUG(" "<<$2<<" is a new PhoSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                      }
+           | OBJ ID ':' PHO criteria {
                                         DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -1246,6 +1275,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
+             | OBJ ID TAKE LEP criteria
 //           | OBJ ID ':' BJET criteria
 //           | OBJ ID ':' QGJET criteria
 //           | OBJ ID ':' NUMET criteria
