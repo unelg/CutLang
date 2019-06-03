@@ -37,7 +37,7 @@ class BPdbxA : public dbxA {
 
 
       // Sezen's handmade histograms
-      //TH1D* h_eff = new TH1D("h_eff", "efficiencies", 20, 0, 20);
+/*
       TH1D* mWHh1;
       TH1D* mWHh2;
       TH1D* mTopHh1;
@@ -47,9 +47,7 @@ class BPdbxA : public dbxA {
       TH1D* xWHbRh1;
       TH1D* xWHbRh2;
       TH1D* Zlm;
-
-      Double_t minwidthw, minwidthz, minmassmm, mindrmm, maxetconem;
-      Int_t chargeveto, minnjetsw;  
+*/
       int TRGe, TRGm;
  
 //DBXcut relevant variables

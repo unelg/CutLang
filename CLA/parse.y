@@ -110,7 +110,7 @@ initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
 definitions : definitions definition 
             | 
             ;
-definition : DEF  ID  ':' particules {
+definition : DEF  ID  '=' particules {
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
@@ -132,7 +132,41 @@ definition : DEF  ID  ':' particules {
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
+            |  DEF  ID  ':' particules {
+                                        pnum=0;
+                                        map<string,vector<myParticle*> >::iterator it ;
+                                        string name = $2;
+                                        it = ListParts->find(name);
+                                        if(it != ListParts->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        parts->push_back(name+" : "+$4);
+                                                // std::cout<<"\n TMP List: \n";
+                                                // vector<myParticle*>::iterator myiterator;
+                                                // myiterator = TmpParticle.begin();
+                                                // while (myiterator != TmpParticle.end()) {
+                                                // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
+                                                // myiterator++;
+                                                // }
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        ListParts->insert(make_pair(name,newList));
+                                }
             |  DEF ID  ':' e {
+                                        pnum=0;
+                                        map<string, Node*>::iterator it ;
+                                        string name = $2;
+                                        it = NodeVars->find(name);
+                                        if(it != NodeVars->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        NodeVars->insert(make_pair(name,$4));
+				}
+            |  DEF ID  '=' e {
                                         pnum=0;
                                         map<string, Node*>::iterator it ;
                                         string name = $2;
