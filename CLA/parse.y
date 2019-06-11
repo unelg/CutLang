@@ -72,6 +72,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
 %left AND
+%token NOT
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
@@ -1463,6 +1464,9 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
            | condition OR condition { 
                                         $$=new BinaryNode(LogicalOr,$1,$3,"OR"); 
                                         }
+	   | NOT condition {
+					$$=new BinaryNode(LogicalNot,$2,$2,"NOT");
+					}
            | '(' condition ')' { 
                                         $$=$2; 
                                 } 
