@@ -92,6 +92,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "][" return ERG;
 "AND"|"&&" return AND;//logical ops
 "OR"|"||" return OR;
+"NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
 [tT][aA][nN] return TAN;
