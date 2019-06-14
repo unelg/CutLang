@@ -1,4 +1,4 @@
-#include "FuncNode.h"
+ #include "FuncNode.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -32,6 +32,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                 case 0: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
+							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
@@ -39,6 +40,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                 case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
+							inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
@@ -46,6 +48,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 11 is tau
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
+							inputPart->setPdgID(ao->taus[ac].at(ai).pdgID()  );
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
@@ -88,7 +91,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
                                                         break;
 
-                                            default: std::cout<<"No such object! ERROR\n";
+                                            default: std::cout<<"	No such object! ERROR\n";
                                                         break;
                                 } // end of case
         }// end of for
@@ -195,6 +198,13 @@ double Qof( dbxParticle* apart){
     return charge;
 }
 
+double pdgIDof( dbxParticle* apart){
+   double pdgID = apart->pdgID();
+   DEBUG(" pdgIDof:"<<pdgID<<"\t");
+   return pdgID;
+}
+
+
 double Mof( dbxParticle* apart){
     double mass=(apart->lv()).M();
     DEBUG(" m:"<<mass<<"\t");
@@ -252,6 +262,8 @@ double DeepBof( dbxParticle* apart){
     DEBUG(" DeepB:"<<DeepB<<"\t");
     return DeepB;
 }
+
+
 double tau1of( dbxParticle* apart){
     double tau1=apart->Attribute(1) ;
     DEBUG(" tau1:"<<tau1<<"\t");
@@ -273,6 +285,9 @@ double dzof( dbxParticle* apart){
     DEBUG(" dz:"<<dz<<"\t");
     return dz;
 }
+
+
+
 double dxyof( dbxParticle* apart){
     double dxy=apart->Attribute(1);
     DEBUG(" dxy:"<<dxy<<"\t");
