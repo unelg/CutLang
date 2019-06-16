@@ -59,7 +59,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
-%token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
+%token DEEPB FJET PDGID MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
@@ -267,6 +267,29 @@ function : '{' particules '}' 'm' {
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Qof,newList,"q", it->second);
+                                       }
+                                }
+//---------------------------------------
+         | PDGID '(' particules ')' {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                  }
+         | '{' particules '}' PDGID {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                  }
+         | '{' particules '}' PDGID '(' ID  ')' {     
+                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "User object not defined: "; message += $6;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(pdgIDof,newList,"pdgID", it->second);
                                        }
                                 }
 //---------------------------------------
