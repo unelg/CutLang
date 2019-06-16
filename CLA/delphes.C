@@ -95,6 +95,7 @@ std::cout << "Begin Filling"<<std::endl;
                 alv.SetPtEtaPhiM( Muon_PT[i], Muon_Eta[i], Muon_Phi[i], (105.658/1E3) ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_Charge[i] );
+		adbxe->setPdgID(-13*Muon_Charge[i] );
                 adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
                 adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->setParticleIndx(i);
@@ -111,6 +112,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 alv.SetPtEtaPhiM( Electron_PT[i], Electron_Eta[i], Electron_Phi[i], (0.511/1E3) ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_Charge[i] );
+		adbxe->setPdgID(-11*Electron_Charge[i] );
                 adbxe->setParticleIndx(i);
                 adbxe->setClusterE(Electron_EhadOverEem[i] );
                 electrons.push_back(*adbxe);

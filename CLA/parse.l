@@ -47,6 +47,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "JET"|"Jet" return JET;
 "FJET"|"FatJet" return FJET;
 "LEP" return LEP;
+"PDGID" return PDGID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;

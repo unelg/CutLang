@@ -19,6 +19,7 @@ dbxParticle:: dbxParticle() : TObject() {
   p_escalefactor=999.;
 */
   p_charge=0; // not initialized
+	  p_pdgID = 0.;
   p_lvector.SetPtEtaPhiM(0, 0, 0, 0);
 }
 dbxParticle:: dbxParticle (TLorentzVector lv){
@@ -46,6 +47,7 @@ dbxParticle:: dbxParticle (TLorentzVector lv){
 dbxParticle:: ~dbxParticle() {}
 
 dbxParticle:: dbxParticle (TLorentzVector lv, int q){
+  p_pdgID = 0.;
   p_et_cone = -999;
   p_pt_cone = -999;
   p_flavor = -999;
@@ -72,6 +74,13 @@ dbxParticle  dbxParticle::operator+ (dbxParticle& p)
 //    result.setCharge(this->q()+p.q());
       return result;
 }
+
+int dbxParticle::setPdgID(int pdgID)
+{
+	p_pdgID = pdgID;
+	return 0;
+}
+
 double dbxParticle::deltaR(dbxParticle p1,dbxParticle p2){
     
   return p1.lv().DeltaR(p2.lv());
