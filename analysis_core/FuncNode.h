@@ -56,6 +56,7 @@ double     Ptof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
 double    Etaof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
+double 	pdgIDof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
 double  DeepBof( dbxParticle* apart);
 double   tau1of( dbxParticle* apart);
