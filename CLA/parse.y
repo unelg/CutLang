@@ -54,6 +54,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO 
+%token REJEC
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -1354,9 +1355,13 @@ commands : commands command
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
+	|REJEC condition {
+					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+					NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
-        | CMD ALL {                             
+        | CMD ALL {                                     
                                         Node* a = new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
@@ -1586,4 +1591,3 @@ e : e '+' e  {
     } 
    ;
 %%
-
