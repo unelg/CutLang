@@ -26,7 +26,7 @@ private:
     //should add something related to trigger types
     Node* userObjectA;
     Node* userObjectB;
-    double (*f)(AnalysisObjects*, string, int);
+    double (*f)(AnalysisObjects*, string, float);
     double (*g1)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
     double (*g2)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>));
     double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 ));
@@ -35,27 +35,31 @@ private:
                double (*h2)(std::vector<TLorentzVector>);
                double (*h3)(std::vector<TLorentzVector>, TVector2 );
                double (*h4)(std::vector<TLorentzVector>, TLorentzVector );
-    int type;
+
     bool ext;
+    int type = 1;
+    float value = 1.0;
     std::vector<myParticle*> inputParticles;
 public:
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id), 
-                      int id, 
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), 
+                      float val, 
                std::string s, 
                Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         f=func;
+	cout<<"string s received!!"<<s<<endl;
         g1=NULL;
         g2=NULL;
         g3=NULL;
         g4=NULL;
         ext=false;
-        type=id;
+        value=val;
         symbol=s;
         left=NULL;
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
+
 //-------------------------extern.........
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets),
@@ -197,8 +201,8 @@ virtual double evaluate(AnalysisObjects* ao) override {
               if (g2 != NULL) return (*g2)(ao, symbol, type, h2 );
               if (g3 != NULL) return (*g3)(ao, symbol, type, h3 );
               if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4);
-        }               
-        return (*f)(ao, symbol, type);
+        }              
+        return (*f)(ao, symbol, value);
 }
 
     virtual void Reset() override{}
@@ -207,10 +211,17 @@ virtual double evaluate(AnalysisObjects* ao) override {
     virtual ~SFuncNode() {}
 };
 
-double all(AnalysisObjects* ao, string s, int id){
+double all(AnalysisObjects* ao, string s, float id){
     return 1;
 }
-double count(AnalysisObjects* ao, string s, int id) {
+
+double uweight(AnalysisObjects* ao, string s, float value){
+	ao->evt.user_evt_weight *= value;
+	return 1;
+}
+
+
+double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
     DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #P types:"<<ao->gams.size()<<"\n");
@@ -234,12 +245,12 @@ double count(AnalysisObjects* ao, string s, int id) {
     }
     return (-1);
 }
-double met(AnalysisObjects* ao, string s, int id){
+double met(AnalysisObjects* ao, string s, float id){
      DEBUG("MET:" << ao->met["MET"].Mod() <<"\n");
     return ( ao->met["MET"].Mod() );
 }
 
-double ht(AnalysisObjects* ao, string s, int id){
+double ht(AnalysisObjects* ao, string s, float id){
     double sum_htjet=0;
     for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();
     return (sum_htjet  );       
