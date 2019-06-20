@@ -46,7 +46,6 @@ public:
                std::string s, 
                Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         f=func;
-	cout<<"string s received!!"<<s<<endl;
         g1=NULL;
         g2=NULL;
         g3=NULL;
