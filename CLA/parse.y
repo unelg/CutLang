@@ -54,6 +54,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO 
+%token REJEC
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -73,6 +74,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %left OR
 %left AND
 %token NOT
+%token WEIGHT
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
@@ -732,6 +734,8 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
+	
+
         | LEPSF {    
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,0,s);
@@ -1351,16 +1355,25 @@ commands : commands command
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
+	|REJEC condition {
+					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+					NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
-        | CMD ALL {                                         
-                                        Node* a=new SFuncNode(all,0, "all");
+        | CMD ALL {                                     
+                                        Node* a = new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
+	 | WEIGHT ID NB {
+						Node* a = new SFuncNode(uweight,$3,$2);
+						NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
+	
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
