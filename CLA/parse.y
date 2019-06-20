@@ -73,6 +73,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %left OR
 %left AND
 %token NOT
+%token WEIGHT
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
@@ -732,6 +733,8 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
+	
+
         | LEPSF {    
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,0,s);
@@ -1353,14 +1356,19 @@ command : CMD condition { //find a way to print commands
 	                }
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
-        | CMD ALL {                                         
-                                        Node* a=new SFuncNode(all,0, "all");
+        | CMD ALL {                             
+                                        Node* a = new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
+	 | WEIGHT ID NB {
+						Node* a = new SFuncNode(uweight,$3,$2);
+						NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
+	
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
@@ -1578,3 +1586,4 @@ e : e '+' e  {
     } 
    ;
 %%
+
