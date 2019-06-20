@@ -42,7 +42,7 @@ public:
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{}
     virtual double evaluate(AnalysisObjects* ao) override {
         double value=left->evaluate(ao);
-        ahisto->Fill(value, 1.);
+        ahisto->Fill(value, ao->evt.user_evt_weight);
         return 1;
     }
     virtual ~HistoNode() {
