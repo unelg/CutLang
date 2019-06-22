@@ -170,6 +170,7 @@ std::cout << "MET OK"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=runNumber;
+        anevt.user_evt_weight=1;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
         anevt.event_no=eventNumber;

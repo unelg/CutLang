@@ -3,5 +3,6 @@
 region   test
   select   ALL              # to count all events
   select   Size (ELE) >= 2  # events with 2 or more electrons 
+  weight   randWeight   1.123
 #  reject   Size (ELE) >= 2  # events with 2 or more electrons 
   histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
