@@ -437,7 +437,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( particles->size()>4) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
        
         if(simpleloop){
