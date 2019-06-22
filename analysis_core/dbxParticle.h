@@ -124,7 +124,7 @@ typedef struct evt_data
 	unsigned int tile_Error;
 	unsigned int core_Flags;
 	float z_vtx_weight;
-double user_evt_weight;
+        double user_evt_weight;
     
 //S.I
    Float_t         weight_mc;

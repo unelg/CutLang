@@ -95,7 +95,7 @@ std::cout << "Begin Filling"<<std::endl;
                 alv.SetPtEtaPhiM( Muon_PT[i], Muon_Eta[i], Muon_Phi[i], (105.658/1E3) ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_Charge[i] );
-		adbxe->setPdgID(-13*Muon_Charge[i] );
+		adbxm->setPdgID(-13*Muon_Charge[i] );
                 adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
                 adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->setParticleIndx(i);
@@ -160,6 +160,7 @@ std::cout << "MET OK"<<std::endl;
 //------------ auxiliary information -------
         anevt.run_no=RunNumber;
         anevt.lumiblk_no=1;
+        anevt.user_evt_weight=1;
         anevt.top_hfor_type=0;
         anevt.event_no=Event_Number[0];
         anevt.TRG_e= 1;
