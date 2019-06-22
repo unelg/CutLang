@@ -7,6 +7,8 @@
 //
 #include "ObjectNode.hpp"
 #include "ValueNode.h"
+#include <set>
+
 
 //#define _CLV_
 #ifdef _CLV_
@@ -198,17 +200,17 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
            continue;
         }
 //---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
-        int t1=-1; int t2=-1; int t3=1;
-        if ( particles->size()>=2) {
-             for (int jp=0; jp<particles->size(); jp++){
-                if (t1<0) {t1=particles->at(jp)->type;
-                 }else if ((t2<0) && (t1!=particles->at(jp)->type) ) {t2=particles->at(jp)->type;
-               } else if ((t1!=particles->at(jp)->type) &&(t2 != particles->at(jp)->type ) ) {
-                 cerr <<" 3 TYPE particle selection is not allowed in this version!\n"; t3=-99; exit(1);
-               }
-             }// end of loop over particles
-          if (t3) { simpleloop=false; }
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
         }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit; 
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
@@ -285,17 +287,17 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            continue;
         }
 //---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
-        int t1=-1; int t2=-1; int t3=1;
-        if ( particles->size()>=2) { 
-             for (int jp=0; jp<particles->size(); jp++){
-                if (t1<0) {t1=particles->at(jp)->type;
-                 }else if ((t2<0) && (t1!=particles->at(jp)->type) ) {t2=particles->at(jp)->type;
-               } else if ((t1!=particles->at(jp)->type) &&(t2 != particles->at(jp)->type ) ) {
-                 cerr <<" 3 TYPE particle selection is not allowed in this version!\n"; t3=-99; exit(1);
-               } 
-             }// end of loop over particles
-          if (t3) { simpleloop=false; }
-        }           
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit;
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;
  
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -368,9 +370,18 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
-        
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit;
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit; 
+
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                for (int jp=0; jp<particles->size(); jp++){
@@ -410,6 +421,12 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
@@ -437,8 +454,17 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>4) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit;
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;
        
         if(simpleloop){
             DEBUG("size=1\n");
@@ -481,6 +507,10 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
@@ -509,10 +539,18 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit;
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;
  
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
-       
         if(simpleloop){
             DEBUG("Simple Loop\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -554,6 +592,12 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
+
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
@@ -582,9 +626,18 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
-        if ( particles->size()>2) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( particles->size()==2) { if (particles->at(0)->type != particles->at(1)->type ) simpleloop=false; }
-       
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit; 
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;      
+
         if(simpleloop){
             DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -624,6 +677,12 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
+
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
                         (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
