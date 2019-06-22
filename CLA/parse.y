@@ -1348,7 +1348,10 @@ criteria : criteria criterion
          ;
 criterion : CMD condition { //find a way to print commands                                                                            
                                          TmpCriteria.push_back($2);
-				}
+			}
+          | REJEC condition {
+                                         TmpCriteria.push_back($2);
+          };
 commands : commands command 
         | 
         ;

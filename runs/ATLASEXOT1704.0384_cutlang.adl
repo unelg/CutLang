@@ -1,0 +1,106 @@
+# arxiv:1704.03848, ATLAS monophoton
+
+#info analysis
+# Details about experiment
+#  experiment ATLAS
+#  id EXOT-2016-32
+#  publication Eur.Phys.J. C77 (2017) no.6, 393
+#  sqrtS 13.0
+#  lumi 36.1
+#  arXiv 1704.03848
+#  hepdata https://www.hepdata.net/record/ins1591328
+#  doi 10.1140/epjc/s10052-017-4965-8
+
+# OBJECT SELECTIONS
+
+object photons take PHO
+  select {PHO_}Pt > 10
+  select Abs({PHO_}Eta) < 2.37
+
+object tightphotons take  photons
+  select {photons_ }AbsEta < 1.37 OR {photons_ }AbsEta [] 1.52 2.37
+
+object electrons take  ELE
+  select {ELE_ }Pt > 7
+  select Abs({ELE_ }Eta) < 2.47
+
+object muons take MUO
+  select {MUO_ }Pt > 6
+  select Abs({MUO_ }Eta) < 2.7
+
+object jets take  JET
+  select {JET_ }Pt > 20
+  select {JET_ }AbsEta < 4.5
+
+object cleanjets take jets
+  reject {jets_ , electrons_}dR < 0.2 
+
+object cleanelectrons take electrons 
+  reject dR(electrons_ , cleanjets_)  < 0.4
+
+object cleanmuons take muons 
+  reject dR(muons_ , cleanjets_ ) < 0.4
+
+object jetsSR take cleanjets 
+  select { cleanjets_ }Pt > 30
+  reject dR(cleanjets_ , photons_ ) < 0.4
+  reject dPhi(cleanjets_ , METLV[0]) < 0.4
+
+#object scalarHT
+  # scalar sum of pT of jets, electrons, photons, muons
+  # NB: such variables need to be precisely defined so that
+  # adapters know how to compute them
+#  take Delphes_scalarHT
+
+# VARIABLES
+
+# met / sqrt(sumET) should be defined directly, but temporarily using an 
+# external function until math operators get implemented in adl2tnm
+# define METoverSqrtSumET = MET[0].PT / sqrt(scalarHT)
+#define METoverSqrtSumET = fMEToverSqrtSumET(MET[0], scalarHT[0].HT)
+
+# EVENT SELECTION
+
+region preselection
+# Pre-selection cuts
+  select ALL
+  select Size ( tightphotons ) >= 1
+  select { tightphotons[0] }Pt > 150
+  select dPhi(tightphotons[0], METLV[0]) > 0.4
+  select MET / Sqrt(HT) > 8.5
+  select Size( electrons ) >= 0
+  reject Size( jetsSR ) > 1
+  select Size( cleanmuons ) == 0
+  select Size( cleanelectrons ) == 0
+
+region SRI1
+  preselection
+  select MET > 150
+
+region SRI2
+  preselection
+  select MET  > 225
+
+region SRI3
+  preselection
+  select MET  > 300
+
+region SRE1
+  preselection
+  select  MET > 150 AND  MET < 225
+
+region SRE2
+  preselection
+  select MET > 225 AND MET < 300  
+
+#region lhprocsel  
+# Reverse order selection for comparison to LH17 proceedings
+#  #select MET[0].PT > 150
+#  select tightphotons.size > 0
+#  select tightphotons[0].PT > 150
+#  #select dPhi(tightphotons[0].Phi, MET[0].Phi) > 0.4
+#  #select METoverSqrtSumET > 8.5
+#  reject jetsSR.size > 1
+#  select cleanmuons.size == 0
+#  select cleanelectrons.size == 0
+  
