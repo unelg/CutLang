@@ -179,6 +179,7 @@ std::cout << "MET OK"<<std::endl;
 
         anevt.run_no=run;
         anevt.lumiblk_no=luminosityBlock;
+        anevt.user_evt_weight=1;
         anevt.top_hfor_type=0;
         anevt.event_no=event;
         anevt.TRG_e= 1;
