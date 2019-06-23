@@ -97,6 +97,7 @@ std::cout << "Begin Filling"<<std::endl;
             if (lep_type[i]==13) {
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(lep_charge[i] );
+		adbxm->setPdgID(-13*lep_charge[i]);
                 adbxm->setEtCone(lep_etcone20[i]  );
                 adbxm->setPtCone(lep_ptcone30[i]  );
                 adbxm->setParticleIndx(i);
@@ -107,6 +108,7 @@ std::cout << "Begin Filling"<<std::endl;
             if (lep_type[i]==11) {
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(lep_charge[i] );
+		adbxe->setPdgID(-11*lep_charge[i]);
                 adbxe->setParticleIndx(i);
                 adbxe->setEtCone(lep_etcone20[i]  );
                 adbxe->setPtCone(lep_ptcone30[i]  );
@@ -114,10 +116,21 @@ std::cout << "Begin Filling"<<std::endl;
                 electrons.push_back(*adbxe);
                 delete adbxe;
             }
+	    if (lep_type[i]==15) {
+                adbxt= new dbxTau(alv);
+                adbxt->setCharge(lep_charge[i] );
+		adbxt->setPdgID(-15*lep_charge[i]);
+                adbxt->setEtCone(lep_etcone20[i]  );
+                adbxt->setPtCone(lep_ptcone30[i]  );
+                adbxt->setParticleIndx(i);
+                adbxt->setZ0(lep_z0[i] );
+                taus.push_back(*adbxt);
+                delete adbxt;
+            }
         }
 
 #ifdef __DEBUG__
-std::cout << "Muons and Electrons OK:"<< Electron_ <<std::endl;
+std::cout << "Muons, Electrons and Taus OK:"<< Electron_ <<std::endl;
 #endif
 
 /*
@@ -159,6 +172,7 @@ std::cout << "MET OK"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=runNumber;
+        anevt.user_evt_weight=1;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
         anevt.event_no=eventNumber;

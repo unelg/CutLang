@@ -82,6 +82,7 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(mu_charge->at(i) );
+		adbxm->setPdgID(-13*mu_charge->at(i) );
                 adbxm->setEtCone(mu_topoetcone20->at(i) );
                 adbxm->setPtCone(mu_ptvarcone30->at(i)  );
                 adbxm->setParticleIndx(i);
@@ -101,6 +102,7 @@ std::cout << "Muons OK:"<< mu_pt->size()<<std::endl;
                 alv.SetPtEtaPhiE( el_pt->at(i)*0.001, el_eta->at(i), el_phi->at(i), el_e->at(i)*0.001 ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(el_charge->at(i) );
+		adbxe->setPdgID(-11*el_charge->at(i) );
                 adbxe->setPtCone(el_ptvarcone20->at(i));// 30 has 20 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 adbxe->setEtCone20(el_ptvarcone20->at(i) );
                 adbxe->settrue_origin(el_true_origin->at(i));
@@ -154,6 +156,7 @@ std::cout << "MET OK"<<std::endl;
 
 
         anevt.run_no=runNumber;
+        anevt.user_evt_weight=1;
         anevt.event_no=eventNumber;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
