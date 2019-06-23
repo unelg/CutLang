@@ -29,7 +29,8 @@ struct AnalysisObjects {
     std::map<std::string, std::vector<dbxPhoton>   > gams;
     std::map<std::string, std::vector<dbxJet>      > jets;
     std::map<std::string, std::vector<dbxJet>      >ljets;
-    std::map<std::string, std::vector<dbxTruth>    > truth;
+    std::map<std::string, std::vector<dbxTruth>    >truth;
+    std::map<std::string, std::vector<dbxParticle> >combos;
     std::map<std::string, TVector2                 > met;
     evt_data            evt;
 };
@@ -46,7 +47,8 @@ enum particleType{
  photon_t=8,
  ljet_t=9,
  truth_t=10,
- tau_t=11
+ tau_t=11,
+ combo_t=20
 };
 
 

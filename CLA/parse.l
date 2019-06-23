@@ -23,6 +23,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "algo"|"region"|"algorithm" return ALGO;
 "take"|"using" return TAKE;
 "histo" return HISTO;
+"weight" return WEIGHT;
 "minptm" return MINPTM;
 "minptg" return MINPTG;
 "minptj" return MINPTJ;

@@ -21,8 +21,8 @@ ObjectNode::ObjectNode(std::string id,
                        vector<Node*> criteria,
                        std::string s) {
 
-    symbol=s;
-    name=id;//this is useless because symbol already has name of the particle
+    symbol=s; // e.g. "obj Ele"
+    name=id;//this is useless because symbol already has name of the particle, e.g. "ELE"
 
     if(func==NULL) {
         createNewSet=((ObjectNode*)previous)->createNewSet;
@@ -39,20 +39,22 @@ ObjectNode::ObjectNode(std::string id,
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
     while (anode->left != NULL) { anode=(ObjectNode*)anode->left; }
-      if (anode->name == "JET" ) type=2;
       if (anode->name == "MUO" ) type=0;
       if (anode->name == "ELE" ) type=1;
+      if (anode->name == "JET" ) type=2;
       if (anode->name == "PHO" ) type=8;
       if (anode->name == "FJET") type=9;
       if (anode->name == "TAU" ) type=11;
+      if (anode->name == "Combo" ) type=20;
       DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
-    } else {
-      if (id == "JET" ) type=2;
+    } else { // if null
       if (id == "MUO" ) type=0;
       if (id == "ELE" ) type=1;
+      if (id == "JET" ) type=2;
       if (id == "PHO" ) type=8;
       if (id == "FJET") type=9;
       if (id == "TAU" ) type=11;
+      if (id == "Combo" ) type=20;
       DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
     }
 }
@@ -90,7 +92,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
       basename=anode->name;
-      DEBUG("previous:"<< basename<< "  type:"<<type<<"\n");
+      DEBUG("previous:"<< basename<< "  type:"<<type<<"\n"); // Combo, 20
 // is it in the map list?
        switch (type) {
         case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
@@ -125,6 +127,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                                 DEBUG(" *****FJETs evaluated.\n");
                	      } else keepworking=false;
                       break;
+       case 20:       if (ao->combos.find(basename)==ao->combos.end()  ){
+               			anode->evaluate(ao);
+                                DEBUG(" *****COMBOs evaluated.\n");
+               	      } else keepworking=false;
+                      break;
 
         default:  break;
        }
@@ -156,16 +163,25 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itfj=ao->ljets.begin();itfj!=ao->ljets.end();itfj++){
      if (itfj->first == name) return 1;
     }
+    map <string, std::vector<dbxParticle>  >::iterator itc;
+    for (itc=ao->combos.begin();itc!=ao->combos.end();itc++){
+     if (itc->first == name) return 1;
+    }
       
-    DEBUG("Before new set #types: J, FJ, E, M, T, P:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size() <<"\n"); 
+    DEBUG("Before new set #types: J, FJ, E, M, T, P, C:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size() <<"\n"); 
+//---------------
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
-    DEBUG(" After new set #types: J, FJ, E, M, T, P:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size() <<"\n"); 
+//---------------
+    DEBUG(" After new set #types: J, FJ, E, M, T, P, C:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size() <<"\n"); 
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
-      DEBUG("\t #Jtypename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
+      DEBUG("\t #J typename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
     }
     for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
-      DEBUG("\t #Ptypename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+      DEBUG("\t #P typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+    }
+    for (itc=ao->combos.begin();itc!=ao->combos.end();itc++){
+      DEBUG("\t #C typename:"<<itc->first<<"    size:"<<itc->second.size() <<"\n");
     }
     //Save AO somewhere to return in next time
     return 1;
@@ -634,4 +650,76 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }// end of two particles
     }// end of cutIterator
    DEBUG("TAUS created\n");
+}
+void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+
+
+   vector<dbxParticle>  combination;
+   dbxParticle *adbxp;
+   TLorentzVector  alv;
+   std::string collectionName;
+   int ipart_max;
+
+   for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
+        particles->clear();
+        (*cutIterator)->getParticles(particles);
+
+     DEBUG("Psize:"<<particles->size() <<"\n");
+      for (int jj=0; jj<particles->size(); jj++){
+       DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+       collectionName=particles->at(jj)->collection;
+
+       switch(particles->at(jj)->type){
+                    case 0: ipart_max=(ao->muos)[collectionName].size();
+                            for (int ipart=0; ipart<ipart_max; ipart++){
+                                alv=(ao->muos)[collectionName].at(ipart).lv();
+                                adbxp= new dbxParticle(alv);
+                                adbxp->setCharge((ao->muos)[collectionName].at(ipart).q() );
+                                combination.push_back(*adbxp);
+                                delete adbxp;
+                            }
+                            break;
+                    case 1: ipart_max=(ao->eles)[collectionName].size();
+                            for (int ipart=0; ipart<ipart_max; ipart++){
+                                alv=(ao->eles)[collectionName].at(ipart).lv();
+                                adbxp= new dbxParticle(alv);
+                                adbxp->setCharge((ao->eles)[collectionName].at(ipart).q() );
+                                combination.push_back(*adbxp);
+                                delete adbxp;
+                            }
+                            break;
+                    case 2: ipart_max=(ao->jets)[collectionName].size();
+                        break;
+//                  case 3: ipart_max=abc.tagJets(ao, 1).size(); //b-jets
+//                      break;
+//                  case 4: ipart_max=abc.tagJets(ao, 1).size(); //light jets
+//                      break;
+                    case 8: ipart_max=(ao->gams)[collectionName].size();
+                        break;
+                    case 9: ipart_max=(ao->ljets)[collectionName].size();
+                        break;
+                   case 11: ipart_max=(ao->taus)[collectionName].size();
+                            for (int ipart=0; ipart<ipart_max; ipart++){
+                                alv=(ao->taus)[collectionName].at(ipart).lv();
+                                adbxp= new dbxParticle(alv);
+                                adbxp->setCharge((ao->taus)[collectionName].at(ipart).q() );
+                                combination.push_back(*adbxp);
+                                delete adbxp;
+                            }
+                            break;
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
+                        break;
+                }
+        DEBUG("Adding # particles:"<<ipart_max<<"\n");
+
+      } //end of particle loop
+   }// end of  cut iterator loop
+
+   ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
+
+   DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
+   DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
+
 }
