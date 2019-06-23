@@ -180,7 +180,7 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
-//       cout <<"==parsing started==\t";
+       cout <<"==parsing started==\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
        cout <<" parsing finished.  ";
        if (retval){
@@ -212,8 +212,8 @@ int BPdbxA:: readAnalysisParams() {
             cout<<" CUT "<<iter->first<<" ";
             cout<<"--->"<<iter->second->getStr()<<"\n";
 
-           TString newLabels=iter->second->getStr();
-//           TString newLabels=effCL[ iter->first -1];
+//           TString newLabels=iter->second->getStr();
+           TString newLabels=effCL[ iter->first -1];
 /*
             TString newLabels="CUT";
                     newLabels+=iter->first;

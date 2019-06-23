@@ -1,11 +1,12 @@
 #CLA ADL example4
 
 define Zreco : ELE[0] ELE[1]
+define leps = ELE + MUO
 
 object goodEle : ELE
-  select  Pt(ELE_)        >   10
-  select abs({ELE_}Eta)   <   2.4
-  select     {ELE_}AbsEta ][  1.442 1.556
+  select  Pt(ELE)        >   10
+  select abs({ELE}Eta)   <   2.4
+  select     {ELE}AbsEta ][  1.442 1.556
 
 define goodZreco : goodEle[0] goodEle[1]
 
@@ -13,9 +14,9 @@ region   test
   select      ALL              # to count all events
   select      Size(ELE)     >= 2  # events with 2 or more electrons 
   select      Size(goodEle) >= 2  # events with 2 or more electrons 
-  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
-  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
-  select      {Zreco}q == 0       # Z is neutral
-  select      {goodZreco}q == 0   # Z is neutral
-  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
-  histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
+#  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
+#  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
+#  select      {Zreco}q == 0       # Z is neutral
+#  select      {goodZreco}q == 0   # Z is neutral
+#  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
+#  histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
