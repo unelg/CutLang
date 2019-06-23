@@ -52,12 +52,12 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
-%token DEF CMD HISTO OBJ ALGO WEIGHT
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
@@ -266,6 +266,29 @@ function : '{' particules '}' 'm' {
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Qof,newList,"q", it->second);
+                                       }
+                                }
+//---------------------------------------
+         | PDGID '(' particules ')' {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                  }
+         | '{' particules '}' PDGID {     
+                                       vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                  }
+         | '{' particules '}' PDGID '(' ID  ')' {     
+                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "User object not defined: "; message += $6;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(pdgIDof,newList,"pdgID", it->second);
                                        }
                                 }
 //---------------------------------------
@@ -715,6 +738,8 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
+	
+
         | LEPSF {    
                                         string s="LEPSF";                                                              
                                         $$=new SFuncNode(all,0,s);
@@ -1454,29 +1479,34 @@ criteria : criteria criterion
          ;
 criterion : CMD condition { //find a way to print commands                                                                            
                                          TmpCriteria.push_back($2);
-				}
+			}
+          | REJEC condition {
+                                         TmpCriteria.push_back($2);
+          };
 commands : commands command 
         | 
         ;
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
+	|REJEC condition {
+					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+					NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
-        | CMD ALL {                                         
-                                        Node* a=new SFuncNode(all,0, "all");
+        | CMD ALL {                                     
+                                        Node* a = new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
+	| WEIGHT ID NB {
+						Node* a = new SFuncNode(uweight,$3,$2);
+						NodeCuts->insert(make_pair(++cutcount,a));
+			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
-
-//------------------------------------------
-      | WEIGHT ID NB {
-                                  cout <<"I see WEIGHT\n";
-                                  //    $$=new SFuncNode(uweight, $3 ,$2); // function, float, string
-      }
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;

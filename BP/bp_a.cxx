@@ -39,12 +39,14 @@ int BPdbxA:: readAnalysisParams() {
   }
 
 // ---------------------------DBX style defs, objects and cuts
+    int kk=1;
+
     string tempLine;
     string tempS1, tempS2;
     string subdelimiter = " ";
     string hashdelimiter = "#";
-    size_t found;
-    size_t foundp;
+    size_t found, foundp, foundr, foundw;
+    bool foundInFile(false);
     TString DefList2file="\n";
     TString CutList2file="\n";
     TString ObjList2file="\n";
@@ -54,7 +56,6 @@ int BPdbxA:: readAnalysisParams() {
 
     while ( ! cardfile.eof() ) {
        getline( cardfile, tempLine );
-//       cout<<tempLine<<endl;
        if ( tempLine[0] == '#' ) continue; // skip comment lines
        if (tempLine.find_first_of("#") != std::string::npos ){
          tempLine.erase(tempLine.find_first_of("#"));
@@ -110,14 +111,18 @@ int BPdbxA:: readAnalysisParams() {
 
 //---------cmds
         found=tempLine.find("cmd ")  ;
+       foundw=tempLine.find("weight ")  ;
        foundp=tempLine.find("select ")  ;
-       if ((found!=std::string::npos) ||(foundp!=std::string::npos)) {
+       foundr=tempLine.find("reject ")  ;
+       if ((found!=std::string::npos) ||(foundp!=std::string::npos) || (foundr!=std::string::npos) || (foundw!=std::string::npos)) {
            if (algorithmnow) {
               CutList2file+=tempLine;
               CutList2file+="\n";
               size_t apos=tempLine.find(hashdelimiter);
-              if (found!=std::string::npos) { tempS1 = tempLine.substr(found+4, apos);}
-              else                          { tempS1 = tempLine.substr(foundp+7, apos); }
+              if       (found!=std::string::npos) { tempS1 = tempLine.substr(found +4, apos); }
+              else if (foundw!=std::string::npos) { tempS1 = tempLine.substr(foundw+7, apos); }
+              else if (foundp!=std::string::npos) { tempS1 = tempLine.substr(foundp+7, apos); }
+              else                                { tempS1 = tempLine.substr(foundr+7, apos); tempS1="reject "+tempS1; }
               tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
               effCL.push_back(tempS1);
 //              cout <<tempS1<<"\n";
@@ -144,7 +149,7 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 
-    }
+    } 
 //-----create the relevant output directory
     if (!algorithmnow) {
        int r=dbxA::setDir(cname);  // make the relevant root directory
@@ -172,6 +177,7 @@ int BPdbxA:: readAnalysisParams() {
 // ****************************************
 // ---------------------------DBX style cuts
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+       int kFillHistos=0;
     
        std::vector<double> PtEtaInitializations(11);
        PtEtaInitializations={15., 15., 15., 15., 15., 2.5, 2.5, 2.5, 2.5, 30, 1, 0};
@@ -209,8 +215,6 @@ int BPdbxA:: readAnalysisParams() {
     {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
-            cout<<" CUT "<<iter->first<<" ";
-            cout<<"--->"<<iter->second->getStr()<<"\n";
 
 //           TString newLabels=iter->second->getStr();
            TString newLabels=effCL[ iter->first -1];
@@ -223,12 +227,12 @@ int BPdbxA:: readAnalysisParams() {
             iter++; 
     }
 
-#ifdef _CLV_
+#ifdef _CLV__
      cout<<"\n Particle Lists: \n";
 
      for (map<string,vector<myParticle*> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
          {
-         cout << (it1)->first << ": ";
+         cout << (*it1)->first << ": ";
          for (vector<myParticle*>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
          cout << (*lit)->type << "_" << (*lit)->index << " ";
          cout << "\n";
@@ -251,16 +255,6 @@ int BPdbxA:: readAnalysisParams() {
             itv->second->display();
             std::cout<<std::endl;
             itv++;
-    }
-
-    cout<<"\n CUTS : \n";
-    std::map<int, Node*>::iterator jter = NodeCuts.begin();
-    while(jter != NodeCuts.end())
-    {
-            cout<<"**************************** CUT "<<jter->first<<endl;
-            jter->second->display();
-            std::cout<<endl;
-            jter++;
     }
 
 #endif
@@ -310,12 +304,14 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
   TVector2 met = ao.met.begin()->second;
   evt_data anevt = ao.evt;
 
+  int retval=0;
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
   double theLeptonWeight = 1;
   double theFourJetWeight = 1;
-  double evt_weight = 1;
-
+  unsigned int njets;
+  double evt_weight = ao.evt.user_evt_weight;  
+//double evt_weight = 1;
   if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
@@ -342,11 +338,11 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
-
         DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
         double d=iter->second->evaluate(&ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
-        if (d==0) return iter->first;         // quits the event.
+              evt_weight = ao.evt.user_evt_weight;
+if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts

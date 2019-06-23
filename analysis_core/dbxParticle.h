@@ -124,6 +124,7 @@ typedef struct evt_data
 	unsigned int tile_Error;
 	unsigned int core_Flags;
 	float z_vtx_weight;
+        double user_evt_weight;
     
 //S.I
    Float_t         weight_mc;
@@ -199,6 +200,7 @@ public:
 	void dumpLHCO(std::ofstream&  );
 
 	int setCharge( int);
+	int setPdgID( int);
 	int setEtCone( double );
 	int setPtCone( double );
 	int setFlavor ( double );
@@ -238,6 +240,7 @@ public:
 	void addAttribute(double v) {p_attribute.push_back(v);} 
 
 	int q()  { return p_charge; }
+	int pdgID() {return p_pdgID; }
 	double Attribute(int k)  { if (k>(int)p_attribute.size()){ 
                                  std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
 	int nAttribute() { return p_attribute.size(); }
@@ -268,9 +271,11 @@ public:
 	double SFIsoUncertaintyDown() { return p_isouncertaintydown ; }
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
+
 private:
         std::vector<double> p_attribute;
 	int p_charge;
+	int p_pdgID;
 	double p_et_cone;
 	double p_pt_cone;
 	double p_flavor;

@@ -19,6 +19,7 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def"|"define" return DEF;//case sensitive in this case
 "cmd"|"cut"|"select"|"command" return CMD;
+"reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
 "take"|"using" return TAKE;
@@ -48,6 +49,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "JET"|"Jet" return JET;
 "FJET"|"FatJet" return FJET;
 "LEP" return LEP;
+"PDGID" return PDGID;
+"weight" return WEIGHT;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;

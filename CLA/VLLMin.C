@@ -147,6 +147,7 @@ void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
 
     anevt.run_no=runNumber;
+    anevt.user_evt_weight=1;
     anevt.event_no=eventNumber;
     anevt.lumiblk_no=1;
     anevt.top_hfor_type=0;
