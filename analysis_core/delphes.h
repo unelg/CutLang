@@ -29,19 +29,19 @@ public :
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    static constexpr Int_t kMaxEvent = 1;
-   static constexpr Int_t kMaxParticle = 1016;
-   static constexpr Int_t kMaxTrack = 58;
-   static constexpr Int_t kMaxTower = 108;
-   static constexpr Int_t kMaxEFlowTrack = 58;
-   static constexpr Int_t kMaxEFlowPhoton = 48;
-   static constexpr Int_t kMaxEFlowNeutralHadron = 42;
-   static constexpr Int_t kMaxGenJet = 7;
+   static constexpr Int_t kMaxParticle = 5000;
+   static constexpr Int_t kMaxTrack = 500;
+   static constexpr Int_t kMaxTower = 500;
+   static constexpr Int_t kMaxEFlowTrack = 500;
+   static constexpr Int_t kMaxEFlowPhoton = 500;
+   static constexpr Int_t kMaxEFlowNeutralHadron = 500;
+   static constexpr Int_t kMaxGenJet = 100;
    static constexpr Int_t kMaxGenMissingET = 1;
-   static constexpr Int_t kMaxJet = 5;
-   static constexpr Int_t kMaxElectron = 2;
-   static constexpr Int_t kMaxPhoton = 1;
-   static constexpr Int_t kMaxMuon = 1;
-   static constexpr Int_t kMaxFatJet = 1;
+   static constexpr Int_t kMaxJet = 100;
+   static constexpr Int_t kMaxElectron = 50;
+   static constexpr Int_t kMaxPhoton = 50;
+   static constexpr Int_t kMaxMuon = 50;
+   static constexpr Int_t kMaxFatJet = 50;
    static constexpr Int_t kMaxMissingET = 1;
    static constexpr Int_t kMaxScalarHT = 1;
 
