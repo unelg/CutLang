@@ -1,0 +1,12 @@
+#CLA ADL Sorting
+
+object goodEle : ELE
+  select   Pt(ELE_)       >   10
+  select abs({ELE_}Eta )  <   2.4
+  select     {ELE_}AbsEta ][  1.442 1.556
+
+
+algo sorting
+  select      ALL                   # to count all events
+  select      (Size(goodEle) == 4) OR (Size(goodEle) == 3)   # events with 3 or 4 good electrons 
+  select      SORT {goodEle_ }Pz descend
