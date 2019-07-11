@@ -19,6 +19,7 @@
 #include "SFuncNode.h"
 #include "HistoNode.h"
 #include "SearchNode.h"
+#include "SortNode.h"
 #include "IfNode.h"
 #include "ObjectNode.hpp"
 //Delete Nodes
