@@ -173,6 +173,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         case 2: Max=ao->jets[ac].size();break;
                         case 3: Max=left->tagJets(ao,1,ac).size();break;
                         case 4: Max=left->tagJets(ao,0,ac).size();break;
+			case 8: Max=ao->gams[ac].size();break;
+			case 11: Max=ao->taus[ac].size();break;
+			case 20: Max=ao->combos[ac].size();break;
                     }
                     vector<int> v;//--------------------why not pass it by reference?!
                     double current_difference =9999999999.9;
