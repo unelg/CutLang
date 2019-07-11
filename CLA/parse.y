@@ -63,6 +63,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
+%token ASCEND DESCEND
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -1613,6 +1614,11 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
 //                                    }
 //                                   }
            | e MAXIMIZE e { $$=new SearchNode(maxim,$1,$3,"!="); }
+
+	   | SORT e ASCEND{$$=new SortNode($2,"ascend");}
+	    
+  	   | SORT e DESCEND{$$=new SortNode($2,"descend");}
+		
            | e IRG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
                                         Node* c1=new BinaryNode(ge,$1,limit1,">=");
