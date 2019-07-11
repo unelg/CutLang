@@ -49,7 +49,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "FJET"|"FatJet" return FJET;
 "LEP" return LEP;
 "PDGID" return PDGID;
-"WEIGHT" return WEIGHT;
+"weight" return WEIGHT;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
@@ -98,6 +98,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+"ascend" return ASCEND;
+"descend" return DESCEND;
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
