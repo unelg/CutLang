@@ -31,6 +31,8 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxJet>      jets;
    vector<dbxJet>    ljets;
    vector<dbxTruth>   truth;
+   vector<dbxParticle> combos;
+
 
    map<string, vector<dbxMuon>     > muos_map;
    map<string, vector<dbxElectron> > eles_map;
@@ -39,6 +41,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    map<string, vector<dbxJet>      > jets_map;
    map<string, vector<dbxJet>     >ljets_map;
    map<string, vector<dbxTruth>    >truth_map;
+   map<string, vector<dbxParticle> >combo_map;
    map<string, TVector2            >  met_map;
 
    evt_data anevt;
@@ -153,6 +156,7 @@ std::cout << "MET OK"<<std::endl;
 
 
         anevt.run_no=runNumber;
+        anevt.user_evt_weight=1;
         anevt.event_no=eventNumber;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
@@ -224,9 +228,10 @@ std::cout << "Filling finished"<<std::endl;
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map, anevt};
+        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map, anevt};
 }
 
 //--------------------------------------------------------LOOP

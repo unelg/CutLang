@@ -10,7 +10,7 @@
 #include <vector>
 #include <iterator>
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -37,7 +37,6 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 //see how to give input to yyparse and get output -> DONE
 //read file
 //avoid global variables
-//add histos -> DONE
 //view input
 %}
 %union {
@@ -53,18 +52,17 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
-%token DEF CMD HISTO OBJ ALGO 
-%token REJEC
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF FILLHISTOS //simple funcs
-%token DEEPB FJET PDGID MSOFTD TAU1 TAU2 TAU3 // razor additions
+%token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
+%token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token PERM COMB SORT TAKE
+%token PERM COMB SORT TAKE 
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -74,7 +72,6 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %left OR
 %left AND
 %token NOT
-%token WEIGHT
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
@@ -624,16 +621,24 @@ function : '{' particules '}' 'm' {
                                                 $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
         | NUMOF '(' ID ')'  {      
+                                       map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "Object not defined: ";
+                                       if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
+                                           std::string message = "OBJect not defined: ";
                                            message += $3;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        }
                                        else {
+                                           if (it != ObjectCuts->end()){
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count,            type, it->first, it->second);
+                                           }
+                                           else { // new type is defined using particle class summation
+                                            vector<myParticle*> newList= itdef->second;
+                                           // TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                                           // $$=new SFuncNode(count,100, itdef->
+                                           }
                                        }
                            }
         | NUMOF '(' ELE ')' {       
@@ -711,7 +716,6 @@ function : '{' particules '}' 'm' {
                                          $$=new SFuncNode(userfuncD, fMTR2, type, $3 , it2->second,  it->second);
                                      }
                        }
-//------------------------------------------
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");
              }
@@ -730,7 +734,7 @@ function : '{' particules '}' 'm' {
        | MET {
                                         $$=new SFuncNode(met,0, "MET");
               }
-        | ALL {    
+       | ALL {    
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
@@ -805,6 +809,7 @@ particules : particules particule {
                          }
             ;
 particule : ELE '_' index {
+                                DEBUG("electron particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
                                 a->type =1;
                                 a->index = (int)$3;
@@ -820,6 +825,16 @@ particule : ELE '_' index {
                                 a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                            }
+        | ELE               {
+                                DEBUG("all electron particules \t");
+                                myParticle* a = new myParticle;
+                                a->type =1;
+                                a->index = 6213;
+                                a->collection = "ELE";
+                                TmpParticle.push_back(a);
+                                tmp="ele_6213";
                                 $$=strdup(tmp.c_str());
                             }
         | MUO '[' index ']' {   
@@ -840,6 +855,17 @@ particule : ELE '_' index {
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
+       | MUO            {      
+                                DEBUG("all muon particules \t");
+                                tmp="muo_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 0;
+                                a->index = 6213;
+                                a->collection = "MUO";
+                                TmpParticle.push_back(a);
+                        }
+
         | TAU '[' index ']' {   
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -1010,7 +1036,7 @@ particule : ELE '_' index {
                         } 
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
-                           tmp="jet_"+to_string((int)$3);
+                           tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 1;
@@ -1020,7 +1046,7 @@ particule : ELE '_' index {
                         }
                         else if (otype==0 ) {
                            DEBUG("which is a MUO\n");
-                           tmp="jet_"+to_string((int)$3);
+                           tmp="muo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 0;
@@ -1030,7 +1056,7 @@ particule : ELE '_' index {
                         }
                         else if (otype==11 ) {
                            DEBUG("which is a TAU\n");
-                           tmp="jet_"+to_string((int)$3);
+                           tmp="tau_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 11;
@@ -1040,7 +1066,7 @@ particule : ELE '_' index {
                         }
                         else if (otype==8 ) {
                            DEBUG("which is a PHO\n");
-                           tmp="jet_"+to_string((int)$3);
+                           tmp="pho_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 8;
@@ -1050,7 +1076,7 @@ particule : ELE '_' index {
                         }
                         else if (otype==9 ) {
                            DEBUG("which is a FatJET\n");
-                           tmp="jet_"+to_string((int)$3);
+                           tmp="ljet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 9;
@@ -1156,6 +1182,7 @@ particule : ELE '_' index {
              }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
 
+                DEBUG ("ID no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1241,55 +1268,159 @@ objectBloc : OBJ ID ':' ID criteria {
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
                                     }
-           | OBJ ID TAKE ELE criteria {
+        | OBJ ID ':' ELE '+' MUO {
+                                     DEBUG(" "<<$2<<" is a new Ele+Muo Set\n");
+                                     vector<myParticle*> newList;
+                                     myParticle* a = new myParticle;
+                                     myParticle* b = new myParticle;
+                                     a->type =1; a->index = 6213; a->collection = "ELE";
+                                     newList.push_back(a);
+                                     b->type =0; b->index = 6213; b->collection = "MUO";
+                                     newList.push_back(b);
+                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     vector<Node*> newNList; // cut list
+                                     newNList.push_back(nnode);
+                                     Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
+                                     Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                     ObjectCuts->insert(make_pair($2,obj));
+                                  }
+        | OBJ ID ':' ELE '+' TAU {
+                                     DEBUG(" "<<$2<<" is a new Ele+Tau Set\n");
+                                     vector<myParticle*> newList;
+                                     myParticle* a = new myParticle;
+                                     myParticle* b = new myParticle;
+                                     a->type =1;  a->index = 6213; a->collection = "ELE";
+                                     newList.push_back(a);
+                                     b->type =11; b->index = 6213; b->collection = "TAU";
+                                     newList.push_back(b);
+                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     vector<Node*> newNList; // cut list
+                                     newNList.push_back(nnode);
+                                     Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
+                                     Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                     ObjectCuts->insert(make_pair($2,obj));
+                                  }
+        | OBJ ID ':' MUO '+' TAU {
+                                     DEBUG(" "<<$2<<" is a new Muo+Tau Set\n");
+                                     vector<myParticle*> newList;
+                                     myParticle* a = new myParticle;
+                                     myParticle* b = new myParticle;
+                                     a->type =0;  a->index = 6213; a->collection = "MUO";
+                                     newList.push_back(a);
+                                     b->type =11; b->index = 6213; b->collection = "TAU";
+                                     newList.push_back(b);
+                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     vector<Node*> newNList; // cut list
+                                     newNList.push_back(nnode);
+                                     Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
+                                     Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                     ObjectCuts->insert(make_pair($2,obj));
+                                  }
+        | OBJ ID ':' ELE '+' MUO '+' TAU {
+                                     DEBUG(" "<<$2<<" is a new Ele+Muo+Tau Set\n");
+                                     vector<myParticle*> newList;
+                                     myParticle* a = new myParticle;
+                                     myParticle* b = new myParticle;
+                                     myParticle* c = new myParticle;
+                                     a->type =1;  a->index = 6213; a->collection = "ELE";
+                                     newList.push_back(a);
+                                     b->type =0;  b->index = 6213; b->collection = "MUO";
+                                     newList.push_back(b);
+                                     c->type =11; c->index = 6213; c->collection = "TAU";
+                                     newList.push_back(c);
+                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     vector<Node*> newNList; // cut list
+                                     newNList.push_back(nnode);
+                                     Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
+                                     Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                     ObjectCuts->insert(make_pair($2,obj));
+                                  }
+
+         | OBJ ID ':' ID '+' ID {
+                                    map<string, Node *>::iterator it ;
+                                    it = ObjectCuts->find($4);
+                                    if(it == ObjectCuts->end()) {
+                                             DEBUG($4<<" : ") ;
+                                             yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                             YYERROR;
+                                    }
+                                    ObjectNode* child1=(ObjectNode*)it->second;
+                                    map<string, Node *>::iterator iu ;
+                                    iu = ObjectCuts->find($6);
+                                    if(iu == ObjectCuts->end()) {
+                                             DEBUG($6<<" : ") ;
+                                             yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                             YYERROR;
+                                    }
+                                    ObjectNode* child2=(ObjectNode*)iu->second;
+//                                    Node* previous;
+//                                    while (previous != NULL) {
+//                                    }
+                                    DEBUG(" "<<$2<<" is a new "<<$4<<" of type:"<<child1->type<<" + "<< $6<<" of type:"<<child2->type << "\n");
+                                    vector<myParticle*> newList;
+                                    myParticle* a = new myParticle;
+                                    myParticle* b = new myParticle;
+                                    a->type =child1->type; a->index = 6213; a->collection = $4;
+                                    newList.push_back(a);
+                                    b->type =child2->type; b->index = 6213; b->collection = $6;
+                                    newList.push_back(b);
+                                    Node* nnode= new FuncNode(Qof,newList,"q");
+                                    vector<Node*> newNList; // cut list
+                                    newNList.push_back(nnode);
+                                    Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
+                                    Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                    ObjectCuts->insert(make_pair($2,obj));
+                                   }
+         | OBJ ID TAKE ELE criteria {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
+                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj ELE" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID ':' ELE criteria {
+         | OBJ ID ':' ELE criteria {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj Ele" );
+                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj ELE" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID TAKE MUO criteria {
+
+         | OBJ ID TAKE MUO criteria {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
+                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj MUO" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID ':' MUO criteria {
+         | OBJ ID ':' MUO criteria {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj Muo" );
+                                        Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj MUO" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID TAKE TAU criteria {
+         | OBJ ID TAKE TAU criteria {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
+                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj TAU" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID ':' TAU criteria {
+         | OBJ ID ':' TAU criteria {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj Tau" );
+                                        Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj TAU" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-           | OBJ ID TAKE PHO criteria {
+         | OBJ ID TAKE PHO criteria {
                                         DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -1297,7 +1428,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
-           | OBJ ID ':' PHO criteria {
+         | OBJ ID ':' PHO criteria {
                                         DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -1305,7 +1436,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
-           | OBJ ID TAKE JET criteria {
+         | OBJ ID TAKE JET criteria {
                                         DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -1313,7 +1444,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
-           | OBJ ID ':' JET criteria {
+         | OBJ ID ':' JET criteria {
                                         DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -1348,7 +1479,10 @@ criteria : criteria criterion
          ;
 criterion : CMD condition { //find a way to print commands                                                                            
                                          TmpCriteria.push_back($2);
-				}
+			}
+          | REJEC condition {
+                                         TmpCriteria.push_back($2);
+          };
 commands : commands command 
         | 
         ;
@@ -1365,7 +1499,7 @@ command : CMD condition { //find a way to print commands
                                         Node* a = new SFuncNode(all,0, "all");
                                         NodeCuts->insert(make_pair(++cutcount,a));
 				}
-	 | WEIGHT ID NB {
+	| WEIGHT ID NB {
 						Node* a = new SFuncNode(uweight,$3,$2);
 						NodeCuts->insert(make_pair(++cutcount,a));
 			}
@@ -1373,7 +1507,6 @@ command : CMD condition { //find a way to print commands
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
-	
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;

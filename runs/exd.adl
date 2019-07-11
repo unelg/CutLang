@@ -1,0 +1,22 @@
+#CLA ADL example2
+object goodEle : ELE
+  select  Pt(ELE)        >   10
+  select abs({ELE}Eta)   <   2.4
+  select     {ELE}AbsEta ][  1.442 1.556
+
+object GMUO : MUO
+  select  Pt(MUO)        >   10
+  select abs({MUO}Eta)   <   2.4
+
+
+object gleps : goodEle + GMUO                #just one particle after other
+object leps : ELE + MUO                 #just one particle after other
+define Zreco1 : ELE[-1] + ELE[-1]
+region   test
+  select      ALL              # to count all events
+  select      Size (goodEle)  >= 0  # events with 2 or more electrons 
+  select      Size (GMUO)  >= 0  # events with 2 or more electrons 
+  select      Size(gleps) >= 1  # events with 2 or more leptons 
+  select      Size(ELE)  >= 1  # events with 2 or more electrons 
+  weight       mcw      1.1
+#  select      {ELE_0 ELE_1 }q == 0   # Z is neutral

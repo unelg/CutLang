@@ -63,6 +63,7 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxJet>      jets;
        vector<dbxJet>    ljets;
        vector<dbxTruth>   truth;
+       vector<dbxParticle> combos;
 
        map<string, vector<dbxMuon>     > muos_map;
        map<string, vector<dbxElectron> > eles_map;
@@ -71,6 +72,7 @@ std::cout << "Read Event"<<std::endl;
        map<string, vector<dbxJet>      > jets_map;
        map<string, vector<dbxJet>     >ljets_map;
        map<string, vector<dbxTruth>    >truth_map;
+       map<string, vector<dbxParticle> >combo_map;
        map<string, TVector2            >  met_map;
 
 
@@ -95,7 +97,7 @@ std::cout << "Begin Filling"<<std::endl;
                 alv.SetPtEtaPhiM( Muon_PT[i], Muon_Eta[i], Muon_Phi[i], (105.658/1E3) ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_Charge[i] );
-		adbxe->setPdgID(-13*Muon_Charge[i] );
+		adbxm->setPdgID(-13*Muon_Charge[i] );
                 adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
                 adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->setParticleIndx(i);
@@ -160,6 +162,7 @@ std::cout << "MET OK"<<std::endl;
 //------------ auxiliary information -------
         anevt.run_no=RunNumber;
         anevt.lumiblk_no=1;
+        anevt.user_evt_weight=1;
         anevt.top_hfor_type=0;
         anevt.event_no=Event_Number[0];
         anevt.TRG_e= 1;
@@ -187,9 +190,10 @@ std::cout << "Filling finished"<<std::endl;
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, met_map,  anevt};
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map,  anevt};
 
         aCtrl.RunTasks(a0);
 
