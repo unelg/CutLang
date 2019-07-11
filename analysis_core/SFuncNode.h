@@ -219,7 +219,6 @@ double uweight(AnalysisObjects* ao, string s, float value){
 	return 1;
 }
 
-
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
@@ -228,9 +227,9 @@ double count(AnalysisObjects* ao, string s, float id) {
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
-    map <string, std::vector<dbxPhoton>  >::iterator itp;
-    for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
-      DEBUG("\t #Ptypename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+    map <string, std::vector<dbxParticle>  >::iterator itp;
+    for (itp=ao->combos.begin();itp!=ao->combos.end();itp++){
+      DEBUG("\t #C typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
     }
 
     switch (pid) {
@@ -240,6 +239,7 @@ double count(AnalysisObjects* ao, string s, float id) {
      case jet_t:      return (ao->jets.at(s).size()); break;
      case ljet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
+     case combo_t:    return (ao->combos.at(s).size()); break;
      default:         return (-1); break;
     }
     return (-1);
