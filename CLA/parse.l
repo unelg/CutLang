@@ -99,8 +99,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
-"ascend" return ASCEND;
-"descend" return DESCEND;
+[Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
+[Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
