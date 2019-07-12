@@ -1,6 +1,7 @@
 #CLA ADL example4
 
 define Zreco : ELE[0] ELE[1]
+
 define leps = ELE + MUO
 
 object goodEle : ELE

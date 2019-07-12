@@ -9,12 +9,12 @@ object goodEle : ELE
 algo Dsorting
   select      ALL                   # to count all events
   select      Size(goodEle) >= 2 
-  select      SORT {goodEle_ }E descend
+  select Sort        {goodEle_ }E descend
   histo       h1d, "test electron E sorting Des", 100, 0, 1000, {goodEle_0}E 
-  select      SORT {goodEle_ }E ascend
+  select Sort        {goodEle_ }E ascend
   histo       h1a, "test electron E sorting Asc", 100, 0, 1000, {goodEle_0}E 
-  select      SORT {goodEle_ }Pz descend
+  select Sort        {goodEle_ }Pz descend
   histo       h2d, "test electron Pz sorting Des", 100, 0, 1000, {goodEle_0}Pz 
-  select      SORT {goodEle_ }Pz ascend
+  select Sort        {goodEle_ }Pz ascend
   histo       h2a, "test electron Pz sorting Asc", 100, 0, 1000, {goodEle_0}Pz 
 
