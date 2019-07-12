@@ -1556,6 +1556,9 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
+	   | SORT e ASCEND{Node* sort = new SortNode($2,"ascend");NodeCuts->insert(make_pair(++cutcount,sort));}
+	    
+	   | SORT e DESCEND{Node* sort =new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
 description : description HID {                                                 
                                                 char s [512];
@@ -1615,9 +1618,6 @@ condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
 //                                   }
            | e MAXIMIZE e { $$=new SearchNode(maxim,$1,$3,"!="); }
 
-	   | SORT e ASCEND{$$=new SortNode($2,"ascend");}
-	    
-  	   | SORT e DESCEND{$$=new SortNode($2,"descend");}
 		
            | e IRG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
