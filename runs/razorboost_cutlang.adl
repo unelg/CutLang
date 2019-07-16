@@ -1,15 +1,17 @@
-# arxiv:1710.11188, CMS SUSY stop (resolved and boosted)
+# arxiv:1812.06302, CMS SUSY razor
 
 #info analysis
 # Details about experiment
 #  experiment CMS
-#  id SUS-16-050
-#  publication Phys.Rev. D97 (2018) no.1, 012007 
+#  id SUS-16-017
+#  title Inclusive search for supersymmetry in pp collisions at sqrt(s)=13 TeV using razor 
+# variables and boosted object identification in zero and one lepton final states
+#  publication JHEP 1903 (2019) 031
 #  sqrtS 13.0
 #  lumi 35.9
-#  arXiv 1710.11188
-#  hepdata https://www.hepdata.net/record/ins1633588
-#  doi 10.1103/PhysRevD.97.012007
+#  arXiv 1812.06302
+#  hepdata 
+#  doi 10.1007/JHEP03(2019)031
 
 ### OBJECT SELECTIONS
 
