@@ -18,6 +18,98 @@ using namespace std;
 
 
 
+void SelectionSort(double* tempFuncVal,int* sortedIndex, int Max, string symbol)
+{
+
+	for(int i = 0; i<Max; i++)
+	{	
+		sortedIndex[i] = i;	
+	}
+        for(int i = 0; i<Max - 1; i++)
+        {
+            for(int j = i+1; j<Max; j++)
+            {
+	if(symbol == "ascend") //ascending sort
+                {
+                    if(tempFuncVal[i]>tempFuncVal[j])
+                    {
+                        swap(tempFuncVal[i],tempFuncVal[j]);
+                        swap(sortedIndex[i],sortedIndex[j]);
+                    }
+
+			
+                }
+                if(symbol == "descend") //descending sort
+                {
+                    if(tempFuncVal[i]<tempFuncVal[j])
+                    {
+                        swap(tempFuncVal[i],tempFuncVal[j]);
+                        swap(sortedIndex[i],sortedIndex[j]);
+                    }
+                }
+}}
+
+}
+ //quick sort ----------
+int partition (double *arr, int *sortedIndex, int start, int end, string symbol) //Auxilliary function for quick sort
+{
+    int pivot = arr[end]; // pivot
+    int i = (start - 1); // Index of smaller element
+
+    for (int j = start; j <= end - 1; j++)
+    {
+	if(symbol == "ascend"){
+        // If current element is smaller than or
+        // equal to pivot
+        if (arr[j] <= pivot)
+        {
+            i++; // increment index of smaller element
+            swap(arr[i], arr[j]);
+	    swap(sortedIndex[i],sortedIndex[j]);
+        }}
+
+	if(symbol == "descend"){
+        // If current element is smaller than or
+        // equal to pivot
+        if (arr[j] >= pivot)
+        {
+            i++; // increment index of smaller element
+            swap(arr[i], arr[j]);
+	    swap(sortedIndex[i],sortedIndex[j]);
+        }}
+    }
+    swap(arr[i + 1], arr[end]);
+    swap(sortedIndex[i + 1],sortedIndex[end]);
+    
+    return (i + 1);
+}
+
+
+void QuickSortAux(double* arr, int* sortedIndex,  int start, int end, string symbol) //Auxilliary function for quick sort
+{
+    if (start < end)
+    {
+        /* pi is partitioning index, arr[p] is now
+        at right place */
+        int pi = partition(arr, sortedIndex, start, end, symbol);
+        // Separately sort elements before
+        // partition and after partition
+        QuickSortAux(arr, sortedIndex, start, pi - 1, symbol);
+        QuickSortAux(arr, sortedIndex, pi + 1, end, symbol);
+    }
+}
+
+
+
+void QuickSort(double* tempFuncVal,int* sortedIndex, int Max, string symbol)
+{
+	for(int i = 0; i<Max; i++)
+	{	
+		sortedIndex[i] = i;	
+	}
+	QuickSortAux(tempFuncVal, sortedIndex, 0, Max - 1, symbol);
+	
+}
 
 SortNode::SortNode(Node* funcVal, std::string s)
 {
@@ -54,232 +146,135 @@ double SortNode::evaluate(AnalysisObjects* ao)
         break;
     case 4:
         Max=left->tagJets(ao,0,ac).size();
-        break;
 
 			case 8: Max=ao->gams[ac].size();break;
 			case 11: Max=ao->taus[ac].size();break;
 			case 20: Max=ao->combos[ac].size();break;
     }
     double tempFuncVal[Max]; //temporarily stores the function values for the selected type particles
-//    cout<<"N = "<<Max<<endl;
-//    cout<<"Before sorting : "<<endl;
+   //cout<<"N = "<<Max<<endl;
+    //cout<<"Before sorting : "<<endl;
     for (int i = 0; i < Max; i++)
     {
         particles.at(0)->index = i;
         tempFuncVal[i] = left->evaluate(ao);
-//        cout<<"FuncValue of ao->eles[ "<<particles.at(0)->collection<<" ].at("<<i<<") = "<<left->evaluate(ao)<<endl;
+      //  cout<<"FuncValue of ao->eles[ "<<particles.at(0)->collection<<" ].at("<<i<<") = "<<left->evaluate(ao)<<endl;
   }
-
-
+	
+	int sortedIndex[Max]; 
+	//SelectionSort(tempFuncVal,sortedIndex, Max, symbol);
+	QuickSort(tempFuncVal,sortedIndex, Max, symbol);
     switch(type)
     {
 	//sorting
     case 0: //muons
-        for(int i = 0; i<Max - 1; i++)
-        {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend") //ascending sort
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxMuon tempMuon = ao->muos[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->muos[ac].at(i) = ao->muos[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->muos[ac].at(j) = tempMuon;
-                    }
-                }
-                if(symbol == "descend") //descending sort
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxMuon tempMuon = ao->muos[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->muos[ac].at(i) = ao->muos[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->muos[ac].at(j) = tempMuon;
-                    }
-                }
-            }
+	{
+	vector<dbxMuon> tempMuon;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempMuon.push_back( ao->muos[ac].at(sortedIndex[i]) );
+	}
 
-        }
+	
+	for(int i = 0;i<Max;i++)
+        {
+		ao->muos[ac].at(i) = tempMuon.at(i);
+	}
+	break;
+	}
     case 1: //electrons
-        for(int i = 0; i<Max - 1; i++)
-        {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend")
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxElectron tempElec = ao->eles[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->eles[ac].at(i) = ao->eles[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->eles[ac].at(j) = tempElec;
-                    }
-                }
-                if(symbol == "descend")
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxElectron tempElec = ao->eles[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->eles[ac].at(i) = ao->eles[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->eles[ac].at(j) = tempElec;
-                    }
-                }
-            }
+	{vector<dbxElectron> tempElec;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempElec.push_back( ao->eles[ac].at(sortedIndex[i]) );
+	}
 
-        }
+	
+	for(int i = 0;i<Max;i++)
+        {
+		ao->eles[ac].at(i) = tempElec.at(i);
+	}
+
+        break;}
 
     case 2: //jets
-        for(int i = 0; i<Max - 1; i++)
+	{vector<dbxJet> tempJet;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempJet.push_back( ao->jets[ac].at(sortedIndex[i]) );
+	}
+
+	
+	for(int i = 0;i<Max;i++)
         {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend")
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxJet tempJet = ao->jets[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->jets[ac].at(i) = ao->jets[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->jets[ac].at(j) = tempJet;
-                    }
-                }
-                if(symbol == "descend")
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxJet tempJet = ao->jets[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->jets[ac].at(i) = ao->jets[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->jets[ac].at(j) = tempJet;
-                    }
-                }
-            }
+		ao->jets[ac].at(i) = tempJet.at(i);
+	}
+        
 
-        }
-
+        break;}
      case 8: //photons
-        for(int i = 0; i<Max - 1; i++)
-        {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend")
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxPhoton tempPho = ao->gams[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->gams[ac].at(i) = ao->gams[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->gams[ac].at(j) = tempPho;
-                    }
-                }
-                if(symbol == "descend")
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxPhoton tempPho = ao->gams[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->gams[ac].at(i) = ao->gams[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->gams[ac].at(j) = tempPho;
-                    }
-                }
-            }
+	{vector<dbxPhoton> tempPho;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempPho.push_back( ao->gams[ac].at(sortedIndex[i]) );
+	}
 
-        }
+	
+	for(int i = 0;i<Max;i++)
+        {
+		ao->gams[ac].at(i) = tempPho.at(i);
+	}
+
+        break;}
+        
 
      case 11: //Taus
-	for(int i = 0; i<Max - 1; i++)
-        {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend")
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxTau tempTau = ao->taus[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->taus[ac].at(i) = ao->taus[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->taus[ac].at(j) = tempTau;
-                    }
-                }
-                if(symbol == "descend")
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxTau tempTau = ao->taus[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->taus[ac].at(i) = ao->taus[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->taus[ac].at(j) = tempTau;
-                    }
-                }
-            }
+	{vector<dbxTau> tempTau;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempTau.push_back( ao->taus[ac].at(sortedIndex[i]) );
+	}
 
-        }
-    
+	
+	for(int i = 0;i<Max;i++)
+        {
+		ao->taus[ac].at(i) = tempTau.at(i);
+	}
+	
+
+        break;}
     case 20: //combos
-	 for(int i = 0; i<Max - 1; i++)
-        {
-            for(int j = i+1; j<Max; j++)
-            {
-                if(symbol == "ascend")
-                {
-                    if(tempFuncVal[i]>tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxParticle tempCombo = ao->combos[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->combos[ac].at(i) = ao->combos[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->combos[ac].at(j) = tempCombo;
-                    }
-                }
-                if(symbol == "descend")
-                {
-                    if(tempFuncVal[i]<tempFuncVal[j])
-                    {
-                        double temp = tempFuncVal[i];
-                        dbxParticle tempCombo = ao->combos[ac].at(i);
-                        tempFuncVal[i] = tempFuncVal[j];
-                        ao->combos[ac].at(i) = ao->combos[ac].at(j);;
-                        tempFuncVal[j] = temp;
-                        ao->combos[ac].at(j) = tempCombo;
-                    }
-                }
-            }
+	{vector<dbxParticle> tempCombo;
+	for(int i = 0; i < Max; i++)
+	{	
+		
+		tempCombo.push_back( ao->combos[ac].at(sortedIndex[i]) );
+	}
 
-        }
+	
+	for(int i = 0;i<Max;i++)
+        {
+		ao->combos[ac].at(i) = tempCombo.at(i);
+	}
+
+        break;}	
     }
 
-/*    cout<<"After sorting : "<<endl;
+ /* cout<<"After sorting : "<<endl;
     for (int i = 0; i < Max; i++)
     {
         particles.at(0)->index = i;
+        tempFuncVal[i] = left->evaluate(ao);
         cout<<"FuncValue of ao->eles[ "<<particles.at(0)->collection<<" ].at("<<i<<") = "<<left->evaluate(ao)<<endl;
     }
-    cout<<endl;
-*/
+    cout<<endl;*/
+ 
+
 }
 void SortNode::Reset() {}
 
