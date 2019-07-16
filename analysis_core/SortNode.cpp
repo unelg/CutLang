@@ -274,7 +274,7 @@ double SortNode::evaluate(AnalysisObjects* ao)
     }
     cout<<endl;*/
  
-
+ return 1;
 }
 void SortNode::Reset() {}
 
