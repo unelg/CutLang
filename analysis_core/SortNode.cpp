@@ -132,34 +132,22 @@ double SortNode::evaluate(AnalysisObjects* ao)
     int Max; //Total number of particles of the selected type
     switch(type) //assuming all particles have the same type
     {
-    case 0:
-        Max=ao->muos[ac].size();
-        break;
-    case 1:
-        Max=ao->eles[ac].size();
-        break;
-    case 2:
-        Max=ao->jets[ac].size();
-        break;
-    case 3:
-        Max=left->tagJets(ao,1,ac).size();
-        break;
-    case 4:
-        Max=left->tagJets(ao,0,ac).size();
-
-			case 8: Max=ao->gams[ac].size();break;
-			case 11: Max=ao->taus[ac].size();break;
-			case 20: Max=ao->combos[ac].size();break;
+       case 0: Max=ao->muos[ac].size(); break;
+       case 1: Max=ao->eles[ac].size(); break;
+       case 2: Max=ao->jets[ac].size(); break;
+       case 3: Max=left->tagJets(ao,1,ac).size(); break;
+       case 4: Max=left->tagJets(ao,0,ac).size(); break;
+       case 8: Max=ao->gams[ac].size();break;
+      case 11: Max=ao->taus[ac].size();break;
+      case 20: Max=ao->combos[ac].size();break;
     }
     double tempFuncVal[Max]; //temporarily stores the function values for the selected type particles
    //cout<<"N = "<<Max<<endl;
-    //cout<<"Before sorting : "<<endl;
-    for (int i = 0; i < Max; i++)
-    {
+    for (int i = 0; i < Max; i++) {
         particles.at(0)->index = i;
         tempFuncVal[i] = left->evaluate(ao);
       //  cout<<"FuncValue of ao->eles[ "<<particles.at(0)->collection<<" ].at("<<i<<") = "<<left->evaluate(ao)<<endl;
-  }
+     }
 	
 	int sortedIndex[Max]; 
 	//SelectionSort(tempFuncVal,sortedIndex, Max, symbol);
@@ -168,101 +156,62 @@ double SortNode::evaluate(AnalysisObjects* ao)
     {
 	//sorting
     case 0: //muons
-	{
 	vector<dbxMuon> tempMuon;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	for(int i = 0; i<Max; i++) {	
 		tempMuon.push_back( ao->muos[ac].at(sortedIndex[i]) );
 	}
-
-	
-	for(int i = 0;i<Max;i++)
-        {
+	for(int i = 0;i<Max; i++) {
 		ao->muos[ac].at(i) = tempMuon.at(i);
 	}
 	break;
-	}
     case 1: //electrons
-	{vector<dbxElectron> tempElec;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	vector<dbxElectron> tempElec;
+	for(int i = 0; i < Max; i++) {	
 		tempElec.push_back( ao->eles[ac].at(sortedIndex[i]) );
 	}
-
-	
-	for(int i = 0;i<Max;i++)
-        {
+	for(int i = 0;i<Max;i++) {
 		ao->eles[ac].at(i) = tempElec.at(i);
 	}
-
-        break;}
+        break;
 
     case 2: //jets
-	{vector<dbxJet> tempJet;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	vector<dbxJet> tempJet;
+	for(int i = 0; i < Max; i++) {	
 		tempJet.push_back( ao->jets[ac].at(sortedIndex[i]) );
 	}
-
-	
-	for(int i = 0;i<Max;i++)
-        {
+	for(int i = 0;i<Max;i++) {
 		ao->jets[ac].at(i) = tempJet.at(i);
 	}
-        
-
-        break;}
+        break;
      case 8: //photons
-	{vector<dbxPhoton> tempPho;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	vector<dbxPhoton> tempPho;
+	for(int i = 0; i < Max; i++) {	
 		tempPho.push_back( ao->gams[ac].at(sortedIndex[i]) );
 	}
-
-	
-	for(int i = 0;i<Max;i++)
-        {
+	for(int i = 0;i<Max;i++) {
 		ao->gams[ac].at(i) = tempPho.at(i);
 	}
-
-        break;}
-        
-
+        break;
      case 11: //Taus
-	{vector<dbxTau> tempTau;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	vector<dbxTau> tempTau;
+	for(int i = 0; i < Max; i++) {	
 		tempTau.push_back( ao->taus[ac].at(sortedIndex[i]) );
 	}
-
-	
-	for(int i = 0;i<Max;i++)
-        {
+	for(int i = 0;i<Max;i++) {
 		ao->taus[ac].at(i) = tempTau.at(i);
 	}
-	
-
-        break;}
+        break;
     case 20: //combos
-	{vector<dbxParticle> tempCombo;
-	for(int i = 0; i < Max; i++)
-	{	
-		
+	vector<dbxParticle> tempCombo;
+	for(int i = 0; i < Max; i++) {	
 		tempCombo.push_back( ao->combos[ac].at(sortedIndex[i]) );
 	}
-
-	
 	for(int i = 0;i<Max;i++)
         {
 		ao->combos[ac].at(i) = tempCombo.at(i);
 	}
 
-        break;}	
+        break;
     }
 
  /* cout<<"After sorting : "<<endl;
