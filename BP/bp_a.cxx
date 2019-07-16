@@ -45,7 +45,7 @@ int BPdbxA:: readAnalysisParams() {
     string tempS1, tempS2;
     string subdelimiter = " ";
     string hashdelimiter = "#";
-    size_t found, foundp, foundr, foundw;
+    size_t found, foundp, foundr, foundw, founds;
     bool foundInFile(false);
     TString DefList2file="\n";
     TString CutList2file="\n";
@@ -111,10 +111,11 @@ int BPdbxA:: readAnalysisParams() {
 
 //---------cmds
         found=tempLine.find("cmd ")  ;
+       founds=tempLine.find("Sort ")  ;
        foundw=tempLine.find("weight ")  ;
        foundp=tempLine.find("select ")  ;
        foundr=tempLine.find("reject ")  ;
-       if ((found!=std::string::npos) ||(foundp!=std::string::npos) || (foundr!=std::string::npos) || (foundw!=std::string::npos)) {
+       if ((found!=std::string::npos) ||(foundp!=std::string::npos) || (foundr!=std::string::npos) || (foundw!=std::string::npos) || (founds!=std::string::npos) ) {
            if (algorithmnow) {
               CutList2file+=tempLine;
               CutList2file+="\n";
@@ -122,6 +123,7 @@ int BPdbxA:: readAnalysisParams() {
               if       (found!=std::string::npos) { tempS1 = tempLine.substr(found +4, apos); }
               else if (foundw!=std::string::npos) { tempS1 = tempLine.substr(foundw+7, apos); }
               else if (foundp!=std::string::npos) { tempS1 = tempLine.substr(foundp+7, apos); }
+              else if (founds!=std::string::npos) { tempS1 = tempLine.substr(founds  , apos); }
               else                                { tempS1 = tempLine.substr(foundr+7, apos); tempS1="reject "+tempS1; }
               tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
               effCL.push_back(tempS1);
