@@ -1556,6 +1556,139 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
+
+// Nant was here
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
+					map<string, Node *>::iterator it1 ;
+					map<string, Node *>::iterator it2 ;
+//                                        DEBUG( "\nID:"<< $18 <<"\n");
+                                        it1 = NodeVars->find($18);
+					it2 = NodeVars->find($20);
+                        
+                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
+                                                Node* child1=it1->second;
+						Node* child2=it2->second;
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child1<<" @"<<child2<<"\n" );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+                                        else {
+						DEBUG($18 <<"or" << $20 <<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' ID {
+					map<string, Node *>::iterator it1 ;
+					map<string, Node *>::iterator it2 ;
+//                                        DEBUG( "\nID:"<< $18 <<"\n");
+                                        it1 = NodeVars->find($18);
+					it2 = NodeVars->find($20);
+                        
+                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
+                                                Node* child1=it1->second;
+						Node* child2=it2->second;
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child1<<" @"<<child2<<"\n" );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+                                        else {
+						DEBUG($18 <<"or" << $20 <<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' function {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+//                                        DEBUG( "\nID:"<< $18 <<"\n");
+                                        it = NodeVars->find($18);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($18<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child<< $20"\n" );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' function {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+//                                        DEBUG( "\nID:"<< $18 <<"\n");
+                                        it = NodeVars->find($18);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($18<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child<< $20"\n" );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' ID {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+//                                        DEBUG( "\nID:"<< $20 <<"\n");
+                                        it = NodeVars->find($20);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($20<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<<$18<<" @"<<child<<"\n"  );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' ID {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+//                                        DEBUG( "\nID:"<< $20 <<"\n");
+                                        it = NodeVars->find($20);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($20<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<<$18<<" @"<<child<<"\n"  );
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' function {
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< $18 << $20);
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
+        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' function{
+//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< $18 << $20);
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
+// Nant was here
+
 	   | SORT e ASCEND{Node* sort = new SortNode($2,"ascend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	    
 	   | SORT e DESCEND{Node* sort =new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
