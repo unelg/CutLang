@@ -32,6 +32,11 @@ class DBXNtuple: public TObject {
         vector<dbxElectron> nt_eles;
         vector<dbxMuon>     nt_muos;
         vector<dbxJet>      nt_jets;
+	    vector<dbxTau>	    nt_taus;
+	    vector<dbxJet>      nt_ljets;
+	    vector<dbxPhoton>   nt_photons;
+        vector<dbxParticle> nt_combos;
+	    vector<dbxTruth>    nt_truth;
         vector<double>      nt_uncs;
         vector<TVector2>    nt_sys_met;
         TVector2            nt_met;
