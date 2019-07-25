@@ -15,6 +15,10 @@
 #include "dbx_electron.h"
 #include "dbx_muon.h"
 #include "dbx_jet.h"
+#include "dbx_tau.h"
+#include "dbx_photon.h"
+#include "dbx_truth.h"
+#include "dbxParticle.h"
 
 
 using namespace std;
@@ -27,16 +31,21 @@ class DBXNtuple: public TObject {
         int nEle;
         int nMuo;
         int nJet;
+	int nLJet;
+	int nPhoton;
+	int nTau;
+	int nTruth;
+	int nCombo;
         void  Clean( );
 
         vector<dbxElectron> nt_eles;
         vector<dbxMuon>     nt_muos;
         vector<dbxJet>      nt_jets;
-	    vector<dbxTau>	    nt_taus;
-	    vector<dbxJet>      nt_ljets;
-	    vector<dbxPhoton>   nt_photons;
+	vector<dbxTau>	    nt_taus;
+	vector<dbxJet>      nt_ljets;
+	vector<dbxPhoton>   nt_photons;
         vector<dbxParticle> nt_combos;
-	    vector<dbxTruth>    nt_truth;
+	vector<dbxTruth>    nt_truth;
         vector<double>      nt_uncs;
         vector<TVector2>    nt_sys_met;
         TVector2            nt_met;
