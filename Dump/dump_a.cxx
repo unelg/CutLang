@@ -85,9 +85,12 @@ int DumpdbxA::makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_ma
   vector<dbxElectron> electrons= ao.eles.begin()->second;
   vector <dbxPhoton>    photons= ao.gams.begin()->second;
   vector<dbxJet>           jets= ao.jets.begin()->second;
+  vector<dbxJet>          ljets= ao.ljets.begin()->second;
+  vector<dbxTau>           taus= ao.taus.begin()->second;
+  vector<dbxTruth>        truth= ao.truth.begin()->second;
+  vector<dbxParticle>    combos= ao.combos.begin()->second;
   TVector2 met = ao.met.begin()->second;
   evt_data anevt = ao.evt;
-
 //      here we save the DBXNTuple
 ntsave->Clean();
 ntsave->nEle=electrons.size();
@@ -108,6 +111,32 @@ ntsave->nJet=jets.size();
                  TLorentzVector jet4p = jets.at(i).lv();
 //                 std::cout<<"J Pt = " << jet4p.Pt() << " eta = " << jet4p.Eta() << " phi = " << jet4p.Phi() << std::endl;
          }
+	 ntsave->nPhoton=photons.size();
+	 for ( int i=0; i<(int)photons.size(); i++) {
+ 		ntsave->nt_photons.push_back(photons.at(i) );
+                TLorentzVector photon4p=photons.at(i).lv();
+         }
+	 ntsave->nLJet=ljets.size();
+	 for ( int i=0; i<(int)ljets.size(); i++) {
+ 		ntsave->nt_ljets.push_back(ljets.at(i) );
+                TLorentzVector ljet4p=ljets.at(i).lv();
+         }
+	 ntsave->nTau=taus.size();
+	 for ( int i=0; i<(int)taus.size(); i++) {
+ 		ntsave->nt_taus.push_back(taus.at(i) );
+                TLorentzVector tau4p=taus.at(i).lv();
+         }
+	 ntsave->nTruth=truth.size();
+	 for ( int i=0; i<(int)truth.size(); i++) {
+ 		ntsave->nt_truth.push_back(truth.at(i) );
+                TLorentzVector truth4p=truth.at(i).lv();
+         }
+	 ntsave->nCombo=combos.size();
+	 for ( int i=0; i<(int)combos.size(); i++) {
+ 		ntsave->nt_combos.push_back(combos.at(i) );
+                TLorentzVector combo4p=combos.at(i).lv();
+         }
+
 	 for ( int i=0; i<(int)uncs.size(); i++) {
 		 ntsave->nt_uncs.push_back(uncs.at(i) );
          }
@@ -124,7 +153,12 @@ ntsave->nt_evt=anevt;
 ntsave->nt_muos.resize    ( muons.size()              );
 ntsave->nt_eles.resize    ( electrons.size()          );
 ntsave->nt_jets.resize    ( jets.size()               );
-ntsave->nt_uncs.resize    ( uncs.size()               );
+ ntsave->nt_ljets.resize  ( ljets.size()              );
+ ntsave->nt_photons.resize ( photons.size()           );
+ ntsave->nt_taus.resize    ( taus.size()              );
+ ntsave->nt_truth.resize   ( truth.size()             );
+ ntsave->nt_combos.resize  ( combos.size()            );
+ntsave->nt_uncs.resize     ( uncs.size()              );
 
 ttsave->Fill();
 
@@ -137,7 +171,7 @@ ttsave->Fill();
 
   eff->GetXaxis()->SetBinLabel(cur_cut,"all");
   eff->Fill(cur_cut, anevt.mcevt_weight);
-  cur_cut++;
+  cur_cut++;	
 
 
 // force no GRL for MC events
