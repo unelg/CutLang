@@ -44,6 +44,7 @@ typedef struct evt_data
 		badjet       =right.badjet;
 		top_hfor_type=right.top_hfor_type;
 		mcevt_weight =right.mcevt_weight;
+		user_evt_weight =right.user_evt_weight;
 		isemuoverlap =right.isemuoverlap;
 		vxp_maxtrk_no=right.vxp_maxtrk_no;
 		vxpType      =right.vxpType;

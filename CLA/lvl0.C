@@ -32,7 +32,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    }
 
    int verboseFreq(aselect.verbfreq);
-   evt_data anevt;
    int extra_analysis_count=1;
    int prev_RunNumber=-1;
     
@@ -107,7 +106,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        std::vector<double> scale_mus_msup, scale_mus_mslow, scale_mus_idup, scale_mus_idlow;
        std::vector<double> scale_mus_sfup, scale_mus_sflow, scale_ele_rescaleup, scale_ele_rescalelow;
        std::vector<double> scale_ele_sfup, scale_ele_sflow;
-       evt_data anevtlarup, anevtlardown;
        bool is_mc=true;
        TVector2 met;
        TVector2 met_jesp, met_jesn, met_jerp, met_jern, met_jespileupp, met_jespileupn, met_jesbjetp, met_jesbjetn;//Jets
@@ -132,16 +130,15 @@ void lvl0::Loop(analy_struct aselect, char *extname)
      cout << "#J:"<< event->nJet << " ==?" << " #J:"<< event->nt_jets.size() <<endl;
      cout << "#Run:"<< event->nt_evt.run_no<<endl;
      cout << "#Evt:"<< event->nt_evt.event_no<<endl;
+     cout << "#Evt W:"<< event->nt_evt.user_evt_weight<<endl;
      cout << "METsize:"<<event->nt_sys_met.size() << endl;
      for (unsigned int jk=0; jk<event->nt_sys_met.size(); jk++) {
         cout << (event->nt_sys_met.at(jk)).Mod() << "  " << (event->nt_sys_met.at(jk)).Phi() << endl;
      }
     }
 
-// empty vectors
-    evt_data ev0; 
-
 // analysis using info from lvl0 file
+    evt_data ev0; 
     muons=event->nt_muos; 
     electrons=event->nt_eles; 
     jets=event->nt_jets; 
@@ -150,6 +147,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 // take a copy of the event info
    ev0=event->nt_evt;
 /*
+   cout << "Ev0 UW:"<<ev0.user_evt_weight<< endl;
    cout << "Ev0:"<<ev0.weight_mc<< " "<<ev0.weight_pileup<<" "<<ev0.weight_jvt<< endl;
    cout << event->nt_evt.weight_bTagSF_77_eigenvars_B_up.size();
    cout << "~~~~~~~~~~~\n";
@@ -266,7 +264,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map,  anevt};
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map,  ev0};
         aCtrl.RunTasks(a0);
 
    } // end of event loop
