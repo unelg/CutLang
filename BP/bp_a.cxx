@@ -299,21 +299,13 @@ int BPdbxA:: bookAdditionalHistos() {
 
 /////////////////////////
 int BPdbxA::makeAnalysis( AnalysisObjects ao ){
-  vector<dbxMuon>        muons = ao.muos.begin()->second;
-  vector<dbxElectron> electrons= ao.eles.begin()->second; 
-  vector <dbxPhoton>    photons= ao.gams.begin()->second;
-  vector<dbxJet>           jets= ao.jets.begin()->second;
-  TVector2 met = ao.met.begin()->second;
-  evt_data anevt = ao.evt;
 
-  int retval=0;
+  evt_data anevt = ao.evt;
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
   double theLeptonWeight = 1;
   double theFourJetWeight = 1;
-  unsigned int njets;
   double evt_weight = ao.evt.user_evt_weight;  
-//double evt_weight = 1;
   if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
