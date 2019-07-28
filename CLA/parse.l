@@ -36,12 +36,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "maxmet" return MAXMET;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-"btag_lowthreshold_LVL0" return LVLO;
-"btag_lowthreshold_ATLASOD" return ATLASOD;
-"btag_lowthreshold_CMSOD" return CMSOD;
-"btag_lowthreshold_DELPHES" return DELPHES;
-"btag_lowthreshold_FCC" return FCC;
-"btag_lowthreshold_LHCO" return LHCO;
 "ELE"|"ELECTRON" return ELE;//particles
 "MUO"|"MUON"|"Muon" return MUO;
 "Tau"|"TAU" return TAU;
@@ -50,10 +44,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "FJET"|"FatJet" return FJET;
 [Gg][Ee][Nn] return GEN;
 "LEP" return LEP;
-"btag" return BTAG;
 "PDGID" return PDGID;
-"weight" return WEIGHT;
-"btagDeepB" | "btag" return DEEPB;
+"btagDeepB" return DEEPB;
+[bB][tT][aA][gG] return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;
