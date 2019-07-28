@@ -9,6 +9,18 @@ object goodEle : ELE
   select abs({ELE}Eta)   <   2.4
   select     {ELE}AbsEta ][  1.442 1.556
 
+object BiJET : JET
+  select Pt(JET) > 10
+
+object myMu : MUO 
+  select Pt(MUO) > 10
+
+object myPho : PHO
+  select Pt(PHO) > 10
+
+object myTau : TAU 
+  select Pt(TAU) > 10
+
 define goodZreco : goodEle[0] goodEle[1]
 
 region   test
