@@ -53,13 +53,13 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::vector<double>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
-%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
+%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID
+%token RELISO TAUISO DXY DZ SOFTID BTAG
 %token FMEGAJETS FMR FMTR FMT // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 

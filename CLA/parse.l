@@ -48,10 +48,12 @@ vardef {varname}" "?":"" "?.*"\n"
 "PHO"|"PHOTON" return PHO;
 "JET"|"Jet" return JET;
 "FJET"|"FatJet" return FJET;
+[Gg][Ee][Nn] return GEN;
 "LEP" return LEP;
+"btag" return BTAG;
 "PDGID" return PDGID;
 "weight" return WEIGHT;
-"btagDeepB" return DEEPB;
+"btagDeepB" | "btag" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;

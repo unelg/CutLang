@@ -144,7 +144,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setCharge(-99);
                 adbxj->setParticleIndx(i);
                 adbxj->setFlavor(Jet_Flavor[i] );
-                adbxj->set_isbtagged_77( (Jet_Flavor[i]==5) ); // 5 is btag
+                adbxj->set_isbtagged_77( Jet_BTag[i] ); //  btag
         //        adbxj->setJVtxf(Jet_Ntrk[i] );
                 jets.push_back(*adbxj);
                 delete adbxj;
