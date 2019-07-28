@@ -1,4 +1,4 @@
- #include "FuncNode.h"
+#include "FuncNode.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -52,20 +52,20 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
-                                                        DEBUG("TAU:"<<(*i)->index<<"  ");
+                                                        DEBUG("TAU:"<<ai<<"  ");
                                                         break;
-                                            	case 2: DEBUG("jet:"<<(*i)->index<<" ");
+                                            	case 2: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
                                                         inputPart->setFlavor( ao->jets[ac].at(ai).Flavor()   );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
-///                                             case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1)[ (*i)->index ].lv() ); // 3 is a b jet
-///                                                     DEBUG("b-jet:"<<(*i)->index<<"  ");
-///                                                     break;
-///                                             case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0)[ (*i)->index ].lv()); // 4 is light jet
-///                                                     DEBUG("qgjet:"<<(*i)->index<<" ");
-///                                                     break;
+                                                case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1, ac)[ ai ].lv() ); // 3 is a b jet
+                                                        DEBUG("b-jet:"<<ai<<"  ");
+                                                        break;
+                                                case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0, ac)[ ai ].lv()); // 4 is light jet
+                                                        DEBUG("qgjet:"<<ai<<" ");
+                                                        break;
 /// --------------------------------------------std::map<std::string, TVector2                 > met;
                                                 case 5: v_eta=ao->muos[ac].at(ai).lv().Eta();
                                                         ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);

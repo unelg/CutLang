@@ -646,24 +646,14 @@ function : '{' particules '}' 'm' {
                                            }
                                        }
                            }
-        | NUMOF '(' ELE ')' {       
-                                           $$=new SFuncNode(count, 1, "ELE");
-                            }
-        | NUMOF '(' MUO ')' {       
-                                           $$=new SFuncNode(count, 0, "MUO");
-                            }
-        | NUMOF '(' TAU ')' {       
-                                           $$=new SFuncNode(count, 11, "TAU");
-                            }
-        | NUMOF '(' JET ')' {       
-                                           $$=new SFuncNode(count, 2, "JET");
-                            }
-        | NUMOF '(' FJET ')' {       
-                                           $$=new SFuncNode(count, 9, "FJET");
-                            }
-        | NUMOF '(' PHO ')' {       
-                                           $$=new SFuncNode(count, 8, "PHO");
-                            }
+        | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
+        | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
+        | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
+        | NUMOF '(' JET ')'  {       $$=new SFuncNode(count, 2, "JET");  }
+        | NUMOF '(' BJET ')' {       $$=new SFuncNode(count, 3, "JET");  }
+        | NUMOF '(' QGJET ')' {      $$=new SFuncNode(count, 4, "JET");  }
+        | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
+        | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
 //------------------------------------------
       | FMEGAJETS '(' ID ')' {
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);

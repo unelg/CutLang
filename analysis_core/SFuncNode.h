@@ -232,12 +232,15 @@ double count(AnalysisObjects* ao, string s, float id) {
       DEBUG("\t #C typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
     }
 
+    ValueNode abc=ValueNode();
     switch (pid) {
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
      case tau_t:      return (ao->taus.at(s).size()); break;
      case jet_t:      return (ao->jets.at(s).size()); break;
-     case ljet_t:     return (ao->ljets.at(s).size()); break;
+     case bjet_t:     return ( (abc.tagJets(ao, 1, s) ).size()); break;
+     case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
+     case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      case combo_t:    return (ao->combos.at(s).size()); break;
      default:         return (-1); break;

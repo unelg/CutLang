@@ -45,7 +45,7 @@ enum particleType{
  electronlikeV_t=6,
  pureV_t=7,
  photon_t=8,
- ljet_t=9,
+ fjet_t=9,
  truth_t=10,
  tau_t=11,
  combo_t=20
