@@ -1,4 +1,5 @@
 %error-verbose
+//%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -23,7 +24,7 @@ extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
                 vector<double>* Initializations , vector<double>* DataFormats
-                ,const char *s) { std::cerr << "Error: " << s << std::endl << "line: " << yylineno <<  std::endl; } 
+                ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
@@ -45,6 +46,9 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
           int integer;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
+//%define parse.lac full
+//%define parse.error verbose
+
 %parse-param {std::list<std::string> *parts}
 %parse-param {std::map<std::string,Node*>* NodeVars}
 %parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
@@ -866,7 +870,6 @@ particule : ELE '_' index {
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);
                         }
-
         | TAU '[' index ']' {   
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -884,6 +887,16 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 a->collection = "TAU";
                                 TmpParticle.push_back(a);  
+                        }
+       | TAU            {      
+                                DEBUG("all tau particules \t");
+                                tmp="tau_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 11;
+                                a->index = 6213;
+                                a->collection = "TAU";
+                                TmpParticle.push_back(a);
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -925,6 +938,16 @@ particule : ELE '_' index {
                                 a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
+       | PHO            {      
+                                DEBUG("all PHO particules \t");
+                                tmp="pho_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 8;
+                                a->index = 6213;
+                                a->collection = "PHO";
+                                TmpParticle.push_back(a);
+                        }
         | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -940,6 +963,16 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 a->collection = "JET";
                                 TmpParticle.push_back(a);  
+                        }
+       | JET            {      
+                                DEBUG("all jet particules \t");
+                                tmp="jet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 2;
+                                a->index = 6213;
+                                a->collection = "JET";
+                                TmpParticle.push_back(a);
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -968,6 +1001,16 @@ particule : ELE '_' index {
                                 a->type = 9;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
+                        }
+       | FJET           {      
+                                DEBUG("all Fjet particules \t");
+                                tmp="fjet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 9;
+                                a->index = 6213;
+                                a->collection = "FJET";
+                                TmpParticle.push_back(a);
                         }
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -1444,6 +1487,10 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                      }
+         | OBJ BJET ':' JET criteria {
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
+                                       YYERROR;//stops parsing if variable not found
                                       }
          | OBJ ID ':' JET criteria {
                                         DEBUG(" "<<$2<<" is a new JetSet\n");
