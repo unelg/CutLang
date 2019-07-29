@@ -64,7 +64,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID BTAG
-%token FMEGAJETS FMR FMTR FMT // RAZOR external functions
+%token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
 %token ASCEND DESCEND
@@ -711,6 +711,14 @@ function : '{' particules '}' 'm' {
                                          $$=new SFuncNode(userfuncD, fMTR2, type, $3 , it2->second,  it->second);
                                      }
                        }
+        | FMTAUTAU list { 
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        int type=newList[0]->type; // type is JETS or FJETS etc..
+                                        $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList,  newList1);
+                        }
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");
              }
@@ -1068,6 +1076,16 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="ele_"+to_string((int)$3);
@@ -1154,6 +1172,17 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="jet_"+to_string((int)$3);
