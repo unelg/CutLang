@@ -25,15 +25,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "take"|"using" return TAKE;
 "histo" return HISTO;
 "weight" return WEIGHT;
-"minptm" return MINPTM;
-"minptg" return MINPTG;
-"minptj" return MINPTJ;
-"minpte" return MINPTE;
-"maxetam" return MAXETAM;
-"maxetae" return MAXETAE;
-"maxetag" return MAXETAG;
-"maxetaj" return MAXETAJ;
-"maxmet" return MAXMET;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 "ELE"|"ELECTRON" return ELE;//particles
@@ -95,6 +86,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
 [tT][aA][nN] return TAN;
