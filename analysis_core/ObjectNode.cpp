@@ -710,9 +710,9 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
     }// end of cutIterator
    DEBUG("TAUS created\n");
 }
+//------------------------
 void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-    DEBUG("Creating new COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
-
+   DEBUG("Creating new COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
 
    vector<dbxParticle>  combination;
    dbxParticle *adbxp;
@@ -730,7 +730,13 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
        collectionName=particles->at(jj)->collection;
 
        switch(particles->at(jj)->type){
-                    case 0: ipart_max=(ao->muos)[collectionName].size();
+                    case 0: 
+                            if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
+                               cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->muos)[collectionName].size();
                             for (int ipart=0; ipart<ipart_max; ipart++){
                                 alv=(ao->muos)[collectionName].at(ipart).lv();
                                 adbxp= new dbxParticle(alv);
@@ -739,7 +745,13 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 delete adbxp;
                             }
                             break;
-                    case 1: ipart_max=(ao->eles)[collectionName].size();
+                    case 1: 
+                            if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->eles)[collectionName].size();
                             for (int ipart=0; ipart<ipart_max; ipart++){
                                 alv=(ao->eles)[collectionName].at(ipart).lv();
                                 adbxp= new dbxParticle(alv);

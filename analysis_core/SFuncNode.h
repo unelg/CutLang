@@ -289,14 +289,15 @@ double uweight(AnalysisObjects* ao, string s, float value){
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
-    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #P types:"<<ao->gams.size()<<"\n");
+    //DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #P types:"<<ao->gams.size()<<"\n");
+    cout<<"STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #Combo types:"<<ao->combos.size()<<"\n";
     map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
     map <string, std::vector<dbxParticle>  >::iterator itp;
     for (itp=ao->combos.begin();itp!=ao->combos.end();itp++){
-      DEBUG("\t #C typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n");
+      cout<<"\t #C typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n";
     }
 
     ValueNode abc=ValueNode();
