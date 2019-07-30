@@ -212,13 +212,14 @@ virtual double evaluate(AnalysisObjects* ao) override {
                    case 1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  aPart->setTlv(  aPart->lv()+ao->taus[ac].at(ai).lv() );   break;
                    case 2:  aPart->setTlv(  aPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                  case 20:  aPart->setTlv(  aPart->lv()+ao->combos[ac].at(ai).lv() ); break;
                    case 9:  aPart->setTlv(  aPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
                    case 8:  aPart->setTlv(  aPart->lv()+ao->gams[ac].at(ai).lv() );   break;
                    case 7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                             aPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
                             break;
-                   default: std::cout<<"No such object! ERROR\n";
+                   default: std::cout<<"SFN No such object! ERROR\n";
                             break;
 
                } // end of switch
@@ -242,13 +243,14 @@ virtual double evaluate(AnalysisObjects* ao) override {
                    case 1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
                    case 2:  bPart->setTlv(  bPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                  case 20:  aPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
                    case 9:  bPart->setTlv(  bPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
                    case 8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
                    case 7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                             bPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
                             break;
-                   default: std::cout<<"No such object! ERROR\n";
+                   default: std::cout<<"SFN No such object! ERROR\n";
                             break;
 
                } // end of switch

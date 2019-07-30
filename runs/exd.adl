@@ -14,9 +14,9 @@ object leps : ELE + MUO                 #just one particle after other
 define Zreco1 : ELE[-1] + ELE[-1]
 region   test
   select      ALL              # to count all events
-  select      Size (goodEle)  >= 0  # events with 2 or more electrons 
-  select      Size (GMUO)  >= 0  # events with 2 or more electrons 
-  select      Size(gleps) >= 0  # events with 2 or more leptons 
-  select      Size(ELE)  >= 1  # events with 2 or more electrons 
+  select      Size (goodEle)  >= 1  # events with 2 or more electrons 
+  select      Size (GMUO)  >= 1  # events with 2 or more electrons 
+  select      Size(gleps) >= 3  # events with 2 or more leptons 
+  select      Size(ELE)  >= 2  # events with 2 or more electrons 
   weight       mcw      1.1
 #  select      {ELE_0 ELE_1 }q == 0   # Z is neutral
