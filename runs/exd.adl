@@ -20,3 +20,4 @@ region   test
   select      Size(ELE)  >= 2  # events with 2 or more electrons 
   weight       mcw      1.1
 #  select      {ELE_0 ELE_1 }q == 0   # Z is neutral
+  save    saveobjs.root

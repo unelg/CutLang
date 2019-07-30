@@ -19,6 +19,7 @@ class BPdbxA : public dbxA {
          //grl_cut=false;
          }
 
+      int getInputs();
       int initGRL();
       int readAnalysisParams();
       int plotVariables(int sel);

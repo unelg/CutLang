@@ -272,9 +272,11 @@ public:
 	double SFIsoUncertaintyDown() { return p_isouncertaintydown ; }
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
+        void   addToCollection( std::string v) { p_collections.push_back(v);}
 
 private:
         std::vector<double> p_attribute;
+        std::vector<std::string> p_collections;
 	int p_charge;
 	int p_pdgID;
 	double p_et_cone;

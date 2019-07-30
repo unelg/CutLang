@@ -6,6 +6,10 @@
 #include "analysis_core.h"
 #include "dbx_a.h"
 
+#include "DBXNtuple.h"
+#include "TFile.h"
+#include "TTree.h"
+
 //#define __SEZEN__
 //#define _CLV_
 
@@ -19,6 +23,16 @@ extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,ve
 
 extern FILE* yyin;
 extern int cutcount;
+
+
+int BPdbxA:: getInputs() {
+        int retval=0;
+        ntsave = new DBXNtuple();
+        ftsave = new TFile ("lvl0.root","RECREATE"); // il faut changer le nom du fichier
+        ttsave = new TTree ("nt_tree", "saving data on the grid");
+        ttsave->Branch("dbxAsave", ntsave);
+        return retval;
+}
 
 int BPdbxA::plotVariables(int sel) {
  return 0;  
@@ -261,6 +275,9 @@ int BPdbxA:: readAnalysisParams() {
 
 #endif
 
+// il faut verifier si l'utilisateur veut savegarder les events  
+     getInputs(); // verifier si la commande est bon ou pas
+
   return retval;
 }
 
@@ -341,5 +358,47 @@ if (d==0) return iter->first;         // quits the event.
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
+
+// les cuts sont finis ici.
+//      here we save the DBXNTuple
+         ntsave->Clean();
+//particles
+  vector<dbxMuon>        muons = ao.muos.begin()->second;
+  vector<dbxElectron> electrons= ao.eles.begin()->second;
+  vector <dbxPhoton>    photons= ao.gams.begin()->second;
+  vector<dbxJet>           jets= ao.jets.begin()->second;
+  vector<dbxJet>          ljets= ao.ljets.begin()->second;
+  vector<dbxTau>           taus= ao.taus.begin()->second;
+  vector<dbxTruth>        truth= ao.truth.begin()->second;
+  vector<dbxParticle>    combos= ao.combos.begin()->second;
+//-----------------------------------------
+
+/*
+// Electrons
+         ntsave->nEle=electrons.size();
+         for ( int i=0; i<(int)electrons.size(); i++) {
+                ntsave->nt_eles.push_back(electrons.at(i) );
+                TLorentzVector ele4p=electrons.at(i).lv();
+         }
+// JETS, MUONS TAUs as before
+
+
+
+ ntsave->nt_met=met;
+ ntsave->nt_evt=anevt;
+
+ ntsave->nt_muos.resize    ( muons.size()             );
+ ntsave->nt_eles.resize    ( electrons.size()         );
+ ntsave->nt_taus.resize    ( taus.size()              );
+ ntsave->nt_jets.resize    ( jets.size()              );
+ ntsave->nt_ljets.resize   ( ljets.size()             );
+ ntsave->nt_photons.resize ( photons.size()           );
+ ntsave->nt_combos.resize  ( combos.size()            );
+ ntsave->nt_truth.resize   ( truth.size()             );
+ ntsave->nt_uncs.resize    ( uncs.size()              );
+
+ttsave->Fill();
+*/
+
 return 1;
 }
