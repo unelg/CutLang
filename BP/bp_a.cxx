@@ -6,10 +6,6 @@
 #include "analysis_core.h"
 #include "dbx_a.h"
 
-#include "DBXNtuple.h"
-#include "TFile.h"
-#include "TTree.h"
-
 //#define __SEZEN__
 //#define _CLV_
 
@@ -19,16 +15,19 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<double>* PtEtaInitializations , vector<double>* btagValues);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, vector<double>* TRGValues);
 
 extern FILE* yyin;
 extern int cutcount;
 
 
-int BPdbxA:: getInputs() {
+int BPdbxA::getInputs(std::string aname) {
         int retval=0;
         ntsave = new DBXNtuple();
-        ftsave = new TFile ("lvl0.root","RECREATE"); // il faut changer le nom du fichier
+        std::string fname="lvl0_";
+                    fname+=aname;
+                    fname+=".root";
+        ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
         ttsave = new TTree ("nt_tree", "saving data on the grid");
         ttsave->Branch("dbxAsave", ntsave);
         return retval;
@@ -60,7 +59,6 @@ int BPdbxA:: readAnalysisParams() {
     string subdelimiter = " ";
     string hashdelimiter = "#";
     size_t found, foundp, foundr, foundw, founds;
-    bool foundInFile(false);
     TString DefList2file="\n";
     TString CutList2file="\n";
     TString ObjList2file="\n";
@@ -193,17 +191,17 @@ int BPdbxA:: readAnalysisParams() {
 // ****************************************
 // ---------------------------DBX style cuts
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
-       int kFillHistos=0;
     
-       std::vector<double> PtEtaInitializations(11);
-       PtEtaInitializations={15., 15., 15., 15., 15., 2.5, 2.5, 2.5, 2.5, 30, 1, 0};
-       vector<double> btagValues=vector<double>(6);
+       std::vector<std::string> NameInitializations(2);
+       NameInitializations={" "," "};
+       vector<double> TRGValues(5);
+       TRGValues={1,0,0,0,0};
 
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
        cout <<"==parsing started==\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &PtEtaInitializations, &btagValues);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues);
        cout <<" parsing finished.  ";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
@@ -211,17 +209,8 @@ int BPdbxA:: readAnalysisParams() {
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
 
-   minpte  = PtEtaInitializations[0];
-   minptm  = PtEtaInitializations[1];
-   minptj  = PtEtaInitializations[2];
-   minptg  = PtEtaInitializations[3];
-   maxetae = PtEtaInitializations[4];
-   maxetam = PtEtaInitializations[5];
-   maxetaj = PtEtaInitializations[6];
-   maxetag = PtEtaInitializations[7];
-   maxmet  = PtEtaInitializations[8];
-   TRGe    = PtEtaInitializations[9];
-   TRGm    = PtEtaInitializations[10];
+   TRGe    = TRGValues[0];
+   TRGm    = TRGValues[1];
 
     eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
 
@@ -275,9 +264,10 @@ int BPdbxA:: readAnalysisParams() {
 
 #endif
 
-// il faut verifier si l'utilisateur veut savegarder les events  
-     getInputs(); // verifier si la commande est bon ou pas
-
+// check if the user wants to save or NOT.
+     if (TRGValues.at(4)>0) {
+       getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
+     }
   return retval;
 }
 
@@ -320,8 +310,6 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
   evt_data anevt = ao.evt;
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-  double theLeptonWeight = 1;
-  double theFourJetWeight = 1;
   double evt_weight = ao.evt.user_evt_weight;  
   if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
 // --------- INITIAL  # events  ====> C0
@@ -361,7 +349,7 @@ if (d==0) return iter->first;         // quits the event.
 
 // les cuts sont finis ici.
 //      here we save the DBXNTuple
-         ntsave->Clean();
+//         ntsave->Clean();
 //particles
   vector<dbxMuon>        muons = ao.muos.begin()->second;
   vector<dbxElectron> electrons= ao.eles.begin()->second;

@@ -23,7 +23,7 @@ extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
-                vector<double>* Initializations , vector<double>* DataFormats
+                vector<string>* Initializations , vector<double>* DataFormats
                 ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
 using namespace std;
@@ -54,11 +54,11 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
 %parse-param {std::map<int,Node*>* NodeCuts}
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
-%parse-param {std::vector<double>* Initializations}
+%parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
-%token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
+%token TRGE TRGM SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
@@ -67,7 +67,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
-%token ASCEND DESCEND
+%token ASCEND DESCEND 
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -94,23 +94,8 @@ input : initializations definitions objects commands
 initializations : initializations initialization 
         | 
         ;
-initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
-                | MINPTM '=' NB {Initializations->at(1)=$3;}
-                | MINPTJ '=' NB {Initializations->at(2)=$3;}
-                | MINPTG '=' NB {Initializations->at(3)=$3;}
-                | MAXETAE '=' NB {Initializations->at(4)=$3;}
-                | MAXETAM '=' NB {Initializations->at(5)=$3;}
-                | MAXETAJ '=' NB {Initializations->at(6)=$3;}
-                | MAXETAG '=' NB {Initializations->at(7)=$3;}
-                | MAXMET '=' NB {Initializations->at(8)=$3;}
-                | TRGE  '=' INT {Initializations->at(9)=$3; }
-                | TRGM  '=' INT {Initializations->at(10)=0.0; }
-                | LVLO '=' NB  {DataFormats->at(0)=$3;}
-                | ATLASOD '=' NB {DataFormats->at(1)=$3;}
-                | CMSOD '=' NB {DataFormats->at(2)=$3;}
-                | DELPHES '=' NB {DataFormats->at(3)=$3;}
-                | FCC '=' NB {DataFormats->at(4)=$3;}
-                | LHCO '=' NB {DataFormats->at(5)=$3;}
+initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
+                | TRGM  '=' INT {DataFormats->at(1)=0.0; }
                 ;
 definitions : definitions definition 
             | 
@@ -899,7 +884,7 @@ particule : ELE '_' index {
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 0;
                                 }
                                 else{
@@ -911,7 +896,7 @@ particule : ELE '_' index {
         | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 0;
                                 }
                                 else{
@@ -1027,7 +1012,7 @@ particule : ELE '_' index {
         | NUMET '_' index {     tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 5;
                                 }
                                 else{
@@ -1562,13 +1547,18 @@ command : CMD condition { //find a way to print commands
 			}
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
+        | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
+                    DataFormats->at(4)=1;
+                    Initializations->at(0)=$2;
+                    cout <<"ha?\n";
+                  }
         | CMD ALL {                                     
-                                        Node* a = new SFuncNode(all,0, "all");
-                                        NodeCuts->insert(make_pair(++cutcount,a));
-				}
+                                Node* a = new SFuncNode(all,0, "all");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+		  }
 	| WEIGHT ID NB {
-						Node* a = new SFuncNode(uweight,$3,$2);
-						NodeCuts->insert(make_pair(++cutcount,a));
+				Node* a = new SFuncNode(uweight,$3,$2);
+				NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
@@ -1622,9 +1612,7 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-
 // Nant was here
-
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;

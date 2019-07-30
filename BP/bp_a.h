@@ -8,6 +8,11 @@
 #include "myParticle.h"
 #include "Node.h"
 #include <list>
+#include "DBXNtuple.h"
+#include "TFile.h"
+#include "TTree.h"
+
+
 
 class BPdbxA : public dbxA {
   public: 
@@ -19,7 +24,7 @@ class BPdbxA : public dbxA {
          //grl_cut=false;
          }
 
-      int getInputs();
+      int getInputs(std::string);
       int initGRL();
       int readAnalysisParams();
       int plotVariables(int sel);
