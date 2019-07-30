@@ -90,8 +90,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         ka=ao->ljets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
                                                         break;
+                                               case 20: DEBUG("combo:"<< (*i)->index <<" ");
+                                                        inputPart->setTlv(  inputPart->lv()+ao->combos[ac].at(ai).lv()); // 20 is combos
+                                                        inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
+                                                        break;
 
-                                            default: std::cout<<"	No such object! ERROR\n";
+                                            default: std::cout<<" FN No such object! ERROR\n";
                                                         break;
                                 } // end of case
         }// end of for
