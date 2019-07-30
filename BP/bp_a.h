@@ -36,6 +36,10 @@ class BPdbxA : public dbxA {
       char cname[CHMAX];
       char algoname[CHMAX];
 
+      TFile *ftsave;
+      TTree *ttsave;
+      DBXNtuple *ntsave;
+
 
       // Sezen's handmade histograms
 /*
