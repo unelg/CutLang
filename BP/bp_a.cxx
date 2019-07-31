@@ -400,9 +400,8 @@ if (d==0) return iter->first;         // quits the event.
 	ntsave->nt_combos.push_back(combos.at(i) );
       }
       
-       ntsave->nt_met=met;
-       ntsave->nt_evt=anevt;
-	
+      ntsave->nt_met=met;
+      ntsave->nt_evt=anevt;
       ntsave->nt_muos.resize    ( muons.size()             );
       ntsave->nt_eles.resize    ( electrons.size()         );
       ntsave->nt_taus.resize    ( taus.size()              );
@@ -414,7 +413,7 @@ if (d==0) return iter->first;         // quits the event.
       
       ttsave->Fill();
       
-       }
+      }
     return 1;
 }
 
