@@ -31,12 +31,16 @@ class BPdbxA : public dbxA {
       int printEfficiencies();
       int bookAdditionalHistos();
       int makeAnalysis(AnalysisObjects ao ); 
+      int Finalize();
       int saveHistos() {
+	      if (savebool) Finalize();
         int r = dbxA::saveHistos();
         return r;
       }
+      
 
    private:
+      bool savebool = false;
       bool grl_cut;
       char cname[CHMAX];
       char algoname[CHMAX];
