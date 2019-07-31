@@ -267,6 +267,7 @@ int BPdbxA:: readAnalysisParams() {
 // check if the user wants to save or NOT.
      if (TRGValues.at(4)>0) {
        getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
+       savebool = true;
      }
   return retval;
 }
@@ -348,45 +349,77 @@ if (d==0) return iter->first;         // quits the event.
     DEBUG("   EOE\n     ");
 
 // les cuts sont finis ici.
-//      here we save the DBXNTuple
-//         ntsave->Clean();
-//particles
-  vector<dbxMuon>        muons = ao.muos.begin()->second;
-  vector<dbxElectron> electrons= ao.eles.begin()->second;
-  vector <dbxPhoton>    photons= ao.gams.begin()->second;
-  vector<dbxJet>           jets= ao.jets.begin()->second;
-  vector<dbxJet>          ljets= ao.ljets.begin()->second;
-  vector<dbxTau>           taus= ao.taus.begin()->second;
-  vector<dbxTruth>        truth= ao.truth.begin()->second;
-  vector<dbxParticle>    combos= ao.combos.begin()->second;
-//-----------------------------------------
+    if(savebool){
+      
+      vector<dbxMuon>        muons = ao.muos.begin()->second;
+      vector<dbxElectron> electrons= ao.eles.begin()->second;
+      vector <dbxPhoton>    photons= ao.gams.begin()->second;
+      vector<dbxJet>           jets= ao.jets.begin()->second;
+      vector<dbxJet>          ljets= ao.ljets.begin()->second;
+      vector<dbxTau>           taus= ao.taus.begin()->second;
+      vector<dbxTruth>        truth= ao.truth.begin()->second;
+      vector<dbxParticle>    combos= ao.combos.begin()->second;
+      //-----------------------------------------
+      
+      
+      TVector2 met = ao.met.begin()->second;
+      evt_data anevt = ao.evt;
+      
+      //      here we save the DBXNTuple
+      ntsave->Clean();
+      ntsave->nEle=electrons.size();
+      for ( int i=0; i<(int)electrons.size(); i++) {
+	ntsave->nt_eles.push_back(electrons.at(i) );
+      }
+      ntsave->nMuo=muons.size();
+      for ( int i=0; i<(int)muons.size(); i++) {
+	ntsave->nt_muos.push_back(muons.at(i) );
+      }
+      ntsave->nJet=jets.size();
+      for ( int i=0; i<(int)jets.size(); i++) {
+	ntsave->nt_jets.push_back(jets.at(i) );
+      }
+      ntsave->nPhoton=photons.size();
+      for ( int i=0; i<(int)photons.size(); i++) {
+	ntsave->nt_photons.push_back(photons.at(i) );
+      }
+      ntsave->nLJet=ljets.size();
+      for ( int i=0; i<(int)ljets.size(); i++) {
+	ntsave->nt_ljets.push_back(ljets.at(i) );
+      }
+      ntsave->nTau=taus.size();
+      for ( int i=0; i<(int)taus.size(); i++) {
+	ntsave->nt_taus.push_back(taus.at(i) );
+      }
+      ntsave->nTruth=truth.size();
+      for ( int i=0; i<(int)truth.size(); i++) {
+	ntsave->nt_truth.push_back(truth.at(i) );
+      }
+      ntsave->nCombo=combos.size();
+      for ( int i=0; i<(int)combos.size(); i++) {
+	ntsave->nt_combos.push_back(combos.at(i) );
+      }
+      
+       ntsave->nt_met=met;
+       ntsave->nt_evt=anevt;
+	
+      ntsave->nt_muos.resize    ( muons.size()             );
+      ntsave->nt_eles.resize    ( electrons.size()         );
+      ntsave->nt_taus.resize    ( taus.size()              );
+      ntsave->nt_jets.resize    ( jets.size()              );
+      ntsave->nt_ljets.resize   ( ljets.size()             );
+      ntsave->nt_photons.resize ( photons.size()           );
+      ntsave->nt_combos.resize  ( combos.size()            );
+      ntsave->nt_truth.resize   ( truth.size()             );
+      
+      ttsave->Fill();
+      
+       }
+    return 1;
+}
 
-/*
-// Electrons
-         ntsave->nEle=electrons.size();
-         for ( int i=0; i<(int)electrons.size(); i++) {
-                ntsave->nt_eles.push_back(electrons.at(i) );
-                TLorentzVector ele4p=electrons.at(i).lv();
-         }
-// JETS, MUONS TAUs as before
-
-
-
- ntsave->nt_met=met;
- ntsave->nt_evt=anevt;
-
- ntsave->nt_muos.resize    ( muons.size()             );
- ntsave->nt_eles.resize    ( electrons.size()         );
- ntsave->nt_taus.resize    ( taus.size()              );
- ntsave->nt_jets.resize    ( jets.size()              );
- ntsave->nt_ljets.resize   ( ljets.size()             );
- ntsave->nt_photons.resize ( photons.size()           );
- ntsave->nt_combos.resize  ( combos.size()            );
- ntsave->nt_truth.resize   ( truth.size()             );
- ntsave->nt_uncs.resize    ( uncs.size()              );
-
-ttsave->Fill();
-*/
-
-return 1;
+int BPdbxA::Finalize(){       
+  ftsave->Write();
+  ftsave->Close();
+  return 1;
 }
