@@ -61,13 +61,11 @@ int DumpdbxA:: bookAdditionalHistos() {
 }
 
 int DumpdbxA:: getInputs() {
-
         int retval=0;  
         ntsave = new DBXNtuple();
 	ftsave = new TFile ("lvl0.root","RECREATE");
 	ttsave = new TTree ("nt_tree", "saving data on the grid");
         ttsave->Branch("dbxAsave", ntsave);
-	
         return retval;
 }
 
@@ -91,21 +89,22 @@ int DumpdbxA::makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_ma
   vector<dbxParticle>    combos= ao.combos.begin()->second;
   TVector2 met = ao.met.begin()->second;
   evt_data anevt = ao.evt;
+
 //      here we save the DBXNTuple
-ntsave->Clean();
-ntsave->nEle=electrons.size();
+         ntsave->Clean();
+         ntsave->nEle=electrons.size();
 	 for ( int i=0; i<(int)electrons.size(); i++) {
  		ntsave->nt_eles.push_back(electrons.at(i) );
                 TLorentzVector ele4p=electrons.at(i).lv();
 //                std::cout<<"E Pt = " << ele4p.Pt() << " eta = " << ele4p.Eta() << " phi = " << ele4p.Phi() << std::endl;
          }
-ntsave->nMuo=muons.size();
+         ntsave->nMuo=muons.size();
 	 for ( int i=0; i<(int)muons.size(); i++) {
 		ntsave->nt_muos.push_back(muons.at(i) );
                 TLorentzVector mu4p = muons.at(i).lv();
 //                std::cout<<"M Pt = " << mu4p.Pt() << " eta = " << mu4p.Eta() << " phi = " << mu4p.Phi() << std::endl;
          }
-ntsave->nJet=jets.size();
+         ntsave->nJet=jets.size();
 	 for ( int i=0; i<(int)jets.size(); i++) {
 		 ntsave->nt_jets.push_back(jets.at(i) );
                  TLorentzVector jet4p = jets.at(i).lv();
@@ -147,18 +146,18 @@ for (map<int, TVector2>::iterator itm = met_syst_map.begin(); itm != met_syst_ma
 //     cout << "~~~~~~~~~~~~~~~~~~~~~ E:"<<TRGe <<"  M:"<<TRGm <<endl;
 
 
-ntsave->nt_met=met;
-ntsave->nt_evt=anevt;
+ ntsave->nt_met=met;
+ ntsave->nt_evt=anevt;
 
-ntsave->nt_muos.resize    ( muons.size()              );
-ntsave->nt_eles.resize    ( electrons.size()          );
-ntsave->nt_jets.resize    ( jets.size()               );
- ntsave->nt_ljets.resize  ( ljets.size()              );
- ntsave->nt_photons.resize ( photons.size()           );
+ ntsave->nt_muos.resize    ( muons.size()             );
+ ntsave->nt_eles.resize    ( electrons.size()         );
  ntsave->nt_taus.resize    ( taus.size()              );
- ntsave->nt_truth.resize   ( truth.size()             );
+ ntsave->nt_jets.resize    ( jets.size()              );
+ ntsave->nt_ljets.resize   ( ljets.size()             );
+ ntsave->nt_photons.resize ( photons.size()           );
  ntsave->nt_combos.resize  ( combos.size()            );
-ntsave->nt_uncs.resize     ( uncs.size()              );
+ ntsave->nt_truth.resize   ( truth.size()             );
+ ntsave->nt_uncs.resize    ( uncs.size()              );
 
 ttsave->Fill();
 

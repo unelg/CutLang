@@ -421,4 +421,5 @@ if (d==0) return iter->first;         // quits the event.
 int BPdbxA::Finalize(){       
   ftsave->Write();
   ftsave->Close();
+  return 1;
 }

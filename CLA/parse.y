@@ -1,4 +1,5 @@
 %error-verbose
+//%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -22,8 +23,8 @@ extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
-                vector<double>* Initializations , vector<double>* DataFormats
-                ,const char *s) { std::cerr << "Error: " << s << std::endl << "line: " << yylineno <<  std::endl; } 
+                vector<string>* Initializations , vector<double>* DataFormats
+                ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
 using namespace std;
 string tmp;
@@ -45,25 +46,28 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
           int integer;
 	char* s;//ADD POINTER TO NODE unique_ptr?
 }
+//%define parse.lac full
+//%define parse.error verbose
+
 %parse-param {std::list<std::string> *parts}
 %parse-param {std::map<std::string,Node*>* NodeVars}
 %parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
 %parse-param {std::map<int,Node*>* NodeCuts}
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
-%parse-param {std::vector<double>* Initializations}
+%parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
-%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV //particle types
-%token MINPTM MINPTG MINPTJ MINPTE MAXETAM MAXETAE MAXETAG MAXETAJ MAXMET TRGE TRGM
+%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
+%token TRGE TRGM SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID
-%token FMEGAJETS FMR FMTR FMT // RAZOR external functions
+%token RELISO TAUISO DXY DZ SOFTID BTAG
+%token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
-%token ASCEND DESCEND
+%token ASCEND DESCEND 
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -90,23 +94,8 @@ input : initializations definitions objects commands
 initializations : initializations initialization 
         | 
         ;
-initialization : MINPTE '=' NB {Initializations->at(0)=$3;}
-                | MINPTM '=' NB {Initializations->at(1)=$3;}
-                | MINPTJ '=' NB {Initializations->at(2)=$3;}
-                | MINPTG '=' NB {Initializations->at(3)=$3;}
-                | MAXETAE '=' NB {Initializations->at(4)=$3;}
-                | MAXETAM '=' NB {Initializations->at(5)=$3;}
-                | MAXETAJ '=' NB {Initializations->at(6)=$3;}
-                | MAXETAG '=' NB {Initializations->at(7)=$3;}
-                | MAXMET '=' NB {Initializations->at(8)=$3;}
-                | TRGE  '=' INT {Initializations->at(9)=$3; }
-                | TRGM  '=' INT {Initializations->at(10)=0.0; }
-                | LVLO '=' NB  {DataFormats->at(0)=$3;}
-                | ATLASOD '=' NB {DataFormats->at(1)=$3;}
-                | CMSOD '=' NB {DataFormats->at(2)=$3;}
-                | DELPHES '=' NB {DataFormats->at(3)=$3;}
-                | FCC '=' NB {DataFormats->at(4)=$3;}
-                | LHCO '=' NB {DataFormats->at(5)=$3;}
+initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
+                | TRGM  '=' INT {DataFormats->at(1)=0.0; }
                 ;
 definitions : definitions definition 
             | 
@@ -642,24 +631,14 @@ function : '{' particules '}' 'm' {
                                            }
                                        }
                            }
-        | NUMOF '(' ELE ')' {       
-                                           $$=new SFuncNode(count, 1, "ELE");
-                            }
-        | NUMOF '(' MUO ')' {       
-                                           $$=new SFuncNode(count, 0, "MUO");
-                            }
-        | NUMOF '(' TAU ')' {       
-                                           $$=new SFuncNode(count, 11, "TAU");
-                            }
-        | NUMOF '(' JET ')' {       
-                                           $$=new SFuncNode(count, 2, "JET");
-                            }
-        | NUMOF '(' FJET ')' {       
-                                           $$=new SFuncNode(count, 9, "FJET");
-                            }
-        | NUMOF '(' PHO ')' {       
-                                           $$=new SFuncNode(count, 8, "PHO");
-                            }
+        | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
+        | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
+        | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
+        | NUMOF '(' JET ')'  {       $$=new SFuncNode(count, 2, "JET");  }
+        | NUMOF '(' BJET ')' {       $$=new SFuncNode(count, 3, "JET");  }
+        | NUMOF '(' QGJET ')' {      $$=new SFuncNode(count, 4, "JET");  }
+        | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
+        | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
 //------------------------------------------
       | FMEGAJETS '(' ID ')' {
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -717,6 +696,14 @@ function : '{' particules '}' 'm' {
                                          $$=new SFuncNode(userfuncD, fMTR2, type, $3 , it2->second,  it->second);
                                      }
                        }
+        | FMTAUTAU list { 
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        int type=newList[0]->type; // type is JETS or FJETS etc..
+                                        $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList,  newList1);
+                        }
         | HT {
                                         $$=new SFuncNode(ht,0,"JET");
              }
@@ -866,7 +853,6 @@ particule : ELE '_' index {
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);
                         }
-
         | TAU '[' index ']' {   
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -885,10 +871,20 @@ particule : ELE '_' index {
                                 a->collection = "TAU";
                                 TmpParticle.push_back(a);  
                         }
+       | TAU            {      
+                                DEBUG("all tau particules \t");
+                                tmp="tau_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 11;
+                                a->index = 6213;
+                                a->collection = "TAU";
+                                TmpParticle.push_back(a);
+                        }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 0;
                                 }
                                 else{
@@ -900,7 +896,7 @@ particule : ELE '_' index {
         | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 0;
                                 }
                                 else{
@@ -925,6 +921,16 @@ particule : ELE '_' index {
                                 a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
+       | PHO            {      
+                                DEBUG("all PHO particules \t");
+                                tmp="pho_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 8;
+                                a->index = 6213;
+                                a->collection = "PHO";
+                                TmpParticle.push_back(a);
+                        }
         | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -940,6 +946,16 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 a->collection = "JET";
                                 TmpParticle.push_back(a);  
+                        }
+       | JET            {      
+                                DEBUG("all jet particules \t");
+                                tmp="jet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 2;
+                                a->index = 6213;
+                                a->collection = "JET";
+                                TmpParticle.push_back(a);
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -969,6 +985,16 @@ particule : ELE '_' index {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+       | FJET           {      
+                                DEBUG("all Fjet particules \t");
+                                tmp="fjet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 9;
+                                a->index = 6213;
+                                a->collection = "FJET";
+                                TmpParticle.push_back(a);
+                        }
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -986,7 +1012,7 @@ particule : ELE '_' index {
         | NUMET '_' index {     tmp="numet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(Initializations->at(10)>0){
+                                if(DataFormats->at(1)>0){
                                         a->type = 5;
                                 }
                                 else{
@@ -1035,6 +1061,16 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="ele_"+to_string((int)$3);
@@ -1121,6 +1157,17 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="jet_"+to_string((int)$3);
@@ -1445,6 +1492,10 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
+         | OBJ BJET ':' JET criteria {
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
+                                       YYERROR;//stops parsing if variable not found
+                                      }
          | OBJ ID ':' JET criteria {
                                         DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
@@ -1496,13 +1547,18 @@ command : CMD condition { //find a way to print commands
 			}
         | ALGO ID {  cout << " ALGO: "<< $2<<" ";
                   }
+        | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
+                    DataFormats->at(4)=1;
+                    Initializations->at(0)=$2;
+                    cout <<"ha?\n";
+                  }
         | CMD ALL {                                     
-                                        Node* a = new SFuncNode(all,0, "all");
-                                        NodeCuts->insert(make_pair(++cutcount,a));
-				}
+                                Node* a = new SFuncNode(all,0, "all");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+		  }
 	| WEIGHT ID NB {
-						Node* a = new SFuncNode(uweight,$3,$2);
-						NodeCuts->insert(make_pair(++cutcount,a));
+				Node* a = new SFuncNode(uweight,$3,$2);
+				NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
@@ -1556,9 +1612,7 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-
 // Nant was here
-
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;

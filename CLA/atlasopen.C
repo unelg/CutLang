@@ -155,7 +155,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setCharge(-99);
                 adbxj->setJVtxf(jet_jvf[i]);
                 adbxj->setParticleIndx(i);
-                adbxj->setFlavor(jet_trueflav[i] );
+                adbxj->setFlavor(jet_MV1[i] );
                 adbxj->set_isbtagged_77( jet_MV1[i] > blow_th ); // 5 is btag
                 jets.push_back(*adbxj);
                 delete adbxj;
@@ -172,7 +172,7 @@ std::cout << "MET OK"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=runNumber;
-        anevt.user_evt_weight=1;
+        anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
         anevt.event_no=eventNumber;
