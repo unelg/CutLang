@@ -286,6 +286,11 @@ double uweight(AnalysisObjects* ao, string s, float value){
 	return 1;
 }
 
+double lepsf(AnalysisObjects* ao, string s, float value){
+	ao->evt.user_evt_weight *= ao->evt.weight_leptonSF;
+	return 1;
+}
+
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 

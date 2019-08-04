@@ -95,7 +95,7 @@ initializations : initializations initialization
         | 
         ;
 initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
-                | TRGM  '=' INT {DataFormats->at(1)=0.0; }
+                | TRGM  '=' INT {DataFormats->at(1)=$3; }
                 ;
 definitions : definitions definition 
             | 
@@ -726,12 +726,6 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
-	
-
-        | LEPSF {    
-                                        string s="LEPSF";                                                              
-                                        $$=new SFuncNode(all,0,s);
-                }
 //      | COMB '(' particules  ')' {
 //                                      VECTOR<MYPARTICLE*> NEWLIST;
 //                                      TMPPARTICLE.SWAP(NEWLIST);
@@ -1556,6 +1550,10 @@ command : CMD condition { //find a way to print commands
                                 Node* a = new SFuncNode(all,0, "all");
                                 NodeCuts->insert(make_pair(++cutcount,a));
 		  }
+        | CMD LEPSF {    
+                                Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+                    }
 	| WEIGHT ID NB {
 				Node* a = new SFuncNode(uweight,$3,$2);
 				NodeCuts->insert(make_pair(++cutcount,a));

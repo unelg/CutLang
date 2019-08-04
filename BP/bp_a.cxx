@@ -208,12 +208,12 @@ int BPdbxA:: readAnalysisParams() {
          exit (99); 
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
-
    TRGe    = TRGValues[0];
    TRGm    = TRGValues[1];
 
     eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
 
+    cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
     DEBUG("CL CUTS: \n");
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
     while(iter != NodeCuts.end())
@@ -312,7 +312,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
   double evt_weight = ao.evt.user_evt_weight;  
-  if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+  if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
   ao.evt.user_evt_weight*=evt_weight;
 
 // --------- INITIAL  # events  ====> C0
