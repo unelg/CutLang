@@ -312,7 +312,9 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
   double evt_weight = ao.evt.user_evt_weight;  
-  if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;//                                                                                                                                                                 
+  if(TRGe==2 || TRGm== 2) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+  ao.evt.user_evt_weight*=evt_weight;
+
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");

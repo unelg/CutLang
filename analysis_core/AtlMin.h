@@ -88,7 +88,7 @@ public :
    vector<int>     *jet_truthflav;
    vector<int>     *jet_truthPartonLabel;
    vector<char>    *jet_isTrueHS;
-   vector<char>    *jet_isbtagged_77;
+   vector<char>    *jet_isbtagged_MV2c10_77;
    vector<float>   *ljet_pt;
    vector<float>   *ljet_eta;
    vector<float>   *ljet_phi;
@@ -221,7 +221,7 @@ public :
    TBranch        *b_jet_truthflav;   //!
    TBranch        *b_jet_truthPartonLabel;   //!
    TBranch        *b_jet_isTrueHS;   //!
-   TBranch        *b_jet_isbtagged_77;   //!
+   TBranch        *b_jet_isbtagged_MV2c10_77;   //!
    TBranch        *b_ljet_pt;   //!
    TBranch        *b_ljet_eta;   //!
    TBranch        *b_ljet_phi;   //!
@@ -403,7 +403,7 @@ void AtlMin::Init(TTree *tree, int year)
    jet_truthflav = 0;
    jet_truthPartonLabel = 0;
    jet_isTrueHS = 0;
-   jet_isbtagged_77 = 0;
+   jet_isbtagged_MV2c10_77 = 0;
    ljet_pt = 0;
    ljet_eta = 0;
    ljet_phi = 0;
@@ -518,7 +518,7 @@ void AtlMin::Init(TTree *tree, int year)
    fChain->SetBranchAddress("jet_truthflav", &jet_truthflav, &b_jet_truthflav);
    fChain->SetBranchAddress("jet_truthPartonLabel", &jet_truthPartonLabel, &b_jet_truthPartonLabel);
    fChain->SetBranchAddress("jet_isTrueHS", &jet_isTrueHS, &b_jet_isTrueHS);
-   fChain->SetBranchAddress("jet_isbtagged_77", &jet_isbtagged_77, &b_jet_isbtagged_77);
+   fChain->SetBranchAddress("jet_isbtagged_MV2c10_77", &jet_isbtagged_MV2c10_77, &b_jet_isbtagged_MV2c10_77);
    fChain->SetBranchAddress("ljet_pt", &ljet_pt, &b_ljet_pt);
    fChain->SetBranchAddress("ljet_eta", &ljet_eta, &b_ljet_eta);
    fChain->SetBranchAddress("ljet_phi", &ljet_phi, &b_ljet_phi);
