@@ -40,7 +40,7 @@ public :
    Float_t         weight_mc;
    Float_t         weight_pileup;
    Float_t         weight_leptonSF;
-   Float_t         weight_bTagSF_77;
+   Float_t         weight_bTagSF_MV2c10_77;
    Float_t         weight_jvt;
    ULong64_t       eventNumber;
    UInt_t          runNumber;
@@ -173,7 +173,7 @@ public :
    TBranch        *b_weight_mc;   //!
    TBranch        *b_weight_pileup;   //!
    TBranch        *b_weight_leptonSF;   //!
-   TBranch        *b_weight_bTagSF_77;   //!
+   TBranch        *b_weight_bTagSF_MV2c10_77;   //!
    TBranch        *b_weight_jvt;   //!
    TBranch        *b_eventNumber;   //!
    TBranch        *b_runNumber;   //!
@@ -470,7 +470,7 @@ void AtlMin::Init(TTree *tree, int year)
    fChain->SetBranchAddress("weight_mc", &weight_mc, &b_weight_mc);
    fChain->SetBranchAddress("weight_pileup", &weight_pileup, &b_weight_pileup);
    fChain->SetBranchAddress("weight_leptonSF", &weight_leptonSF, &b_weight_leptonSF);
-   fChain->SetBranchAddress("weight_bTagSF_77", &weight_bTagSF_77, &b_weight_bTagSF_77);
+   fChain->SetBranchAddress("weight_bTagSF_MV2c10_77", &weight_bTagSF_MV2c10_77, &b_weight_bTagSF_MV2c10_77);
    fChain->SetBranchAddress("weight_jvt", &weight_jvt, &b_weight_jvt);
    fChain->SetBranchAddress("eventNumber", &eventNumber, &b_eventNumber);
    fChain->SetBranchAddress("runNumber", &runNumber, &b_runNumber);

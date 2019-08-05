@@ -61,9 +61,9 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token TRGE TRGM SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID BTAG
+%token RELISO TAUISO DXY DZ SOFTID ISBTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
@@ -329,16 +329,26 @@ function : '{' particules '}' 'm' {
                                 }
 //---------------------------------------
 //---------------------------------------
+         | '{' particules '}' ISBTAG {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"BTAG");
+                                    }
+         | ISBTAG '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"BTAG");
+                                    }
          | '{' particules '}' DEEPB {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
-                                  }
+                                    }
          | DEEPB '(' particules ')' {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
-                                  }
+                                    }
          | '{' particules '}' MSOFTD {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -1552,6 +1562,10 @@ command : CMD condition { //find a way to print commands
 		  }
         | CMD LEPSF {    
                                 Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+                    }
+        | CMD BTAGSF {    
+                                Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                                 NodeCuts->insert(make_pair(++cutcount,a));
                     }
 	| WEIGHT ID NB {

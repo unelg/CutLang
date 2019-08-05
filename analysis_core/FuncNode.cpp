@@ -267,6 +267,11 @@ double DeepBof( dbxParticle* apart){
     return DeepB;
 }
 
+double isBTag( dbxParticle* apart){
+    bool Bval=((dbxJet*)apart)->isbtagged_77();
+    DEBUG(" BTAG:"<<Bval<<"\t");
+    return Bval;
+}
 
 double tau1of( dbxParticle* apart){
     double tau1=apart->Attribute(1) ;
@@ -289,8 +294,6 @@ double dzof( dbxParticle* apart){
     DEBUG(" dz:"<<dz<<"\t");
     return dz;
 }
-
-
 
 double dxyof( dbxParticle* apart){
     double dxy=apart->Attribute(1);

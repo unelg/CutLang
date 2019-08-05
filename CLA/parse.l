@@ -37,7 +37,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "LEP" return LEP;
 "PDGID" return PDGID;
 "btagDeepB" return DEEPB;
-[bB][tT][aA][gG] return DEEPB;
+[bB][tT][aA][gG] return ISBTAG;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;
@@ -71,6 +71,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "MET" return MET;
 "ALL" return ALL;
 "LEPsf" return LEPSF;
+"bTagSF" return BTAGSF;
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;

@@ -291,6 +291,11 @@ double lepsf(AnalysisObjects* ao, string s, float value){
 	return 1;
 }
 
+double btagsf(AnalysisObjects* ao, string s, float value){
+        ao->evt.user_evt_weight *= ao->evt.weight_bTagSF_77;
+        return 1;
+}
+
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
