@@ -88,6 +88,7 @@ std::cout << "Read Event"<<std::endl;
        dbxMuon     *adbxm;
        //dbxTau      *adbxt;
        dbxPhoton   *adbxp;
+       dbxTruth    *adbxgen;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
@@ -153,6 +154,21 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Jets:"<<Jet_<<std::endl;
 #endif
+
+//GEN LEVEL particles
+        for (unsigned int i=0; i<Particle_; i++) {
+                alv.SetPtEtaPhiM( Particle_PT[i], Particle_Eta[i], Particle_Phi[i], Particle_Mass[i] ); // all in GeV
+                adbxgen= new dbxParticle(alv);
+                adbxgen->setCharge( Particle_Charge[i] );
+                adbxgeb->adbxe->setPdgID(  Particle_PID[i] );
+                adbxgen->setParticleIndx(i);
+                truth.push_back(*adbxgen);
+                delete adbxgen;
+        }
+
+
+
+
 //MET
         met.SetMagPhi( MissingET_MET[0],  MissingET_Phi[0]);
 #ifdef __DEBUG__
