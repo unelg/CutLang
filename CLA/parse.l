@@ -55,11 +55,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "QGJET" return QGJET;
 "NUMET" return NUMET;
 "METLV" return METLV;
-"Phi" return PHI;//functions
-"Eta" return ETA;
+[pP][hT][iI] return PHI;//functions
+[eE][tT][aA] return ETA;
 "AbsEta" return ABSETA;
-"Pt" return PT;
-"Pz" return PZ;
+[pP][tT] return PT;
+[pP][zZ] return PZ;
 "nbf" return NBF;
 "dR" return DR;
 "dPhi" return DPHI;

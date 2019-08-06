@@ -1,0 +1,15 @@
+object genelectrons : GEN
+ select {GEN}PDGID == -11 
+ select {GEN}pT > 5
+ select {GEN}AbsEta < 2.4
+  
+object genmuons : GEN
+ select PDGID(GEN) == -13 
+ select Pt(GEN) > 5
+ select Abs( Eta(GEN) ) < 2.4
+
+region test1
+  select Size(genelectrons) >= 1
+
+region test2
+  select Size(genmuons) >= 1
