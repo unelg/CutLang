@@ -135,13 +135,13 @@ std::cout << "Electrons OK:"<< el_e->size() <<std::endl;
                 adbxj->setjvt(jet_jvt->at(i));
                 adbxj->setParticleIndx(i);
                 adbxj->setFlavor(jet_truthflav->at(i) );
-                adbxj->set_isbtagged_77(bool(jet_isbtagged_77->at(i)));
+                adbxj->set_isbtagged_77(bool(jet_isbtagged_MV2c10_77->at(i)));
+//                            if  (jet_isbtagged_MV2c10_77->at(i)>0)  std::cout << bool(jet_isbtagged_MV2c10_77->at(i)) <<"\n";
                 adbxj->setmv2c00(jet_mv2c00->at(i));
                 adbxj->setmv2c10(jet_mv2c10->at(i));
                 adbxj->setmv2c20(jet_mv2c20->at(i));
                 adbxj->setip3dsv1(jet_ip3dsv1->at(i));
 
- //               adbxj->set_isbtagged_77( jet_MV2c10mu[i] > 0.7892 ); //  is btag
                 jets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -169,7 +169,7 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_mc=weight_mc;
   anevt.weight_pileup=weight_pileup;
   anevt.weight_leptonSF=weight_leptonSF;
-  anevt.weight_bTagSF_77=weight_bTagSF_77;
+  anevt.weight_bTagSF_77=weight_bTagSF_MV2c10_77;
   anevt.weight_jvt=weight_jvt;
 
 /*
@@ -253,6 +253,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    cout << "End of analysis initialization"<<endl;
 
    Long64_t nentries = fChain->GetEntriesFast();
+   if (aselect.maxEvents > 0) nentries=aselect.maxEvents;
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=0; j<nentries; ++j) {

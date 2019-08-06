@@ -25,33 +25,19 @@ vardef {varname}" "?":"" "?.*"\n"
 "take"|"using" return TAKE;
 "histo" return HISTO;
 "weight" return WEIGHT;
-"minptm" return MINPTM;
-"minptg" return MINPTG;
-"minptj" return MINPTJ;
-"minpte" return MINPTE;
-"maxetam" return MAXETAM;
-"maxetae" return MAXETAE;
-"maxetag" return MAXETAG;
-"maxetaj" return MAXETAJ;
-"maxmet" return MAXMET;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-"btag_lowthreshold_LVL0" return LVLO;
-"btag_lowthreshold_ATLASOD" return ATLASOD;
-"btag_lowthreshold_CMSOD" return CMSOD;
-"btag_lowthreshold_DELPHES" return DELPHES;
-"btag_lowthreshold_FCC" return FCC;
-"btag_lowthreshold_LHCO" return LHCO;
 "ELE"|"ELECTRON" return ELE;//particles
 "MUO"|"MUON"|"Muon" return MUO;
 "Tau"|"TAU" return TAU;
 "PHO"|"PHOTON" return PHO;
 "JET"|"Jet" return JET;
 "FJET"|"FatJet" return FJET;
+[Gg][Ee][Nn] return GEN;
 "LEP" return LEP;
 "PDGID" return PDGID;
-"weight" return WEIGHT;
 "btagDeepB" return DEEPB;
+[bB][tT][aA][gG] return ISBTAG;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;
@@ -59,6 +45,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fmegajets" return FMEGAJETS;
 "fMR" return FMR;
 "fMTR" return FMTR;
+"fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
 "dxy" return DXY;
 "dz" return DZ;
@@ -84,6 +71,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "MET" return MET;
 "ALL" return ALL;
 "LEPsf" return LEPSF;
+"bTagSF" return BTAGSF;
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
@@ -99,6 +87,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
 [tT][aA][nN] return TAN;

@@ -61,9 +61,9 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token TRGE TRGM SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF PDGID //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID BTAG
+%token RELISO TAUISO DXY DZ SOFTID ISBTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
@@ -95,7 +95,7 @@ initializations : initializations initialization
         | 
         ;
 initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
-                | TRGM  '=' INT {DataFormats->at(1)=0.0; }
+                | TRGM  '=' INT {DataFormats->at(1)=$3; }
                 ;
 definitions : definitions definition 
             | 
@@ -329,16 +329,26 @@ function : '{' particules '}' 'm' {
                                 }
 //---------------------------------------
 //---------------------------------------
+         | '{' particules '}' ISBTAG {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"BTAG");
+                                    }
+         | ISBTAG '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"BTAG");
+                                    }
          | '{' particules '}' DEEPB {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
-                                  }
+                                    }
          | DEEPB '(' particules ')' {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
-                                  }
+                                    }
          | '{' particules '}' MSOFTD {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -631,7 +641,7 @@ function : '{' particules '}' 'm' {
                                            }
                                        }
                            }
-	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
+   	    | NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
         | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
         | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
@@ -727,12 +737,6 @@ function : '{' particules '}' 'm' {
                                         $$=new SFuncNode(all,0, "all");
               }
 //------------------------------------------
-	
-
-        | LEPSF {    
-                                        string s="LEPSF";                                                              
-                                        $$=new SFuncNode(all,0,s);
-                }
 //      | COMB '(' particules  ')' {
 //                                      VECTOR<MYPARTICLE*> NEWLIST;
 //                                      TMPPARTICLE.SWAP(NEWLIST);
@@ -1105,7 +1109,7 @@ particule : GEN '_' index    {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-			/*else if (otype == 10 ) {
+			                  else if (otype == 10 ) {
                            DEBUG("which is a GEN\n");
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -1114,7 +1118,7 @@ particule : GEN '_' index    {
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
-                        }*/
+                        } 
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="ele_"+to_string((int)$3);
@@ -1211,7 +1215,7 @@ particule : GEN '_' index    {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-			/*else if (otype == 10 ) {
+			                  else if (otype == 10 ) {
                            DEBUG("which is a GEN\n");
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -1220,8 +1224,7 @@ particule : GEN '_' index    {
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
-                        }*/
-
+                        }
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="jet_"+to_string((int)$3);
@@ -1626,7 +1629,15 @@ command : CMD condition { //find a way to print commands
                                 Node* a = new SFuncNode(all,0, "all");
                                 NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-	| WEIGHT ID NB {
+        | CMD LEPSF {    
+                                Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+                    }
+        | CMD BTAGSF {    
+                                Node* a=new SFuncNode(btagsf,0,"BTAGSF");
+                                NodeCuts->insert(make_pair(++cutcount,a));
+                    }
+    	  | WEIGHT ID NB {
 				Node* a = new SFuncNode(uweight,$3,$2);
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}

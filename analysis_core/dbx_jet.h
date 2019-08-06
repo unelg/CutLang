@@ -40,9 +40,6 @@ class dbxJet: public dbxParticle {
         void setisTrueHS(const char&v){ m_isTrueHS=v;}
         //end S.I        
         
-        
-        
- 
         unsigned int Jee_status(){return p_jee_status;}
         double btag_eventW()     {return p_btag_eventW;}
         int    JLabel()          {return p_jlabel;}

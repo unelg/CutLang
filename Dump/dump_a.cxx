@@ -61,13 +61,11 @@ int DumpdbxA:: bookAdditionalHistos() {
 }
 
 int DumpdbxA:: getInputs() {
-
         int retval=0;  
         ntsave = new DBXNtuple();
 	ftsave = new TFile ("lvl0.root","RECREATE");
 	ttsave = new TTree ("nt_tree", "saving data on the grid");
         ttsave->Branch("dbxAsave", ntsave);
-	
         return retval;
 }
 
@@ -85,29 +83,59 @@ int DumpdbxA::makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_ma
   vector<dbxElectron> electrons= ao.eles.begin()->second;
   vector <dbxPhoton>    photons= ao.gams.begin()->second;
   vector<dbxJet>           jets= ao.jets.begin()->second;
+  vector<dbxJet>          ljets= ao.ljets.begin()->second;
+  vector<dbxTau>           taus= ao.taus.begin()->second;
+  vector<dbxTruth>        truth= ao.truth.begin()->second;
+  vector<dbxParticle>    combos= ao.combos.begin()->second;
   TVector2 met = ao.met.begin()->second;
   evt_data anevt = ao.evt;
 
 //      here we save the DBXNTuple
-ntsave->Clean();
-ntsave->nEle=electrons.size();
+         ntsave->Clean();
+         ntsave->nEle=electrons.size();
 	 for ( int i=0; i<(int)electrons.size(); i++) {
  		ntsave->nt_eles.push_back(electrons.at(i) );
                 TLorentzVector ele4p=electrons.at(i).lv();
 //                std::cout<<"E Pt = " << ele4p.Pt() << " eta = " << ele4p.Eta() << " phi = " << ele4p.Phi() << std::endl;
          }
-ntsave->nMuo=muons.size();
+         ntsave->nMuo=muons.size();
 	 for ( int i=0; i<(int)muons.size(); i++) {
 		ntsave->nt_muos.push_back(muons.at(i) );
                 TLorentzVector mu4p = muons.at(i).lv();
 //                std::cout<<"M Pt = " << mu4p.Pt() << " eta = " << mu4p.Eta() << " phi = " << mu4p.Phi() << std::endl;
          }
-ntsave->nJet=jets.size();
+         ntsave->nJet=jets.size();
 	 for ( int i=0; i<(int)jets.size(); i++) {
 		 ntsave->nt_jets.push_back(jets.at(i) );
                  TLorentzVector jet4p = jets.at(i).lv();
 //                 std::cout<<"J Pt = " << jet4p.Pt() << " eta = " << jet4p.Eta() << " phi = " << jet4p.Phi() << std::endl;
          }
+	 ntsave->nPhoton=photons.size();
+	 for ( int i=0; i<(int)photons.size(); i++) {
+ 		ntsave->nt_photons.push_back(photons.at(i) );
+                TLorentzVector photon4p=photons.at(i).lv();
+         }
+	 ntsave->nLJet=ljets.size();
+	 for ( int i=0; i<(int)ljets.size(); i++) {
+ 		ntsave->nt_ljets.push_back(ljets.at(i) );
+                TLorentzVector ljet4p=ljets.at(i).lv();
+         }
+	 ntsave->nTau=taus.size();
+	 for ( int i=0; i<(int)taus.size(); i++) {
+ 		ntsave->nt_taus.push_back(taus.at(i) );
+                TLorentzVector tau4p=taus.at(i).lv();
+         }
+	 ntsave->nTruth=truth.size();
+	 for ( int i=0; i<(int)truth.size(); i++) {
+ 		ntsave->nt_truth.push_back(truth.at(i) );
+                TLorentzVector truth4p=truth.at(i).lv();
+         }
+	 ntsave->nCombo=combos.size();
+	 for ( int i=0; i<(int)combos.size(); i++) {
+ 		ntsave->nt_combos.push_back(combos.at(i) );
+                TLorentzVector combo4p=combos.at(i).lv();
+         }
+
 	 for ( int i=0; i<(int)uncs.size(); i++) {
 		 ntsave->nt_uncs.push_back(uncs.at(i) );
          }
@@ -118,13 +146,18 @@ for (map<int, TVector2>::iterator itm = met_syst_map.begin(); itm != met_syst_ma
 //     cout << "~~~~~~~~~~~~~~~~~~~~~ E:"<<TRGe <<"  M:"<<TRGm <<endl;
 
 
-ntsave->nt_met=met;
-ntsave->nt_evt=anevt;
+ ntsave->nt_met=met;
+ ntsave->nt_evt=anevt;
 
-ntsave->nt_muos.resize    ( muons.size()              );
-ntsave->nt_eles.resize    ( electrons.size()          );
-ntsave->nt_jets.resize    ( jets.size()               );
-ntsave->nt_uncs.resize    ( uncs.size()               );
+ ntsave->nt_muos.resize    ( muons.size()             );
+ ntsave->nt_eles.resize    ( electrons.size()         );
+ ntsave->nt_taus.resize    ( taus.size()              );
+ ntsave->nt_jets.resize    ( jets.size()              );
+ ntsave->nt_ljets.resize   ( ljets.size()             );
+ ntsave->nt_photons.resize ( photons.size()           );
+ ntsave->nt_combos.resize  ( combos.size()            );
+ ntsave->nt_truth.resize   ( truth.size()             );
+ ntsave->nt_uncs.resize    ( uncs.size()              );
 
 ttsave->Fill();
 
@@ -137,7 +170,7 @@ ttsave->Fill();
 
   eff->GetXaxis()->SetBinLabel(cur_cut,"all");
   eff->Fill(cur_cut, anevt.mcevt_weight);
-  cur_cut++;
+  cur_cut++;	
 
 
 // force no GRL for MC events
