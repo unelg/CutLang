@@ -1524,6 +1524,23 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
+	  | OBJ ID TAKE GEN criteria {
+	                                        DEBUG(" "<<$2<<" is a new GenSet\n");
+	                                        vector<Node*> newList;
+	                                        TmpCriteria.swap(newList);
+	                                        Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
+	                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+	                                        ObjectCuts->insert(make_pair($2,obj));
+	                             }
+	 | OBJ ID ':' GEN criteria {
+	                                        DEBUG(" "<<$2<<" is a new GenSet\n");
+	                                        vector<Node*> newList;
+	                                        TmpCriteria.swap(newList);
+	                                        Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
+	                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+	                                        ObjectCuts->insert(make_pair($2,obj));
+				   }
+	
              | OBJ ID TAKE LEP criteria
 //           | OBJ ID ':' BJET criteria
 //           | OBJ ID ':' QGJET criteria

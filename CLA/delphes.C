@@ -158,9 +158,9 @@ std::cout << "Jets:"<<Jet_<<std::endl;
 //GEN LEVEL particles
         for (unsigned int i=0; i<Particle_; i++) {
                 alv.SetPtEtaPhiM( Particle_PT[i], Particle_Eta[i], Particle_Phi[i], Particle_Mass[i] ); // all in GeV
-                adbxgen= new dbxParticle(alv);
+                adbxgen= new dbxTruth(alv);
                 adbxgen->setCharge( Particle_Charge[i] );
-                adbxgeb->adbxe->setPdgID(  Particle_PID[i] );
+                adbxgen->setPdgID(  Particle_PID[i] );
                 adbxgen->setParticleIndx(i);
                 truth.push_back(*adbxgen);
                 delete adbxgen;
