@@ -208,6 +208,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
              if (atype==7) ac="MET";
 
                switch (atype) { 
+		  case 10:  aPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
                    case 0:  aPart->setTlv(  aPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case 1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  aPart->setTlv(  aPart->lv()+ao->taus[ac].at(ai).lv() );   break;
@@ -239,6 +240,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
              if (atype==7) ac="MET";
 
                switch (atype) { 
+		              case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
                    case 0:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case 1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
@@ -312,6 +314,7 @@ double count(AnalysisObjects* ao, string s, float id) {
 */
     ValueNode abc=ValueNode();
     switch (pid) {
+     case truth_t:    return (ao->truth.at(s).size()); break;
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
      case tau_t:      return (ao->taus.at(s).size()); break;
