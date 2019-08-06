@@ -240,7 +240,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
              if (atype==7) ac="MET";
 
                switch (atype) { 
-		  case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
+		              case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
                    case 0:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case 1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
@@ -286,6 +286,16 @@ double all(AnalysisObjects* ao, string s, float id){
 double uweight(AnalysisObjects* ao, string s, float value){
 	ao->evt.user_evt_weight *= value;
 	return 1;
+}
+
+double lepsf(AnalysisObjects* ao, string s, float value){
+	ao->evt.user_evt_weight *= ao->evt.weight_leptonSF;
+	return 1;
+}
+
+double btagsf(AnalysisObjects* ao, string s, float value){
+        ao->evt.user_evt_weight *= ao->evt.weight_bTagSF_77;
+        return 1;
 }
 
 double count(AnalysisObjects* ao, string s, float id) {

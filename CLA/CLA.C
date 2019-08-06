@@ -42,6 +42,7 @@ int main(int argc, char*argv[])
  bool use_lvl0=false;
  bool use_delphes=false;
  bool use_atlasod=false;
+ bool use_atlmin=false;
  bool use_cmsod=false;
  bool use_cmsnano=false;
  bool use_vllmin=false;
@@ -95,6 +96,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
  else if (inptype == "ATLASVLL"){ use_vllmin =true;}
+ else if (inptype == "ATLMIN")  { use_atlmin =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
@@ -208,6 +210,9 @@ if (ival==0) {
   }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("mini");
+  }else if (use_atlmin){
+   cout << "~Now using ATLAS Mini NTUPLE files.~~~~~~ alpha!\n";
+   chain = new TChain("nominal");
   }else if (use_vllmin){
    cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
    chain = new TChain("/physics/nominal");
@@ -247,6 +252,9 @@ if (ival==0) {
    } else if (use_vllmin){
      VLLMin *vllmina=new VLLMin("XXX",chain);
              vllmina->Loop(aselect, username);
+  } else if (use_atlmin){
+    AtlMin *atlmina=new AtlMin("XXX",chain);
+            atlmina->Loop(aselect, username);
    } else if (use_fcc){
     fcc *fcca=new fcc("XXX",chain);
          fcca->Loop(aselect, username);

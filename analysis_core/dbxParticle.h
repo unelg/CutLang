@@ -44,6 +44,7 @@ typedef struct evt_data
 		badjet       =right.badjet;
 		top_hfor_type=right.top_hfor_type;
 		mcevt_weight =right.mcevt_weight;
+		user_evt_weight =right.user_evt_weight;
 		isemuoverlap =right.isemuoverlap;
 		vxp_maxtrk_no=right.vxp_maxtrk_no;
 		vxpType      =right.vxpType;
@@ -271,9 +272,11 @@ public:
 	double SFIsoUncertaintyDown() { return p_isouncertaintydown ; }
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
+        void   addToCollection( std::string v) { p_collections.push_back(v);}
 
 private:
         std::vector<double> p_attribute;
+        std::vector<std::string> p_collections;
 	int p_charge;
 	int p_pdgID;
 	double p_et_cone;
