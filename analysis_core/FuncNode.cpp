@@ -29,10 +29,15 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
              if (atype==7) ac="MET";
 
                 switch (atype) {  //----burada STR ile mapda find ediliyor
+		                                           case 10: DEBUG("truth:"<< (*i)->index <<" ");
+		                                                    inputPart->setTlv(  inputPart->lv()+ao->truth[ac].at(ai).lv()); 
+		                                                    inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
+		                                                    inputPart->setPdgID(ao->truth[ac].at(ai).pdgID()  );
+		                                                    break;
                                                 case 0: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
-							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
+							                                          inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
@@ -40,7 +45,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                 case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
-							inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
+							                                          inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
@@ -99,7 +104,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                 } // end of case
         }// end of for
-  
+	
 }
 
 void FuncNode::setParticleIndex(int order, int newIndex){
@@ -317,9 +322,6 @@ double tauisoof( dbxParticle* apart){
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
-
-
-
 
 
 double nbfof( dbxParticle* apart){

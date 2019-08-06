@@ -641,6 +641,7 @@ function : '{' particules '}' 'm' {
                                            }
                                        }
                            }
+   	    | NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
         | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
         | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
@@ -800,7 +801,40 @@ particules : particules particule {
                                         pnum++;
                          }
             ;
-particule : ELE '_' index {
+particule : GEN '_' index    {
+				DEBUG("truth particule:"<<(int)$3<<"\n");
+                                myParticle* a = new myParticle;
+                                a->type =10;
+                                a->index = (int)$3;
+                                a->collection = "Truth";
+                                TmpParticle.push_back(a);                            
+                                tmp="truth_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+			     }
+
+	 | GEN '[' index ']' { 
+				myParticle* a = new myParticle;
+                                a->type =10;
+                                a->index = (int)$3;
+                                a->collection = "Truth";
+                                TmpParticle.push_back(a);
+                                tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+			     }
+
+
+	 | GEN         {
+				DEBUG("all truth particles \t");
+				myParticle* a = new myParticle;
+				a->type =10;
+                                a->index = 6213;
+                                a->collection = "Truth";
+                                TmpParticle.push_back(a);
+                                tmp="truth_6213";
+                                $$=strdup(tmp.c_str());
+			}
+
+	| ELE '_' index {
                                 DEBUG("electron particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
                                 a->type =1;
@@ -1075,6 +1109,16 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
+			                  else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 10;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="ele_"+to_string((int)$3);
@@ -1171,7 +1215,16 @@ particule : ELE '_' index {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-
+			                  else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 10;
+                                a->index = (int)$3;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
                         else if (otype == 1 ) {
                            DEBUG("which is a ELE\n");
                            tmp="jet_"+to_string((int)$3);
@@ -1439,7 +1492,23 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-
+	 | OBJ ID TAKE GEN criteria {
+                                        DEBUG(" "<<$2<<" is a new GenSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                     }
+	 | OBJ ID ':' GEN criteria {
+                                        DEBUG(" "<<$2<<" is a new GenSet\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+				   }
+                                     
          | OBJ ID TAKE MUO criteria {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
@@ -1585,7 +1654,7 @@ command : CMD condition { //find a way to print commands
                                 Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                                 NodeCuts->insert(make_pair(++cutcount,a));
                     }
-	| WEIGHT ID NB {
+    	  | WEIGHT ID NB {
 				Node* a = new SFuncNode(uweight,$3,$2);
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
