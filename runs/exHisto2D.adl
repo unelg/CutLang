@@ -1,0 +1,28 @@
+#CLA ADL example7
+
+define   WH1  : JET[-1] JET[-1]
+define   WH2  : JET[-3] JET[-3]
+###      chi2 for W finder
+define   Wchi2 : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 
+
+## top quarks without b tagging 
+define   Top1 : WH1 JET[-2]
+define   Top2 : WH1 JET[-4]
+define   mTop1 : m(Top1)
+define   mTop2 : m(Top2)
+###      chi2 for top finder
+define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
+
+algo besttop
+  select   ALL                   # to count all events
+  select   Size(JET) >= 6        # at least 6 jets
+  select   MET < 100             # no large MET
+  select   Wchi2 + topchi2 ~= 0  # find the tops and ws
+  histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
+  histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
+  histo    hmTopWH1 , "Top W correlation (GeV)", 70, 0, 700, 50, 50, 150, mTop1, m(WH1)
+  histo    hmTopWH2 , "Top W correlation (GeV)", 50, 50, 150, 70, 0, 700, m(WH2), mTop2
+  histo    hmWH , "Hadronic W reco (GeV)", 50, 50, 150, 50, 50, 150, m(WH1), m(WH2)
+  histo    hW1mR , "Hadronic W reco (GeV) vs Rwj", 50, 50, 150, 50, 0, 10, m(WH1), {WH1, WH2 }dR #this line doesn't work. why?
+  histo    hW1mE , "Hadronic W reco (GeV) vs E", 50, 50, 150, 50, 50, 150, m(WH2), E(WH1)
+  histo    hmTop , "Hadronic top reco (GeV)", 70, 0, 700, 70, 0, 700, mTop1, mTop2 

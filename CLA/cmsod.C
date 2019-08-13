@@ -138,6 +138,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);
                 adbxj->setParticleIndx(i);
+                adbxj->setFlavor(Jet_btag[i] );
                 adbxj->set_isbtagged_77( (Jet_btag[i]>= blow_th ) ); // cms is >=
                 jets.push_back(*adbxj);
                 delete adbxj;
