@@ -93,6 +93,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
+[eE][xX][pP] return EXP;
+[lL][oO][gG] return LOG;
 [aA][bB][sS] return ABS;
 [sS][qQ][rR][tT] return SQRT;
 [sS][oO][rR][tT] return SORT;
