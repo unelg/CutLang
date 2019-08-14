@@ -30,6 +30,7 @@ using namespace std;
 string tmp;
 int pnum;
 int dnum;
+vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
@@ -67,7 +68,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
-%token ASCEND DESCEND 
+%token ASCEND DESCEND ALIAS
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -89,6 +90,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %%
 input : initializations definitions objects commands 
       | initializations objects definitions  commands 
+      | initializations objects definitions objects commands 
       | initializations definitions objects definitions  commands 
      ;
 initializations : initializations initialization 
@@ -563,6 +565,11 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
+         | NBF '(' particules ')' {
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(nbfof,newList,"nbf");
+                                  }
          | list DR { 
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -641,7 +648,7 @@ function : '{' particules '}' 'm' {
                                            }
                                        }
                            }
-   	    | NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
+   	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
         | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
         | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
@@ -736,25 +743,7 @@ function : '{' particules '}' 'm' {
        | ALL {    
                                         $$=new SFuncNode(all,0, "all");
               }
-//------------------------------------------
-//      | COMB '(' particules  ')' {
-//                                      VECTOR<MYPARTICLE*> NEWLIST;
-//                                      TMPPARTICLE.SWAP(NEWLIST);
-//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"C");
-//           | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
-//                                  }
-//      | PERM '(' particules  ')' {
-//                                      VECTOR<MYPARTICLE*> NEWLIST;
-//                                      TMPPARTICLE.SWAP(NEWLIST);
-//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
-//                                  }
-//      | SORT '(' particules ',' condition ')' {
-//                                      VECTOR<MYPARTICLE*> NEWLIST;
-//                                      TMPPARTICLE.SWAP(NEWLIST);
-//                                      $$=NEW FUNCNODE(PZOF,NEWLIST,"PZ");
-//                                  }
         ;
-//------------------------------------------
 //------------------------------------------
 list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
@@ -1287,7 +1276,7 @@ particule : GEN '_' index    {
              }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
 
-                DEBUG ("ID no index\n");
+                DEBUG ("ID "<< $1 <<" no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1304,6 +1293,7 @@ particule : GEN '_' index    {
                        }
                 }
                 else {
+                        DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
@@ -1348,7 +1338,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
                                     }
-objectBloc : OBJ ID ':' ID criteria {
+      | OBJ ID ':' ID criteria {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
                                         map<string, Node *>::iterator it ;
@@ -1373,6 +1363,22 @@ objectBloc : OBJ ID ':' ID criteria {
                                                 ObjectCuts->insert(make_pair($2,obj));
                                         }
                                     }
+       | OBJ ID ':' COMB '(' particules ')' hamhum criteria {
+                      vector<myParticle*> newPList;   
+                      CombiParticle.swap(newPList);
+                      DEBUG("PARTITION: "<<CombiParticle.size()<<"\n");
+                      vector<Node*> newNList;         //empty
+                      TmpCriteria.swap(newNList);
+                      vector<Node*>::iterator it=newNList.begin();
+
+
+                      Node* nnode= new FuncNode(Qof,newPList,"q"); // this is the combinatorics function
+                      it= newNList.insert(it, nnode );
+
+                      Node* previous=new ObjectNode("Combo",NULL,createNewParti,newNList,"Partition" );
+                      Node*      obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                      ObjectCuts->insert(make_pair($2,obj));
+        }
         | OBJ ID ':' ELE '+' MUO {
                                      DEBUG(" "<<$2<<" is a new Ele+Muo Set\n");
                                      vector<myParticle*> newList;
@@ -1593,6 +1599,7 @@ objectBloc : OBJ ID ':' ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
+/*
 	  | OBJ ID TAKE GEN criteria {
 	                                        DEBUG(" "<<$2<<" is a new GenSet\n");
 	                                        vector<Node*> newList;
@@ -1609,15 +1616,21 @@ objectBloc : OBJ ID ':' ID criteria {
 	                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
 	                                        ObjectCuts->insert(make_pair($2,obj));
 				   }
-	
+*/	
              | OBJ ID TAKE LEP criteria
 //           | OBJ ID ':' BJET criteria
 //           | OBJ ID ':' QGJET criteria
 //           | OBJ ID ':' NUMET criteria
 //           | OBJ ID ':' METLV criteria
            ;
-criteria : criteria criterion
-         | criterion
+
+hamhum : ALIAS {
+          DEBUG ("ALIAS found.\n");
+          TmpParticle.swap( CombiParticle);
+         }
+         ;
+criteria : criteria criterion 
+         | criterion 
          ;
 criterion : CMD condition { //find a way to print commands                                                                            
                                          TmpCriteria.push_back($2);
@@ -1841,9 +1854,8 @@ command : CMD condition { //find a way to print commands
 				}
 // Nant was here
 
-	   | SORT e ASCEND{Node* sort = new SortNode($2,"ascend");NodeCuts->insert(make_pair(++cutcount,sort));}
-	    
-	   | SORT e DESCEND{Node* sort =new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
+	   | SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
+	   | SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
 description : description HID {                                                 
                                                 char s [512];
@@ -1883,7 +1895,7 @@ action : condition {
                         $$=$1;
                         }
        ;    
-condition : e LT e  { $$=new BinaryNode(lt,$1,$3,"<");  }
+condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e GT e { $$=new BinaryNode(gt,$1,$3,">");  }
            | e LE e { $$=new BinaryNode(le,$1,$3,"<="); }  
            | e GE e { $$=new BinaryNode(ge,$1,$3,">="); }

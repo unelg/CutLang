@@ -58,6 +58,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 "AbsEta" return ABSETA;
+"alias" return ALIAS;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 "nbf" return NBF;
@@ -82,8 +83,8 @@ vardef {varname}" "?":"" "?.*"\n"
 ">"|"GT" return GT;
 "[]" return IRG;
 "][" return ERG;
-"AND"|"&&" return AND;//logical ops
-"OR"|"||" return OR;
+"AND"|"&&"|"and" return AND;//logical ops
+"OR"|"||"|"or" return OR;
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
