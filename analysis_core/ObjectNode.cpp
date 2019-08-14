@@ -10,7 +10,7 @@
 #include <set>
 
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -904,4 +904,77 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     }// end of cutIterator
 }
  
+
+void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+   DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+
+   vector<dbxParticle>  combination;
+   dbxParticle *adbxp;
+   TLorentzVector  alv;
+   std::string collectionName;
+   int ipart_max;
+
+   auto cutIterator=criteria->begin();
+   particles->clear();
+   (*cutIterator)->getParticles(particles);
+    DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
+    DEBUG("iPsize:"<<particles->size() <<"\n");
+
+// at this point I have the particles I will use to construct the combined object. like j1 and j2
+// now we find how many of those particles we have in each event
+    for (int jj=0; jj<particles->size(); jj++){
+       DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+       collectionName=particles->at(jj)->collection;
+       switch(particles->at(jj)->type){
+                    case 0: 
+                            if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
+                               cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->muos)[collectionName].size();
+                            break;
+                    case 1: 
+                            if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->eles)[collectionName].size();
+                            break;
+		    case 10: ipart_max=(ao->truth)[collectionName].size();
+                        break;
+                    case 2: ipart_max=(ao->jets)[collectionName].size();
+                        break;
+                    case 8: ipart_max=(ao->gams)[collectionName].size();
+                        break;
+                    case 9: ipart_max=(ao->ljets)[collectionName].size();
+                        break;
+                   case 11: ipart_max=(ao->taus)[collectionName].size();
+                            break;
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
+                        break;
+                }
+        DEBUG("Max # particles:"<<ipart_max<<"\n");
+      } //end of particle loop
+
+//---- NANT's code to produce all the combined objetcs
+//   ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
+
+
+   cutIterator++; // now moving on to the real, first cut defining the new set.
+   while ( cutIterator!=criteria->end() ){ // do the real cuts now.
+     particles->clear();
+    (*cutIterator)->getParticles(particles);
+     DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\n");
+     DEBUG("Cur Psize:"<<particles->size() <<"\n");
+
+   cutIterator++;
+   }// end of  cut iterator loop
+
+   DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
+   DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
+
+}
 
