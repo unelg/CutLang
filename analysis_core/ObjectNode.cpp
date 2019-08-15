@@ -911,8 +911,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
    vector<dbxParticle>  combination;
    dbxParticle *adbxp;
-   TLorentzVector  alv;
-   int apq = 0;
    std::string collectionName;
    int ipart_max;
 
@@ -962,20 +960,18 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       } //end of particle loop
 
 //---- NANT's code to produce all the combined objetcs
-
     Comb combinations_part (ipart_max, particles->size());
-
     combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    TLorentzVector  alv;
+    int apq = 0;
     
-    for(size_t k=0; k<out.size(); ++k)
-    {
+    for(size_t k=0; k<out.size(); ++k) {
       temp_index = out[k]; // ex temp_index = {0,1} 
-      for(size_t i = 0; i<temp_index.size(); ++i)	
-	    {
-	  
+      for(size_t i = 0; i<temp_index.size(); ++i){
+	  DEBUG ("Now p index is:"<< temp_index[i]<<" \t"); 
 	  switch(particles->at(i)->type){
 	  case 0: 
 	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
@@ -1006,27 +1002,63 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(i)->type << std::endl;
 	    break;
 	  }
-	  	  
-	  adbxp= new dbxParticle(alv);
-	  adbxp->setCharge(apq);                            
-	  combination.push_back(*adbxp);
-	  delete adbxp;
-    apq=0;
-    
-	}
-	}
-      
-      ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
-      
-   cutIterator++; // now moving on to the real, first cut defining the new set.
-   while ( cutIterator!=criteria->end() ){ // do the real cuts now.
-     particles->clear();
-    (*cutIterator)->getParticles(particles);
-     DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\n");
-     DEBUG("Cur Psize:"<<particles->size() <<"\n");
+        } 	  
+	adbxp= new dbxParticle(alv);
+	adbxp->setCharge(apq);                            
+	combination.push_back(*adbxp);
+	delete adbxp;
+        apq=0;
+        alv.SetPxPyPzE(0,0,0,0);
+        DEBUG("\n");
+    }
+    ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
-   cutIterator++;
-   }// end of  cut iterator loop
+
+//----------      
+    cutIterator++; // now moving on to the real, first cut defining the new set.
+    while ( cutIterator!=criteria->end() ){ // do the real cuts now.
+      particles->clear();
+      (*cutIterator)->getParticlesAt(particles,0);
+      int ipart_max = (ao->combos)[name].size();
+      bool simpleloop=true;
+      DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
+      if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+      }
+      std::set<int> ptypeset;
+      int t1=particles->at(0)->type;
+      int t2;
+      for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+      }
+      if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+      if ( ptypeset.size()==2) {simpleloop=false; }
+      std::set<int>::iterator ptit;
+      ptit=ptypeset.begin(); ptit++;
+      t2=*ptit;
+
+      if(simpleloop){
+           DEBUG("simpleloop\n");
+           for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               for (int jp=0; jp<particles->size(); jp++){
+                DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< 20<<" name:"<<name<<"\n");
+                particles->at(jp)->type=20;
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
+               DEBUG("Going to evalutate\n");
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               DEBUG("P or F:"<<ppassed<<"\n");
+               if (!ppassed) (ao->truth).find(name)->second.erase( (ao->truth).find(name)->second.begin()+ipart);
+            }
+      } else {
+           DEBUG("TWO particle loop\n");
+      }
+
+      cutIterator++;
+    }// end of  cut iterator loop
 
    DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
    DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");

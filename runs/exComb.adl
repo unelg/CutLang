@@ -4,9 +4,9 @@ object jets : JET
 define ahz = jets[-1] jets[-2]
 
 object hZs : COMB( jets[-1] jets[-2] ) alias  
-     select {jets[-1] }Pt > 20.1
-     select {jets[-2] }Pt > 30.1
-     select { ahz }m [] 50 150
+     select { ahz }m < 150
+#     select {jets[-1] }Pt > 20.1
+#     select {jets[-2] }Pt > 30.1
 
 region test
 select ALL       # to count all events
