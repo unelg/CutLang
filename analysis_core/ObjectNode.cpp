@@ -964,12 +964,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     combinations_part.affiche();
 
     vector<int> temp_index;
-    vector<vector<int>> out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
     TLorentzVector  alv;
     int apq = 0;
     
-    for(size_t k=0; k<out.size(); ++k) {
-      temp_index = out[k]; // ex temp_index = {0,1} 
+    for(size_t k=0; k<combi_out.size(); ++k) {
+      temp_index = combi_out[k]; // ex temp_index = {0,1} 
       for(size_t i = 0; i<temp_index.size(); ++i){
 	  DEBUG ("Now p index is:"<< temp_index[i]<<" \t"); 
 	  switch(particles->at(i)->type){
@@ -1005,10 +1005,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         } 	  
 // we have the combined particle AND the indices of the parents
 
-
-
-
-
 	adbxp= new dbxParticle(alv);
 	adbxp->setCharge(apq);                            
 	combination.push_back(*adbxp);
@@ -1038,6 +1034,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       }
       std::set<int> ptypeset;
       int t1=particles->at(0)->type;
+      int tidx1=particles->at(0)->index;
       int t2;
       for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
@@ -1050,17 +1047,25 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
       if(simpleloop){
            DEBUG("simpleloop\n");
-           for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
-                DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< 20<<" name:"<<name<<"\n");
-                particles->at(jp)->type=20;
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
+           for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
+               for (int jp=0; jp<particles->size(); jp++){ //
+                DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< t1<<" name:"<<name<<"\n");
+                if (tidx1 < 0) {  DEBUG("******Negative INDEX !!!\t");
+                   temp_index = combi_out[ ipart ];
+                   particles->at(jp)->index =temp_index[abs(1+tidx1)];
+                   DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
+                } else {
+                  particles->at(jp)->index=ipart;
+                  particles->at(jp)->collection=name;
+                }
+
                }
+
+
                DEBUG("Going to evalutate\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("P or F:"<<ppassed<<"\n");
-               if (!ppassed) (ao->truth).find(name)->second.erase( (ao->truth).find(name)->second.begin()+ipart);
+               if (!ppassed) (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
             }
       } else {
            DEBUG("TWO particle loop\n");
