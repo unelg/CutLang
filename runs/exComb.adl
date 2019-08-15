@@ -1,9 +1,10 @@
 object jets : JET
    select  {JET}Pt > 50 AND abs({JET }Eta) < 4
 
-define ahz = jets[-1] jets[-2]
+# not good. since we want to make a combi type 20
+#define ahz = jets[-1] jets[-2]
 
-object hZs : COMB( jets[-1] jets[-2] ) alias  
+object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
      select { ahz }m < 150
 #     select {jets[-1] }Pt > 20.1
 #     select {jets[-2] }Pt > 30.1

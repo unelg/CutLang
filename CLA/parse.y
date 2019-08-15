@@ -11,7 +11,7 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -68,7 +68,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE 
-%token ASCEND DESCEND ALIAS
+%token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
@@ -176,7 +176,7 @@ function : '{' particules '}' 'm' {
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       DEBUG("Mass function\n");
+                                       DEBUG("Mass function with:"<< TmpParticle.size() <<" particles.\n");
                                   }
          | 'm' '(' particules ')' {     
                                        vector<myParticle*> newList;
@@ -1064,7 +1064,7 @@ particule : GEN '_' index    {
                         }
         | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                DEBUG("ID -------\t");
+                DEBUG("ID ---[]---\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1170,7 +1170,7 @@ particule : GEN '_' index    {
              }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                DEBUG("ID -------\t");
+                DEBUG("ID --_----\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1281,20 +1281,18 @@ particule : GEN '_' index    {
                 it = ListParts->find($1);
      
                 if(it == ListParts->end()) {
-
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
                        DEBUG($1<<" : "); //------------new ID
-
                        if(ito != ObjectCuts->end()) {
                         DEBUG(" "<<$1<<" is a user particle\n ");
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
-                }
-                else {
+                } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
+                        DEBUG(......
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
@@ -1370,8 +1368,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                       vector<Node*> newNList;         //empty
                       TmpCriteria.swap(newNList);
                       vector<Node*>::iterator it=newNList.begin();
-
-
+//-----------
                       Node* nnode= new FuncNode(Qof,newPList,"q"); // this is the combinatorics function
                       it= newNList.insert(it, nnode );
 
@@ -1624,10 +1621,16 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' METLV criteria
            ;
 
-hamhum : ALIAS {
-          DEBUG ("ALIAS found.\n");
+hamhum : ALIAS ID {
+          DEBUG ("ALIAS found.\t");
           TmpParticle.swap( CombiParticle);
-         }
+          string name = $2;
+          vector<myParticle*> newList;
+          myParticle* a = new myParticle;
+          a->type =20; a->index = 6213; a->collection = "Combo";
+          ListParts->insert(make_pair(name,newList));
+          DEBUG (name<<" inserted\n");
+         }  
          ;
 criteria : criteria criterion 
          | criterion 
