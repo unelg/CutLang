@@ -43,5 +43,6 @@ void createNewMuo   (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myP
 void createNewTau   (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 void createNewPho   (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 void createNewCombo (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
+void createNewParti (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 void createNewTruth (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 #endif /* ObjectNode_hpp */

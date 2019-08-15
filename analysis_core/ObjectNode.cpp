@@ -11,7 +11,6 @@
 
 #include "Comb.h"
 
-
 #define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -973,10 +972,9 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     
     for(size_t k=0; k<out.size(); ++k)
     {
-      temp_index = out[k]; // ex temp_index = {0,1}
-      
+      temp_index = out[k]; // ex temp_index = {0,1} 
       for(size_t i = 0; i<temp_index.size(); ++i)	
-	{
+	    {
 	  
 	  switch(particles->at(i)->type){
 	  case 0: 
@@ -1013,6 +1011,8 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	  adbxp->setCharge(apq);                            
 	  combination.push_back(*adbxp);
 	  delete adbxp;
+    apq=0;
+    
 	}
 	}
       

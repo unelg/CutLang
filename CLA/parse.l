@@ -55,11 +55,12 @@ vardef {varname}" "?":"" "?.*"\n"
 "QGJET" return QGJET;
 "NUMET" return NUMET;
 "METLV" return METLV;
-"Phi" return PHI;//functions
-"Eta" return ETA;
+[pP][hT][iI] return PHI;//functions
+[eE][tT][aA] return ETA;
 "AbsEta" return ABSETA;
-"Pt" return PT;
-"Pz" return PZ;
+"alias" return ALIAS;
+[pP][tT] return PT;
+[pP][zZ] return PZ;
 "nbf" return NBF;
 "dR" return DR;
 "dPhi" return DPHI;
@@ -82,8 +83,8 @@ vardef {varname}" "?":"" "?.*"\n"
 ">"|"GT" return GT;
 "[]" return IRG;
 "][" return ERG;
-"AND"|"&&" return AND;//logical ops
-"OR"|"||" return OR;
+"AND"|"&&"|"and" return AND;//logical ops
+"OR"|"||"|"or" return OR;
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
@@ -93,6 +94,9 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
+[eE][xX][pP] return EXP;
+[lL][oO][gG] return LOG;
+[Hh][Ss][Tt][Ee][Pp] return HSTEP;
 [aA][bB][sS] return ABS;
 [sS][qQ][rR][tT] return SQRT;
 [sS][oO][rR][tT] return SORT;
