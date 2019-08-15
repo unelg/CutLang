@@ -1003,6 +1003,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    break;
 	  }
         } 	  
+// we have the combined particle AND the indices of the parents
+
+
+
+
+
 	adbxp= new dbxParticle(alv);
 	adbxp->setCharge(apq);                            
 	combination.push_back(*adbxp);
@@ -1018,7 +1024,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     cutIterator++; // now moving on to the real, first cut defining the new set.
     while ( cutIterator!=criteria->end() ){ // do the real cuts now.
       particles->clear();
+      DEBUG("before\n");
+//      (*cutIterator)->getParticles(particles);
       (*cutIterator)->getParticlesAt(particles,0);
+      DEBUG("after\n");
       int ipart_max = (ao->combos)[name].size();
       bool simpleloop=true;
       DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
