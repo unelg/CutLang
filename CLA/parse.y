@@ -1292,7 +1292,7 @@ particule : GEN '_' index    {
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
-                        DEBUG(......
+                        DEBUG("Notre particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
@@ -1628,6 +1628,7 @@ hamhum : ALIAS ID {
           vector<myParticle*> newList;
           myParticle* a = new myParticle;
           a->type =20; a->index = 6213; a->collection = "Combo";
+	  newList.push_back(a);
           ListParts->insert(make_pair(name,newList));
           DEBUG (name<<" inserted\n");
          }  
