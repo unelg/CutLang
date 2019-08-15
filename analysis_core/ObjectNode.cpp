@@ -9,6 +9,7 @@
 #include "ValueNode.h"
 #include <set>
 
+#include "Comb.h"
 
 #define _CLV_
 #ifdef _CLV_
@@ -911,6 +912,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    vector<dbxParticle>  combination;
    dbxParticle *adbxp;
    TLorentzVector  alv;
+   int apq = 0;
    std::string collectionName;
    int ipart_max;
 
@@ -960,9 +962,62 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       } //end of particle loop
 
 //---- NANT's code to produce all the combined objetcs
-//   ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
+    Comb combinations_part (ipart_max, particles->size());
 
+    combinations_part.affiche();
+
+    vector<int> temp_index;
+    vector<vector<int>> out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    
+    for(size_t k=0; k<out.size(); ++k)
+    {
+      temp_index = out[k]; // ex temp_index = {0,1} 
+      for(size_t i = 0; i<temp_index.size(); ++i)	
+	    {
+	  
+	  switch(particles->at(i)->type){
+	  case 0: 
+	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->muos)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 1: 
+	    alv+=(ao->eles)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->eles)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 10:
+	    alv+=(ao->truth)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->truth)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 2:
+	    alv+=(ao->jets)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->jets)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 8: alv+=(ao->gams)[collectionName].at(temp_index[i]).lv();
+	    break;
+	  case 9: alv+=(ao->ljets)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->ljets)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 11: 
+	    alv+=(ao->taus)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->taus)[collectionName].at(temp_index[i]).q();
+	    break;
+	  default:
+	    std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(i)->type << std::endl;
+	    break;
+	  }
+	  	  
+	  adbxp= new dbxParticle(alv);
+	  adbxp->setCharge(apq);                            
+	  combination.push_back(*adbxp);
+	  delete adbxp;
+    apq=0;
+    
+	}
+	}
+      
+      ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
+      
    cutIterator++; // now moving on to the real, first cut defining the new set.
    while ( cutIterator!=criteria->end() ){ // do the real cuts now.
      particles->clear();
