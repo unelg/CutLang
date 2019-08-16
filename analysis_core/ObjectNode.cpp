@@ -10,6 +10,7 @@
 #include <set>
 
 #include "Comb.h"
+#include "Denombrement.h"
 
 #define _CLV_
 #ifdef _CLV_
@@ -85,8 +86,8 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
-    this->Reset(); ///////NGU
     DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
+ 
     std::string basename="xxx";
     bool keepworking=true;
 
@@ -864,7 +865,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->truth)[base_collection2].size();
+                    case 0: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size();
                         break;
@@ -950,7 +951,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                         break;
                     case 9: ipart_max=(ao->ljets)[collectionName].size();
                         break;
-                   case 11: ipart_max=(ao->taus)[collectionName].size();
+                    case 11: ipart_max=(ao->taus)[collectionName].size();
                             break;
                     default:
                         std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
@@ -961,7 +962,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //---- NANT's code to produce all the combined objetcs
     Comb combinations_part (ipart_max, particles->size());
-//    combinations_part.affiche();
+    combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
@@ -1015,41 +1016,54 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     }
     ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
+     vector<vector<int>> bad_combinations;
+     vector<vector<int>> good_combinations;
+
 
 //----------      
     cutIterator++; // now moving on to the real, first cut defining the new set.
     while ( cutIterator!=criteria->end() ){ // do the real cuts now.
       particles->clear();
+      DEBUG("before\n");
+//      (*cutIterator)->getParticles(particles);
       (*cutIterator)->getParticlesAt(particles,0);
+      DEBUG("after\n");
       int ipart_max = (ao->combos)[name].size();
       bool simpleloop=true;
-      DEBUG("*** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
+      DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
       if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
       }
       std::set<int> ptypeset;
+      std::set<int> pindexset;
       int t1=particles->at(0)->type;
       int tidx1=particles->at(0)->index;
       int t2;
+      int tidx2;
       for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
+	 pindexset.insert( particles->at(kp)->index);
       }
       if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
       if ( ptypeset.size()==2) {simpleloop=false; }
       std::set<int>::iterator ptit;
+      std::set<int>::iterator pIit;
       ptit=ptypeset.begin(); ptit++;
       t2=*ptit;
+      pIit=pindexset.begin(); pIit++;
+      tidx2=*pIit;
 
       if(simpleloop){
-           DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
+           DEBUG("simpleloop\n");
+	   
            for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
                for (int jp=0; jp<particles->size(); jp++){ //
                 DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< t1<<" name:"<<name<<"\n");
                 if (tidx1 < 0) {  DEBUG("******Negative INDEX !!!\t");
                    temp_index = combi_out[ ipart ];
-                   particles->at(jp)->index =temp_index[abs(1+tidx1)];
+                   particles->at(0)->index =temp_index[abs(1+tidx1)];
                    DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
                 } else {
                   particles->at(jp)->index=ipart;
@@ -1062,17 +1076,102 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                DEBUG("Going to evalutate\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("P or F:"<<ppassed<<"\n");
-               if (!ppassed) (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-            }
+               if (!ppassed) {
+		 (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+		 bad_combinations.push_back(combi_out[ipart]);
+	       }
+	   }
       } else {
-           DEBUG("TWO particle loop\n");
+	DEBUG("TWO particle loop\n");
+	ValueNode abc=ValueNode();
+	for (int ipart=ipart_max-1; ipart>=0; ipart--){
+	  if (tidx1 < 0) {DEBUG("****** Negative index t1 ");
+	    temp_index = combi_out[ipart];
+	    particles->at(0)->index = temp_index[abs(1+tidx1)];
+	  }
+	  else {
+	    particles->at(0)->index=ipart;
+	    DEBUG("index = " << ipart << endl);
+	  }
+	  int ipart2_max;
+	  string base_collection2=particles->at(1)->collection;
+	  switch(particles->at(1)->type){
+	  case 0: ipart2_max=(ao->muos)[base_collection2].size();
+	    break;
+	  case 10: ipart2_max=(ao->truth)[base_collection2].size();
+	    break;
+	  case 1: ipart2_max=(ao->eles)[base_collection2].size();
+	    break;
+	  case 2: ipart2_max=(ao->jets)[base_collection2].size();
+	    break;
+	    //                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+	    //                      break;
+	    //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
+	    //                      break;
+	  case 8: ipart2_max=(ao->gams)[base_collection2].size();
+	    break;
+	  case 9: ipart2_max=(ao->ljets)[base_collection2].size();
+	    break;
+	  case 11: ipart2_max=(ao->taus)[base_collection2].size();
+	    break;
+	  case 20: ipart2_max=(ao->combos)[base_collection2].size();
+	    break;
+	  default:
+	    std::cerr << "WRONG PARTICLE TYPE! type:"<<particles->at(1)->type << std::endl;
+	    break;
+	  }
+	  
+	  for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+
+	    if (particles->at(1)->index < 0 ){ DEBUG("*******Negative index t2 ");
+		  temp_index = combi_out[kpart];
+		  particles->at(1)->index = temp_index[abs(1+particles->at(1)->index)];
+		}
+		else {
+		  particles->at(1)->index=kpart;
+		  DEBUG("index = " << kpart << endl);
+		}
+
+	     for (int jp=2; jp<particles->size(); jp++){
+	      if (particles->at(jp)->type == t1){
+		if (tidx1 < 0) {DEBUG("****** Negative index t1 ");
+		  temp_index = combi_out[ipart];
+		  particles->at(jp)->index = temp_index[abs(1+tidx1)];
+		}
+		else {
+		   particles->at(jp)->index=ipart;
+		   DEBUG("index = " << ipart << endl);
+		}
+	      }    
+	      if (particles->at(jp)->type == t2){
+		if (tidx2 < 0 ){ DEBUG("*******Negative index t2 ");
+		  temp_index = combi_out[kpart];
+		  particles->at(jp)->index = temp_index[abs(1+tidx2)];
+		}
+		else {
+		  particles->at(jp)->index=kpart;
+		  DEBUG("index = " << kpart << endl);
+		}		
+	      } 	      
+	     }
+	    
+	    bool ppassed=(*cutIterator)->evaluate(ao);
+	    DEBUG("P or F:"<<ppassed<<"\n");
+	    if (!ppassed) {
+	      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+	      // bad_combinations.push_back(combi_out[ipart]);
+	    }
+	    
+	  } 
+	}
       }
 
       cutIterator++;
     }// end of  cut iterator loop
+    
+    DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
+    DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
 
-   DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
-   DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
-
+    
 }
 
