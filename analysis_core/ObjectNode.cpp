@@ -85,8 +85,8 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
+    this->Reset(); ///////NGU
     DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
- 
     std::string basename="xxx";
     bool keepworking=true;
 
@@ -961,7 +961,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //---- NANT's code to produce all the combined objetcs
     Comb combinations_part (ipart_max, particles->size());
-    combinations_part.affiche();
+//    combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
@@ -1020,13 +1020,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     cutIterator++; // now moving on to the real, first cut defining the new set.
     while ( cutIterator!=criteria->end() ){ // do the real cuts now.
       particles->clear();
-      DEBUG("before\n");
-//      (*cutIterator)->getParticles(particles);
       (*cutIterator)->getParticlesAt(particles,0);
-      DEBUG("after\n");
       int ipart_max = (ao->combos)[name].size();
       bool simpleloop=true;
-      DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
+      DEBUG("*** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
       if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -1046,7 +1043,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       t2=*ptit;
 
       if(simpleloop){
-           DEBUG("simpleloop\n");
+           DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
            for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
                for (int jp=0; jp<particles->size(); jp++){ //
                 DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< t1<<" name:"<<name<<"\n");

@@ -5,15 +5,12 @@ object hZs : COMB( jets[-1] jets[-2] ) alias ahz
      select { ahz }m < 300
      select {jets[-1] }Pt > 20.1
      select {jets[-2] }Pt > 90.1
-#     select { ahz }AbsEta < 2.07
+     select { ahz }AbsEta < 2.07
 
 region test
-select ALL       # to count all events
-select Size(jets) > 2
-#select  {jets_0 jets_1}m > 1 
-#select  {jets_0 jets_2}m > 1 
-#select  {jets_0 jets_3}m > 1 
-#select  {jets_1 jets_2}m > 1 
-#select  {jets_1 jets_3}m > 1 
-#select  {jets_2 jets_3}m > 1 
-select Size(hZs) > 0
+	select ALL       # to count all events
+	select Size(jets) > 2
+	select Size(hZs) > 1
+	select  {hZs[0] }Pt > 100
+	select  {hZs[0], hZs[1] }dR > 0.5
+
