@@ -2,10 +2,10 @@ object jets : JET
    select  {JET}Pt > 50 AND abs({JET }Eta) < 4
 
 object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
-     select { ahz }m < 300
+     select { ahz }m < 200
      select {jets[-1] }Pt > 20.1
      select {jets[-2] }Pt > 90.1
-#     select {jets[-2], ahz }dR > 0.6
+     select {jets[-2], ahz }dR > 0.2
      select { ahz }AbsEta < 2.07
 
 region test
