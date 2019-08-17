@@ -10,9 +10,9 @@
 #include <set>
 
 #include "Comb.h"
-#include "Denombrement.h"
+//#include "Denombrement.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -87,7 +87,7 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
     DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
- 
+    this->Reset(); ///////NGU
     std::string basename="xxx";
     bool keepworking=true;
 
@@ -873,10 +873,6 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                         break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size();
                         break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
                         break;
                     case 9: ipart2_max=(ao->ljets)[base_collection2].size();
@@ -962,7 +958,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //---- NANT's code to produce all the combined objetcs
     Comb combinations_part (ipart_max, particles->size());
-    combinations_part.affiche();
+//    combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
@@ -1024,13 +1020,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     cutIterator++; // now moving on to the real, first cut defining the new set.
     while ( cutIterator!=criteria->end() ){ // do the real cuts now.
       particles->clear();
-      DEBUG("before\n");
-//      (*cutIterator)->getParticles(particles);
       (*cutIterator)->getParticlesAt(particles,0);
-      DEBUG("after\n");
       int ipart_max = (ao->combos)[name].size();
       bool simpleloop=true;
-      DEBUG("Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
+      DEBUG("***** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
       if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -1056,8 +1049,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       tidx2=*pIit;
 
       if(simpleloop){
-           DEBUG("simpleloop\n");
-	   
+           DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
            for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
                for (int jp=0; jp<particles->size(); jp++){ //
                 DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< t1<<" name:"<<name<<"\n");
@@ -1071,7 +1063,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 }
 
                }
-
 
                DEBUG("Going to evalutate\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
@@ -1104,10 +1095,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    break;
 	  case 2: ipart2_max=(ao->jets)[base_collection2].size();
 	    break;
-	    //                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-	    //                      break;
-	    //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-	    //                      break;
 	  case 8: ipart2_max=(ao->gams)[base_collection2].size();
 	    break;
 	  case 9: ipart2_max=(ao->ljets)[base_collection2].size();
@@ -1121,18 +1108,17 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    break;
 	  }
 	  
-	  for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+	  for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
 
 	    if (particles->at(1)->index < 0 ){ DEBUG("*******Negative index t2 ");
 		  temp_index = combi_out[kpart];
 		  particles->at(1)->index = temp_index[abs(1+particles->at(1)->index)];
-		}
-		else {
+	    } else {
 		  particles->at(1)->index=kpart;
 		  DEBUG("index = " << kpart << endl);
-		}
+	    }
 
-	     for (int jp=2; jp<particles->size(); jp++){
+	    for (int jp=2; jp<particles->size(); jp++){
 	      if (particles->at(jp)->type == t1){
 		if (tidx1 < 0) {DEBUG("****** Negative index t1 ");
 		  temp_index = combi_out[ipart];
@@ -1156,22 +1142,22 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	     }
 	    
 	    bool ppassed=(*cutIterator)->evaluate(ao);
-	    DEBUG("P or F:"<<ppassed<<"\n");
+	    DEBUG("P or F:"<<ppassed<<" ipart:"<<ipart<<"\n");
 	    if (!ppassed) {
 	      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
 	      // bad_combinations.push_back(combi_out[ipart]);
+              break;
 	    }
 	    
-	  } 
-	}
-      }
+	  } // kpart loop 
+	} // ipart loop
+      } // two particle
 
       cutIterator++;
     }// end of  cut iterator loop
     
     DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
     DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
-
     
 }
 
