@@ -12,7 +12,7 @@
 #include "Comb.h"
 //#include "Denombrement.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -958,7 +958,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //---- NANT's code to produce all the combined objetcs
     Comb combinations_part (ipart_max, particles->size());
-//    combinations_part.affiche();
+    combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
