@@ -15,7 +15,7 @@ struct curseur
     int right;
 };
 
-bool etape_select(vector<int> tab_input, vector<int> tab_select)
+bool etape_select(vector<int> tab_input, vector<int> tab_select)// première étape de la selection des bad combinations
 {
     bool test = true;
 
@@ -25,7 +25,7 @@ bool etape_select(vector<int> tab_input, vector<int> tab_select)
     return test;
 }
 
-void etape_select_fin(vector<vector<int>>& output, vector<int> tab_select, int pas, int n)
+void etape_select_fin(vector<vector<int>>& output, vector<int> tab_select, int pas, int n)// dernière étape de la selection des bad combinations en tant que methode de la classe i.e on enlève les bad combinations après que l'on ait généré toutes les combinations possibles
 {
     vector<int> temp(pas);
     int i = 0;
@@ -48,7 +48,7 @@ void etape_select_fin(vector<vector<int>>& output, vector<int> tab_select, int p
     }while(i<output.size());
 }
 
-void test_selection(vector<int> temp, vector<vector<int>>& output, vector<vector<int>> tab_select, int pas, int n)
+void test_selection(vector<int> temp, vector<vector<int>>& output, vector<vector<int>> tab_select, int pas, int n)// dernière étape de la selection des bad combinations cette fois ci on ne genère pas les bad combinations tout simplement dans output
 {
     vector<int> block_of_temp(pas);
     bool test = true;
@@ -85,7 +85,7 @@ void reccursion(void c(int, int, int,vector<vector<int>>,  vector<vector<int>>&,
     }
 }
 
-void sort(vector<int>& input, int pas, int nbZ)
+void sort(vector<int>& input, int pas, int nbZ)// fonction pour arranger en ordre croissant  un groupe de nombre
 {
     for(int i = 0; i<nbZ; ++i)
     {
@@ -100,7 +100,7 @@ void sort(vector<int>& input, int pas, int nbZ)
     }
 }
 
-void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int>>& output, vector<int> tab, int& itt, int nbZ)
+void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int>>& output, vector<int> tab, int& itt, int nbZ)// combinaison des dernier groupes de chiffres avec les chiffres en surplus
 {
     vector<int> temp = tab;
     string bit_conteur(K, 1);
@@ -120,7 +120,7 @@ void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int
     }
 }
 
-void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0)// ici le pas est le nombre "nJet" de jets // tab
+void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0)//on genère ici toutes les combinaisons possibles en utilisant les curseurs "left" et "right"
 {
     int arret = stop;
     int nbZ = (real_end + 1)/pas;
@@ -185,7 +185,7 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
     }while(right_end >= real_end && arret==0);
 }
 
-void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0) // tab, output
+void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0) // on fait toutes les "etape" depuis le plus droit parce que dans précédamment on a tout de suite commencé par un swap
 {
     int n = left_begin;
     while(n < real_end - pas)
