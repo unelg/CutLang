@@ -1,20 +1,33 @@
+
 object jets : JET
-   select  {JET}Pt > 50 AND abs({JET }Eta) < 4
+   select  {JET}Pt > 10  
+   select  {JET}Eta < 4
+
 
 object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
-     select { ahz }m < 200
-#     select {jets[-1] }Pt > 20.1
-#     select {jets[-2] }Pt > 90.1
-#     select { ahz }AbsEta < 2.07
-     select {jets[-2], ahz }dR > 2.0
+     select { ahz }m [] 20 150
+#     select {jets[-1] }Pt > 25.1
+#     select {jets[-2] }Pt > 22.1
+#     select { ahz }AbsEta < 2.0
+#     select {jets[-1], ahz }dR < 0.6
 
-region test
+define zz : hZs[-1] 
+define zhad : jets[-1] jets[-2]
+
+object goodeles : ELE
+   select  {ELE}Pt > 10  
+   select  {ELE}AbsEta < 4
+
+region testA
+ 	select ALL                        # to count all events
+ 	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
+ 	select Size(hZs)  >= 1            # we need at least 2 Zhad candidates.
+        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
+        histo  m1hZ, "mass Hrec GeV", 50, 50, 150, { zz }m
+
+region testB
 	select ALL                        # to count all events
 	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
-	select Size(hZs)  > 1             # we need at least 2 Zhad candidates.
-#------at this point we might have multiple candidates, e.g. Z(01) Z(23) && Z(02) Z(13)
-#------if no specification given, we take the first one, WITH A WARNING, otherwise select
-#       select ({hZs[-1]}m - hZs[-2]}m)^2 ~= 0     # we kill here overlapping candidates. 
-#	select {hZs[0]}Pt > 100           # first one has to have large Pt
-#	select {hZs[0], hZs[1]}dR > 1.5   # the angular separation between the two should be large
-
+        select {zhad}m ~= 91.2            # the other method
+        histo  m2hZ, "mass Hrec GeV", 50, 50, 150, {zhad}m
+        histo  e2hZ, "AE Hrec ", 50, 0, 5, {zhad}AbsEta
