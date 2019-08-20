@@ -10,7 +10,7 @@
 #include <set>
 
 #include "Comb.h"
-//#include "Denombrement.h"
+#include "Denombrement.h"
 
 //#define _CLV_
 #ifdef _CLV_
