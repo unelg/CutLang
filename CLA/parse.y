@@ -34,7 +34,7 @@ vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
-std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[5];
+std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -176,7 +176,7 @@ function : '{' particules '}' 'm' {
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       DEBUG("Mass function with:"<< TmpParticle.size() <<" particles.\n");
+                                       DEBUG("Mass function with:"<< newList.size() <<" particles.\n");
                                   }
          | 'm' '(' particules ')' {     
                                        vector<myParticle*> newList;
@@ -1203,6 +1203,7 @@ particule : GEN '_' index    {
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
+                           DEBUG(" TP size :"<<TmpParticle.size()<<"\n");
                         }
 			                  else if (otype == 10 ) {
                            DEBUG("which is a GEN\n");
@@ -1292,7 +1293,7 @@ particule : GEN '_' index    {
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
-                        DEBUG("Notre particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
+                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
@@ -1671,7 +1672,7 @@ command : CMD condition { //find a way to print commands
                                 Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                                 NodeCuts->insert(make_pair(++cutcount,a));
                     }
-    	  | WEIGHT ID NB {
+    	| WEIGHT ID NB {
 				Node* a = new SFuncNode(uweight,$3,$2);
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
@@ -1905,7 +1906,7 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e GE e { $$=new BinaryNode(ge,$1,$3,">="); }
            | e EQ e { $$=new BinaryNode(eq,$1,$3,"=="); } 
            | e NE e { $$=new BinaryNode(ne,$1,$3,"<>"); }   
-           | e MINIMIZE e { $$=new SearchNode(minim,$1,$3,"~="); }
+           | e MINIMIZE e { DEBUG ("MINIMIZE\n"); $$=new SearchNode(minim,$1,$3,"~="); }
 //         | e '(' ID ')' MINIMIZE e { 
 //                                    map<string,Node*>::iterator ito = ObjectCuts->find($3);
 //                                    if(ito == ObjectCuts->end()) {
@@ -2005,11 +2006,24 @@ e : e '+' e  {
                 it = NodeVars->find($1);
      
                 if(it == NodeVars->end()) {
-                        DEBUG($1<<" : ");
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                        DEBUG($1<<" : \n");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
                         YYERROR;//stops parsing if variable not found
-                }
-                else {
+
+                        vector<Node*> newList; //empty
+                        TmpCriteria.swap(newList);
+                        map<string, Node *>::iterator it ;
+                        it = ObjectCuts->find($1);
+                        if(it == ObjectCuts->end()) {
+                                                DEBUG($1<<" : ") ;
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                YYERROR;
+                        }
+                        else {
+                               DEBUG($1<<" is a known object\n ") ;
+                             }
+
+                } else {
                         $$=it->second;
                 }
                 //get the node from variable map
@@ -2020,7 +2034,7 @@ e : e '+' e  {
      
                 if(it == NodeVars->end()) {
                         DEBUG($1<<" : ");
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
                         YYERROR;//stops parsing if variable not found
                 }
                 else {
