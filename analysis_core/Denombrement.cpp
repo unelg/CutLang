@@ -15,57 +15,39 @@ struct curseur
     int right;
 };
 
-bool etape_select(vector<int> tab_input, vector<int> tab_select)// première étape de la selection des bad combinations
+void suppr_bad_combi(vector<int>& temp, vector<int> tab_select, int& n, int pas)
 {
-    bool test = true;
+    vector<int> temp_combi(pas);
+    int k = 0;
 
-    for(int i = 0; i<tab_input.size(); ++i)
-        test = test && (tab_input[i]==tab_select[i]);
-
-    return test;
-}
-
-void etape_select_fin(vector<vector<int>>& output, vector<int> tab_select, int pas, int n)// dernière étape de la selection des bad combinations en tant que methode de la classe i.e on enlève les bad combinations après que l'on ait généré toutes les combinations possibles
-{
-    vector<int> temp(pas);
-    int i = 0;
     do
     {
-        for(int j = 0; j<n; ++j)
+        for(int i = 0; i<pas; i++)
         {
-            for(int k = 0; k<pas; ++k)
-                {
-                    temp[k] = output[i][k+j*pas];
-                }
-
-            if(etape_select(temp, tab_select))
-                {
-                    output.erase(output.begin()+i);
-                    --i; j = n;
-                }
+            temp_combi[i] = temp[i+k];
         }
-        ++i;
-    }while(i<output.size());
+        if(temp_combi==tab_select)
+        {
+            temp.erase(temp.begin()+k, temp.begin()+ k + pas );
+            k-=pas;
+            n-=pas;
+        }
+        k+=pas;
+    }while(k<n);
 }
 
-void test_selection(vector<int> temp, vector<vector<int>>& output, vector<vector<int>> tab_select, int pas, int n)// dernière étape de la selection des bad combinations cette fois ci on ne genère pas les bad combinations tout simplement dans output
+void suppr_by_set(vector<vector<int>>&output, vector<int> temp, vector<vector<int>> set_select, int n, int pas)
 {
-    vector<int> block_of_temp(pas);
-    bool test = true;
+    int N = n;
+    for(int i = 0; i<set_select.size(); i++)
+        suppr_bad_combi(temp, set_select[i], N, pas);
 
-    for(size_t i = 0; i<tab_select.size(); ++i)
-        {
-            for(size_t j = 0; j<n; j++)
-            {
-                for(size_t k = 0; k<pas; k++)
-                {
-                    block_of_temp[k] = temp[k+j*pas];
-                }
-                test = test && (!etape_select(block_of_temp, tab_select[i]));
-            }
-        }
-    if(test)
-        output.push_back(temp);
+    temp.erase(temp.begin()+N, temp.end());
+    if(N!=0)
+    {
+        if(output.size()>0){ if(temp!=output.back()) output.push_back(temp); }
+        else output.push_back(temp);
+    }
 }
 
 void reccursion(void c(int, int, int,vector<vector<int>>,  vector<vector<int>>&, vector<int>, int&, int), void e( vector<vector<int>>, vector<int>, vector<vector<int>>&, int, int, int, int, int, int, int), vector<vector<int>> tab_select, vector<int> temp ,
@@ -85,7 +67,7 @@ void reccursion(void c(int, int, int,vector<vector<int>>,  vector<vector<int>>&,
     }
 }
 
-void sort(vector<int>& input, int pas, int nbZ)// fonction pour arranger en ordre croissant  un groupe de nombre
+void sort(vector<int>& input, int pas, int nbZ)
 {
     for(int i = 0; i<nbZ; ++i)
     {
@@ -100,11 +82,12 @@ void sort(vector<int>& input, int pas, int nbZ)// fonction pour arranger en ordr
     }
 }
 
-void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int>>& output, vector<int> tab, int& itt, int nbZ)// combinaison des dernier groupes de chiffres avec les chiffres en surplus
+void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int>>& output, vector<int> tab, int& itt, int nbZ)
 {
     vector<int> temp = tab;
     string bit_conteur(K, 1);
     bit_conteur.resize(N, 0);
+    int total = n+K;
 
     while (std::prev_permutation(bit_conteur.begin(), bit_conteur.end()))
     {
@@ -116,11 +99,12 @@ void comb(int N, int K, int n, vector<vector<int>> tab_select, vector<vector<int
 
         }
         sort(temp, K, nbZ);
-        test_selection(temp, output, tab_select, K, nbZ); ++itt;
+        suppr_by_set(output, temp, tab_select, total, K);
+        ++itt;
     }
 }
 
-void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0)//on genère ici toutes les combinaisons possibles en utilisant les curseurs "left" et "right"
+void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0)// ici le pas est le nombre "nJet" de jets // tab
 {
     int arret = stop;
     int nbZ = (real_end + 1)/pas;
@@ -132,6 +116,7 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
 
     a.left = left_begin;
     a.right = right_begin;
+    int total = real_end+1;
 
     do
     {
@@ -142,7 +127,8 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
                 a.right = i;
                 swap(temp[a.left],temp[a.right]);
                 sort(temp,pas, nbZ);
-                test_selection(temp, output, tab_select, pas, nbZ); ++itteration;
+                suppr_by_set(output, temp, tab_select, real_end+1, pas);
+                 ++itteration;
                 reccursion(comb, etape, tab_select, temp, output, left_begin, right_end, real_end, interrup, pas, nbZ);
 
                 if (a.left != left_begin && i != right_end)
@@ -178,14 +164,15 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
             a.right = right_begin;
 
             sort(temp, pas, nbZ);
-            test_selection(temp, output, tab_select, pas, nbZ); ++itteration;
+            suppr_by_set(output, temp, tab_select, total, pas);
+              ++itteration;
 
             reccursion(comb, etape, tab_select, temp, output, left_begin, right_end, real_end, interrup, pas, nbZ);
         }
     }while(right_end >= real_end && arret==0);
 }
 
-void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0) // on fait toutes les "etape" depuis le plus droit parce que dans précédamment on a tout de suite commencé par un swap
+void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>& output, int left_begin, int right_begin, int right_end, int real_end, int interrup, int pas, int stop = 0) // tab, output
 {
     int n = left_begin;
     while(n < real_end - pas)
@@ -209,7 +196,7 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal, vector<vector<int>> t
             tab[i] = i;
         }
 
-    test_selection(tab, out, tab_selection, nJetRecontr-1, nJetTotal/nJetRecontr);
+    suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
 
     etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
 }
@@ -223,7 +210,7 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReco
             tab[i] = i;
         }
 
-    out.push_back(tab);
+    suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
 
     etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
 }
@@ -242,7 +229,7 @@ void Denombrement::affiche()
 {
     for(int i = 0; i<out.size(); ++i)
     {
-        for(int j = 0; j<nZ*nJetRecontr; ++j)
+        for(int j = 0; j<out[i].size(); ++j)
         {
             cout << out[i][j] << " ";
             if(j%nJetRecontr == nJetRecontr-1)
@@ -264,8 +251,3 @@ void Denombrement::output(vector<vector<int>>& tab)
     out = tab;
 }
 
-void Denombrement::select(vector<vector<int>> tab_select)
-{
-    for(size_t i = 0; i<tab_select.size(); ++i)
-        etape_select_fin(out, tab_select[i], nJetRecontr, (nJetTotal)/nJetRecontr);
-}
