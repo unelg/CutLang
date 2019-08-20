@@ -1064,7 +1064,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
                }
 
-               DEBUG("Going to evalutate\n");
+               DEBUG("Going to evaluate\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("P or F:"<<ppassed<<"\n");
                if (!ppassed) {

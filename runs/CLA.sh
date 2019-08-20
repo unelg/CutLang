@@ -10,6 +10,8 @@ datatype=$2
 if [ $# -lt 2 ]; then
  echo ERROR: not enough arguments
  echo $0  ROOTfile_name  ROOTfile_type [-h]
+ cat $0 | grep '|-'|grep -v grep| cut -f1 -d')'
+ echo "ROOT file type can be:"; grep "inptype ==" ../CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
  exit 1
 fi
 
@@ -32,6 +34,7 @@ case $key in
     -h|--help)
     echo command line arguments:
     cat $0 | grep '|-'|grep -v grep| cut -f1 -d')'
+    echo "ROOT file type can be:"; grep "inptype ==" ../CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
     exit 1
     ;;
     -v|--verbose)
