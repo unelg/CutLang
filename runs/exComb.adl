@@ -1,0 +1,33 @@
+
+object jets : JET
+   select  {JET}Pt > 10  
+   select  {JET}Eta < 4
+
+
+object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
+     select { ahz }m [] 20 150
+#     select {jets[-1] }Pt > 25.1
+#     select {jets[-2] }Pt > 22.1
+#     select { ahz }AbsEta < 2.0
+#     select {jets[-1], ahz }dR < 0.6
+
+define zz : hZs[-1] 
+define zhad : jets[-1] jets[-2]
+
+object goodeles : ELE
+   select  {ELE}Pt > 10  
+   select  {ELE}AbsEta < 4
+
+region testA
+ 	select ALL                        # to count all events
+ 	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
+ 	select Size(hZs)  >= 1            # we need at least 2 Zhad candidates.
+        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
+        histo  m1hZ, "mass Hrec GeV", 50, 50, 150, { zz }m
+
+region testB
+	select ALL                        # to count all events
+	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
+        select {zhad}m ~= 91.2            # the other method
+        histo  m2hZ, "mass Hrec GeV", 50, 50, 150, {zhad}m
+        histo  e2hZ, "AE Hrec ", 50, 0, 5, {zhad}AbsEta
