@@ -323,7 +323,11 @@ double count(AnalysisObjects* ao, string s, float id) {
      case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
-     case combo_t:    return (ao->combos.at(s).size()); break;
+     case combo_t:    //if (ao->combos.at(s).indexA.size() > 0) {return (ao->combos.at(s).size());
+                      //} else { DEBUG( "TABLE A\n");    // to be continued     
+                               return (ao->combos.at(s).size() );
+                      //} 
+                      break;
      default:         return (-1); break;
     }
     return (-1);

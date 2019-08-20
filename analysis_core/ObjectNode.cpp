@@ -24,9 +24,9 @@ ObjectNode::ObjectNode(std::string id,
                        void (* func) (AnalysisObjects* ao, vector<Node*>* criteria, std::vector<myParticle *>* particles, std::string  name, std::string basename),
                        vector<Node*> criteria,
                        std::string s) {
-
     symbol=s; // e.g. "obj Ele"
     name=id;//this is useless because symbol already has name of the particle, e.g. "ELE"
+    combo_rdy=false;
 
     if(func==NULL) {
         createNewSet=((ObjectNode*)previous)->createNewSet;
@@ -1156,8 +1156,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       cutIterator++;
     }// end of  cut iterator loop
     
+    vector <int>  indexB;
+    for (int i=0; i< (ao->combos)[name].size(); i++){
+       indexB.push_back(i);
+    }
+
     DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
     DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
-    
+ // tableA has to be prepared here.
+ // NANT
+ // print tableA 
+   
 }
 
