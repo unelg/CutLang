@@ -9,7 +9,7 @@ class Comb
 {
     public:
         Comb(int, int);
-        Comb(int, int, vector<vector<int>>);
+        Comb(int, int, vector<vector<int>>);    
         virtual ~Comb();
         vector<vector<int>> output();
         void affiche();
