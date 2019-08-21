@@ -12,12 +12,14 @@
 #include "Comb.h"
 #include "Denombrement.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
 #define DEBUG(a)
 #endif
+
+
 
 ObjectNode::ObjectNode(std::string id,
                        Node* previous,
@@ -902,6 +904,18 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     }// end of cutIterator
 }
  
+void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<int>& table_B_ii, int index_jj, int n, int pas )
+{
+	vector<int> temp(tab_select_jj.size()); 
+	for(int i = 0; i<n; i++)
+	{
+		for(int j = 0; j<pas; j++)
+			temp[j] = output_ii[j+i*pas];
+
+		if(temp==tab_select_jj)
+			table_B_ii.push_back(index_jj);
+	}
+}
 
 void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
    DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
@@ -958,7 +972,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //---- NANT's code to produce all the combined objetcs
     Comb combinations_part (ipart_max, particles->size());
-//    combinations_part.affiche();
+    combinations_part.affiche();
 
     vector<int> temp_index;
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
@@ -1013,7 +1027,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
      vector<vector<int>> bad_combinations;
-     vector<vector<int>> good_combinations;
+     set<vector<int>> good_combinations;
 
 
 //----------      
@@ -1061,16 +1075,18 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                   particles->at(jp)->index=ipart;
                   particles->at(jp)->collection=name;
                 }
-
                }
 
                DEBUG("Going to evaluate\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("P or F:"<<ppassed<<"\n");
                if (!ppassed) {
-		 (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-		 bad_combinations.push_back(combi_out[ipart]);
-	       }
+		 			(ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+		 			bad_combinations.push_back(combi_out[ipart]);
+		 			good_combinations.erase(combi_out[ipart]);
+	     		  }
+	     		else 
+	     			good_combinations.insert(combi_out[ipart]);
 	   }
       } else {
 	DEBUG("TWO particle loop\n");
@@ -1145,9 +1161,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    DEBUG("P or F:"<<ppassed<<" ipart:"<<ipart<<"\n");
 	    if (!ppassed) {
 	      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-	      // bad_combinations.push_back(combi_out[ipart]);
-              break;
+	          bad_combinations.push_back(combi_out[ipart]);
+	          good_combinations.erase(combi_out[ipart]);
 	    }
+	    else 
+	    	good_combinations.insert(combi_out[ipart]);
+
 	    
 	  } // kpart loop 
 	} // ipart loop
@@ -1155,9 +1174,48 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
       cutIterator++;
     }// end of  cut iterator loop
+
+    Denombrement All_possibles_combinations = Denombrement(particles->size(), ipart_max-1);
+    cout << endl << "Before selection : " << endl;
+    All_possibles_combinations.affiche();
+
+    Denombrement All_possibilities_with_selection = Denombrement(particles->size(), ipart_max-1, bad_combinations);
+    cout << endl <<"After selection : " << endl;
+    All_possibilities_with_selection.affiche();
+
+    vector<vector<int>> out_selection = All_possibilities_with_selection.output();
     
     DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
     DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
+
+    vector<int> index_B;
+    for(int i = 0; i<good_combinations.size(); i++)
+    	index_B.push_back(i);
+
+    DEBUG(endl << "We have "<< index_B.size() << " combined particles left" << endl);
+
+    set<vector<int>> :: iterator it;
     
+    vector<vector<int>> table_B(out_selection.size());
+
+    for(int ii=0; ii<out_selection.size(); ii++)
+    {
+    	for(it=good_combinations.begin(); it!=good_combinations.end(); it++)
+    	{
+    		step_add_a_comb(out_selection[ii], *it, table_B[ii], distance(good_combinations.begin(), it), out_selection[ii].size()/particles->size(), particles->size());
+    	}
+    }
+
+    DEBUG( endl << "Converting combinations to index" << endl);
+
+    for(int i = 0; i<table_B.size(); i++)
+    {
+    	for(int j = 0; j<table_B[i].size(); j++)
+    		DEBUG(table_B[i][j] << " ");
+    	DEBUG(endl);
+    }
+
+    
+
 }
 

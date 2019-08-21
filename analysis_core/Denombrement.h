@@ -1,6 +1,7 @@
 #ifndef DENOMBREMENT_H
 #define DENOMBREMENT_H
 #include <vector>
+#include <string>
 
 using namespace std;
 

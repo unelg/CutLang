@@ -1,6 +1,13 @@
+//
+//
+//
+//
+//
+
 #include <iostream>
 #include <algorithm>
 #include "Denombrement.h"
+#include "Comb.h"
 #include <vector>
 #include <string>
 #include <iterator>
@@ -23,9 +30,9 @@ void suppr_bad_combi(vector<int>& temp, vector<int> tab_select, int& n, int pas)
     do
     {
         for(int i = 0; i<pas; i++)
-        {
-            temp_combi[i] = temp[i+k];
-        }
+            temp_combi[i] = temp[i+k];          
+
+
         if(temp_combi==tab_select)
         {
             temp.erase(temp.begin()+k, temp.begin()+ k + pas );
@@ -45,8 +52,7 @@ void suppr_by_set(vector<vector<int>>&output, vector<int> temp, vector<vector<in
     temp.erase(temp.begin()+N, temp.end());
     if(N!=0)
     {
-        if(output.size()>0){ if(temp!=output.back()) output.push_back(temp); }
-        else output.push_back(temp);
+        if( output.size()==0 || temp!=output.back() ) output.push_back(temp);
     }
 }
 
@@ -189,30 +195,48 @@ void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector
 
 Denombrement::Denombrement( int JetReconstr, int JetTotal, vector<vector<int>> tab_select) : nJetRecontr(JetReconstr), nJetTotal(JetTotal), tab_selection(tab_select)
 {
-    vector<int> tab(nJetTotal+1);
+    if(JetTotal>2)
+    {
+        vector<int> tab(nJetTotal+1);
 
-    for(int i = 0; i<nJetTotal+1 ; ++i)
+        for(int i = 0; i<nJetTotal+1 ; ++i)
         {
             tab[i] = i;
         }
 
-    suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
+        suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
 
-    etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
+        etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
+    }
+
+    else
+    {
+        Comb simple_combination = Comb(nJetTotal+1, nJetRecontr, tab_selection);
+        out = simple_combination.output();
+    }
 }
 
 Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReconstr), nJetTotal(JetTotal)
 {
-    vector<int> tab(nJetTotal+1);
+    if(JetTotal>2)
+    {
+        vector<int> tab(nJetTotal+1);
 
-    for(int i = 0; i<nJetTotal+1 ; ++i)
+        for(int i = 0; i<nJetTotal+1 ; ++i)
         {
             tab[i] = i;
         }
 
-    suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
+        suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
 
-    etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
+        etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
+    }
+
+    else
+    {
+        Comb simple_combination = Comb(nJetTotal+1, nJetRecontr);
+        out = simple_combination.output();
+    }
 }
 
 Denombrement::~Denombrement()
