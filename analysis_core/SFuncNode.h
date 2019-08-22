@@ -270,6 +270,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
               if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4);
               if (g5 != NULL) return (*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), h5);
         }              
+        DEBUG ("Symbol:"<<symbol<<" Value:"<<value<<"\n");
         return (*f)(ao, symbol, value);
 }
 
