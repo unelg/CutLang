@@ -25,10 +25,6 @@ class ObjectNode : public Node{
         string name;
            int type;
 
-        bool combo_rdy;
-        vector <int> *indexA;
-        vector < vector <int> > tableA;
-
         ObjectNode(string id,Node* previous, void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
                    std::vector<myParticle *>* particles, std::string name, std::string basename ), vector<Node*> criteria,  std::string s );
         

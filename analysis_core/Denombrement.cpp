@@ -12,8 +12,17 @@
 #include <string>
 #include <iterator>
 
-using namespace std;
 
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
+
+using namespace std;
 int itteration = 1;
 
 struct curseur
@@ -266,18 +275,18 @@ void Denombrement::affiche()
     {
         for(int j = 0; j<out[i].size(); ++j)
         {
-            cout << out[i][j] << " ";
+            DEBUG( out[i][j] << " ");
             if(j%nJetRecontr == nJetRecontr-1)
-                cout << "  ";
+              DEBUG("  ");
         }
-        cout<<endl;
+        DEBUG("\n");
     }
 }
 
 void Denombrement::itt()
 {
     itteration_ = itteration;
-    cout << endl << "Le nombre d'itterations est: " << itteration_ << endl;
+    DEBUG("\nLe nombre d'itterations est: " << itteration_ << "\n");
     itteration = 1;
 }
 
