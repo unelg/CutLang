@@ -1176,11 +1176,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     }// end of  cut iterator loop
 
     Denombrement All_possibles_combinations = Denombrement(particles->size(), ipart_max-1);
-    cout << endl << "Before selection : " << endl;
+    DEBUG("Before selection : \n");
     All_possibles_combinations.affiche();
+    DEBUG("xxxxxxxxxxxxxx\n");
 
     Denombrement All_possibilities_with_selection = Denombrement(particles->size(), ipart_max-1, bad_combinations);
-    cout << endl <<"After selection : " << endl;
+    DEBUG("After selection : \n");
     All_possibilities_with_selection.affiche();
 
     vector<vector<int>> out_selection = All_possibilities_with_selection.output();
