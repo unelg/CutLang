@@ -22,23 +22,30 @@ struct curseur
     int right;
 };
 
-void suppr_bad_combi(vector<int>& temp, vector<int> tab_select, int& n, int pas)
+void suppr_bad_combi(vector<int>& temp, vector<int>& tab_select, int& n, int pas)
 {
     vector<int> temp_combi(pas);
     int k = 0;
+    vector<int> tab;
 
     do
     {
         for(int i = 0; i<pas; i++)
-            temp_combi[i] = temp[i+k];          
-
+            temp_combi[i] = temp[i+k];       
 
         if(temp_combi==tab_select)
         {
-            temp.erase(temp.begin()+k, temp.begin()+ k + pas );
+            for(int l = 0; l<k; l++)
+                tab.push_back(temp[l]);
+
+            for(int l = k+pas; l<temp.size(); l++)
+                tab.push_back(temp[l]);
+
+            temp=tab;
             k-=pas;
             n-=pas;
         }
+
         k+=pas;
     }while(k<n);
 }
@@ -46,13 +53,17 @@ void suppr_bad_combi(vector<int>& temp, vector<int> tab_select, int& n, int pas)
 void suppr_by_set(vector<vector<int>>&output, vector<int> temp, vector<vector<int>> set_select, int n, int pas)
 {
     int N = n;
+    vector<int>tab;
     for(int i = 0; i<set_select.size(); i++)
-        suppr_bad_combi(temp, set_select[i], N, pas);
+        {
+            suppr_bad_combi(temp, set_select[i], N, pas);
+        }
 
-    temp.erase(temp.begin()+N, temp.end());
+    for(int i = 0; i<N; i++)
+        tab.push_back(temp[i]);
     if(N!=0)
     {
-        if( output.size()==0 || temp!=output.back() ) output.push_back(temp);
+        if( output.size()==0 || tab!=output.back() ) output.push_back(tab);
     }
 }
 
