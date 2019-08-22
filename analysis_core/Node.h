@@ -33,6 +33,7 @@ struct AnalysisObjects {
     std::map<std::string, std::vector<dbxParticle> >combos;
     std::map<std::string, TVector2                 > met;
     evt_data            evt;
+    std::map<std::string, std::vector< std::vector <int> > >tableA;
 };
 
 enum particleType{

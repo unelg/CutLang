@@ -5,7 +5,7 @@ object jets : JET
 
 
 object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
-     select { ahz }m [] 20 150
+     select { ahz }m [] 60 130
 #     select {jets[-1] }Pt > 25.1
 #     select {jets[-2] }Pt > 22.1
 #     select { ahz }AbsEta < 2.0
@@ -21,7 +21,7 @@ object goodeles : ELE
 region testA
  	select ALL                        # to count all events
  	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
- 	select Size(hZs)  >= 1            # we need at least 2 Zhad candidates.
+ 	select Size(hZs)  > 1            # we need at least 2 Zhad candidates.
 #        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
 #        histo  m1hZ, "mass Hrec GeV", 50, 50, 150, { zz }m
 
