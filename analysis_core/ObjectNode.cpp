@@ -105,7 +105,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        switch (type) {
         case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
-                                DEBUG(" Muos evaluated.\n");
+                                DEBUG(" Muos evObjectCutsaluated.\n");
                       } else keepworking=false;
                       break;
 
@@ -913,7 +913,9 @@ void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<in
 			temp[j] = output_ii[j+i*pas];
 
 		if(temp==tab_select_jj)
-			table_B_ii.push_back(index_jj);
+			{
+        table_B_ii.push_back(index_jj);
+      }
 	}
 }
 
@@ -1195,6 +1197,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     DEBUG(endl << "We have "<< index_B.size() << " combined particles left" << endl);
 
     set<vector<int>> :: iterator it;
+
+    DEBUG("The surviving particles are :\n");
+
+    for(it=good_combinations.begin(); it!=good_combinations.end(); it++)
+    {
+      for(int i = 0; i<particles->size(); i++)
+        DEBUG((*it)[i] << " ");
+      DEBUG(" -> " << index_B[distance(good_combinations.begin(), it)] << endl);
+    }
+    
     
     vector<vector<int>> table_B(out_selection.size());
 
@@ -1211,11 +1223,13 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     for(int i = 0; i<table_B.size(); i++)
     {
     	for(int j = 0; j<table_B[i].size(); j++)
-    		DEBUG(table_B[i][j] << " ");
-    	DEBUG(endl);
+        cout << table_B[i][j] << " ";
+    	cout << endl;
     }
 
-    
+    out_selection.clear();
+    All_possibilities_with_selection.output(out_selection);
+    All_possibles_combinations.output(out_selection);
 
 }
 
