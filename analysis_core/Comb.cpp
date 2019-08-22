@@ -53,9 +53,8 @@ void combinaison(int N, int K, vector<vector<int>>& output, vector<vector<int>> 
     do
     {
         temp.clear();
-        for (int k = 0; k < N; ++k) // [0..N-1] integers
+        for (int k = 0; k < N; ++k) 
         {
-
             if (bitmask[k]) {temp.push_back(k);}
         }
         suppr_by_set_Comb(output, temp, tab_select, 2, 2);
