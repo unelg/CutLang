@@ -22,6 +22,13 @@
 #include "analysis_core.h"
 #include "myParticle.h"
 
+
+ struct indicesA{
+   std::vector< std::vector <int> > tableA;
+        int max_col;
+        int max_row;
+ };
+
 struct AnalysisObjects {
     std::map<std::string, std::vector<dbxMuon>     > muos;
     std::map<std::string, std::vector<dbxElectron> > eles;
@@ -32,8 +39,8 @@ struct AnalysisObjects {
     std::map<std::string, std::vector<dbxTruth>    >truth;
     std::map<std::string, std::vector<dbxParticle> >combos;
     std::map<std::string, TVector2                 > met;
-    evt_data            evt;
-    std::map<std::string, std::vector< std::vector <int> > >tableA;
+                          evt_data                   evt;
+    std::map<std::string, indicesA >             combosA;
 };
 
 enum particleType{

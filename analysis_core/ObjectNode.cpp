@@ -1029,8 +1029,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
      vector<vector<int>> bad_combinations;
-     set<vector<int>> good_combinations;
-
+       set<vector<int>> good_combinations;
 
 //----------      
     cutIterator++; // now moving on to the real, first cut defining the new set.
@@ -1194,9 +1193,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     	index_B.push_back(i);
 
     DEBUG(endl << "We have "<< index_B.size() << " combined particles left" << endl);
-
     set<vector<int>> :: iterator it;
-
     DEBUG("The surviving particles are :\n");
 
     for(it=good_combinations.begin(); it!=good_combinations.end(); it++)
@@ -1205,7 +1202,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         DEBUG((*it)[i] << " ");
       DEBUG(" -> " << index_B[distance(good_combinations.begin(), it)] << endl);
     }
-    
     
     vector<vector<int>> table_B(out_selection.size());
 
@@ -1219,12 +1215,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
     DEBUG( endl << "Converting combinations to index" << endl);
 
-    for(int i = 0; i<table_B.size(); i++)
-    {
-    	for(int j = 0; j<table_B[i].size(); j++)
-        cout << table_B[i][j] << " ";
-    	cout << endl;
+    int amaxrow=0;
+    for(int i = 0; i<table_B.size(); i++) {
+        if (table_B[i].size() > amaxrow) amaxrow=table_B[i].size();
+    	for(int j = 0; j<table_B[i].size(); j++) DEBUG(table_B[i][j] << " ");
+    	DEBUG("\n"); 
     }
+
+    indicesA indexA={table_B, (int)table_B.size(), amaxrow};
+    ao->combosA.insert( pair <string, indicesA > (name,     indexA) );
+
 
     out_selection.clear();
     All_possibilities_with_selection.output(out_selection);
