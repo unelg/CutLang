@@ -308,11 +308,13 @@ double count(AnalysisObjects* ao, string s, float id) {
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
-    map <string, std::vector<dbxParticle>  >::iterator itp;
-    for (itp=ao->combos.begin();itp!=ao->combos.end();itp++){
-      cout<<"\t #C typename:"<<itp->first<<"    size:"<<itp->second.size() <<"\n";
-    }
 */
+    DEBUG("\n");
+    map <string,  indicesA  >::iterator itp;
+    for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){
+      DEBUG("#C typename:"<<itp->first<<"    size:"<<itp->second.tableA.size() <<"\n");
+    }
+
     ValueNode abc=ValueNode();
     switch (pid) {
      case truth_t:    return (ao->truth.at(s).size()); break;
@@ -324,15 +326,19 @@ double count(AnalysisObjects* ao, string s, float id) {
      case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
-     case combo_t:    //if (ao->combos.at(s).indexA.size() > 0) {return (ao->combos.at(s).size());
-                      //} else { DEBUG( "TABLE A\n");    // to be continued     
+     case combo_t:    if (ao->combosA.at(s).tableA.size() > 0) {
+                           DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row
+                                  <<" "<< ao->combosA.at(s).max_col<<"\n");
+                             return (ao->combosA.at(s).max_row);
+                      } else { DEBUG(s<<" Normal\n");    // to be continued     
                                return (ao->combos.at(s).size() );
-                      //} 
+                      } 
                       break;
      default:         return (-1); break;
     }
     return (-1);
 }
+
 double met(AnalysisObjects* ao, string s, float id){
      DEBUG("MET:" << ao->met["MET"].Mod() <<"\n");
     return ( ao->met["MET"].Mod() );
@@ -344,7 +350,6 @@ double ht(AnalysisObjects* ao, string s, float id){
     return (sum_htjet  );       
 }
 
-//                                                           double                  sin   (            double x           );
 
 double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets ) ){
 // string contains what to send
