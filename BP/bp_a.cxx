@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __SEZEN__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
