@@ -45,9 +45,39 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
                     DEBUG(" oi:"<<oi[i]<<" ");
                     bestIndices.push_back(0); // initialization
       }
-      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<FORBIDDEN_INDICES[type].size()<<"\n");
-      // loops start ~~~~~~~~~~~
+      string s=particles.at(0)->collection;
+      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<FORBIDDEN_INDICES[type].size()<< " Type:"<<type<<"\n");
 
+      if ((type==20) && (ao->combosA.at(s).tableA.size() > 0)){
+       DEBUG("-------------combo-------------------\n");
+        for (int k1=0; k1<ao->combosA.at(s).tableA.size(); k1++) {
+         if (ao->combosA.at(s).tableA[k1].size()==maxDepth) {
+         for (int k2=0; k2<ao->combosA.at(s).tableA[k1].size(); k2++) {
+          DEBUG(ao->combosA.at(s).tableA[k1][k2] << " ");
+// the indice @ k1,k2 should be used
+          if (k2 < maxDepth) v->push_back( ao->combosA.at(s).tableA[k1][k2] );
+         }
+         for(int i=0;i<v->size();i++){
+                      particles.at(indices->at(i))->index=v->at(i);
+         }   
+         double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+         double diff=right->evaluate(ao)-tmpval;
+
+         if ( (*f)(diff,*curr_diff) ) {
+                       DEBUG("diff:"<<diff<<" c_diff:"<<*curr_diff<<"\n");
+                       *curr_diff = fabs(diff);
+                       for(int i=0;i<v->size();i++){ bestIndices[i]=v->at(i); }
+                 } else { DEBUG("\n");}
+          v->clear();
+         }
+        }
+
+      return;
+      }
+
+
+
+      // loops start ~~~~~~~~~~~
        DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
 
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {

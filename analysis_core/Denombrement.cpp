@@ -218,17 +218,13 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal, vector<vector<int>> t
     if(JetTotal>2)
     {
         vector<int> tab(nJetTotal+1);
-
         for(int i = 0; i<nJetTotal+1 ; ++i)
         {
             tab[i] = i;
         }
-
         suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
-
         etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
     }
-
     else
     {
         Comb simple_combination = Comb(nJetTotal+1, nJetRecontr, tab_selection);
@@ -241,19 +237,10 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReco
     if(JetTotal>2)
     {
         vector<int> tab(nJetTotal+1);
-
-        for(int i = 0; i<nJetTotal+1 ; ++i)
-        {
-            tab[i] = i;
-        }
-
+        for(int i = 0; i<nJetTotal+1 ; ++i) { tab[i] = i; }
         suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
-
         etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
-    }
-
-    else
-    {
+    } else {
         Comb simple_combination = Comb(nJetTotal+1, nJetRecontr);
         out = simple_combination.output();
     }
@@ -275,11 +262,10 @@ void Denombrement::affiche()
     {
         for(int j = 0; j<out[i].size(); ++j)
         {
-            DEBUG( out[i][j] << " ");
-            if(j%nJetRecontr == nJetRecontr-1)
-              DEBUG("  ");
+            cout<< out[i][j] << " ";
+            if(j%nJetRecontr == nJetRecontr-1) cout<<"  ";
         }
-        DEBUG("\n");
+        cout<<"\n";
     }
 }
 

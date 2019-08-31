@@ -16,10 +16,7 @@ void suppr_bad_combi_Comb(vector<int>& temp, vector<int> tab_select, int& n, int
 
     do
     {
-        for(int i = 0; i<pas; i++)
-        {
-            temp_combi[i] = temp[i+k];
-        }
+        for(int i = 0; i<pas; i++) { temp_combi[i] = temp[i+k]; }
         if(temp_combi==tab_select)
         {
             temp.erase(temp.begin()+k, temp.begin()+ k + pas );
@@ -33,9 +30,7 @@ void suppr_bad_combi_Comb(vector<int>& temp, vector<int> tab_select, int& n, int
 void suppr_by_set_Comb(vector<vector<int>>&output, vector<int> temp, vector<vector<int>> set_select, int n, int pas)
 {
     int N = n;
-    for(int i = 0; i<set_select.size(); i++)
-        suppr_bad_combi_Comb(temp, set_select[i], N, pas);
-
+    for(int i = 0; i<set_select.size(); i++) suppr_bad_combi_Comb(temp, set_select[i], N, pas);
     temp.erase(temp.begin()+N, temp.end());
     if(N!=0)
     {
