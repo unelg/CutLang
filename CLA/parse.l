@@ -94,6 +94,9 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][nN] return TAN;
 [sS][iI][nN] return SIN;
 [cC][oO][sS] return COS;
+[sS][iI][nN][hH] return SINH;
+[cC][oO][sS][hH] return COSH;
+[tT][aA][nN][hH] return TANH;
 [eE][xX][pP] return EXP;
 [lL][oO][gG] return LOG;
 [Hh][Ss][Tt][Ee][Pp] return HSTEP;
