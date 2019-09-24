@@ -9,6 +9,8 @@
 #include "ValueNode.h"
 #include <set>
 
+#include "Comb.h"
+#include "Denombrement.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -16,6 +18,8 @@
 #else
 #define DEBUG(a)
 #endif
+
+
 
 ObjectNode::ObjectNode(std::string id,
                        Node* previous,
@@ -85,7 +89,7 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
     DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
- 
+    this->Reset(); ///////NGU
     std::string basename="xxx";
     bool keepworking=true;
 
@@ -101,7 +105,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        switch (type) {
         case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
-                                DEBUG(" Muos evaluated.\n");
+                                DEBUG(" Muos evObjectCutsaluated.\n");
                       } else keepworking=false;
                       break;
 
@@ -863,7 +867,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->truth)[base_collection2].size();
+                    case 0: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size();
                         break;
@@ -871,10 +875,6 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                         break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size();
                         break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
                     case 8: ipart2_max=(ao->gams)[base_collection2].size();
                         break;
                     case 9: ipart2_max=(ao->ljets)[base_collection2].size();
@@ -904,4 +904,363 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     }// end of cutIterator
 }
  
+void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<int>& table_B_ii, int index_jj, int n, int pas )
+{
+	vector<int> temp(tab_select_jj.size()); 
+	for(int i = 0; i<n; i++)
+	{
+		for(int j = 0; j<pas; j++)
+			temp[j] = output_ii[j+i*pas];
+
+		if(temp==tab_select_jj)
+			{
+        table_B_ii.push_back(index_jj);
+      }
+	}
+}
+
+void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+   DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+
+   vector<dbxParticle>  combination;
+   dbxParticle *adbxp;
+   std::string collectionName;
+   int ipart_max;
+   int requested_max;
+   int requested_size;
+
+   auto cutIterator=criteria->begin();
+   particles->clear();
+   (*cutIterator)->getParticles(particles);
+    requested_size=particles->size();
+    DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
+    DEBUG("iPsize:"<<particles->size() <<"\n");
+
+// at this point I have the particles I will use to construct the combined object. like j1 and j2
+// now we find how many of those particles we have in each event
+    for (int jj=0; jj<particles->size(); jj++){
+       DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+       collectionName=particles->at(jj)->collection;
+       switch(particles->at(jj)->type){
+                    case 0: 
+                            if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
+                               cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->muos)[collectionName].size();
+                            break;
+                    case 1: 
+                            if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            ipart_max=(ao->eles)[collectionName].size();
+                            break;
+		    case 10: ipart_max=(ao->truth)[collectionName].size();
+                        break;
+                    case 2: ipart_max=(ao->jets)[collectionName].size();
+                        break;
+                    case 8: ipart_max=(ao->gams)[collectionName].size();
+                        break;
+                    case 9: ipart_max=(ao->ljets)[collectionName].size();
+                        break;
+                    case 11: ipart_max=(ao->taus)[collectionName].size();
+                            break;
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
+                        break;
+                }
+        DEBUG("Max # particles:"<<ipart_max<<"\n");
+      } //end of particle loop
+
+//---- NANT's code to produce all the combined objetcs
+    requested_max=ipart_max;
+    Comb combinations_part (requested_max, requested_size);
+#ifdef _CLV_
+    combinations_part.affiche();
+#endif
+    vector<int> temp_index;
+    vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    TLorentzVector  alv;
+    int apq = 0;
+    
+    for(size_t k=0; k<combi_out.size(); ++k) {
+      temp_index = combi_out[k]; // ex temp_index = {0,1} 
+      for(size_t i = 0; i<temp_index.size(); ++i){
+	  DEBUG ("Now p index is:"<< temp_index[i]<<" \t"); 
+	  switch(particles->at(i)->type){
+	  case 0: 
+	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->muos)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 1: 
+	    alv+=(ao->eles)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->eles)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 10:
+	    alv+=(ao->truth)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->truth)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 2:
+	    alv+=(ao->jets)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->jets)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 8: alv+=(ao->gams)[collectionName].at(temp_index[i]).lv();
+	    break;
+	  case 9: alv+=(ao->ljets)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->ljets)[collectionName].at(temp_index[i]).q();
+	    break;
+	  case 11: 
+	    alv+=(ao->taus)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->taus)[collectionName].at(temp_index[i]).q();
+	    break;
+	  default:
+	    std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(i)->type << std::endl;
+	    break;
+	  }
+        } 	  
+// we have the combined particle AND the indices of the parents
+
+	adbxp= new dbxParticle(alv);
+	adbxp->setCharge(apq);                            
+	combination.push_back(*adbxp);
+	delete adbxp;
+        apq=0;
+        alv.SetPxPyPzE(0,0,0,0);
+        DEBUG("\n");
+    }
+    ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
+
+     vector<vector<int>> bad_combinations;
+       set<vector<int>> good_combinations;
+
+//----------      
+    cutIterator++; // now moving on to the real, first cut defining the new set.
+    while ( cutIterator!=criteria->end() ){ // do the real cuts now.
+      particles->clear();
+      (*cutIterator)->getParticlesAt(particles,0);
+      int ipart_max = (ao->combos)[name].size();
+      bool simpleloop=true;
+      DEBUG("***** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
+      if ( particles->size()==0) {
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+      }
+      std::set<int> ptypeset;
+      std::set<int> pindexset;
+      int t1=particles->at(0)->type;
+      int tidx1=particles->at(0)->index;
+      int t2;
+      int tidx2;
+      for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+	 pindexset.insert( particles->at(kp)->index);
+      }
+      if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+      if ( ptypeset.size()==2) {simpleloop=false; }
+      std::set<int>::iterator ptit;
+      std::set<int>::iterator pIit;
+      ptit=ptypeset.begin(); ptit++;
+      t2=*ptit;
+      pIit=pindexset.begin(); pIit++;
+      tidx2=*pIit;
+
+      if(simpleloop){
+           DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
+           for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
+               std::vector< vector<int> >::iterator itb; // bad list iterator
+               itb=find (bad_combinations.begin(), bad_combinations.end(), combi_out[ipart]);
+               if ( itb!= bad_combinations.end() ) {
+                  DEBUG("SKIP aldeady bad combi\n");
+                  continue; // skip the bad indices
+               }
+               for (int jp=0; jp<particles->size(); jp++){ //
+                DEBUG("p_index:"<<ipart<<" j_index:"<<jp<<" type:"<< t1<<" name:"<<name<<"\n");
+                if (tidx1 < 0) {  DEBUG("******Negative INDEX !!!\t");
+                   temp_index = combi_out[ ipart ];
+                   particles->at(0)->index =temp_index[abs(1+tidx1)];
+                   DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
+                } else {
+                  particles->at(jp)->index=ipart;
+                  particles->at(jp)->collection=name;
+                }
+               }
+
+               DEBUG("Going to evaluate "<< combi_out[ipart][0] <<" " <<combi_out[ipart][1]  <<"\n");
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               DEBUG("P or F:"<<ppassed<<"\n");
+               if (!ppassed) {
+		 			(ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+		 			bad_combinations.push_back(combi_out[ipart]);
+		 			good_combinations.erase(combi_out[ipart]);
+	     		    } else      good_combinations.insert(combi_out[ipart]);
+	   }
+      } else {
+	DEBUG("TWO particle loop\n");
+	ValueNode abc=ValueNode();
+	for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over combis
+          std::vector< vector<int> >::iterator itb; // bad list iterator
+          itb=find (bad_combinations.begin(), bad_combinations.end(), combi_out[ipart]);
+          if ( itb!= bad_combinations.end() ) {
+                  DEBUG("SKIP aldeady bad combi\n");
+                  continue; // skip the bad indices
+          }
+	  if (tidx1 < 0) {DEBUG("****** Negative index t1 \t");
+	    temp_index = combi_out[ipart];
+	    particles->at(0)->index = temp_index[abs(1+tidx1)];
+	  }
+	  else {
+	    particles->at(0)->index=ipart;
+	  }
+	  DEBUG("now index = " <<  particles->at(0)->index << " type:"<<particles->at(0)->type <<endl);
+	  int ipart2_max;
+	  string base_collection2=particles->at(1)->collection;
+	  switch(particles->at(1)->type){
+	  case 0: ipart2_max=(ao->muos)[base_collection2].size();
+	    break;
+	  case 10: ipart2_max=(ao->truth)[base_collection2].size();
+	    break;
+	  case 1: ipart2_max=(ao->eles)[base_collection2].size();
+	    break;
+	  case 2: ipart2_max=(ao->jets)[base_collection2].size();
+	    break;
+	  case 8: ipart2_max=(ao->gams)[base_collection2].size();
+	    break;
+	  case 9: ipart2_max=(ao->ljets)[base_collection2].size();
+	    break;
+	  case 11: ipart2_max=(ao->taus)[base_collection2].size();
+	    break;
+	  case 20: ipart2_max=(ao->combos)[base_collection2].size();
+	    break;
+	  default:
+	    std::cerr << "WRONG PARTICLE TYPE! type:"<<particles->at(1)->type << std::endl;
+	    break;
+	  }
+	  DEBUG ("  t2 max:"<<ipart2_max<<"  of type:"<< particles->at(1)->type<<"\n");
+	  for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
+
+            if ((tidx1<0) && (particles->at(1)->type==20)){
+                 if (ipart != kpart) continue;
+            }
+
+	    if (particles->at(1)->index < 0 ){ DEBUG("*******Negative index t2 ");
+		  temp_index = combi_out[kpart];
+		  particles->at(1)->index = temp_index[abs(1+particles->at(1)->index)];
+	    } else {
+		  particles->at(1)->index=kpart;
+	    }
+	    DEBUG("now t2 index = " << particles->at(1)->index << endl);
+
+	    for (int jp=2; jp<particles->size(); jp++){
+	      if (particles->at(jp)->type == t1){
+		if (tidx1 < 0) {DEBUG("****** Negative index t1 ");
+		  temp_index = combi_out[ipart];
+		  particles->at(jp)->index = temp_index[abs(1+tidx1)];
+		}
+		else {
+		   particles->at(jp)->index=ipart;
+		}
+		DEBUG("index t1 jp = " << particles->at(jp)->index << endl);
+	      }    
+
+	      if (particles->at(jp)->type == t2){
+		if (tidx2 < 0 ){ DEBUG("*******Negative index t2 ");
+		  temp_index = combi_out[kpart];
+		  particles->at(jp)->index = temp_index[abs(1+tidx2)];
+		}
+		else {
+		  particles->at(jp)->index=kpart;
+		}		
+		DEBUG("index t2 jp = " << particles->at(jp)->index << endl);
+	      } 	      
+	     }
+	    
+            DEBUG("Going to evaluate "<< combi_out[ipart][0] <<" " <<combi_out[ipart][1]  <<"\n");
+	    bool ppassed=(*cutIterator)->evaluate(ao);
+	    DEBUG("P or F:"<<ppassed<<"\n");
+	    if (!ppassed) {
+	      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+	          bad_combinations.push_back(combi_out[ipart]);
+	          good_combinations.erase(combi_out[ipart]);
+	    }
+	    else good_combinations.insert(combi_out[ipart]);
+
+	    
+	  } // kpart loop 
+	} // ipart loop
+      } // two particle
+      cutIterator++;
+    }// end of  cut iterator loop
+
+   if (requested_max<=0) {
+     vector<vector<int>> table_B;
+     indicesA indexA={table_B, 0, 0};
+     ao->combosA.insert( pair <string, indicesA > (name,     indexA) );
+     return;
+   }
+//----------
+
+    DEBUG("Before denombre : "<< requested_size<< "  max:"<<requested_max<<"\n");
+    Denombrement All_possibles_combinations = Denombrement(requested_size, requested_max-1);
+    DEBUG("Before selection : \n");
+#ifdef _CLV_
+    All_possibles_combinations.affiche();
+#endif
+    DEBUG("Before removing the bads:"<< bad_combinations.size() <<"\n");
+    Denombrement All_possibilities_with_selection = Denombrement(requested_size, requested_max-1, bad_combinations);
+    DEBUG(endl <<"After removing the bads : " << endl);
+#ifdef _CLV_
+    All_possibilities_with_selection.affiche();
+#endif
+
+    vector<vector<int>> out_selection = All_possibilities_with_selection.output();
+    
+    DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
+    DEBUG(" remaining combo particle#:"<<(ao->combos)[name].size()<< " \n");
+
+    vector<int> index_B;
+    for(int i = 0; i<good_combinations.size(); i++) index_B.push_back(i);
+
+    DEBUG(endl << "We have "<< index_B.size() << " combined particles left" << endl);
+    set<vector<int>> :: iterator it;
+    DEBUG("The surviving particles are :\n");
+
+    for(it=good_combinations.begin(); it!=good_combinations.end(); it++)
+    {
+      for(int i = 0; i<particles->size(); i++)
+        DEBUG((*it)[i] << " ");
+      DEBUG(" -> " << index_B[distance(good_combinations.begin(), it)] << endl);
+    }
+    
+    vector<vector<int>> table_B(out_selection.size());
+
+    for(int ii=0; ii<out_selection.size(); ii++)
+    {
+    	for(it=good_combinations.begin(); it!=good_combinations.end(); it++)
+    	{
+    		step_add_a_comb(out_selection[ii], *it, table_B[ii], distance(good_combinations.begin(), it), out_selection[ii].size()/requested_size, requested_size);
+    	}
+    }
+
+    DEBUG( endl << "Converting combinations to index:" << endl);
+
+    int amaxrow=0;
+    for(int i = 0; i<table_B.size(); i++) {
+        if (table_B[i].size() > amaxrow) amaxrow=table_B[i].size();
+    	for(int j = 0; j<table_B[i].size(); j++) DEBUG(table_B[i][j] << " ");
+    	DEBUG("\n"); 
+    }
+
+    indicesA indexA={table_B, (int)table_B.size(), amaxrow};
+    ao->combosA.insert( pair <string, indicesA > (name,     indexA) );
+
+
+    out_selection.clear();
+    All_possibilities_with_selection.output(out_selection);
+    All_possibles_combinations.output(out_selection);
+
+}
 

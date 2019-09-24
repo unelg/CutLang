@@ -3,6 +3,7 @@
 
 #include "TLorentzVector.h"
 #include <iostream>
+#include <vector>
 #define CHMAX 256
 
 
@@ -273,6 +274,7 @@ public:
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
         void   addToCollection( std::string v) { p_collections.push_back(v);}
+	
 
 private:
         std::vector<double> p_attribute;

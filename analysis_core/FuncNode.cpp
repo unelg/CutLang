@@ -123,7 +123,7 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
                          Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
         f=func;
         symbol=s;
-        inputParticles=input; // type, index, string=ELE, crELE, ELEsr... ve/veya Node*objectNode
+        inputParticles=input; // type, index, string=ELE, crELE, ELEsr... and/or Node*objectNode
         myParticle apart;
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
@@ -171,7 +171,7 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
-     DEBUG("\nIn function Node evaluate\n");
+     DEBUG("\nIn function Node evaluate, #p:"<< inputParticles.size() <<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
      if(userObjectA) { userObjectA->evaluate(ao); 
                        int thistype=((ObjectNode*)userObjectA)->type;
@@ -327,5 +327,6 @@ double tauisoof( dbxParticle* apart){
 double nbfof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();
     DEBUG(" CORRECT ME NBF:"<<phi<<"\t");
+    cout <<"--This is wrong--\n";
     return phi;
 }

@@ -1,0 +1,45 @@
+
+object jets : JET
+   select  {JET}Pt > 10  
+   select  {JET}Eta < 4
+
+
+object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
+     select { ahz }AbsEta < 3.0
+#    select {jets[-2] }Pt > 2.1
+     select {jets[-1] }Pt > 5.1
+     select {jets[-1], ahz }dR < 0.6
+     select { ahz }m [] 10 200           # does get the paricle numbers (2) fromt the last cut
+
+define zz : hZs[-1] 
+define zhad : jets[-1] jets[-2]
+define zham : {hZs[-1]}m
+define zhbm : {hZs[-2]}m
+#define chi2 : (zham - zhbm)^2
+define chi2 : (zham - 91.2)^2 + (zhbm - 91.2)^2
+
+object goodeles : ELE
+   select  {ELE}Pt > 10  
+   select  {ELE}AbsEta < 4
+
+region testA
+ 	select ALL                        # to count all events
+ 	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
+ 	select Size(hZs)  >= 2            # we need at least 2 Zhad candidates.
+#        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
+        select chi2  ~= 0            # we kill here overlapping candidates. 
+        histo  hchi2, "chi2 ", 50, 0, 500, chi2
+        histo  bm1hZ, "mass Hrec GeV", 50, 50, 150, zham
+        histo  bm2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
+        histo  bm12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
+        select chi2  <= 100            # we kill bad candidates. 
+        histo  am1hZ, "mass Hrec GeV", 50, 50, 150, zham
+        histo  am2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
+        histo  am12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
+
+#region testB
+#	select ALL                        # to count all events
+##	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
+#        select {zhad}m ~= 91.2            # the other method
+#        histo  m2hZ, "mass Hrec GeV", 50, 50, 150, {zhad}m
+#        histo  e2hZ, "AE Hrec ", 50, 0, 5, {zhad}AbsEta
