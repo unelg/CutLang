@@ -72,7 +72,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %token <real> NB
 %token <integer> INT
 %token <s> ID HID 
-%token SIN COS TAN ABS SQRT EXP LOG HSTEP
+%token SIN COS TAN ABS SQRT EXP LOG HSTEP SINH COSH TANH
 %token OR AND 
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
@@ -1981,6 +1981,15 @@ e : e '+' e  {
    | TAN '(' e ')' {    
                         $$=new UnaryAONode(tan,$3,"tan");
                }
+   | SINH '(' e ')' {
+			$$=new UnaryAONode(sinh,$3,"sinh");
+		}
+   | COSH '(' e ')' {
+			$$=new UnaryAONode(cosh,$3,"cosh");
+		}
+   | TANH '(' e ')' {
+			$$=new UnaryAONode(tanh,$3,"tanh");
+		}
    | EXP '(' e ')' {
 			$$=new UnaryAONode(exp,$3,"exp");
 		}
