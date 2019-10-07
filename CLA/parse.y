@@ -57,7 +57,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
-%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
