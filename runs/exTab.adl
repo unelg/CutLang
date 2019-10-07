@@ -12,5 +12,4 @@ region   test
   reject  Size (ELE) > 4  # events with 2 or more electrons 
   histo   h1mReco, "Z mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
 
-table effTable
 
