@@ -25,6 +25,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "take"|"using" return TAKE;
 "histo" return HISTO;
 "weight" return WEIGHT;
+"table" return TABLE;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 "ELE"|"ELECTRON" return ELE;//particles
