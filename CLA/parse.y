@@ -30,6 +30,7 @@ using namespace std;
 string tmp;
 int pnum;
 int dnum;
+vector<float> tmpTable;
 vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
@@ -1622,6 +1623,17 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' METLV criteria
            ;
 
+binlist : binlist abin
+        | abin
+        ;
+
+abin : NB NB NB {
+        tmpTable.push_back($1);
+        tmpTable.push_back($2);
+        tmpTable.push_back($3);
+       }
+       ;
+
 hamhum : ALIAS ID {
           DEBUG ("ALIAS found.\t");
           TmpParticle.swap( CombiParticle);
@@ -1658,7 +1670,6 @@ command : CMD condition { //find a way to print commands
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
                     DataFormats->at(4)=1;
                     Initializations->at(0)=$2;
-                    cout <<"ha?\n";
                   }
         | CMD ALL {                                     
                                 Node* a = new SFuncNode(all,0, "all");
@@ -1672,9 +1683,23 @@ command : CMD condition { //find a way to print commands
                                 Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                                 NodeCuts->insert(make_pair(++cutcount,a));
                     }
+    	| TABLE ID binlist {
+                                cout << "TABLE "<< $2  << "\n";
+//				Node* a = new SFuncNode(uweight,$3,$2);
+        }
     	| WEIGHT ID NB {
 				Node* a = new SFuncNode(uweight,$3,$2);
 				NodeCuts->insert(make_pair(++cutcount,a));
+			}
+    	| WEIGHT ID ID {
+                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
+//				Node* a = new SFuncNode(uweight,$3,$2);
+//				NodeCuts->insert(make_pair(++cutcount,a));
+			}
+    	| WEIGHT ID function ID {
+                                cout << "Weight "<< $2  <<"Will be from table "<< $4<< " using "<< $3 << "\n";
+//				Node* a = new SFuncNode(uweight,$3,$2);
+//				NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
