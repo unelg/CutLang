@@ -5,7 +5,12 @@ def effFunc = sqrt({ELE_0}pT)/({ELE_0}pT + {ELE_1}pT)
 region   test
   select  ALL              # to count all events
   select  Size (ELE) >= 2  # events with 2 or more electrons 
-  table   effTable 0.1 0 10 0.2 10 20 0.4 20 50 0.7 50 70 0.95 70 1000
+  table   effTable 
+          0.1   0.0   10.0 
+          0.2  10.0   20.0 
+          0.4  20.0   50.0 
+          0.7  50.0   70.0 
+          0.95 70.0   1000.0
   weight  effWeight {ELE_0}pT effTable  
   weight  peffWeight effFunc  
   weight  randWeight   1.123
