@@ -1709,8 +1709,16 @@ command : CMD condition { //find a way to print commands
 			}
     	| WEIGHT ID function ID {
                                 cout << "Weight "<< $2  <<"Will be from table "<< $4<< " using "<< $3 << "\n";
-//				Node* a = new SFuncNode(uweight,$3,$2);
-//				NodeCuts->insert(make_pair(++cutcount,a));
+                                map<string,vector<float> >::iterator itt;
+                                string name = $4;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+				Node* a = new TableNode(tweight,$3,itt->second, $2);
+				NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | CMD ifstatement {                                         
                                         NodeCuts->insert(make_pair(++cutcount,$2));
@@ -1893,8 +1901,6 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-// Nant was here
-
 	   | SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
 	   | SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
