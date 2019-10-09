@@ -15,7 +15,7 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, vector<double>* TRGValues);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, vector<double>* TRGValues, map<string,vector<float> >* ListTables);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -201,7 +201,7 @@ int BPdbxA:: readAnalysisParams() {
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
        cout <<"==parsing started==\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
        cout <<" parsing finished.  ";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
