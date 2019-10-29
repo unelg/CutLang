@@ -63,10 +63,10 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 "nbf" return NBF;
-"dR" return DR;
-"dPhi" return DPHI;
-"dEta" return DETA;
-"Size"|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
+[dD][rR] return DR;
+[dD][pP][hH][iI] return DPHI;
+[dD][eE][tT][aA] return DETA;
+[Ss][Ii][Zz][Ee]|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;

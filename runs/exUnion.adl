@@ -1,4 +1,5 @@
 #CLA ADL example2
+
 object goodEle : ELE
   select  Pt(ELE)        >   10
   select abs({ELE}Eta)   <   2.4
@@ -9,15 +10,21 @@ object GMUO : MUO
   select abs({MUO}Eta)   <   2.4
 
 
-object geps : Union( MUO , ELE, TAU)                #just one particle after other
-object gleps : Union( goodEle , GMUO )          #just one particle after other
-define Zreco1 : ELE[-1] + ELE[-1]
+object geps  : Union( MUO , ELE, TAU)            #add all leptons into a set
+object gleps : Union( goodEle , GMUO )          #add all good electrons and good muons into another set
+
+define Zreco = ELE[-1] ELE[-1]               #negative indices are to be determined by optimization functions  
+
 region   test
   select      ALL              # to count all events
   select      Size (goodEle)  >= 1  # events with 2 or more electrons 
   select      Size (GMUO)  >= 1  # events with 2 or more electrons 
   select      Size (geps) > 2  # events with 2 or more leptons 
-#  select      Size(ELE)  >= 2  # events with 2 or more electrons 
-#  weight       mcw      1.1
-#  select      {ELE_0 ELE_1 }q == 0   # Z is neutral
-#  save    saveobjs.root
+  select      Size(ELE)  >= 2  # events with 2 or more electrons 
+  weight      mcw      1.1
+  select      m(Zreco) ~= 90.1
+   histo      hmz1, "before cut", 50, 0, 150, {Zreco}m
+  select      m(Zreco) [] 70 110
+   histo      hmz2, "after cut", 50, 60, 120, m(Zreco)
+  select      {ELE_0 ELE_1 }q == 0   # Z is neutral
+    save      saveobjs               # no need to write .root
