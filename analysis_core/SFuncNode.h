@@ -326,7 +326,7 @@ double count(AnalysisObjects* ao, string s, float id) {
      case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
-     case combo_t:    if (ao->combosA.at(s).tableA.size() > 0) {
+     case combo_t:    if (ao->combosA.find(s)!=ao->combosA.end() ){ 
                            DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row
                                   <<" "<< ao->combosA.at(s).max_col<<"\n");
                              return (ao->combosA.at(s).max_row);

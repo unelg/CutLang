@@ -215,7 +215,7 @@ if (ival==0) {
    chain = new TChain("nominal");
   }else if (use_vllmin){
    cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
-   chain = new TChain("/physics/nominal");
+   chain = new TChain("/physics");
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
    chain = new TChain("Delphes");

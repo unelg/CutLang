@@ -18,7 +18,6 @@ algo        testA
 #  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
   select      {Zreco}q == 0       # Z is neutral
   histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
-  select      ALL              # to count all events
 
 algo        testB
   preselection
@@ -26,4 +25,3 @@ algo        testB
 #  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
   select      {goodZreco}q == 0   # Z is neutral
   histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
-  select      ALL              # to count all events

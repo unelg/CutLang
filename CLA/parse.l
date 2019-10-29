@@ -89,6 +89,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[uU][nN][iI][oO][nN] return UNION;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
