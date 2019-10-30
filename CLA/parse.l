@@ -17,25 +17,33 @@ real {integer}("."{integer})
 varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%
-"def"|"define" return DEF;//case sensitive in this case
-"cmd"|"cut"|"select"|"command" return CMD;
+[dD][eE][fF]|"define" return DEF;//case sensitive in this case
+[cC][mM][dD]|[cC][uU][tT]|[sS][eE][lL][eE][cC][tT] return CMD;
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
 "take"|"using" return TAKE;
 "histo" return HISTO;
-"weight" return WEIGHT;
-"table" return TABLE;
+[wW][eE][iI][gG][hH][tT] return WEIGHT;
+[tT][aA][bB][lL][eE] return TABLE;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-"ELE"|"ELECTRON" return ELE;//particles
-"MUO"|"MUON"|"Muon" return MUO;
-"Tau"|"TAU" return TAU;
-"PHO"|"PHOTON" return PHO;
-"JET"|"Jet" return JET;
-"FJET"|"FatJet" return FJET;
+
+[eE][lL][eE]|"ELECTRON" return ELE;//particles
+[mM][uU][oO]|"MUON" return MUO;
+[tT][aA][uU] return TAU;
+[pP][hH][oO]|"PHOTON" return PHO;
+[jJ][eE][tT] return JET;
 [Gg][Ee][Nn] return GEN;
+"FJET"|"FatJet" return FJET;
+"BJET" return BJET;
+"QGJET" return QGJET;
 "LEP" return LEP;
+"NUMET" return NUMET;
+"METLV" return METLV;
+"MET" return MET;
+"ALL" return ALL;
+
 "PDGID" return PDGID;
 "btagDeepB" return DEEPB;
 [bB][tT][aA][gG] return ISBTAG;
@@ -52,28 +60,25 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
-"BJET" return BJET;
-"QGJET" return QGJET;
-"NUMET" return NUMET;
-"METLV" return METLV;
-[pP][hT][iI] return PHI;//functions
-[eE][tT][aA] return ETA;
-"AbsEta" return ABSETA;
 "alias" return ALIAS;
+
+  /* ************* generic functions ******* */
+[pP][hT][iI] return PHI;
+[eE][tT][aA] return ETA;
+[aA][bB][sS][eE][tT][aA] return ETA;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
-"nbf" return NBF;
 [dD][rR] return DR;
 [dD][pP][hH][iI] return DPHI;
 [dD][eE][tT][aA] return DETA;
-[Ss][Ii][Zz][Ee]|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
-"HT" return HT;
+[Ss][Ii][Zz][Ee]|[cC][Oo][uU][nN][tT]|[nN][uU][mM][bB][eE][rR] return NUMOF;//no arg funcs
+[hH][tT] return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
-"MET" return MET;
-"ALL" return ALL;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
+"nbf" return NBF;
+
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
