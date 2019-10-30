@@ -204,19 +204,19 @@ function : '{' particules '}' 'm' {
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function\n");
                                   }
-         | '{' particules '}' 'm' '(' ID ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        DEBUG("Mass function with "<< $6<<"\n");
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Mof,newList,"m", it->second);
-                                       }
-                                }
+//       | '{' particules '}' 'm' '(' ID ')' {     
+//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
+//                                     if(it == ObjectCuts->end()) {
+//                                         std::string message = "User object not defined: "; message += $6;
+//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                         YYERROR;
+//                                     } else {
+//                                      DEBUG("Mass function with "<< $6<<"\n");
+//                                      vector<myParticle*> newList;
+//                                      TmpParticle.swap(newList);
+//                                      $$=new FuncNode(Mof,newList,"m", it->second);
+//                                     }
+//                              }
 //---------------------------------------
 //       | '{' particules '}' 'm' '(' ID ',' ID ')' {     
 //                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
@@ -268,18 +268,6 @@ function : '{' particules '}' 'm' {
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
-         | '{' particules '}' 'q' '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Qof,newList,"q", it->second);
-                                       }
-                                }
 //---------------------------------------
          | PDGID '(' particules ')' {     
                                        vector<myParticle*> newList;
@@ -291,18 +279,6 @@ function : '{' particules '}' 'm' {
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
                                   }
-         | '{' particules '}' PDGID '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pdgIDof,newList,"pdgID", it->second);
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' 'P' {     
                                        vector<myParticle*> newList;
@@ -314,18 +290,6 @@ function : '{' particules '}' 'm' {
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
                                   }
-         | '{' particules '}' 'P' '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Pof,newList,"p", it->second);
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' 'E' {     
                                         vector<myParticle*> newList;
@@ -337,18 +301,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
-         | '{' particules '}' 'E' '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Eof,newList,"e", it->second);
-                                       }
-                                }
 //---------------------------------------
 //---------------------------------------
          | '{' particules '}' ISBTAG {     
@@ -474,18 +426,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
-         | '{' particules '}' PHI '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Phiof,newList,"phi", it->second);
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' ETA {     
                                         vector<myParticle*> newList;
@@ -497,18 +437,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
-         | '{' particules '}' ETA '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Etaof,newList,"eta", it->second);
-                                       }
-                                }
 //---------------------------------------
          | ABSETA '(' particules ')' {     
                                         vector<myParticle*> newList;
@@ -520,18 +448,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
-         | '{' particules '}' ABSETA '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(AbsEtaof,newList,"abseta", it->second);
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' PT {     
                                         vector<myParticle*> newList;
@@ -544,18 +460,6 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(Ptof,newList,"pt");
                                  }
 
-         | '{' particules '}' PT '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Ptof,newList,"pt", it->second, it->first); // NGUUUUUUUUUUUUUUUUU
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' PZ {     
                                         vector<myParticle*> newList;
@@ -567,18 +471,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
                                  }
-         | '{' particules '}' PZ '(' ID  ')' {     
-                                       map<string,Node*>::iterator it = ObjectCuts->find($6);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $6;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(Pzof,newList,"pz", it->second);
-                                       }
-                                }
 //---------------------------------------
          | '{' particules '}' NBF {     
                                         vector<myParticle*> newList;
@@ -604,21 +496,6 @@ function : '{' particules '}' 'm' {
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-         | list DR  '(' ID  ')' {  //-----------with user objects
-                                       map<string,Node*>::iterator it = ObjectCuts->find($4);
-                                       if(it == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $4;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        vector<myParticle*> newList1;
-                                        TmpParticle1.swap(newList1);
-                                        $$=new LFuncNode(dR,newList1,newList,"dR", it->second);
-                                       }
-
-                                }
         | list DPHI { 
                                                 vector<myParticle*> newList;
                                                 TmpParticle.swap(newList);
