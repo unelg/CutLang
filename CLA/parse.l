@@ -58,15 +58,15 @@ vardef {varname}" "?":"" "?.*"\n"
 "METLV" return METLV;
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
-"AbsEta" return ABSETA;
+[Aa][bB][sS][Ee][tT][aA] return ABSETA;
 "alias" return ALIAS;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 "nbf" return NBF;
-"dR" return DR;
-"dPhi" return DPHI;
-"dEta" return DETA;
-"Size"|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
+[dD][rR] return DR;
+[dD][pP][hH][iI] return DPHI;
+[dD][eE][tT][aA] return DETA;
+[sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
