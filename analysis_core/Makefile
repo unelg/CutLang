@@ -27,14 +27,14 @@ all : $(objects)
 #	$(CXX) $(CXXFLAGS) -shared -o dbx_photon.so dbx_photon.o dbx_photon_dict.C -I`root-config --incdir` `root-config --libs`
 #	$(CXX) $(CXXFLAGS) -shared -o dbx_jet.so dbx_jet.o dbx_jet_dict.C -I`root-config --incdir` `root-config --libs`
 	root  -q -l -b -x makeSos.C
-	test -L ../runs/DBXNtuple_cpp_ACLiC_dict_rdict.pcm   || ( ln -s DBXNtuple_cpp_ACLiC_dict_rdict.pcm     ../runs/ )
-	test -L ../runs/dbxParticle_cpp_ACLiC_dict_rdict.pcm || ( ln -s dbxParticle_cpp_ACLiC_dict_rdict.pcm   ../runs/ )
-	test -L ../runs/dbx_electron_h_ACLiC_dict_rdict.pcm  || ( ln -s dbx_electron_h_ACLiC_dict_rdict.pcm    ../runs/ )
-	test -L ../runs/dbx_jet_h_ACLiC_dict_rdict.pcm       || ( ln -s dbx_jet_h_ACLiC_dict_rdict.pcm         ../runs/ )
-	test -L ../runs/dbx_muon_h_ACLiC_dict_rdict.pcm      || ( ln -s dbx_muon_h_ACLiC_dict_rdict.pcm        ../runs/ )
-	test -L ../runs/dbx_photon_h_ACLiC_dict_rdict.pcm    || ( ln -s dbx_photon_h_ACLiC_dict_rdict.pcm      ../runs/ )
-	test -L ../runs/dbx_tau_h_ACLiC_dict_rdict.pcm       || ( ln -s dbx_tau_h_ACLiC_dict_rdict.pcm         ../runs/ )
-	test -L ../runs/dbx_truth_h_ACLiC_dict_rdict.pcm     || ( ln -s dbx_truth_h_ACLiC_dict_rdict.pcm       ../runs/ )
+	test -L ../runs/DBXNtuple_cpp_ACLiC_dict_rdict.pcm   || ( ln -s ../analysis_core/DBXNtuple_cpp_ACLiC_dict_rdict.pcm     ../runs/ )
+	test -L ../runs/dbxParticle_cpp_ACLiC_dict_rdict.pcm || ( ln -s ../analysis_core/dbxParticle_cpp_ACLiC_dict_rdict.pcm   ../runs/ )
+	test -L ../runs/dbx_electron_h_ACLiC_dict_rdict.pcm  || ( ln -s ../analysis_core/dbx_electron_h_ACLiC_dict_rdict.pcm    ../runs/ )
+	test -L ../runs/dbx_jet_h_ACLiC_dict_rdict.pcm       || ( ln -s ../analysis_core/dbx_jet_h_ACLiC_dict_rdict.pcm         ../runs/ )
+	test -L ../runs/dbx_muon_h_ACLiC_dict_rdict.pcm      || ( ln -s ../analysis_core/dbx_muon_h_ACLiC_dict_rdict.pcm        ../runs/ )
+	test -L ../runs/dbx_photon_h_ACLiC_dict_rdict.pcm    || ( ln -s ../analysis_core/dbx_photon_h_ACLiC_dict_rdict.pcm      ../runs/ )
+	test -L ../runs/dbx_tau_h_ACLiC_dict_rdict.pcm       || ( ln -s ../analysis_core/dbx_tau_h_ACLiC_dict_rdict.pcm         ../runs/ )
+	test -L ../runs/dbx_truth_h_ACLiC_dict_rdict.pcm     || ( ln -s ../analysis_core/dbx_truth_h_ACLiC_dict_rdict.pcm       ../runs/ )
 
 
 clean:

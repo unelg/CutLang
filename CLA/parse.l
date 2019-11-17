@@ -17,33 +17,25 @@ real {integer}("."{integer})
 varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%
-[dD][eE][fF]|"define" return DEF;//case sensitive in this case
-[cC][mM][dD]|[cC][uU][tT]|[sS][eE][lL][eE][cC][tT] return CMD;
+"def"|"define" return DEF;//case sensitive in this case
+"cmd"|"cut"|"select"|"command" return CMD;
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
-"take"|"using" return TAKE;
-"histo" return HISTO;
+[tT][aA][kK][eE]|[uU][sS][iI][nN][gG] return TAKE;
+[hH][iI][sS][tT][oO] return HISTO;
 [wW][eE][iI][gG][hH][tT] return WEIGHT;
 [tT][aA][bB][lL][eE] return TABLE;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-
+[Gg][Ee][Nn] return GEN;
 [eE][lL][eE]|"ELECTRON" return ELE;//particles
 [mM][uU][oO]|"MUON" return MUO;
 [tT][aA][uU] return TAU;
 [pP][hH][oO]|"PHOTON" return PHO;
 [jJ][eE][tT] return JET;
-[Gg][Ee][Nn] return GEN;
 "FJET"|"FatJet" return FJET;
-"BJET" return BJET;
-"QGJET" return QGJET;
 "LEP" return LEP;
-"NUMET" return NUMET;
-"METLV" return METLV;
-"MET" return MET;
-"ALL" return ALL;
-
 "PDGID" return PDGID;
 "btagDeepB" return DEEPB;
 [bB][tT][aA][gG] return ISBTAG;
@@ -60,25 +52,28 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
-"alias" return ALIAS;
-
-  /* ************* generic functions ******* */
-[pP][hT][iI] return PHI;
+"BJET" return BJET;
+"QGJET" return QGJET;
+"NUMET" return NUMET;
+"METLV" return METLV;
+[pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
-[aA][bB][sS][eE][tT][aA] return ETA;
+[Aa][bB][sS][Ee][tT][aA] return ABSETA;
+"alias" return ALIAS;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 [dD][rR] return DR;
 [dD][pP][hH][iI] return DPHI;
 [dD][eE][tT][aA] return DETA;
-[Ss][Ii][Zz][Ee]|[cC][Oo][uU][nN][tT]|[nN][uU][mM][bB][eE][rR] return NUMOF;//no arg funcs
-[hH][tT] return HT;
+[sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs
+"nbf" return NBF;
+"HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
+"MET" return MET;
+"ALL" return ALL;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
-"nbf" return NBF;
-
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
@@ -94,7 +89,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
-[uU][nN][iI][oO][nN] return UNION;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
