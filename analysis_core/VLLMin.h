@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Sep 18 20:09:46 2019 by ROOT version 6.11/02
-// from TTree physics/xAOD->NTuple tree
-// found on file: mc16_13TeV.311528.CompHepPythia8EvtGen_A14NNPDF23LO_WjjnuZlle150GeV.deriv.DAOD_EXOT12.e7404_a875_r9364_p3638.root
+// Tue Apr  2 21:53:28 2019 by ROOT version 5.34/36
+// from TTree nominal/nominal
+// found on file: SeeSaw_multilep_MC_M300.root
 //////////////////////////////////////////////////////////
 
-#ifndef VLLMinSignal_h
-#define VLLMinSignal_h
+#ifndef VLLMin_h
+#define VLLMin_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -17,7 +17,6 @@
 #include "dbxParticle.h"
 #include "Node.h"
 
-// Header file for the classes stored in the TTree if any.
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -25,265 +24,665 @@
 #include <fstream>
 #include "vector"
 #include "string"
+/*
+// Header file for the classes stored in the TTree if any.
+#include "/Volumes/MacintoshHD2/build/electric_commander/build/workspace/root-release-5.34/BUILDTYPE/Release/COMPILER/native/LABEL/mac1011/sources/root_v5.34.36/root/cint/cint/lib/prec_stl/string"
+#include "/Volumes/MacintoshHD2/build/electric_commander/build/workspace/root-release-5.34/BUILDTYPE/Release/COMPILER/native/LABEL/mac1011/sources/root_v5.34.36/root/cint/cint/lib/prec_stl/vector"
+#include "/Volumes/MacintoshHD2/build/electric_commander/build/workspace/root-release-5.34/BUILDTYPE/Release/COMPILER/native/LABEL/mac1011/sources/root_v5.34.36/root/cint/cint/lib/prec_stl/vector"
+#include "/Volumes/MacintoshHD2/build/electric_commander/build/workspace/root-release-5.34/BUILDTYPE/Release/COMPILER/native/LABEL/mac1011/sources/root_v5.34.36/root/cint/cint/lib/prec_stl/vector"
+*/
 
 using namespace std;
+// Fixed size dimensions of array or collections stored in the TTree if any.
 
-class VLLMin{
+class VLLMin {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_e17_lhloose_nod0_mu14 = 4;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_2e12_lhloose_L12EM10VH = 9;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0 = 9;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_mu22_mu8noL1 = 3;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_e17_lhloose_mu14 = 4;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_mu18_mu8noL1 = 3;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI = 1;
-   static constexpr Int_t kMaxtrigMatchedPairs_HLT_2e24_lhvloose_nod0 = 1;
-
    // Declaration of leaf types
-   UInt_t          runNumber;
-   ULong64_t       eventNumber;
-   ULong64_t       mcEventNumber;
-   vector<float>   *mcEventWeights;
-   UInt_t          mcChannelNumber;
-   UInt_t          randomRunNumber;
-   Float_t         averageMu;
-   Float_t         averageMuScaled;
-   Float_t         actualMu;
-   Float_t         actualMuScaled;
-   Float_t         pileupWeight_NOSYS;
-   Bool_t          trigPassed_HLT_2e12_lhloose_L12EM10VH;
-   Bool_t          trigPassed_HLT_2e17_lhvloose_nod0;
-   Bool_t          trigPassed_HLT_e17_lhloose_nod0_mu14;
-   Bool_t          trigPassed_HLT_e17_lhloose_mu14;
-   Bool_t          trigPassed_HLT_mu22_mu8noL1;
-   Bool_t          trigPassed_HLT_mu18_mu8noL1;
-   Bool_t          trigPassed_HLT_2e17_lhvloose_nod0_L12EM15VHI;
-   Bool_t          trigPassed_HLT_2e24_lhvloose_nod0;
-   Int_t           trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_;
-   UChar_t         trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_first[kMaxtrigMatchedPairs_HLT_e17_lhloose_nod0_mu14];   //[trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_]
-   UChar_t         trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_second[kMaxtrigMatchedPairs_HLT_e17_lhloose_nod0_mu14];   //[trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_]
-   Int_t           trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_;
-   UChar_t         trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_first[kMaxtrigMatchedPairs_HLT_2e12_lhloose_L12EM10VH];   //[trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_]
-   UChar_t         trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_second[kMaxtrigMatchedPairs_HLT_2e12_lhloose_L12EM10VH];   //[trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_]
-   Int_t           trigMatchedPairs_HLT_2e17_lhvloose_nod0_;
-   UChar_t         trigMatchedPairs_HLT_2e17_lhvloose_nod0_first[kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0];   //[trigMatchedPairs_HLT_2e17_lhvloose_nod0_]
-   UChar_t         trigMatchedPairs_HLT_2e17_lhvloose_nod0_second[kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0];   //[trigMatchedPairs_HLT_2e17_lhvloose_nod0_]
-   Int_t           trigMatchedPairs_HLT_mu22_mu8noL1_;
-   UChar_t         trigMatchedPairs_HLT_mu22_mu8noL1_first[kMaxtrigMatchedPairs_HLT_mu22_mu8noL1];   //[trigMatchedPairs_HLT_mu22_mu8noL1_]
-   UChar_t         trigMatchedPairs_HLT_mu22_mu8noL1_second[kMaxtrigMatchedPairs_HLT_mu22_mu8noL1];   //[trigMatchedPairs_HLT_mu22_mu8noL1_]
-   Int_t           trigMatchedPairs_HLT_e17_lhloose_mu14_;
-   UChar_t         trigMatchedPairs_HLT_e17_lhloose_mu14_first[kMaxtrigMatchedPairs_HLT_e17_lhloose_mu14];   //[trigMatchedPairs_HLT_e17_lhloose_mu14_]
-   UChar_t         trigMatchedPairs_HLT_e17_lhloose_mu14_second[kMaxtrigMatchedPairs_HLT_e17_lhloose_mu14];   //[trigMatchedPairs_HLT_e17_lhloose_mu14_]
-   Int_t           trigMatchedPairs_HLT_mu18_mu8noL1_;
-   UChar_t         trigMatchedPairs_HLT_mu18_mu8noL1_first[kMaxtrigMatchedPairs_HLT_mu18_mu8noL1];   //[trigMatchedPairs_HLT_mu18_mu8noL1_]
-   UChar_t         trigMatchedPairs_HLT_mu18_mu8noL1_second[kMaxtrigMatchedPairs_HLT_mu18_mu8noL1];   //[trigMatchedPairs_HLT_mu18_mu8noL1_]
-   Int_t           trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_;
-   UChar_t         trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_first[kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI];   //[trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_]
-   UChar_t         trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_second[kMaxtrigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI];   //[trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_]
-   Int_t           trigMatchedPairs_HLT_2e24_lhvloose_nod0_;
-   UChar_t         trigMatchedPairs_HLT_2e24_lhvloose_nod0_first[kMaxtrigMatchedPairs_HLT_2e24_lhvloose_nod0];   //[trigMatchedPairs_HLT_2e24_lhvloose_nod0_]
-   UChar_t         trigMatchedPairs_HLT_2e24_lhvloose_nod0_second[kMaxtrigMatchedPairs_HLT_2e24_lhvloose_nod0];   //[trigMatchedPairs_HLT_2e24_lhvloose_nod0_]
-   Float_t         JVTEfficiency_NOSYS;
-   Float_t         fJVTEfficiency_NOSYS;
-   Float_t         FTagEfficiency_MV2c10_FixedCutBEff_77_NOSYS;
-   vector<float>   *jet_m;
-   vector<float>   *jet_pt_NOSYS;
-   vector<float>   *jet_eta;
-   vector<float>   *jet_phi;
-   vector<char>    *jet_selected_NOSYS;
-   vector<char>    *jet_FTag_MV2c10_FixedCutBEff_77_NOSYS;
+   Int_t           runNumber;
+   Long64_t        eventNumber;
+   Int_t           lumiBlock;
+   UInt_t          coreFlags;
+   Int_t           bcid;
+   Int_t           mcEventNumber;
+   Int_t           mcChannelNumber;
+   Float_t         mcEventWeight;
+   Int_t           NPV;
+   Float_t         actualInteractionsPerCrossing;
+   Float_t         averageInteractionsPerCrossing;
+   Float_t         weight_pileup;
+   Float_t         correctedAverageMu;
+   Float_t         correctedAndScaledAverageMu;
+   Float_t         correctedActualMu;
+   Float_t         correctedAndScaledActualMu;
+   Int_t           rand_run_nr;
+   Int_t           rand_lumiblock_nr;
+   Char_t          isMC;
+   Double_t        crossSection;
+  // multimap<string,pair<unsigned int,unsigned int> > *trigMatchMapDilep;
+  // multimap<string,tuple<unsigned int,unsigned int,unsigned int> > *trigMatchMapTrilep;
+   string          *decayType;
+   vector<float>   *JvtEff_SF;
+   vector<float>   *FTagEff_SF_MV2c10_FixedCutBEff_70;
+   vector<float>   *FTagEff_SF_MV2c10_FixedCutBEff_77;
+   vector<float>   *FTagEff_SF_MV2c10_FixedCutBEff_85;
+   vector<float>   *FTagEff_SF_MV2c10_HybBEff_70;
+   vector<float>   *FTagEff_SF_MV2c10_HybBEff_77;
+   vector<float>   *FTagEff_SF_MV2c10_HybBEff_85;
+   vector<string>  *passedTriggers;
+   vector<string>  *disabledTriggers;
+   Int_t           nmuon;
+   vector<float>   *muon_m;
+   vector<float>   *muon_pt;
+   vector<float>   *muon_phi;
+   vector<float>   *muon_eta;
+   vector<float>   *muon_charge;
+   vector<int>     *muon_isTrigMatched;
+   vector<vector<int> > *muon_isTrigMatchedToChain;
+   vector<string>  *muon_listTrigChains;
+   vector<int>     *muon_isIsolated_FCTight_FixedRad;
+   vector<int>     *muon_isIsolated_FixedCutHighPtTrackOnly;
+   vector<int>     *muon_isIsolated_FCLoose_FixedRad;
+   vector<int>     *muon_isIsolated_FCTightTrackOnly_FixedRad;
+   vector<vector<float> > *muon_RecoEff_SF_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu8noL1_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu8noL1_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu18_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu18_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu10_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu10_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu14_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu14_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu22_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu22_RecoTight;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_RecoTight;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_RecoTight;
+   vector<vector<float> > *muon_RecoEff_SF_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu8noL1_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu8noL1_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu18_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu18_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu10_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu10_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu14_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu14_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu22_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu22_RecoMedium;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_RecoMedium;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_RecoMedium;
+   vector<vector<float> > *muon_RecoEff_SF_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu8noL1_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu18_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu18_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu10_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu10_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu14_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu14_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu22_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu22_RecoHighPt;
+   vector<vector<float> > *muon_TrigEff_SF_HLT_mu20_RecoHighPt;
+   vector<vector<float> > *muon_TrigMCEff_HLT_mu20_RecoHighPt;
+   vector<vector<float> > *muon_IsoEff_SF_IsoFCTight_FixedRad;
+   vector<vector<float> > *muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly;
+   vector<vector<float> > *muon_IsoEff_SF_IsoFCLoose_FixedRad;
+   vector<vector<float> > *muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad;
+   vector<vector<float> > *muon_TTVAEff_SF;
+   vector<int>     *muon_isTight;
+   vector<int>     *muon_isMedium;
+   vector<int>     *muon_isHighPt;
+   vector<int>     *muon_truthClassification;
+   vector<int>     *muon_truthType;
+   vector<int>     *muon_truthOrigin;
+   vector<int>     *muon_truthSignal;
+   Int_t           nel;
    vector<float>   *el_m;
-   vector<float>   *el_pt_NOSYS;
+   vector<float>   *el_pt;
+   vector<float>   *el_phi;
    vector<float>   *el_eta;
    vector<float>   *el_caloCluster_eta;
-   vector<float>   *el_phi;
    vector<float>   *el_charge;
-   vector<char>    *el_selected_NOSYS;
-   vector<char>    *el_likelihood_Tight;
-   vector<char>    *el_isIsolated_FCLoose_NOSYS;
-   vector<float>   *el_effSF_Reco_NOSYS;
-   vector<float>   *el_effSF_PID_Tight_NOSYS;
-   vector<float>   *el_effSF_Isol_Tight_FCLoose_NOSYS;
-   vector<float>   *el_effSF_Chflip_Tight_FCLoose_NOSYS;
-   vector<float>   *el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS;
-   vector<float>   *el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS;
-   vector<float>   *el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS;
-   vector<float>   *el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS;
-   vector<float>   *el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS;
-   vector<float>   *el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS;
-   vector<unsigned int> *el_truthClassification;
-   vector<char>    *el_truthSignal;
+   vector<int>     *el_isTrigMatched;
+   vector<vector<int> > *el_isTrigMatchedToChain;
+   vector<string>  *el_listTrigChains;
+   vector<int>     *el_isIsolated_FCTight;
+   vector<int>     *el_isIsolated_FCHighPtCaloOnly;
+   vector<int>     *el_isIsolated_FCLoose;
+   vector<int>     *el_isIsolated_Gradient;
+   vector<int>     *el_LHLooseBL;
+   vector<int>     *el_LHTight;
+   vector<int>     *el_LHMedium;
+   vector<vector<float> > *el_PIDEff_SF_Tight;
+   vector<vector<float> > *el_IsoEff_SF_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;
+   vector<vector<float> > *el_ChflipEff_SF_Tight_isolFCTight;
+   vector<vector<float> > *el_IsoEff_SF_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;
+   vector<vector<float> > *el_ChflipEff_SF_Tight;
+   vector<vector<float> > *el_IsoEff_SF_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;
+   vector<vector<float> > *el_ChflipEff_SF_Tight_isolFCLoose;
+   vector<vector<float> > *el_IsoEff_SF_Tight_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;
+   vector<vector<float> > *el_ChflipEff_SF_Tight_isolGradient;
+   vector<vector<float> > *el_PIDEff_SF_Medium;
+   vector<vector<float> > *el_IsoEff_SF_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;
+   vector<vector<float> > *el_ChflipEff_SF_Medium_isolFCTight;
+   vector<vector<float> > *el_IsoEff_SF_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;
+   vector<vector<float> > *el_ChflipEff_SF_Medium;
+   vector<vector<float> > *el_IsoEff_SF_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;
+   vector<vector<float> > *el_ChflipEff_SF_Medium_isolFCLoose;
+   vector<vector<float> > *el_IsoEff_SF_Medium_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;
+   vector<vector<float> > *el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;
+   vector<vector<float> > *el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;
+   vector<vector<float> > *el_ChflipEff_SF_Medium_isolGradient;
+   vector<vector<float> > *el_RecoEff_SF;
+   vector<int>     *el_truthClassification;
    vector<int>     *el_truthType;
    vector<int>     *el_truthOrigin;
-   vector<int>     *el_firstEgMotherPdgId;
+   vector<int>     *el_truthSignal;
    vector<int>     *el_firstEgMotherTruthType;
    vector<int>     *el_firstEgMotherTruthOrigin;
-   vector<float>   *mu_m;
-   vector<float>   *mu_pt_NOSYS;
-   vector<float>   *mu_eta;
-   vector<float>   *mu_phi;
-   vector<float>   *mu_charge;
-   vector<char>    *mu_selected_NOSYS;
-   vector<char>    *mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS;
-   vector<float>   *mu_effSF_Reco_NOSYS;
-   vector<float>   *mu_effSF_TTVA_NOSYS;
-   vector<float>   *mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS;
-   vector<float>   *mu_effMC_Trig_Medium_HLT_mu22_NOSYS;
-   vector<float>   *mu_effData_Trig_Medium_HLT_mu22_NOSYS;
-   vector<float>   *mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS;
-   vector<float>   *mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS;
-   vector<float>   *mu_effMC_Trig_Medium_HLT_mu14_NOSYS;
-   vector<float>   *mu_effData_Trig_Medium_HLT_mu14_NOSYS;
-   vector<float>   *mu_effMC_Trig_Medium_HLT_mu18_NOSYS;
-   vector<float>   *mu_effData_Trig_Medium_HLT_mu18_NOSYS;
-   vector<unsigned int> *mu_truthClassification;
-   vector<char>    *mu_truthSignal;
-   vector<int>     *mu_truthType;
-   vector<int>     *mu_truthOrigin;
-   vector<string>  *met_name;
-   vector<double>  *met_NOSYS;
-   vector<double>  *met_px_NOSYS;
-   vector<double>  *met_py_NOSYS;
-   vector<double>  *met_phi_NOSYS;
-   vector<double>  *met_sumet_NOSYS;
-   vector<float>   *met_significance_NOSYS;
+   vector<int>     *el_firstEgMotherPdgId;
+   Int_t           njet;
+   vector<float>   *jet_E;
+   vector<float>   *jet_pt;
+   vector<float>   *jet_phi;
+   vector<float>   *jet_eta;
+   vector<int>     *jet_is_MV2c10_FixedCutBEff_77;
+   vector<int>     *jet_is_MV2c10_FixedCutBEff_85;
+   vector<int>     *jet_is_MV2c10_FixedCutBEff_70;
+   vector<int>     *jet_is_MV2c10_HybBEff_77;
+   vector<int>     *jet_is_MV2c10_HybBEff_85;
+   vector<int>     *jet_is_MV2c10_HybBEff_70;
+   Int_t           ntau;
+   vector<float>   *tau_m;
+   vector<float>   *tau_pt;
+   vector<float>   *tau_phi;
+   vector<float>   *tau_eta;
+   vector<int>     *tau_isTrigMatched;
+   vector<vector<int> > *tau_isTrigMatchedToChain;
+   vector<string>  *tau_listTrigChains;
+   vector<int>     *tau_ntrk;
+   vector<float>   *tau_charge;
+   vector<int>     *tau_isJetBDTSigVeryLoose;
+   vector<int>     *tau_isJetBDTSigLoose;
+   vector<int>     *tau_isJetBDTSigMedium;
+   vector<int>     *tau_isJetBDTSigTight;
+   vector<float>   *tau_JetBDTScore;
+   vector<float>   *tau_JetBDTScoreSigTrans;
+   vector<int>     *tau_isEleBDTLoose;
+   vector<int>     *tau_isEleBDTMedium;
+   vector<int>     *tau_isEleBDTTight;
+   vector<float>   *tau_EleBDTScore;
+   vector<int>     *tau_passEleOLR;
+   vector<float>   *tau_seedJetWidth;
+   vector<float>   *tau_seedJetJvt;
+   vector<int>     *tau_truthClassification;
+   vector<int>     *tau_isTruthMatched;
+   vector<int>     *tau_isTrueHadronicTau;
+   vector<int>     *tau_truthPdgId;
+   vector<int>     *tau_truthOrigin;
+   vector<int>     *tau_truthType;
+   vector<int>     *tau_truthSignal;
+   vector<int>     *tau_truthStatus;
+   vector<int>     *tau_PartonTruthLabelID;
+   Float_t         metFinalTrk;
+   Float_t         metFinalTrkPx;
+   Float_t         metFinalTrkPy;
+   Float_t         metFinalTrkSumEt;
+   Float_t         metFinalTrkPhi;
+   Float_t         metFinalTrkOverSqrtSumEt;
+   Float_t         metFinalTrkOverSqrtHt;
+   Float_t         metFinalTrkSignificance;
+   Float_t         metFinalTrkSigDirectional;
+   Float_t         metSoftTrk;
+   Float_t         metSoftTrkSumEt;
+   Float_t         metSoftTrkPhi;
 
    // List of branches
    TBranch        *b_runNumber;   //!
    TBranch        *b_eventNumber;   //!
+   TBranch        *b_lumiBlock;   //!
+   TBranch        *b_coreFlags;   //!
+   TBranch        *b_bcid;   //!
    TBranch        *b_mcEventNumber;   //!
-   TBranch        *b_mcEventWeights;   //!
    TBranch        *b_mcChannelNumber;   //!
-   TBranch        *b_randomRunNumber;   //!
-   TBranch        *b_averageMu;   //!
-   TBranch        *b_averageMuScaled;   //!
-   TBranch        *b_actualMu;   //!
-   TBranch        *b_actualMuScaled;   //!
-   TBranch        *b_pileupWeight_NOSYS;   //!
-   TBranch        *b_trigPassed_HLT_2e12_lhloose_L12EM10VH;   //!
-   TBranch        *b_trigPassed_HLT_2e17_lhvloose_nod0;   //!
-   TBranch        *b_trigPassed_HLT_e17_lhloose_nod0_mu14;   //!
-   TBranch        *b_trigPassed_HLT_e17_lhloose_mu14;   //!
-   TBranch        *b_trigPassed_HLT_mu22_mu8noL1;   //!
-   TBranch        *b_trigPassed_HLT_mu18_mu8noL1;   //!
-   TBranch        *b_trigPassed_HLT_2e17_lhvloose_nod0_L12EM15VHI;   //!
-   TBranch        *b_trigPassed_HLT_2e24_lhvloose_nod0;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu22_mu8noL1_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu22_mu8noL1_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu22_mu8noL1_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_mu14_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_mu14_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_e17_lhloose_mu14_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu18_mu8noL1_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu18_mu8noL1_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_mu18_mu8noL1_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_second;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_first;   //!
-   TBranch        *b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_second;   //!
-   TBranch        *b_JVTEfficiency_NOSYS;   //!
-   TBranch        *b_fJVTEfficiency_NOSYS;   //!
-   TBranch        *b_FTagEfficiency_MV2c10_FixedCutBEff_77_NOSYS;   //!
-   TBranch        *b_jet_m;   //!
-   TBranch        *b_jet_pt_NOSYS;   //!
-   TBranch        *b_jet_eta;   //!
-   TBranch        *b_jet_phi;   //!
-   TBranch        *b_jet_selected_NOSYS;   //!
-   TBranch        *b_jet_FTag_MV2c10_FixedCutBEff_77_NOSYS;   //!
+   TBranch        *b_mcEventWeight;   //!
+   TBranch        *b_NPV;   //!
+   TBranch        *b_actualInteractionsPerCrossing;   //!
+   TBranch        *b_averageInteractionsPerCrossing;   //!
+   TBranch        *b_weight_pileup;   //!
+   TBranch        *b_correctedAverageMu;   //!
+   TBranch        *b_correctedAndScaledAverageMu;   //!
+   TBranch        *b_correctedActualMu;   //!
+   TBranch        *b_correctedAndScaledActualMu;   //!
+   TBranch        *b_rand_run_nr;   //!
+   TBranch        *b_rand_lumiblock_nr;   //!
+   TBranch        *b_isMC;   //!
+   TBranch        *b_crossSection;   //!
+   TBranch        *b_trigMatchMapDilep;   //!
+   TBranch        *b_trigMatchMapTrilep;   //!
+   TBranch        *b_decayType;   //!
+   TBranch        *b_JvtEff_SF;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_FixedCutBEff_70;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_FixedCutBEff_77;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_FixedCutBEff_85;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_HybBEff_70;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_HybBEff_77;   //!
+   TBranch        *b_FTagEff_SF_MV2c10_HybBEff_85;   //!
+   TBranch        *b_passedTriggers;   //!
+   TBranch        *b_disabledTriggers;   //!
+   TBranch        *b_nmuon;   //!
+   TBranch        *b_muon_m;   //!
+   TBranch        *b_muon_pt;   //!
+   TBranch        *b_muon_phi;   //!
+   TBranch        *b_muon_eta;   //!
+   TBranch        *b_muon_charge;   //!
+   TBranch        *b_muon_isTrigMatched;   //!
+   TBranch        *b_muon_isTrigMatchedToChain;   //!
+   TBranch        *b_muon_listTrigChains;   //!
+   TBranch        *b_muon_isIsolated_FCTight_FixedRad;   //!
+   TBranch        *b_muon_isIsolated_FixedCutHighPtTrackOnly;   //!
+   TBranch        *b_muon_isIsolated_FCLoose_FixedRad;   //!
+   TBranch        *b_muon_isIsolated_FCTightTrackOnly_FixedRad;   //!
+   TBranch        *b_muon_RecoEff_SF_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu8noL1_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu8noL1_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu18_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu18_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu10_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu10_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu14_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu14_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu22_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu22_RecoTight;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_RecoTight;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_RecoTight;   //!
+   TBranch        *b_muon_RecoEff_SF_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu8noL1_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu8noL1_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu18_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu18_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu10_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu10_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu14_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu14_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu22_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu22_RecoMedium;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_RecoMedium;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_RecoMedium;   //!
+   TBranch        *b_muon_RecoEff_SF_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu8noL1_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu18_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu18_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu10_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu10_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu14_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu14_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu22_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu22_RecoHighPt;   //!
+   TBranch        *b_muon_TrigEff_SF_HLT_mu20_RecoHighPt;   //!
+   TBranch        *b_muon_TrigMCEff_HLT_mu20_RecoHighPt;   //!
+   TBranch        *b_muon_IsoEff_SF_IsoFCTight_FixedRad;   //!
+   TBranch        *b_muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly;   //!
+   TBranch        *b_muon_IsoEff_SF_IsoFCLoose_FixedRad;   //!
+   TBranch        *b_muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad;   //!
+   TBranch        *b_muon_TTVAEff_SF;   //!
+   TBranch        *b_muon_isTight;   //!
+   TBranch        *b_muon_isMedium;   //!
+   TBranch        *b_muon_isHighPt;   //!
+   TBranch        *b_muon_truthClassification;   //!
+   TBranch        *b_muon_truthType;   //!
+   TBranch        *b_muon_truthOrigin;   //!
+   TBranch        *b_muon_truthSignal;   //!
+   TBranch        *b_nel;   //!
    TBranch        *b_el_m;   //!
-   TBranch        *b_el_pt_NOSYS;   //!
+   TBranch        *b_el_pt;   //!
+   TBranch        *b_el_phi;   //!
    TBranch        *b_el_eta;   //!
    TBranch        *b_el_caloCluster_eta;   //!
-   TBranch        *b_el_phi;   //!
    TBranch        *b_el_charge;   //!
-   TBranch        *b_el_selected_NOSYS;   //!
-   TBranch        *b_el_likelihood_Tight;   //!
-   TBranch        *b_el_isIsolated_FCLoose_NOSYS;   //!
-   TBranch        *b_el_effSF_Reco_NOSYS;   //!
-   TBranch        *b_el_effSF_PID_Tight_NOSYS;   //!
-   TBranch        *b_el_effSF_Isol_Tight_FCLoose_NOSYS;   //!
-   TBranch        *b_el_effSF_Chflip_Tight_FCLoose_NOSYS;   //!
-   TBranch        *b_el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS;   //!
-   TBranch        *b_el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS;   //!
-   TBranch        *b_el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS;   //!
-   TBranch        *b_el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS;   //!
-   TBranch        *b_el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS;   //!
-   TBranch        *b_el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS;   //!
+   TBranch        *b_el_isTrigMatched;   //!
+   TBranch        *b_el_isTrigMatchedToChain;   //!
+   TBranch        *b_el_listTrigChains;   //!
+   TBranch        *b_el_isIsolated_FCTight;   //!
+   TBranch        *b_el_isIsolated_FCHighPtCaloOnly;   //!
+   TBranch        *b_el_isIsolated_FCLoose;   //!
+   TBranch        *b_el_isIsolated_Gradient;   //!
+   TBranch        *b_el_LHLooseBL;   //!
+   TBranch        *b_el_LHTight;   //!
+   TBranch        *b_el_LHMedium;   //!
+   TBranch        *b_el_PIDEff_SF_Tight;   //!
+   TBranch        *b_el_IsoEff_SF_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight;   //!
+   TBranch        *b_el_ChflipEff_SF_Tight_isolFCTight;   //!
+   TBranch        *b_el_IsoEff_SF_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight;   //!
+   TBranch        *b_el_ChflipEff_SF_Tight;   //!
+   TBranch        *b_el_IsoEff_SF_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose;   //!
+   TBranch        *b_el_ChflipEff_SF_Tight_isolFCLoose;   //!
+   TBranch        *b_el_IsoEff_SF_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient;   //!
+   TBranch        *b_el_ChflipEff_SF_Tight_isolGradient;   //!
+   TBranch        *b_el_PIDEff_SF_Medium;   //!
+   TBranch        *b_el_IsoEff_SF_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight;   //!
+   TBranch        *b_el_ChflipEff_SF_Medium_isolFCTight;   //!
+   TBranch        *b_el_IsoEff_SF_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium;   //!
+   TBranch        *b_el_ChflipEff_SF_Medium;   //!
+   TBranch        *b_el_IsoEff_SF_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose;   //!
+   TBranch        *b_el_ChflipEff_SF_Medium_isolFCLoose;   //!
+   TBranch        *b_el_IsoEff_SF_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;   //!
+   TBranch        *b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient;   //!
+   TBranch        *b_el_ChflipEff_SF_Medium_isolGradient;   //!
+   TBranch        *b_el_RecoEff_SF;   //!
    TBranch        *b_el_truthClassification;   //!
-   TBranch        *b_el_truthSignal;   //!
    TBranch        *b_el_truthType;   //!
    TBranch        *b_el_truthOrigin;   //!
-   TBranch        *b_el_firstEgMotherPdgId;   //!
+   TBranch        *b_el_truthSignal;   //!
    TBranch        *b_el_firstEgMotherTruthType;   //!
    TBranch        *b_el_firstEgMotherTruthOrigin;   //!
-   TBranch        *b_mu_m;   //!
-   TBranch        *b_mu_pt_NOSYS;   //!
-   TBranch        *b_mu_eta;   //!
-   TBranch        *b_mu_phi;   //!
-   TBranch        *b_mu_charge;   //!
-   TBranch        *b_mu_selected_NOSYS;   //!
-   TBranch        *b_mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS;   //!
-   TBranch        *b_mu_effSF_Reco_NOSYS;   //!
-   TBranch        *b_mu_effSF_TTVA_NOSYS;   //!
-   TBranch        *b_mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS;   //!
-   TBranch        *b_mu_effMC_Trig_Medium_HLT_mu22_NOSYS;   //!
-   TBranch        *b_mu_effData_Trig_Medium_HLT_mu22_NOSYS;   //!
-   TBranch        *b_mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS;   //!
-   TBranch        *b_mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS;   //!
-   TBranch        *b_mu_effMC_Trig_Medium_HLT_mu14_NOSYS;   //!
-   TBranch        *b_mu_effData_Trig_Medium_HLT_mu14_NOSYS;   //!
-   TBranch        *b_mu_effMC_Trig_Medium_HLT_mu18_NOSYS;   //!
-   TBranch        *b_mu_effData_Trig_Medium_HLT_mu18_NOSYS;   //!
-   TBranch        *b_mu_truthClassification;   //!
-   TBranch        *b_mu_truthSignal;   //!
-   TBranch        *b_mu_truthType;   //!
-   TBranch        *b_mu_truthOrigin;   //!
-   TBranch        *b_met_name;   //!
-   TBranch        *b_met_NOSYS;   //!
-   TBranch        *b_met_px_NOSYS;   //!
-   TBranch        *b_met_py_NOSYS;   //!
-   TBranch        *b_met_phi_NOSYS;   //!
-   TBranch        *b_met_sumet_NOSYS;   //!
-   TBranch        *b_met_significance_NOSYS;   //!
+   TBranch        *b_el_firstEgMotherPdgId;   //!
+   TBranch        *b_njet;   //!
+   TBranch        *b_jet_E;   //!
+   TBranch        *b_jet_pt;   //!
+   TBranch        *b_jet_phi;   //!
+   TBranch        *b_jet_eta;   //!
+   TBranch        *b_jet_is_MV2c10_FixedCutBEff_77;   //!
+   TBranch        *b_jet_is_MV2c10_FixedCutBEff_85;   //!
+   TBranch        *b_jet_is_MV2c10_FixedCutBEff_70;   //!
+   TBranch        *b_jet_is_MV2c10_HybBEff_77;   //!
+   TBranch        *b_jet_is_MV2c10_HybBEff_85;   //!
+   TBranch        *b_jet_is_MV2c10_HybBEff_70;   //!
+   TBranch        *b_ntau;   //!
+   TBranch        *b_tau_m;   //!
+   TBranch        *b_tau_pt;   //!
+   TBranch        *b_tau_phi;   //!
+   TBranch        *b_tau_eta;   //!
+   TBranch        *b_tau_isTrigMatched;   //!
+   TBranch        *b_tau_isTrigMatchedToChain;   //!
+   TBranch        *b_tau_listTrigChains;   //!
+   TBranch        *b_tau_ntrk;   //!
+   TBranch        *b_tau_charge;   //!
+   TBranch        *b_tau_isJetBDTSigVeryLoose;   //!
+   TBranch        *b_tau_isJetBDTSigLoose;   //!
+   TBranch        *b_tau_isJetBDTSigMedium;   //!
+   TBranch        *b_tau_isJetBDTSigTight;   //!
+   TBranch        *b_tau_JetBDTScore;   //!
+   TBranch        *b_tau_JetBDTScoreSigTrans;   //!
+   TBranch        *b_tau_isEleBDTLoose;   //!
+   TBranch        *b_tau_isEleBDTMedium;   //!
+   TBranch        *b_tau_isEleBDTTight;   //!
+   TBranch        *b_tau_EleBDTScore;   //!
+   TBranch        *b_tau_passEleOLR;   //!
+   TBranch        *b_tau_seedJetWidth;   //!
+   TBranch        *b_tau_seedJetJvt;   //!
+   TBranch        *b_tau_truthClassification;   //!
+   TBranch        *b_tau_isTruthMatched;   //!
+   TBranch        *b_tau_isTrueHadronicTau;   //!
+   TBranch        *b_tau_truthPdgId;   //!
+   TBranch        *b_tau_truthOrigin;   //!
+   TBranch        *b_tau_truthType;   //!
+   TBranch        *b_tau_truthSignal;   //!
+   TBranch        *b_tau_truthStatus;   //!
+   TBranch        *b_tau_PartonTruthLabelID;   //!
+   TBranch        *b_metFinalTrk;   //!
+   TBranch        *b_metFinalTrkPx;   //!
+   TBranch        *b_metFinalTrkPy;   //!
+   TBranch        *b_metFinalTrkSumEt;   //!
+   TBranch        *b_metFinalTrkPhi;   //!
+   TBranch        *b_metFinalTrkOverSqrtSumEt;   //!
+   TBranch        *b_metFinalTrkOverSqrtHt;   //!
+   TBranch        *b_metFinalTrkSignificance;   //!
+   TBranch        *b_metFinalTrkSigDirectional;   //!
+   TBranch        *b_metSoftTrk;   //!
+   TBranch        *b_metSoftTrkSumEt;   //!
+   TBranch        *b_metSoftTrkPhi;   //!
 
-    VLLMin(char *file_name, TChain *tree=0, int year=2012);
-    virtual ~VLLMin();
-    virtual Int_t    Cut(Long64_t entry);
-    virtual Int_t    GetEntry(Long64_t entry);
-    virtual void     GetPhysicsObjects(Long64_t entry, AnalysisObjects *a0);
-    virtual Long64_t LoadTree(Long64_t entry);
-    virtual void     Init(TTree *tree, int year);
-    virtual void     Loop(analy_struct aselect, char *sampletype);
-    virtual Bool_t   Notify();
-    virtual void     Show(Long64_t entry = -1);
+   VLLMin(char *file_name, TChain *tree=0, int year=2012);
+   virtual ~VLLMin();
+   virtual Int_t    Cut(Long64_t entry);
+   virtual Int_t    GetEntry(Long64_t entry);
+   virtual void     GetPhysicsObjects(Long64_t entry, AnalysisObjects *a0);
+   virtual Long64_t LoadTree(Long64_t entry);
+   virtual void     Init(TTree *tree, int year);
+   virtual void     Loop(analy_struct aselect, char *sampletype);
+   virtual Bool_t   Notify();
+   virtual void     Show(Long64_t entry = -1);
 };
 
 #endif
 
-#ifdef VLLMinSignal_cxx
+#ifdef VLLMin_cxx
 VLLMin::VLLMin( char *file_name, TChain *tree, int year) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
+
     TChain* chain;
     if (tree == 0) {
-        //chain = new TChain("/physics/nominal");
-        chain = new TChain("/physics");
+        chain = new TChain("/physics/nominal");
         chain->Add(file_name);
     }
     if (tree == 0) {
@@ -329,68 +728,278 @@ void VLLMin::Init(TTree *tree, int year)
    // (once per file to be processed).
 
    // Set object pointer
-   mcEventWeights = 0;
-   jet_m = 0;
-   jet_pt_NOSYS = 0;
-   jet_eta = 0;
-   jet_phi = 0;
-   jet_selected_NOSYS = 0;
-   jet_FTag_MV2c10_FixedCutBEff_77_NOSYS = 0;
+//   trigMatchMapDilep = 0;
+//   trigMatchMapTrilep = 0;
+   decayType = 0;
+   JvtEff_SF = 0;
+   FTagEff_SF_MV2c10_FixedCutBEff_70 = 0;
+   FTagEff_SF_MV2c10_FixedCutBEff_77 = 0;
+   FTagEff_SF_MV2c10_FixedCutBEff_85 = 0;
+   FTagEff_SF_MV2c10_HybBEff_70 = 0;
+   FTagEff_SF_MV2c10_HybBEff_77 = 0;
+   FTagEff_SF_MV2c10_HybBEff_85 = 0;
+   passedTriggers = 0;
+   disabledTriggers = 0;
+   muon_m = 0;
+   muon_pt = 0;
+   muon_phi = 0;
+   muon_eta = 0;
+   muon_charge = 0;
+   muon_isTrigMatched = 0;
+   muon_isTrigMatchedToChain = 0;
+   muon_listTrigChains = 0;
+   muon_isIsolated_FCTight_FixedRad = 0;
+   muon_isIsolated_FixedCutHighPtTrackOnly = 0;
+   muon_isIsolated_FCLoose_FixedRad = 0;
+   muon_isIsolated_FCTightTrackOnly_FixedRad = 0;
+   muon_RecoEff_SF_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu8noL1_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu8noL1_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu18_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu18_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu10_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu10_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu14_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu14_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu22_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu22_RecoTight = 0;
+   muon_TrigEff_SF_HLT_mu20_RecoTight = 0;
+   muon_TrigMCEff_HLT_mu20_RecoTight = 0;
+   muon_RecoEff_SF_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu8noL1_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu8noL1_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu18_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu18_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu10_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu10_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu14_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu14_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu22_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu22_RecoMedium = 0;
+   muon_TrigEff_SF_HLT_mu20_RecoMedium = 0;
+   muon_TrigMCEff_HLT_mu20_RecoMedium = 0;
+   muon_RecoEff_SF_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu8noL1_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu18_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu18_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu10_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu10_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu14_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu14_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu22_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu22_RecoHighPt = 0;
+   muon_TrigEff_SF_HLT_mu20_RecoHighPt = 0;
+   muon_TrigMCEff_HLT_mu20_RecoHighPt = 0;
+   muon_IsoEff_SF_IsoFCTight_FixedRad = 0;
+   muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly = 0;
+   muon_IsoEff_SF_IsoFCLoose_FixedRad = 0;
+   muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad = 0;
+   muon_TTVAEff_SF = 0;
+   muon_isTight = 0;
+   muon_isMedium = 0;
+   muon_isHighPt = 0;
+   muon_truthClassification = 0;
+   muon_truthType = 0;
+   muon_truthOrigin = 0;
+   muon_truthSignal = 0;
    el_m = 0;
-   el_pt_NOSYS = 0;
+   el_pt = 0;
+   el_phi = 0;
    el_eta = 0;
    el_caloCluster_eta = 0;
-   el_phi = 0;
    el_charge = 0;
-   el_selected_NOSYS = 0;
-   el_likelihood_Tight = 0;
-   el_isIsolated_FCLoose_NOSYS = 0;
-   el_effSF_Reco_NOSYS = 0;
-   el_effSF_PID_Tight_NOSYS = 0;
-   el_effSF_Isol_Tight_FCLoose_NOSYS = 0;
-   el_effSF_Chflip_Tight_FCLoose_NOSYS = 0;
-   el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS = 0;
-   el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS = 0;
-   el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS = 0;
-   el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS = 0;
-   el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS = 0;
-   el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS = 0;
+   el_isTrigMatched = 0;
+   el_isTrigMatchedToChain = 0;
+   el_listTrigChains = 0;
+   el_isIsolated_FCTight = 0;
+   el_isIsolated_FCHighPtCaloOnly = 0;
+   el_isIsolated_FCLoose = 0;
+   el_isIsolated_Gradient = 0;
+   el_LHLooseBL = 0;
+   el_LHTight = 0;
+   el_LHMedium = 0;
+   el_PIDEff_SF_Tight = 0;
+   el_IsoEff_SF_Tight_isolFCTight = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight = 0;
+   el_ChflipEff_SF_Tight_isolFCTight = 0;
+   el_IsoEff_SF_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly = 0;
+   el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight = 0;
+   el_ChflipEff_SF_Tight = 0;
+   el_IsoEff_SF_Tight_isolFCLoose = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose = 0;
+   el_ChflipEff_SF_Tight_isolFCLoose = 0;
+   el_IsoEff_SF_Tight_isolGradient = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient = 0;
+   el_ChflipEff_SF_Tight_isolGradient = 0;
+   el_PIDEff_SF_Medium = 0;
+   el_IsoEff_SF_Medium_isolFCTight = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight = 0;
+   el_ChflipEff_SF_Medium_isolFCTight = 0;
+   el_IsoEff_SF_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly = 0;
+   el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium = 0;
+   el_ChflipEff_SF_Medium = 0;
+   el_IsoEff_SF_Medium_isolFCLoose = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose = 0;
+   el_ChflipEff_SF_Medium_isolFCLoose = 0;
+   el_IsoEff_SF_Medium_isolGradient = 0;
+   el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient = 0;
+   el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient = 0;
+   el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient = 0;
+   el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient = 0;
+   el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient = 0;
+   el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient = 0;
+   el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient = 0;
+   el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient = 0;
+   el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient = 0;
+   el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient = 0;
+   el_ChflipEff_SF_Medium_isolGradient = 0;
+   el_RecoEff_SF = 0;
    el_truthClassification = 0;
-   el_truthSignal = 0;
    el_truthType = 0;
    el_truthOrigin = 0;
-   el_firstEgMotherPdgId = 0;
+   el_truthSignal = 0;
    el_firstEgMotherTruthType = 0;
    el_firstEgMotherTruthOrigin = 0;
-   mu_m = 0;
-   mu_pt_NOSYS = 0;
-   mu_eta = 0;
-   mu_phi = 0;
-   mu_charge = 0;
-   mu_selected_NOSYS = 0;
-   mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS = 0;
-   mu_effSF_Reco_NOSYS = 0;
-   mu_effSF_TTVA_NOSYS = 0;
-   mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS = 0;
-   mu_effMC_Trig_Medium_HLT_mu22_NOSYS = 0;
-   mu_effData_Trig_Medium_HLT_mu22_NOSYS = 0;
-   mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS = 0;
-   mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS = 0;
-   mu_effMC_Trig_Medium_HLT_mu14_NOSYS = 0;
-   mu_effData_Trig_Medium_HLT_mu14_NOSYS = 0;
-   mu_effMC_Trig_Medium_HLT_mu18_NOSYS = 0;
-   mu_effData_Trig_Medium_HLT_mu18_NOSYS = 0;
-   mu_truthClassification = 0;
-   mu_truthSignal = 0;
-   mu_truthType = 0;
-   mu_truthOrigin = 0;
-   met_name = 0;
-   met_NOSYS = 0;
-   met_px_NOSYS = 0;
-   met_py_NOSYS = 0;
-   met_phi_NOSYS = 0;
-   met_sumet_NOSYS = 0;
-   met_significance_NOSYS = 0;
+   el_firstEgMotherPdgId = 0;
+   jet_E = 0;
+   jet_pt = 0;
+   jet_phi = 0;
+   jet_eta = 0;
+   jet_is_MV2c10_FixedCutBEff_77 = 0;
+   jet_is_MV2c10_FixedCutBEff_85 = 0;
+   jet_is_MV2c10_FixedCutBEff_70 = 0;
+   jet_is_MV2c10_HybBEff_77 = 0;
+   jet_is_MV2c10_HybBEff_85 = 0;
+   jet_is_MV2c10_HybBEff_70 = 0;
+   tau_m = 0;
+   tau_pt = 0;
+   tau_phi = 0;
+   tau_eta = 0;
+   tau_isTrigMatched = 0;
+   tau_isTrigMatchedToChain = 0;
+   tau_listTrigChains = 0;
+   tau_ntrk = 0;
+   tau_charge = 0;
+   tau_isJetBDTSigVeryLoose = 0;
+   tau_isJetBDTSigLoose = 0;
+   tau_isJetBDTSigMedium = 0;
+   tau_isJetBDTSigTight = 0;
+   tau_JetBDTScore = 0;
+   tau_JetBDTScoreSigTrans = 0;
+   tau_isEleBDTLoose = 0;
+   tau_isEleBDTMedium = 0;
+   tau_isEleBDTTight = 0;
+   tau_EleBDTScore = 0;
+   tau_passEleOLR = 0;
+   tau_seedJetWidth = 0;
+   tau_seedJetJvt = 0;
+   tau_truthClassification = 0;
+   tau_isTruthMatched = 0;
+   tau_isTrueHadronicTau = 0;
+   tau_truthPdgId = 0;
+   tau_truthOrigin = 0;
+   tau_truthType = 0;
+   tau_truthSignal = 0;
+   tau_truthStatus = 0;
+   tau_PartonTruthLabelID = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -399,111 +1008,312 @@ void VLLMin::Init(TTree *tree, int year)
 
    fChain->SetBranchAddress("runNumber", &runNumber, &b_runNumber);
    fChain->SetBranchAddress("eventNumber", &eventNumber, &b_eventNumber);
+   fChain->SetBranchAddress("lumiBlock", &lumiBlock, &b_lumiBlock);
+   fChain->SetBranchAddress("coreFlags", &coreFlags, &b_coreFlags);
+   fChain->SetBranchAddress("bcid", &bcid, &b_bcid);
    fChain->SetBranchAddress("mcEventNumber", &mcEventNumber, &b_mcEventNumber);
-   fChain->SetBranchAddress("mcEventWeights", &mcEventWeights, &b_mcEventWeights);
    fChain->SetBranchAddress("mcChannelNumber", &mcChannelNumber, &b_mcChannelNumber);
-   fChain->SetBranchAddress("randomRunNumber", &randomRunNumber, &b_randomRunNumber);
-   fChain->SetBranchAddress("averageMu", &averageMu, &b_averageMu);
-   fChain->SetBranchAddress("averageMuScaled", &averageMuScaled, &b_averageMuScaled);
-   fChain->SetBranchAddress("actualMu", &actualMu, &b_actualMu);
-   fChain->SetBranchAddress("actualMuScaled", &actualMuScaled, &b_actualMuScaled);
-   fChain->SetBranchAddress("pileupWeight_NOSYS", &pileupWeight_NOSYS, &b_pileupWeight_NOSYS);
-   fChain->SetBranchAddress("trigPassed_HLT_2e12_lhloose_L12EM10VH", &trigPassed_HLT_2e12_lhloose_L12EM10VH, &b_trigPassed_HLT_2e12_lhloose_L12EM10VH);
-   fChain->SetBranchAddress("trigPassed_HLT_2e17_lhvloose_nod0", &trigPassed_HLT_2e17_lhvloose_nod0, &b_trigPassed_HLT_2e17_lhvloose_nod0);
-   fChain->SetBranchAddress("trigPassed_HLT_e17_lhloose_nod0_mu14", &trigPassed_HLT_e17_lhloose_nod0_mu14, &b_trigPassed_HLT_e17_lhloose_nod0_mu14);
-   fChain->SetBranchAddress("trigPassed_HLT_e17_lhloose_mu14", &trigPassed_HLT_e17_lhloose_mu14, &b_trigPassed_HLT_e17_lhloose_mu14);
-   fChain->SetBranchAddress("trigPassed_HLT_mu22_mu8noL1", &trigPassed_HLT_mu22_mu8noL1, &b_trigPassed_HLT_mu22_mu8noL1);
-   fChain->SetBranchAddress("trigPassed_HLT_mu18_mu8noL1", &trigPassed_HLT_mu18_mu8noL1, &b_trigPassed_HLT_mu18_mu8noL1);
-   fChain->SetBranchAddress("trigPassed_HLT_2e17_lhvloose_nod0_L12EM15VHI", &trigPassed_HLT_2e17_lhvloose_nod0_L12EM15VHI, &b_trigPassed_HLT_2e17_lhvloose_nod0_L12EM15VHI);
-   fChain->SetBranchAddress("trigPassed_HLT_2e24_lhvloose_nod0", &trigPassed_HLT_2e24_lhvloose_nod0, &b_trigPassed_HLT_2e24_lhvloose_nod0);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_nod0_mu14", &trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_, &b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_nod0_mu14.first", trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_first, &b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_nod0_mu14.second", trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_second, &b_trigMatchedPairs_HLT_e17_lhloose_nod0_mu14_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH", &trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_, &b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH.first", trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_first, &b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH.second", trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_second, &b_trigMatchedPairs_HLT_2e12_lhloose_L12EM10VH_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0", &trigMatchedPairs_HLT_2e17_lhvloose_nod0_, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0.first", trigMatchedPairs_HLT_2e17_lhvloose_nod0_first, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0.second", trigMatchedPairs_HLT_2e17_lhvloose_nod0_second, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu22_mu8noL1", &trigMatchedPairs_HLT_mu22_mu8noL1_, &b_trigMatchedPairs_HLT_mu22_mu8noL1_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu22_mu8noL1.first", trigMatchedPairs_HLT_mu22_mu8noL1_first, &b_trigMatchedPairs_HLT_mu22_mu8noL1_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu22_mu8noL1.second", trigMatchedPairs_HLT_mu22_mu8noL1_second, &b_trigMatchedPairs_HLT_mu22_mu8noL1_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_mu14", &trigMatchedPairs_HLT_e17_lhloose_mu14_, &b_trigMatchedPairs_HLT_e17_lhloose_mu14_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_mu14.first", trigMatchedPairs_HLT_e17_lhloose_mu14_first, &b_trigMatchedPairs_HLT_e17_lhloose_mu14_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_e17_lhloose_mu14.second", trigMatchedPairs_HLT_e17_lhloose_mu14_second, &b_trigMatchedPairs_HLT_e17_lhloose_mu14_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu18_mu8noL1", &trigMatchedPairs_HLT_mu18_mu8noL1_, &b_trigMatchedPairs_HLT_mu18_mu8noL1_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu18_mu8noL1.first", trigMatchedPairs_HLT_mu18_mu8noL1_first, &b_trigMatchedPairs_HLT_mu18_mu8noL1_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_mu18_mu8noL1.second", trigMatchedPairs_HLT_mu18_mu8noL1_second, &b_trigMatchedPairs_HLT_mu18_mu8noL1_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI", &trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI.first", &trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_first, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI.second", &trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_second, &b_trigMatchedPairs_HLT_2e17_lhvloose_nod0_L12EM15VHI_second);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e24_lhvloose_nod0", &trigMatchedPairs_HLT_2e24_lhvloose_nod0_, &b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e24_lhvloose_nod0.first", &trigMatchedPairs_HLT_2e24_lhvloose_nod0_first, &b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_first);
-   fChain->SetBranchAddress("trigMatchedPairs_HLT_2e24_lhvloose_nod0.second", &trigMatchedPairs_HLT_2e24_lhvloose_nod0_second, &b_trigMatchedPairs_HLT_2e24_lhvloose_nod0_second);
-   fChain->SetBranchAddress("JVTEfficiency_NOSYS", &JVTEfficiency_NOSYS, &b_JVTEfficiency_NOSYS);
-   fChain->SetBranchAddress("fJVTEfficiency_NOSYS", &fJVTEfficiency_NOSYS, &b_fJVTEfficiency_NOSYS);
-   fChain->SetBranchAddress("FTagEfficiency_MV2c10_FixedCutBEff_77_NOSYS", &FTagEfficiency_MV2c10_FixedCutBEff_77_NOSYS, &b_FTagEfficiency_MV2c10_FixedCutBEff_77_NOSYS);
-   fChain->SetBranchAddress("jet_m", &jet_m, &b_jet_m);
-   fChain->SetBranchAddress("jet_pt_NOSYS", &jet_pt_NOSYS, &b_jet_pt_NOSYS);
-   fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
-   fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
-   fChain->SetBranchAddress("jet_selected_NOSYS", &jet_selected_NOSYS, &b_jet_selected_NOSYS);
-   fChain->SetBranchAddress("jet_FTag_MV2c10_FixedCutBEff_77_NOSYS", &jet_FTag_MV2c10_FixedCutBEff_77_NOSYS, &b_jet_FTag_MV2c10_FixedCutBEff_77_NOSYS);
+   fChain->SetBranchAddress("mcEventWeight", &mcEventWeight, &b_mcEventWeight);
+   fChain->SetBranchAddress("NPV", &NPV, &b_NPV);
+   fChain->SetBranchAddress("actualInteractionsPerCrossing", &actualInteractionsPerCrossing, &b_actualInteractionsPerCrossing);
+   fChain->SetBranchAddress("averageInteractionsPerCrossing", &averageInteractionsPerCrossing, &b_averageInteractionsPerCrossing);
+   fChain->SetBranchAddress("weight_pileup", &weight_pileup, &b_weight_pileup);
+   fChain->SetBranchAddress("correctedAverageMu", &correctedAverageMu, &b_correctedAverageMu);
+   fChain->SetBranchAddress("correctedAndScaledAverageMu", &correctedAndScaledAverageMu, &b_correctedAndScaledAverageMu);
+   fChain->SetBranchAddress("correctedActualMu", &correctedActualMu, &b_correctedActualMu);
+   fChain->SetBranchAddress("correctedAndScaledActualMu", &correctedAndScaledActualMu, &b_correctedAndScaledActualMu);
+   fChain->SetBranchAddress("rand_run_nr", &rand_run_nr, &b_rand_run_nr);
+   fChain->SetBranchAddress("rand_lumiblock_nr", &rand_lumiblock_nr, &b_rand_lumiblock_nr);
+   fChain->SetBranchAddress("isMC", &isMC, &b_isMC);
+   fChain->SetBranchAddress("crossSection", &crossSection, &b_crossSection);
+//   fChain->SetBranchAddress("trigMatchMapDilep", &trigMatchMapDilep, &b_trigMatchMapDilep);
+//   fChain->SetBranchAddress("trigMatchMapTrilep", &trigMatchMapTrilep, &b_trigMatchMapTrilep);
+   fChain->SetBranchAddress("decayType", &decayType, &b_decayType);
+   fChain->SetBranchAddress("JvtEff_SF", &JvtEff_SF, &b_JvtEff_SF);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_FixedCutBEff_70", &FTagEff_SF_MV2c10_FixedCutBEff_70, &b_FTagEff_SF_MV2c10_FixedCutBEff_70);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_FixedCutBEff_77", &FTagEff_SF_MV2c10_FixedCutBEff_77, &b_FTagEff_SF_MV2c10_FixedCutBEff_77);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_FixedCutBEff_85", &FTagEff_SF_MV2c10_FixedCutBEff_85, &b_FTagEff_SF_MV2c10_FixedCutBEff_85);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_HybBEff_70", &FTagEff_SF_MV2c10_HybBEff_70, &b_FTagEff_SF_MV2c10_HybBEff_70);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_HybBEff_77", &FTagEff_SF_MV2c10_HybBEff_77, &b_FTagEff_SF_MV2c10_HybBEff_77);
+   fChain->SetBranchAddress("FTagEff_SF_MV2c10_HybBEff_85", &FTagEff_SF_MV2c10_HybBEff_85, &b_FTagEff_SF_MV2c10_HybBEff_85);
+   fChain->SetBranchAddress("passedTriggers", &passedTriggers, &b_passedTriggers);
+   fChain->SetBranchAddress("disabledTriggers", &disabledTriggers, &b_disabledTriggers);
+   fChain->SetBranchAddress("nmuon", &nmuon, &b_nmuon);
+   fChain->SetBranchAddress("muon_m", &muon_m, &b_muon_m);
+   fChain->SetBranchAddress("muon_pt", &muon_pt, &b_muon_pt);
+   fChain->SetBranchAddress("muon_phi", &muon_phi, &b_muon_phi);
+   fChain->SetBranchAddress("muon_eta", &muon_eta, &b_muon_eta);
+   fChain->SetBranchAddress("muon_charge", &muon_charge, &b_muon_charge);
+   fChain->SetBranchAddress("muon_isTrigMatched", &muon_isTrigMatched, &b_muon_isTrigMatched);
+   fChain->SetBranchAddress("muon_isTrigMatchedToChain", &muon_isTrigMatchedToChain, &b_muon_isTrigMatchedToChain);
+   fChain->SetBranchAddress("muon_listTrigChains", &muon_listTrigChains, &b_muon_listTrigChains);
+   fChain->SetBranchAddress("muon_isIsolated_FCTight_FixedRad", &muon_isIsolated_FCTight_FixedRad, &b_muon_isIsolated_FCTight_FixedRad);
+   fChain->SetBranchAddress("muon_isIsolated_FixedCutHighPtTrackOnly", &muon_isIsolated_FixedCutHighPtTrackOnly, &b_muon_isIsolated_FixedCutHighPtTrackOnly);
+   fChain->SetBranchAddress("muon_isIsolated_FCLoose_FixedRad", &muon_isIsolated_FCLoose_FixedRad, &b_muon_isIsolated_FCLoose_FixedRad);
+   fChain->SetBranchAddress("muon_isIsolated_FCTightTrackOnly_FixedRad", &muon_isIsolated_FCTightTrackOnly_FixedRad, &b_muon_isIsolated_FCTightTrackOnly_FixedRad);
+   fChain->SetBranchAddress("muon_RecoEff_SF_RecoTight", &muon_RecoEff_SF_RecoTight, &b_muon_RecoEff_SF_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu8noL1_RecoTight", &muon_TrigEff_SF_HLT_mu8noL1_RecoTight, &b_muon_TrigEff_SF_HLT_mu8noL1_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu8noL1_RecoTight", &muon_TrigMCEff_HLT_mu8noL1_RecoTight, &b_muon_TrigMCEff_HLT_mu8noL1_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu18_RecoTight", &muon_TrigEff_SF_HLT_mu18_RecoTight, &b_muon_TrigEff_SF_HLT_mu18_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu18_RecoTight", &muon_TrigMCEff_HLT_mu18_RecoTight, &b_muon_TrigMCEff_HLT_mu18_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight", &muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight, &b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight", &muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight, &b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight", &muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight, &b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight", &muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight, &b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu10_RecoTight", &muon_TrigEff_SF_HLT_mu10_RecoTight, &b_muon_TrigEff_SF_HLT_mu10_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu10_RecoTight", &muon_TrigMCEff_HLT_mu10_RecoTight, &b_muon_TrigMCEff_HLT_mu10_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu14_RecoTight", &muon_TrigEff_SF_HLT_mu14_RecoTight, &b_muon_TrigEff_SF_HLT_mu14_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu14_RecoTight", &muon_TrigMCEff_HLT_mu14_RecoTight, &b_muon_TrigMCEff_HLT_mu14_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu22_RecoTight", &muon_TrigEff_SF_HLT_mu22_RecoTight, &b_muon_TrigEff_SF_HLT_mu22_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu22_RecoTight", &muon_TrigMCEff_HLT_mu22_RecoTight, &b_muon_TrigMCEff_HLT_mu22_RecoTight);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_RecoTight", &muon_TrigEff_SF_HLT_mu20_RecoTight, &b_muon_TrigEff_SF_HLT_mu20_RecoTight);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_RecoTight", &muon_TrigMCEff_HLT_mu20_RecoTight, &b_muon_TrigMCEff_HLT_mu20_RecoTight);
+   fChain->SetBranchAddress("muon_RecoEff_SF_RecoMedium", &muon_RecoEff_SF_RecoMedium, &b_muon_RecoEff_SF_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu8noL1_RecoMedium", &muon_TrigEff_SF_HLT_mu8noL1_RecoMedium, &b_muon_TrigEff_SF_HLT_mu8noL1_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu8noL1_RecoMedium", &muon_TrigMCEff_HLT_mu8noL1_RecoMedium, &b_muon_TrigMCEff_HLT_mu8noL1_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu18_RecoMedium", &muon_TrigEff_SF_HLT_mu18_RecoMedium, &b_muon_TrigEff_SF_HLT_mu18_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu18_RecoMedium", &muon_TrigMCEff_HLT_mu18_RecoMedium, &b_muon_TrigMCEff_HLT_mu18_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium", &muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium, &b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium", &muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium, &b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium", &muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium, &b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium", &muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium, &b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu10_RecoMedium", &muon_TrigEff_SF_HLT_mu10_RecoMedium, &b_muon_TrigEff_SF_HLT_mu10_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu10_RecoMedium", &muon_TrigMCEff_HLT_mu10_RecoMedium, &b_muon_TrigMCEff_HLT_mu10_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu14_RecoMedium", &muon_TrigEff_SF_HLT_mu14_RecoMedium, &b_muon_TrigEff_SF_HLT_mu14_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu14_RecoMedium", &muon_TrigMCEff_HLT_mu14_RecoMedium, &b_muon_TrigMCEff_HLT_mu14_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu22_RecoMedium", &muon_TrigEff_SF_HLT_mu22_RecoMedium, &b_muon_TrigEff_SF_HLT_mu22_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu22_RecoMedium", &muon_TrigMCEff_HLT_mu22_RecoMedium, &b_muon_TrigMCEff_HLT_mu22_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_RecoMedium", &muon_TrigEff_SF_HLT_mu20_RecoMedium, &b_muon_TrigEff_SF_HLT_mu20_RecoMedium);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_RecoMedium", &muon_TrigMCEff_HLT_mu20_RecoMedium, &b_muon_TrigMCEff_HLT_mu20_RecoMedium);
+   fChain->SetBranchAddress("muon_RecoEff_SF_RecoHighPt", &muon_RecoEff_SF_RecoHighPt, &b_muon_RecoEff_SF_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt", &muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu8noL1_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu8noL1_RecoHighPt", &muon_TrigMCEff_HLT_mu8noL1_RecoHighPt, &b_muon_TrigMCEff_HLT_mu8noL1_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu18_RecoHighPt", &muon_TrigEff_SF_HLT_mu18_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu18_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu18_RecoHighPt", &muon_TrigMCEff_HLT_mu18_RecoHighPt, &b_muon_TrigMCEff_HLT_mu18_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt", &muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt", &muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt, &b_muon_TrigMCEff_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt", &muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt", &muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt, &b_muon_TrigMCEff_HLT_mu26_ivarmedium_OR_HLT_mu50_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu10_RecoHighPt", &muon_TrigEff_SF_HLT_mu10_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu10_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu10_RecoHighPt", &muon_TrigMCEff_HLT_mu10_RecoHighPt, &b_muon_TrigMCEff_HLT_mu10_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu14_RecoHighPt", &muon_TrigEff_SF_HLT_mu14_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu14_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu14_RecoHighPt", &muon_TrigMCEff_HLT_mu14_RecoHighPt, &b_muon_TrigMCEff_HLT_mu14_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu22_RecoHighPt", &muon_TrigEff_SF_HLT_mu22_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu22_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu22_RecoHighPt", &muon_TrigMCEff_HLT_mu22_RecoHighPt, &b_muon_TrigMCEff_HLT_mu22_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigEff_SF_HLT_mu20_RecoHighPt", &muon_TrigEff_SF_HLT_mu20_RecoHighPt, &b_muon_TrigEff_SF_HLT_mu20_RecoHighPt);
+   fChain->SetBranchAddress("muon_TrigMCEff_HLT_mu20_RecoHighPt", &muon_TrigMCEff_HLT_mu20_RecoHighPt, &b_muon_TrigMCEff_HLT_mu20_RecoHighPt);
+   fChain->SetBranchAddress("muon_IsoEff_SF_IsoFCTight_FixedRad", &muon_IsoEff_SF_IsoFCTight_FixedRad, &b_muon_IsoEff_SF_IsoFCTight_FixedRad);
+   fChain->SetBranchAddress("muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly", &muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly, &b_muon_IsoEff_SF_IsoFixedCutHighPtTrackOnly);
+   fChain->SetBranchAddress("muon_IsoEff_SF_IsoFCLoose_FixedRad", &muon_IsoEff_SF_IsoFCLoose_FixedRad, &b_muon_IsoEff_SF_IsoFCLoose_FixedRad);
+   fChain->SetBranchAddress("muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad", &muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad, &b_muon_IsoEff_SF_IsoFCTightTrackOnly_FixedRad);
+   fChain->SetBranchAddress("muon_TTVAEff_SF", &muon_TTVAEff_SF, &b_muon_TTVAEff_SF);
+   fChain->SetBranchAddress("muon_isTight", &muon_isTight, &b_muon_isTight);
+   fChain->SetBranchAddress("muon_isMedium", &muon_isMedium, &b_muon_isMedium);
+   fChain->SetBranchAddress("muon_isHighPt", &muon_isHighPt, &b_muon_isHighPt);
+   fChain->SetBranchAddress("muon_truthClassification", &muon_truthClassification, &b_muon_truthClassification);
+   fChain->SetBranchAddress("muon_truthType", &muon_truthType, &b_muon_truthType);
+   fChain->SetBranchAddress("muon_truthOrigin", &muon_truthOrigin, &b_muon_truthOrigin);
+   fChain->SetBranchAddress("muon_truthSignal", &muon_truthSignal, &b_muon_truthSignal);
+   fChain->SetBranchAddress("nel", &nel, &b_nel);
    fChain->SetBranchAddress("el_m", &el_m, &b_el_m);
-   fChain->SetBranchAddress("el_pt_NOSYS", &el_pt_NOSYS, &b_el_pt_NOSYS);
+   fChain->SetBranchAddress("el_pt", &el_pt, &b_el_pt);
+   fChain->SetBranchAddress("el_phi", &el_phi, &b_el_phi);
    fChain->SetBranchAddress("el_eta", &el_eta, &b_el_eta);
    fChain->SetBranchAddress("el_caloCluster_eta", &el_caloCluster_eta, &b_el_caloCluster_eta);
-   fChain->SetBranchAddress("el_phi", &el_phi, &b_el_phi);
    fChain->SetBranchAddress("el_charge", &el_charge, &b_el_charge);
-   fChain->SetBranchAddress("el_selected_NOSYS", &el_selected_NOSYS, &b_el_selected_NOSYS);
-   fChain->SetBranchAddress("el_likelihood_Tight", &el_likelihood_Tight, &b_el_likelihood_Tight);
-   fChain->SetBranchAddress("el_isIsolated_FCLoose_NOSYS", &el_isIsolated_FCLoose_NOSYS, &b_el_isIsolated_FCLoose_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Reco_NOSYS", &el_effSF_Reco_NOSYS, &b_el_effSF_Reco_NOSYS);
-   fChain->SetBranchAddress("el_effSF_PID_Tight_NOSYS", &el_effSF_PID_Tight_NOSYS, &b_el_effSF_PID_Tight_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Isol_Tight_FCLoose_NOSYS", &el_effSF_Isol_Tight_FCLoose_NOSYS, &b_el_effSF_Isol_Tight_FCLoose_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Chflip_Tight_FCLoose_NOSYS", &el_effSF_Chflip_Tight_FCLoose_NOSYS, &b_el_effSF_Chflip_Tight_FCLoose_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS", &el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS, &b_el_effSF_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS);
-   fChain->SetBranchAddress("el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS", &el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS, &b_el_effMC_Trig_Tight_FCLoose_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS", &el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS, &b_el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS);
-   fChain->SetBranchAddress("el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS", &el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS, &b_el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e17_lhvloose_nod0_L1EM15VHI_NOSYS);
-   fChain->SetBranchAddress("el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS", &el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS, &b_el_effSF_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS);
-   fChain->SetBranchAddress("el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS", &el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS, &b_el_effMC_Trig_Tight_FCLoose_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_NOSYS);
+   fChain->SetBranchAddress("el_isTrigMatched", &el_isTrigMatched, &b_el_isTrigMatched);
+   fChain->SetBranchAddress("el_isTrigMatchedToChain", &el_isTrigMatchedToChain, &b_el_isTrigMatchedToChain);
+   fChain->SetBranchAddress("el_listTrigChains", &el_listTrigChains, &b_el_listTrigChains);
+   fChain->SetBranchAddress("el_isIsolated_FCTight", &el_isIsolated_FCTight, &b_el_isIsolated_FCTight);
+   fChain->SetBranchAddress("el_isIsolated_FCHighPtCaloOnly", &el_isIsolated_FCHighPtCaloOnly, &b_el_isIsolated_FCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_isIsolated_FCLoose", &el_isIsolated_FCLoose, &b_el_isIsolated_FCLoose);
+   fChain->SetBranchAddress("el_isIsolated_Gradient", &el_isIsolated_Gradient, &b_el_isIsolated_Gradient);
+   fChain->SetBranchAddress("el_LHLooseBL", &el_LHLooseBL, &b_el_LHLooseBL);
+   fChain->SetBranchAddress("el_LHTight", &el_LHTight, &b_el_LHTight);
+   fChain->SetBranchAddress("el_LHMedium", &el_LHMedium, &b_el_LHMedium);
+   fChain->SetBranchAddress("el_PIDEff_SF_Tight", &el_PIDEff_SF_Tight, &b_el_PIDEff_SF_Tight);
+   fChain->SetBranchAddress("el_IsoEff_SF_Tight_isolFCTight", &el_IsoEff_SF_Tight_isolFCTight, &b_el_IsoEff_SF_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Tight_isolFCTight", &el_ChflipEff_SF_Tight_isolFCTight, &b_el_ChflipEff_SF_Tight_isolFCTight);
+   fChain->SetBranchAddress("el_IsoEff_SF_Tight_isolFCHighPtCaloOnly", &el_IsoEff_SF_Tight_isolFCHighPtCaloOnly, &b_el_IsoEff_SF_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly", &el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly, &b_el_ChflipEff_SF_Tight_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Tight", &el_ChflipEff_SF_Tight, &b_el_ChflipEff_SF_Tight);
+   fChain->SetBranchAddress("el_IsoEff_SF_Tight_isolFCLoose", &el_IsoEff_SF_Tight_isolFCLoose, &b_el_IsoEff_SF_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Tight_isolFCLoose", &el_ChflipEff_SF_Tight_isolFCLoose, &b_el_ChflipEff_SF_Tight_isolFCLoose);
+   fChain->SetBranchAddress("el_IsoEff_SF_Tight_isolGradient", &el_IsoEff_SF_Tight_isolGradient, &b_el_IsoEff_SF_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Tight_isolGradient);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Tight_isolGradient", &el_ChflipEff_SF_Tight_isolGradient, &b_el_ChflipEff_SF_Tight_isolGradient);
+   fChain->SetBranchAddress("el_PIDEff_SF_Medium", &el_PIDEff_SF_Medium, &b_el_PIDEff_SF_Medium);
+   fChain->SetBranchAddress("el_IsoEff_SF_Medium_isolFCTight", &el_IsoEff_SF_Medium_isolFCTight, &b_el_IsoEff_SF_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Medium_isolFCTight", &el_ChflipEff_SF_Medium_isolFCTight, &b_el_ChflipEff_SF_Medium_isolFCTight);
+   fChain->SetBranchAddress("el_IsoEff_SF_Medium_isolFCHighPtCaloOnly", &el_IsoEff_SF_Medium_isolFCHighPtCaloOnly, &b_el_IsoEff_SF_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly", &el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly, &b_el_ChflipEff_SF_Medium_isolFCHighPtCaloOnly);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Medium", &el_ChflipEff_SF_Medium, &b_el_ChflipEff_SF_Medium);
+   fChain->SetBranchAddress("el_IsoEff_SF_Medium_isolFCLoose", &el_IsoEff_SF_Medium_isolFCLoose, &b_el_IsoEff_SF_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Medium_isolFCLoose", &el_ChflipEff_SF_Medium_isolFCLoose, &b_el_ChflipEff_SF_Medium_isolFCLoose);
+   fChain->SetBranchAddress("el_IsoEff_SF_Medium_isolGradient", &el_IsoEff_SF_Medium_isolGradient, &b_el_IsoEff_SF_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient", &el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient, &b_el_TrigEff_SF_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient", &el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient, &b_el_TrigMCEff_MULTI_L_2015_e17_lhloose_2016_2018_e17_lhloose_nod0_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient", &el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient, &b_el_TrigEff_SF_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient", &el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient, &b_el_TrigMCEff_MULTI_L_2015_e12_lhloose_2016_2018_e12_lhloose_nod0_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient", &el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient, &b_el_TrigEff_SF_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient", &el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient, &b_el_TrigMCEff_TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_2017_2018_e12_lhvloose_nod0_L1EM10VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient", &el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient, &b_el_TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient", &el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient, &b_el_TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient", &el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient, &b_el_TrigEff_SF_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient", &el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient, &b_el_TrigMCEff_TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_2017_2018_e24_lhvloose_nod0_L1EM20VH_Medium_isolGradient);
+   fChain->SetBranchAddress("el_ChflipEff_SF_Medium_isolGradient", &el_ChflipEff_SF_Medium_isolGradient, &b_el_ChflipEff_SF_Medium_isolGradient);
+   fChain->SetBranchAddress("el_RecoEff_SF", &el_RecoEff_SF, &b_el_RecoEff_SF);
    fChain->SetBranchAddress("el_truthClassification", &el_truthClassification, &b_el_truthClassification);
-   fChain->SetBranchAddress("el_truthSignal", &el_truthSignal, &b_el_truthSignal);
    fChain->SetBranchAddress("el_truthType", &el_truthType, &b_el_truthType);
    fChain->SetBranchAddress("el_truthOrigin", &el_truthOrigin, &b_el_truthOrigin);
-   fChain->SetBranchAddress("el_firstEgMotherPdgId", &el_firstEgMotherPdgId, &b_el_firstEgMotherPdgId);
+   fChain->SetBranchAddress("el_truthSignal", &el_truthSignal, &b_el_truthSignal);
    fChain->SetBranchAddress("el_firstEgMotherTruthType", &el_firstEgMotherTruthType, &b_el_firstEgMotherTruthType);
    fChain->SetBranchAddress("el_firstEgMotherTruthOrigin", &el_firstEgMotherTruthOrigin, &b_el_firstEgMotherTruthOrigin);
-   fChain->SetBranchAddress("mu_m", &mu_m, &b_mu_m);
-   fChain->SetBranchAddress("mu_pt_NOSYS", &mu_pt_NOSYS, &b_mu_pt_NOSYS);
-   fChain->SetBranchAddress("mu_eta", &mu_eta, &b_mu_eta);
-   fChain->SetBranchAddress("mu_phi", &mu_phi, &b_mu_phi);
-   fChain->SetBranchAddress("mu_charge", &mu_charge, &b_mu_charge);
-   fChain->SetBranchAddress("mu_selected_NOSYS", &mu_selected_NOSYS, &b_mu_selected_NOSYS);
-   fChain->SetBranchAddress("mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS", &mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS, &b_mu_isIsolated_FCTightTrackOnly_FixedRad_NOSYS);
-   fChain->SetBranchAddress("mu_effSF_Reco_NOSYS", &mu_effSF_Reco_NOSYS, &b_mu_effSF_Reco_NOSYS);
-   fChain->SetBranchAddress("mu_effSF_TTVA_NOSYS", &mu_effSF_TTVA_NOSYS, &b_mu_effSF_TTVA_NOSYS);
-   fChain->SetBranchAddress("mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS", &mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS, &b_mu_effSF_Isol_FCTightTrackOnly_FixedRad_NOSYS);
-   fChain->SetBranchAddress("mu_effMC_Trig_Medium_HLT_mu22_NOSYS", &mu_effMC_Trig_Medium_HLT_mu22_NOSYS, &b_mu_effMC_Trig_Medium_HLT_mu22_NOSYS);
-   fChain->SetBranchAddress("mu_effData_Trig_Medium_HLT_mu22_NOSYS", &mu_effData_Trig_Medium_HLT_mu22_NOSYS, &b_mu_effData_Trig_Medium_HLT_mu22_NOSYS);
-   fChain->SetBranchAddress("mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS", &mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS, &b_mu_effMC_Trig_Medium_HLT_mu8noL1_NOSYS);
-   fChain->SetBranchAddress("mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS", &mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS, &b_mu_effData_Trig_Medium_HLT_mu8noL1_NOSYS);
-   fChain->SetBranchAddress("mu_effMC_Trig_Medium_HLT_mu14_NOSYS", &mu_effMC_Trig_Medium_HLT_mu14_NOSYS, &b_mu_effMC_Trig_Medium_HLT_mu14_NOSYS);
-   fChain->SetBranchAddress("mu_effData_Trig_Medium_HLT_mu14_NOSYS", &mu_effData_Trig_Medium_HLT_mu14_NOSYS, &b_mu_effData_Trig_Medium_HLT_mu14_NOSYS);
-   fChain->SetBranchAddress("mu_effMC_Trig_Medium_HLT_mu18_NOSYS", &mu_effMC_Trig_Medium_HLT_mu18_NOSYS, &b_mu_effMC_Trig_Medium_HLT_mu18_NOSYS);
-   fChain->SetBranchAddress("mu_effData_Trig_Medium_HLT_mu18_NOSYS", &mu_effData_Trig_Medium_HLT_mu18_NOSYS, &b_mu_effData_Trig_Medium_HLT_mu18_NOSYS);
-   fChain->SetBranchAddress("mu_truthClassification", &mu_truthClassification, &b_mu_truthClassification);
-   fChain->SetBranchAddress("mu_truthSignal", &mu_truthSignal, &b_mu_truthSignal);
-   fChain->SetBranchAddress("mu_truthType", &mu_truthType, &b_mu_truthType);
-   fChain->SetBranchAddress("mu_truthOrigin", &mu_truthOrigin, &b_mu_truthOrigin);
-   fChain->SetBranchAddress("met_name", &met_name, &b_met_name);
-   fChain->SetBranchAddress("met_NOSYS", &met_NOSYS, &b_met_NOSYS);
-   fChain->SetBranchAddress("met_px_NOSYS", &met_px_NOSYS, &b_met_px_NOSYS);
-   fChain->SetBranchAddress("met_py_NOSYS", &met_py_NOSYS, &b_met_py_NOSYS);
-   fChain->SetBranchAddress("met_phi_NOSYS", &met_phi_NOSYS, &b_met_phi_NOSYS);
-   fChain->SetBranchAddress("met_sumet_NOSYS", &met_sumet_NOSYS, &b_met_sumet_NOSYS);
-   fChain->SetBranchAddress("met_significance_NOSYS", &met_significance_NOSYS, &b_met_significance_NOSYS);
+   fChain->SetBranchAddress("el_firstEgMotherPdgId", &el_firstEgMotherPdgId, &b_el_firstEgMotherPdgId);
+   fChain->SetBranchAddress("njet", &njet, &b_njet);
+   fChain->SetBranchAddress("jet_E", &jet_E, &b_jet_E);
+   fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
+   fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
+   fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
+   fChain->SetBranchAddress("jet_is_MV2c10_FixedCutBEff_77", &jet_is_MV2c10_FixedCutBEff_77, &b_jet_is_MV2c10_FixedCutBEff_77);
+   fChain->SetBranchAddress("jet_is_MV2c10_FixedCutBEff_85", &jet_is_MV2c10_FixedCutBEff_85, &b_jet_is_MV2c10_FixedCutBEff_85);
+   fChain->SetBranchAddress("jet_is_MV2c10_FixedCutBEff_70", &jet_is_MV2c10_FixedCutBEff_70, &b_jet_is_MV2c10_FixedCutBEff_70);
+   fChain->SetBranchAddress("jet_is_MV2c10_HybBEff_77", &jet_is_MV2c10_HybBEff_77, &b_jet_is_MV2c10_HybBEff_77);
+   fChain->SetBranchAddress("jet_is_MV2c10_HybBEff_85", &jet_is_MV2c10_HybBEff_85, &b_jet_is_MV2c10_HybBEff_85);
+   fChain->SetBranchAddress("jet_is_MV2c10_HybBEff_70", &jet_is_MV2c10_HybBEff_70, &b_jet_is_MV2c10_HybBEff_70);
+   fChain->SetBranchAddress("ntau", &ntau, &b_ntau);
+   fChain->SetBranchAddress("tau_m", &tau_m, &b_tau_m);
+   fChain->SetBranchAddress("tau_pt", &tau_pt, &b_tau_pt);
+   fChain->SetBranchAddress("tau_phi", &tau_phi, &b_tau_phi);
+   fChain->SetBranchAddress("tau_eta", &tau_eta, &b_tau_eta);
+   fChain->SetBranchAddress("tau_isTrigMatched", &tau_isTrigMatched, &b_tau_isTrigMatched);
+   fChain->SetBranchAddress("tau_isTrigMatchedToChain", &tau_isTrigMatchedToChain, &b_tau_isTrigMatchedToChain);
+   fChain->SetBranchAddress("tau_listTrigChains", &tau_listTrigChains, &b_tau_listTrigChains);
+   fChain->SetBranchAddress("tau_ntrk", &tau_ntrk, &b_tau_ntrk);
+   fChain->SetBranchAddress("tau_charge", &tau_charge, &b_tau_charge);
+   fChain->SetBranchAddress("tau_isJetBDTSigVeryLoose", &tau_isJetBDTSigVeryLoose, &b_tau_isJetBDTSigVeryLoose);
+   fChain->SetBranchAddress("tau_isJetBDTSigLoose", &tau_isJetBDTSigLoose, &b_tau_isJetBDTSigLoose);
+   fChain->SetBranchAddress("tau_isJetBDTSigMedium", &tau_isJetBDTSigMedium, &b_tau_isJetBDTSigMedium);
+   fChain->SetBranchAddress("tau_isJetBDTSigTight", &tau_isJetBDTSigTight, &b_tau_isJetBDTSigTight);
+   fChain->SetBranchAddress("tau_JetBDTScore", &tau_JetBDTScore, &b_tau_JetBDTScore);
+   fChain->SetBranchAddress("tau_JetBDTScoreSigTrans", &tau_JetBDTScoreSigTrans, &b_tau_JetBDTScoreSigTrans);
+   fChain->SetBranchAddress("tau_isEleBDTLoose", &tau_isEleBDTLoose, &b_tau_isEleBDTLoose);
+   fChain->SetBranchAddress("tau_isEleBDTMedium", &tau_isEleBDTMedium, &b_tau_isEleBDTMedium);
+   fChain->SetBranchAddress("tau_isEleBDTTight", &tau_isEleBDTTight, &b_tau_isEleBDTTight);
+   fChain->SetBranchAddress("tau_EleBDTScore", &tau_EleBDTScore, &b_tau_EleBDTScore);
+   fChain->SetBranchAddress("tau_passEleOLR", &tau_passEleOLR, &b_tau_passEleOLR);
+   fChain->SetBranchAddress("tau_seedJetWidth", &tau_seedJetWidth, &b_tau_seedJetWidth);
+   fChain->SetBranchAddress("tau_seedJetJvt", &tau_seedJetJvt, &b_tau_seedJetJvt);
+   fChain->SetBranchAddress("tau_truthClassification", &tau_truthClassification, &b_tau_truthClassification);
+   fChain->SetBranchAddress("tau_isTruthMatched", &tau_isTruthMatched, &b_tau_isTruthMatched);
+   fChain->SetBranchAddress("tau_isTrueHadronicTau", &tau_isTrueHadronicTau, &b_tau_isTrueHadronicTau);
+   fChain->SetBranchAddress("tau_truthPdgId", &tau_truthPdgId, &b_tau_truthPdgId);
+   fChain->SetBranchAddress("tau_truthOrigin", &tau_truthOrigin, &b_tau_truthOrigin);
+   fChain->SetBranchAddress("tau_truthType", &tau_truthType, &b_tau_truthType);
+   fChain->SetBranchAddress("tau_truthSignal", &tau_truthSignal, &b_tau_truthSignal);
+   fChain->SetBranchAddress("tau_truthStatus", &tau_truthStatus, &b_tau_truthStatus);
+   fChain->SetBranchAddress("tau_PartonTruthLabelID", &tau_PartonTruthLabelID, &b_tau_PartonTruthLabelID);
+   fChain->SetBranchAddress("metFinalTrk", &metFinalTrk, &b_metFinalTrk);
+   fChain->SetBranchAddress("metFinalTrkPx", &metFinalTrkPx, &b_metFinalTrkPx);
+   fChain->SetBranchAddress("metFinalTrkPy", &metFinalTrkPy, &b_metFinalTrkPy);
+   fChain->SetBranchAddress("metFinalTrkSumEt", &metFinalTrkSumEt, &b_metFinalTrkSumEt);
+   fChain->SetBranchAddress("metFinalTrkPhi", &metFinalTrkPhi, &b_metFinalTrkPhi);
+   fChain->SetBranchAddress("metFinalTrkOverSqrtSumEt", &metFinalTrkOverSqrtSumEt, &b_metFinalTrkOverSqrtSumEt);
+   fChain->SetBranchAddress("metFinalTrkOverSqrtHt", &metFinalTrkOverSqrtHt, &b_metFinalTrkOverSqrtHt);
+   fChain->SetBranchAddress("metFinalTrkSignificance", &metFinalTrkSignificance, &b_metFinalTrkSignificance);
+   fChain->SetBranchAddress("metFinalTrkSigDirectional", &metFinalTrkSigDirectional, &b_metFinalTrkSigDirectional);
+   fChain->SetBranchAddress("metSoftTrk", &metSoftTrk, &b_metSoftTrk);
+   fChain->SetBranchAddress("metSoftTrkSumEt", &metSoftTrkSumEt, &b_metSoftTrkSumEt);
+   fChain->SetBranchAddress("metSoftTrkPhi", &metSoftTrkPhi, &b_metSoftTrkPhi);
    Notify();
 }
 
@@ -532,4 +1342,4 @@ Int_t VLLMin::Cut(Long64_t entry)
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef VLLMinSignal_cxx
+#endif // #ifdef VLLMin_cxx
