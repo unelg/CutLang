@@ -7,12 +7,7 @@
 #include <iostream>
 
 
-#ifdef VLQLIGHT
-#include "VLQLight/analysis_core.h"
-#endif
-
-
-void PrintEfficiencies(TH1F* effh) {
+void PrintEfficiencies(TH1F* effh, bool skip_eff) {
   using namespace std;
 
   // Prints out the efficiencies
@@ -21,13 +16,12 @@ void PrintEfficiencies(TH1F* effh) {
   cout << "Based on " << effh->GetBinContent(2) << " events:\n";
 
   int s;
-  string title= "\t\t\t================== Cut name ";
-  title+="=============";
-  title+="\t Rel. eff. \t Remaining\n";
   for (s=2; s<=effh->GetNbinsX(); ++s) {
     eff = effh->GetBinContent(s) / effh->GetBinContent(s-1);
     err = sqrt(eff*(1-eff)/effh->GetBinContent(s-1));
-    if (strlen(effh->GetXaxis()->GetBinLabel(s)) <1) break;
+    TString cutname=effh->GetXaxis()->GetBinLabel(s);
+    if ( cutname.Sizeof() <1) break;
+    if (skip_eff) { if ( cutname.BeginsWith("[Histo]") ) continue; }
     cout << setw(66) << effh->GetXaxis()->GetBinLabel(s)
 	 << " : "  << setw(6) << setprecision(4) << eff
 	 << " +- " << setw(9) << setprecision(3) << err 

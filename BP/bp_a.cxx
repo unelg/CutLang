@@ -20,7 +20,6 @@ extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,ve
 extern FILE* yyin;
 extern int cutcount;
 
-
 int BPdbxA::getInputs(std::string aname) {
         int retval=0;
         ntsave = new DBXNtuple();
@@ -52,8 +51,6 @@ int BPdbxA:: readAnalysisParams() {
   }
 
 // ---------------------------DBX style defs, objects and cuts
-    int kk=1;
-
     string tempLine;
     string tempS1, tempS2;
     string subdelimiter = " ";
@@ -62,7 +59,6 @@ int BPdbxA:: readAnalysisParams() {
     TString DefList2file="\n";
     TString CutList2file="\n";
     TString ObjList2file="\n";
-    std::vector<TString> effCL;
 
     bool algorithmnow=false;
 
@@ -163,14 +159,15 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 
-    } 
+    }
+    unsigned int bsize=effCL.size()+1; // all is always there 
 //-----create the relevant output directory
     if (!algorithmnow) {
-       int r=dbxA::setDir(cname);  // make the relevant root directory
+       int r=dbxA::setDir(cname, bsize);  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir(cname);
     } else {
-       int r=dbxA::setDir(algoname);  // make the relevant root directory
+       int r=dbxA::setDir(algoname, bsize);  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir(algoname);
     }
@@ -208,29 +205,24 @@ int BPdbxA:: readAnalysisParams() {
          exit (99); 
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
-   TRGe    = TRGValues[0];
-   TRGm    = TRGValues[1];
-
-    eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
-
-    cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
-    DEBUG("CL CUTS: \n");
-    std::map<int, Node*>::iterator iter = NodeCuts.begin();
-    while(iter != NodeCuts.end())
-    {
+       TRGe    = TRGValues[0];
+       TRGm    = TRGValues[1];
+       skip_histos    = (bool) TRGValues[3];
+      
+        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+      
+        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
+        DEBUG("CL CUTS: \n");
+        std::map<int, Node*>::iterator iter = NodeCuts.begin();
+        while(iter != NodeCuts.end())
+        {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
-
 //           TString newLabels=iter->second->getStr();
-           TString newLabels=effCL[ iter->first -1];
-/*
-            TString newLabels="CUT";
-                    newLabels+=iter->first;
- */
-           eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
-
+            TString newLabels=effCL[ iter->first -1];
+            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
             iter++; 
-    }
+        }
 
 #ifdef _CLV__
      cout<<"\n Particle Lists: \n";
@@ -274,7 +266,7 @@ int BPdbxA:: readAnalysisParams() {
 
 int BPdbxA:: printEfficiencies() {
   cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
-  PrintEfficiencies(eff);
+  PrintEfficiencies(eff, skip_histos);
   return 0;
 }
 
@@ -343,8 +335,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
         double d=iter->second->evaluate(&ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
-              evt_weight = ao.evt.user_evt_weight;
-if (d==0) return iter->first;         // quits the event.
+        evt_weight = ao.evt.user_evt_weight;
+        if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts

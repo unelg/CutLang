@@ -20,7 +20,7 @@ class DumpdbxA : public dbxA {
       DumpdbxA(char *aname) : dbxA ( aname)
          {
          sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-         int r=dbxA::setDir(cname);  // make the relevant root directory
+         int r=dbxA::setDir(cname, 30);  // make the relevant root directory
          if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
          //grl_cut=false;
          }
@@ -45,9 +45,6 @@ class DumpdbxA : public dbxA {
       char cname[CHMAX];
       TH1F *hmmultextra, *hmptextra, *hmetaextra, *hmphiextra;
       int TRGe, TRGm;
-      Double_t minptm2011;
-      Double_t minptm2012;
-      Double_t minptm;
 
       TFile *ftsave;
       TTree *ttsave;
