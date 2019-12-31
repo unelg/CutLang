@@ -265,10 +265,16 @@ void VLLMin::Loop(analy_struct aselect, char *extname)
 
     Long64_t nentries = fChain->GetEntriesFast();
     if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
-    cout << "number of entries" << nentries << endl;
+    cout << "number of entries " << nentries << endl;
+    Long64_t startevent = 0;
+    if (aselect.startpt>0 ) startevent=aselect.startpt;
+    cout << "starting entry " << startevent << endl;
+    Long64_t lastevent = startevent + nentries;
+    if (lastevent> fChain->GetEntriesFast() ) lastevent=fChain->GetEntriesFast();
+    cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
 
     Long64_t nbytes = 0, nb = 0;
-    for (Long64_t j=0; j<nentries; ++j) {
+    for (Long64_t j=startevent; j<lastevent; ++j) {
 
         //  if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
         if (0 > LoadTree (j)) break;
