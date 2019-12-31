@@ -41,10 +41,19 @@ void fcc::Loop(analy_struct aselect, char *extname)
    cout << "End of analysis initialization"<<endl;
 
    Long64_t nentries = fChain->GetEntriesFast();
-   if (aselect.maxEvents > 0) nentries=aselect.maxEvents;
-   cout << "We have:"<<nentries<<" events.\n";
-   for (Long64_t j=0; j<nentries; ++j) {
+   if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
+   cout << "number of entries " << nentries << endl;
+   Long64_t startevent = 0;
+   if (aselect.startpt>0 ) startevent=aselect.startpt;
+   cout << aselect.startpt<< endl;
+   cout << "starting entry " << startevent << endl;
+   Long64_t lastevent = startevent + nentries;
+   if (lastevent> fChain->GetEntriesFast() ) lastevent=fChain->GetEntriesFast();
+   cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
 
+   Long64_t nbytes = 0, nb = 0;
+   for (Long64_t j=startevent; j<lastevent; ++j) {
+     
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
@@ -78,8 +87,8 @@ std::cout << "Read Event"<<std::endl;
        TVector2 met;
        dbxJet      *adbxj;
        dbxElectron *adbxe;
-       dbxMuon     *adbxm; 
-       dbxPhoton   *adbxp; 
+       dbxMuon     *adbxm;
+       dbxPhoton   *adbxp;
        int mch;
        float mpx,mpy,mpz,mma, muE, jfv;
 
@@ -97,9 +106,9 @@ std::cout << "Begin Filling"<<std::endl;
                 mpz=fChain->GetLeaf("muons.core.p4.pz")->GetValue(i);
                 mma=fChain->GetLeaf("muons.core.p4.mass")->GetValue(i);
                 mch=fChain->GetLeaf("muons.core.charge")->GetValue(i);
-              
+
                 if (mpz == 0.0) break;
-               
+
                 muE=sqrt (mpx*mpx + mpy*mpy + mpz*mpz + mma*mma);
 		alv.SetPxPyPzE( mpx, mpy, mpz,  muE); // all in GeV
 		adbxm= new dbxMuon(alv);
@@ -123,9 +132,9 @@ std::cout << "Muons OK:"<< muons_<<std::endl;
                 mpz=fChain->GetLeaf("electrons.core.p4.pz")->GetValue(i);
                 mma=fChain->GetLeaf("electrons.core.p4.mass")->GetValue(i);
                 mch=fChain->GetLeaf("electrons.core.charge")->GetValue(i);
-              
+
                 if (mpz == 0.0) break;
-               
+
                 muE=sqrt (mpx*mpx + mpy*mpy + mpz*mpz + mma*mma);
 		alv.SetPxPyPzE( mpx, mpy, mpz,  muE); // all in GeV
 		adbxe= new dbxElectron(alv);
@@ -146,9 +155,9 @@ std::cout << "Electrons OK:"<< electrons_ <<std::endl;
                 mpy=fChain->GetLeaf("photons.core.p4.py")->GetValue(i);
                 mpz=fChain->GetLeaf("photons.core.p4.pz")->GetValue(i);
                 mma=fChain->GetLeaf("photons.core.p4.mass")->GetValue(i);
-              
+
                 if (mpz == 0.0) break;
-               
+
                 muE=sqrt (mpx*mpx + mpy*mpy + mpz*mpz + mma*mma);
 		alv.SetPxPyPzE( mpx, mpy, mpz,  muE); // all in GeV
         	adbxp= new dbxPhoton(alv);
@@ -170,7 +179,7 @@ std::cout << "Photons OK:"<<photons_<<std::endl;
                 mpz=fChain->GetLeaf("jets.core.p4.pz")->GetValue(i);
                 mma=fChain->GetLeaf("jets.core.p4.mass")->GetValue(i);
                 jfv=fChain->GetLeaf("jetsFlavor.tag")->GetValue(i);
-              
+
                 if (mpz == 0.0) break;
 
                 muE=sqrt (mpx*mpx + mpy*mpy + mpz*mpz + mma*mma);
