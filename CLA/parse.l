@@ -107,6 +107,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][oO][rR][tT] return SORT;
 [cC][oO][mM][bB] return COMB;
 [pP][eE][rR][mM] return PERM;
+[mM][iI][nN] return MIN;
+[mM][aA][xX] return MAX;
 {integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 {real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
