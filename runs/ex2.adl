@@ -1,7 +1,5 @@
 #CLA ADL example2
 
-SkipHistos = 1
-
 region   test
   select      ALL              # to count all events
   select      Size (ELE) >= 2  # events with 2 or more electrons 

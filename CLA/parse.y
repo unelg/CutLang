@@ -63,7 +63,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SAVE SKPH
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
-%token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
+%token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG
@@ -426,6 +426,17 @@ function : '{' particules '}' 'm' {
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
+                                  }
+//---------------------------------------
+         | '{' particules '}' RAP {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Rapof,newList,"rap");
+                                  }
+         | RAP '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Rapof,newList,"rap");
                                   }
 //---------------------------------------
          | '{' particules '}' ETA {     
