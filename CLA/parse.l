@@ -59,6 +59,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "METLV" return METLV;
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
+[rR][aA][pP] return RAP;
 [Aa][bB][sS][Ee][tT][aA] return ABSETA;
 "alias" return ALIAS;
 [pP][tT] return PT;

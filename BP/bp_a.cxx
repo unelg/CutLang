@@ -68,6 +68,10 @@ int BPdbxA:: readAnalysisParams() {
        if (tempLine.find_first_of("#") != std::string::npos ){
          tempLine.erase(tempLine.find_first_of("#"));
        }
+/*
+    for(auto& c : tempLine) { c = tolower(c); }
+*/
+
 //---------obj
        found = tempLine.find("obj ");
        if (found!=std::string::npos) {

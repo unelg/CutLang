@@ -255,6 +255,12 @@ double Etaof( dbxParticle* apart){
     return eta;
 }
 
+double Rapof( dbxParticle* apart){
+    double rap=(apart->lv()).Rapidity();
+    DEBUG(" Rap:"<<rap<<"\t");
+    return rap;
+}
+
 double Phiof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();
     DEBUG(" phi:"<<phi<<"\t");
