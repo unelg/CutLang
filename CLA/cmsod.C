@@ -164,7 +164,6 @@ std::cout << "MET OK"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=RunNumber;
-        anevt.user_evt_weight=1;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
         anevt.event_no=j;
@@ -173,9 +172,11 @@ std::cout << "MET OK"<<std::endl;
         anevt.TRG_j= 0;
         anevt.vxp_maxtrk_no= 9;
         anevt.badjet=0;
-        anevt.mcevt_weight=1.0;
+        anevt.user_evt_weight=1;
+        anevt.mcevt_weight=EventWeight;
         anevt.pileup_weight=1.0;
         anevt.z_vtx_weight = 1.0;
+        anevt.weight_jvt=1.0;
         anevt.weight_bTagSF_77 = 1.0;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;

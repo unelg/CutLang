@@ -69,9 +69,7 @@ double     dzof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
-
-
-double nbfof( dbxParticle* apart);
+double    nbfof( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */

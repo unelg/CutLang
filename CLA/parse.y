@@ -69,7 +69,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token PERM COMB SORT TAKE UNION
+%token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
@@ -567,6 +567,18 @@ function : '{' particules '}' 'm' {
         | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
         | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
 //------------------------------------------
+//    | SUM '(' ID ')' {
+//                                   map<string,Node*>::iterator it = ObjectCuts->find($3);
+//                                   if(it == ObjectCuts->end()) {
+//                                       std::string message = "Object not defined: ";
+//                                       message += $3;
+//                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                       YYERROR;
+//                                   } else {
+//                                       int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+//                                       $$=new SFuncNode(sum, type, it->first , it->second);
+//                                   }
+//                     }
       | FMEGAJETS '(' ID ')' {
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);
                                      if(it == ObjectCuts->end()) {
@@ -1084,7 +1096,6 @@ particule : GEN '_' index    {
                 it = ListParts->find($1);
      
                 if(it == ListParts->end()) {
-
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
                        DEBUG($1<<" : "); //------------new ID
@@ -1195,7 +1206,90 @@ particule : GEN '_' index    {
                        ito=ObjectCuts->find($1);
                        DEBUG($1<<" : "); //------------new ID
                        if(ito != ObjectCuts->end()) {
-                        DEBUG(" "<<$1<<" is a user particle\n ");
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
+                        int otype=((ObjectNode*) ito->second)->type;
+
+                        if (otype == 2 ) {
+                           DEBUG("which is a JET\n");
+                           tmp="jet_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 2;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+			else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 10;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
+                        else if (otype == 1 ) {
+                           DEBUG("which is a ELE\n");
+                           tmp="ele_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 1;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==0 ) {
+                           DEBUG("which is a MUO\n");
+                                tmp="muo_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 0;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==11 ) {
+                           DEBUG("which is a TAU\n");
+                           tmp="tau_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 11;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==8 ) {
+                           DEBUG("which is a PHO\n");
+                           tmp="pho_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 8;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==9 ) {
+                           DEBUG("which is a FatJET\n");
+                           tmp="ljet_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 9;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                       } else {
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1320,7 +1414,6 @@ objectBloc : OBJ ID TAKE ID criteria {
                               }
         | OBJ ID ':' UNION '(' ID ',' ID ')' {
                                      DEBUG(" "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n");
-                                     cout <<" "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n";
                                      myParticle* a = new myParticle;
                                      myParticle* b = new myParticle;
                                      a->index = 6213;
