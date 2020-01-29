@@ -1,5 +1,6 @@
 #include "LFuncNode.h"
 
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -89,8 +90,56 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
 
-        partConstruct(ao, &inputParticles,&myPart);
+        DEBUG("P0_0 Type:"<<inputParticles[0]->type<< " index:"<<inputParticles[0]->index<<"\n");
+        DEBUG("P1_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
+        if ( inputParticles2[0]->index == 6213) {
+           string base_collection2=inputParticles2[0]->collection;
+              int base_type2=inputParticles2[0]->type;
+           int ipart2_max=-1;
+           try {
+                switch(inputParticles2[0]->type){
+                    case 0: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
+                    case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
+                    case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+                    case 7: ipart2_max=1; break;
+                    case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
+                    case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
+                   case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+
+                   default:
+                       std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles2[0]->type << std::endl; break;
+                }
+                } catch(...) {
+                            std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n";
+                            _Exit(-1);
+                }
+            // now we know how many we want
+            DEBUG ("Sum "<< ipart2_max<<" particles\t");
+            std::vector<myParticle*>  inputParticles1;
+            std::vector<myParticle>  inputParticles0;
+            for (int ip2=0; ip2 < ipart2_max; ip2++){
+            myParticle * aparticle = new myParticle;
+                         aparticle->type= base_type2;
+                         aparticle->collection= base_collection2;
+                         aparticle->index=ip2;
+                       DEBUG( "index="<<ip2<<" ");
+              inputParticles0.push_back(*aparticle);
+              delete aparticle;
+            }
+            DEBUG("\n");
+        for (int ji=0; ji<inputParticles0.size(); ji++){
+         inputParticles1.push_back( &inputParticles0[ji]);
+        }
+        partConstruct(ao, &inputParticles1,&myPart2);
+        inputParticles0.clear();
+        inputParticles1.clear();
+        } else {
         partConstruct(ao, &inputParticles2,&myPart2);
+        }
+  
+        partConstruct(ao, &inputParticles,&myPart);
         return (*f2)(&myPart,&myPart2);
 }
 

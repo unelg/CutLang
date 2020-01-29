@@ -109,6 +109,26 @@ definitions : definitions definition
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
+definition : DEF  ID  '=' SUM '(' particules ')' {
+                                        pnum=0;
+                                        map<string,vector<myParticle*> >::iterator it ;
+                                        string name = $2;
+                                        it = ListParts->find(name);
+                                        if(it != ListParts->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        parts->push_back(name+" : "+$6);
+//                                        std::cout<<"\n SUM TMP List: \n";
+//                                        for (int ik=0; ik<TmpParticle.size();ik++){
+//                                                std::cout << "type: " << TmpParticle[ik]->type << " index: " << TmpParticle[ik]->index << endl;
+//                                        }
+                                             
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        ListParts->insert(make_pair(name,newList));
+				}
 definition : DEF  ID  '=' particules {
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -154,7 +174,7 @@ definition : DEF  ID  '=' particules {
                                         ListParts->insert(make_pair(name,newList));
                                 }
     	    | TABLE ID binlist {
-                               cout << "TABLE "<< $2  << "\n";
+                               DEBUG("TABLE "<< $2  << "\n");
                                map<string,vector<float> >::iterator itt;
                                string name = $2;
                                itt = ListTables->find(name);
@@ -1675,7 +1695,7 @@ command : CMD condition { //find a way to print commands
 					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
 					NodeCuts->insert(make_pair(++cutcount,a));
 			}
-        | ALGO ID {  cout << " ALGO: "<< $2<<" ";
+        | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
                     DataFormats->at(4)=1;
@@ -1698,12 +1718,12 @@ command : CMD condition { //find a way to print commands
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID {
-                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
+//                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
 //				Node* a = new SFuncNode(uweight,$3,$2);
 //				NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
-                                cout << "Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n";
+                                DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
                                 map<string,vector<float> >::iterator itt;
                                 string name = $3;
                                 itt = ListTables->find(name);
