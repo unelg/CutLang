@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Jul  3 09:38:08 2019 by ROOT version 6.12/06
+// Mon Feb  3 22:43:15 2020 by ROOT version 6.18/04
 // from TTree Delphes/Analysis tree
-// found on file: delphescompleteoutput.root
+// found on file: /Users/ngu/Downloads/cmsfull.root
 //////////////////////////////////////////////////////////
 
 #ifndef delphes_h
@@ -22,6 +22,7 @@
 #include <TRefArray.h>
 #include <TRef.h>
 
+
 class delphes {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -29,19 +30,20 @@ public :
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    static constexpr Int_t kMaxEvent = 1;
-   static constexpr Int_t kMaxParticle = 5000;
-   static constexpr Int_t kMaxTrack = 500;
-   static constexpr Int_t kMaxTower = 500;
-   static constexpr Int_t kMaxEFlowTrack = 500;
-   static constexpr Int_t kMaxEFlowPhoton = 500;
-   static constexpr Int_t kMaxEFlowNeutralHadron = 500;
-   static constexpr Int_t kMaxGenJet = 100;
+   static constexpr Int_t kMaxWeight = 1;
+   static constexpr Int_t kMaxParticle = 3279;
+   static constexpr Int_t kMaxTrack = 242;
+   static constexpr Int_t kMaxTower = 327;
+   static constexpr Int_t kMaxEFlowTrack = 242;
+   static constexpr Int_t kMaxEFlowPhoton = 138;
+   static constexpr Int_t kMaxEFlowNeutralHadron = 133;
+   static constexpr Int_t kMaxGenJet = 120;
    static constexpr Int_t kMaxGenMissingET = 1;
-   static constexpr Int_t kMaxJet = 100;
-   static constexpr Int_t kMaxElectron = 50;
-   static constexpr Int_t kMaxPhoton = 50;
-   static constexpr Int_t kMaxMuon = 50;
-   static constexpr Int_t kMaxFatJet = 50;
+   static constexpr Int_t kMaxJet = 160;
+   static constexpr Int_t kMaxElectron = 130;
+   static constexpr Int_t kMaxPhoton = 120;
+   static constexpr Int_t kMaxMuon = 130;
+   static constexpr Int_t kMaxFatJet = 140;
    static constexpr Int_t kMaxMissingET = 1;
    static constexpr Int_t kMaxScalarHT = 1;
 
@@ -55,6 +57,8 @@ public :
    Int_t           Event_ProcessID[kMaxEvent];   //[Event_]
    Int_t           Event_MPI[kMaxEvent];   //[Event_]
    Float_t         Event_Weight[kMaxEvent];   //[Event_]
+   Float_t         Event_CrossSection[kMaxEvent];   //[Event_]
+   Float_t         Event_CrossSectionError[kMaxEvent];   //[Event_]
    Float_t         Event_Scale[kMaxEvent];   //[Event_]
    Float_t         Event_AlphaQED[kMaxEvent];   //[Event_]
    Float_t         Event_AlphaQCD[kMaxEvent];   //[Event_]
@@ -66,6 +70,11 @@ public :
    Float_t         Event_PDF1[kMaxEvent];   //[Event_]
    Float_t         Event_PDF2[kMaxEvent];   //[Event_]
    Int_t           Event_size;
+   Int_t           Weight_;
+   UInt_t          Weight_fUniqueID[kMaxWeight];   //[Weight_]
+   UInt_t          Weight_fBits[kMaxWeight];   //[Weight_]
+   Float_t         Weight_Weight[kMaxWeight];   //[Weight_]
+   Int_t           Weight_size;
    Int_t           Particle_;
    UInt_t          Particle_fUniqueID[kMaxParticle];   //[Particle_]
    UInt_t          Particle_fBits[kMaxParticle];   //[Particle_]
@@ -226,22 +235,32 @@ public :
    UInt_t          GenJet_BTagAlgo[kMaxGenJet];   //[GenJet_]
    UInt_t          GenJet_BTagPhys[kMaxGenJet];   //[GenJet_]
    UInt_t          GenJet_TauTag[kMaxGenJet];   //[GenJet_]
+   Float_t         GenJet_TauWeight[kMaxGenJet];   //[GenJet_]
    Int_t           GenJet_Charge[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_EhadOverEem[kMaxGenJet];   //[GenJet_]
    Int_t           GenJet_NCharged[kMaxGenJet];   //[GenJet_]
    Int_t           GenJet_NNeutrals[kMaxGenJet];   //[GenJet_]
+   Float_t         GenJet_NeutralEnergyFraction[kMaxGenJet];   //[GenJet_]
+   Float_t         GenJet_ChargedEnergyFraction[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_Beta[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_BetaStar[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_MeanSqDeltaR[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_PTD[kMaxGenJet];   //[GenJet_]
    Float_t         GenJet_FracPt[kMaxGenJet][5];   //[GenJet_]
    Float_t         GenJet_Tau[kMaxGenJet][5];   //[GenJet_]
+   TLorentzVector  GenJet_SoftDroppedJet[kMaxGenJet];
+   TLorentzVector  GenJet_SoftDroppedSubJet1[kMaxGenJet];
+   TLorentzVector  GenJet_SoftDroppedSubJet2[kMaxGenJet];
    TLorentzVector  GenJet_TrimmedP4[5][kMaxGenJet];
    TLorentzVector  GenJet_PrunedP4[5][kMaxGenJet];
    TLorentzVector  GenJet_SoftDroppedP4[5][kMaxGenJet];
    Int_t           GenJet_NSubJetsTrimmed[kMaxGenJet];   //[GenJet_]
    Int_t           GenJet_NSubJetsPruned[kMaxGenJet];   //[GenJet_]
    Int_t           GenJet_NSubJetsSoftDropped[kMaxGenJet];   //[GenJet_]
+   Double_t        GenJet_ExclYmerge23[kMaxGenJet];   //[GenJet_]
+   Double_t        GenJet_ExclYmerge34[kMaxGenJet];   //[GenJet_]
+   Double_t        GenJet_ExclYmerge45[kMaxGenJet];   //[GenJet_]
+   Double_t        GenJet_ExclYmerge56[kMaxGenJet];   //[GenJet_]
    TRefArray       GenJet_Constituents[kMaxGenJet];
    TRefArray       GenJet_Particles[kMaxGenJet];
    TLorentzVector  GenJet_Area[kMaxGenJet];
@@ -270,22 +289,32 @@ public :
    UInt_t          Jet_BTagAlgo[kMaxJet];   //[Jet_]
    UInt_t          Jet_BTagPhys[kMaxJet];   //[Jet_]
    UInt_t          Jet_TauTag[kMaxJet];   //[Jet_]
+   Float_t         Jet_TauWeight[kMaxJet];   //[Jet_]
    Int_t           Jet_Charge[kMaxJet];   //[Jet_]
    Float_t         Jet_EhadOverEem[kMaxJet];   //[Jet_]
    Int_t           Jet_NCharged[kMaxJet];   //[Jet_]
    Int_t           Jet_NNeutrals[kMaxJet];   //[Jet_]
+   Float_t         Jet_NeutralEnergyFraction[kMaxJet];   //[Jet_]
+   Float_t         Jet_ChargedEnergyFraction[kMaxJet];   //[Jet_]
    Float_t         Jet_Beta[kMaxJet];   //[Jet_]
    Float_t         Jet_BetaStar[kMaxJet];   //[Jet_]
    Float_t         Jet_MeanSqDeltaR[kMaxJet];   //[Jet_]
    Float_t         Jet_PTD[kMaxJet];   //[Jet_]
    Float_t         Jet_FracPt[kMaxJet][5];   //[Jet_]
    Float_t         Jet_Tau[kMaxJet][5];   //[Jet_]
+   TLorentzVector  Jet_SoftDroppedJet[kMaxJet];
+   TLorentzVector  Jet_SoftDroppedSubJet1[kMaxJet];
+   TLorentzVector  Jet_SoftDroppedSubJet2[kMaxJet];
    TLorentzVector  Jet_TrimmedP4[5][kMaxJet];
    TLorentzVector  Jet_PrunedP4[5][kMaxJet];
    TLorentzVector  Jet_SoftDroppedP4[5][kMaxJet];
    Int_t           Jet_NSubJetsTrimmed[kMaxJet];   //[Jet_]
    Int_t           Jet_NSubJetsPruned[kMaxJet];   //[Jet_]
    Int_t           Jet_NSubJetsSoftDropped[kMaxJet];   //[Jet_]
+   Double_t        Jet_ExclYmerge23[kMaxJet];   //[Jet_]
+   Double_t        Jet_ExclYmerge34[kMaxJet];   //[Jet_]
+   Double_t        Jet_ExclYmerge45[kMaxJet];   //[Jet_]
+   Double_t        Jet_ExclYmerge56[kMaxJet];   //[Jet_]
    TRefArray       Jet_Constituents[kMaxJet];
    TRefArray       Jet_Particles[kMaxJet];
    TLorentzVector  Jet_Area[kMaxJet];
@@ -306,6 +335,10 @@ public :
    Float_t         Electron_SumPtNeutral[kMaxElectron];   //[Electron_]
    Float_t         Electron_SumPtChargedPU[kMaxElectron];   //[Electron_]
    Float_t         Electron_SumPt[kMaxElectron];   //[Electron_]
+   Float_t         Electron_D0[kMaxElectron];   //[Electron_]
+   Float_t         Electron_DZ[kMaxElectron];   //[Electron_]
+   Float_t         Electron_ErrorD0[kMaxElectron];   //[Electron_]
+   Float_t         Electron_ErrorDZ[kMaxElectron];   //[Electron_]
    Int_t           Electron_size;
    Int_t           Photon_;
    UInt_t          Photon_fUniqueID[kMaxPhoton];   //[Photon_]
@@ -323,6 +356,7 @@ public :
    Float_t         Photon_SumPtNeutral[kMaxPhoton];   //[Photon_]
    Float_t         Photon_SumPtChargedPU[kMaxPhoton];   //[Photon_]
    Float_t         Photon_SumPt[kMaxPhoton];   //[Photon_]
+   Int_t           Photon_Status[kMaxPhoton];   //[Photon_]
    Int_t           Photon_size;
    Int_t           Muon_;
    UInt_t          Muon_fUniqueID[kMaxMuon];   //[Muon_]
@@ -339,6 +373,10 @@ public :
    Float_t         Muon_SumPtNeutral[kMaxMuon];   //[Muon_]
    Float_t         Muon_SumPtChargedPU[kMaxMuon];   //[Muon_]
    Float_t         Muon_SumPt[kMaxMuon];   //[Muon_]
+   Float_t         Muon_D0[kMaxMuon];   //[Muon_]
+   Float_t         Muon_DZ[kMaxMuon];   //[Muon_]
+   Float_t         Muon_ErrorD0[kMaxMuon];   //[Muon_]
+   Float_t         Muon_ErrorDZ[kMaxMuon];   //[Muon_]
    Int_t           Muon_size;
    Int_t           FatJet_;
    UInt_t          FatJet_fUniqueID[kMaxFatJet];   //[FatJet_]
@@ -357,22 +395,32 @@ public :
    UInt_t          FatJet_BTagAlgo[kMaxFatJet];   //[FatJet_]
    UInt_t          FatJet_BTagPhys[kMaxFatJet];   //[FatJet_]
    UInt_t          FatJet_TauTag[kMaxFatJet];   //[FatJet_]
+   Float_t         FatJet_TauWeight[kMaxFatJet];   //[FatJet_]
    Int_t           FatJet_Charge[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_EhadOverEem[kMaxFatJet];   //[FatJet_]
    Int_t           FatJet_NCharged[kMaxFatJet];   //[FatJet_]
    Int_t           FatJet_NNeutrals[kMaxFatJet];   //[FatJet_]
+   Float_t         FatJet_NeutralEnergyFraction[kMaxFatJet];   //[FatJet_]
+   Float_t         FatJet_ChargedEnergyFraction[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_Beta[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_BetaStar[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_MeanSqDeltaR[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_PTD[kMaxFatJet];   //[FatJet_]
    Float_t         FatJet_FracPt[kMaxFatJet][5];   //[FatJet_]
    Float_t         FatJet_Tau[kMaxFatJet][5];   //[FatJet_]
+   TLorentzVector  FatJet_SoftDroppedJet[kMaxFatJet];
+   TLorentzVector  FatJet_SoftDroppedSubJet1[kMaxFatJet];
+   TLorentzVector  FatJet_SoftDroppedSubJet2[kMaxFatJet];
    TLorentzVector  FatJet_TrimmedP4[5][kMaxFatJet];
    TLorentzVector  FatJet_PrunedP4[5][kMaxFatJet];
    TLorentzVector  FatJet_SoftDroppedP4[5][kMaxFatJet];
    Int_t           FatJet_NSubJetsTrimmed[kMaxFatJet];   //[FatJet_]
    Int_t           FatJet_NSubJetsPruned[kMaxFatJet];   //[FatJet_]
    Int_t           FatJet_NSubJetsSoftDropped[kMaxFatJet];   //[FatJet_]
+   Double_t        FatJet_ExclYmerge23[kMaxFatJet];   //[FatJet_]
+   Double_t        FatJet_ExclYmerge34[kMaxFatJet];   //[FatJet_]
+   Double_t        FatJet_ExclYmerge45[kMaxFatJet];   //[FatJet_]
+   Double_t        FatJet_ExclYmerge56[kMaxFatJet];   //[FatJet_]
    TRefArray       FatJet_Constituents[kMaxFatJet];
    TRefArray       FatJet_Particles[kMaxFatJet];
    TLorentzVector  FatJet_Area[kMaxFatJet];
@@ -400,6 +448,8 @@ public :
    TBranch        *b_Event_ProcessID;   //!
    TBranch        *b_Event_MPI;   //!
    TBranch        *b_Event_Weight;   //!
+   TBranch        *b_Event_CrossSection;   //!
+   TBranch        *b_Event_CrossSectionError;   //!
    TBranch        *b_Event_Scale;   //!
    TBranch        *b_Event_AlphaQED;   //!
    TBranch        *b_Event_AlphaQCD;   //!
@@ -411,6 +461,11 @@ public :
    TBranch        *b_Event_PDF1;   //!
    TBranch        *b_Event_PDF2;   //!
    TBranch        *b_Event_size;   //!
+   TBranch        *b_Weight_;   //!
+   TBranch        *b_Weight_fUniqueID;   //!
+   TBranch        *b_Weight_fBits;   //!
+   TBranch        *b_Weight_Weight;   //!
+   TBranch        *b_Weight_size;   //!
    TBranch        *b_Particle_;   //!
    TBranch        *b_Particle_fUniqueID;   //!
    TBranch        *b_Particle_fBits;   //!
@@ -571,22 +626,32 @@ public :
    TBranch        *b_GenJet_BTagAlgo;   //!
    TBranch        *b_GenJet_BTagPhys;   //!
    TBranch        *b_GenJet_TauTag;   //!
+   TBranch        *b_GenJet_TauWeight;   //!
    TBranch        *b_GenJet_Charge;   //!
    TBranch        *b_GenJet_EhadOverEem;   //!
    TBranch        *b_GenJet_NCharged;   //!
    TBranch        *b_GenJet_NNeutrals;   //!
+   TBranch        *b_GenJet_NeutralEnergyFraction;   //!
+   TBranch        *b_GenJet_ChargedEnergyFraction;   //!
    TBranch        *b_GenJet_Beta;   //!
    TBranch        *b_GenJet_BetaStar;   //!
    TBranch        *b_GenJet_MeanSqDeltaR;   //!
    TBranch        *b_GenJet_PTD;   //!
    TBranch        *b_GenJet_FracPt;   //!
    TBranch        *b_GenJet_Tau;   //!
+   TBranch        *b_GenJet_SoftDroppedJet;   //!
+   TBranch        *b_GenJet_SoftDroppedSubJet1;   //!
+   TBranch        *b_GenJet_SoftDroppedSubJet2;   //!
    TBranch        *b_GenJet_TrimmedP4;   //!
    TBranch        *b_GenJet_PrunedP4;   //!
    TBranch        *b_GenJet_SoftDroppedP4;   //!
    TBranch        *b_GenJet_NSubJetsTrimmed;   //!
    TBranch        *b_GenJet_NSubJetsPruned;   //!
    TBranch        *b_GenJet_NSubJetsSoftDropped;   //!
+   TBranch        *b_GenJet_ExclYmerge23;   //!
+   TBranch        *b_GenJet_ExclYmerge34;   //!
+   TBranch        *b_GenJet_ExclYmerge45;   //!
+   TBranch        *b_GenJet_ExclYmerge56;   //!
    TBranch        *b_GenJet_Constituents;   //!
    TBranch        *b_GenJet_Particles;   //!
    TBranch        *b_GenJet_Area;   //!
@@ -615,22 +680,32 @@ public :
    TBranch        *b_Jet_BTagAlgo;   //!
    TBranch        *b_Jet_BTagPhys;   //!
    TBranch        *b_Jet_TauTag;   //!
+   TBranch        *b_Jet_TauWeight;   //!
    TBranch        *b_Jet_Charge;   //!
    TBranch        *b_Jet_EhadOverEem;   //!
    TBranch        *b_Jet_NCharged;   //!
    TBranch        *b_Jet_NNeutrals;   //!
+   TBranch        *b_Jet_NeutralEnergyFraction;   //!
+   TBranch        *b_Jet_ChargedEnergyFraction;   //!
    TBranch        *b_Jet_Beta;   //!
    TBranch        *b_Jet_BetaStar;   //!
    TBranch        *b_Jet_MeanSqDeltaR;   //!
    TBranch        *b_Jet_PTD;   //!
    TBranch        *b_Jet_FracPt;   //!
    TBranch        *b_Jet_Tau;   //!
+   TBranch        *b_Jet_SoftDroppedJet;   //!
+   TBranch        *b_Jet_SoftDroppedSubJet1;   //!
+   TBranch        *b_Jet_SoftDroppedSubJet2;   //!
    TBranch        *b_Jet_TrimmedP4;   //!
    TBranch        *b_Jet_PrunedP4;   //!
    TBranch        *b_Jet_SoftDroppedP4;   //!
    TBranch        *b_Jet_NSubJetsTrimmed;   //!
    TBranch        *b_Jet_NSubJetsPruned;   //!
    TBranch        *b_Jet_NSubJetsSoftDropped;   //!
+   TBranch        *b_Jet_ExclYmerge23;   //!
+   TBranch        *b_Jet_ExclYmerge34;   //!
+   TBranch        *b_Jet_ExclYmerge45;   //!
+   TBranch        *b_Jet_ExclYmerge56;   //!
    TBranch        *b_Jet_Constituents;   //!
    TBranch        *b_Jet_Particles;   //!
    TBranch        *b_Jet_Area;   //!
@@ -651,6 +726,10 @@ public :
    TBranch        *b_Electron_SumPtNeutral;   //!
    TBranch        *b_Electron_SumPtChargedPU;   //!
    TBranch        *b_Electron_SumPt;   //!
+   TBranch        *b_Electron_D0;   //!
+   TBranch        *b_Electron_DZ;   //!
+   TBranch        *b_Electron_ErrorD0;   //!
+   TBranch        *b_Electron_ErrorDZ;   //!
    TBranch        *b_Electron_size;   //!
    TBranch        *b_Photon_;   //!
    TBranch        *b_Photon_fUniqueID;   //!
@@ -668,6 +747,7 @@ public :
    TBranch        *b_Photon_SumPtNeutral;   //!
    TBranch        *b_Photon_SumPtChargedPU;   //!
    TBranch        *b_Photon_SumPt;   //!
+   TBranch        *b_Photon_Status;   //!
    TBranch        *b_Photon_size;   //!
    TBranch        *b_Muon_;   //!
    TBranch        *b_Muon_fUniqueID;   //!
@@ -684,6 +764,10 @@ public :
    TBranch        *b_Muon_SumPtNeutral;   //!
    TBranch        *b_Muon_SumPtChargedPU;   //!
    TBranch        *b_Muon_SumPt;   //!
+   TBranch        *b_Muon_D0;   //!
+   TBranch        *b_Muon_DZ;   //!
+   TBranch        *b_Muon_ErrorD0;   //!
+   TBranch        *b_Muon_ErrorDZ;   //!
    TBranch        *b_Muon_size;   //!
    TBranch        *b_FatJet_;   //!
    TBranch        *b_FatJet_fUniqueID;   //!
@@ -702,22 +786,32 @@ public :
    TBranch        *b_FatJet_BTagAlgo;   //!
    TBranch        *b_FatJet_BTagPhys;   //!
    TBranch        *b_FatJet_TauTag;   //!
+   TBranch        *b_FatJet_TauWeight;   //!
    TBranch        *b_FatJet_Charge;   //!
    TBranch        *b_FatJet_EhadOverEem;   //!
    TBranch        *b_FatJet_NCharged;   //!
    TBranch        *b_FatJet_NNeutrals;   //!
+   TBranch        *b_FatJet_NeutralEnergyFraction;   //!
+   TBranch        *b_FatJet_ChargedEnergyFraction;   //!
    TBranch        *b_FatJet_Beta;   //!
    TBranch        *b_FatJet_BetaStar;   //!
    TBranch        *b_FatJet_MeanSqDeltaR;   //!
    TBranch        *b_FatJet_PTD;   //!
    TBranch        *b_FatJet_FracPt;   //!
    TBranch        *b_FatJet_Tau;   //!
+   TBranch        *b_FatJet_SoftDroppedJet;   //!
+   TBranch        *b_FatJet_SoftDroppedSubJet1;   //!
+   TBranch        *b_FatJet_SoftDroppedSubJet2;   //!
    TBranch        *b_FatJet_TrimmedP4;   //!
    TBranch        *b_FatJet_PrunedP4;   //!
    TBranch        *b_FatJet_SoftDroppedP4;   //!
    TBranch        *b_FatJet_NSubJetsTrimmed;   //!
    TBranch        *b_FatJet_NSubJetsPruned;   //!
    TBranch        *b_FatJet_NSubJetsSoftDropped;   //!
+   TBranch        *b_FatJet_ExclYmerge23;   //!
+   TBranch        *b_FatJet_ExclYmerge34;   //!
+   TBranch        *b_FatJet_ExclYmerge45;   //!
+   TBranch        *b_FatJet_ExclYmerge56;   //!
    TBranch        *b_FatJet_Constituents;   //!
    TBranch        *b_FatJet_Particles;   //!
    TBranch        *b_FatJet_Area;   //!
@@ -762,7 +856,6 @@ delphes::delphes(char *file_name, TChain *tree) : fChain(0)
      Init(tree);
   }
 }
-
 
 delphes::~delphes()
 {
@@ -814,6 +907,8 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Event.ProcessID", Event_ProcessID, &b_Event_ProcessID);
    fChain->SetBranchAddress("Event.MPI", Event_MPI, &b_Event_MPI);
    fChain->SetBranchAddress("Event.Weight", Event_Weight, &b_Event_Weight);
+   fChain->SetBranchAddress("Event.CrossSection", Event_CrossSection, &b_Event_CrossSection);
+   fChain->SetBranchAddress("Event.CrossSectionError", Event_CrossSectionError, &b_Event_CrossSectionError);
    fChain->SetBranchAddress("Event.Scale", Event_Scale, &b_Event_Scale);
    fChain->SetBranchAddress("Event.AlphaQED", Event_AlphaQED, &b_Event_AlphaQED);
    fChain->SetBranchAddress("Event.AlphaQCD", Event_AlphaQCD, &b_Event_AlphaQCD);
@@ -825,6 +920,11 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Event.PDF1", Event_PDF1, &b_Event_PDF1);
    fChain->SetBranchAddress("Event.PDF2", Event_PDF2, &b_Event_PDF2);
    fChain->SetBranchAddress("Event_size", &Event_size, &b_Event_size);
+   fChain->SetBranchAddress("Weight", &Weight_, &b_Weight_);
+   fChain->SetBranchAddress("Weight.fUniqueID", Weight_fUniqueID, &b_Weight_fUniqueID);
+   fChain->SetBranchAddress("Weight.fBits", Weight_fBits, &b_Weight_fBits);
+   fChain->SetBranchAddress("Weight.Weight", Weight_Weight, &b_Weight_Weight);
+   fChain->SetBranchAddress("Weight_size", &Weight_size, &b_Weight_size);
    fChain->SetBranchAddress("Particle", &Particle_, &b_Particle_);
    fChain->SetBranchAddress("Particle.fUniqueID", Particle_fUniqueID, &b_Particle_fUniqueID);
    fChain->SetBranchAddress("Particle.fBits", Particle_fBits, &b_Particle_fBits);
@@ -985,22 +1085,32 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("GenJet.BTagAlgo", GenJet_BTagAlgo, &b_GenJet_BTagAlgo);
    fChain->SetBranchAddress("GenJet.BTagPhys", GenJet_BTagPhys, &b_GenJet_BTagPhys);
    fChain->SetBranchAddress("GenJet.TauTag", GenJet_TauTag, &b_GenJet_TauTag);
+   fChain->SetBranchAddress("GenJet.TauWeight", GenJet_TauWeight, &b_GenJet_TauWeight);
    fChain->SetBranchAddress("GenJet.Charge", GenJet_Charge, &b_GenJet_Charge);
    fChain->SetBranchAddress("GenJet.EhadOverEem", GenJet_EhadOverEem, &b_GenJet_EhadOverEem);
    fChain->SetBranchAddress("GenJet.NCharged", GenJet_NCharged, &b_GenJet_NCharged);
    fChain->SetBranchAddress("GenJet.NNeutrals", GenJet_NNeutrals, &b_GenJet_NNeutrals);
+   fChain->SetBranchAddress("GenJet.NeutralEnergyFraction", GenJet_NeutralEnergyFraction, &b_GenJet_NeutralEnergyFraction);
+   fChain->SetBranchAddress("GenJet.ChargedEnergyFraction", GenJet_ChargedEnergyFraction, &b_GenJet_ChargedEnergyFraction);
    fChain->SetBranchAddress("GenJet.Beta", GenJet_Beta, &b_GenJet_Beta);
    fChain->SetBranchAddress("GenJet.BetaStar", GenJet_BetaStar, &b_GenJet_BetaStar);
    fChain->SetBranchAddress("GenJet.MeanSqDeltaR", GenJet_MeanSqDeltaR, &b_GenJet_MeanSqDeltaR);
    fChain->SetBranchAddress("GenJet.PTD", GenJet_PTD, &b_GenJet_PTD);
    fChain->SetBranchAddress("GenJet.FracPt[5]", GenJet_FracPt, &b_GenJet_FracPt);
    fChain->SetBranchAddress("GenJet.Tau[5]", GenJet_Tau, &b_GenJet_Tau);
+   fChain->SetBranchAddress("GenJet.SoftDroppedJet", GenJet_SoftDroppedJet, &b_GenJet_SoftDroppedJet);
+   fChain->SetBranchAddress("GenJet.SoftDroppedSubJet1", GenJet_SoftDroppedSubJet1, &b_GenJet_SoftDroppedSubJet1);
+   fChain->SetBranchAddress("GenJet.SoftDroppedSubJet2", GenJet_SoftDroppedSubJet2, &b_GenJet_SoftDroppedSubJet2);
    fChain->SetBranchAddress("GenJet.TrimmedP4[5]", GenJet_TrimmedP4, &b_GenJet_TrimmedP4);
    fChain->SetBranchAddress("GenJet.PrunedP4[5]", GenJet_PrunedP4, &b_GenJet_PrunedP4);
    fChain->SetBranchAddress("GenJet.SoftDroppedP4[5]", GenJet_SoftDroppedP4, &b_GenJet_SoftDroppedP4);
    fChain->SetBranchAddress("GenJet.NSubJetsTrimmed", GenJet_NSubJetsTrimmed, &b_GenJet_NSubJetsTrimmed);
    fChain->SetBranchAddress("GenJet.NSubJetsPruned", GenJet_NSubJetsPruned, &b_GenJet_NSubJetsPruned);
    fChain->SetBranchAddress("GenJet.NSubJetsSoftDropped", GenJet_NSubJetsSoftDropped, &b_GenJet_NSubJetsSoftDropped);
+   fChain->SetBranchAddress("GenJet.ExclYmerge23", GenJet_ExclYmerge23, &b_GenJet_ExclYmerge23);
+   fChain->SetBranchAddress("GenJet.ExclYmerge34", GenJet_ExclYmerge34, &b_GenJet_ExclYmerge34);
+   fChain->SetBranchAddress("GenJet.ExclYmerge45", GenJet_ExclYmerge45, &b_GenJet_ExclYmerge45);
+   fChain->SetBranchAddress("GenJet.ExclYmerge56", GenJet_ExclYmerge56, &b_GenJet_ExclYmerge56);
    fChain->SetBranchAddress("GenJet.Constituents", GenJet_Constituents, &b_GenJet_Constituents);
    fChain->SetBranchAddress("GenJet.Particles", GenJet_Particles, &b_GenJet_Particles);
    fChain->SetBranchAddress("GenJet.Area", GenJet_Area, &b_GenJet_Area);
@@ -1029,22 +1139,32 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Jet.BTagAlgo", Jet_BTagAlgo, &b_Jet_BTagAlgo);
    fChain->SetBranchAddress("Jet.BTagPhys", Jet_BTagPhys, &b_Jet_BTagPhys);
    fChain->SetBranchAddress("Jet.TauTag", Jet_TauTag, &b_Jet_TauTag);
+   fChain->SetBranchAddress("Jet.TauWeight", Jet_TauWeight, &b_Jet_TauWeight);
    fChain->SetBranchAddress("Jet.Charge", Jet_Charge, &b_Jet_Charge);
    fChain->SetBranchAddress("Jet.EhadOverEem", Jet_EhadOverEem, &b_Jet_EhadOverEem);
    fChain->SetBranchAddress("Jet.NCharged", Jet_NCharged, &b_Jet_NCharged);
    fChain->SetBranchAddress("Jet.NNeutrals", Jet_NNeutrals, &b_Jet_NNeutrals);
+   fChain->SetBranchAddress("Jet.NeutralEnergyFraction", Jet_NeutralEnergyFraction, &b_Jet_NeutralEnergyFraction);
+   fChain->SetBranchAddress("Jet.ChargedEnergyFraction", Jet_ChargedEnergyFraction, &b_Jet_ChargedEnergyFraction);
    fChain->SetBranchAddress("Jet.Beta", Jet_Beta, &b_Jet_Beta);
    fChain->SetBranchAddress("Jet.BetaStar", Jet_BetaStar, &b_Jet_BetaStar);
    fChain->SetBranchAddress("Jet.MeanSqDeltaR", Jet_MeanSqDeltaR, &b_Jet_MeanSqDeltaR);
    fChain->SetBranchAddress("Jet.PTD", Jet_PTD, &b_Jet_PTD);
    fChain->SetBranchAddress("Jet.FracPt[5]", Jet_FracPt, &b_Jet_FracPt);
    fChain->SetBranchAddress("Jet.Tau[5]", Jet_Tau, &b_Jet_Tau);
+   fChain->SetBranchAddress("Jet.SoftDroppedJet", Jet_SoftDroppedJet, &b_Jet_SoftDroppedJet);
+   fChain->SetBranchAddress("Jet.SoftDroppedSubJet1", Jet_SoftDroppedSubJet1, &b_Jet_SoftDroppedSubJet1);
+   fChain->SetBranchAddress("Jet.SoftDroppedSubJet2", Jet_SoftDroppedSubJet2, &b_Jet_SoftDroppedSubJet2);
    fChain->SetBranchAddress("Jet.TrimmedP4[5]", Jet_TrimmedP4, &b_Jet_TrimmedP4);
    fChain->SetBranchAddress("Jet.PrunedP4[5]", Jet_PrunedP4, &b_Jet_PrunedP4);
    fChain->SetBranchAddress("Jet.SoftDroppedP4[5]", Jet_SoftDroppedP4, &b_Jet_SoftDroppedP4);
    fChain->SetBranchAddress("Jet.NSubJetsTrimmed", Jet_NSubJetsTrimmed, &b_Jet_NSubJetsTrimmed);
    fChain->SetBranchAddress("Jet.NSubJetsPruned", Jet_NSubJetsPruned, &b_Jet_NSubJetsPruned);
    fChain->SetBranchAddress("Jet.NSubJetsSoftDropped", Jet_NSubJetsSoftDropped, &b_Jet_NSubJetsSoftDropped);
+   fChain->SetBranchAddress("Jet.ExclYmerge23", Jet_ExclYmerge23, &b_Jet_ExclYmerge23);
+   fChain->SetBranchAddress("Jet.ExclYmerge34", Jet_ExclYmerge34, &b_Jet_ExclYmerge34);
+   fChain->SetBranchAddress("Jet.ExclYmerge45", Jet_ExclYmerge45, &b_Jet_ExclYmerge45);
+   fChain->SetBranchAddress("Jet.ExclYmerge56", Jet_ExclYmerge56, &b_Jet_ExclYmerge56);
    fChain->SetBranchAddress("Jet.Constituents", Jet_Constituents, &b_Jet_Constituents);
    fChain->SetBranchAddress("Jet.Particles", Jet_Particles, &b_Jet_Particles);
    fChain->SetBranchAddress("Jet.Area", Jet_Area, &b_Jet_Area);
@@ -1065,6 +1185,10 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Electron.SumPtNeutral", Electron_SumPtNeutral, &b_Electron_SumPtNeutral);
    fChain->SetBranchAddress("Electron.SumPtChargedPU", Electron_SumPtChargedPU, &b_Electron_SumPtChargedPU);
    fChain->SetBranchAddress("Electron.SumPt", Electron_SumPt, &b_Electron_SumPt);
+   fChain->SetBranchAddress("Electron.D0", Electron_D0, &b_Electron_D0);
+   fChain->SetBranchAddress("Electron.DZ", Electron_DZ, &b_Electron_DZ);
+   fChain->SetBranchAddress("Electron.ErrorD0", Electron_ErrorD0, &b_Electron_ErrorD0);
+   fChain->SetBranchAddress("Electron.ErrorDZ", Electron_ErrorDZ, &b_Electron_ErrorDZ);
    fChain->SetBranchAddress("Electron_size", &Electron_size, &b_Electron_size);
    fChain->SetBranchAddress("Photon", &Photon_, &b_Photon_);
    fChain->SetBranchAddress("Photon.fUniqueID", Photon_fUniqueID, &b_Photon_fUniqueID);
@@ -1082,6 +1206,7 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Photon.SumPtNeutral", Photon_SumPtNeutral, &b_Photon_SumPtNeutral);
    fChain->SetBranchAddress("Photon.SumPtChargedPU", Photon_SumPtChargedPU, &b_Photon_SumPtChargedPU);
    fChain->SetBranchAddress("Photon.SumPt", Photon_SumPt, &b_Photon_SumPt);
+   fChain->SetBranchAddress("Photon.Status", Photon_Status, &b_Photon_Status);
    fChain->SetBranchAddress("Photon_size", &Photon_size, &b_Photon_size);
    fChain->SetBranchAddress("Muon", &Muon_, &b_Muon_);
    fChain->SetBranchAddress("Muon.fUniqueID", Muon_fUniqueID, &b_Muon_fUniqueID);
@@ -1098,6 +1223,10 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("Muon.SumPtNeutral", Muon_SumPtNeutral, &b_Muon_SumPtNeutral);
    fChain->SetBranchAddress("Muon.SumPtChargedPU", Muon_SumPtChargedPU, &b_Muon_SumPtChargedPU);
    fChain->SetBranchAddress("Muon.SumPt", Muon_SumPt, &b_Muon_SumPt);
+   fChain->SetBranchAddress("Muon.D0", Muon_D0, &b_Muon_D0);
+   fChain->SetBranchAddress("Muon.DZ", Muon_DZ, &b_Muon_DZ);
+   fChain->SetBranchAddress("Muon.ErrorD0", Muon_ErrorD0, &b_Muon_ErrorD0);
+   fChain->SetBranchAddress("Muon.ErrorDZ", Muon_ErrorDZ, &b_Muon_ErrorDZ);
    fChain->SetBranchAddress("Muon_size", &Muon_size, &b_Muon_size);
    fChain->SetBranchAddress("FatJet", &FatJet_, &b_FatJet_);
    fChain->SetBranchAddress("FatJet.fUniqueID", FatJet_fUniqueID, &b_FatJet_fUniqueID);
@@ -1116,22 +1245,32 @@ void delphes::Init(TTree *tree)
    fChain->SetBranchAddress("FatJet.BTagAlgo", FatJet_BTagAlgo, &b_FatJet_BTagAlgo);
    fChain->SetBranchAddress("FatJet.BTagPhys", FatJet_BTagPhys, &b_FatJet_BTagPhys);
    fChain->SetBranchAddress("FatJet.TauTag", FatJet_TauTag, &b_FatJet_TauTag);
+   fChain->SetBranchAddress("FatJet.TauWeight", FatJet_TauWeight, &b_FatJet_TauWeight);
    fChain->SetBranchAddress("FatJet.Charge", FatJet_Charge, &b_FatJet_Charge);
    fChain->SetBranchAddress("FatJet.EhadOverEem", FatJet_EhadOverEem, &b_FatJet_EhadOverEem);
    fChain->SetBranchAddress("FatJet.NCharged", FatJet_NCharged, &b_FatJet_NCharged);
    fChain->SetBranchAddress("FatJet.NNeutrals", FatJet_NNeutrals, &b_FatJet_NNeutrals);
+   fChain->SetBranchAddress("FatJet.NeutralEnergyFraction", FatJet_NeutralEnergyFraction, &b_FatJet_NeutralEnergyFraction);
+   fChain->SetBranchAddress("FatJet.ChargedEnergyFraction", FatJet_ChargedEnergyFraction, &b_FatJet_ChargedEnergyFraction);
    fChain->SetBranchAddress("FatJet.Beta", FatJet_Beta, &b_FatJet_Beta);
    fChain->SetBranchAddress("FatJet.BetaStar", FatJet_BetaStar, &b_FatJet_BetaStar);
    fChain->SetBranchAddress("FatJet.MeanSqDeltaR", FatJet_MeanSqDeltaR, &b_FatJet_MeanSqDeltaR);
    fChain->SetBranchAddress("FatJet.PTD", FatJet_PTD, &b_FatJet_PTD);
    fChain->SetBranchAddress("FatJet.FracPt[5]", FatJet_FracPt, &b_FatJet_FracPt);
    fChain->SetBranchAddress("FatJet.Tau[5]", FatJet_Tau, &b_FatJet_Tau);
+   fChain->SetBranchAddress("FatJet.SoftDroppedJet", FatJet_SoftDroppedJet, &b_FatJet_SoftDroppedJet);
+   fChain->SetBranchAddress("FatJet.SoftDroppedSubJet1", FatJet_SoftDroppedSubJet1, &b_FatJet_SoftDroppedSubJet1);
+   fChain->SetBranchAddress("FatJet.SoftDroppedSubJet2", FatJet_SoftDroppedSubJet2, &b_FatJet_SoftDroppedSubJet2);
    fChain->SetBranchAddress("FatJet.TrimmedP4[5]", FatJet_TrimmedP4, &b_FatJet_TrimmedP4);
    fChain->SetBranchAddress("FatJet.PrunedP4[5]", FatJet_PrunedP4, &b_FatJet_PrunedP4);
    fChain->SetBranchAddress("FatJet.SoftDroppedP4[5]", FatJet_SoftDroppedP4, &b_FatJet_SoftDroppedP4);
    fChain->SetBranchAddress("FatJet.NSubJetsTrimmed", FatJet_NSubJetsTrimmed, &b_FatJet_NSubJetsTrimmed);
    fChain->SetBranchAddress("FatJet.NSubJetsPruned", FatJet_NSubJetsPruned, &b_FatJet_NSubJetsPruned);
    fChain->SetBranchAddress("FatJet.NSubJetsSoftDropped", FatJet_NSubJetsSoftDropped, &b_FatJet_NSubJetsSoftDropped);
+   fChain->SetBranchAddress("FatJet.ExclYmerge23", FatJet_ExclYmerge23, &b_FatJet_ExclYmerge23);
+   fChain->SetBranchAddress("FatJet.ExclYmerge34", FatJet_ExclYmerge34, &b_FatJet_ExclYmerge34);
+   fChain->SetBranchAddress("FatJet.ExclYmerge45", FatJet_ExclYmerge45, &b_FatJet_ExclYmerge45);
+   fChain->SetBranchAddress("FatJet.ExclYmerge56", FatJet_ExclYmerge56, &b_FatJet_ExclYmerge56);
    fChain->SetBranchAddress("FatJet.Constituents", FatJet_Constituents, &b_FatJet_Constituents);
    fChain->SetBranchAddress("FatJet.Particles", FatJet_Particles, &b_FatJet_Particles);
    fChain->SetBranchAddress("FatJet.Area", FatJet_Area, &b_FatJet_Area);
