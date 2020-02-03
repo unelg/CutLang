@@ -62,13 +62,16 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                             	case 2: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
                                                         inputPart->setFlavor( ao->jets[ac].at(ai).Flavor()   );
+                                                        inputPart->setIsTight( ao->jets[ac].at(ai).isbtagged_77()   );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
                                                 case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1, ac)[ ai ].lv() ); // 3 is a b jet
+                                                        inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
                                                         DEBUG("b-jet:"<<ai<<"  ");
                                                         break;
                                                 case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0, ac)[ ai ].lv()); // 4 is light jet
+                                                        inputPart->setIsTight( tagJets(ao,0, ac)[ai].isbtagged_77()   );
                                                         DEBUG("qgjet:"<<ai<<" ");
                                                         break;
 /// --------------------------------------------std::map<std::string, TVector2                 > met;
@@ -327,7 +330,8 @@ double DeepBof( dbxParticle* apart){
 }
 
 double isBTag( dbxParticle* apart){
-    bool Bval=((dbxJet*)apart)->isbtagged_77();
+    //bool Bval=((dbxJet*)apart)->isbtagged_77();
+    bool Bval=(apart)->isTight();
     DEBUG(" BTAG:"<<Bval<<"\t");
     return Bval;
 }
