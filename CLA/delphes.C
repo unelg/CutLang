@@ -39,15 +39,16 @@ void delphes::Loop(analy_struct aselect, char *extname)
    cout << "End of analysis initialization"<<endl;
 
    Long64_t nentries = fChain->GetEntriesFast();
-   if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
    cout << "number of entries " << nentries << endl;
+   if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
+   cout << "Forced number of entries " << nentries << endl;
    Long64_t startevent = 0;
    if (aselect.startpt>0 ) startevent=aselect.startpt;
    cout << "starting entry " << startevent << endl;
    Long64_t lastevent = startevent + nentries;
-   if (lastevent> fChain->GetEntriesFast() ) lastevent=fChain->GetEntriesFast();
-   cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
-
+   if (lastevent > fChain->GetEntriesFast() ) { lastevent=fChain->GetEntriesFast();
+     cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
+   }
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
@@ -155,7 +156,8 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setParticleIndx(i);
 //                adbxj->setFlavor(Jet_Flavor[i] );
                 adbxj->setFlavor(Jet_BTag[i] );
-                adbxj->set_isbtagged_77( Jet_BTag[i] ); //  btag
+                adbxj->set_isbtagged_77(  (bool)Jet_BTag[i] ); //  btag
+ //                if ( Jet_ == 1) std::cout << "B/N:"<<(bool)Jet_BTag[i]<<"\n";
         //        adbxj->setJVtxf(Jet_Ntrk[i] );
                 jets.push_back(*adbxj);
                 delete adbxj;
@@ -163,7 +165,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Jets:"<<Jet_<<std::endl;
 #endif
-
+/*
 //GEN LEVEL particles
         for (unsigned int i=0; i<Particle_; i++) {
                 alv.SetPtEtaPhiM( Particle_PT[i], Particle_Eta[i], Particle_Phi[i], Particle_Mass[i] ); // all in GeV
@@ -174,7 +176,7 @@ std::cout << "Jets:"<<Jet_<<std::endl;
                 truth.push_back(*adbxgen);
                 delete adbxgen;
         }
-
+*/
 
 
 //MET
