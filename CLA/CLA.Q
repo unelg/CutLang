@@ -52,7 +52,8 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
- cout << "CLA v02.02.00\n";
+ cout << "CLA v02.02.02\t";
+ cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
      if (i + 1 != argc) // Check that we haven't finished parsing already

@@ -52,3 +52,10 @@ for an_algo in $algo_list ; do
  echo $thisline >> BP_${iregion}-card.ini
  cat $this_region_name >> BP_${iregion}-card.ini
 done
+
+# CLEAN the region names
+for an_algo in $algo_list ; do
+ thisline=`head -n $an_algo _algos.ini| tail -n 1`
+ this_region_name=`echo $thisline | cut -f2 -d ' '`
+ rm -f $this_region_name
+done

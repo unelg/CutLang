@@ -35,11 +35,16 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][uU] return TAU;
 [pP][hH][oO]|"PHOTON" return PHO;
 [jJ][eE][tT] return JET;
-"FJET"|"FatJet" return FJET;
+[fF][jJ][eE][tT]|"FatJet" return FJET;
 "LEP" return LEP;
+"BJET" return BJET;
+"QGJET" return QGJET;
+"NUMET" return NUMET;
+"METLV" return METLV;
+
+[bB][tT][aA][gG] return ISBTAG;
 "PDGID" return PDGID;
 "btagDeepB" return DEEPB;
-[bB][tT][aA][gG] return ISBTAG;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;
@@ -53,12 +58,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
-"BJET" return BJET;
-"QGJET" return QGJET;
-"NUMET" return NUMET;
-"METLV" return METLV;
+"Union" return UNION;
+
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
+[rR][aA][pP] return RAP;
 [Aa][bB][sS][Ee][tT][aA] return ABSETA;
 "alias" return ALIAS;
 [pP][tT] return PT;
@@ -90,6 +94,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[sS][uU][mM] return SUM;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
@@ -109,8 +114,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][eE][rR][mM] return PERM;
 [mM][iI][nN] return MIN;
 [mM][aA][xX] return MAX;
-{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
-{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
+[-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
+[-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\"".*"\"" yylval.s=strdup(yytext);return HID;

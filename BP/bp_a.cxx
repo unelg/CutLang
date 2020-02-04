@@ -68,6 +68,10 @@ int BPdbxA:: readAnalysisParams() {
        if (tempLine.find_first_of("#") != std::string::npos ){
          tempLine.erase(tempLine.find_first_of("#"));
        }
+/*
+    for(auto& c : tempLine) { c = tolower(c); }
+*/
+
 //---------obj
        found = tempLine.find("obj ");
        if (found!=std::string::npos) {
@@ -197,9 +201,9 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
-       cout <<"==parsing started==\t";
+       cout <<"==parsing started:\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
-       cout <<" parsing finished.  ";
+       cout <<"\t parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
@@ -225,7 +229,7 @@ int BPdbxA:: readAnalysisParams() {
         }
 
 #ifdef _CLV__
-     cout<<"\n Particle Lists: \n";
+     cout<<"\n Parsed Particle Lists: \n";
 
      for (map<string,vector<myParticle*> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
          {
@@ -235,7 +239,7 @@ int BPdbxA:: readAnalysisParams() {
          cout << "\n";
          }
 
-    cout<<"\n Particles defintions as given by user: \n";
+    cout<<"\n UNParsed Particles Lists: \n";
 
     std::list<std::string>::iterator it = parts.begin();
     while(it != parts.end())

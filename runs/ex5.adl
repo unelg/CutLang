@@ -1,6 +1,7 @@
 #CLA ADL example5
 
 define Zreco : ELE[0] ELE[1]
+define mZreco = m(Zreco)
 
 object goodEle : ELE
   select   Pt(ELE_)       >   10
@@ -17,7 +18,7 @@ algo        testA
   preselection
 #  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
   select      {Zreco}q == 0       # Z is neutral
-  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
+  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, mZreco
 
 algo        testB
   preselection
