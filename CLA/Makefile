@@ -4,6 +4,7 @@ MAC     = Darwin
 ROOTCFLAGS    = $(shell root-config --cflags)
 ROOTLIBS      = $(shell root-config --libs)
 ROOTGLIBS     = $(shell root-config --glibs)
+TODAYDATE     = $(shell date)	
 
 # we try to identify where the various subdirs (like CorrectionMethods) are
 SUBDIRLOC = $(shell test -d ../CLA && echo ../ || echo ./)
@@ -39,7 +40,7 @@ endif
 
 ANLOBJS       = bp_a.o dump_a.o 
 OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o cmsod.o  AtlMin.o VLLMin.o CMSnanoAOD.o
-OBJS_2        = CLA.o b.o l.o
+OBJS_2        = b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
 	cpargs = -pHr
@@ -52,7 +53,9 @@ endif
 .PHONY: clean cleanall auxiliaries softlinks
 
 CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) -lProof $(LIBS)
+	sed "s/XXXXYYYYZZZZ/$(TODAYDATE)/g"  CLA.Q > CLA.C ; $(CXX) $(CXXFLAGS) $(INCLUDES) -c CLA.C
+	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) CLA.o $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS) -lProof $(LIBS)
+
 
 b.o : parse.y
 	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp

@@ -63,13 +63,13 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SAVE SKPH
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
-%token PHI ETA ABSETA PT PZ NBF DR DPHI DETA //functions
+%token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token PERM COMB SORT TAKE UNION
+%token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
@@ -110,6 +110,26 @@ definitions : definitions definition
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
+definition : DEF  ID  '=' SUM '(' particules ')' {
+                                        pnum=0;
+                                        map<string,vector<myParticle*> >::iterator it ;
+                                        string name = $2;
+                                        it = ListParts->find(name);
+                                        if(it != ListParts->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        parts->push_back(name+" : "+$6);
+//                                        std::cout<<"\n SUM TMP List: \n";
+//                                        for (int ik=0; ik<TmpParticle.size();ik++){
+//                                                std::cout << "type: " << TmpParticle[ik]->type << " index: " << TmpParticle[ik]->index << endl;
+//                                        }
+                                             
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        ListParts->insert(make_pair(name,newList));
+				}
 definition : DEF  ID  '=' particules {
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -155,7 +175,7 @@ definition : DEF  ID  '=' particules {
                                         ListParts->insert(make_pair(name,newList));
                                 }
     	    | TABLE ID binlist {
-                               cout << "TABLE "<< $2  << "\n";
+                               DEBUG("TABLE "<< $2  << "\n");
                                map<string,vector<float> >::iterator itt;
                                string name = $2;
                                itt = ListTables->find(name);
@@ -429,6 +449,17 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
 //---------------------------------------
+         | '{' particules '}' RAP {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Rapof,newList,"rap");
+                                  }
+         | RAP '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Rapof,newList,"rap");
+                                  }
+//---------------------------------------
          | '{' particules '}' ETA {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -557,6 +588,18 @@ function : '{' particules '}' 'm' {
         | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
         | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
 //------------------------------------------
+//    | SUM '(' ID ')' {
+//                                   map<string,Node*>::iterator it = ObjectCuts->find($3);
+//                                   if(it == ObjectCuts->end()) {
+//                                       std::string message = "Object not defined: ";
+//                                       message += $3;
+//                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                                       YYERROR;
+//                                   } else {
+//                                       int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+//                                       $$=new SFuncNode(sum, type, it->first , it->second);
+//                                   }
+//                     }
       | FMEGAJETS '(' ID ')' {
                                      map<string,Node*>::iterator it = ObjectCuts->find($3);
                                      if(it == ObjectCuts->end()) {
@@ -1074,7 +1117,6 @@ particule : GEN '_' index    {
                 it = ListParts->find($1);
      
                 if(it == ListParts->end()) {
-
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
                        DEBUG($1<<" : "); //------------new ID
@@ -1185,7 +1227,90 @@ particule : GEN '_' index    {
                        ito=ObjectCuts->find($1);
                        DEBUG($1<<" : "); //------------new ID
                        if(ito != ObjectCuts->end()) {
-                        DEBUG(" "<<$1<<" is a user particle\n ");
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
+                        int otype=((ObjectNode*) ito->second)->type;
+
+                        if (otype == 2 ) {
+                           DEBUG("which is a JET\n");
+                           tmp="jet_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 2;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 20;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+			else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 10;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        } 
+                        else if (otype == 1 ) {
+                           DEBUG("which is a ELE\n");
+                           tmp="ele_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 1;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==0 ) {
+                           DEBUG("which is a MUO\n");
+                                tmp="muo_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 0;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==11 ) {
+                           DEBUG("which is a TAU\n");
+                           tmp="tau_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 11;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==8 ) {
+                           DEBUG("which is a PHO\n");
+                           tmp="pho_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 8;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                        else if (otype==9 ) {
+                           DEBUG("which is a FatJET\n");
+                           tmp="ljet_";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 9;
+                                a->index = 6213;
+                                a->collection = $1;
+                                TmpParticle.push_back(a);
+                        }
+                       } else {
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1310,7 +1435,6 @@ objectBloc : OBJ ID TAKE ID criteria {
                               }
         | OBJ ID ':' UNION '(' ID ',' ID ')' {
                                      DEBUG(" "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n");
-                                     cout <<" "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n";
                                      myParticle* a = new myParticle;
                                      myParticle* b = new myParticle;
                                      a->index = 6213;
@@ -1572,7 +1696,7 @@ command : CMD condition { //find a way to print commands
 					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
 					NodeCuts->insert(make_pair(++cutcount,a));
 			}
-        | ALGO ID {  cout << " ALGO: "<< $2<<" ";
+        | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
                     DataFormats->at(4)=1;
@@ -1595,12 +1719,12 @@ command : CMD condition { //find a way to print commands
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID {
-                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
+//                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
 //				Node* a = new SFuncNode(uweight,$3,$2);
 //				NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
-                                cout << "Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n";
+                                DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
                                 map<string,vector<float> >::iterator itt;
                                 string name = $3;
                                 itt = ListTables->find(name);

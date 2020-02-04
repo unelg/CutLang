@@ -2,8 +2,6 @@
 
 define Zreco : ELE[0] ELE[1]
 
-define cleps = ELE + MUO
-
 object goodEle using ELE
   select  Pt(ELE)        >   10
   select abs({ELE}Eta)   <   2.4
@@ -13,7 +11,7 @@ object BiJET : JET
   select bTag(JET) == 1
 
 object myMu : MUO 
-  select Pt(MUO) > 10
+  select Pt(MUO) > 20
 
 object myPho : PHO
   select Pt(PHO) > 10
@@ -28,8 +26,10 @@ region   test
   select      Size(JET)     >= 1  # events with 2 or more jets 
   select      Size(BJET)    >= 1  # events with 2 or more jets 
   select      Size(BiJET)   >= 1  # events with 2 or more jets 
-  select      Size(ELE)     >= 2  # events with 2 or more electrons 
-  select      Size(goodEle) >= 2  # events with 2 or more electrons 
+#  select      Size(ELE)     >= 2  # events with 2 or more electrons 
+#  select      Size(goodEle) >= 2  # events with 2 or more electrons 
+  select      Size(MUO) >= 2  # events with 2 or more electrons 
+  select      Size(myMu) >= 2  # events with 2 or more electrons 
 #  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
 #  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
 #  select      {Zreco}q == 0       # Z is neutral
