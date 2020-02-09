@@ -64,6 +64,7 @@ class BPdbxA : public dbxA {
 */
       int TRGe, TRGm;
       bool skip_histos;
+      bool skip_effs;
  
 //DBXcut relevant variables
         std::vector< std::vector<std::string> > myopelist;

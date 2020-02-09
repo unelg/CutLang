@@ -134,7 +134,6 @@ void AnalysisController::SetJetUncs(vector <double> uncs){
 void AnalysisController::Finalize(){
 	for ( int i=0; i<dbxAnalyses.size(); i++)
 	{
-		cout <<"Efficiencies for analysis : "<< dbxAnalyses[i]->cname <<endl;
 		dbxAnalyses[i]->printEfficiencies();
 		dbxAnalyses[i]->saveHistos();
 	}

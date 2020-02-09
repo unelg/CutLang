@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-void PrintEfficiencies(TH1F* effh, bool skip_eff) {
+void PrintEfficiencies(TH1F* effh, bool skip_histos) {
   using namespace std;
 
   // Prints out the efficiencies
@@ -21,7 +21,7 @@ void PrintEfficiencies(TH1F* effh, bool skip_eff) {
     err = sqrt(eff*(1-eff)/effh->GetBinContent(s-1));
     TString cutname=effh->GetXaxis()->GetBinLabel(s);
     if ( cutname.Sizeof() <1) break;
-    if (skip_eff) { if ( cutname.BeginsWith("[Histo]") ) continue; }
+    if (skip_histos) { if ( cutname.BeginsWith("[Histo]") ) continue; }
     cout << setw(66) << effh->GetXaxis()->GetBinLabel(s)
 	 << " : "  << setw(6) << setprecision(4) << eff
 	 << " +- " << setw(9) << setprecision(3) << err 
