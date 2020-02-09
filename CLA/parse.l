@@ -26,7 +26,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [hH][iI][sS][tT][oO] return HISTO;
 [wW][eE][iI][gG][hH][tT] return WEIGHT;
 [tT][aA][bB][lL][eE] return TABLE;
-"SkipHistos" return SKPH;
+[Ss][Kk][Ii][Pp][Hh][Ii][Ss][Tt][Oo][Ss] return SKPH;
+[Ss][Kk][Ii][Pp][Ee][Ff][Ff][Ss] return SKPE;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 [Gg][Ee][Nn] return GEN;
