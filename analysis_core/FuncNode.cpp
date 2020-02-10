@@ -33,12 +33,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                case 10: DEBUG("truth:"<< (*i)->index <<" ");
 		                                         inputPart->setTlv(  inputPart->lv()+ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
-		                                         inputPart->setPdgID(ao->truth[ac].at(ai).pdgID()  );
+		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
 		                                         break;
                                                 case 0: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
-							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
+							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
@@ -54,7 +54,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 11 is tau
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
-							inputPart->setPdgID(ao->taus[ac].at(ai).pdgID()  );
+							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
