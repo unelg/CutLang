@@ -1699,7 +1699,7 @@ command : CMD condition { //find a way to print commands
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
-                    DataFormats->at(4)=1;
+                    DataFormats->at(4)=cutcount;
                     Initializations->at(0)=$2;
                   }
         | CMD ALL {                                     
