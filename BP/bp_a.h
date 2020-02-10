@@ -38,12 +38,12 @@ class BPdbxA : public dbxA {
         return r;
       }
       
-
    private:
       bool savebool = false;
       bool grl_cut;
       char cname[CHMAX];
       char algoname[CHMAX];
+      std::vector<TString> effCL;
 
       TFile *ftsave;
       TTree *ttsave;
@@ -63,23 +63,15 @@ class BPdbxA : public dbxA {
       TH1D* Zlm;
 */
       int TRGe, TRGm;
+      bool skip_histos;
  
 //DBXcut relevant variables
         std::vector< std::vector<std::string> > myopelist;
-        std::vector< std::vector<std::string> > terOpelistT;
-        std::vector< std::vector<std::string> > terOpelistF;
-        std::vector<   int                    > isTernary;
-        std::vector< pair< int , int >        > forbidthese;
-  
-        map < string, vector<string> > obj_names;
-
-        std::vector<int> ret_i;
-        std::vector<int> ret_t;
-        vector <int>  found_type_vecs, found_idx_vecs, found_idx_origs;
 //-------------------------anna
         list<string> parts; //for def of particles as given by user
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle*> > ListParts;//for particle definition
+        map<string,vector<float> > ListTables;//for table definition
         map<int,Node*> NodeCuts;//cuts and histos
         map<string,Node*> ObjectCuts;//cuts for user defined objects
 

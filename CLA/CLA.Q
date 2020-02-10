@@ -24,8 +24,8 @@ using namespace std;
 
 int root_analysisd3pd(string sample, analy_struct aselect);
 
-int main(int argc, char*argv[]) 
-{ 
+int main(int argc, char*argv[])
+{
 
 /** select analysis */
  analy_struct aselect;
@@ -35,6 +35,7 @@ int main(int argc, char*argv[])
  aselect.doQCD=false;
  aselect.doHF=false;
  aselect.maxEvents=0; // now the default is 0
+ aselect.startpt=0;
  aselect.verbfreq=1000;
 
  bool  use_fcc=false;
@@ -51,42 +52,45 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
- cout << "CLA v02.02.00\n";
+ cout << "CLA v02.02.02\t";
+ cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
      if (i + 1 != argc) // Check that we haven't finished parsing already
-         if        (std::string(argv[i]) == "-D")  { // Dump                  
+         if        (std::string(argv[i]) == "-D")  { // Dump
              aselect.Dumpcount = atoi(argv[i + 1]);   i++;
-         } else if (std::string(argv[i]) == "-BP") { // BP 
+         } else if (std::string(argv[i]) == "-BP") { // BP
              aselect.BPcount = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-S") { // systematics
              aselect.dosystematics = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-Q") { // do QCD
              aselect.doQCD = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-P") { // use proof
-             use_proof=true;  
+             use_proof=true;
          } else if (std::string(argv[i]) == "-UN") { // username to be added to histoname
              username = argv[i + 1];  i++;
          } else if (std::string(argv[i]) == "-V") { // verbosity frequency in #events
              aselect.verbfreq = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-EVT") { // max events
              aselect.maxEvents = atoi(argv[i + 1]);  i++;
+         } else if (std::string(argv[i]) == "-ST") { // start point
+             aselect.startpt = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-inp") { // use LHCO format input
              inptype = argv[i + 1];  i++;
          } else {
              std::cout << "invalid arguments, please read the help below.\n";
      }
  }
- 
+
 
  std::cout << "#BP  runs is "<< aselect.BPcount<<std::endl;
  std::cout << "#Dump runs is "<< aselect.Dumpcount<<std::endl;
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " d3pd.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO]\n"  
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
-                       << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"  
+                       << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
   exit(-2);
  }
@@ -135,7 +139,7 @@ TProof* proof;
 
         proof->UploadPackage("cards", PROPT );
         proof->EnablePackage("cards",1);
-        proof->UploadPackage("libs", PROPT ); 
+        proof->UploadPackage("libs", PROPT );
         proof->EnablePackage("libs",1);
         proof->ShowPackages();
         proof->Exec(".! uname -a");
@@ -164,7 +168,7 @@ TProof* proof;
 
         cout << "----------------------------------------"<<endl;
 //        proof->Process(aset, &anAna, " ", 0);
-       
+
 //      proof->Process(aset, "dbxAna", " -BP 1 -S 0 -AtlMin 1 ", 0); // the real execution
         aset->Process("dbxAna.C"," -BP 1 -S 0 -AtlMin 1 ",0); // the real execution
       }
@@ -215,13 +219,13 @@ if (ival==0) {
    chain = new TChain("nominal");
   }else if (use_vllmin){
    cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
-   chain = new TChain("/physics/nominal");
+   chain = new TChain("/physics");
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
    chain = new TChain("Delphes");
   }else{
    chain = new TChain("physics");
-  } 
+  }
   int aret;
   for (unsigned int iFile=0; iFile<fileList.size(); ++iFile){
     std::cout << "open " << fileList[iFile].c_str() << std::endl;
@@ -232,7 +236,7 @@ if (ival==0) {
   if (chain->GetEntries() > 0 ) {
     cout << "initialized with the chain"<<endl;
 
-    chain->GetEntry(0); 
+    chain->GetEntry(0);
 
    if (use_lhco){
     lhco *lhcoa=new lhco("XXX",chain);
@@ -261,7 +265,7 @@ if (ival==0) {
    } else if (use_delphes){
     delphes *delphesa=new delphes("XXX",chain);
              delphesa->Loop(aselect, username);
-  } 
+  }
 
   cout << "finished."<<endl;
 
@@ -270,7 +274,7 @@ if (ival==0) {
   } else {
     std::cout <<"WARNING: No events found in files " << std::endl;
   }
-  //chain->Delete(); 
+  //chain->Delete();
   return 0;
 
 } else {

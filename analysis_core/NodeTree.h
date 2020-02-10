@@ -13,6 +13,7 @@
 #include "Node.h"
 #include "ValueNode.h"
 #include "BinaryNode.hpp"
+#include "TableNode.hpp"
 #include "UnaryAONode.h"
 #include "FuncNode.h"
 #include "LFuncNode.h"

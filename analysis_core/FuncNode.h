@@ -55,6 +55,7 @@ double     Pzof( dbxParticle* apart);
 double     Ptof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
 double    Etaof( dbxParticle* apart);
+double    Rapof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
 double 	pdgIDof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
@@ -68,9 +69,7 @@ double     dzof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
-
-
-double nbfof( dbxParticle* apart);
+double    nbfof( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */

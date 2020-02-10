@@ -22,22 +22,29 @@ vardef {varname}" "?":"" "?.*"\n"
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
-"take"|"using" return TAKE;
-"histo" return HISTO;
-"weight" return WEIGHT;
+[tT][aA][kK][eE]|[uU][sS][iI][nN][gG] return TAKE;
+[hH][iI][sS][tT][oO] return HISTO;
+[wW][eE][iI][gG][hH][tT] return WEIGHT;
+[tT][aA][bB][lL][eE] return TABLE;
+"SkipHistos" return SKPH;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
-"ELE"|"ELECTRON" return ELE;//particles
-"MUO"|"MUON"|"Muon" return MUO;
-"Tau"|"TAU" return TAU;
-"PHO"|"PHOTON" return PHO;
-"JET"|"Jet" return JET;
-"FJET"|"FatJet" return FJET;
 [Gg][Ee][Nn] return GEN;
+[eE][lL][eE]|"ELECTRON" return ELE;//particles
+[mM][uU][oO]|"MUON" return MUO;
+[tT][aA][uU] return TAU;
+[pP][hH][oO]|"PHOTON" return PHO;
+[jJ][eE][tT] return JET;
+[fF][jJ][eE][tT]|"FatJet" return FJET;
 "LEP" return LEP;
+"BJET" return BJET;
+"QGJET" return QGJET;
+"NUMET" return NUMET;
+"METLV" return METLV;
+
+[bB][tT][aA][gG] return ISBTAG;
 "PDGID" return PDGID;
 "btagDeepB" return DEEPB;
-[bB][tT][aA][gG] return ISBTAG;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
 "tau2" return TAU2;
@@ -51,21 +58,20 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
-"BJET" return BJET;
-"QGJET" return QGJET;
-"NUMET" return NUMET;
-"METLV" return METLV;
+"Union" return UNION;
+
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
-"AbsEta" return ABSETA;
+[rR][aA][pP] return RAP;
+[Aa][bB][sS][Ee][tT][aA] return ABSETA;
 "alias" return ALIAS;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
+[dD][rR] return DR;
+[dD][pP][hH][iI] return DPHI;
+[dD][eE][tT][aA] return DETA;
+[sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs
 "nbf" return NBF;
-"dR" return DR;
-"dPhi" return DPHI;
-"dEta" return DETA;
-"Size"|"Count"|"NumberOf"|"NumOf" return NUMOF;//no arg funcs
 "HT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
@@ -88,6 +94,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[sS][uU][mM] return SUM;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
@@ -105,8 +112,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][oO][rR][tT] return SORT;
 [cC][oO][mM][bB] return COMB;
 [pP][eE][rR][mM] return PERM;
-{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
-{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
+[-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
+[-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\"".*"\"" yylval.s=strdup(yytext);return HID;

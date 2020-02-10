@@ -43,8 +43,18 @@ void cmsod::Loop(analy_struct aselect, char *extname)
    blow_th=ReadCard(CardName,"btag_lowthreshold_CMSOD",blow_th);
 
    Long64_t nentries = fChain->GetEntriesFast();
-   if (aselect.maxEvents > 0) nentries=aselect.maxEvents;
-   for (Long64_t j=0; j<nentries; ++j) {
+   if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
+   cout << "number of entries " << nentries << endl;
+   Long64_t startevent = 0;
+   if (aselect.startpt>0 ) startevent=aselect.startpt;
+   cout << "starting entry " << startevent << endl;
+   Long64_t lastevent = startevent + nentries;
+   if (lastevent > fChain->GetEntriesFast() ) { lastevent=fChain->GetEntriesFast();
+       cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
+   }
+
+   Long64_t nbytes = 0, nb = 0;
+   for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
@@ -155,7 +165,6 @@ std::cout << "MET OK"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=RunNumber;
-        anevt.user_evt_weight=1;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
         anevt.event_no=j;
@@ -164,9 +173,11 @@ std::cout << "MET OK"<<std::endl;
         anevt.TRG_j= 0;
         anevt.vxp_maxtrk_no= 9;
         anevt.badjet=0;
-        anevt.mcevt_weight=1.0;
+        anevt.user_evt_weight=1;
+        anevt.mcevt_weight=EventWeight;
         anevt.pileup_weight=1.0;
         anevt.z_vtx_weight = 1.0;
+        anevt.weight_jvt=1.0;
         anevt.weight_bTagSF_77 = 1.0;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
