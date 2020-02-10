@@ -352,7 +352,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     return 1;
 }
 
-int BPdbxA::saveInstance(AnaylsisObjects ao) {	     
+int BPdbxA::saveInstance(AnalysisObjects ao) {	     
       vector<dbxMuon>        muons = ao.muos.begin()->second;
       vector<dbxElectron> electrons= ao.eles.begin()->second;
       vector <dbxPhoton>    photons= ao.gams.begin()->second;
