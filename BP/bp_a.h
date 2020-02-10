@@ -31,6 +31,7 @@ class BPdbxA : public dbxA {
       int printEfficiencies();
       int bookAdditionalHistos();
       int makeAnalysis(AnalysisObjects ao ); 
+      int saveInstance(AnalysisObjects ao );
       int Finalize();
       int saveHistos() {
 	      if (savebool) Finalize();
@@ -62,7 +63,7 @@ class BPdbxA : public dbxA {
       TH1D* xWHbRh2;
       TH1D* Zlm;
 */
-      int TRGe, TRGm;
+      int TRGe, TRGm, TRGs;
       bool skip_histos;
  
 //DBXcut relevant variables

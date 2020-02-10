@@ -76,6 +76,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %token <s> ID HID 
 %token SIN COS TAN ABS SQRT EXP LOG HSTEP SINH COSH TANH
 %token OR AND 
+%token MIN MAX
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
 %left AND
@@ -1698,7 +1699,7 @@ command : CMD condition { //find a way to print commands
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
-                    DataFormats->at(4)=1;
+                    DataFormats->at(4)=cutcount;
                     Initializations->at(0)=$2;
                   }
         | CMD ALL {                                     
@@ -1739,6 +1740,9 @@ command : CMD condition { //find a way to print commands
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
+        | CMD minmax {
+                                DEBUG("Min/Max function has run");
+                                }
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
@@ -1919,6 +1923,41 @@ command : CMD condition { //find a way to print commands
 	   | SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
 	   | SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
+minmax : MIN '(' list ',' criteria ')' {
+                                                vector<Node*> criteria;
+                                                vector<myParticle*> newList;
+                                                vector<myParticle*> resList;
+                                                TmpCriteria.swap(criteria);
+                                                TmpParticle.swap(newList);
+                                                myParticle* res = new myParticle;
+                                                myParticle* temp = new myParticle;
+                                                for (auto i = newList.begin(); i != newList.end(); ++i) {
+                                                        *temp = **i;
+                                                        if (temp->collection < res->collection) *res = *temp;
+                                                }
+                                                resList.push_back(res);
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
+                                                ObjectCuts->insert(make_pair("MIN",obj));
+                                        }
+        | MAX '(' list ',' criteria ')' {
+                                                vector<Node*> criteria;
+                                                vector<myParticle*> newList;
+                                                vector<myParticle*> resList;
+                                                TmpCriteria.swap(criteria);
+                                                TmpParticle.swap(newList);
+                                                myParticle* res = new myParticle;
+                                                myParticle* temp = new myParticle;
+                                                for (auto i = newList.begin(); i != newList.end(); ++i) {
+                                                        *temp = **i;
+                                                        if (temp->collection > res->collection) *res = *temp;
+                                                }
+                                                resList.push_back(res);
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
+                                                ObjectCuts->insert(make_pair("MIN",obj));
+                                        }
+        ;
 description : description HID {                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
