@@ -16,10 +16,11 @@ void FuncNode::ResetParticles(){
     
 void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
-        
+        DEBUG("\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
          DEBUG("CONSTRUCT type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
-         if (((*i)->collection).size() < 1 && (*i)->type!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type<<" idx:"<<(*i)->index <<"\n"; 
+         if (((*i)->collection).size() < 1 && (*i)->type!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type
+                                                                   << " size:"<< ((*i)->collection).size()<< " idx:"<<(*i)->index <<"\n"; 
         }
         int ka;
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
@@ -45,7 +46,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                 case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
-							                                          inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
+							inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
