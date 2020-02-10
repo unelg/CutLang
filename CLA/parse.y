@@ -35,7 +35,7 @@ vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
-std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
+std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -1100,6 +1100,7 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
+                        cout << $1 << " is a problem\n";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1310,6 +1311,7 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
+                        cout << $1 << " is a problem\n";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
