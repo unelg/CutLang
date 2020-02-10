@@ -34,7 +34,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    int verboseFreq(aselect.verbfreq);
    int extra_analysis_count=1;
    int prev_RunNumber=-1;
-    
+
    map < string, int > syst_names;
    syst_names["01_pileup"]                  = 2;
    syst_names["02_elTRG"]                   = 2;
@@ -57,18 +57,27 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    syst_names["19_btagSF77eigenvarsC"]      = 2;
    syst_names["20_btagSF77eigenvarsLight"]  = 2;
    syst_names["21_jvt"]                     = 2;
-    
 
-    
+
+
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
 
    Long64_t nentries = fChain->GetEntriesFast();
-   if (aselect.maxEvents > 0) nentries=aselect.maxEvents;
-   cout << "We have:"<<nentries<< " events"<<endl;
-   for (Long64_t j=0; j<nentries; ++j) 
-   {
+   if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
+   cout << "number of entries " << nentries << endl;
+   Long64_t startevent = 0;
+   if (aselect.startpt>0 ) startevent=aselect.startpt;
+   cout << "starting entry " << startevent << endl;
+   Long64_t lastevent = startevent + nentries;
+   if (lastevent > fChain->GetEntriesFast() ) { lastevent=fChain->GetEntriesFast();
+       cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
+   }
+
+   Long64_t nbytes = 0, nb = 0;
+   for (Long64_t j=startevent; j<lastevent; ++j) {
+
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if (0 > LoadTree (j)) break;
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
@@ -138,10 +147,10 @@ void lvl0::Loop(analy_struct aselect, char *extname)
     }
 
 // analysis using info from lvl0 file
-    evt_data ev0; 
-    muons=event->nt_muos; 
-    electrons=event->nt_eles; 
-    jets=event->nt_jets; 
+    evt_data ev0;
+    muons=event->nt_muos;
+    electrons=event->nt_eles;
+    jets=event->nt_jets;
     met=event->nt_met;
 
 // take a copy of the event info
@@ -156,7 +165,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
 */
    int km=0; // this is to count number of systematics
    map < string,   AnalysisObjects > analysis_objs_map;
-/*      
+/*
   if (aselect.dosystematics) {
 #ifdef __DEBUG__
    cout << "Running with systematics.\n";
@@ -245,7 +254,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
                                                         analysis_objs_map["21_jvt_0"]   =(AnalysisObjects){event->nt_muos,event->nt_eles, ga0,  event->nt_jets,  event->nt_met, ev0}; km++;
    ev0.weight_jvt=ev0.weight_jvt_DOWN;
                                                         analysis_objs_map["21_jvt_1"]   =(AnalysisObjects){event->nt_muos,event->nt_eles, ga0,  event->nt_jets,  event->nt_met, ev0}; km++;
-      
+
 
   }
   aCtrl.RunTasks(a0, analysis_objs_map);

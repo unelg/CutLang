@@ -211,12 +211,12 @@ int dbxA:: ChangeDir(char *dn) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: setDir(char *dn) {
+int dbxA:: setDir(char *dn, unsigned int bsize) {
   int retval=0;
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
-  eff= new TH1F("eff","selection efficiencies ",30,0.5,30.5);
+  eff= new TH1F("eff","selection efficiencies ",bsize,0.5,bsize+0.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   char hname[64];
   if (0)

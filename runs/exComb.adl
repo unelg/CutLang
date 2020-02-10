@@ -1,14 +1,13 @@
-
 object jets : JET
    select  {JET}Pt > 10  
    select  {JET}Eta < 4
 
-
+###### 12 21 13 31
 object hZs : COMB( jets[-1] jets[-2] ) alias ahz 
      select { ahz }AbsEta < 3.0
-#    select {jets[-2] }Pt > 2.1
+     select {jets[-2] }Pt > 2.1
      select {jets[-1] }Pt > 5.1
-     select {jets[-1], ahz }dR < 0.6
+     select {jets[-1], ahz }dR < 0.6   #--- means a member of hZs and its constituent number 1, not a loop between all members and all constituents
      select { ahz }m [] 10 200           # does get the paricle numbers (2) fromt the last cut
 
 define zz : hZs[-1] 
@@ -24,9 +23,12 @@ object goodeles : ELE
 
 region testA
  	select ALL                        # to count all events
+# count number size are all the same.
  	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
- 	select Size(hZs)  >= 2            # we need at least 2 Zhad candidates.
-#        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
+ 	select Count(hZs)  >= 2            # we need at least 2 Zhad candidates.
+# 4Jetli bir olayim var. 12, 21, 13, 31, 23, 32, 14, 41, 24, 42, 34, 43
+#                        ^^------------------------------------- ^^  ^^
+        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
         select chi2  ~= 0            # we kill here overlapping candidates. 
         histo  hchi2, "chi2 ", 50, 0, 500, chi2
         histo  bm1hZ, "mass Hrec GeV", 50, 50, 150, zham

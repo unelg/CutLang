@@ -4,6 +4,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system
 EVENTS=0
 INIFILE=CLA.ini
 VERBOSE=5000
+STRT=0
 datafile=$1
 datatype=$2
 
@@ -28,6 +29,11 @@ case $key in
     ;;
     -e|--events)
     EVENTS="$4"
+    shift # past argument
+    shift # past value
+    ;;
+    -s|--start)
+    STRT="$4"
     shift # past argument
     shift # past value
     ;;
@@ -72,20 +78,22 @@ else
  cp ${INIFILE} BP_1-card.ini
  Nalgo=1
 fi
- 
- for ialgo in `seq $Nalgo`; do
-  ../scripts/ini2txt.sh  BP_$ialgo
- done
+
+# for ialgo in `seq $Nalgo`; do
+#  ../scripts/ini2txt.sh  BP_$ialgo
+# done
 
 if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../CLA/
 fi
 
 rm histoOut-BP_*.root
-echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
-../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE}
+echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 if [ $? -eq 0 ]; then
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-  rm   histoOut-${rbase}.root 
+  rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root
+  rm -f histoOut-BP_*.root
+  rm -f BP_*-card.ini _head.ini _algos.ini _inifile
 fi

@@ -16,6 +16,7 @@ struct analy_struct {   // Declare analysis types
 	int BPcount;
 	int Dumpcount;
 	int maxEvents;
+	int startpt;
 	int verbfreq;
 	bool dosystematics;
 	bool doQCD;
@@ -97,7 +98,7 @@ typedef struct evt_data
                 weight_bTagSF_77_extrapolation_up = right.weight_bTagSF_77_extrapolation_up;
                 weight_bTagSF_77_extrapolation_down = right.weight_bTagSF_77_extrapolation_down;
                 weight_bTagSF_77_extrapolation_from_charm_up = right.weight_bTagSF_77_extrapolation_from_charm_up;
-                weight_bTagSF_77_extrapolation_from_charm_down = right.weight_bTagSF_77_extrapolation_from_charm_down;   
+                weight_bTagSF_77_extrapolation_from_charm_down = right.weight_bTagSF_77_extrapolation_from_charm_down;
                 weight_jvt_UP = right.weight_jvt_UP;
                 weight_jvt_DOWN = right.weight_jvt_DOWN;
                 weight_bTagSF_77_eigenvars_B_up=right.weight_bTagSF_77_eigenvars_B_up;
@@ -127,7 +128,7 @@ typedef struct evt_data
 	unsigned int core_Flags;
 	float z_vtx_weight;
         double user_evt_weight;
-    
+
 //S.I
    Float_t         weight_mc;
    Float_t         weight_pileup;
@@ -168,7 +169,7 @@ typedef struct evt_data
    Float_t         weight_bTagSF_77_extrapolation_up;
    Float_t         weight_bTagSF_77_extrapolation_down;
    Float_t         weight_bTagSF_77_extrapolation_from_charm_up;
-   Float_t         weight_bTagSF_77_extrapolation_from_charm_down;   
+   Float_t         weight_bTagSF_77_extrapolation_from_charm_down;
    Float_t         weight_jvt_UP;
    Float_t         weight_jvt_DOWN;
 
@@ -179,8 +180,8 @@ typedef struct evt_data
    std::vector<float> weight_bTagSF_77_eigenvars_C_down;
    std::vector<float> weight_bTagSF_77_eigenvars_Light_down;
 
-//E S.I.    
-    
+//E S.I.
+
 }evt_data;
 
 
@@ -193,7 +194,7 @@ public:
 	~dbxParticle();
 	dbxParticle  operator+ (dbxParticle& c);
 	static double deltaR(dbxParticle,dbxParticle);
-	static double deltaPhi(dbxParticle,dbxParticle);	
+	static double deltaPhi(dbxParticle,dbxParticle);
 	//dbxParticle  operator-() const;
 	static bool comparePt(dbxParticle lhs, dbxParticle rhs) { return (lhs.lv().Pt() > rhs.lv().Pt()); }
 	void Reset(){  p_charge=0; p_lvector.SetPtEtaPhiM(0, 0, 0, 0); p_attribute.clear(); }
@@ -235,15 +236,15 @@ public:
 	int scaleLorentzVector ( double );
 	int setZ0 (double );
         void setPt_Uncorrected(double v){p_Pt_Uncorrected=v;}
-	void setAttribute(int k, double v) {  
+	void setAttribute(int k, double v) {
                   if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
-                  } else { p_attribute[k]=v; } 
+                  } else { p_attribute[k]=v; }
         }
-	void addAttribute(double v) {p_attribute.push_back(v);} 
+	void addAttribute(double v) {p_attribute.push_back(v);}
 
 	int q()  { return p_charge; }
 	int pdgID() {return p_pdgID; }
-	double Attribute(int k)  { if (k>(int)p_attribute.size()){ 
+	double Attribute(int k)  { if (k>(int)p_attribute.size()){
                                  std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
 	int nAttribute() { return p_attribute.size(); }
 	double EtCone()  { return p_et_cone; }
@@ -274,7 +275,7 @@ public:
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
         void   addToCollection( std::string v) { p_collections.push_back(v);}
-	
+
 
 private:
         std::vector<double> p_attribute;
