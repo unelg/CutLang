@@ -1,4 +1,4 @@
-#CLA ADL example4
+#CLA ADL example4 modded to add SAVE and MIN/MAX application
 
 define Zreco : ELE[0] ELE[1]
 
