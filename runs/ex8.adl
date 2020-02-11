@@ -29,7 +29,7 @@ region   test
 #  save        middle ##### SAVE TOWARDS MIDDLE OF ANALSIS
   select      Size(MUO) >= 2  # events with 2 or more electrons 
   select      Size(myMu) >= 2  # events with 2 or more electrons 
-  select      min({mass ELE[0],mass ELE[1]},select (1 + 1) != (23 - 10)) # MIN function ## Can be replaced by MAX
+  select      min({Xreco, Zreco}, select Size(ELE) > 2) # MIN function ## Can be replaced by MAX
 #  save        end ##### SAVE AT FINAL INSTANCE
 
 
