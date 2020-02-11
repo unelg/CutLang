@@ -1,5 +1,6 @@
-#ifndef __PRINTEFFICIENCIES_C
-#define __PRINTEFFICIENCIES_C
+#ifndef FINALEFF_H
+#define FINALEFF_H
+#include "TH1.h"
 
 #include <iomanip>
 #include <TH1F.h>
@@ -35,31 +36,6 @@ void PrintEfficiencies(TH1F* effh, bool skip_histos) {
   return;
 }
 
-void ComputeEfficiences(TH1F *eff1, double xsec1, TH1F *eff2, double xsec2) {
-  using namespace std;
 
-  // Compute and print out efficiencies by combining two separate samples
-  if (!eff1 || !eff2) return;
-  if (eff1->GetNbinsX() != eff2->GetNbinsX()) return;
-
-  cout << "Based on " << eff1->GetBinContent(2) << " events with xsec="
-       << xsec1 << " and " << eff2->GetBinContent(2)
-       << " events with xsec=" << xsec2 << endl;
-
-  double eff(0), before(1), after(0);
-
-   for (int s=2; s<=eff1->GetNbinsX(); ++s) {
-     before = xsec1 * eff1->GetBinContent(s-1) / eff1->GetBinContent(2)
-            + xsec2 * eff2->GetBinContent(s-1) / eff2->GetBinContent(2);
-     after  = xsec1 * eff1->GetBinContent(s) / eff1->GetBinContent(2)
-            + xsec2 * eff2->GetBinContent(s) / eff2->GetBinContent(2);
-     eff = after / before;
-     cout << "Efficiency for " << eff1->GetXaxis()->GetBinLabel(s) << "\t = "
-	  << setw(6) << setprecision(4) << eff << endl; }
-
-   eff = after / (xsec1+xsec2);
-   cout << " --> Overall efficiency\t = "
-	<< setw(6) << setprecision(4) << eff*100. << endl;
-   return;
-}
-#endif
+void FinalEff(TString file_addr, bool sh, bool se);
+#endif // FINALEFF_H

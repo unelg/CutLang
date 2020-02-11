@@ -35,7 +35,7 @@ vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
-std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
+std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -61,7 +61,7 @@ std::unordered_set<int> SearchNode::FORBIDDEN_INDICES[22];
 %parse-param {std::map<std::string,std::vector<float> >* ListTables}
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
-%token TRGE TRGM SAVE SKPH
+%token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
@@ -103,6 +103,7 @@ initializations : initializations initialization
 initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                 | TRGM  '=' INT {DataFormats->at(1)=$3; }
                 | SKPH  '=' INT {DataFormats->at(3)=$3; }
+                | SKPE  '=' INT {DataFormats->at(2)=$3; }
                 ;
 definitions : definitions definition 
             | 
@@ -1101,6 +1102,7 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
+                        cout << $1 << " is a problem\n";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1311,6 +1313,7 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
+                        cout << $1 << " is a problem\n";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1936,7 +1939,7 @@ minmax : MIN '(' list ',' criteria ')' {
                                                         if (temp->collection < res->collection) *res = *temp;
                                                 }
                                                 resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
                                                 Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
                                                 ObjectCuts->insert(make_pair("MIN",obj));
                                         }
@@ -1953,7 +1956,7 @@ minmax : MIN '(' list ',' criteria ')' {
                                                         if (temp->collection > res->collection) *res = *temp;
                                                 }
                                                 resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
                                                 Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
                                                 ObjectCuts->insert(make_pair("MIN",obj));
                                         }

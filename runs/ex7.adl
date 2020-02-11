@@ -12,12 +12,12 @@ define   Wchi2 : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2
 ## top quarks without b tagging 
 define   Top1 : WH1 JET[-2] # take another jet
 #----> 12 3 toplamakla, 13 2 toplamak ayni degil. cunku ilkinde bj candidate 3 ikincisinde 2 numarali jetler.
-define   Top2 : WH1 JET[-8]
+define   Top2 : WH2 JET[-4]
 define   mTop1 : m(Top1)
 define   mTop2 : m(Top2)
 ###      chi2 for top finder
-define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
-define   totchi : Wchi2 + topchi2
+#define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
+define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
 
 algo besttop
   select   ALL                   # to count all events

@@ -14,13 +14,13 @@ using namespace std;
 //takes care of Minimizing/Maximizing
 class SearchNode : public Node{
 private:
-    static unordered_set<int> FORBIDDEN_INDICES[22]; //muos, eles, muos, bjets, nonbjets....
+    static std::map< std::string, unordered_set<int> > FORBIDDEN_INDEX_LIST;
     double (*f)(double, double);
     vector<int> bestIndices;
     std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed
     void performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao);
-    void runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type);
-    void runNestedLoopRec ( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type);
+    void runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type, string ac);
+    void runNestedLoopRec ( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type, string ac);
 
 
 public:
