@@ -1,6 +1,7 @@
 #CLA ADL example4 modded to add SAVE and MIN/MAX application
 
 define Zreco : ELE[0] ELE[1]
+define Xreco : ELE[3] ELE[4]
 
 object goodEle using ELE
   select  Pt(ELE)        >   10
