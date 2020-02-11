@@ -22,14 +22,15 @@ vardef {varname}" "?":"" "?.*"\n"
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
+"TRGe" return TRGE;
+"TRGm" return TRGM;
+
 [tT][aA][kK][eE]|[uU][sS][iI][nN][gG] return TAKE;
 [hH][iI][sS][tT][oO] return HISTO;
 [wW][eE][iI][gG][hH][tT] return WEIGHT;
 [tT][aA][bB][lL][eE] return TABLE;
 [Ss][Kk][Ii][Pp][Hh][Ii][Ss][Tt][Oo][Ss] return SKPH;
 [Ss][Kk][Ii][Pp][Ee][Ff][Ff][Ss] return SKPE;
-"TRGe" return TRGE;
-"TRGm" return TRGM;
 [Gg][Ee][Nn] return GEN;
 [eE][lL][eE]|"ELECTRON" return ELE;//particles
 [mM][uU][oO]|"MUON" return MUO;
@@ -37,14 +38,16 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][hH][oO]|"PHOTON" return PHO;
 [jJ][eE][tT] return JET;
 [fF][jJ][eE][tT]|"FatJet" return FJET;
-"LEP" return LEP;
-"BJET" return BJET;
-"QGJET" return QGJET;
+[bB][jJ][eE][tT] return BJET;
+[qQ][gG][jJ][eE][tT] return QGJET;
 "NUMET" return NUMET;
 "METLV" return METLV;
+"LEP" return LEP;
 
+[uU][nN][iI][oO][nN] return UNION;
+[aA][lL][iI][aA][sS] return ALIAS;
 [bB][tT][aA][gG] return ISBTAG;
-"PDGID" return PDGID;
+[pP][dD][gG][iI][dD] return PDGID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;
@@ -59,13 +62,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
-"Union" return UNION;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;
 [Aa][bB][sS][Ee][tT][aA] return ABSETA;
-"alias" return ALIAS;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 [dD][rR] return DR;
@@ -113,6 +114,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][oO][rR][tT] return SORT;
 [cC][oO][mM][bB] return COMB;
 [pP][eE][rR][mM] return PERM;
+[mM][iI][nN] return MIN;
+[mM][aA][xX] return MAX;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;

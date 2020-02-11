@@ -265,6 +265,7 @@ int BPdbxA:: readAnalysisParams() {
      if (TRGValues.at(4)>0) {
        getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
        savebool = true;
+       TRGs = TRGValues.at(4);
      }
   return retval;
 }
@@ -345,13 +346,16 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         evt_weight = ao.evt.user_evt_weight;
         if (d==0) return iter->first;         // quits the event.
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
+	if (iter->first  == TRGs && savebool) saveInstance(ao);
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
 
 // les cuts sont finis ici.
-    if(savebool){
-      
+    return 1;
+}
+
+int BPdbxA::saveInstance(AnalysisObjects ao) {	     
       vector<dbxMuon>        muons = ao.muos.begin()->second;
       vector<dbxElectron> electrons= ao.eles.begin()->second;
       vector <dbxPhoton>    photons= ao.gams.begin()->second;
@@ -413,9 +417,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
       ntsave->nt_truth.resize   ( truth.size()             );
       
       ttsave->Fill();
-      
-      }
-    return 1;
+
+      return 1;
 }
 
 int BPdbxA::Finalize(){       
