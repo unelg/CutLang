@@ -22,7 +22,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
-"SkipHistos" return SKPH;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 
@@ -30,6 +29,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [hH][iI][sS][tT][oO] return HISTO;
 [wW][eE][iI][gG][hH][tT] return WEIGHT;
 [tT][aA][bB][lL][eE] return TABLE;
+[Ss][Kk][Ii][Pp][Hh][Ii][Ss][Tt][Oo][Ss] return SKPH;
+[Ss][Kk][Ii][Pp][Ee][Ff][Ff][Ss] return SKPE;
 [Gg][Ee][Nn] return GEN;
 [eE][lL][eE]|"ELECTRON" return ELE;//particles
 [mM][uU][oO]|"MUON" return MUO;
