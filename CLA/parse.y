@@ -1938,7 +1938,7 @@ minmax : MIN '(' list ',' criteria ')' {
                                                         if (temp->collection < res->collection) *res = *temp;
                                                 }
                                                 resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
                                                 Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
                                                 ObjectCuts->insert(make_pair("MIN",obj));
                                         }
@@ -1955,7 +1955,7 @@ minmax : MIN '(' list ',' criteria ')' {
                                                         if (temp->collection > res->collection) *res = *temp;
                                                 }
                                                 resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"paritcle");
+                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
                                                 Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
                                                 ObjectCuts->insert(make_pair("MIN",obj));
                                         }
