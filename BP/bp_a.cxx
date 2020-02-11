@@ -212,6 +212,7 @@ int BPdbxA:: readAnalysisParams() {
        TRGe    = TRGValues[0];
        TRGm    = TRGValues[1];
        skip_histos    = (bool) TRGValues[3];
+       skip_effs    = (bool) TRGValues[2];
       
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
       
@@ -270,6 +271,8 @@ int BPdbxA:: readAnalysisParams() {
 }
 
 int BPdbxA:: printEfficiencies() {
+  if (skip_effs) return 0;
+  cout <<"Efficiencies for analysis : "<< cname <<endl;
   cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
   PrintEfficiencies(eff, skip_histos);
   return 0;
