@@ -112,6 +112,9 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
                 adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->setParticleIndx(i);
+                adbxm->addAttribute( Muon_DZ[i]);
+                adbxm->addAttribute( Muon_D0[i]     );
+                adbxm->addAttribute( Muon_IsolationVar[i]     );
                 muons.push_back(*adbxm);
                 delete adbxm;
         }
@@ -128,6 +131,9 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
 		adbxe->setPdgID(-11*Electron_Charge[i] );
                 adbxe->setParticleIndx(i);
                 adbxe->setClusterE(Electron_EhadOverEem[i] );
+                adbxe->addAttribute( Electron_DZ[i]);
+                adbxe->addAttribute( Electron_D0[i]     );
+                adbxe->addAttribute( Electron_IsolationVar[i]     );
                 electrons.push_back(*adbxe);
                 delete adbxe;
         }

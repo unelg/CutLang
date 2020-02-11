@@ -1,4 +1,6 @@
 #CLA ADL example5
+#SkipHistos = 1
+Skipeffs = 1
 
 define Zreco : ELE[0] ELE[1]
 define mZreco = m(Zreco)
