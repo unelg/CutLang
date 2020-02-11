@@ -213,20 +213,20 @@ int BPdbxA:: readAnalysisParams() {
        TRGm    = TRGValues[1];
        skip_histos    = (bool) TRGValues[3];
       
-        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
+       eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
       
-        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
-        DEBUG("CL CUTS: \n");
-        std::map<int, Node*>::iterator iter = NodeCuts.begin();
-        while(iter != NodeCuts.end())
-        {
+       cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
+       DEBUG("CL CUTS: \n");
+       std::map<int, Node*>::iterator iter = NodeCuts.begin();
+       while(iter != NodeCuts.end())
+       {
             DEBUG(" CUT "<<iter->first<<" ");
             DEBUG("--->"<<iter->second->getStr()<<"\n");
 //           TString newLabels=iter->second->getStr();
             TString newLabels=effCL[ iter->first -1];
             eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
             iter++; 
-        }
+       }
 
 #ifdef _CLV__
      cout<<"\n Parsed Particle Lists: \n";
