@@ -61,7 +61,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %parse-param {std::map<std::string,std::vector<float> >* ListTables}
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
-%token TRGE TRGM SAVE SKPH
+%token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
@@ -103,6 +103,7 @@ initializations : initializations initialization
 initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                 | TRGM  '=' INT {DataFormats->at(1)=$3; }
                 | SKPH  '=' INT {DataFormats->at(3)=$3; }
+                | SKPE  '=' INT {DataFormats->at(2)=$3; }
                 ;
 definitions : definitions definition 
             | 
