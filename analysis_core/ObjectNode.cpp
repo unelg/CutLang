@@ -742,6 +742,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 alv=(ao->muos)[collectionName].at(ipart).lv();
                                 adbxp= new dbxParticle(alv);
                                 adbxp->setCharge((ao->muos)[collectionName].at(ipart).q() );
+                                adbxp->setPdgID( (ao->muos)[collectionName].at(ipart).pdgID() );
                                 combination.push_back(*adbxp);
                                 delete adbxp;
                             }
@@ -757,6 +758,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 alv=(ao->eles)[collectionName].at(ipart).lv();
                                 adbxp= new dbxParticle(alv);
                                 adbxp->setCharge((ao->eles)[collectionName].at(ipart).q() );
+                                adbxp->setPdgID( (ao->eles)[collectionName].at(ipart).pdgID() );
                                 combination.push_back(*adbxp);
                                 delete adbxp;
                             }
@@ -776,6 +778,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 alv=(ao->taus)[collectionName].at(ipart).lv();
                                 adbxp= new dbxParticle(alv);
                                 adbxp->setCharge((ao->taus)[collectionName].at(ipart).q() );
+                                adbxp->setPdgID( (ao->taus)[collectionName].at(ipart).pdgID() );
                                 combination.push_back(*adbxp);
                                 delete adbxp;
                             }
