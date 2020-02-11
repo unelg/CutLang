@@ -52,9 +52,9 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
 //-----TODO: put a check mechanism
 
       string s=particles.at(0)->collection;
-      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<forbidit->second.size()<< " Type:"<<type<<" Collection:"<<ac<<"\n");
+      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<forbidit->second.size()<< " Type:"<<type<<" Collection:"<<s<<"\n");
 
-      if ((type==20) && (ao->combosA.at(s).tableA.size() > 0)){
+      if ((type==20) && (ao->combosA[s].tableA.size() > 0)){
        DEBUG("-------------combo-------------------\n");
         for (int k1=0; k1<ao->combosA.at(s).tableA.size(); k1++) {
          if (ao->combosA.at(s).tableA[k1].size()==maxDepth) {
@@ -80,7 +80,7 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
         }
       return;
       }
-
+      DEBUG("NON COMBO\n");
       // loops start ~~~~~~~~~~~
       DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
       unordered_set<int> Forbidden_Indices;
