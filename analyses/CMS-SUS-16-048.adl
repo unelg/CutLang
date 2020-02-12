@@ -1,0 +1,112 @@
+#info analysis
+#  experiment CMS
+#  id SUS-16-048
+#  publication Phys. Lett. B 782 (2018) 440
+#  sqrtS 13.0
+#  lumi 35.9
+#  arXiv 1801.01846
+#  hepdata 
+#  doi 10.1016/j.physletb.2018.05.062
+
+object muons : MUO
+  select {MUO_}Pt [] 3.5 30
+  select abs({MUO_}Eta) < 2.4
+# select some ID and iso - check with Delphes
+# e.g. select IsolationVarRhoCorr < 0.1
+
+object electrons : ELE
+  select {ELE_}Pt [] 3.5 30
+  select Abs({ELE_}Eta) < 2.5
+# select some ID and iso - check with Delphes
+# select pT < 10 ? loose == 1 : tight == 1
+
+object leptons : electrons + muons
+  
+object jets : JET
+  select {JET_}Pt > 25  
+  select Abs({JET_}Eta) < 2.4
+
+object bjets : jets
+  select {JET_}BTag == 1
+
+#define dilepton = leptons[0] + leptons[1]
+define dielectron = electrons[0] + electrons[1]
+define dimuon = muons[0] + muons[1]
+#define HT = HT(jets) ### boyle miydi?
+define MTl1 = sqrt( 2*{leptons[0]}Pt * MET*(1-cos( {METLV[0]}Phi - {leptons[0]}Phi )))
+define MTl2 = sqrt( 2*{leptons[1]}Pt * MET*(1-cos( {METLV[0]}Phi - {leptons[1]}Phi )))
+define MTm1 = sqrt( 2*{muons[0]}Pt * MET*(1-cos( {METLV[0]}Phi - {muons[0]}Phi )))
+define MTm2 = sqrt( 2*{muons[1]}Pt * MET*(1-cos( {METLV[0]}Phi - {muons[1]}Phi )))
+#define Mtautau = fMtautau(leptons[0], leptons[1], METLV[0])
+
+
+region wpreselection
+  select ALL
+  select Size(electrons) >= 0 
+  select Size(muons) >= 0
+  select Size(leptons) == 2
+#  select MTl1 > 70
+#  select MTl2 > 70
+#  select {leptons[0]}q * {leptons[1]}q == -1
+#  select {leptons[0]}Pt > 5
+#  select {leptons[1]}Pt > 5
+#  select Size(bjets) == 0
+#  select Size(muons) == 2 ? {dimuon}m [] 4 9 OR {dimuon}m [] 10.5 50 : {dielectron}m [] 4 9 OR {dielectron}m []  10.550
+#  select Size(muons) == 2 ? {dimuon}Pt > 3 : {dielectron}Pt > 3
+#  select Size(muons) == 2 ? {METLV[0]}Pt > 125 : {METLV[0]}Pt > 200
+#  select {METLV[0]}Pt / HT [] 0.6 1.4
+#  select HT > 100
+#  select MTl1 < 70 AND MTl2 < 70
+   save savetest 
+
+#region w1dimuon
+#  select ALL
+#  select Size(muons) == 2
+#  select {muons[0]}Pt [] 5 30
+#  select {muons[0]}q * {muons[1]}q == -1
+#  select {dimuon}Pt > 3 
+#  select {dimuon}m [] 4 50 
+#  select {dimuon}m ][ 9 10.5
+#  select {METLV[0]}Pt [] 125 200
+#  select Size(jets) >= 1
+#  select HT(jets) > 100
+#  select {METLV[0]}Pt / HT(jets) [] 0.6 1.4
+#  select Size(bjets) == 0
+#  reject fMTauTau(muons_0, muons_1) [] 0 160 
+#  select MTm1 < 70 AND MTm2 < 70
+#
+#region w1dielectron
+#  select ALL
+#  select Size(electrons) == 2
+#  select Size(muons) >= 0
+#  select Size(leptons) >= 0
+#  select {electrons[0]}Pt [] 5 30
+#  select {electrons[0]}q * {electrons[1]}q == -1
+#  select {dielectron}Pt > 3 
+#  select {dielectron}m [] 4 50
+#  select {dielectron}m ][ 9 10.5
+#  select {METLV[0]}Pt [] 125 200
+#  select {METLV[0]}Pt / HT [] 0.6 1.4
+#  select Size(jets) >= 1
+#  select HT > 100
+#  select Size(bjets) == 0
+#  reject fMTauTau(electrons_0, electrons_1) [] 0 160
+#  select MTl1 < 70 AND MTl2 < 70
+
+#region stop1dimuon
+#  select Size(muons) == 2
+#  select {muons[0]}Pt [] 5 30
+#  select {muons[0]}q * {muons[1]}q == -1
+#  select {dimuon}Pt > 3 
+#  select {dimuon}m [] 4 50
+#  reject {dimuon}m [] 9 10.5
+#  select {METLV[0]}Pt [] 125 200
+#  select {METLV[0]}Pt / HT [] 0.6 1.4
+#  select Size(jets) >= 1
+#  select HT > 100
+##  select Size(bjetss) == 0
+#  #reject Mtautau [] 0 160
+#  
+#region w1dimuon2
+#  stopdimuon
+#  select MTl1 < 70 AND MTl2 < 70
