@@ -148,7 +148,7 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
                        bestIndices.clear();
                        for(int i=0;i<v->size();i++){ bestIndices.push_back( v->at(i) ); }
                        found_at_least_one=true;
-                 } else { DEBUG("Comparison didn't run...\n");}
+                 } else { DEBUG("Comparison failed...\n");}
 
                  v->clear();
                 }}
@@ -282,5 +282,6 @@ double maxim( double difference, double current_difference){
 }
 
 double minim( double difference, double current_difference){
+    DEBUG("dif:"<<difference <<"  cur_diff:"<<current_difference<<"\n");
     return fabs(difference) < current_difference ;
 }

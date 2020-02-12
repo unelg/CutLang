@@ -23,12 +23,13 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                                    << " size:"<< ((*i)->collection).size()<< " idx:"<<(*i)->index <<"\n"; 
         }
         int ka;
+        DEBUG("inputPart q:"<<inputPart->q()<<" pdgID:"<<inputPart->pdgID()<<"\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
                 int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
              if (atype==7) ac="MET";
-
+                DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
 		                                case 10: DEBUG("truth:"<< (*i)->index <<" ");
 		                                         inputPart->setTlv(  inputPart->lv()+ao->truth[ac].at(ai).lv()); 
@@ -102,6 +103,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                case 20: DEBUG("combo:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(  inputPart->lv()+ao->combos[ac].at(ai).lv()); // 20 is combos
                                                         inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
+                                                        DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->combos[ac].at(ai).pdgID()<<"\n");
 							inputPart->setPdgID(inputPart->pdgID()+ao->combos[ac].at(ai).pdgID()  );
                                                         break;
 
