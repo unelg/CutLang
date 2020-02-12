@@ -39,9 +39,6 @@ void cmsod::Loop(analy_struct aselect, char *extname)
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
 
-   TString CardName="BP_1-card.txt";
-   blow_th=ReadCard(CardName,"btag_lowthreshold_CMSOD",blow_th);
-
    Long64_t nentries = fChain->GetEntriesFast();
    if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
    cout << "number of entries " << nentries << endl;

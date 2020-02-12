@@ -186,7 +186,7 @@ elif [ ${PRLL} -ne 1 ]; then
       root -l -q \
       '../analysis_core/FinalEff.C("../runs/histoOut-'${rbase}'.root", '$sh', '$se')'
       rm -r ../temp*  # removes temp folders
-     # rm ../runs/tempor.adl # removes temporary adl
+      rm ../runs/tempor.adl # removes temporary adl
     fi
   fi
 

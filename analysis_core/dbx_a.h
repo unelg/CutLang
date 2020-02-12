@@ -69,7 +69,6 @@ public:
 
    void   setDataCardPrefix(string dcp) { dataCardPrefix = dcp; }
    string getDataCardPrefix() { return dataCardPrefix; }
-   string getDataCardName()   { return dataCardPrefix+"-card.txt"; }
 
    char cname[128];
    TH1F *eff;

@@ -46,7 +46,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                                 case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
-							inputPart->setPdgID(ao->eles[ac].at(ai).pdgID()  );
+							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
@@ -102,6 +102,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                case 20: DEBUG("combo:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(  inputPart->lv()+ao->combos[ac].at(ai).lv()); // 20 is combos
                                                         inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
+							inputPart->setPdgID(inputPart->pdgID()+ao->combos[ac].at(ai).pdgID()  );
                                                         break;
 
                                             default: std::cout<<" FN No such object of type " <<atype<< " ERROR!\n";
