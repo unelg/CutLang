@@ -124,11 +124,10 @@ else
     cp ${INIFILE} BP_1-card.ini
     Nalgo=1
   fi
+  for ialgo in `seq $Nalgo`; do
+   ../scripts/ini2txt.sh  BP_$ialgo
+  done
 fi
-
- for ialgo in `seq $Nalgo`; do
-  ../scripts/ini2txt.sh  BP_$ialgo
- done
 
 if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../CLA/
@@ -152,7 +151,7 @@ elif [ ${PRLL} -ne 1 ]; then
   echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
       cp -a ../runs/. ../temp_runs${i}
-      rm ../temp_runs${i}/histoOut-BP_*.root
+      rm -f ../temp_runs${i}/histoOut-BP_*.root
       echo temp_runs${i} copied from runs
   done
   multitask(){
@@ -175,7 +174,7 @@ elif [ ${PRLL} -ne 1 ]; then
   fi
   if [ $? -eq 0 ]; then
     rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-    rm   ../runs/histoOut-${rbase}.root
+    rm -f ../runs/histoOut-${rbase}.root
     for ((i = 0 ; i < ${PRLL} ; i++)); do
       hadd -a ../runs/histoOut-${rbase}.root \
       ../temp_runs${i}/histoOut-tempor.root # merging all root files
@@ -186,17 +185,17 @@ elif [ ${PRLL} -ne 1 ]; then
       root -l -q \
       '../analysis_core/FinalEff.C("../runs/histoOut-'${rbase}'.root", '$sh', '$se')'
       rm -r ../temp*  # removes temp folders
-      rm ../runs/tempor.adl # removes temporary adl
+      rm -f ../runs/tempor.adl # removes temporary adl
     fi
   fi
 
 else
-  rm histoOut-BP_*.root
+  rm -f histoOut-BP_*.root
   echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
   ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
   if [ $? -eq 0 ]; then
     rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev | cut -f1 -d'.'`
-    rm   histoOut-${rbase}.root
+    rm -f histoOut-${rbase}.root
     if [[ -z $(pwd | grep "temp_runs") ]]; then
       hadd histoOut-${rbase}.root histoOut-BP_*.root
     else
