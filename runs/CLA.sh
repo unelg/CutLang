@@ -95,5 +95,6 @@ if [ $? -eq 0 ]; then
   rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root
   rm -f histoOut-BP_*.root
-  rm -f BP_*-card.ini _head.ini _algos.ini _inifile
+  rm -f _head.ini _algos.ini _inifile
+#  rm -f BP_*-card.ini 
 fi

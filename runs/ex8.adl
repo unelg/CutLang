@@ -1,41 +1,18 @@
-#CLA ADL example4 modded to add SAVE and MIN/MAX application
-
-define Zreco : ELE[0] ELE[1]
+#CLA ADL example8 modded to test SAVE and MIN/MAX application
 
 object goodEle using ELE
   select  Pt(ELE)        >   10
   select abs({ELE}Eta)   <   2.4
   select     {ELE}AbsEta ][  1.442 1.556
 
-object BiJET : JET
-  select bTag(JET) == 1
-
-object myMu : MUO 
-  select Pt(MUO) > 20
-
-object myPho : PHO
-  select Pt(PHO) > 10
-
-object myTau : TAU 
-  select Pt(TAU) > 10
-
-define goodZreco : goodEle[0] goodEle[1]
 
 region   test
-  select      ALL              # to count all events
+  select      ALL                 # to count all events
   select      Size(JET)     >= 1  # events with 2 or more jets 
-  select      Size(BJET)    >= 1  # events with 2 or more jets 
-  select      Size(BiJET)   >= 1  # events with 2 or more jets 
-#  save        middle ##### SAVE TOWARDS MIDDLE OF ANALSIS
-  select      Size(MUO) >= 2  # events with 2 or more electrons 
-  select      Size(myMu) >= 2  # events with 2 or more electrons 
-  select      min({mass ELE[0],mass ELE[1]},select (1 + 1) != (23 - 10)) # MIN function ## Can be replaced by MAX
-#  save        end ##### SAVE AT FINAL INSTANCE
+# save        middlefile          ##### SAVE TOWARDS MIDDLE OF ANALSIS
+  select      Size(MUO)     >= 2  # events with 2 or more electrons 
+  select      min(dPhi({MUO_0, MUO_1}, {JET_0}) ) > 0.2 # MIN function ## Can be replaced by MAX
+# save        endfile             ##### SAVE AT FINAL INSTANCE
 
+#  select      min(dPhi({MUO_0, MUO_1}, {JET_0}) ) > 0.2 # MIN function ## Can be replaced by MAX
 
-#  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
-#  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
-#  select      {Zreco}q == 0       # Z is neutral
-#  select      {goodZreco}q == 0   # Z is neutral
-#  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
-#  histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)

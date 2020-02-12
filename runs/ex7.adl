@@ -22,12 +22,12 @@ define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
 algo besttop
   select   ALL                   # to count all events
   select   Size(JET) >= 6        # at least 6 jets
-  select   MET < 100             # no large MET
+#  select   MET < 100             # no large MET
   select   totchi  ~= 0  # find the tops and ws
-  histo    hchi , "Histo of chi2", 50, 0, 500, totchi
-  select   totchi < 10.5 # small than a certain value of chi2
-  histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
-  histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
+#  histo    hchi , "Histo of chi2", 50, 0, 500, totchi
+#  select   totchi < 10.5 # small than a certain value of chi2
+#  histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
+#  histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
   histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
   histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
 

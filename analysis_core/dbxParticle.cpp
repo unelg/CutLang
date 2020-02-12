@@ -19,7 +19,7 @@ dbxParticle:: dbxParticle() : TObject() {
   p_escalefactor=999.;
 */
   p_charge=0; // not initialized
-	  p_pdgID = 0.;
+  p_pdgID= 0.;
   p_lvector.SetPtEtaPhiM(0, 0, 0, 0);
 }
 dbxParticle:: dbxParticle (TLorentzVector lv){

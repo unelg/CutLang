@@ -269,8 +269,6 @@ if (ival==0) {
 
   cout << "finished."<<endl;
 
-
-
   } else {
     std::cout <<"WARNING: No events found in files " << std::endl;
   }
