@@ -190,19 +190,21 @@ SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::st
 }
 
 double SearchNode::evaluate(AnalysisObjects* ao) {
-        DEBUG("---------------"<<getStr()<<"\n"); 
+        DEBUG("\n---------------"<<getStr()<<"\n"); 
         particles.clear();
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
 
         std::map<string,unordered_set<int> >::iterator forbidit;
- 
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);
                 else {
                      forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  );
-                     forbidit->second.insert(particles.at(i)->index);
+                     if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
+                       DEBUG("was NOT blacklisted, now adding. \n");
+                       FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, particles.at(i)->index));
+                      } else forbidit->second.insert(particles.at(i)->index);
                      }
         }
 
