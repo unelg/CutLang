@@ -74,7 +74,7 @@ if [ $Nalgo -gt 1 ]; then
  echo Analysis with Multiple Regions
  ../scripts/separate_algos.sh ${INIFILE}
 else
- echo Simple Analysis
+ echo Single Analysis
  cp ${INIFILE} BP_1-card.ini
  Nalgo=1
 fi

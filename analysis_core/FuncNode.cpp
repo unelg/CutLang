@@ -28,6 +28,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                 int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
+             if (ai >= 10000) continue; // skip the loop particles
              if (atype==7) ac="MET";
                 DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
@@ -50,6 +51,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->eles[ac].at(ai).nAttribute();
+                                                        DEBUG("e- Nattr:"<<ka<<"\n");
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
@@ -200,8 +202,8 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      if(userObjectD)  userObjectD->evaluate(ao); 
      if ( userObjectA || userObjectB || userObjectC || userObjectD ) DEBUG("UOs EVALUATED:"<< getStr() <<"\n");
 
-     DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"<< inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\
-n");
+     DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
+                     << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
     if (inputParticles[0]->index == 6213) {
         string base_collection2=inputParticles[0]->collection;
@@ -227,7 +229,7 @@ n");
                             _Exit(-1);
         }
         // now we know how many we want
-        DEBUG ("Sum "<< ipart2_max<<" particles\t");
+        DEBUG ("loop over "<< ipart2_max<<" particles\t");
         std::vector<myParticle*>  inputParticles1;
         std::vector<myParticle>  inputParticles0;
         for (int ip2=0; ip2 < ipart2_max; ip2++){
@@ -240,12 +242,19 @@ n");
               delete aparticle;
         }
         DEBUG("\n");
+        double total=0;
         for (int ji=0; ji<inputParticles0.size(); ji++){
          inputParticles1.push_back( &inputParticles0[ji]);
+         partConstruct(ao, &inputParticles1,&myPart);
+         DEBUG("a particle constructed \t");
+         double retval=(*f)(&myPart );
+         DEBUG("yielded:" <<  retval<<"\n");    
+         total+=retval;
+         inputParticles1.clear();
         }
-        partConstruct(ao, &inputParticles1,&myPart);
         inputParticles0.clear();
-        inputParticles1.clear();
+        DEBUG("Sum:"<<total<<"\n");
+        return total;
      } else {
         partConstruct(ao, &inputParticles, &myPart);
      }
@@ -357,13 +366,17 @@ double tau3of( dbxParticle* apart){
 }
 //----------for electron and muons
 double dzof( dbxParticle* apart){
-    double dz=apart->Attribute(0) ;
+    double dz=999;
+    int ka=apart->nAttribute();
+    if (ka>0) dz=apart->Attribute(0) ;
     DEBUG(" dz:"<<dz<<"\t");
     return dz;
 }
 
 double dxyof( dbxParticle* apart){
-    double dxy=apart->Attribute(1);
+    double dxy=999;
+    int ka=apart->nAttribute();
+    if (ka>1) dxy=apart->Attribute(1) ;
     DEBUG(" dxy:"<<dxy<<"\t");
     return dxy;
 }
