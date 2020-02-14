@@ -25,7 +25,7 @@ private:
         Node* userObjectC;
         Node* userObjectD;
 
-
+        friend class LoopNode;
 protected:
     std::vector<myParticle*> inputParticles;
     std::vector<myParticle> originalParticles;

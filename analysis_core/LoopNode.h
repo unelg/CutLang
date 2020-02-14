@@ -7,7 +7,7 @@
 #define LoopNode_h
 #include "Node.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -45,7 +45,8 @@ public:
     virtual double evaluate(AnalysisObjects* ao) override {
       // here we need to loop over all functions
        std::vector <double> result_list;
-       DEBUG("\nWe are in "<<this->getStr()<<"\n");
+       double retval;
+       DEBUG("\nWe are in LN, "<<this->getStr()<<"\n");
        this->getParticles(&inputParticles);       
 
        for (int ii=0; ii<inputParticles.size(); ii++){
@@ -53,7 +54,7 @@ public:
                      << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
        }
        int ipart2_max=0; // loop counter
-       if (inputParticles[0]->index == 6213) {
+       if (inputParticles[0]->index == 6213 && inputParticles.size()==1) {
         std::string base_collection2=inputParticles[0]->collection;
         int base_type2=inputParticles[0]->type;
         try {
@@ -75,16 +76,32 @@ public:
                             std::cerr << "YOU WANT TO LOOP A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n";
                             _Exit(-1);
         }
-       }
        // now we know how many we want
        DEBUG ("loop over "<< ipart2_max<<" particles\t");
        for (int ii=0;ii<ipart2_max; ii++){
         ((FuncNode*)left)->setParticleIndex(0, ii);
-        double retval=left->evaluate(ao);
+        retval=left->evaluate(ao);
         DEBUG("retval:"<<retval<<"\n");
         result_list.push_back(retval); 
        }
        ((FuncNode*)left)->setParticleIndex(0, 6213);
+       } else if (inputParticles.size()>1){
+        for (int ii=0;ii<inputParticles.size(); ii++){
+           int anindex=inputParticles[ii]->index;
+           if (anindex > 9999) { // Indices around 10000 are to be looped over
+            ((LFuncNode*)left)->setParticleIndex(ii, anindex-10000 );
+            retval=left->evaluate(ao);
+            DEBUG("retval:"<<retval<<"\n");
+            result_list.push_back(retval); 
+            ((LFuncNode*)left)->setParticleIndex(ii, anindex );
+        }
+       }
+       } else {
+          std::cerr<<"Not known situation in LOOP NODE\n";
+          exit (-1);
+       }
+
+
        return (*f)(result_list);
     }
     

@@ -32,21 +32,23 @@ vardef {varname}" "?":"" "?.*"\n"
 [Ss][Kk][Ii][Pp][Hh][Ii][Ss][Tt][Oo][Ss] return SKPH;
 [Ss][Kk][Ii][Pp][Ee][Ff][Ff][Ss] return SKPE;
 [Gg][Ee][Nn] return GEN;
-[eE][lL][eE]|"ELECTRON" return ELE;//particles
-[mM][uU][oO]|"MUON" return MUO;
+[eE][lL][eE]|"Electron" return ELE;//particles
+[mM][uU][oO]|"Muon" return MUO;
 [tT][aA][uU] return TAU;
-[pP][hH][oO]|"PHOTON" return PHO;
+[pP][hH][oO]|"Photon" return PHO;
 [jJ][eE][tT] return JET;
 [fF][jJ][eE][tT]|"FatJet" return FJET;
-[bB][jJ][eE][tT] return BJET;
 [qQ][gG][jJ][eE][tT] return QGJET;
+[bB][iI][nN] return BINS;
 "NUMET" return NUMET;
 "METLV" return METLV;
 "LEP" return LEP;
+"BJET" return BJET;
 
 [uU][nN][iI][oO][nN] return UNION;
 [aA][lL][iI][aA][sS] return ALIAS;
 [bB][tT][aA][gG] return ISBTAG;
+[cC][tT][aA][gG] return ISCTAG;
 [pP][dD][gG][iI][dD] return PDGID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
@@ -58,7 +60,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
-"dxy" return DXY;
+"dxy"|"D0" return DXY;
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
