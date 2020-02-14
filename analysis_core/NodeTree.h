@@ -22,6 +22,7 @@
 #include "SearchNode.h"
 #include "SortNode.h"
 #include "IfNode.h"
+#include "LoopNode.h"
 #include "ObjectNode.hpp"
 //Delete Nodes
 //Print Nodes As Defined by User
