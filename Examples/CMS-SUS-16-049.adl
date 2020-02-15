@@ -1,0 +1,121 @@
+#info analysis
+#  title "Search for direct production of supersymmetric partners of the top quark in the 
+# all-jets final state in proton-proton collisions at sqrt(s) = 13 TeV"
+#  experiment CMS
+#  id SUS-16-049
+#  publication JHEP 10 (2017) 005
+#  sqrtS 13.0
+#  lumi 35.9
+#  arXiv 1707.03316
+#  hepdata 
+#  doi 10.1007/JHEP10(2017)005
+
+# OBJECTS
+object jets
+  take Jet
+  select pT(Jet) > 20  
+  select abs(Eta(Jet)) < 2.4
+
+object bjets
+  take jets
+  select BTag(Jet) == 1
+
+# Boosted objects come after baseline, so not considering for overlap study
+object mergedtops
+  take FatJet
+  select m(FatJet) > 110
+  select pT(FatJet) > 400
+  select abs(eta(FatJet)) < 2.4
+  # select subjet.pT > 20
+  # Normally use BDTs. We now use tau32 from razor
+  select tau3(FatJet) / tau2(FatJet) < 0.46
+
+object mergedWs
+  take FatJet
+  select m(FatJet) [] 50 110
+  select pT(FatJet) > 400
+  select abs(eta(FatJet)) < 2.4
+  # select subjet.pT > 20
+  # Normally use BDTs. We now use tau21 from razor
+  select tau2(FatJet) / tau1(FatJet) < 0.4
+
+# Involves complex combinations and a BDT, which can be done in an external function.
+# Since this is not only used in SR binning, not to be used for the overlap study.
+# object resolvedtops
+#  take fresolvedtop(jets, bjets, mergedWs, regedtops)
+
+object jetsISR
+  take FatJet 
+  select pT(FatJet) > 200
+  select bTag(FatJet) == 0
+  select pT(FatJet) > 300
+  select abs(eta(FatJet)) < 2.4
+  select dPhi(FatJet, METLV_0) >= 2 
+
+object muons
+  take Muon
+  select pT(Muon) > 5
+  select abs(eta(Muon)) < 2.4
+  # relative isolation Irel < 0.10
+
+object electrons
+  take ELE
+  select pT(ELE) > 5
+  select abs(eta(ELE)) < 2.4
+  # relative isolation Irel < 0.21
+
+object leptons : Union(electrons , muons)
+
+object taujets
+  take Jet
+  select pT(Jet) > 10
+  select abs(eta(Jet)) < 2.4
+  select tauTag(Jet) == 1
+
+#object vetotracks
+# no isolation in Delphes, therefore cannot readily do it in Delphes
+#  take Track
+#  select pT > 10
+#  select abs(eta) < 2.5
+#  select sumPt / pT < 0.1 # R = 0.3
+  
+# VARIABLES
+define MTb0 = sqrt( 2*{bjets[0]}pT * MET*(1-cos({METLV_0}Phi - {bjets[0]}Phi )))
+define MTb1 = sqrt( 2*{bjets[1]}pT * MET*(1-cos({METLV_0}Phi - {bjets[1]}Phi )))
+define MTbmin = min(MTb0, MTb1)
+define SMET = MET / sqrt(HT(jets))
+
+# EVENT SELECTION
+
+region baseline
+  select ALL
+  select MET > 250
+  select Size(electrons) + Size(muons) >= 0
+  select Size(leptons) == 0
+  select Size(taujets) == 0
+
+# The high deltam SRs:
+region highdm
+  baseline
+  select size(jets) >= 5
+  select size(bjets) >= 1
+  select dphi(jets[0], METLV_0) > 0.5
+  select dphi(jets[1], METLV_0) > 0.5
+  select dphi(jets[2], METLV_0) > 0.5
+  select dphi(jets[3], METLV_0) > 0.5
+  # the rest divided into SRs of MTbmin, Nt, NW, Nresolvedtop, Nb, MET  
+  # baseline should suffice for the overlap study.
+
+# The low deltam SRs:
+region lowdm
+  baseline
+  select Size(jets) >= 2
+  select Size(bjets) >= 1 ?   MTb0 < 175 : ALL
+  select Size(bjets) >  1 ? MTbmin < 175 : ALL
+  select Size(jetsISR) > 0
+  select dPhi(jets[0], METLV_0) > 0.5
+  select dPhi(jets[1], METLV_0) > 0.15
+  select dPhi(jets[2], METLV_0) > 0.15
+  select SMET > 10
+  # the rest divided into SRs of Nj, Nb, NSV, pTISR, pTb, MET.
+  # baseline should suffice for the overlap study
