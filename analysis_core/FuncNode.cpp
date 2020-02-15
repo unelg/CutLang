@@ -19,13 +19,14 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
         DEBUG("\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
          DEBUG("CONSTRUCT type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
-         if (((*i)->collection).size() < 1 && (*i)->type!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type
+         if (((*i)->collection).size() < 1 && abs((*i)->type)!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type
                                                                    << " size:"<< ((*i)->collection).size()<< " idx:"<<(*i)->index <<"\n"; 
         }
         int ka;
         DEBUG("inputPart q:"<<inputPart->q()<<" pdgID:"<<inputPart->pdgID()<<"\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
-                int atype=(*i)->type;
+                int atype=abs((*i)->type);
+          short int sgn=atype/(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
              if (ai >= 10000) continue; // skip the loop particles
@@ -33,12 +34,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                 DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
 		                                case 10: DEBUG("truth:"<< (*i)->index <<" ");
-		                                         inputPart->setTlv(  inputPart->lv()+ao->truth[ac].at(ai).lv()); 
+		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
 		                                         break;
                                                 case 0: //ao->muons_map-->find...
-                                                        inputPart->setTlv(  inputPart->lv()+ao->muos[ac].at(ai).lv() ); // 0 is muon
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
@@ -46,7 +47,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  ");
                                                         break;
-                                                case 1: inputPart->setTlv(  inputPart->lv()+ao->eles[ac].at(ai).lv() ); // 1 is electron
+                                                case 1: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); // 1 is electron
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
                                                         inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
@@ -55,7 +56,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
-                                               case 11: inputPart->setTlv(  inputPart->lv()+ao->taus[ac].at(ai).lv() ); // 11 is tau
+                                               case 11: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); // 11 is tau
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
                            //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
@@ -64,46 +65,46 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         DEBUG("TAU:"<<ai<<"  ");
                                                         break;
                                             	case 2: DEBUG("jet:"<<ai<<" ");
-                                                        inputPart->setTlv(inputPart->lv()+ao->jets[ac].at(ai).lv() ); // 2 is any jet
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // 2 is any jet
                                                         inputPart->setFlavor( ao->jets[ac].at(ai).Flavor()   );
                                                         inputPart->setIsTight( ao->jets[ac].at(ai).isbtagged_77()   );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
-                                                case 3: inputPart->setTlv(inputPart->lv()+tagJets(ao, 1, ac)[ ai ].lv() ); // 3 is a b jet
+                                                case 3: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // 3 is a b jet
                                                         inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
                                                         DEBUG("b-jet:"<<ai<<"  ");
                                                         break;
-                                                case 4: inputPart->setTlv(inputPart->lv()+tagJets(ao, 0, ac)[ ai ].lv()); // 4 is light jet
+                                                case 4: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 0, ac)[ ai ].lv()); // 4 is light jet
                                                         inputPart->setIsTight( tagJets(ao,0, ac)[ai].isbtagged_77()   );
                                                         DEBUG("qgjet:"<<ai<<" ");
                                                         break;
 /// --------------------------------------------std::map<std::string, TVector2                 > met;
                                                 case 5: v_eta=ao->muos[ac].at(ai).lv().Eta();
                                                         ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
-                                                        inputPart->setTlv(inputPart->lv()+ametlv); // met4v is v from MET using same eta approx.
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ametlv); // met4v is v from MET using same eta approx.
                                                         DEBUG("muMET ");
                                                         break;
                                                 case 6: v_eta=ao->eles[ac].at(ai).lv().Eta();
                                                         ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
-                                                        inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ametlv); // v from MET using same eta approx.
                                                         DEBUG("eleMET ");
                                                         break;
                                                 case 7: DEBUG("MET LV\n ");
                                                         ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
-                                                        inputPart->setTlv(inputPart->lv()+ametlv); // v from MET using same eta approx.
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ametlv); // v from MET using same eta approx.
                                                         break;
                                                 case 8: DEBUG("gamma:"<< (*i)->index <<" ");
-                                                        inputPart->setTlv(inputPart->lv()+ao->gams[ac].at(ai).lv()); // 8 is gammas
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); // 8 is gammas
                                                         break;
                                                 case 9: DEBUG("FatJet:"<< (*i)->index <<" ");
-                                                        inputPart->setTlv(inputPart->lv()+ao->ljets[ac].at(ai).lv()); // 9 is gammas
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv()); // 9 is gammas
                                                         inputPart->setFlavor( ao->ljets[ac].at(ai).Flavor()   );
                                                         ka=ao->ljets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
                                                         break;
                                                case 20: DEBUG("combo:"<< (*i)->index <<" ");
-                                                        inputPart->setTlv(  inputPart->lv()+ao->combos[ac].at(ai).lv()); // 20 is combos
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*ao->combos[ac].at(ai).lv()); // 20 is combos
                                                         inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
                                                         DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->combos[ac].at(ai).pdgID()<<"\n");
 							inputPart->setPdgID(inputPart->pdgID()+ao->combos[ac].at(ai).pdgID()  );
