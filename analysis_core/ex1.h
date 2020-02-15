@@ -27,7 +27,7 @@ class dbxCutEx1of : public dbxCut {
          for (unsigned int jj=0; jj<2; jj++)
            switch (getParticleType(jj*2)){
 
-            case 0: for (int ii=0; ii<ao->muos.size(); ii++) meff+=ao->muos[ii].lv().Pt();
+            case 12: for (int ii=0; ii<ao->muos.size(); ii++) meff+=ao->muos[ii].lv().Pt();
                     break;
             case 1: for (int ii=0; ii<ao->eles.size(); ii++) meff+=ao->eles[ii].lv().Pt();
                     break;

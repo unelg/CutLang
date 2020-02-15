@@ -216,7 +216,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[0])->collection;
                     int Max;
                     switch(type){//assuming all particles have the same type
-                        case 0: Max=ao->muos[ac].size();break;
+                       case 12: Max=ao->muos[ac].size();break;
                         case 1: Max=ao->eles[ac].size();break;
                         case 2: Max=ao->jets[ac].size();break;
                         case 3: Max=left->tagJets(ao,1,ac).size();break;

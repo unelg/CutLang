@@ -1,0 +1,36 @@
+#info analysis
+#  title "Search for supersymmetry in events with at least one photon, missing transverse 
+# momentum and large transverse event activity in proton-proton collisions at sqrts 13 TeV"
+#  experiment CMS
+#  id SUS-16-047
+#  publication JHEP 12 (2017) 142
+#  sqrtS 13.0
+#  lumi 35.9
+#  arXiv 1707.06193
+#  hepdata 
+#  doi 10.1007/JHEP12(2017)142
+
+object photons
+  take Photon 
+  select pT(Photon) > 100
+  select abs(eta(Photon)) < 1.4442
+  
+object jets
+  take Jet 
+  select pT(Jet) > 30  
+  select abs(Eta(Jet)) < 3
+  reject dR(Jet, photons) < 0.4 
+
+# Variables
+define HTpho = HT(jets) + pT(photons[0])
+
+# signal regions
+region SRs
+  select ALL
+  select size(photons) == 1 
+  # Can write dphi with eta-phi:
+  select dphi(photons[0],   METLV_0 ) < 0.3 
+  select dphi(photons[0], - METLV_0 ) < 3.0
+  bin HTpho 700 2000
+  bin MET 350 450 600 
+

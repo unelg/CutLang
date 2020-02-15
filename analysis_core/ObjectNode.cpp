@@ -45,7 +45,7 @@ ObjectNode::ObjectNode(std::string id,
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
     while (anode->left != NULL) { anode=(ObjectNode*)anode->left; }
-      if (anode->name == "MUO" ) type=0;
+      if (anode->name == "MUO" ) type=12;
       if (anode->name == "ELE" ) type=1;
       if (anode->name == "JET" ) type=2;
       if (anode->name == "PHO" ) type=8;
@@ -55,7 +55,7 @@ ObjectNode::ObjectNode(std::string id,
       if (anode->name == "Combo" ) type=20;
       DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
     } else { // if null
-      if (id == "MUO" ) type=0;
+      if (id == "MUO" ) type=12;
       if (id == "ELE" ) type=1;
       if (id == "JET" ) type=2;
       if (id == "PHO" ) type=8;
@@ -103,9 +103,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       DEBUG("previous:"<< basename<< "  type:"<<type<<"\n"); // Combo, 20
 // is it in the map list?
        switch (type) {
-        case 0:       if (ao->muos.find(basename)==ao->muos.end()  ){
+        case 12:       if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
-                                DEBUG(" Muos evObjectCutsaluated.\n");
+                                DEBUG(" Muos evaluated.\n");
                       } else keepworking=false;
                       break;
 
@@ -205,7 +205,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     return 1;
 }
 
-// MUO     0
+// MUO     12
 // ELE     1
 // JET     2
 // BJET    3
@@ -264,7 +264,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 string base_collection2=particles->at(1)->collection;
                 try {
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
 		    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
                     case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
                     case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
@@ -353,7 +353,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
                     case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
@@ -431,7 +431,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
                     case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
@@ -514,7 +514,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
                     case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
@@ -595,7 +595,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
                     case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
@@ -676,7 +676,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 	            case 10: ipart2_max=(ao->truth)[base_collection2].size(); break; 
                     case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
                     case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
@@ -731,7 +731,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
        collectionName=particles->at(jj)->collection;
 
        switch(particles->at(jj)->type){
-                    case 0: 
+                    case 12: 
                             if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
                                cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -842,7 +842,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 0: ipart2_max=(ao->muos)[base_collection2].size();
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
 		    case 10: ipart2_max=(ao->truth)[base_collection2].size();
                         break;
@@ -917,7 +917,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
        DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
        collectionName=particles->at(jj)->collection;
        switch(particles->at(jj)->type){
-                    case 0: 
+                    case 12: 
                             if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
                                cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -966,7 +966,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       for(size_t i = 0; i<temp_index.size(); ++i){
 	  DEBUG ("Now p index is:"<< temp_index[i]<<" \t"); 
 	  switch(particles->at(i)->type){
-	  case 0: 
+	  case 12: 
 	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->muos)[collectionName].at(temp_index[i]).q();
 	    break;
@@ -1094,7 +1094,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	  int ipart2_max;
 	  string base_collection2=particles->at(1)->collection;
 	  switch(particles->at(1)->type){
-	  case 0: ipart2_max=(ao->muos)[base_collection2].size(); break;
+	  case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
 	  case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
 	  case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
 	  case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;

@@ -82,7 +82,7 @@ $(ANLOBJS): %.o : %.cxx
 
 # clean
 clean:
-	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _*
+	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _* b.cpp l.cpp 
 	$(MAKE) -C $(SUBDIRLOC)analysis_core clean
 
 # clean everything including the auxiliaries we depend on
