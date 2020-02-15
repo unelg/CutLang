@@ -181,7 +181,7 @@ definition : DEF  ID  '=' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
-				}
+			     }
             |  DEF ID  '=' e {
                                         pnum=0;
                                         map<string, Node*>::iterator it ;
@@ -193,7 +193,7 @@ definition : DEF  ID  '=' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
-				}
+			      }
         ;
 //---------------------------------------
 function : '{' particules '}' 'm' {     
@@ -1674,11 +1674,11 @@ hamhum : ALIAS ID {
 criteria : criteria criterion 
          | criterion 
          ;
-criterion : CMD condition { //find a way to print commands                                                                            
-                                         TmpCriteria.push_back($2);
-			}
-          | REJEC condition {
-                                         TmpCriteria.push_back($2);
+criterion : CMD condition {   TmpCriteria.push_back($2);
+	  }
+          | CMD action   {    TmpCriteria.push_back($2); 
+          }
+          | REJEC condition { TmpCriteria.push_back($2);
           };
 commands : commands command 
         | 
@@ -1940,9 +1940,6 @@ description : description HID {
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
                         } 
-//            | condition 'ise' action 'yoksa' action  %prec '?' {
-//                        $$=new IfNode($1,$3,$5,"if");
-//             } 
             ;
 action : condition {
                         $$=$1;
@@ -2025,12 +2022,12 @@ e : e '+' e  {
    | SUM '(' e ')' {  DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
    | MIN '(' e ')' {  DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
    | MAX '(' e ')' {  DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
-   | MIN '(' idlist ')' {  cout <<"\t MIN function IMPLEMENTED\n";  
+   | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
                            TmpIDList.swap(newIDlist);
                            $$=new LoopNode(minof,newIDlist,"min");
                         }
-   | MAX '(' idlist ')' {  cout <<"\t MAX function IMPLEMENTED\n";  
+   | MAX '(' idlist ')' {  DEBUG("\t MAX function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
                            TmpIDList.swap(newIDlist);
                            $$=new LoopNode(maxof,newIDlist,"max");
@@ -2049,7 +2046,7 @@ e : e '+' e  {
                 it = NodeVars->find($1);
      
                 if(it == NodeVars->end()) {
-                        DEBUG($1<<" : \n");
+                        cout<<$1<<"\t";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
                         YYERROR;//stops parsing if variable not found
 
