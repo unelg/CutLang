@@ -38,7 +38,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
 		                                         break;
-                                                case 0: //ao->muons_map-->find...
+                                                case 12: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); // 0 is muon
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
@@ -212,8 +212,8 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         int ipart2_max=-1;
         try {
                 switch(inputParticles[0]->type){
-                    case 0: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
+                   case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+                   case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
                     case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
                     case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
                     case 7: ipart2_max=1; break;
