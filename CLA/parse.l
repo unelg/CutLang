@@ -49,6 +49,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [aA][lL][iI][aA][sS] return ALIAS;
 [bB][tT][aA][gG] return ISBTAG;
 [cC][tT][aA][gG] return ISCTAG;
+[tT][aA][uU][tT][aA][gG] return ISTAUTAG;
 [pP][dD][gG][iI][dD] return PDGID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;

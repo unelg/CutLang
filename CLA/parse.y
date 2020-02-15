@@ -66,7 +66,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG
+%token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE UNION SUM
@@ -251,6 +251,16 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
 //---------------------------------------
+         | '{' particules '}' ISTAUTAG {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                    }
+         | ISTAUTAG '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                    }
          | '{' particules '}' ISCTAG {     
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -644,9 +654,7 @@ particules : particules particule {
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
                                   }
-            | particule {   if (pnum==0){
-                                                $$=strdup($1);                                                       
-                                        }
+            | particule {   if (pnum==0){ $$=strdup($1);    }
                                         else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
@@ -656,14 +664,25 @@ particules : particules particule {
                                         }
                                         pnum++;
                          }
-            | particule '+' {   if (pnum==0){
-                                                $$=strdup($1);                                                       
-                                        }
+            | particule '+' {   if (pnum==0){ $$=strdup($1); }
                                         else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
                                                 strcat(s," ");
                                                 strcat(s,$1);
+                                                strcpy($$,s);
+                                        }
+                                        pnum++;
+                         }
+            | '-' particule {  if (pnum==0){ cout <<"==>"<<$2<<"\t";
+                                             cout << TmpParticle.size()<<"\n";
+                                            TmpParticle[ TmpParticle.size()-1]->type*=-1;
+                                            $$=strdup($2); }
+                                        else{
+                                                char s [512];
+                                                strcpy(s,$$);
+                                                strcat(s," -");
+                                                strcat(s,$2);
                                                 strcpy($$,s);
                                         }
                                         pnum++;
@@ -1603,7 +1622,11 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' NUMET criteria
 //           | OBJ ID ':' METLV criteria
            ;
-
+bins    : bins NB
+        | bins INT
+        | NB
+        | INT
+        ;
 binlist : binlist abin
         | abin
         ;
@@ -1646,6 +1669,8 @@ command : CMD condition { //find a way to print commands
 					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
 					NodeCuts->insert(make_pair(++cutcount,a));
 			}
+        | BINS ID bins { cout << "BIN:" << $2 <<"\n"; } 
+        | BINS MET bins { cout << "BIN MET" << "\n"; } 
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
