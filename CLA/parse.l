@@ -61,7 +61,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
-"dxy"|"D0" return DXY;
+"dxy"|[dD]"0" return DXY;
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;

@@ -279,7 +279,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                    case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
 
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE:"<<particles->at(1)->type << std::endl;
+                        std::cerr << "WRONG PARTICLE JET TYPE:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 } catch(...) {
@@ -608,7 +608,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                    case 11: ipart2_max=(ao->taus)[base_collection2].size(); break;
                    case 20: ipart2_max=(ao->combos)[base_collection2].size();
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try FJET:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
@@ -689,7 +689,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                    case 11: ipart2_max=(ao->taus)[base_collection2].size(); break;
                    case 20: ipart2_max=(ao->combos)[base_collection2].size();
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE! Try Tau:"<<particles->at(1)->type << std::endl;
                         break;
                 }
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
@@ -731,7 +731,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
        collectionName=particles->at(jj)->collection;
 
        switch(particles->at(jj)->type){
-                    case 12: 
+                  case muon_t: 
                             if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
                                cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -747,7 +747,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 delete adbxp;
                             }
                             break;
-                    case 1: 
+                    case electron_t: 
                             if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -783,8 +783,18 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                 delete adbxp;
                             }
                             break;
-                   case 20: ipart_max=(ao->combos)[collectionName].size(); default:
-                        std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
+                   case 20: ipart_max=(ao->combos)[collectionName].size(); 
+                            for (int ipart=0; ipart<ipart_max; ipart++){
+                                alv=(ao->combos)[collectionName].at(ipart).lv();
+                                adbxp= new dbxParticle(alv);
+                                adbxp->setCharge((ao->combos)[collectionName].at(ipart).q() );
+                                adbxp->setPdgID( (ao->combos)[collectionName].at(ipart).pdgID() );
+                                combination.push_back(*adbxp);
+                                delete adbxp;
+                            }
+                            break;
+                    default:
+                        std::cerr << "WRONG PARTICLE COMBO TYPE! Type:"<<particles->at(jj)->type << std::endl;
                         break;
                 }
         DEBUG("Adding # particles:"<<ipart_max<<"\n");
@@ -798,7 +808,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 }
 
-
+//------------------------------------------------
 void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     ao->truth.insert( std::pair<string, vector<dbxTruth> >(name, (ao->truth)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
@@ -842,21 +852,23 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 12: ipart2_max=(ao->muos)[base_collection2].size();
+                  case muon_t: ipart2_max=(ao->muos)[base_collection2].size();
                         break;
-		    case 10: ipart2_max=(ao->truth)[base_collection2].size();
+	         case truth_t: ipart2_max=(ao->truth)[base_collection2].size();
                         break;
-                    case 1: ipart2_max=(ao->eles)[base_collection2].size();
+                   case electron_t: ipart2_max=(ao->eles)[base_collection2].size();
                         break;
-                    case 2: ipart2_max=(ao->jets)[base_collection2].size();
+                   case jet_t: ipart2_max=(ao->jets)[base_collection2].size();
                         break;
-                    case 8: ipart2_max=(ao->gams)[base_collection2].size();
+                case photon_t: ipart2_max=(ao->gams)[base_collection2].size();
                         break;
-                    case 9: ipart2_max=(ao->ljets)[base_collection2].size();
+                  case fjet_t: ipart2_max=(ao->ljets)[base_collection2].size();
                         break;
-                   case 11: ipart2_max=(ao->taus)[base_collection2].size();
+                   case tau_t: ipart2_max=(ao->taus)[base_collection2].size();
                         break;
-                    default:
+                 case combo_t: ipart2_max=(ao->combos)[base_collection2].size();
+                        break;
+                      default:
                         std::cerr << "WRONG PARTICLE TYPE! Try Truth:"<<particles->at(1)->type << std::endl;
                         break;
                 }
@@ -914,10 +926,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 // at this point I have the particles I will use to construct the combined object. like j1 and j2
 // now we find how many of those particles we have in each event
     for (int jj=0; jj<particles->size(); jj++){
-       DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+       DEBUG("Type:"<<particles->at(jj)->type<< " index:"<<particles->at(jj)->index<<" Coll:"<< particles->at(jj)->collection<<"\n");
        collectionName=particles->at(jj)->collection;
        switch(particles->at(jj)->type){
-                    case 12: 
+                   case muon_t: 
                             if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
                                cout << "ERROR: "<<collectionName<<" collection is not DEFINED\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -925,7 +937,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                             }
                             ipart_max=(ao->muos)[collectionName].size();
                             break;
-                    case 1: 
+                    case electron_t: 
                             if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
@@ -933,18 +945,20 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                             }
                             ipart_max=(ao->eles)[collectionName].size();
                             break;
-		    case 10: ipart_max=(ao->truth)[collectionName].size();
+		    case truth_t: ipart_max=(ao->truth)[collectionName].size();
                         break;
-                    case 2: ipart_max=(ao->jets)[collectionName].size();
+                    case jet_t: ipart_max=(ao->jets)[collectionName].size();
                         break;
-                    case 8: ipart_max=(ao->gams)[collectionName].size();
+                    case photon_t: ipart_max=(ao->gams)[collectionName].size();
                         break;
-                    case 9: ipart_max=(ao->ljets)[collectionName].size();
+                    case fjet_t: ipart_max=(ao->ljets)[collectionName].size();
                         break;
-                    case 11: ipart_max=(ao->taus)[collectionName].size();
+                    case tau_t: ipart_max=(ao->taus)[collectionName].size();
+                            break;
+                    case combo_t: ipart_max=(ao->combos)[collectionName].size();
                             break;
                     default:
-                        std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(jj)->type << std::endl;
+                        std::cerr << "WRONG PARTICLE TYPE in Parti! Type:"<<particles->at(jj)->type << std::endl;
                         break;
                 }
         DEBUG("Max # particles:"<<ipart_max<<"\n");
@@ -960,39 +974,54 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     vector<vector<int>> combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
     TLorentzVector  alv;
     int apq = 0;
+    int apdgid=0;
     
     for(size_t k=0; k<combi_out.size(); ++k) {
       temp_index = combi_out[k]; // ex temp_index = {0,1} 
       for(size_t i = 0; i<temp_index.size(); ++i){
 	  DEBUG ("Now p index is:"<< temp_index[i]<<" \t"); 
 	  switch(particles->at(i)->type){
-	  case 12: 
+	  case muon_t: 
 	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->muos)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->muos)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 1: 
+	  case electron_t: 
 	    alv+=(ao->eles)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->eles)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->eles)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 10:
+	  case truth_t:
 	    alv+=(ao->truth)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->truth)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->truth)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 2:
+	  case jet_t:
 	    alv+=(ao->jets)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->jets)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->jets)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 8: alv+=(ao->gams)[collectionName].at(temp_index[i]).lv();
+	  case photon_t: 
+            alv+=(ao->gams)[collectionName].at(temp_index[i]).lv();
+            apdgid+=(ao->gams)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 9: alv+=(ao->ljets)[collectionName].at(temp_index[i]).lv();
+	  case fjet_t: 
+            alv+=(ao->ljets)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->ljets)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->ljets)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case 11: 
+	  case tau_t: 
 	    alv+=(ao->taus)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->taus)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->taus)[collectionName].at(temp_index[i]).pdgID();
+	    break;
+	  case combo_t: 
+	    alv+=(ao->combos)[collectionName].at(temp_index[i]).lv();
+	    apq+=(ao->combos)[collectionName].at(temp_index[i]).q();
+	    apdgid+=(ao->combos)[collectionName].at(temp_index[i]).pdgID();
 	    break;
 	  default:
-	    std::cerr << "WRONG PARTICLE TYPE! Type:"<<particles->at(i)->type << std::endl;
+	    std::cerr << "WRONG particle TYPE! Type:"<<particles->at(i)->type << std::endl;
 	    break;
 	  }
         } 	  
@@ -1000,9 +1029,11 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 	adbxp= new dbxParticle(alv);
 	adbxp->setCharge(apq);                            
+	adbxp->setPdgID(apdgid);                          
 	combination.push_back(*adbxp);
 	delete adbxp;
         apq=0;
+        apdgid=0;
         alv.SetPxPyPzE(0,0,0,0);
         DEBUG("\n");
     }
@@ -1094,14 +1125,14 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	  int ipart2_max;
 	  string base_collection2=particles->at(1)->collection;
 	  switch(particles->at(1)->type){
-	  case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
-	  case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
-	  case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
-	  case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
-	  case 8: ipart2_max=(ao->gams)[base_collection2].size(); break;
-	  case 9: ipart2_max=(ao->ljets)[base_collection2].size(); break;
-	  case 11: ipart2_max=(ao->taus)[base_collection2].size(); break;
-	  case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+	  case muon_t: ipart2_max=(ao->muos)[base_collection2].size(); break;
+	  case truth_t: ipart2_max=(ao->truth)[base_collection2].size(); break;
+	  case electron_t: ipart2_max=(ao->eles)[base_collection2].size(); break;
+	  case jet_t: ipart2_max=(ao->jets)[base_collection2].size(); break;
+	  case photon_t: ipart2_max=(ao->gams)[base_collection2].size(); break;
+	  case fjet_t: ipart2_max=(ao->ljets)[base_collection2].size(); break;
+	  case tau_t: ipart2_max=(ao->taus)[base_collection2].size(); break;
+	  case combo_t: ipart2_max=(ao->combos)[base_collection2].size(); break;
 	  default:
 	    std::cerr << "WRONG PARTICLE TYPE! type:"<<particles->at(1)->type << std::endl;
 	    break;
@@ -1223,7 +1254,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
     indicesA indexA={table_B, (int)table_B.size(), amaxrow};
     ao->combosA.insert( pair <string, indicesA > (name,     indexA) );
-
 
     out_selection.clear();
     All_possibilities_with_selection.output(out_selection);

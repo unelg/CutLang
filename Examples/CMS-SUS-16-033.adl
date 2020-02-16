@@ -38,8 +38,7 @@ object electrons
 
 object leptons :  Union( electrons, muons )
   
-define MHLV = SUM ( jetsmht )   # - function is missing
-#define MHLV = jetsmht_0 jetsmht_1   # - sum function is missing
+define MHLV =  jetsmht_   # - function is missing
 define MHT = pT( MHLV )
 
 # preselection region
