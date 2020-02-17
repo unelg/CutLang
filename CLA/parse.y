@@ -2055,10 +2055,7 @@ command : CMD condition { //find a way to print commands
         | BINS MET bins { cout << "BIN MET" << "\n"; } 
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
-        | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
-                    DataFormats->at(4)=cutcount;
-                    Initializations->at(0)=$2;
-                  }
+        | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
         | CMD ALL {                                     
                                 Node* a = new SFuncNode(all,0, "all");
                                 NodeCuts->insert(make_pair(++cutcount,a));
