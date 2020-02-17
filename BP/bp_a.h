@@ -30,8 +30,7 @@ class BPdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(AnalysisObjects ao ); 
-      int saveInstance(AnalysisObjects ao );
+      int makeAnalysis(AnalysisObjects ao );
       int Finalize();
       int saveHistos() {
 	      if (savebool) Finalize();
@@ -46,10 +45,6 @@ class BPdbxA : public dbxA {
       char algoname[CHMAX];
       std::vector<TString> effCL;
 
-      TFile *ftsave;
-      TTree *ttsave;
-      DBXNtuple *ntsave;
-
 
       // Sezen's handmade histograms
 /*
@@ -63,7 +58,7 @@ class BPdbxA : public dbxA {
       TH1D* xWHbRh2;
       TH1D* Zlm;
 */
-      int TRGe, TRGm, TRGs;
+      int TRGe, TRGm;
       bool skip_histos;
       bool skip_effs;
  
