@@ -1,5 +1,5 @@
-%error-verbose
-//%define parse.error verbose
+//%error-verbose
+%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -33,6 +33,7 @@ int dnum;
 vector<float> tmpBinlist;
 vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
+vector<myParticle*> AliasList;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
@@ -1287,6 +1288,7 @@ particule : GEN '_' index    {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
                         DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
+                        DEBUG("NO PROBLEM\n");
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
@@ -1368,6 +1370,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                       Node* previous=new ObjectNode("Combo",NULL,createNewParti,newNList,"Partition" );
                       Node*      obj=new ObjectNode($2,previous,NULL,newNList,$2 );
                       ObjectCuts->insert(make_pair($2,obj));
+                      vector<myParticle*> junkvector;   
+                      AliasList.swap(junkvector);
         }
 //----------- UNION
         | OBJ ID ':' UNION '(' LEPTON ',' LEPTON ')' {
@@ -1663,11 +1667,10 @@ hamhum : ALIAS ID {
           DEBUG ("ALIAS found.\t");
           TmpParticle.swap( CombiParticle);
           string name = $2;
-          vector<myParticle*> newList;
           myParticle* a = new myParticle;
           a->type =20; a->index = 6213; a->collection = "Combo";
-	  newList.push_back(a);
-          ListParts->insert(make_pair(name,newList));
+	  AliasList.push_back(a);
+          ListParts->insert(make_pair(name,AliasList));
           DEBUG (name<<" inserted\n");
          }  
          ;

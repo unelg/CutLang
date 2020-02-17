@@ -4,12 +4,6 @@
 #include "DBXNtuple.h"
 #include "TFile.h"
 
-int DumpdbxA::plotVariables(int sel) {
-    dbxA::plotVariables (sel);
-    //put your extra canvas,plots here
-    return 0 ;  
-}
-
 int DumpdbxA:: readAnalysisParams() {
   int retval=0;
   TString CardName=cname;
@@ -50,10 +44,6 @@ int DumpdbxA:: initGRL() {
 
 int DumpdbxA:: bookAdditionalHistos() {
 //additional histograms are defined here
-  hmmultextra   = new TH1F("hmmultextra" ,"Muon multiplicity",20,-0.5,19.5);
-  hmptextra  = new TH1F("hmptextra" ,"Muon P_{T}",100,0.,600.);
-  hmetaextra    = new TH1F("hmetaextra" ,"Muon #eta",100,-5.,5.);
-  hmphiextra    = new TH1F("hmphiextra" ,"#phi of muons",100,-5.,5.);
   eff= new TH1F("eff","selection efficiencies",5,0.5,5.5);
   getInputs();
 
@@ -185,17 +175,6 @@ ttsave->Fill();
   eff->Fill(cur_cut, anevt.mcevt_weight);
   cur_cut++;
 
-//cout <<"Before histo filling.\n";
-
-// Fill kinematics of muons before any cut
-    
-     hmmultextra->Fill(muons.size(), anevt.mcevt_weight);
-    	 
-     for (UInt_t i=0; i<muons.size(); i++) {
-       	 hmptextra->Fill(fabs(muons.at(i).lv().Pt()), anevt.mcevt_weight);
-  	 hmetaextra->Fill(muons.at(i).lv().Eta(),anevt.mcevt_weight);
-   	 hmphiextra->Fill(muons.at(i).lv().Phi(), anevt.mcevt_weight);
-     } 
 
 //cout <<"Before calling mother class.\n";
 
