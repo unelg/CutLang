@@ -45,24 +45,24 @@ ObjectNode::ObjectNode(std::string id,
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
     while (anode->left != NULL) { anode=(ObjectNode*)anode->left; }
-      if (anode->name == "MUO" ) type=12;
-      if (anode->name == "ELE" ) type=1;
-      if (anode->name == "JET" ) type=2;
-      if (anode->name == "PHO" ) type=8;
-      if (anode->name == "FJET") type=9;
-      if (anode->name == "Truth") type=10;
-      if (anode->name == "TAU" ) type=11;
-      if (anode->name == "Combo" ) type=20;
+      if (anode->name == "MUO" ) type=muon_t;
+      if (anode->name == "ELE" ) type=electron_t;
+      if (anode->name == "JET" ) type=jet_t;
+      if (anode->name == "PHO" ) type=photon_t;
+      if (anode->name == "FJET") type=fjet_t;
+      if (anode->name == "Truth") type=truth_t;
+      if (anode->name == "TAU" ) type=tau_t;
+      if (anode->name == "Combo" ) type=combo_t;
       DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
     } else { // if null
-      if (id == "MUO" ) type=12;
-      if (id == "ELE" ) type=1;
-      if (id == "JET" ) type=2;
-      if (id == "PHO" ) type=8;
-      if (id == "FJET") type=9;
-      if (id == "Truth") type=10;
-      if (id == "TAU" ) type=11;
-      if (id == "Combo" ) type=20;
+      if (id == "MUO" ) type=muon_t;
+      if (id == "ELE" ) type=electron_t;
+      if (id == "JET" ) type=jet_t;
+      if (id == "PHO" ) type=photon_t;
+      if (id == "FJET") type=fjet_t;
+      if (id == "Truth") type=fjet_t;
+      if (id == "TAU" ) type=tau_t;
+      if (id == "Combo" ) type=combo_t;
       DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
     }
 }
@@ -103,45 +103,45 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       DEBUG("previous:"<< basename<< "  type:"<<type<<"\n"); // Combo, 20
 // is it in the map list?
        switch (type) {
-        case 12:       if (ao->muos.find(basename)==ao->muos.end()  ){
+        case muon_t:       if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Muos evaluated.\n");
                       } else keepworking=false;
                       break;
 
-	case 10:      if (ao->truth.find(basename) == ao->truth.end() ){
+	case truth_t:      if (ao->truth.find(basename) == ao->truth.end() ){
 				anode->evaluate(ao);
 				DEBUG(" Truth evaluated.\n");
 		      } else keepworking=false;
 		      break;
 
-        case 1:       if (ao->eles.find(basename)==ao->eles.end()  ){
+       case electron_t:       if (ao->eles.find(basename)==ao->eles.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Eles evaluated.\n");
                       } else keepworking=false;
                       break;
-       case 11:       if (ao->taus.find(basename)==ao->taus.end()  ){
+       case tau_t:       if (ao->taus.find(basename)==ao->taus.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Taus evaluated.\n");
                       } else keepworking=false;
                       break;
 
-        case 2:       if (ao->jets.find(basename)==ao->jets.end()  ){
+        case jet_t:       if (ao->jets.find(basename)==ao->jets.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Jets evaluated.\n");
                	      } else keepworking=false;
                       break;
-        case 8:       if (ao->gams.find(basename)==ao->gams.end()  ){
+        case photon_t:       if (ao->gams.find(basename)==ao->gams.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" *****Phos evaluated.\n");
                	      } else keepworking=false;
                       break;
-        case 9:       if (ao->ljets.find(basename)==ao->ljets.end()  ){
+        case fjet_t:       if (ao->ljets.find(basename)==ao->ljets.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" *****FJETs evaluated.\n");
                	      } else keepworking=false;
                       break;
-       case 20:       if (ao->combos.find(basename)==ao->combos.end()  ){
+       case combo_t:       if (ao->combos.find(basename)==ao->combos.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" *****COMBOs evaluated.\n");
                	      } else keepworking=false;
@@ -204,17 +204,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     //Save AO somewhere to return in next time
     return 1;
 }
-
-// MUO     12
-// ELE     1
-// JET     2
-// BJET    3
-// QGJET   4
-// NUMET_M 5 
-// NUMET_E 6
-// METLV   7
-// PHO     8
-// Tau    11 
+// ***********************************
 
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
@@ -264,19 +254,19 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                 string base_collection2=particles->at(1)->collection;
                 try {
                 switch(particles->at(1)->type){
-                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-		    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                    case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+                    case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+	           case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
+                case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
+                     case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
 //                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
 //                        break;
 //                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                        break;
-                    case 7: ipart2_max=1; break;
-                    case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+                   case pureV_t: ipart2_max=1; break;
+                  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
+                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
+                     case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+                   case combo_t: ipart2_max=(ao->combos)[base_collection2].size(); break;
 
                     default:
                         std::cerr << "WRONG PARTICLE JET TYPE:"<<particles->at(1)->type << std::endl;
@@ -353,18 +343,18 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
-                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
-		    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
-                    case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
-                    case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
+                    case muon_t: ipart2_max=(ao->muos)[base_collection2].size(); break;
+	           case truth_t: ipart2_max=(ao->truth)[base_collection2].size(); break;
+                case electron_t: ipart2_max=(ao->eles)[base_collection2].size(); break;
+                     case jet_t: ipart2_max=(ao->jets)[base_collection2].size(); break;
 //                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
-                    case 8: ipart2_max=(ao->gams)[base_collection2].size(); break;
-                    case 9: ipart2_max=(ao->ljets)[base_collection2].size(); break;
-                   case 11: ipart2_max=(ao->taus)[base_collection2].size(); break;
-                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+                 case photon_t: ipart2_max=(ao->gams)[base_collection2].size(); break;
+                   case fjet_t: ipart2_max=(ao->ljets)[base_collection2].size(); break;
+                    case tau_t: ipart2_max=(ao->taus)[base_collection2].size(); break;
+                  case combo_t: ipart2_max=(ao->combos)[base_collection2].size(); break;
 
                     default:
                         std::cerr << "WRONG PARTICLE TYPE! Try ELE:"<<particles->at(1)->type << std::endl;

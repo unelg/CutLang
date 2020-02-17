@@ -193,17 +193,17 @@ int BPdbxA:: readAnalysisParams() {
 // ---------------------------DBX style cuts
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
     
-       std::vector<std::string> NameInitializations(2);
+//       std::vector<std::string> NameInitializations(2);
        NameInitializations={" "," "};
-       vector<double> TRGValues(5);
+//       vector<double> TRGValues(5);
        TRGValues={1,0,0,0,0};
 
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
-       cout <<"==parsing started:\t";
+       cout <<"==Parsing started:\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
-       cout <<"\t parsing finished.==\n";
+       cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 

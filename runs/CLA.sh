@@ -91,6 +91,7 @@ rm histoOut-BP_*.root
 echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 if [ $? -eq 0 ]; then
+   echo "Run finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root

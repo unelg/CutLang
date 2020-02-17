@@ -203,7 +203,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                      forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  );
                      if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
                        DEBUG("was NOT blacklisted, now adding. \n");
-                       FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, particles.at(i)->index));
+                       unordered_set<int> pippo;
+                                          pippo.insert(particles.at(i)->index);
+                       FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, pippo));
                       } else forbidit->second.insert(particles.at(i)->index);
                      }
         }
@@ -242,7 +244,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         DEBUG("forbidding:"<<bestIndices[i]<<" for "<<ac<<"\n");
                         if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
                          DEBUG(ac<<" was NOT there, now adding. \n");
-                         FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, bestIndices[i])   );
+                         unordered_set<int> pippo;
+                                            pippo.insert(bestIndices[i]);
+                         FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, pippo) );
                         } else {
                          forbidit->second.insert(bestIndices[i]);
                         }
