@@ -1,0 +1,121 @@
+#info analysis
+#  title "Search for supersymmetry in events with at least three electrons or muons, jets, 
+# and missing transverse momentum in proton-proton collisions at sqrt(s) = 13 TeV"
+#  experiment CMS
+#  id SUS-16-041
+#  publication JHEP 02 (2018) 067
+#  sqrtS 13.0
+#  lumi 35.9
+#  arXiv 1710.09154
+#  hepdata
+#  doi 10.1007/JHEP02(2018)067
+
+# OBJECTS
+
+object muons
+  take Muon
+  select pT(Muon) > 10
+  select abs(eta(Muon)) < 2.4
+#  select D0(Muon) < 0.5
+#  select dz(Muon) < 1
+  # define Imini = relative isolation
+  # define pTratio = pT / closestjet.pT
+  # define pTrel = (abs((closestjet.p - p) x p)) / abs(closestjet.p - p)
+  # select Imini < 0.16 and (pTratio > 0.76 or pTrel > 7.2)
+
+object electrons
+  take Electron
+  select pT(Electron) > 10
+  select abs(eta(Electron)) < 2.5
+#  select D0(Electron) < 0.5
+#  select dz(Electron) < 1
+  # define Imini = relative isolation
+  # define pTratio = pT / closestjet.pT
+  # define pTrel = (abs((closestjet.p - p) x p)) / abs(closestjet.p - p)
+  # select Imini < 0.12 and (pTratio > 0.80 or pTrel > 7.2)
+
+object leptons : Union (electrons, muons)
+
+object jets
+  take Jet 
+  select pT(Jet) > 30
+  select abs(Eta(Jet)) < 2.4
+  select dR(Jet, leptons) > 0.4 # can use the eta-phi version to avoid j 
+#converted to select by NGU
+  #reject dR(Eta, Phi, leptons.Eta, leptons.Phi)
+
+object bjets
+  take Jet
+  select BTag(Jet) == 1
+  select pT(Jet) > 25
+  select abs(Eta(Jet)) < 2.4
+
+object OSdileptons : COMB(leptons[-1] leptons[-2]) alias adilepton
+  select pdgID(adilepton) == 0
+  select     m(adilepton) > 12 
+
+define theDilepton : OSdileptons[-1]
+define Zreco : leptons[-1] leptons[-2]
+
+###################################
+
+# Only used in the SR binning.  Not to be used for overlap study.
+#define MTl0 = sqrt( 2*{leptons[0]}pT * MET*(1-cos({METLV_0}Phi - {leptons[0]}Phi) ))
+#define MTl1 = sqrt( 2*{leptons[1]}pT * MET*(1-cos({METLV_0}Phi - {leptons[1]}Phi) ))
+#define MTl2 = sqrt( 2*{leptons[2]}pT * MET*(1-cos({METLV_0}Phi - {leptons[2]}Phi) ))
+#define MTmin = min(MTl0, MTl1, MTl2)
+
+region preselection
+  select ALL
+  select Size(electrons) + Size(muons) >= 3
+  select Size(leptons) >= 3
+  select Size(jets) >= 2
+  select MET > 50
+  select Size(OSdileptons)  >= 1
+  select m(theDilepton) ~= 91.2
+#  select m(theDilepton) [] 76 106
+# select ({Zreco}m - 91.2)^2 + (99999*{Zreco}pdgID)^2 ~= 0
+# select m(Zreco) > 12 
+# select pdgID(Zreco) == 0 
+
+#  # Alternatively, if we want the analysis for the overlap study:
+#  #select {leptons[0]}q + {leptons[1]}q == 0 ? m(leptons[0] + leptons[1]) < 12 : ALL
+#  #select {leptons[0]}q + {leptons[2]}q == 0 ? m(leptons[0] + leptons[2]) < 12 : ALL
+#  #select {leptons[1]}q + {leptons[2]}q == 0 ? m(leptons[1] + leptons[2]) < 12 : ALL
+#
+ region onZ
+   preselection
+   select m(theDilepton) [] 76 106
+  
+region offZ
+  preselection
+  # perfect reject example:
+  reject m(theDilepton) [] 76 106
+#
+## The following are binned into SRs of nb, HT, MET, HT.
+## As the values cover the whole range, none of this is necessary for the 
+ region onZhighHT
+   onZ
+   select HT(jets) > 400 
+   select abs(pdgID(leptons[0])) == 11 ? pT(leptons[0]) > 25 : pT(leptons[0]) > 20
+   select abs(pdgID(leptons[1])) == 11 ? pT(leptons[1]) > 15 : pT(leptons[1]) > 10
+ 
+ region onZlowHT
+   onZ
+   select HT(jets) [] 60 400 
+   select abs(pdgID(leptons[0])) == 11 ? pT(leptons[0]) > 15 : pT(leptons[0]) > 10
+   select abs(pdgID(leptons[1])) == 11 ? pT(leptons[1]) > 15 : pT(leptons[1]) > 10
+ 
+ region offZhighHT
+   offZ
+   select HT(jets) > 400 
+   select abs(pdgID(leptons[0])) == 11 ? pT(leptons[0]) > 25 : pT(leptons[0]) > 20
+   select abs(pdgID(leptons[1])) == 11 ? pT(leptons[1]) > 15 : pT(leptons[1]) > 10
+ 
+ region offZlowHT
+   onZ
+   select HT(jets) [] 60 400 
+   select abs(pdgID(leptons[0])) == 11 ? pT(leptons[0]) > 15 : pT(leptons[0]) > 10
+   select abs(pdgID(leptons[1])) == 11 ? pT(leptons[1]) > 15 : pT(leptons[1]) > 10
+
+

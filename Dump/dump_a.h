@@ -28,7 +28,6 @@ class DumpdbxA : public dbxA {
       int Finalize();
       int initGRL();
       int readAnalysisParams();
-      int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
       int makeAnalysis(AnalysisObjects ao);
@@ -43,7 +42,6 @@ class DumpdbxA : public dbxA {
    private:
       bool grl_cut;
       char cname[CHMAX];
-      TH1F *hmmultextra, *hmptextra, *hmetaextra, *hmphiextra;
       int TRGe, TRGm;
 
       TFile *ftsave;

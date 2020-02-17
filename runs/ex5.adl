@@ -1,6 +1,6 @@
 #CLA ADL example5
-#SkipHistos = 1
-Skipeffs = 1
+#SkipHistos = 1 # to not print histos in efficiency table
+#Skipeffs = 1   # to not print efficiencies at all
 
 define Zreco : ELE[0] ELE[1]
 define mZreco = m(Zreco)

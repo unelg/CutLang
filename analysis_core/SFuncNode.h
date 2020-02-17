@@ -209,10 +209,10 @@ virtual double evaluate(AnalysisObjects* ao) override {
 
                switch (atype) { 
 		  case 10:  aPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
-                   case 0:  aPart->setTlv(  aPart->lv()+ao->muos[ac].at(ai).lv() );   break;
-                   case 1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
+                  case 12:  aPart->setTlv(  aPart->lv()+ao->muos[ac].at(ai).lv() );   break;
+                  case  1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                   case 11:  aPart->setTlv(  aPart->lv()+ao->taus[ac].at(ai).lv() );   break;
-                   case 2:  aPart->setTlv(  aPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                  case  2:  aPart->setTlv(  aPart->lv()+ao->jets[ac].at(ai).lv() );   break;
                   case 20:  aPart->setTlv(  aPart->lv()+ao->combos[ac].at(ai).lv() ); break;
                    case 9:  aPart->setTlv(  aPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
                    case 8:  aPart->setTlv(  aPart->lv()+ao->gams[ac].at(ai).lv() );   break;
@@ -240,15 +240,15 @@ virtual double evaluate(AnalysisObjects* ao) override {
              if (atype==7) ac="MET";
 
                switch (atype) { 
-		              case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
-                   case 0:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
-                   case 1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
-                  case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
-                   case 2:  bPart->setTlv(  bPart->lv()+ao->jets[ac].at(ai).lv() );   break;
-                  case 20:  aPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
-                   case 9:  bPart->setTlv(  bPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
-                   case 8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
-                   case 7: DEBUG("MET LV\n ");
+		   case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
+                   case 12:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
+                   case  1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
+                   case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
+                   case  2:  bPart->setTlv(  bPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                   case 20:  aPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
+                   case  9:  bPart->setTlv(  bPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
+                   case  8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+                   case  7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                             bPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
                             break;
@@ -302,13 +302,13 @@ double btagsf(AnalysisObjects* ao, string s, float value){
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
-/*
-    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #P types:"<<ao->gams.size()<<"\n");
+
+    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #M types:"<<ao->muos.size()<<"\n");
     map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
-*/
+
     DEBUG("\n");
     map <string,  indicesA  >::iterator itp;
     for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){

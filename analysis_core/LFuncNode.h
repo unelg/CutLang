@@ -25,6 +25,8 @@ private:
     std::vector<myParticle> originalParticles2;
     dbxParticle myPart2;
 
+    friend class LoopNode;
+
 protected:
     virtual void ResetParticles() override;
     virtual void setParticleIndex(int order, int newIndex) override;

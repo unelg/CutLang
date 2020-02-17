@@ -18,8 +18,9 @@ define Zreco = ELE[-1] ELE[-1]               #negative indices are to be determi
 region   test
   select      ALL              # to count all events
   select      Size (goodEle)  >= 1  # events with 2 or more electrons 
+  select      Size(MUO) >= 1
   select      Size (GMUO)  >= 1  # events with 2 or more electrons 
-  select      Size (geps) > 2  # events with 2 or more leptons 
+  select      Size (gleps) > 2  # events with 2 or more leptons 
   select      Size(ELE)  >= 2  # events with 2 or more electrons 
   weight      mcw      1.1
   select      m(Zreco) ~= 90.1
