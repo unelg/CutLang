@@ -1,4 +1,4 @@
-void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
+void showall(TString regname="preselection", TString inpfile="histoOut-e6new.root" )
 {
 
   using namespace std;
@@ -18,11 +18,11 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
   while (infile >> word) {
     histo.push_back(word);
   }
-
-  //  for (unsigned n=0; n<histo.size(); ++n) {
-  //      cout << histo.at( n ) << " ";
-  //  }
-    
+/*
+    for (unsigned n=0; n<histo.size(); ++n) {
+        cout << histo.at( n ) << " ";
+    }
+*/    
   for (unsigned k=0; k<histo.size(); ++k) {
     TString endch = histo.at(k) ;
     char lastChar = endch( endch.Length() - 1 );
@@ -47,9 +47,7 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
   } // end loop over k
 
   TFile *_file0 = TFile::Open(inpfile);
-  TString dirname="BP_"; 
-          dirname+=inpreg;
-  _file0->cd(dirname);
+  _file0->cd(regname);
     
   TCanvas *c1=new TCanvas("c1","CutLang histogramming example",200,10,700,500);
   gStyle->SetOptStat(1);
@@ -93,20 +91,22 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
       c1->Divide(4,4);
     }
     
-  vector<TH1F> vlist;
-  TH1F *h, *h2, *h3, *h4, *h5;
+  vector<TH1F*> vlist;
+  TH1F *h, *h2, *h3, *h4, *h5;      // single
 
   double legxmin = 0.60;
   double legxmax = 0.83;
   double legymin = 0.80;
   double legymax = 0.85;
   double legystp = 0.07;
-    
+   
+  cout <<"Tek:"<<tek.size()<<" Cift:"<<cift.size()<<"\n";
+ 
   for (unsigned int c=0;c<tek.size();c++)
     {
       h = (TH1F*)gROOT->FindObject(tek.at(c))->Clone();
       if (h==0) cout << "I couldn't find " << tek.at(c) << endl;
-      vlist.push_back(*h);
+      vlist.push_back(h);
     }
     
   for (unsigned int c=0;c<tek.size();c++) {
@@ -114,33 +114,37 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
     c1->cd(c+1)->SetBottomMargin(bmargin);
     c1->cd(c+1)->SetLeftMargin(lmargin);
 
-    cout  << " drawing at " << c << " " << tek.at(c) << " " << vlist.at(c).GetTitle() << endl;
-    vlist.at(c).SetLineColor(1);
-    vlist.at(c).GetXaxis()->SetTitle(vlist.at(c).GetTitle() );
-    vlist.at(c).GetXaxis()->CenterTitle();
-    vlist.at(c).GetXaxis()->SetTitleOffset(1.1);
-    vlist.at(c).GetXaxis()->SetTitleSize(0.055);
-    vlist.at(c).GetXaxis()->SetTitleFont(42);
-    vlist.at(c).GetXaxis()->SetLabelOffset(0.012);
-    vlist.at(c).GetXaxis()->SetLabelSize(0.050);
-    vlist.at(c).GetXaxis()->SetLabelFont(42);
-    vlist.at(c).GetYaxis()->SetTitle("Number of events");
-    vlist.at(c).GetYaxis()->CenterTitle();
-    vlist.at(c).GetYaxis()->SetTitleOffset(1.28);
-    vlist.at(c).GetYaxis()->SetTitleSize(0.055);
-    vlist.at(c).GetYaxis()->SetLabelOffset(0.012);
-    vlist.at(c).GetYaxis()->SetLabelSize(0.050);
-    vlist.at(c).GetYaxis()->SetLabelFont(42);
-    vlist.at(c).GetYaxis()->SetTitleFont(42);
-    vlist.at(c).Draw();
-        
+    cout  << " drawing at " << c << " " << tek.at(c) << " " << vlist.at(c)->GetTitle() << endl;
+
+    vlist.at(c)->SetLineColor(1);
+    vlist.at(c)->GetXaxis()->SetTitle(vlist.at(c)->GetTitle() );
+    vlist.at(c)->GetXaxis()->CenterTitle();
+    vlist.at(c)->GetXaxis()->SetTitleOffset(1.1);
+    vlist.at(c)->GetXaxis()->SetTitleSize(0.055);
+    vlist.at(c)->GetXaxis()->SetTitleFont(42);
+    vlist.at(c)->GetXaxis()->SetLabelOffset(0.012);
+    vlist.at(c)->GetXaxis()->SetLabelSize(0.050);
+    vlist.at(c)->GetXaxis()->SetLabelFont(42);
+    vlist.at(c)->GetYaxis()->SetTitle("Number of events");
+    vlist.at(c)->GetYaxis()->CenterTitle();
+    vlist.at(c)->GetYaxis()->SetTitleOffset(1.28);
+    vlist.at(c)->GetYaxis()->SetTitleSize(0.055);
+    vlist.at(c)->GetYaxis()->SetLabelOffset(0.012);
+    vlist.at(c)->GetYaxis()->SetLabelSize(0.050);
+    vlist.at(c)->GetYaxis()->SetLabelFont(42);
+    vlist.at(c)->GetYaxis()->SetTitleFont(42);
+
+    vlist.at(c)->Draw();
+    cout <<"done\n";    
+    
     TLegend *l1 = new TLegend(legxmin, legymin, legxmax, legymax);
     l1->SetBorderSize(0);
     l1->SetFillStyle(0000);
     l1->SetTextSize(0.050);
     l1->SetTextFont(42);
-    l1->AddEntry(&(vlist).at(c), vlist.at(c).GetName(), "l");
+    l1->AddEntry(vlist.at(c), vlist.at(c)->GetName(), "l");
     l1->Draw("same");
+    cout <<"done label\n";    
 
     for (unsigned l=0; l<cift.size(); ++l)
       {
@@ -160,6 +164,7 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
 	    l2->Draw("same");
 	  }
       }
+   cout <<"cift done\n";
     for (unsigned d=0; d<trip.size(); ++d)
       {
 	TString strg2 = tek.at(c) ;
@@ -178,6 +183,7 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
 	    l3->Draw("same");
 	  }
       }
+   cout <<"trip done\n";
     for (unsigned s=0; s<quad.size(); ++s)
       {
 	TString strg3 = tek.at(c) ;
@@ -196,6 +202,7 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
 	    l4->Draw("same");
 	  }
       }
+   cout <<"quad done\n";
     for (unsigned z=0; z<fifth.size(); ++z)
       {
 	TString strg4 = tek.at(c) ;
@@ -217,15 +224,15 @@ void showall(int inpreg=1, TString inpfile="histoOut-CLA.root" )
       }
 	
   }// end of loop for 1s                
-    
+  cout <<" end of loop\n";  
                 
   c1->Modified();
   c1->Update();
-  gSystem->ProcessEvents();
+//  gSystem->ProcessEvents();
   TString pricanvas="all_";
-          pricanvas+=inpreg;
+          pricanvas+=regname;
           pricanvas+=".pdf";
   c1->SaveAs(pricanvas);
   c1->Modified();
-    
+  cout << "end of sw\n";   
 }

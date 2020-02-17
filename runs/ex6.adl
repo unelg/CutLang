@@ -1,11 +1,11 @@
 #CLA ADL example6
 
-define Zreco : ELE[0] ELE[1]
+define Zreco : ELE[-1] ELE[-1]
 
 object goodEle : ELE
-  select Pt(ELE_)       >   10
-  select   {ELE_}AbsEta <   2.4
-  select   {ELE_}AbsEta ][  1.442 1.556
+  select Pt(ELE_)       >   0
+  select   {ELE_}AbsEta <   95.4
+#  select   {ELE_}AbsEta ][  1.442 1.556
 
 define goodZreco : goodEle[-1] goodEle[-1]
 
@@ -14,4 +14,4 @@ algo BestZ
   select      Size(goodEle) >= 2    # events with 2 or more electrons 
   select      {goodZreco}m ~= 91.2  # find the pair yielding mass closest to Z    
   select      {goodZreco}q == 0     # Z is neutral
-  histo       hZRecoB, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
+#  histo       hZReco, "Z candidate mass (GeV)", 100, 0.0, 200.0, m(goodZreco)

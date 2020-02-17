@@ -8,7 +8,7 @@ STRT=0
 PRLL=1
 datafile=$1
 datatype=$2
-numcpu=$(nproc)
+numcpu=1
 
 if [ $# -lt 2 ]; then
  echo ERROR: not enough arguments
@@ -77,6 +77,29 @@ cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
 Nalgo=`cat pippo | wc -l`
 rm pippo
 
+# number of logical processors is determined
+if [ ${PRLL} -ne 1 ]; then
+  OS="`uname`"
+  case $OS in
+    'Linux')
+      numcpu=$(nproc)
+      ;;
+    'FreeBSD')
+      numcpu=$(sysctl -n hw.ncpu)
+      ;;
+    'Windows')
+      numcpu=$(echo %NumberOfCores%)
+      ;;
+    'Darwin') 
+      numcpu=$(sysctl -n hw.ncpu)
+      ;;
+     *) 
+      echo Unknown system, use CutLang with only 1 cpu
+      ;;
+  esac
+  # echo Number of available cpus : $numcpu
+fi
+
 if [ ${PRLL} -ne 1 ]; then
   # taking skip histos and skip efficiencies values for final eff table
   sh=$(cat ${INIFILE} | grep -v "#" | grep -i "SkipHistos" | sed 's/[^0-9]//g')
@@ -91,7 +114,7 @@ if [ ${PRLL} -ne 1 ]; then
   if [[ -n $(grep -i "SkipEffs" ${INIFILE}) ]]; then 
     sed -i '/SkipEffs/Id' ./tempor.adl
   fi
-  sed  -i '1i SkipEffs = 1' tempor.adl
+  ex -sc '1i|SkipEffs = 1' -cx tempor.adl
 else
   if [ $Nalgo -gt 1 ]; then
     echo Analysis with Multiple Regions
@@ -101,18 +124,17 @@ else
     cp ${INIFILE} BP_1-card.ini
     Nalgo=1
   fi
+  for ialgo in `seq $Nalgo`; do
+   ../scripts/ini2txt.sh  BP_$ialgo
+  done
 fi
-
- for ialgo in `seq $Nalgo`; do
-  ../scripts/ini2txt.sh  BP_$ialgo
- done
 
 if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../CLA/
 fi
 
-if ! [[ "${PRLL}" =~ ^[0-9]+$ ]] || [ ${PRLL} -gt $((numcpu - 1 )) ] || [ ${PRLL} -lt 0 ]; then
-  echo "Please write an integer between 1 and $((numcpu - 1 )) after -j or use 0 for maximum performance"
+if ! [[ "${PRLL}" =~ ^[0-9]+$ ]] || [ ${PRLL} -gt $numcpu ] || [ ${PRLL} -lt 0 ]; then
+  echo "Please write an integer between 1 and $((numcpu - 1 )) after -j or use 0 for optimum performance"
 elif [ ${PRLL} -ne 1 ]; then
   if [ ${PRLL} -eq 0 ]; then # automatically divides jobs to numcpu-1
     PRLL=$((numcpu - 1 ))
@@ -125,17 +147,16 @@ elif [ ${PRLL} -ne 1 ]; then
     EVENTS="$(echo $TotalEvents | awk '{print $NF}')"
     # echo Total number of events: $EVENTS
   fi
+  echo "**********************************************************************************************"
   echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}
-  orgaddr=$(pwd | rev | cut -d/ -f1 --complement | rev ) # path of CutLang
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
-      cp -a ${orgaddr}/runs/. ${orgaddr}/temp_runs${i}
-      rm ${orgaddr}/temp_runs${i}/histoOut-BP_*.root
+      cp -a ../runs/. ../temp_runs${i}
+      rm -f ../temp_runs${i}/histoOut-BP_*.root
       echo temp_runs${i} copied from runs
   done
   multitask(){
-    intrvl=$((EVENTS/PRLL)) # workload division
     lp=$1
-    cd ${orgaddr}/temp_runs${lp}
+    cd ../temp_runs${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
       echo ./CLA.sh $datafile $datatype -i ${INIFILE} -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
       ./CLA_multicore.sh $datafile $datatype -i tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
@@ -144,6 +165,7 @@ elif [ ${PRLL} -ne 1 ]; then
       ./CLA_multicore.sh $datafile $datatype -i tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE
     fi
   }
+  intrvl=$((EVENTS/PRLL)) # workload division
   if [ $? -eq 0 ]; then # multithreading
     for ((i = 0 ; i < ${PRLL} ; i++)); do
       multitask "$i" &
@@ -152,28 +174,28 @@ elif [ ${PRLL} -ne 1 ]; then
   fi
   if [ $? -eq 0 ]; then
     rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-    rm   ${orgaddr}/runs/histoOut-${rbase}.root
+    rm -f ../runs/histoOut-${rbase}.root
     for ((i = 0 ; i < ${PRLL} ; i++)); do
-      hadd -a ${orgaddr}/runs/histoOut-${rbase}.root \
-      ${orgaddr}/temp_runs${i}/histoOut-tempor.root # merging all root files
+      hadd -a ../runs/histoOut-${rbase}.root \
+      ../temp_runs${i}/histoOut-tempor.root # merging all root files
     done
     wait
     # prints efficiencies of combined files
     if [ $? -eq 0 ]; then
       root -l -q \
-      '../analysis_core/FinalEff.C("'${orgaddr}'/runs/histoOut-'${rbase}'.root", '$sh', '$se')'
-      rm -r ${orgaddr}/temp*  # removes temp folders
-      rm ${orgaddr}/runs/tempor.adl # removes temporary adl
+      '../analysis_core/FinalEff.C("../runs/histoOut-'${rbase}'.root", '$sh', '$se')'
+      rm -r ../temp*  # removes temp folders
+      rm -f ../runs/tempor.adl # removes temporary adl
     fi
   fi
 
 else
-  rm histoOut-BP_*.root
+  rm -f histoOut-BP_*.root
   echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
   ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
   if [ $? -eq 0 ]; then
     rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev | cut -f1 -d'.'`
-    rm   histoOut-${rbase}.root
+    rm -f histoOut-${rbase}.root
     if [[ -z $(pwd | grep "temp_runs") ]]; then
       hadd histoOut-${rbase}.root histoOut-BP_*.root
     else

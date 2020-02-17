@@ -74,7 +74,7 @@ if [ $Nalgo -gt 1 ]; then
  echo Analysis with Multiple Regions
  ../scripts/separate_algos.sh ${INIFILE}
 else
- echo Simple Analysis
+ echo Single Analysis
  cp ${INIFILE} BP_1-card.ini
  Nalgo=1
 fi
@@ -91,9 +91,11 @@ rm histoOut-BP_*.root
 echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 if [ $? -eq 0 ]; then
+   echo "Run finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root
   rm -f histoOut-BP_*.root
-  rm -f BP_*-card.ini _head.ini _algos.ini _inifile
+  rm -f _head.ini _algos.ini _inifile
+#  rm -f BP_*-card.ini 
 fi

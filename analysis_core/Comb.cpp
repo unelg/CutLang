@@ -27,7 +27,7 @@ void suppr_bad_combi_Comb(vector<int>& temp, vector<int> tab_select, int& n, int
     }while(k<n);
 }
 
-void suppr_by_set_Comb(vector<vector<int>>&output, vector<int> temp, vector<vector<int>> set_select, int n, int pas)
+void suppr_by_set_Comb(vector<vector<int> >&output, vector<int> temp, vector<vector<int> > set_select, int n, int pas)
 {
     int N = n;
     for(int i = 0; i<set_select.size(); i++) suppr_bad_combi_Comb(temp, set_select[i], N, pas);
@@ -39,7 +39,7 @@ void suppr_by_set_Comb(vector<vector<int>>&output, vector<int> temp, vector<vect
     }
 }
 
-void combinaison(int N, int K, vector<vector<int>>& output, vector<vector<int>> tab_select)
+void combinaison(int N, int K, vector<vector<int> >& output, vector<vector<int> > tab_select)
 {
     vector<int> temp;
     string bitmask(K, 1);
@@ -61,7 +61,7 @@ Comb::Comb(int JetTotal, int JetReco) : nJetTotal(JetTotal), nJetReco(JetReco)
     combinaison(nJetTotal, nJetReco, output_, tab_selection);
 }
 
-Comb::Comb(int JetTotal, int JetReco, vector<vector<int>> tab_select) : nJetTotal(JetTotal), nJetReco(JetReco), tab_selection(tab_select)
+Comb::Comb(int JetTotal, int JetReco, vector<vector<int> > tab_select) : nJetTotal(JetTotal), nJetReco(JetReco), tab_selection(tab_select)
 {
     combinaison(nJetTotal, nJetReco, output_, tab_selection);
 }
@@ -81,7 +81,7 @@ void Comb::affiche()
     }
 }
 
-vector<vector<int>> Comb::output()
+vector<vector<int> > Comb::output()
 {
   return output_;
 }

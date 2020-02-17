@@ -148,7 +148,7 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
                        bestIndices.clear();
                        for(int i=0;i<v->size();i++){ bestIndices.push_back( v->at(i) ); }
                        found_at_least_one=true;
-                 } else { DEBUG("\n");}
+                 } else { DEBUG("Comparison failed...\n");}
 
                  v->clear();
                 }}
@@ -190,19 +190,23 @@ SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::st
 }
 
 double SearchNode::evaluate(AnalysisObjects* ao) {
-        DEBUG("---------------"<<getStr()<<"\n"); 
+        DEBUG("\n---------------"<<getStr()<<"\n"); 
         particles.clear();
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
 
         std::map<string,unordered_set<int> >::iterator forbidit;
- 
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
                 DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);
                 else {
                      forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  );
-                     forbidit->second.insert(particles.at(i)->index);
+                     if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
+                       DEBUG("was NOT blacklisted, now adding. \n");
+                       unordered_set<int> pippo;
+                                          pippo.insert(particles.at(i)->index);
+                       FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, pippo));
+                      } else forbidit->second.insert(particles.at(i)->index);
                      }
         }
 
@@ -214,7 +218,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[0])->collection;
                     int Max;
                     switch(type){//assuming all particles have the same type
-                        case 0: Max=ao->muos[ac].size();break;
+                       case 12: Max=ao->muos[ac].size();break;
                         case 1: Max=ao->eles[ac].size();break;
                         case 2: Max=ao->jets[ac].size();break;
                         case 3: Max=left->tagJets(ao,1,ac).size();break;
@@ -240,7 +244,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         DEBUG("forbidding:"<<bestIndices[i]<<" for "<<ac<<"\n");
                         if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
                          DEBUG(ac<<" was NOT there, now adding. \n");
-                         FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, bestIndices[i])   );
+                         unordered_set<int> pippo;
+                                            pippo.insert(bestIndices[i]);
+                         FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, pippo) );
                         } else {
                          forbidit->second.insert(bestIndices[i]);
                         }
@@ -282,5 +288,6 @@ double maxim( double difference, double current_difference){
 }
 
 double minim( double difference, double current_difference){
+    DEBUG("dif:"<<difference <<"  cur_diff:"<<current_difference<<"\n");
     return fabs(difference) < current_difference ;
 }

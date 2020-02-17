@@ -17,7 +17,7 @@ VPATH = $(subst -I,:,$(INCLUDES))
 
 JUPY	      = $(shell uname -n | grep -c 'jupyter')
 
-CXX           = $(shell root-config --cxx) -g -O3 -D__GRID__  -D__STANDALONE__  
+CXX           = $(shell root-config --cxx) -g -O2  -D__GRID__  -D__STANDALONE__  
 #-D_CLV_
 #-D__DEBUG__
 CXXFLAGS      =$(INCLUDES) -Wall -fPIC
@@ -58,9 +58,11 @@ CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 
 
 b.o : parse.y
+#	/usr/bin/yacc -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 
 l.o : parse.l
+#	/usr/bin/lex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 	flex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 
 auxiliaries:
@@ -82,7 +84,7 @@ $(ANLOBJS): %.o : %.cxx
 
 # clean
 clean:
-	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _*
+	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _* b.cpp l.cpp 
 	$(MAKE) -C $(SUBDIRLOC)analysis_core clean
 
 # clean everything including the auxiliaries we depend on

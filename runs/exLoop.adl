@@ -1,0 +1,6 @@
+region   signal
+ select  ALL              # to count all events
+ select  Sum ( pT(JET) ) >= 20
+ select  Size( JET ) > 2
+ select  Size( ELE ) > 0
+ select  min ( dR(JET[0:2], ELE[0] )) > 0.9

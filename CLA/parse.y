@@ -1,5 +1,5 @@
-%error-verbose
-//%define parse.error verbose
+//%error-verbose
+%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -33,8 +33,10 @@ int dnum;
 vector<float> tmpBinlist;
 vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
+vector<myParticle*> AliasList;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<Node*> TmpCriteria;
+vector<Node*> TmpIDList;
 std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
@@ -59,14 +61,14 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %parse-param {std::map<std::string,std::vector<float> >* ListTables}
-%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE BINS
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID ISBTAG
+%token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token PERM COMB SORT TAKE UNION SUM
@@ -111,26 +113,6 @@ definitions : definitions definition
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
-definition : DEF  ID  '=' SUM '(' particules ')' {
-                                        pnum=0;
-                                        map<string,vector<myParticle*> >::iterator it ;
-                                        string name = $2;
-                                        it = ListParts->find(name);
-                                        if(it != ListParts->end()) {
-                                                DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
-                                                YYERROR;//stops parsing if variable already defined
-                                        }
-                                        parts->push_back(name+" : "+$6);
-//                                        std::cout<<"\n SUM TMP List: \n";
-//                                        for (int ik=0; ik<TmpParticle.size();ik++){
-//                                                std::cout << "type: " << TmpParticle[ik]->type << " index: " << TmpParticle[ik]->index << endl;
-//                                        }
-                                             
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        ListParts->insert(make_pair(name,newList));
-				}
 definition : DEF  ID  '=' particules {
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -200,7 +182,7 @@ definition : DEF  ID  '=' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
-				}
+			     }
             |  DEF ID  '=' e {
                                         pnum=0;
                                         map<string, Node*>::iterator it ;
@@ -212,7 +194,7 @@ definition : DEF  ID  '=' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
-				}
+			      }
         ;
 //---------------------------------------
 function : '{' particules '}' 'm' {     
@@ -227,60 +209,6 @@ function : '{' particules '}' 'm' {
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function\n");
                                   }
-//       | '{' particules '}' 'm' '(' ID ')' {     
-//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
-//                                     if(it == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $6;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else {
-//                                      DEBUG("Mass function with "<< $6<<"\n");
-//                                      vector<myParticle*> newList;
-//                                      TmpParticle.swap(newList);
-//                                      $$=new FuncNode(Mof,newList,"m", it->second);
-//                                     }
-//                              }
-//---------------------------------------
-//       | '{' particules '}' 'm' '(' ID ',' ID ')' {     
-//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
-//                                     map<string,Node*>::iterator kt = ObjectCuts->find($8);
-//                                     if(it == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $6;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else if(kt == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $8;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else {
-//                                      vector<myParticle*> newList;
-//                                      TmpParticle.swap(newList);
-//                                      $$=new FuncNode(Mof,newList,"m", it->second, kt->second);
-//                                     }
-//                              }
-//       | '{' particules '}' 'm' '(' ID ',' ID ',' ID ')' {     
-//                                     map<string,Node*>::iterator it = ObjectCuts->find($6);
-//                                     map<string,Node*>::iterator kt = ObjectCuts->find($8);
-//                                     map<string,Node*>::iterator lt = ObjectCuts->find($10);
-//                                     if(it == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $6;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else if(kt == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $8;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else if(lt == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $10;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                     } else {
-//                                      vector<myParticle*> newList;
-//                                      TmpParticle.swap(newList);
-//                                      $$=new FuncNode(Mof,newList,"m", it->second, kt->second, lt->second);
-//                                     }
-//                              }
-//---------------------------------------
          | 'q' '(' particules ')' {     
                                        vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -325,6 +253,26 @@ function : '{' particules '}' 'm' {
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
 //---------------------------------------
+         | '{' particules '}' ISTAUTAG {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                    }
+         | ISTAUTAG '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                    }
+         | '{' particules '}' ISCTAG {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"CTAG");
+                                    }
+         | ISCTAG '(' particules ')' {     
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isBTag,newList,"CTAG");
+                                    }
 //---------------------------------------
          | '{' particules '}' ISBTAG {     
                                         vector<myParticle*> newList;
@@ -523,7 +471,7 @@ function : '{' particules '}' 'm' {
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-         | DR list { 
+         | DR list {            
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
@@ -531,32 +479,32 @@ function : '{' particules '}' 'm' {
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
         | list DPHI { 
-                                                vector<myParticle*> newList;
-                                                TmpParticle.swap(newList);
-                                                vector<myParticle*> newList1;
-                                                TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
         | DPHI list { 
-                                                vector<myParticle*> newList;
-                                                TmpParticle.swap(newList);
-                                                vector<myParticle*> newList1;
-                                                TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
         | list DETA { 
-                                                vector<myParticle*> newList;
-                                                TmpParticle.swap(newList);
-                                                vector<myParticle*> newList1;
-                                                TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dEta,newList1,newList,"dEta");
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
         | DETA list { 
-                                                vector<myParticle*> newList;
-                                                TmpParticle.swap(newList);
-                                                vector<myParticle*> newList1;
-                                                TmpParticle1.swap(newList1);
-                                                $$=new LFuncNode(dEta,newList1,newList,"dEta");
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
         | NUMOF '(' ID ')'  {      
                                        map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
@@ -581,7 +529,7 @@ function : '{' particules '}' 'm' {
                            }
    	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
-        | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 0, "MUO");  }
+        | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 12, "MUO");  }
         | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
         | NUMOF '(' JET ')'  {       $$=new SFuncNode(count, 2, "JET");  }
         | NUMOF '(' BJET ')' {       $$=new SFuncNode(count, 3, "JET");  }
@@ -708,9 +656,7 @@ particules : particules particule {
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
                                   }
-            | particule {   if (pnum==0){
-                                                $$=strdup($1);                                                       
-                                        }
+            | particule {   if (pnum==0){ $$=strdup($1);    }
                                         else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
@@ -720,9 +666,7 @@ particules : particules particule {
                                         }
                                         pnum++;
                          }
-            | particule '+' {   if (pnum==0){
-                                                $$=strdup($1);                                                       
-                                        }
+            | particule '+' {   if (pnum==0){ $$=strdup($1); }
                                         else{                                                
                                                 char s [512];
                                                 strcpy(s,$$); 
@@ -730,6 +674,18 @@ particules : particules particule {
                                                 strcat(s,$1);
                                                 strcpy($$,s);
                                         }
+                                        pnum++;
+                         }
+            | '-' particule {  if (pnum==0){ 
+                                            $$=strdup($2); }
+                                        else{
+                                                char s [512];
+                                                strcpy(s,$$);
+                                                strcat(s," ");
+                                                strcat(s,$2);
+                                                strcpy($$,s);
+                                        }
+                                        TmpParticle[ TmpParticle.size()-1]->type*=-1;
                                         pnum++;
                          }
             ;
@@ -799,7 +755,7 @@ particule : GEN '_' index    {
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = (int)$3;
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);  
@@ -808,7 +764,7 @@ particule : GEN '_' index    {
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = (int)$3;
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);  
@@ -818,7 +774,7 @@ particule : GEN '_' index    {
                                 tmp="muo_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = 6213;
                                 a->collection = "MUO";
                                 TmpParticle.push_back(a);
@@ -909,6 +865,17 @@ particule : GEN '_' index    {
                                 a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
+        | JET '[' index ':' index ']' {
+                                tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                 myParticle* a = new myParticle;
+                                 a->type = 2;
+                                 a->index = 10000+ii;
+                                 a->collection = "JET";
+                                 TmpParticle.push_back(a);
+                                }
+                        } 
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1061,12 +1028,12 @@ particule : GEN '_' index    {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (otype==0 ) {
+                        else if (otype==12 ) {
                            DEBUG("which is a MUO\n");
                            tmp="muo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
@@ -1168,12 +1135,12 @@ particule : GEN '_' index    {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (otype==0 ) {
+                        else if (otype==12 ) {
                            DEBUG("which is a MUO\n");
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = (int)$3;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
@@ -1272,12 +1239,12 @@ particule : GEN '_' index    {
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
-                        else if (otype==0 ) {
+                        else if (otype==12 ) {
                            DEBUG("which is a MUO\n");
                                 tmp="muo_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 0;
+                                a->type = 12;
                                 a->index = 6213;
                                 a->collection = $1;
                                 TmpParticle.push_back(a);
@@ -1321,6 +1288,7 @@ particule : GEN '_' index    {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
                         DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
+                        DEBUG("NO PROBLEM\n");
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
@@ -1402,6 +1370,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                       Node* previous=new ObjectNode("Combo",NULL,createNewParti,newNList,"Partition" );
                       Node*      obj=new ObjectNode($2,previous,NULL,newNList,$2 );
                       ObjectCuts->insert(make_pair($2,obj));
+                      vector<myParticle*> junkvector;   
+                      AliasList.swap(junkvector);
         }
 //----------- UNION
         | OBJ ID ':' UNION '(' LEPTON ',' LEPTON ')' {
@@ -1413,7 +1383,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      if        (strcmp($6,"ELE") == 0 ) {
                                       a->type =1; a->collection = "ELE";
                                      } else if (strcmp($6,"MUO") == 0 ) {
-                                      a->type =0; a->collection = "MUO";
+                                      a->type =12; a->collection = "MUO";
                                      } else if (strcmp($6,"TAU") == 0 ) {
                                       a->type =11; a->collection = "TAU";
                                      }
@@ -1421,7 +1391,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      if        (strcmp($8,"ELE") == 0 ) {
                                       b->type =1; b->collection = "ELE";
                                      } else if (strcmp($8,"MUO") == 0 ) {
-                                      b->type =0; b->collection = "MUO";
+                                      b->type =12; b->collection = "MUO";
                                      } else if (strcmp($8,"TAU") == 0 ) {
                                       b->type =11; b->collection = "TAU";
                                      }
@@ -1483,7 +1453,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      if        (strcmp($6,"ELE") == 0 ) {
                                       a->type =1; a->collection = "ELE";
                                      } else if (strcmp($6,"MUO") == 0 ) {
-                                      a->type =0; a->collection = "MUO";
+                                      a->type =12; a->collection = "MUO";
                                      } else if (strcmp($6,"TAU") == 0 ) {
                                       a->type =11; a->collection = "TAU";
                                      }
@@ -1491,7 +1461,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      if        (strcmp($8,"ELE") == 0 ) {
                                       b->type =1; b->collection = "ELE";
                                      } else if (strcmp($8,"MUO") == 0 ) {
-                                      b->type =0; b->collection = "MUO";
+                                      b->type =12; b->collection = "MUO";
                                      } else if (strcmp($8,"TAU") == 0 ) {
                                       b->type =11; b->collection = "TAU";
                                      }
@@ -1499,7 +1469,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      if        (strcmp($10,"ELE") == 0 ) {
                                       c->type =1; c->collection = "ELE";
                                      } else if (strcmp($10,"MUO") == 0 ) {
-                                      c->type =0; c->collection = "MUO";
+                                      c->type =12; c->collection = "MUO";
                                      } else if (strcmp($10,"TAU") == 0 ) {
                                       c->type =11; c->collection = "TAU";
                                      }
@@ -1656,7 +1626,32 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' NUMET criteria
 //           | OBJ ID ':' METLV criteria
            ;
-
+idlist  : ID ',' idlist { cout << $1<<" + "; 
+               map<string, Node*>::iterator it ;
+               string name = $1;
+               it = NodeVars->find(name);
+	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
+                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           YYERROR;//stops parsing if variable already defined
+                                        }
+               TmpIDList.push_back(it->second);
+        }
+        | ID { cout << $1 <<"\n";
+               map<string, Node*>::iterator it ;
+               string name = $1;
+               it = NodeVars->find(name);
+	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
+                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           YYERROR;//stops parsing if variable already defined
+                                        }
+               TmpIDList.push_back(it->second);
+         }
+        ;
+bins    : bins NB
+        | bins INT
+        | NB
+        | INT
+        ;
 binlist : binlist abin
         | abin
         ;
@@ -1672,22 +1667,21 @@ hamhum : ALIAS ID {
           DEBUG ("ALIAS found.\t");
           TmpParticle.swap( CombiParticle);
           string name = $2;
-          vector<myParticle*> newList;
           myParticle* a = new myParticle;
           a->type =20; a->index = 6213; a->collection = "Combo";
-	  newList.push_back(a);
-          ListParts->insert(make_pair(name,newList));
+	  AliasList.push_back(a);
+          ListParts->insert(make_pair(name,AliasList));
           DEBUG (name<<" inserted\n");
          }  
          ;
 criteria : criteria criterion 
          | criterion 
          ;
-criterion : CMD condition { //find a way to print commands                                                                            
-                                         TmpCriteria.push_back($2);
-			}
-          | REJEC condition {
-                                         TmpCriteria.push_back($2);
+criterion : CMD condition {   TmpCriteria.push_back($2);
+	  }
+          | CMD action   {    TmpCriteria.push_back($2); 
+          }
+          | REJEC condition { TmpCriteria.push_back($2);
           };
 commands : commands command 
         | 
@@ -1699,6 +1693,8 @@ command : CMD condition { //find a way to print commands
 					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
 					NodeCuts->insert(make_pair(++cutcount,a));
 			}
+        | BINS ID bins { cout << "BIN:" << $2 <<"\n"; } 
+        | BINS MET bins { cout << "BIN MET" << "\n"; } 
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { cout << " Will SAVE into file: lvl0_"<< $2<<".root\n";
@@ -1743,9 +1739,6 @@ command : CMD condition { //find a way to print commands
                                         NodeCuts->insert(make_pair(++cutcount,$2));
     
 				}
-        | CMD minmax {
-                                DEBUG("Min/Max function has run");
-                                }
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
@@ -1926,41 +1919,6 @@ command : CMD condition { //find a way to print commands
 	   | SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
 	   | SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
-minmax : MIN '(' list ',' criteria ')' {
-                                                vector<Node*> criteria;
-                                                vector<myParticle*> newList;
-                                                vector<myParticle*> resList;
-                                                TmpCriteria.swap(criteria);
-                                                TmpParticle.swap(newList);
-                                                myParticle* res = new myParticle;
-                                                myParticle* temp = new myParticle;
-                                                for (auto i = newList.begin(); i != newList.end(); ++i) {
-                                                        *temp = **i;
-                                                        if (temp->collection < res->collection) *res = *temp;
-                                                }
-                                                resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
-                                                Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
-                                                ObjectCuts->insert(make_pair("MIN",obj));
-                                        }
-        | MAX '(' list ',' criteria ')' {
-                                                vector<Node*> criteria;
-                                                vector<myParticle*> newList;
-                                                vector<myParticle*> resList;
-                                                TmpCriteria.swap(criteria);
-                                                TmpParticle.swap(newList);
-                                                myParticle* res = new myParticle;
-                                                myParticle* temp = new myParticle;
-                                                for (auto i = newList.begin(); i != newList.end(); ++i) {
-                                                        *temp = **i;
-                                                        if (temp->collection > res->collection) *res = *temp;
-                                                }
-                                                resList.push_back(res);
-                                                Node* previous = new ObjectNode("Parti",NULL,createNewParti,criteria,"particle");
-                                                Node* obj = new ObjectNode("MIN",previous,NULL,criteria,"min");
-                                                ObjectCuts->insert(make_pair("MIN",obj));
-                                        }
-        ;
 description : description HID {                                                 
                                                 char s [512];
                                                 strcpy(s,$$); 
@@ -1985,9 +1943,6 @@ description : description HID {
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
                         } 
-//            | condition 'ise' action 'yoksa' action  %prec '?' {
-//                        $$=new IfNode($1,$3,$5,"if");
-//             } 
             ;
 action : condition {
                         $$=$1;
@@ -2006,18 +1961,7 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e EQ e { $$=new BinaryNode(eq,$1,$3,"=="); } 
            | e NE e { $$=new BinaryNode(ne,$1,$3,"<>"); }   
            | e MINIMIZE e { DEBUG ("MINIMIZE\n"); $$=new SearchNode(minim,$1,$3,"~="); }
-//         | e '(' ID ')' MINIMIZE e { 
-//                                    map<string,Node*>::iterator ito = ObjectCuts->find($3);
-//                                    if(ito == ObjectCuts->end()) {
-//                                         std::string message = "User object not defined: "; message += $3;
-//                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                         YYERROR;
-//                                    } else {
-//                                         DEBUG(ito->first <<" recognized for search.\n";
-//                                         $$=new SearchNode(minim,$1,$6,"~=",ito); 
-//                                    }
-//                                   }
-           | e MAXIMIZE e { $$=new SearchNode(maxim,$1,$3,"!="); }
+           | e MAXIMIZE e { DEBUG ("MAXIMIZE\n");$$=new SearchNode(maxim,$1,$3,"!="); }
 
 		
            | e IRG e e {                Node* limit1=$3;
@@ -2065,42 +2009,33 @@ e : e '+' e  {
    |'-' e %prec Unary { 
                         $$=new UnaryAONode(unaryMinu,$2,"-");
                }
-   | ABS '(' e ')' {    
-                        $$=new UnaryAONode(abs,$3,"fabs"); 
-               }
-   | SQRT '(' e ')' {    
-                        $$=new UnaryAONode(sqrt,$3,"sqrt"); 
-               }
-   | COS '(' e ')' {    
-                        $$=new UnaryAONode(cos,$3,"cos"); 
-               }
-   | SIN '(' e ')' {    
-                        $$=new UnaryAONode(sin,$3,"sin");
-               }
-   | TAN '(' e ')' {    
-                        $$=new UnaryAONode(tan,$3,"tan");
-               }
-   | SINH '(' e ')' {
-			$$=new UnaryAONode(sinh,$3,"sinh");
-		}
-   | COSH '(' e ')' {
-			$$=new UnaryAONode(cosh,$3,"cosh");
-		}
-   | TANH '(' e ')' {
-			$$=new UnaryAONode(tanh,$3,"tanh");
-		}
-   | EXP '(' e ')' {
-			$$=new UnaryAONode(exp,$3,"exp");
-		}
-   | LOG '(' e ')' {
-			$$=new UnaryAONode(log,$3,"log");
-		}
+   | ABS '(' e ')'  { $$=new UnaryAONode(abs,$3,"fabs"); }
+   | SQRT '(' e ')' { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
+   | COS '(' e ')'  { $$=new UnaryAONode(cos,$3,"cos"); }
+   | SIN '(' e ')'  { $$=new UnaryAONode(sin,$3,"sin"); }
+   | TAN '(' e ')'  { $$=new UnaryAONode(tan,$3,"tan"); }
+   | SINH '(' e ')' { $$=new UnaryAONode(sinh,$3,"sinh"); }
+   | COSH '(' e ')' { $$=new UnaryAONode(cosh,$3,"cosh"); }
+   | TANH '(' e ')' { $$=new UnaryAONode(tanh,$3,"tanh"); }
+   | EXP '(' e ')'  { $$=new UnaryAONode(exp,$3,"exp"); }
+   | LOG '(' e ')'  { $$=new UnaryAONode(log,$3,"log"); }
    | HSTEP '(' e ')' {
 			$$=new UnaryAONode(hstep,$3,"hstep"); //Heavyside step function
 		}
-   |'(' e ')' {   
-                        $$=$2;
-               }
+   | SUM '(' e ')' {  DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
+   | MIN '(' e ')' {  DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MAX '(' e ')' {  DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
+   | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
+                           vector <Node*> newIDlist;
+                           TmpIDList.swap(newIDlist);
+                           $$=new LoopNode(minof,newIDlist,"min");
+                        }
+   | MAX '(' idlist ')' {  DEBUG("\t MAX function IMPLEMENTED\n");  
+                           vector <Node*> newIDlist;
+                           TmpIDList.swap(newIDlist);
+                           $$=new LoopNode(maxof,newIDlist,"max");
+                        }
+   |'(' e ')' {   $$=$2; }
    | NB {       tmp=to_string($1); 
                 $$=new ValueNode($1);
                 } 
@@ -2114,7 +2049,7 @@ e : e '+' e  {
                 it = NodeVars->find($1);
      
                 if(it == NodeVars->end()) {
-                        DEBUG($1<<" : \n");
+                        cout<<$1<<"\t";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
                         YYERROR;//stops parsing if variable not found
 

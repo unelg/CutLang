@@ -132,7 +132,7 @@ double SortNode::evaluate(AnalysisObjects* ao)
     int Max; //Total number of particles of the selected type
     switch(type) //assuming all particles have the same type
     {
-       case 0: Max=ao->muos[ac].size(); break;
+      case 12: Max=ao->muos[ac].size(); break;
        case 1: Max=ao->eles[ac].size(); break;
        case 2: Max=ao->jets[ac].size(); break;
        case 3: Max=left->tagJets(ao,1,ac).size(); break;
@@ -155,7 +155,7 @@ double SortNode::evaluate(AnalysisObjects* ao)
     switch(type)
     {
 	//sorting
-    case 0: //muons
+    case 12: //muons
 	{vector<dbxMuon> tempMuon;
 	for(int i = 0; i<Max; i++) {	
 		tempMuon.push_back( ao->muos[ac].at(sortedIndex[i]) );

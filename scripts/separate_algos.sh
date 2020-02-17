@@ -7,7 +7,7 @@ if [ $# == 1 ]; then
  INIFILE=$1
 fi
 
-cat $INIFILE | grep -v '^#' > _inifile
+cat $INIFILE | grep -v '^ *#' > _inifile
 #-------remove all lines starting with a #
 INIFILE=_inifile
 
