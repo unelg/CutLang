@@ -258,7 +258,6 @@ int BPdbxA:: readAnalysisParams() {
      if (TRGValues.at(4)>0) {
        getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
        savebool = true;
-       TRGs = TRGValues.at(4);
      }
   return retval;
 }
