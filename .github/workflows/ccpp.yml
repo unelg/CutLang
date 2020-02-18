@@ -1,0 +1,24 @@
+name: C/C++ CI
+
+on: [push, pull_request]
+
+jobs:
+  run:
+    steps:
+      - uses: actions/checkout@v2
+      - name: runexamples
+        run: |
+          cd ./runs/
+          wget http://www.hepforge.org/archive/cutlang/cms_opendata_ttbar.root
+          
+          ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exLoop.adl -e 10000
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: buildfile
+      run: | 
+        cd ./CLA
+        echo "This is a test run"
+        sudo make
