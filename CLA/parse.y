@@ -137,6 +137,7 @@ definition : DEF  ID  '=' particules {
 				}
             |  DEF  ID  ':' particules {
                                         pnum=0;
+                                        DEBUG($2<<" will be defined as a new particle.\n");
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
@@ -157,22 +158,9 @@ definition : DEF  ID  '=' particules {
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
                                 }
-    	    | TABLE ID binlist {
-                               DEBUG("TABLE "<< $2  << "\n");
-                               map<string,vector<float> >::iterator itt;
-                               string name = $2;
-                               itt = ListTables->find(name);
-                               if(itt != ListTables->end()) {
-                                      DEBUG(name<<" : ");
-                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
-                                      YYERROR;//stops parsing if variable already defined
-                               }
-                               vector <float> newBinlist;
-                               tmpBinlist.swap(newBinlist);
-                               ListTables->insert(make_pair(name,newBinlist));
-            }  
             |  DEF ID  ':' e {
                                         pnum=0;
+                                        DEBUG($2<<" will be defined as a node variable.\n");
                                         map<string, Node*>::iterator it ;
                                         string name = $2;
                                         it = NodeVars->find(name);
@@ -195,6 +183,20 @@ definition : DEF  ID  '=' particules {
                                         }
                                         NodeVars->insert(make_pair(name,$4));
 			      }
+    	    | TABLE ID binlist {
+                               DEBUG("TABLE "<< $2  << "\n");
+                               map<string,vector<float> >::iterator itt;
+                               string name = $2;
+                               itt = ListTables->find(name);
+                               if(itt != ListTables->end()) {
+                                      DEBUG(name<<" : ");
+                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
+                                      YYERROR;//stops parsing if variable already defined
+                               }
+                               vector <float> newBinlist;
+                               tmpBinlist.swap(newBinlist);
+                               ListTables->insert(make_pair(name,newBinlist));
+            }  
         ;
 //---------------------------------------
 function : '{' particules '}' 'm' {     
@@ -628,11 +630,11 @@ function : '{' particules '}' 'm' {
                                            $$=new SFuncNode(ht,id, it->first, it->second);
                                        }
                          }
-       | MET {
-                                        $$=new SFuncNode(met,0, "MET");
+       | MET {           DEBUG("**************** MET ****************\n");
+                         $$=new SFuncNode(met,0, "MET");
               }
        | ALL {    
-                                        $$=new SFuncNode(all,0, "all");
+                         $$=new SFuncNode(all,0, "all");
               }
         ;
 //------------------------------------------
@@ -666,16 +668,17 @@ particules : particules particule {
                                         }
                                         pnum++;
                          }
-            | particule '+' {   if (pnum==0){ $$=strdup($1); }
-                                        else{                                                
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$1);
-                                                strcpy($$,s);
-                                        }
-                                        pnum++;
-                         }
+//
+//          | particule '+' {   if (pnum==0){ $$=strdup($1); }
+//                                      else{                                                
+//                                              char s [512];
+//                                              strcpy(s,$$); 
+//                                              strcat(s," ");
+//                                              strcat(s,$1);
+//                                              strcpy($$,s);
+//                                      }
+//                                      pnum++;
+//                       }
             | '-' particule {  if (pnum==0){ 
                                             $$=strdup($2); }
                                         else{
@@ -1187,7 +1190,7 @@ particule : GEN '_' index    {
              }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
 
-                DEBUG ("ID "<< $1 <<" no index\n");
+                DEBUG ("Particle candidate "<< $1 <<" has no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1280,9 +1283,14 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
-                        cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
-                        YYERROR;//stops parsing if particle not found 
+                        ito=NodeVars->find($1);
+                        if (ito==NodeVars->end()) { // not found even there!
+                          cout << $1 << " is not a particle, object or variable. \n";
+                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"ID not defined");
+                          YYERROR;//stops parsing if particle not found 
+                        }
+                        cout <<  $1 << " is a node variable, this is a particle. what to do?\n";
+                        //$$=$1;
                        }
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
@@ -1626,7 +1634,7 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' NUMET criteria
 //           | OBJ ID ':' METLV criteria
            ;
-idlist  : ID ',' idlist { cout << $1<<" + "; 
+idlist  : ID ',' idlist { DEBUG($1<<" + "); 
                map<string, Node*>::iterator it ;
                string name = $1;
                it = NodeVars->find(name);
@@ -1636,7 +1644,7 @@ idlist  : ID ',' idlist { cout << $1<<" + ";
                                         }
                TmpIDList.push_back(it->second);
         }
-        | ID { cout << $1 <<"\n";
+        | ID { DEBUG($1 <<"\n");
                map<string, Node*>::iterator it ;
                string name = $1;
                it = NodeVars->find(name);
@@ -2045,6 +2053,7 @@ e : e '+' e  {
    | function {$$=$1; pnum=0;}
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well
+                DEBUG($1<<" is a node variable candidate\n");
                 map<string, Node *>::iterator it ;
                 it = NodeVars->find($1);
      
@@ -2065,7 +2074,6 @@ e : e '+' e  {
                         else {
                                DEBUG($1<<" is a known object\n ") ;
                              }
-
                 } else {
                         $$=it->second;
                 }
@@ -2085,15 +2093,15 @@ e : e '+' e  {
                         DEBUG(it->second->getStr()<<"\n");
                 }
                 map<string,Node*>::iterator ito = ObjectCuts->find($3);
-                                      if(ito == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                      } else {
-                                        DEBUG(ito->first <<" OBJ id recognized.\n");
-                                        it->second->setUserObjects(ito->second);
-                                      }
-                        $$=it->second;
+                if(ito == ObjectCuts->end()) {
+                    std::string message = "User object not defined: "; message += $3;
+                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                    YYERROR;
+                } else {
+                    DEBUG(ito->first <<" OBJ id recognized.\n");
+                    it->second->setUserObjects(ito->second);
+                }
+                $$=it->second;
     } 
    ;
 %%
