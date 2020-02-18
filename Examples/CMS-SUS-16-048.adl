@@ -28,7 +28,7 @@ object jets : JET
 object bjets : jets
   select {JET_}BTag == 1
 
-define dimuon = muons[0] + muons[1]
+define dimuon = muons[0] muons[1]
 define MTm1 = sqrt( 2*{muons[0]}Pt * MET*(1-cos( {METLV[0]}Phi - {muons[0]}Phi )))
 define MTm2 = sqrt( 2*{muons[1]}Pt * MET*(1-cos( {METLV[0]}Phi - {muons[1]}Phi )))
 

@@ -85,8 +85,8 @@ region preselection
 
 region signal
   preselection
-  select m(bjets[0] + bjets[1]) [] 90 150
+  select m(bjets[0] bjets[1]) [] 90 150
   select MTl > 150
   select MCT > 170
-#  bin MET 125 200
+  bin MET 125 200
   
