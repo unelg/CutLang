@@ -24,6 +24,7 @@
 #include "IfNode.h"
 #include "LoopNode.h"
 #include "ObjectNode.hpp"
+#include "SaveNode.h"
 //Delete Nodes
 //Print Nodes As Defined by User
 #endif /* NodeTree_h */
