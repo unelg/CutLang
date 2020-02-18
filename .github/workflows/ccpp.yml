@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+   
+    - name: make
+      run: cd CLA; make
+    - name: check
+      run: cd ../runs; CLA.sh -h
+  
