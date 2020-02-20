@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile -t rootimage
+      run: docker build ./.github/workflows/ --file Dockerfile -t rootimage
 
   deploy:
     runs-on: [ubuntu-latest]
