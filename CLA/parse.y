@@ -695,9 +695,7 @@ particules : particules particule {
 particule : GEN '_' index    {
 				DEBUG("truth particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
-                                a->type =10;
-                                a->index = (int)$3;
-                                a->collection = "Truth";
+                                a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);                            
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -705,9 +703,7 @@ particule : GEN '_' index    {
 
 	 | GEN '[' index ']' { 
 				myParticle* a = new myParticle;
-                                a->type =10;
-                                a->index = (int)$3;
-                                a->collection = "Truth";
+                                a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);
                                 tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -717,9 +713,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 10;
-                                 a->index = 10000+ii;
-                                 a->collection = "Truth";
+                                 a->type = 10; a->index = 10000+ii; a->collection = "Truth";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -728,9 +722,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 10;
-                                 a->index = 10000+ii;
-                                 a->collection = "Truth";
+                                 a->type = 10; a->index = 10000+ii; a->collection = "Truth";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -738,9 +730,7 @@ particule : GEN '_' index    {
 	 | GEN         {
 				DEBUG("all truth particles \t");
 				myParticle* a = new myParticle;
-				a->type =10;
-                                a->index = 6213;
-                                a->collection = "Truth";
+				a->type =10; a->index = 6213; a->collection = "Truth";
                                 TmpParticle.push_back(a);
                                 tmp="truth_6213";
                                 $$=strdup(tmp.c_str());
@@ -749,18 +739,14 @@ particule : GEN '_' index    {
 	| ELE '_' index {
                                 DEBUG("electron particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = (int)$3;
-                                a->collection = "ELE";
+                                a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
         | ELE '[' index ']' {
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = (int)$3;
-                                a->collection = "ELE";
+                                a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -768,9 +754,7 @@ particule : GEN '_' index    {
         | ELE               {
                                 DEBUG("all electron particules \t");
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = 6213;
-                                a->collection = "ELE";
+                                a->type =1; a->index = 6213; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_6213";
                                 $$=strdup(tmp.c_str());
@@ -780,9 +764,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-                                 a->index = 10000+ii;
-                                 a->collection = "ELE";
+                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -791,9 +773,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-                                 a->index = 10000+ii;
-                                 a->collection = "ELE";
+                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -801,18 +781,14 @@ particule : GEN '_' index    {
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
         | MUO '_' index {       
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
        | MUO            {      
@@ -820,9 +796,7 @@ particule : GEN '_' index    {
                                 tmp="muo_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = 6213; a->collection = "MUO";
                                 TmpParticle.push_back(a);
                         }
        | MUO '[' index ':' index ']' {
@@ -830,9 +804,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12;
-                                 a->index = 10000+ii;
-                                 a->collection = "MUO";
+                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -842,9 +814,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12;
-                                 a->index = 10000+ii;
-                                 a->collection = "MUO";
+                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -852,9 +822,7 @@ particule : GEN '_' index    {
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = "TAU";
+                                a->type = 11; a->index = (int)$3; a->collection = "TAU";
                                 TmpParticle.push_back(a);  
                         }
         | TAU '_' index {       
@@ -872,9 +840,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11;
-                                 a->index = 10000+ii;
-                                 a->collection = "TAU";
+                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -883,9 +849,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11;
-                                 a->index = 10000+ii;
-                                 a->collection = "TAU";
+                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -895,20 +859,14 @@ particule : GEN '_' index    {
                                 tmp="tau_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = "TAU";
+                                a->type = 11; a->index = 6213; a->collection = "TAU";
                                 TmpParticle.push_back(a);
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(DataFormats->at(1)>0){
-                                        a->type = 0;
-                                }
-                                else{
-                                        a->type = 1;
-                                }
+                                a->type = 1; 
+                                if(DataFormats->at(1)>0) a->type = 0; 
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -937,12 +895,8 @@ particule : GEN '_' index    {
         | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(DataFormats->at(1)>0){
-                                        a->type = 0;
-                                }
-                                else{
-                                        a->type = 1;
-                                }
+                                a->type = 1;
+                                if(DataFormats->at(1)>0) a->type = 0;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -950,18 +904,14 @@ particule : GEN '_' index    {
         | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
 
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
         | PHO '[' index ':' index ']' {
@@ -969,9 +919,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 8;
-                                 a->index = 10000+ii;
-				 a->collection = "PHO";
+                                 a->type = 8; a->index = 10000+ii; a->collection = "PHO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -980,9 +928,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 8;
-                                 a->index = 10000+ii;
-				 a->collection = "PHO";
+                                 a->type = 8; a->index = 10000+ii; a->collection = "PHO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -991,17 +937,13 @@ particule : GEN '_' index    {
                                 tmp="pho_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = 6213; a->collection = "PHO";
                                 TmpParticle.push_back(a);
                         }
         | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = "JET";
+                                a->type = 2; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
         | JET '[' index ':' index ']' {
@@ -1009,9 +951,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 2;
-                                 a->index = 10000+ii;
-                                 a->collection = "JET";
+                                 a->type = 2; a->index = 10000+ii; a->collection = "JET";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -1020,18 +960,14 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 2;
-                                 a->index = 10000+ii;
-                                 a->collection = "JET";
+                                 a->type = 2; a->index = 10000+ii; a->collection = "JET";
                                  TmpParticle.push_back(a);
                                 }
                         } 
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = "JET";
+                                a->type = 2; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
        | JET            {      
@@ -1039,9 +975,7 @@ particule : GEN '_' index    {
                                 tmp="jet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = "JET";
+                                a->type = 2; a->index = 6213; a->collection = "JET";
                                 TmpParticle.push_back(a);
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
@@ -1081,15 +1015,13 @@ particule : GEN '_' index    {
         | FJET '_' index {      tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
+                                a->type = 9; a->index = (int)$3; a->collection = "FJET";
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ']' {  tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
+                                a->type = 9; a->index = (int)$3; a->collection = "FJET";
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ':' index ']' {
@@ -1097,8 +1029,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 9;
-                                 a->index = 10000+ii;
+                                 a->type = 9; a->index = 10000+ii; a->collection = "FJET";
 				 TmpParticle.push_back(a);
                                 }
                         } 
@@ -1107,8 +1038,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 9;
-                                 a->index = 10000+ii;
+                                 a->type = 9; a->index = 10000+ii; a->collection = "FJET";
 				 TmpParticle.push_back(a);
                                 }
                         } 
@@ -1117,9 +1047,7 @@ particule : GEN '_' index    {
                                 tmp="fjet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = "FJET";
+                                a->type = 9; a->index = 6213; a->collection = "FJET";
                                 TmpParticle.push_back(a);
                         }
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
@@ -1245,9 +1173,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 2; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1255,9 +1181,7 @@ particule : GEN '_' index    {
                            tmp="compo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 20; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
 			                  else if (otype == 10 ) {
@@ -1265,9 +1189,7 @@ particule : GEN '_' index    {
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 10; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 1 ) {
@@ -1275,9 +1197,7 @@ particule : GEN '_' index    {
                            tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 1; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1285,9 +1205,7 @@ particule : GEN '_' index    {
                            tmp="muo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 12; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1295,9 +1213,7 @@ particule : GEN '_' index    {
                            tmp="tau_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 11; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1305,9 +1221,7 @@ particule : GEN '_' index    {
                            tmp="pho_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 8; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1315,13 +1229,116 @@ particule : GEN '_' index    {
                            tmp="ljet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 9; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
                         cout << $1 << " is a problem\n";
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        YYERROR;//stops parsing if particle not found 
+                       }
+                } else {
+                        vector<myParticle*> newList= it->second;
+                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                        $$=$1;
+                }
+             }
+        | ID '[' index ':' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
+                //ngu
+                DEBUG("ID ---[]---\t");
+                map<string,vector<myParticle*> >::iterator it;
+                it = ListParts->find($1);
+                if(it == ListParts->end()) {
+                       map<string,Node*>::iterator ito;
+                       ito=ObjectCuts->find($1);
+                       DEBUG($1<<" : "); //------------new ID
+
+                       if(ito != ObjectCuts->end()) {
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
+                        int otype=((ObjectNode*) ito->second)->type;  
+
+                        if (otype == 2 ) {
+                           DEBUG("which is a JET\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 2; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 20; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+			else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 10; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        } 
+                        else if (otype == 1 ) {
+                           DEBUG("which is a ELE\n");
+                           tmp="ele_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 1; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==12 ) {
+                           DEBUG("which is a MUO\n");
+                           tmp="muo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 12; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==11 ) {
+                           DEBUG("which is a TAU\n");
+                           tmp="tau_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 11; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==8 ) {
+                           DEBUG("which is a PHO\n");
+                           tmp="pho_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 8; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==9 ) {
+                           DEBUG("which is a FatJET\n");
+                           tmp="ljet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 9; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                       } else {
+                        cout << $1 << " is not known.\n";
                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
@@ -1351,9 +1368,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 2; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1361,9 +1376,7 @@ particule : GEN '_' index    {
                            tmp="compo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 20; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                            DEBUG(" TP size :"<<TmpParticle.size()<<"\n");
                         }
@@ -1372,9 +1385,7 @@ particule : GEN '_' index    {
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 10; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype == 1 ) {
@@ -1382,9 +1393,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1392,9 +1401,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1402,9 +1409,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1412,9 +1417,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1422,9 +1425,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
@@ -1456,9 +1457,7 @@ particule : GEN '_' index    {
                            tmp="jet_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index = 6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1466,9 +1465,7 @@ particule : GEN '_' index    {
                            tmp="compo_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
 			else if (otype == 10 ) {
@@ -1476,9 +1473,7 @@ particule : GEN '_' index    {
                            tmp="truth_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 1 ) {
@@ -1486,9 +1481,7 @@ particule : GEN '_' index    {
                            tmp="ele_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1496,9 +1489,7 @@ particule : GEN '_' index    {
                                 tmp="muo_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1506,9 +1497,7 @@ particule : GEN '_' index    {
                            tmp="tau_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1516,9 +1505,7 @@ particule : GEN '_' index    {
                            tmp="pho_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1526,9 +1513,7 @@ particule : GEN '_' index    {
                            tmp="ljet_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
@@ -1551,115 +1536,7 @@ particule : GEN '_' index    {
                 }
              }
         ;
-        | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-
-                DEBUG ("ID "<< $1 <<" no index\n");
-                map<string,vector<myParticle*> >::iterator it;
-                it = ListParts->find($1);
-     
-                if(it == ListParts->end()) {
-                       map<string,Node*>::iterator ito;
-                       ito=ObjectCuts->find($1);
-                       DEBUG($1<<" : "); //------------new ID
-                       if(ito != ObjectCuts->end()) {
-                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
-                        int otype=((ObjectNode*) ito->second)->type;
-
-                        if (otype == 2 ) {
-                           DEBUG("which is a JET\n");
-                           tmp="jet_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        } 
-                        else if (otype == 20 ) {
-                           DEBUG("which is a composite\n");
-                           tmp="compo_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-			else if (otype == 10 ) {
-                           DEBUG("which is a GEN\n");
-                           tmp="truth_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        } 
-                        else if (otype == 1 ) {
-                           DEBUG("which is a ELE\n");
-                           tmp="ele_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==12 ) {
-                           DEBUG("which is a MUO\n");
-                                tmp="muo_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==11 ) {
-                           DEBUG("which is a TAU\n");
-                           tmp="tau_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==8 ) {
-                           DEBUG("which is a PHO\n");
-                           tmp="pho_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==9 ) {
-                           DEBUG("which is a FatJET\n");
-                           tmp="ljet_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                       } else {
-                        cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
-                        YYERROR;//stops parsing if particle not found 
-                       }
-                } else {
-                        DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
-                        vector<myParticle*> newList= it->second;
-                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
-                        DEBUG("NO PROBLEM\n");
-                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
-                        $$=$1;
-                }
-             }
-        ;
+//----------------------------------------
 index : '-' INT {$$=-$2;}
           | INT {$$= $1;}
           | {$$= 6213;} // NGU
