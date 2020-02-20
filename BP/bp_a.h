@@ -62,19 +62,16 @@ class BPdbxA : public dbxA {
       bool skip_histos;
       bool skip_effs;
  
-//DBXcut relevant variables
-        std::vector< std::vector<std::string> > myopelist;
-//-------------------------anna
-// &parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables
+//relevant variables
         list<string> parts; //for def of particles as given by user
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle*> > ListParts;//for particle definition
         map<string,vector<float> > ListTables;//for table definition
         map<int,Node*> NodeCuts;//cuts and histos
+        map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects
         std::vector<std::string> NameInitializations;
         vector<double> TRGValues;
-
-
+        vector<double> bincounts;
 };
 #endif

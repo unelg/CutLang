@@ -22,10 +22,11 @@
 extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
-                map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
+                map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
                 vector<string>* Initializations , vector<double>* DataFormats, map <string, vector<float> >* ListTables
                 ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
+int bincount;
 using namespace std;
 string tmp;
 int pnum;
@@ -57,6 +58,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %parse-param {std::map<std::string,Node*>* NodeVars}
 %parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
 %parse-param {std::map<int,Node*>* NodeCuts}
+%parse-param {std::map<int,Node*>* BinCuts}
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
@@ -120,7 +122,7 @@ definition : DEF  ID  '=' particules {
                                         it = ListParts->find(name);
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         parts->push_back(name+" : "+$4);
@@ -143,7 +145,7 @@ definition : DEF  ID  '=' particules {
                                         it = ListParts->find(name);
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         parts->push_back(name+" : "+$4);
@@ -166,7 +168,7 @@ definition : DEF  ID  '=' particules {
                                         it = NodeVars->find(name);
                                         if(it != NodeVars->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
@@ -178,19 +180,19 @@ definition : DEF  ID  '=' particules {
                                         it = NodeVars->find(name);
                                         if(it != NodeVars->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         NodeVars->insert(make_pair(name,$4));
 			      }
-    	    | TABLE ID binlist {
+    	    | TABLE ID boxlist {
                                DEBUG("TABLE "<< $2  << "\n");
                                map<string,vector<float> >::iterator itt;
                                string name = $2;
                                itt = ListTables->find(name);
                                if(itt != ListTables->end()) {
                                       DEBUG(name<<" : ");
-                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
+                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
                                       YYERROR;//stops parsing if variable already defined
                                }
                                vector <float> newBinlist;
@@ -514,7 +516,7 @@ function : '{' particules '}' 'm' {
                                        if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
                                            std::string message = "OBJect not defined: ";
                                            message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        }
                                        else {
@@ -556,7 +558,7 @@ function : '{' particules '}' 'm' {
                                      if(it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -568,7 +570,7 @@ function : '{' particules '}' 'm' {
                                      if(it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -581,7 +583,7 @@ function : '{' particules '}' 'm' {
                                      if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -594,12 +596,12 @@ function : '{' particules '}' 'm' {
                                      if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else if (it2 == ListParts->end() ) {
                                          std::string message = "Particle not defined: ";
                                          message += $5;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } 
                                       else {
@@ -623,7 +625,7 @@ function : '{' particules '}' 'm' {
                                        if(it == ObjectCuts->end()) {
                                            std::string message = "Object not defined: ";
                                            message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
                                            int id=((ObjectNode*)it->second)->type;
@@ -866,7 +868,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 1; 
-                                if(DataFormats->at(1)>0) a->type = 0; 
+                                if(DataFormats->at(1)>0) a->type = 12; 
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -876,7 +878,7 @@ particule : GEN '_' index    {
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 0;
+				 if(DataFormats->at(1)>0) a->type = 12;
                                  a->index = 10000+ii;
                                  TmpParticle.push_back(a);
                                 }
@@ -887,7 +889,7 @@ particule : GEN '_' index    {
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 0;
+				 if(DataFormats->at(1)>0) a->type = 12;
                                  a->index = 10000+ii;
                                  TmpParticle.push_back(a);
                                 }
@@ -896,7 +898,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 1;
-                                if(DataFormats->at(1)>0) a->type = 0;
+                                if(DataFormats->at(1)>0) a->type = 12;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -1132,26 +1134,6 @@ particule : GEN '_' index    {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
-        | METLV '[' index ':' index ']' {
-                                tmp="meltv_"+to_string((int)$3);
-                                $$=strdup(tmp.c_str());
-                                for (int ii=(int)$3; ii<=(int)$5; ii++){
-                                 myParticle* a = new myParticle;
-                                 a->type = 7;
-				 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
-                                }
-                        } 
-        | METLV '_' index ':' index {
-                                tmp="meltv_"+to_string((int)$3);
-                                $$=strdup(tmp.c_str());
-                                for (int ii=(int)$3; ii<=(int)$5; ii++){
-                                 myParticle* a = new myParticle;
-                                 a->type = 7;
-				 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
-                                }
-                        } 
         | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
                 DEBUG("ID ---[]---\t");
@@ -1234,7 +1216,7 @@ particule : GEN '_' index    {
                         }
                        } else {
                         cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
                 } else {
@@ -1339,7 +1321,7 @@ particule : GEN '_' index    {
                         }
                        } else {
                         cout << $1 << " is not known.\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
                 } else {
@@ -1429,7 +1411,7 @@ particule : GEN '_' index    {
                                 TmpParticle.push_back(a);
                         }
                        } else {
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
                 } else {
@@ -1520,7 +1502,7 @@ particule : GEN '_' index    {
                         ito=NodeVars->find($1);
                         if (ito==NodeVars->end()) { // not found even there!
                           cout << $1 << " is not a particle, object or variable. \n";
-                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"ID not defined");
+                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"ID not defined");
                           YYERROR;//stops parsing if particle not found 
                         }
                         cout <<  $1 << " is a node variable, this is a particle. what to do?\n";
@@ -1557,7 +1539,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
                                                 DEBUG($4<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
                                         else {
@@ -1582,7 +1564,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
                                                 DEBUG($4<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
                                         else {
@@ -1660,7 +1642,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      it = ObjectCuts->find($6);
                                      if(it == ObjectCuts->end()) {
                                                 DEBUG($6<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                        }
                                      ObjectNode* child1=(ObjectNode*)it->second;
@@ -1670,7 +1652,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                       iu = ObjectCuts->find($8);
                                       if(iu == ObjectCuts->end()) {
                                                DEBUG($8<<" : ") ;
-                                               yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                               yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                YYERROR;
                                       }
                                       ObjectNode* child2=(ObjectNode*)iu->second;
@@ -1818,7 +1800,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
          | OBJ BJET ':' JET criteria {
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
                                        YYERROR;//stops parsing if variable not found
                                       }
          | OBJ ID ':' JET criteria {
@@ -1874,7 +1856,7 @@ idlist  : ID ',' idlist { DEBUG($1<<" + ");
                string name = $1;
                it = NodeVars->find(name);
 	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
-                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                            YYERROR;//stops parsing if variable already defined
                                         }
                TmpIDList.push_back(it->second);
@@ -1884,22 +1866,16 @@ idlist  : ID ',' idlist { DEBUG($1<<" + ");
                string name = $1;
                it = NodeVars->find(name);
 	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
-                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                            YYERROR;//stops parsing if variable already defined
                                         }
                TmpIDList.push_back(it->second);
          }
         ;
-bins    : bins NB
-        | bins INT
-        | NB
-        | INT
+boxlist : boxlist abox
+        | abox
         ;
-binlist : binlist abin
-        | abin
-        ;
-
-abin : NB NB NB {
+abox : NB NB NB {
         tmpBinlist.push_back($1);
         tmpBinlist.push_back($2);
         tmpBinlist.push_back($3);
@@ -1929,6 +1905,11 @@ criterion : CMD condition {   TmpCriteria.push_back($2);
 commands : commands command 
         | 
         ;
+bins    : bins NB
+        | bins INT
+        | NB
+        | INT
+        ;
 command : CMD condition { //find a way to print commands                                     
                                          NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
@@ -1938,6 +1919,9 @@ command : CMD condition { //find a way to print commands
 			}
         | BINS ID bins { cout << "BIN:" << $2 <<"\n"; } 
         | BINS MET bins { cout << "BIN MET" << "\n"; } 
+        | BINS condition {  DEBUG("a new bin is found\n"); 
+                            BinCuts->insert(make_pair(++bincount, $2));
+                        }
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
@@ -1969,7 +1953,7 @@ command : CMD condition { //find a way to print commands
                                 itt = ListTables->find(name);
                                 if(itt == ListTables->end()) {
                                        DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
                                        YYERROR;//stops parsing if table is not defined
                                 }
 				Node* a = new TableNode(tweight,$5,itt->second, $2);
@@ -1987,7 +1971,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2006,7 +1990,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2044,7 +2028,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
 						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
@@ -2065,7 +2049,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
 						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
@@ -2078,7 +2062,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2097,7 +2081,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2116,7 +2100,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2135,7 +2119,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2291,7 +2275,7 @@ e : e '+' e  {
      
                 if(it == NodeVars->end()) {
                         cout<<$1<<"\t";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
                         YYERROR;//stops parsing if variable not found
 
                         vector<Node*> newList; //empty
@@ -2300,7 +2284,7 @@ e : e '+' e  {
                         it = ObjectCuts->find($1);
                         if(it == ObjectCuts->end()) {
                                                 DEBUG($1<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                         }
                         else {
@@ -2317,7 +2301,7 @@ e : e '+' e  {
      
                 if(it == NodeVars->end()) {
                         DEBUG($1<<" : ");
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
                         YYERROR;//stops parsing if variable not found
                 }
                 else {
@@ -2327,7 +2311,7 @@ e : e '+' e  {
                 map<string,Node*>::iterator ito = ObjectCuts->find($3);
                 if(ito == ObjectCuts->end()) {
                     std::string message = "User object not defined: "; message += $3;
-                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                     YYERROR;
                 } else {
                     DEBUG(ito->first <<" OBJ id recognized.\n");
