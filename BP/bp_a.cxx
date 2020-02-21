@@ -277,7 +277,7 @@ int BPdbxA:: printEfficiencies() {
   PrintEfficiencies(eff, skip_histos);
   cout <<"Bins for analysis : "<< cname <<endl;
   cout <<setprecision(6);
-  for (int ii=0; ii<bincounts.size(); ii++) std::cout<<"Bin:"<<ii<<" has:"<<bincounts[ii]<<" events\n";
+  for (int ii=0; ii<bincounts.size(); ii++) std::cout<<"\t\t\t\t\t\tBin:"<<ii<<" has:"<<bincounts[ii]<<" events\n";
   return 0;
 }
 

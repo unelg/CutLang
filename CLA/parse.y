@@ -1,5 +1,5 @@
-//%error-verbose
-%define parse.error verbose
+%error-verbose
+//%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -32,6 +32,7 @@ string tmp;
 int pnum;
 int dnum;
 vector<float> tmpBinlist;
+vector<float> tmpBoxlist;
 vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> AliasList;
@@ -1905,20 +1906,29 @@ criterion : CMD condition {   TmpCriteria.push_back($2);
 commands : commands command 
         | 
         ;
-bins    : bins NB
-        | bins INT
-        | NB
-        | INT
+bins    : bins NB {tmpBoxlist.push_back($2);}
+        | bins INT {tmpBoxlist.push_back($2);}
+        | NB {tmpBoxlist.push_back($1);}
+        | INT {tmpBoxlist.push_back($1);}
         ;
 command : CMD condition { //find a way to print commands                                     
-                                         NodeCuts->insert(make_pair(++cutcount,$2));
+                        NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
 	|REJEC condition {
-					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
-					NodeCuts->insert(make_pair(++cutcount,a));
+			Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+			NodeCuts->insert(make_pair(++cutcount,a));
 			}
-        | BINS ID bins { cout << "BIN:" << $2 <<"\n"; } 
-        | BINS MET bins { cout << "BIN MET" << "\n"; } 
+        | BINS e bins {
+                       for (int in=1; in<tmpBoxlist.size(); in++){
+                         DEBUG("lim:"<<tmpBoxlist[in-1]<<" -- "<< tmpBoxlist[in]<<"\n");
+                         Node* l1=new ValueNode(tmpBoxlist[in-1] );
+                         Node* l2=new ValueNode(tmpBoxlist[in  ] );
+                         Node* c1=new BinaryNode(ge,$2,l1,">=");
+                         Node* c2=new BinaryNode(le,$2,l2,"<=");
+                         Node* cl=new BinaryNode(LogicalAnd,c1,c2,"AND");
+                         BinCuts->insert(make_pair(++bincount, cl));
+                       } 
+                      } 
         | BINS condition {  DEBUG("a new bin is found\n"); 
                             BinCuts->insert(make_pair(++bincount, $2));
                         }
@@ -1926,25 +1936,20 @@ command : CMD condition { //find a way to print commands
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
         | CMD ALL {                                     
-                                Node* a = new SFuncNode(all,0, "all");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a = new SFuncNode(all,0, "all");
+                        NodeCuts->insert(make_pair(++cutcount,a));
 		  }
         | CMD LEPSF {    
-                                Node* a=new SFuncNode(lepsf,0,"LEPSF");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD BTAGSF {    
-                                Node* a=new SFuncNode(btagsf,0,"BTAGSF");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a=new SFuncNode(btagsf,0,"BTAGSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
     	| WEIGHT ID NB {
-				Node* a = new SFuncNode(uweight,$3,$2);
-				NodeCuts->insert(make_pair(++cutcount,a));
-			}
-    	| WEIGHT ID ID {
-//                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
-//				Node* a = new SFuncNode(uweight,$3,$2);
-//				NodeCuts->insert(make_pair(++cutcount,a));
+			Node* a = new SFuncNode(uweight,$3,$2);
+			NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
                                 DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
@@ -2168,15 +2173,9 @@ ifstatement : condition '?' action ':' action %prec '?' {
                         $$=new IfNode($1,$3,$5,"if");
                         } 
             ;
-action : condition {
-                        $$=$1;
-                   }
-       | ALL {
-               $$=new SFuncNode(all,0,"all");
-               }
-       | ifstatement {
-                        $$=$1;
-                        }
+action : condition { $$=$1; }
+       | ALL { $$=new SFuncNode(all,0,"all"); }
+       | ifstatement { $$=$1; }
        ;    
 condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e GT e { $$=new BinaryNode(gt,$1,$3,">");  }
@@ -2193,27 +2192,17 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
                                         Node* c1=new BinaryNode(ge,$1,limit1,">=");
                                         Node* c2=new BinaryNode(le,$1,limit2,"<=");
                                         $$=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
-                                        
-                                        } 
+                       } 
            | e ERG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
                                         Node* c1=new BinaryNode(le,$1,limit1,"<=");
                                         Node* c2=new BinaryNode(ge,$1,limit2,">=");
                                         $$=new BinaryNode(LogicalOr,c1,c2,"OR"); 
-                                        
-                                        }                            
-           | condition AND condition { 
-                                        $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); 
-                                        } 
-           | condition OR condition { 
-                                        $$=new BinaryNode(LogicalOr,$1,$3,"OR"); 
-                                        }
-	   | NOT condition {
-					$$=new BinaryNode(LogicalNot,$2,$2,"NOT");
-					}
-           | '(' condition ')' { 
-                                        $$=$2; 
-                                } 
+                       }                            
+           | condition AND condition { $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); } 
+           | condition OR condition  { $$=new BinaryNode(LogicalOr, $1,$3,"OR"); }
+	   |           NOT condition { $$=new BinaryNode(LogicalNot,$2,$2,"NOT"); }
+           | '(' condition ')' { $$=$2; } 
             ;
 e : e '+' e  { 
                 $$=new BinaryNode(add,$1,$3,"+"); 
