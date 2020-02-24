@@ -37,6 +37,13 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
+                                                         ka=ao->truth[ac].at(ai).nAttribute();
+                                                         DEBUG("Gen Nattr:"<<ka<<"\n");
+                                                         for (int anat=0; anat<ka; anat++) {
+                   //                                         cout << "GenAttr:"<<anat<< " :"<<ao->truth[ac].at(ai).Attribute(anat)<<"\n";
+                                                            inputPart->addAttribute(ao->truth[ac].at(ai).Attribute(anat) );
+                                                         }
+//                                                         cout <<"----------------done----------------------\n";
 		                                         break;
                                                 case 12: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); // 0 is muon
@@ -373,7 +380,6 @@ double dzof( dbxParticle* apart){
     DEBUG(" dz:"<<dz<<"\t");
     return dz;
 }
-
 double dxyof( dbxParticle* apart){
     double dxy=999;
     int ka=apart->nAttribute();
@@ -391,15 +397,33 @@ double softIdof( dbxParticle* apart){
    DEBUG(" softidof:"<<v<<"\t");
    return v;
 }
-
-//---------tau only........
+double vzof( dbxParticle* apart){ 
+   double v=apart->Attribute(4);
+   DEBUG(" vert z of:"<<v<<"\t");
+   return v;
+}
+double vyof( dbxParticle* apart){ 
+   double v=apart->Attribute(5);
+   DEBUG(" vert y of:"<<v<<"\t");
+   return v;
+}
+double vxof( dbxParticle* apart){ 
+   double v=apart->Attribute(6);
+   DEBUG(" vert x of:"<<v<<"\t");
+   return v;
+}
+double vtof( dbxParticle* apart){ 
+   double v=apart->Attribute(7);
+   DEBUG(" vert t of:"<<v<<"\t");
+   return v;
+}
 double tauisoof( dbxParticle* apart){
    double v=apart->Attribute(0);
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
 
-
+//------------------------------
 double nbfof( dbxParticle* apart){
     double phi=(apart->lv()).Phi();
     DEBUG(" CORRECT ME NBF:"<<phi<<"\t");
