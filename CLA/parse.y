@@ -117,7 +117,7 @@ definitions : definitions definition
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
-definition : DEF  ID  '=' particules {  
+definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
@@ -132,9 +132,8 @@ definition : DEF  ID  '=' particules {
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
-            |  DEF  ID  ':'  particules {
+            |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
-                                        DEBUG($2<<" will be defined as a new particle.\n");
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
@@ -144,7 +143,7 @@ definition : DEF  ID  '=' particules {
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         if (TmpParticle.size() == 0) { // was wrong rule match
-                                         cout << "MAGIC needed. " << $2<< "\n";
+                                         cout << "MAGIC needed. We shouldnt be here. " << $2<< "\n";
                                          YYERROR;//stops parsing if variable already defined
 //                                       map<string, Node*>::iterator ito;
 //                                       ito= NodeVars->find(name);
@@ -169,9 +168,8 @@ definition : DEF  ID  '=' particules {
                                          ListParts->insert(make_pair(name,newList));
                                         }
                                 }
-           |  DEF ID  ':' e {
+           |  DEF ID  ':' e { DEBUG($2<<" is being worked on as a node variable.\n");
                                         pnum=0;
-                                        DEBUG($2<<" will be defined as a node variable.\n");
                                         map<string, Node*>::iterator it ;
                                         string name = $2;
                                         it = NodeVars->find(name);
@@ -180,9 +178,17 @@ definition : DEF  ID  '=' particules {
                                                 yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
-                                        NodeVars->insert(make_pair(name,$4));
+                                        if ( TmpParticle.size()>0) { // was wrong rule match
+                                          cout << " still recovering...\t";
+                                          vector<myParticle*> newList;
+                                          TmpParticle.swap(newList);
+                                          ListParts->insert(make_pair(name,newList));
+                                          cout << "Done .\n";
+                                        } else {
+                                          NodeVars->insert(make_pair(name,$4));
+                                        }
 			     }
-          |  DEF ID  '=' e {
+          |  DEF ID  '=' e { DEBUG($2<< " is being worked on as a node variable.\n");
                                         pnum=0;
                                         map<string, Node*>::iterator it ;
                                         string name = $2;
@@ -192,7 +198,15 @@ definition : DEF  ID  '=' particules {
                                                 yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
-                                        NodeVars->insert(make_pair(name,$4));
+                                        if ( TmpParticle.size()>0) { // was wrong rule match
+                                          cout << " still recovering...\t";
+                                          vector<myParticle*> newList;
+                                          TmpParticle.swap(newList);
+                                          ListParts->insert(make_pair(name,newList));
+                                          cout << "Done .\n";
+                                        } else {
+                                          NodeVars->insert(make_pair(name,$4));
+                                        }
 			      }
     	    | TABLE ID boxlist {
                                DEBUG("TABLE "<< $2  << "\n");
@@ -632,20 +646,20 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | e '/' e { $$=new BinaryNode(div,$1,$3,"/"); }
    | e '^' e { $$=new BinaryNode(pow,$1,$3,"^"); } 	
    |'-' e %prec Unary { $$=new UnaryAONode(unaryMinu,$2,"-"); }
-   | ABS  '(' e ')' { $$=new UnaryAONode(abs,$3,"fabs"); }
-   | SQRT '(' e ')' { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
-   | COS '(' e ')'  { $$=new UnaryAONode(cos,$3,"cos"); }
-   | SIN '(' e ')'  { $$=new UnaryAONode(sin,$3,"sin"); }
-   | TAN '(' e ')'  { $$=new UnaryAONode(tan,$3,"tan"); }
-   | SINH '(' e ')' { $$=new UnaryAONode(sinh,$3,"sinh"); }
-   | COSH '(' e ')' { $$=new UnaryAONode(cosh,$3,"cosh"); }
-   | TANH '(' e ')' { $$=new UnaryAONode(tanh,$3,"tanh"); }
-   | EXP '(' e ')'  { $$=new UnaryAONode(exp,$3,"exp"); }
-   | LOG '(' e ')'  { $$=new UnaryAONode(log,$3,"log"); }
    | HSTEP '(' e ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
-   | SUM '(' e ')' {  DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
-   | MIN '(' e ')' {  DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
-   | MAX '(' e ')' {  DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
+   | SQRT '(' e ')'  { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
+   | ABS '(' e ')'   { $$=new UnaryAONode(abs,$3,"fabs"); }
+   | COS '(' e ')'   { $$=new UnaryAONode(cos,$3,"cos"); }
+   | SIN '(' e ')'   { $$=new UnaryAONode(sin,$3,"sin"); }
+   | TAN '(' e ')'   { $$=new UnaryAONode(tan,$3,"tan"); }
+   | SINH '(' e ')'  { $$=new UnaryAONode(sinh,$3,"sinh"); }
+   | COSH '(' e ')'  { $$=new UnaryAONode(cosh,$3,"cosh"); }
+   | TANH '(' e ')'  { $$=new UnaryAONode(tanh,$3,"tanh"); }
+   | EXP '(' e ')'   { $$=new UnaryAONode(exp,$3,"exp"); }
+   | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
+   | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
+   | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
    | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
                            TmpIDList.swap(newIDlist);
@@ -665,23 +679,29 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                 DEBUG($1<<" is a node variable candidate\n");
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
-     
-                if(it == NodeVars->end()) {
-                        cout<<$1<<"\t";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
-                        YYERROR;//stops parsing if variable not found
-
-                        vector<Node*> newList; //empty
-                        TmpCriteria.swap(newList);
-                        map<string, Node *>::iterator it;
-                        it = ObjectCuts->find($1);
-                        if(it == ObjectCuts->end()) {
-                                 DEBUG($1<<" : ");
-                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
-                                 YYERROR;
-                        }
-                        else { DEBUG($1<<" is a known object\n "); }
-                } else { $$=it->second; } //get the node from variable map
+                if(it != NodeVars->end()) {
+                  $$=it->second;
+                } else { cout<<$1<<"\t";
+                   map<string, Node *>::iterator ito;
+                   ito = ObjectCuts->find($1);
+                   if(ito == ObjectCuts->end()) {
+                     map<string,vector<myParticle*> >::iterator itp;
+                     itp=ListParts->find($1);
+                     if(itp==ListParts->end() ) {
+                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is NOT a known object nor variable, not even a particle!");
+                       YYERROR;
+                     } else {
+                       cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
+                       vector<myParticle*> newList= itp->second;
+                       DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
+                       TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                       $$=NULL;
+                     }
+                   } else { 
+                   yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is not a known variable, but known as an object.");
+                   YYERROR;//stops parsing if variable not found
+                   }
+                } 
         }
     | ID '(' ID ')' {
                 map<string, Node *>::iterator it;

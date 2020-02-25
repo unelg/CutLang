@@ -1,0 +1,88 @@
+#CLA ADL example7
+
+object bbjet : JET
+    select bTag(JET) == 1
+    select   pT(JET) > 30
+
+object ljet : JET
+    select bTag(JET) == 0
+    select   pT(JET) > 30
+
+object goodjet : JET
+    select   pT(JET) > 30
+    select abs(eta(JET)) < 2.5
+
+
+define   WH1  = goodjet[-1] goodjet[-1] # - index means I do not know yet which jets to take
+define   WH2  = goodjet[-3] goodjet[-3] # -3 here is different than -1, so these are two OTHER jets.
+# --------------> -3 & -3 repeated indices in the same hadronic W
+# --------------> this means the order is NOT important
+# --------------> Jet1 + Jet2 = Jet2 + Jet1
+define   Wchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 # a node variable
+###      chi2 for W finder
+define   bj1 = goodjet[-2]
+define   bj2 = goodjet[-4]
+## top quarks without b tagging 
+define   Top1 = WH1 + bj1 # take another jet with the + sign...
+#----> 12 3 toplamakla, 13 2 toplamak ayni degil. cunku ilkinde bj candidate 3 ikincisinde 2 numarali jetler.
+define   Top2 : WH2 bj2
+###      chi2 for top finder
+#define   totchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 + ((mTop1 - mTop2)/4.2)^2 
+define   topchi = ((m(Top1) - m(Top2))/4.2)^2  # a node variable 
+#define   totchi : Wchi + topchi 
+define   totchi : ((m(Top1) - m(Top2))/4.2)^2  + Wchi
+#define   totchi : Wchi + ((m(Top1) - m(Top2))/4.2)^2  
+
+#topchi will be defined as a node variable.
+#mTop1 is a node variable
+#mTop2 is a node variable
+#Wchi is a node variable
+#totchi will be defined as a node variable.
+
+
+########################### test method
+#define   Wlj1 = ljet[-1] ljet[-1]
+#define   Wlj2 = ljet[-3] ljet[-3]
+#define   Wlchi : (({Wlj1}m - 80.4)/2.1)^2 + (({Wlj2}m - 80.4)/2.1)^2 
+#define   bb1 = bbjet[-5]
+#define   bb2 = bbjet[-6]
+
+#define    btop1 : Wlj1 bb1 
+#define    btop2 : Wlj2 bb2 
+#define   totbchi : (( {btop1}m - { btop2}m )/4.2)^2 + Wchi
+
+#algo bestbb
+# select   ALL 
+# select   Size(ljet) >= 4
+# select   Size(bbjet) >= 2
+# select   Wlchi  ~= 0
+# select   (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
+## select   Wchi + (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
+## histo    hmWlj1 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj1)
+## histo    hmWlj2 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj2)
+# histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, m(btop1)
+# histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, m(btop2)
+ 
+
+ algo besttop
+   select   ALL                   # to count all events
+#   select   Size(JET) >= 6        # at least 6 jets
+#   histo    hJetPt0 , "Pt Jet (GeV)", 70, 0, 700, pT(JET_5)
+   select   Size(goodjet) >= 6        # at least 6 jets
+#   select   MET < 100             # no large MET
+   select   totchi  ~= 0  # find the tops and ws
+#   histo    hchi , "Histo of chi2", 50, 0, 500, totchi
+   select   totchi < 10.5 # small than a certain value of chi2
+#   histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
+#   histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
+#   histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
+#   histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
+
+#  histo    hWbR1  , "Angular distance between W1 and bjet1", 70, 0, 7,  dR(WH1, bj1 )  
+#  histo    hWbR2  , "Angular distance between W2 and bjet2", 70, 0, 7,  dR(WH2, bj2 )  
+#  select   dR(WH1 , bj1 ) > 0.6
+#  select   dR(WH2 , bj2 ) > 0.6
+#  histo    hmASTop1 , "Hadronic top reco after cut(GeV)", 70, 0, 700, mTop1
+#  histo    hmAsTop2 , "Hadronic top reco after cut(GeV)", 70, 0, 700, mTop2
+
+  
