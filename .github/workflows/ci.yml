@@ -18,7 +18,7 @@ jobs:
       uses: actions/cache@v1.1.2
       with:
         path: ./build/
-        key: ${{ runner.os }}-build-${{ hashFiles('**ci.yml') }}
+        key: ${{ runner.os }}-build-${{ hashFiles('./.github/workflows/**ci.yml') }}
         restore-keys: |
           ${{ runner.os }}-build-
           ${{ runner.os }}-
