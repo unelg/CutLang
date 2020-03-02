@@ -27,7 +27,7 @@ jobs:
       run: |
         sudo apt update ; 
         sudo apt install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
-        libxft-dev libxext-dev ;t
+        libxft-dev libxext-dev ;
         sudo apt install gfortran libssl-dev libpcre3-dev \
         xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
         libmysqlclient-dev libfftw3-dev libcfitsio-dev \
