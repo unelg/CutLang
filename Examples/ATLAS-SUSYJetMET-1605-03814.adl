@@ -11,17 +11,6 @@
 #  hepdata http://hepdata.cedar.ac.uk/view/ins1304456
 #  doi 10.1140/epjc/s10052-016-4184-8
 
-######## GENERIC OBJECT THRESHOLDS
-#minptp  = 10.0  # min pt of photons 
-#minpte  = 10.0  # min pt of electrons 
-#minptm  = 10.0  # min pt of muons 
-#minptj  = 20.0  # min pt of jets
-
-#maxetap = 2.37  # max pseudorapidity of photons  
-#maxetae = 2.47  # max pseudorapidity of electrons  
-#maxetam = 2.70  # max pseudorapidity of muons 
-#maxetaj = 2.80  # max pseudorapidity of jets
-
 ######## USER DEFINITIONS
 def Meffs : MET + HT   #Meff is simple
 #def Meff4j : MET + { JETsr_0 }Pt + { JETsr_1 }Pt + { JETsr_2 }Pt + { JETsr_3 }Pt 
@@ -51,7 +40,6 @@ cmd  { ELEclean_ , JETclean_ }dR >= 0.4
 obj  JETsr : JETclean 
 cmd  { JETclean_ }Pt > 50 
 
-def newdefset ### this comment with a dummy ID has to sit right after object definitions
 def Jsr0MEtFi : {JETsr_0,METLV_0}dPhi 
 def Jsr1MEtFi : {JETsr_1,METLV_0}dPhi 
 def Jsr2MEtFi : {JETsr_2,METLV_0}dPhi 

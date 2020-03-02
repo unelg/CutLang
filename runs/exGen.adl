@@ -9,7 +9,11 @@ object genmuons : GEN
  select Abs( Eta(GEN) ) < 2.4
 
 region test1
-  select Size(genelectrons) >= 1
+  select Size(genelectrons) == 1
+ select vY(genelectrons_0) > 0
 
-region test2
-  select Size(genmuons) >= 1
+#region test2
+# select {GEN_1}PDGID == -11
+# select {GEN_1}pT > 5
+# select {GEN_1}AbsEta < 2.4
+# select vX(GEN_1) > 0

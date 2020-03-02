@@ -20,7 +20,9 @@ object bjets
   select BTag(Jet) == 1
 
 object largejets
-  take antikT(jets, 1.4)
+  take jets
+  select pT(jets) > 50
+#  take antikT(jets, 1.4)
   
 object muons
   take Muon
@@ -53,6 +55,7 @@ region baseline
 region SR
   baseline
   select MTl > 140
+  select Size(largejets) >= 1
   select MJ > 400
-#  bin MET 200 350 500
+  bin MET 200 350 500
 

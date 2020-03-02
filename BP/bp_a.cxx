@@ -15,7 +15,9 @@
 #define DEBUG(a)
 #endif
 
-extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, vector<double>* TRGValues, map<string,vector<float> >* ListTables);
+extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
+                                       map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
+                                       vector<double>* TRGValues, map<string,vector<float> >* ListTables);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -195,13 +197,14 @@ int BPdbxA:: readAnalysisParams() {
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
        cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
          exit (99); 
        }
-       cout << "We have "<<NodeCuts.size() << " CutLang Cuts and "<<ObjectCuts.size()  <<" CutLang objects cuts\n";
+       cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
+       cout << BinCuts.size() << " Bins\n";
        TRGe    = TRGValues[0];
        TRGm    = TRGValues[1];
        skip_histos    = (bool) TRGValues[3];
@@ -220,6 +223,11 @@ int BPdbxA:: readAnalysisParams() {
             TString newLabels=effCL[ iter->first -1];
             eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
             iter++; 
+       }
+       iter = BinCuts.begin();
+       while(iter != BinCuts.end())
+       { bincounts.push_back(0);
+         iter++;
        }
 
 #ifdef _CLV__
@@ -267,6 +275,9 @@ int BPdbxA:: printEfficiencies() {
   cout <<"Efficiencies for analysis : "<< cname <<endl;
   cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
   PrintEfficiencies(eff, skip_histos);
+  cout <<"Bins for analysis : "<< cname <<endl;
+  cout <<setprecision(6);
+  for (int ii=0; ii<bincounts.size(); ii++) std::cout<<"\t\t\t\t\t\tBin:"<<ii<<" has:"<<bincounts[ii]<<" events\n";
   return 0;
 }
 
@@ -341,6 +352,22 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
+
+    iter = BinCuts.begin();
+    DEBUG("Binning now ..\n");
+    while(iter != BinCuts.end())
+    {
+        DEBUG("+++++ Binning: "<<iter->first<<" |"<<"\t");
+        double d=iter->second->evaluate(&ao); // execute the selection cut
+        DEBUG("\t****Result : " << d << std::endl);
+        evt_weight = ao.evt.user_evt_weight;
+        if (d==1) { // inside a bin
+           DEBUG(iter->first<<" Passed\n"); // do something
+           bincounts[iter->first -1]++;
+           break;
+        }
+        iter++; //moves on to the next cut
+    }// loop over all binnings   
 
 // les cuts sont finis ici.
     return 1;

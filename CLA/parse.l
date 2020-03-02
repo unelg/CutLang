@@ -51,6 +51,11 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][tT][aA][gG] return ISCTAG;
 [tT][aA][uU][tT][aA][gG] return ISTAUTAG;
 [pP][dD][gG][iI][dD] return PDGID;
+[sS][tT][aA][tT][uU][sS] return STATUS;
+[vV][tT] return VERT;
+[vV][xX] return VERX;
+[vV][yY] return VERY;
+[vV][zZ] return VERZ;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "tau1" return TAU1;

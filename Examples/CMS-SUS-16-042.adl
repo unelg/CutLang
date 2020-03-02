@@ -48,7 +48,8 @@ object jets
 object bjets
   take jets
   select BTag( jets) == 1
-  
+
+ 
 # VARIABLES
 define LepT = {leptons[0]}pT + MET
 define Wlep = leptons[0] METLV_0
@@ -70,6 +71,7 @@ region baseline
   select HT(jets) > 500
   select dphilW > 0.5
 
+
 # Many bins njets, LT, dphilW, HT
 region zerob
   baseline
@@ -80,3 +82,9 @@ region multib
   baseline
   select size(bjets) > 0
   select size(jets) >= 6
+  bin Size(bjets) == 1 AND LepT [] 250  450  AND  HT [] 500 1000
+  bin Size(bjets) == 1 AND LepT [] 250  450  AND  HT [] 1000 1500
+
+
+
+

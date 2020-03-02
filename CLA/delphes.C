@@ -171,7 +171,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Jets:"<<Jet_<<std::endl;
 #endif
-/*
+
 //GEN LEVEL particles
         for (unsigned int i=0; i<Particle_; i++) {
                 alv.SetPtEtaPhiM( Particle_PT[i], Particle_Eta[i], Particle_Phi[i], Particle_Mass[i] ); // all in GeV
@@ -179,10 +179,18 @@ std::cout << "Jets:"<<Jet_<<std::endl;
                 adbxgen->setCharge( Particle_Charge[i] );
                 adbxgen->setPdgID(  Particle_PID[i] );
                 adbxgen->setParticleIndx(i);
+                adbxgen->addAttribute( Particle_DZ[i]);
+                adbxgen->addAttribute( Particle_D0[i]     );
+                adbxgen->addAttribute( Particle_Status[i] );
+                adbxgen->addAttribute( Particle_Z[i] );
+                adbxgen->addAttribute( Particle_Y[i] );
+//                cout << "Delphes Vx:"<<Particle_X[i]<<"\n";
+                adbxgen->addAttribute( Particle_X[i] );
+                adbxgen->addAttribute( Particle_T[i] );
                 truth.push_back(*adbxgen);
                 delete adbxgen;
         }
-*/
+
 
 
 //MET
