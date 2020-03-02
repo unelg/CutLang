@@ -1,5 +1,5 @@
-//%error-verbose
-%define parse.error verbose
+%error-verbose
+//%define parse.error verbose
 %{ 
 #include "NodeTree.h"
 #include <math.h>
@@ -22,15 +22,17 @@
 extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
-                map<int,Node*>* NodeCuts, map<string,Node*>* ObjectCuts,
+                map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
                 vector<string>* Initializations , vector<double>* DataFormats, map <string, vector<float> >* ListTables
                 ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
+int bincount;
 using namespace std;
 string tmp;
 int pnum;
 int dnum;
 vector<float> tmpBinlist;
+vector<float> tmpBoxlist;
 vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> AliasList;
@@ -57,6 +59,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %parse-param {std::map<std::string,Node*>* NodeVars}
 %parse-param {std::map<std::string,std::vector<myParticle*> >* ListParts}
 %parse-param {std::map<int,Node*>* NodeCuts}
+%parse-param {std::map<int,Node*>* BinCuts}
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
@@ -71,6 +74,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
+%token VERT VERX VERY VERZ STATUS
 %token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
@@ -113,320 +117,339 @@ definitions : definitions definition
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
-definition : DEF  ID  '=' particules {
+definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         parts->push_back(name+" : "+$4);
-                                                // std::cout<<"\n TMP List: \n";
-                                                // vector<myParticle*>::iterator myiterator;
-                                                // myiterator = TmpParticle.begin();
-                                                // while (myiterator != TmpParticle.end()) {
-                                                // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                // myiterator++;
-                                                // }
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
-            |  DEF  ID  ':' particules {
+            |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
                                                 YYERROR;//stops parsing if variable already defined
                                         }
-                                        parts->push_back(name+" : "+$4);
-                                                // std::cout<<"\n TMP List: \n";
-                                                // vector<myParticle*>::iterator myiterator;
-                                                // myiterator = TmpParticle.begin();
-                                                // while (myiterator != TmpParticle.end()) {
-                                                // std::cout << "type: " << myiterator->type << " index: " << myiterator->index << endl;
-                                                // myiterator++;
-                                                // }
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        ListParts->insert(make_pair(name,newList));
+                                        if (TmpParticle.size() == 0) { // was wrong rule match
+                                         cout << "MAGIC needed. We shouldnt be here. " << $2<< "\n";
+                                         YYERROR;//stops parsing if variable already defined
+//                                       map<string, Node*>::iterator ito;
+//                                       ito= NodeVars->find(name);
+//                                       if(ito!= NodeVars->end()) {
+//                                              DEBUG(name<<" : ");
+//                                              yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+//                                              YYERROR;//stops parsing if variable already defined
+//                                       }
+//                                      vector<Node*> newList; //empty
+//                                      TmpCriteria.swap(newList);
+//                                      cout << "got #magic:"<<newList.size()<<"\n";
+//                                      for (int np=0; np<newList.size(); np++) {
+//                                               newList[np]->display();
+//                                               cout <<"-----------------\n";
+//                                               NodeVars->insert(make_pair(name,newList[np]));
+//                                      }
+//                                        
+                                        } else {
+                                         parts->push_back(name+" : "+$4);
+                                         vector<myParticle*> newList;
+                                         TmpParticle.swap(newList);
+                                         ListParts->insert(make_pair(name,newList));
+                                        }
                                 }
-    	    | TABLE ID binlist {
+           |  DEF ID  ':' e { DEBUG($2<<" is being worked on as a node variable.\n");
+                                        pnum=0;
+                                        map<string, Node*>::iterator it ;
+                                        string name = $2;
+                                        it = NodeVars->find(name);
+                                        if(it != NodeVars->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        if ( TmpParticle.size()>0) { // was wrong rule match
+                                          cout << " still recovering...\t";
+                                          vector<myParticle*> newList;
+                                          TmpParticle.swap(newList);
+                                          ListParts->insert(make_pair(name,newList));
+                                          cout << "Done .\n";
+                                        } else {
+                                          NodeVars->insert(make_pair(name,$4));
+                                        }
+			     }
+          |  DEF ID  '=' e { DEBUG($2<< " is being worked on as a node variable.\n");
+                                        pnum=0;
+                                        map<string, Node*>::iterator it ;
+                                        string name = $2;
+                                        it = NodeVars->find(name);
+                                        if(it != NodeVars->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        if ( TmpParticle.size()>0) { // was wrong rule match
+                                          cout << " still recovering...\t";
+                                          vector<myParticle*> newList;
+                                          TmpParticle.swap(newList);
+                                          ListParts->insert(make_pair(name,newList));
+                                          cout << "Done .\n";
+                                        } else {
+                                          NodeVars->insert(make_pair(name,$4));
+                                        }
+			      }
+    	    | TABLE ID boxlist {
                                DEBUG("TABLE "<< $2  << "\n");
                                map<string,vector<float> >::iterator itt;
                                string name = $2;
                                itt = ListTables->find(name);
                                if(itt != ListTables->end()) {
                                       DEBUG(name<<" : ");
-                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
+                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table already defined");
                                       YYERROR;//stops parsing if variable already defined
                                }
                                vector <float> newBinlist;
                                tmpBinlist.swap(newBinlist);
                                ListTables->insert(make_pair(name,newBinlist));
             }  
-            |  DEF ID  ':' e {
-                                        pnum=0;
-                                        map<string, Node*>::iterator it ;
-                                        string name = $2;
-                                        it = NodeVars->find(name);
-                                        if(it != NodeVars->end()) {
-                                                DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
-                                                YYERROR;//stops parsing if variable already defined
-                                        }
-                                        NodeVars->insert(make_pair(name,$4));
-			     }
-            |  DEF ID  '=' e {
-                                        pnum=0;
-                                        map<string, Node*>::iterator it ;
-                                        string name = $2;
-                                        it = NodeVars->find(name);
-                                        if(it != NodeVars->end()) {
-                                                DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
-                                                YYERROR;//stops parsing if variable already defined
-                                        }
-                                        NodeVars->insert(make_pair(name,$4));
-			      }
         ;
 //---------------------------------------
-function : '{' particules '}' 'm' {     
-                                       vector<myParticle*> newList;
+function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function with:"<< newList.size() <<" particles.\n");
                                   }
-         | 'm' '(' particules ')' {     
-                                       vector<myParticle*> newList;
+         | 'm' '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function\n");
                                   }
-         | 'q' '(' particules ')' {     
-                                       vector<myParticle*> newList;
+         | 'q' '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
-         | '{' particules '}' 'q' {     
-                                       vector<myParticle*> newList;
+         | '{' particules '}' 'q' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
 //---------------------------------------
-         | PDGID '(' particules ')' {     
-                                       vector<myParticle*> newList;
+         | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
                                   }
-         | '{' particules '}' PDGID {     
-                                       vector<myParticle*> newList;
+         | '{' particules '}' PDGID {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
                                   }
 //---------------------------------------
-         | '{' particules '}' 'P' {     
-                                       vector<myParticle*> newList;
+         | '{' particules '}' 'P' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
                                   }
-         | 'P' '(' particules ')' {     
-                                       vector<myParticle*> newList;
+         | 'P' '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
                                   }
 //---------------------------------------
-         | '{' particules '}' 'E' {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' 'E' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
-         | 'E' '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | 'E' '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
 //---------------------------------------
-         | '{' particules '}' ISTAUTAG {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' ISTAUTAG {vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"TauTAG");
                                     }
-         | ISTAUTAG '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | ISTAUTAG '(' particules ')' {vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"TauTAG");
                                     }
-         | '{' particules '}' ISCTAG {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' ISCTAG {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"CTAG");
                                     }
-         | ISCTAG '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | ISCTAG '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"CTAG");
                                     }
 //---------------------------------------
-         | '{' particules '}' ISBTAG {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' ISBTAG {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"BTAG");
                                     }
-         | ISBTAG '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | ISBTAG '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"BTAG");
                                     }
-         | '{' particules '}' DEEPB {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' DEEPB {   vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
                                     }
-         | DEEPB '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | DEEPB '(' particules ')' {   vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(DeepBof,newList,"deepB");
                                     }
-         | '{' particules '}' MSOFTD {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' MSOFTD {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(MsoftDof,newList,"msoftD");
                                   }
-         | MSOFTD '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | MSOFTD '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(MsoftDof,newList,"msoftD");
                                   }
-         | '{' particules '}' TAU1 {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' TAU1 {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau1of,newList,"tau1");
                                   }
-         | TAU1 '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | TAU1 '(' particules ')' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau1of,newList,"tau1");
                                   }
-         | '{' particules '}' TAU2 {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' TAU2 {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau2of,newList,"tau2");
                                   }
-         | TAU2 '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | TAU2 '(' particules ')' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau2of,newList,"tau2");
                                   }
-         | '{' particules '}' TAU3 {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' TAU3 {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau3of,newList,"tau3");
                                   }
-         | TAU3 '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | TAU3 '(' particules ')' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau3of,newList,"tau3");
                                   }
 
-         | '{' particules '}' DXY {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' DXY {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dxyof,newList,"dxy");
                                   }
-         | DXY '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | DXY '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dxyof,newList,"dxy");
                                   }
-         | '{' particules '}' DZ {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' DZ {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dzof,newList,"dz");
                                   }
-         | DZ '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | DZ '(' particules ')' {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dzof,newList,"dz");
                                   }
-         | '{' particules '}' RELISO {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' VERZ {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vzof,newList,"vz");
+                                  }
+         | VERZ '(' particules ')' {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vzof,newList,"vz");
+                                  }
+         | '{' particules '}' VERY {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vyof,newList,"vy");
+                                  }
+         | VERY '(' particules ')' {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vyof,newList,"vy");
+                                  }
+         | '{' particules '}' VERX {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vxof,newList,"vx");
+                                  }
+         | VERX '(' particules ')' {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vxof,newList,"vx");
+                                  }
+         | '{' particules '}' VERT {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vtof,newList,"vt");
+                                  }
+         | VERT '(' particules ')' {    vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vtof,newList,"vt");
+                                  }
+         | '{' particules '}' RELISO {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
                                   }
-         | RELISO '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | RELISO '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
                                   }
-         | '{' particules '}' SOFTID {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' SOFTID {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(softIdof,newList,"softId");
                                   }
-         | SOFTID '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | SOFTID '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(softIdof,newList,"softId");
                                   }
-         | '{' particules '}' TAUISO {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' STATUS {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(softIdof,newList,"status"); // status and softID are same attrib
+                                  }
+         | STATUS '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(softIdof,newList,"status"); // status and softID are same attrib
+                                  }
+         | '{' particules '}' TAUISO {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
                                   }
-         | TAUISO '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | TAUISO '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
                                   }
 //---------------------------------------
 //---------------------------------------
-         | '{' particules '}' PHI {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' PHI {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
-         | PHI '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | PHI '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
 //---------------------------------------
-         | '{' particules '}' RAP {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' RAP {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Rapof,newList,"rap");
                                   }
-         | RAP '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | RAP '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Rapof,newList,"rap");
                                   }
 //---------------------------------------
-         | '{' particules '}' ETA {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' ETA {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
-         | ETA '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | ETA '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
 //---------------------------------------
-         | ABSETA '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | ABSETA '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
-         | '{' particules '}' ABSETA {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' ABSETA {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
@@ -443,84 +466,71 @@ function : '{' particules '}' 'm' {
                                  }
 
 //---------------------------------------
-         | '{' particules '}' PZ {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' PZ {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
                                  }
-         | PZ '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | PZ '(' particules ')' {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
                                  }
 //---------------------------------------
-         | '{' particules '}' NBF {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' NBF {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
-         | NBF '(' particules ')' {
-                                        vector<myParticle*> newList;
+         | NBF '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
-         | list DR { 
-                                        vector<myParticle*> newList;
+         | list DR { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-         | DR list {            
-                                        vector<myParticle*> newList;
+         | DR list {            	vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-        | list DPHI { 
-                                        vector<myParticle*> newList;
+        | list DPHI { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
-        | DPHI list { 
-                                        vector<myParticle*> newList;
+        | DPHI list { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
-        | list DETA { 
-                                        vector<myParticle*> newList;
+        | list DETA { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
-        | DETA list { 
-                                        vector<myParticle*> newList;
+        | DETA list { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
-        | NUMOF '(' ID ')'  {      
-                                       map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
+        | NUMOF '(' ID ')'  {          map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
                                            std::string message = "OBJect not defined: ";
                                            message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
-                                       }
-                                       else {
+                                       } else {
                                            if (it != ObjectCuts->end()){
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count,            type, it->first, it->second);
-                                           }
-                                           else { // new type is defined using particle class summation
+                                           } else { // new type is defined using particle class summation
                                             vector<myParticle*> newList= itdef->second;
                                            // TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                                            // $$=new SFuncNode(count,100, itdef->
@@ -554,7 +564,7 @@ function : '{' particules '}' 'm' {
                                      if(it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -566,7 +576,7 @@ function : '{' particules '}' 'm' {
                                      if(it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -579,7 +589,7 @@ function : '{' particules '}' 'm' {
                                      if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
@@ -592,12 +602,12 @@ function : '{' particules '}' 'm' {
                                      if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } else if (it2 == ListParts->end() ) {
                                          std::string message = "Particle not defined: ";
                                          message += $5;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
                                      } 
                                       else {
@@ -613,28 +623,112 @@ function : '{' particules '}' 'm' {
                                         int type=newList[0]->type; // type is JETS or FJETS etc..
                                         $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList,  newList1);
                         }
-        | HT {
-                                        $$=new SFuncNode(ht,0,"JET");
-             }
+        | HT { $$=new SFuncNode(ht,0,"JET"); }
         | HT '(' ID  ')' {
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if(it == ObjectCuts->end()) {
                                            std::string message = "Object not defined: ";
                                            message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
                                            int id=((ObjectNode*)it->second)->type;
                                            $$=new SFuncNode(ht,id, it->first, it->second);
                                        }
                          }
-       | MET {
-                                        $$=new SFuncNode(met,0, "MET");
-              }
-       | ALL {    
-                                        $$=new SFuncNode(all,0, "all");
-              }
+       | MET {  $$=new SFuncNode(met,0, "MET"); }
+       | ALL {  $$=new SFuncNode(all,0, "all"); }
         ;
+//-------------------------------------------------------------------------
+ e :  e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
+   | e '-' e { $$=new BinaryNode(sub,$1,$3,"-"); }
+   | e '*' e { $$=new BinaryNode(mult,$1,$3,"*"); }
+   | e '/' e { $$=new BinaryNode(div,$1,$3,"/"); }
+   | e '^' e { $$=new BinaryNode(pow,$1,$3,"^"); } 	
+   |'-' e %prec Unary { $$=new UnaryAONode(unaryMinu,$2,"-"); }
+   | HSTEP '(' e ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
+   | SQRT '(' e ')'  { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
+   | ABS '(' e ')'   { $$=new UnaryAONode(abs,$3,"fabs"); }
+   | COS '(' e ')'   { $$=new UnaryAONode(cos,$3,"cos"); }
+   | SIN '(' e ')'   { $$=new UnaryAONode(sin,$3,"sin"); }
+   | TAN '(' e ')'   { $$=new UnaryAONode(tan,$3,"tan"); }
+   | SINH '(' e ')'  { $$=new UnaryAONode(sinh,$3,"sinh"); }
+   | COSH '(' e ')'  { $$=new UnaryAONode(cosh,$3,"cosh"); }
+   | TANH '(' e ')'  { $$=new UnaryAONode(tanh,$3,"tanh"); }
+   | EXP '(' e ')'   { $$=new UnaryAONode(exp,$3,"exp"); }
+   | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
+   | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
+   | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
+   | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
+                           vector <Node*> newIDlist;
+                           TmpIDList.swap(newIDlist);
+                           $$=new LoopNode(minof,newIDlist,"min");
+                        }
+   | MAX '(' idlist ')' {  DEBUG("\t MAX function IMPLEMENTED\n");  
+                           vector <Node*> newIDlist;
+                           TmpIDList.swap(newIDlist);
+                           $$=new LoopNode(maxof,newIDlist,"max");
+                        }
+   |'(' e ')' {   $$=$2; }
+   | NB {  tmp=to_string($1); $$=new ValueNode($1);} 
+   | INT {  $$=new ValueNode($1);} 
+   | function {$$=$1; pnum=0;}
+   //to make the difference between ID + ID and ID ID in particules ->create two maps
+   | ID { //we want the original defintions as well
+                DEBUG($1<<" is a node variable candidate\n");
+                map<string, Node *>::iterator it;
+                it = NodeVars->find($1);
+                if(it != NodeVars->end()) {
+                  $$=it->second;
+                } else { cout<<$1<<"\t";
+                   map<string, Node *>::iterator ito;
+                   ito = ObjectCuts->find($1);
+                   if(ito == ObjectCuts->end()) {
+                     map<string,vector<myParticle*> >::iterator itp;
+                     itp=ListParts->find($1);
+                     if(itp==ListParts->end() ) {
+                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is NOT a known object nor variable, not even a particle!");
+                       YYERROR;
+                     } else {
+                       cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
+                       vector<myParticle*> newList= itp->second;
+                       DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
+                       TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                       $$=NULL;
+                     }
+                   } else { 
+                   yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is not a known variable, but known as an object.");
+                   YYERROR;//stops parsing if variable not found
+                   }
+                } 
+        }
+    | ID '(' ID ')' {
+                map<string, Node *>::iterator it;
+                it = NodeVars->find($1);
+     
+                if(it == NodeVars->end()) {
+                        DEBUG($1<<" : ");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
+                        YYERROR;//stops parsing if variable not found
+                }
+                else {
+                        DEBUG(it->first <<" node ID recognized.\t");
+                        DEBUG(it->second->getStr()<<"\n");
+                }
+                map<string,Node*>::iterator ito = ObjectCuts->find($3);
+                if(ito == ObjectCuts->end()) {
+                    std::string message = "User object not defined: "; message += $3;
+                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                    YYERROR;
+                } else {
+                    DEBUG(ito->first <<" OBJ id recognized.\n");
+                    it->second->setUserObjects(ito->second);
+                }
+                $$=it->second;
+    } 
+   ;
+
 //------------------------------------------
 list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
@@ -656,6 +750,13 @@ particules : particules particule {
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
                                   }
+            | particules '+' particule {
+                                                char s [512];
+                                                strcpy(s,$$); 
+                                                strcat(s," ");
+                                                strcat(s,$3);
+                                                strcpy($$,s);                                       
+                                  }
             | particule {   if (pnum==0){ $$=strdup($1);    }
                                         else{                                                
                                                 char s [512];
@@ -666,16 +767,16 @@ particules : particules particule {
                                         }
                                         pnum++;
                          }
-            | particule '+' {   if (pnum==0){ $$=strdup($1); }
-                                        else{                                                
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$1);
-                                                strcpy($$,s);
-                                        }
-                                        pnum++;
-                         }
+//          | '+' particule  {   if (pnum==0){ $$=strdup($2); }
+//                                      else{                                                
+//                                              char s [512];
+//                                              strcpy(s,$$); 
+//                                              strcat(s," ");
+//                                              strcat(s,$2);
+//                                              strcpy($$,s);
+//                                      }
+//                                      pnum++;
+//                       }
             | '-' particule {  if (pnum==0){ 
                                             $$=strdup($2); }
                                         else{
@@ -692,9 +793,7 @@ particules : particules particule {
 particule : GEN '_' index    {
 				DEBUG("truth particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
-                                a->type =10;
-                                a->index = (int)$3;
-                                a->collection = "Truth";
+                                a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);                            
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
@@ -702,9 +801,7 @@ particule : GEN '_' index    {
 
 	 | GEN '[' index ']' { 
 				myParticle* a = new myParticle;
-                                a->type =10;
-                                a->index = (int)$3;
-                                a->collection = "Truth";
+                                a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);
                                 tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -714,9 +811,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 10;
-                                 a->index = 10000+ii;
-                                 a->collection = "Truth";
+                                 a->type = 10; a->index = 10000+ii; a->collection = "Truth";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -725,9 +820,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 10;
-                                 a->index = 10000+ii;
-                                 a->collection = "Truth";
+                                 a->type = 10; a->index = 10000+ii; a->collection = "Truth";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -735,9 +828,7 @@ particule : GEN '_' index    {
 	 | GEN         {
 				DEBUG("all truth particles \t");
 				myParticle* a = new myParticle;
-				a->type =10;
-                                a->index = 6213;
-                                a->collection = "Truth";
+				a->type =10; a->index = 6213; a->collection = "Truth";
                                 TmpParticle.push_back(a);
                                 tmp="truth_6213";
                                 $$=strdup(tmp.c_str());
@@ -746,18 +837,14 @@ particule : GEN '_' index    {
 	| ELE '_' index {
                                 DEBUG("electron particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = (int)$3;
-                                a->collection = "ELE";
+                                a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
         | ELE '[' index ']' {
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = (int)$3;
-                                a->collection = "ELE";
+                                a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -765,9 +852,7 @@ particule : GEN '_' index    {
         | ELE               {
                                 DEBUG("all electron particules \t");
                                 myParticle* a = new myParticle;
-                                a->type =1;
-                                a->index = 6213;
-                                a->collection = "ELE";
+                                a->type =1; a->index = 6213; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_6213";
                                 $$=strdup(tmp.c_str());
@@ -777,9 +862,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-                                 a->index = 10000+ii;
-                                 a->collection = "ELE";
+                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -788,9 +871,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-                                 a->index = 10000+ii;
-                                 a->collection = "ELE";
+                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -798,18 +879,14 @@ particule : GEN '_' index    {
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
         | MUO '_' index {       
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
        | MUO            {      
@@ -817,9 +894,7 @@ particule : GEN '_' index    {
                                 tmp="muo_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = "MUO";
+                                a->type = 12; a->index = 6213; a->collection = "MUO";
                                 TmpParticle.push_back(a);
                         }
        | MUO '[' index ':' index ']' {
@@ -827,9 +902,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12;
-                                 a->index = 10000+ii;
-                                 a->collection = "MUO";
+                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -839,9 +912,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12;
-                                 a->index = 10000+ii;
-                                 a->collection = "MUO";
+                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -849,9 +920,7 @@ particule : GEN '_' index    {
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = "TAU";
+                                a->type = 11; a->index = (int)$3; a->collection = "TAU";
                                 TmpParticle.push_back(a);  
                         }
         | TAU '_' index {       
@@ -869,9 +938,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11;
-                                 a->index = 10000+ii;
-                                 a->collection = "TAU";
+                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -880,9 +947,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11;
-                                 a->index = 10000+ii;
-                                 a->collection = "TAU";
+                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -892,20 +957,14 @@ particule : GEN '_' index    {
                                 tmp="tau_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = "TAU";
+                                a->type = 11; a->index = 6213; a->collection = "TAU";
                                 TmpParticle.push_back(a);
                         }
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(DataFormats->at(1)>0){
-                                        a->type = 0;
-                                }
-                                else{
-                                        a->type = 1;
-                                }
+                                a->type = 1; 
+                                if(DataFormats->at(1)>0) a->type = 12; 
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -915,7 +974,7 @@ particule : GEN '_' index    {
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 0;
+				 if(DataFormats->at(1)>0) a->type = 12;
                                  a->index = 10000+ii;
                                  TmpParticle.push_back(a);
                                 }
@@ -926,7 +985,7 @@ particule : GEN '_' index    {
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 0;
+				 if(DataFormats->at(1)>0) a->type = 12;
                                  a->index = 10000+ii;
                                  TmpParticle.push_back(a);
                                 }
@@ -934,12 +993,8 @@ particule : GEN '_' index    {
         | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                if(DataFormats->at(1)>0){
-                                        a->type = 0;
-                                }
-                                else{
-                                        a->type = 1;
-                                }
+                                a->type = 1;
+                                if(DataFormats->at(1)>0) a->type = 12;
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -947,18 +1002,14 @@ particule : GEN '_' index    {
         | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
 
         | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
         | PHO '[' index ':' index ']' {
@@ -966,9 +1017,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 8;
-                                 a->index = 10000+ii;
-				 a->collection = "PHO";
+                                 a->type = 8; a->index = 10000+ii; a->collection = "PHO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -977,9 +1026,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 8;
-                                 a->index = 10000+ii;
-				 a->collection = "PHO";
+                                 a->type = 8; a->index = 10000+ii; a->collection = "PHO";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -988,17 +1035,13 @@ particule : GEN '_' index    {
                                 tmp="pho_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = "PHO";
+                                a->type = 8; a->index = 6213; a->collection = "PHO";
                                 TmpParticle.push_back(a);
                         }
         | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = "JET";
+                                a->type = 2; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
         | JET '[' index ':' index ']' {
@@ -1006,9 +1049,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 2;
-                                 a->index = 10000+ii;
-                                 a->collection = "JET";
+                                 a->type = 2; a->index = 10000+ii; a->collection = "JET";
                                  TmpParticle.push_back(a);
                                 }
                         } 
@@ -1017,18 +1058,14 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 2;
-                                 a->index = 10000+ii;
-                                 a->collection = "JET";
+                                 a->type = 2; a->index = 10000+ii; a->collection = "JET";
                                  TmpParticle.push_back(a);
                                 }
                         } 
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = "JET";
+                                a->type = 2; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
        | JET            {      
@@ -1036,9 +1073,7 @@ particule : GEN '_' index    {
                                 tmp="jet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = "JET";
+                                a->type = 2; a->index = 6213; a->collection = "JET";
                                 TmpParticle.push_back(a);
                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
@@ -1078,15 +1113,13 @@ particule : GEN '_' index    {
         | FJET '_' index {      tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
+                                a->type = 9; a->index = (int)$3; a->collection = "FJET";
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ']' {  tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
+                                a->type = 9; a->index = (int)$3; a->collection = "FJET";
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ':' index ']' {
@@ -1094,8 +1127,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 9;
-                                 a->index = 10000+ii;
+                                 a->type = 9; a->index = 10000+ii; a->collection = "FJET";
 				 TmpParticle.push_back(a);
                                 }
                         } 
@@ -1104,8 +1136,7 @@ particule : GEN '_' index    {
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 9;
-                                 a->index = 10000+ii;
+                                 a->type = 9; a->index = 10000+ii; a->collection = "FJET";
 				 TmpParticle.push_back(a);
                                 }
                         } 
@@ -1114,9 +1145,7 @@ particule : GEN '_' index    {
                                 tmp="fjet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = "FJET";
+                                a->type = 9; a->index = 6213; a->collection = "FJET";
                                 TmpParticle.push_back(a);
                         }
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
@@ -1201,26 +1230,6 @@ particule : GEN '_' index    {
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
-        | METLV '[' index ':' index ']' {
-                                tmp="meltv_"+to_string((int)$3);
-                                $$=strdup(tmp.c_str());
-                                for (int ii=(int)$3; ii<=(int)$5; ii++){
-                                 myParticle* a = new myParticle;
-                                 a->type = 7;
-				 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
-                                }
-                        } 
-        | METLV '_' index ':' index {
-                                tmp="meltv_"+to_string((int)$3);
-                                $$=strdup(tmp.c_str());
-                                for (int ii=(int)$3; ii<=(int)$5; ii++){
-                                 myParticle* a = new myParticle;
-                                 a->type = 7;
-				 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
-                                }
-                        } 
         | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
                 DEBUG("ID ---[]---\t");
@@ -1242,9 +1251,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 2; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1252,9 +1259,7 @@ particule : GEN '_' index    {
                            tmp="compo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 20; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
 			                  else if (otype == 10 ) {
@@ -1262,9 +1267,7 @@ particule : GEN '_' index    {
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 10; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 1 ) {
@@ -1272,9 +1275,7 @@ particule : GEN '_' index    {
                            tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 1; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1282,9 +1283,7 @@ particule : GEN '_' index    {
                            tmp="muo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 12; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1292,9 +1291,7 @@ particule : GEN '_' index    {
                            tmp="tau_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 11; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1302,9 +1299,7 @@ particule : GEN '_' index    {
                            tmp="pho_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 8; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1312,14 +1307,117 @@ particule : GEN '_' index    {
                            tmp="ljet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 9; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
                         cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        YYERROR;//stops parsing if particle not found 
+                       }
+                } else {
+                        vector<myParticle*> newList= it->second;
+                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
+                        $$=$1;
+                }
+             }
+        | ID '[' index ':' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
+                //ngu
+                DEBUG("ID ---[]---\t");
+                map<string,vector<myParticle*> >::iterator it;
+                it = ListParts->find($1);
+                if(it == ListParts->end()) {
+                       map<string,Node*>::iterator ito;
+                       ito=ObjectCuts->find($1);
+                       DEBUG($1<<" : "); //------------new ID
+
+                       if(ito != ObjectCuts->end()) {
+                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
+                        int otype=((ObjectNode*) ito->second)->type;  
+
+                        if (otype == 2 ) {
+                           DEBUG("which is a JET\n");
+                           tmp="jet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 2; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        } 
+                        else if (otype == 20 ) {
+                           DEBUG("which is a composite\n");
+                           tmp="compo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 20; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+			else if (otype == 10 ) {
+                           DEBUG("which is a GEN\n");
+                           tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 10; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        } 
+                        else if (otype == 1 ) {
+                           DEBUG("which is a ELE\n");
+                           tmp="ele_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 1; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==12 ) {
+                           DEBUG("which is a MUO\n");
+                           tmp="muo_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 12; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==11 ) {
+                           DEBUG("which is a TAU\n");
+                           tmp="tau_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 11; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==8 ) {
+                           DEBUG("which is a PHO\n");
+                           tmp="pho_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 8; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                        else if (otype==9 ) {
+                           DEBUG("which is a FatJET\n");
+                           tmp="ljet_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                  myParticle* a = new myParticle;
+                                  a->type = 9; a->index=10000+ii; a->collection = $1;
+                                  TmpParticle.push_back(a);
+                                }
+                        }
+                       } else {
+                        cout << $1 << " is not known.\n";
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
                 } else {
@@ -1348,9 +1446,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 2; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1358,9 +1454,7 @@ particule : GEN '_' index    {
                            tmp="compo_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 20; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                            DEBUG(" TP size :"<<TmpParticle.size()<<"\n");
                         }
@@ -1369,9 +1463,7 @@ particule : GEN '_' index    {
                            tmp="truth_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type = 10; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype == 1 ) {
@@ -1379,9 +1471,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1389,9 +1479,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1399,9 +1487,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1409,9 +1495,7 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1419,13 +1503,11 @@ particule : GEN '_' index    {
                            tmp="jet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = (int)$3;
-                                a->collection = $1;
+                                a->type=otype; a->index = (int)$3; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
                         YYERROR;//stops parsing if particle not found 
                        }
                 } else {
@@ -1436,7 +1518,7 @@ particule : GEN '_' index    {
              }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
 
-                DEBUG ("ID "<< $1 <<" no index\n");
+                DEBUG ("Particle candidate "<< $1 <<" has no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1453,9 +1535,7 @@ particule : GEN '_' index    {
                            tmp="jet_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index = 6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 20 ) {
@@ -1463,9 +1543,7 @@ particule : GEN '_' index    {
                            tmp="compo_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
 			else if (otype == 10 ) {
@@ -1473,9 +1551,7 @@ particule : GEN '_' index    {
                            tmp="truth_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         } 
                         else if (otype == 1 ) {
@@ -1483,9 +1559,7 @@ particule : GEN '_' index    {
                            tmp="ele_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==12 ) {
@@ -1493,9 +1567,7 @@ particule : GEN '_' index    {
                                 tmp="muo_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==11 ) {
@@ -1503,9 +1575,7 @@ particule : GEN '_' index    {
                            tmp="tau_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==8 ) {
@@ -1513,9 +1583,7 @@ particule : GEN '_' index    {
                            tmp="pho_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                         else if (otype==9 ) {
@@ -1523,15 +1591,21 @@ particule : GEN '_' index    {
                            tmp="ljet_";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = $1;
+                                a->type=otype; a->index=6213; a->collection = $1;
                                 TmpParticle.push_back(a);
                         }
                        } else {
-                        cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
+                        ito=NodeVars->find($1);
+                        if (ito==NodeVars->end()) { // not found even there!
+                          cout << $1 << " is not a particle, object or variable. \n";
+                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"ID not defined");
+                          YYERROR;//stops parsing if particle not found 
+                        }
+                        cout <<  $1 << " is a node variable, this is a particle. TmpCri:"<<TmpCriteria.size() <<"\n";
                         YYERROR;//stops parsing if particle not found 
+//                      TmpCriteria.push_back(ito->second );
+//                      tmp="MAGIC";
+//                      $$=strdup(tmp.c_str());               
                        }
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
@@ -1543,115 +1617,7 @@ particule : GEN '_' index    {
                 }
              }
         ;
-        | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-
-                DEBUG ("ID "<< $1 <<" no index\n");
-                map<string,vector<myParticle*> >::iterator it;
-                it = ListParts->find($1);
-     
-                if(it == ListParts->end()) {
-                       map<string,Node*>::iterator ito;
-                       ito=ObjectCuts->find($1);
-                       DEBUG($1<<" : "); //------------new ID
-                       if(ito != ObjectCuts->end()) {
-                        DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
-                        int otype=((ObjectNode*) ito->second)->type;
-
-                        if (otype == 2 ) {
-                           DEBUG("which is a JET\n");
-                           tmp="jet_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 2;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        } 
-                        else if (otype == 20 ) {
-                           DEBUG("which is a composite\n");
-                           tmp="compo_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 20;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-			else if (otype == 10 ) {
-                           DEBUG("which is a GEN\n");
-                           tmp="truth_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 10;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        } 
-                        else if (otype == 1 ) {
-                           DEBUG("which is a ELE\n");
-                           tmp="ele_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 1;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==12 ) {
-                           DEBUG("which is a MUO\n");
-                                tmp="muo_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 12;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==11 ) {
-                           DEBUG("which is a TAU\n");
-                           tmp="tau_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 11;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==8 ) {
-                           DEBUG("which is a PHO\n");
-                           tmp="pho_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 8;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                        else if (otype==9 ) {
-                           DEBUG("which is a FatJET\n");
-                           tmp="ljet_";
-                                $$=strdup(tmp.c_str());
-                                myParticle* a = new myParticle;
-                                a->type = 9;
-                                a->index = 6213;
-                                a->collection = $1;
-                                TmpParticle.push_back(a);
-                        }
-                       } else {
-                        cout << $1 << " is a problem\n";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particle not defined");
-                        YYERROR;//stops parsing if particle not found 
-                       }
-                } else {
-                        DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
-                        vector<myParticle*> newList= it->second;
-                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
-                        DEBUG("NO PROBLEM\n");
-                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
-                        $$=$1;
-                }
-             }
-        ;
+//----------------------------------------
 index : '-' INT {$$=-$2;}
           | INT {$$= $1;}
           | {$$= 6213;} // NGU
@@ -1672,7 +1638,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
                                                 DEBUG($4<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
                                         else {
@@ -1697,7 +1663,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
                                                 DEBUG($4<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
                                         else {
@@ -1775,7 +1741,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      it = ObjectCuts->find($6);
                                      if(it == ObjectCuts->end()) {
                                                 DEBUG($6<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                        }
                                      ObjectNode* child1=(ObjectNode*)it->second;
@@ -1785,7 +1751,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                       iu = ObjectCuts->find($8);
                                       if(iu == ObjectCuts->end()) {
                                                DEBUG($8<<" : ") ;
-                                               yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                               yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                YYERROR;
                                       }
                                       ObjectNode* child2=(ObjectNode*)iu->second;
@@ -1933,7 +1899,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                       }
          | OBJ BJET ':' JET criteria {
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
                                        YYERROR;//stops parsing if variable not found
                                       }
          | OBJ ID ':' JET criteria {
@@ -1984,37 +1950,31 @@ objectBloc : OBJ ID TAKE ID criteria {
 //           | OBJ ID ':' NUMET criteria
 //           | OBJ ID ':' METLV criteria
            ;
-idlist  : ID ',' idlist { cout << $1<<" + "; 
+idlist  : ID ',' idlist { DEBUG($1<<" + "); 
                map<string, Node*>::iterator it ;
                string name = $1;
                it = NodeVars->find(name);
 	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
-                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                            YYERROR;//stops parsing if variable already defined
                                         }
                TmpIDList.push_back(it->second);
         }
-        | ID { cout << $1 <<"\n";
+        | ID { DEBUG($1 <<"\n");
                map<string, Node*>::iterator it ;
                string name = $1;
                it = NodeVars->find(name);
 	       if(it == NodeVars->end()) { DEBUG(name<<" : "<<name<<"\n");
-                                           yyerror(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                            YYERROR;//stops parsing if variable already defined
                                         }
                TmpIDList.push_back(it->second);
          }
         ;
-bins    : bins NB
-        | bins INT
-        | NB
-        | INT
+boxlist : boxlist abox
+        | abox
         ;
-binlist : binlist abin
-        | abin
-        ;
-
-abin : NB NB NB {
+abox : NB NB NB {
         tmpBinlist.push_back($1);
         tmpBinlist.push_back($2);
         tmpBinlist.push_back($3);
@@ -2044,38 +2004,50 @@ criterion : CMD condition {   TmpCriteria.push_back($2);
 commands : commands command 
         | 
         ;
+bins    : bins NB {tmpBoxlist.push_back($2);}
+        | bins INT {tmpBoxlist.push_back($2);}
+        | NB {tmpBoxlist.push_back($1);}
+        | INT {tmpBoxlist.push_back($1);}
+        ;
 command : CMD condition { //find a way to print commands                                     
-                                         NodeCuts->insert(make_pair(++cutcount,$2));
+                        NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
 	|REJEC condition {
-					Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
-					NodeCuts->insert(make_pair(++cutcount,a));
+			Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+			NodeCuts->insert(make_pair(++cutcount,a));
 			}
-        | BINS ID bins { cout << "BIN:" << $2 <<"\n"; } 
-        | BINS MET bins { cout << "BIN MET" << "\n"; } 
+        | BINS e bins {
+                       for (int in=1; in<tmpBoxlist.size(); in++){
+                         DEBUG("lim:"<<tmpBoxlist[in-1]<<" -- "<< tmpBoxlist[in]<<"\n");
+                         Node* l1=new ValueNode(tmpBoxlist[in-1] );
+                         Node* l2=new ValueNode(tmpBoxlist[in  ] );
+                         Node* c1=new BinaryNode(ge,$2,l1,">=");
+                         Node* c2=new BinaryNode(le,$2,l2,"<=");
+                         Node* cl=new BinaryNode(LogicalAnd,c1,c2,"AND");
+                         BinCuts->insert(make_pair(++bincount, cl));
+                       } 
+                      } 
+        | BINS condition {  DEBUG("a new bin is found\n"); 
+                            BinCuts->insert(make_pair(++bincount, $2));
+                        }
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
         | CMD ALL {                                     
-                                Node* a = new SFuncNode(all,0, "all");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a = new SFuncNode(all,0, "all");
+                        NodeCuts->insert(make_pair(++cutcount,a));
 		  }
         | CMD LEPSF {    
-                                Node* a=new SFuncNode(lepsf,0,"LEPSF");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD BTAGSF {    
-                                Node* a=new SFuncNode(btagsf,0,"BTAGSF");
-                                NodeCuts->insert(make_pair(++cutcount,a));
+                        Node* a=new SFuncNode(btagsf,0,"BTAGSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
     	| WEIGHT ID NB {
-				Node* a = new SFuncNode(uweight,$3,$2);
-				NodeCuts->insert(make_pair(++cutcount,a));
-			}
-    	| WEIGHT ID ID {
-//                                cout << "Weight "<< $2  <<"Will be from "<< $3<< "\n";
-//				Node* a = new SFuncNode(uweight,$3,$2);
-//				NodeCuts->insert(make_pair(++cutcount,a));
+			Node* a = new SFuncNode(uweight,$3,$2);
+			NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
                                 DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
@@ -2084,7 +2056,7 @@ command : CMD condition { //find a way to print commands
                                 itt = ListTables->find(name);
                                 if(itt == ListTables->end()) {
                                        DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
                                        YYERROR;//stops parsing if table is not defined
                                 }
 				Node* a = new TableNode(tweight,$5,itt->second, $2);
@@ -2102,7 +2074,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2121,7 +2093,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2159,7 +2131,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
 						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
@@ -2180,7 +2152,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
 						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
@@ -2193,7 +2165,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2212,7 +2184,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2231,7 +2203,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2250,7 +2222,7 @@ command : CMD condition { //find a way to print commands
                         
                                         if(it == NodeVars->end()) {
                                                 DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
                                                 YYERROR;//stops parsing if variable not found
                                         }
                                         else {
@@ -2299,15 +2271,9 @@ ifstatement : condition '?' action ':' action %prec '?' {
                         $$=new IfNode($1,$3,$5,"if");
                         } 
             ;
-action : condition {
-                        $$=$1;
-                   }
-       | ALL {
-               $$=new SFuncNode(all,0,"all");
-               }
-       | ifstatement {
-                        $$=$1;
-                        }
+action : condition { $$=$1; }
+       | ALL { $$=new SFuncNode(all,0,"all"); }
+       | ifstatement { $$=$1; }
        ;    
 condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e GT e { $$=new BinaryNode(gt,$1,$3,">");  }
@@ -2324,131 +2290,16 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
                                         Node* c1=new BinaryNode(ge,$1,limit1,">=");
                                         Node* c2=new BinaryNode(le,$1,limit2,"<=");
                                         $$=new BinaryNode(LogicalAnd,c1,c2,"AND"); 
-                                        
-                                        } 
+                       } 
            | e ERG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
                                         Node* c1=new BinaryNode(le,$1,limit1,"<=");
                                         Node* c2=new BinaryNode(ge,$1,limit2,">=");
                                         $$=new BinaryNode(LogicalOr,c1,c2,"OR"); 
-                                        
-                                        }                            
-           | condition AND condition { 
-                                        $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); 
-                                        } 
-           | condition OR condition { 
-                                        $$=new BinaryNode(LogicalOr,$1,$3,"OR"); 
-                                        }
-	   | NOT condition {
-					$$=new BinaryNode(LogicalNot,$2,$2,"NOT");
-					}
-           | '(' condition ')' { 
-                                        $$=$2; 
-                                } 
+                       }                            
+           | condition AND condition { $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); } 
+           | condition OR condition  { $$=new BinaryNode(LogicalOr, $1,$3,"OR"); }
+	   |           NOT condition { $$=new BinaryNode(LogicalNot,$2,$2,"NOT"); }
+           | '(' condition ')' { $$=$2; } 
             ;
-e : e '+' e  { 
-                $$=new BinaryNode(add,$1,$3,"+"); 
-               }
-   | e '-' e { 
-                $$=new BinaryNode(sub,$1,$3,"-"); 
-               }
-   | e '*' e { 
-                $$=new BinaryNode(mult,$1,$3,"*"); 
-               }
-   | e '/' e { 
-                $$=new BinaryNode(div,$1,$3,"/"); 
-               }
-   | e '^' e {          
-               $$=new BinaryNode(pow,$1,$3,"^");
-               } 	
-   |'-' e %prec Unary { 
-                        $$=new UnaryAONode(unaryMinu,$2,"-");
-               }
-   | ABS '(' e ')'  { $$=new UnaryAONode(abs,$3,"fabs"); }
-   | SQRT '(' e ')' { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
-   | COS '(' e ')'  { $$=new UnaryAONode(cos,$3,"cos"); }
-   | SIN '(' e ')'  { $$=new UnaryAONode(sin,$3,"sin"); }
-   | TAN '(' e ')'  { $$=new UnaryAONode(tan,$3,"tan"); }
-   | SINH '(' e ')' { $$=new UnaryAONode(sinh,$3,"sinh"); }
-   | COSH '(' e ')' { $$=new UnaryAONode(cosh,$3,"cosh"); }
-   | TANH '(' e ')' { $$=new UnaryAONode(tanh,$3,"tanh"); }
-   | EXP '(' e ')'  { $$=new UnaryAONode(exp,$3,"exp"); }
-   | LOG '(' e ')'  { $$=new UnaryAONode(log,$3,"log"); }
-   | HSTEP '(' e ')' {
-			$$=new UnaryAONode(hstep,$3,"hstep"); //Heavyside step function
-		}
-   | SUM '(' e ')' {  DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
-   | MIN '(' e ')' {  DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
-   | MAX '(' e ')' {  DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
-   | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
-                           vector <Node*> newIDlist;
-                           TmpIDList.swap(newIDlist);
-                           $$=new LoopNode(minof,newIDlist,"min");
-                        }
-   | MAX '(' idlist ')' {  DEBUG("\t MAX function IMPLEMENTED\n");  
-                           vector <Node*> newIDlist;
-                           TmpIDList.swap(newIDlist);
-                           $$=new LoopNode(maxof,newIDlist,"max");
-                        }
-   |'(' e ')' {   $$=$2; }
-   | NB {       tmp=to_string($1); 
-                $$=new ValueNode($1);
-                } 
-   | INT {  
-                $$=new ValueNode($1);
-                } 
-   | function {$$=$1; pnum=0;}
-   //to make the difference between ID + ID and ID ID in particules ->create two maps
-   | ID { //we want the original defintions as well
-                map<string, Node *>::iterator it ;
-                it = NodeVars->find($1);
-     
-                if(it == NodeVars->end()) {
-                        cout<<$1<<"\t";
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"single Variable not defined");
-                        YYERROR;//stops parsing if variable not found
-
-                        vector<Node*> newList; //empty
-                        TmpCriteria.swap(newList);
-                        map<string, Node *>::iterator it ;
-                        it = ObjectCuts->find($1);
-                        if(it == ObjectCuts->end()) {
-                                                DEBUG($1<<" : ") ;
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
-                                                YYERROR;
-                        }
-                        else {
-                               DEBUG($1<<" is a known object\n ") ;
-                             }
-
-                } else {
-                        $$=it->second;
-                }
-                //get the node from variable map
-        }
-    | ID '(' ID ')' {
-                map<string, Node *>::iterator it ;
-                it = NodeVars->find($1);
-     
-                if(it == NodeVars->end()) {
-                        DEBUG($1<<" : ");
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
-                        YYERROR;//stops parsing if variable not found
-                }
-                else {
-                        DEBUG(it->first <<" node ID recognized.\t");
-                        DEBUG(it->second->getStr()<<"\n");
-                }
-                map<string,Node*>::iterator ito = ObjectCuts->find($3);
-                                      if(ito == ObjectCuts->end()) {
-                                           std::string message = "User object not defined: "; message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                      } else {
-                                        DEBUG(ito->first <<" OBJ id recognized.\n");
-                                        it->second->setUserObjects(ito->second);
-                                      }
-                        $$=it->second;
-    } 
-   ;
 %%

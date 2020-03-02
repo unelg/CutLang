@@ -26,8 +26,8 @@ object jets take Jet
 #  select abs(Eta(Jet)) < 2.4
 #  select BTag(Jet) == 1
   
-define mll02 = m(leptons[0] + leptons[2])
-define mll12 = m(leptons[1] + leptons[2])
+define mll02 = m(leptons[0] leptons[2])
+define mll12 = m(leptons[1] leptons[2])
 
 region baseline
   select ALL
@@ -35,7 +35,7 @@ region baseline
   select size(muons) >= 0
   select size(leptons) >= 2
   select abs( {leptons[0]}q + {leptons[1]}q ) == 2
-  select m(leptons[0] + leptons[1]) > 8
+  select m(leptons[0] leptons[1]) > 8
   select size(jets) >= 2
   select MET > 50
   select size(leptons) > 2 ?  mll02 < 12 OR mll02 [] 76 106 OR mll12 < 12 OR mll12 [] 76 106  : ALL 

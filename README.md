@@ -7,6 +7,8 @@ This is the repository for CutLang V3
 Requirements
 * ROOT (root.cern.ch) 
 * command line compilation utilities (make, gcc, g++...) 
+* flex
+* bison #without installing flex and bison, the make command gets interrupted by a fatal error.
 
 Install the package using
 ```bash
