@@ -49,10 +49,10 @@ jobs:
       run: |
         source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
         echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh > deploy.txt
+        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh | tee ./output.txt
 
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
       with:
         name: deploy
-        path: ./.github/workflows/deploy.txt
+        path: ./.github/workflows/output.txt
