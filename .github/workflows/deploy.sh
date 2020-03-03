@@ -7,5 +7,5 @@ for i in $(ls |grep .adl); do
         echo "With CMSOD"
         ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i $i -e 10000
         echo "With ATLASOD"
-        ./CLA.sh ./atla_opendata_had_ttbar.root -i $i -e 10000
+        ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i $i -e 10000
 done
