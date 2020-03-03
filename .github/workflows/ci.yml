@@ -46,4 +46,4 @@ jobs:
       run: CLA ; echo 'SHELL := /bin/bash' | cat - Makefile > temp && mv temp Makefile ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
     
     - name: Run Tests
-      run: cd ./.github/workflows ; sudo ./deploy.sh 
+      run: cd ./.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
