@@ -1,0 +1,52 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:    
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: init-cache-dir
+      run: mkdir build
+      
+    - name: Cache ROOT Build
+      id: cache
+      uses: actions/cache@v1.1.2
+      with:
+        path: ./build/
+        key: ${{ runner.os }}-build-${{ hashFiles('.github/workflows/**ci.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+          
+    - name: ROOT Dependencies
+      run: |
+        sudo apt update ; 
+        sudo apt install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
+        libxft-dev libxext-dev ;
+        sudo apt install gfortran libssl-dev libpcre3-dev \
+        xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
+        libmysqlclient-dev libfftw3-dev libcfitsio-dev \
+        graphviz-dev libavahi-compat-libdnssd-dev \
+        libldap2-dev python-dev libxml2-dev libkrb5-dev \
+        libgsl0-dev libqt4-dev ;
+        sudo apt install flex bison wget ;
+                   
+    - name: Build ROOT
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        git clone https://github.com/root-project/root.git
+        cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
+    
+    - name: Build CutLang
+      run: cd ./CLA ; echo 'SHELL := /bin/bash' | cat - Makefile > temp && mv temp Makefile ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
+    
+    - name: Run Tests
+      run: |
+        source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
+        echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
+        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
