@@ -47,5 +47,6 @@ jobs:
     
     - name: Run Tests
       run: |
-        echo $HOME/work/CutLang/CutLang/build > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
-        cd ./.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
+        source $HOME/work/test/test/build/bin/thisroot.sh
+        echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
+        cd $HOME/work/test/test/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
