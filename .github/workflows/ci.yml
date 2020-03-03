@@ -43,9 +43,7 @@ jobs:
         cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
     
     - name: Build CutLang
-      run: |
-        source ./build/bin/thisroot.sh
-        cd CLA ; sudo make
+      run: CLA ; echo 'SHELL := /bin/bash' | cat - Makefile > temp && mv temp Makefile ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
     
     - name: Run Tests
-      run: cd ./.github/workflows ; ./deploy.sh 
+      run: cd ./.github/workflows ; sudo ./deploy.sh 
