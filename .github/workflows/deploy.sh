@@ -1,4 +1,4 @@
-cd ; cd ./runs
+cd $HOME/work/CutLang/CutLang/runs
 
 for i in $(ls |grep .adl); do
         echo "Testing $i:"
