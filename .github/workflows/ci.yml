@@ -49,4 +49,4 @@ jobs:
       run: |
         source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
         echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
-        cd $HOME/work/test/test/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
+        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
