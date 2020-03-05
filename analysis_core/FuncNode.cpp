@@ -422,6 +422,11 @@ double tauisoof( dbxParticle* apart){
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
+double Constitsof( dbxParticle* apart){
+   DEBUG(" CONSTITS of:\n");
+   return 1;
+}
+
 
 //------------------------------
 double nbfof( dbxParticle* apart){

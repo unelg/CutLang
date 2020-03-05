@@ -7,4 +7,5 @@ gROOT->LoadMacro("dbx_photon.h+");
 gROOT->LoadMacro("dbx_jet.h+");
 gROOT->LoadMacro("dbx_truth.h+");
 gROOT->LoadMacro("DBXNtuple.cpp+");
+gROOT->LoadMacro("delphesParticles.h+");
 }

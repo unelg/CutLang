@@ -74,7 +74,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token VERT VERX VERY VERZ STATUS
+%token VERT VERX VERY VERZ STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
@@ -241,6 +241,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | '{' particules '}' 'q' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
+                                  }
+         | CONSTITS '(' particules ')' {  vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(Constitsof,newList,"Constits");
                                   }
 //---------------------------------------
          | PDGID '(' particules ')' {  vector<myParticle*> newList;

@@ -66,7 +66,7 @@ public:
        for (int ii=0; ii<inputParticles.size(); ii++){
         DEBUG("Loop:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                      << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
-       if (inputParticles[ii]->index > 9999) oneParticleAtATime=true; 
+        if (inputParticles[ii]->index > 9999) oneParticleAtATime=true; 
        }
        int ipart2_max=0; // loop counter
        if (inputParticles[0]->index == 6213 && inputParticles.size()==1) {
