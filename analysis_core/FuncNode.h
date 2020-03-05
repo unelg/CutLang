@@ -73,6 +73,7 @@ double     vtof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
+double Constitsof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
 
 //other functions to be added

@@ -58,6 +58,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][zZ] return VERZ;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
+"daughters"|"constituents" return CONSTITS;
 "tau1" return TAU1;
 "tau2" return TAU2;
 "tau3" return TAU3;

@@ -4,6 +4,8 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <signal.h>
+#include <TObject.h>
+#include <TBranchElement.h>
 
 #include "dbx_electron.h"
 #include "dbx_muon.h"
@@ -14,9 +16,49 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 
-//#define __DEBUG__
+//#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+
+
+TClonesArray* delphes::UseBranch(const char *branchName, TTree *fChain){
+  TClonesArray *array = 0;
+  TBranchMap::iterator itBranchMap = fBranchMap.find(branchName);
+  if(itBranchMap != fBranchMap.end()) {
+    cout << "** WARNING: branch '" << branchName << "' is already in use" << endl;
+    array = itBranchMap->second.second;
+  } else {      
+    TBranch *branch = fChain->GetBranch(branchName);
+    if(branch) {
+      if(branch->IsA() == TBranchElement::Class()) {
+        TBranchElement *element = static_cast<TBranchElement *>(branch);
+        const char *className = element->GetClonesName();
+        Int_t size = element->GetMaximum();
+        TClass *cl = gROOT->GetClass(className);
+        if(cl) {
+          array = new TClonesArray(cl, size);
+          array->SetName(branchName);
+          fBranchMap.insert(make_pair(branchName, make_pair(branch, array)));
+          branch->SetAddress(&array);
+        }
+      }
+    }
+  }
+
+  if(!array) {
+    cout << "** WARNING: cannot access branch '" << branchName << "', return NULL pointer" << endl;
+  }
+  return array;
+};
+
 
 void delphes::Loop(analy_struct aselect, char *extname)
 {
@@ -38,7 +80,15 @@ void delphes::Loop(analy_struct aselect, char *extname)
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
 
+   TClonesArray *branchParticle = UseBranch("Particle", fChain);
+   TClonesArray *branchJet = UseBranch("Jet", fChain);
+   TClonesArray *branchPhoton = UseBranch("Photon", fChain);
+   TClonesArray *branchElectron = UseBranch("Electron", fChain);
+   TClonesArray *branchMuon = UseBranch("Muon", fChain);
+   TClonesArray *branchMET = UseBranch("MissingET", fChain);
+//-----------------------------------------------------------min and max nb events
    Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nentinfile=nentries;
    cout << "number of entries " << nentries << endl;
    if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
    cout << "Forced number of entries " << nentries << endl;
@@ -46,19 +96,25 @@ void delphes::Loop(analy_struct aselect, char *extname)
    if (aselect.startpt>0 ) startevent=aselect.startpt;
    cout << "starting entry " << startevent << endl;
    Long64_t lastevent = startevent + nentries;
-   if (lastevent > fChain->GetEntriesFast() ) { lastevent=fChain->GetEntriesFast();
+   if (lastevent > nentinfile ) { lastevent=nentinfile;
      cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t j=startevent; j<lastevent; ++j) {
+//--------------------------------------------------------------generic variables
+   GenParticle *particle;
+   Jet *jet;
+   Photon *photon;
+   Electron *electron;
+   Muon *muon;
+   MissingET *metd;
+   Int_t i, j;
+   TObject *object;
+   TLorentzVector momentum;
+//--------------------------------------------------------------event loop
+   for (Long64_t je=startevent; je<lastevent; ++je) {
 
-       if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
-       if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
-       //fChain->GetTree()->GetEntry(j);
-       fChain->GetEntry(j);
-#ifdef __DEBUG__
-std::cout << "Read Event"<<std::endl;
-#endif
+       if ( fctrlc ) { cout << "Processed " << je << " events\n"; break; }
+       if ( je%verboseFreq == 0 ) cout << "Processing event " << je << endl;
+       DEBUG("Read Event"<<std::endl);
        int RunNumber=137;
 /*
        if (int(RunNumber)!=prev_RunNumber) {
@@ -66,6 +122,19 @@ std::cout << "Read Event"<<std::endl;
                prev_RunNumber=RunNumber;
        }
 */
+ 
+// Load selected branches with data from specified event
+  fChain->LoadTree(je);
+  TBranchMap::iterator itBranchMap;
+  TBranch *branch;
+  for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap) {
+    branch = itBranchMap->second.first;
+    if(branch) {
+      branch->GetEntry(je);
+    }
+  }
+  DEBUG("Branch Entries retrieved\n");
+
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
        vector<dbxTau>      taus;
@@ -74,6 +143,7 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxJet>    ljets;
        vector<dbxTruth>   truth;
        vector<dbxParticle> combos;
+       vector<dbxParticle> constis;
 
        map<string, vector<dbxMuon>     > muos_map;
        map<string, vector<dbxElectron> > eles_map;
@@ -83,9 +153,8 @@ std::cout << "Read Event"<<std::endl;
        map<string, vector<dbxJet>     >ljets_map;
        map<string, vector<dbxTruth>    >truth_map;
        map<string, vector<dbxParticle> >combo_map;
+       map<string, vector<dbxParticle> >constits_map;
        map<string, TVector2            >  met_map;
-
-
 
 
 //temporary variables
@@ -100,104 +169,112 @@ std::cout << "Read Event"<<std::endl;
        dbxPhoton   *adbxp;
        dbxTruth    *adbxgen;
 
-#ifdef __DEBUG__
-std::cout << "Begin Filling"<<std::endl;
-#endif
+      DEBUG("Begin Filling"<<std::endl);
+      if (branchMuon != NULL)
+      for(i = 0; i < branchMuon->GetEntriesFast(); ++i) {
+              muon= (Muon*) branchMuon->At(i);
+              alv.SetPtEtaPhiM( muon->PT, muon->Eta, muon->Phi, (105.658/1E3) ); // all in GeV
+              adbxm= new dbxMuon(alv);
+              adbxm->setCharge(muon->Charge );
+      	      adbxm->setPdgID(-13*muon->Charge );
+              adbxm->setEtCone(muon->IsolationVarRhoCorr);
+              adbxm->setPtCone(muon->IsolationVar       );
+              adbxm->setParticleIndx(i);
+              adbxm->addAttribute( muon->DZ);
+              adbxm->addAttribute( muon->D0);
+              adbxm->addAttribute( muon->IsolationVar   );
+              muons.push_back(*adbxm);
+              delete adbxm;
+      }
+      DEBUG("Muons OK:"<< std::endl);
 
-        for (unsigned int i=0; i<Muon_; i++) {
-                alv.SetPtEtaPhiM( Muon_PT[i], Muon_Eta[i], Muon_Phi[i], (105.658/1E3) ); // all in GeV
-                adbxm= new dbxMuon(alv);
-                adbxm->setCharge(Muon_Charge[i] );
-		adbxm->setPdgID(-13*Muon_Charge[i] );
-                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
-                adbxm->setPtCone(Muon_IsolationVar[i]        );
-                adbxm->setParticleIndx(i);
-                adbxm->addAttribute( Muon_DZ[i]);
-                adbxm->addAttribute( Muon_D0[i]     );
-                adbxm->addAttribute( Muon_IsolationVar[i]     );
-                muons.push_back(*adbxm);
-                delete adbxm;
-        }
-
-#ifdef __DEBUG__
-std::cout << "Muons OK:"<< Muon_<<std::endl;
-#endif
 //ELECTRONS
-
-        for (unsigned int i=0; i<Electron_; i++) {
-                alv.SetPtEtaPhiM( Electron_PT[i], Electron_Eta[i], Electron_Phi[i], (0.511/1E3) ); // all in GeV
-                adbxe= new dbxElectron(alv);
-                adbxe->setCharge(Electron_Charge[i] );
-		adbxe->setPdgID(-11*Electron_Charge[i] );
-                adbxe->setParticleIndx(i);
-                adbxe->setClusterE(Electron_EhadOverEem[i] );
-                adbxe->addAttribute( Electron_DZ[i]);
-                adbxe->addAttribute( Electron_D0[i]     );
-                adbxe->addAttribute( Electron_IsolationVar[i]     );
-                electrons.push_back(*adbxe);
-                delete adbxe;
-        }
-
-#ifdef __DEBUG__
-std::cout << "Electrons OK:"<< Electron_ <<std::endl;
-#endif
+      if (branchElectron != NULL)
+      for(i = 0; i < branchElectron->GetEntriesFast(); ++i) {
+              electron= (Electron*) branchElectron->At(i);
+              alv.SetPtEtaPhiM( electron->PT, electron->Eta, electron->Phi, (0.511/1E3) ); // all in GeV
+              adbxe= new dbxElectron(alv);
+              adbxe->setCharge(electron->Charge );
+      	      adbxe->setPdgID(-11*electron->Charge );
+              adbxe->setParticleIndx(i);
+              adbxe->setClusterE(electron->EhadOverEem );
+              adbxe->addAttribute( electron->DZ);
+              adbxe->addAttribute( electron->D0     );
+              adbxe->addAttribute( electron->IsolationVar     );
+              electrons.push_back(*adbxe);
+              delete adbxe;
+      }
+      DEBUG("Electrons OK:"<< i <<std::endl);
 //PHOTONS
-        for (unsigned int i=0; i<Photon_size; i++) {
-                alv.SetPtEtaPhiM( Photon_PT[i], Photon_Eta[i], Photon_Phi[i], 0 ); // all in GeV
+      if (branchPhoton != NULL)
+      for(i = 0; i < branchPhoton->GetEntriesFast(); ++i) {
+                photon= (Photon*) branchPhoton->At(i);
+                alv.SetPtEtaPhiM( photon->PT, photon->Eta, photon->Phi, 0 ); // all in GeV
                 adbxp= new dbxPhoton(alv);
                 adbxp->setCharge(0);
                 adbxp->setParticleIndx(i);
-                adbxp->setClusterE(Photon_EhadOverEem[i] );
+                adbxp->setClusterE(photon->EhadOverEem );
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
-#ifdef __DEBUG__
-std::cout << "Photons OK:"<<Photon_size<<std::endl;
-#endif
-//JETS
-        for (unsigned int i=0; i<Jet_; i++) {
-                alv.SetPtEtaPhiM( Jet_PT[i], Jet_Eta[i], Jet_Phi[i], Jet_Mass[i] ); // all in GeV
-                adbxj= new dbxJet(alv);
-                adbxj->setCharge(-99);
-                adbxj->setParticleIndx(i);
-//                adbxj->setFlavor(Jet_Flavor[i] );
-                adbxj->setFlavor(Jet_BTag[i] );
-                adbxj->set_isbtagged_77(  (bool)Jet_BTag[i] ); //  btag
- //                if ( Jet_ == 1) std::cout << "B/N:"<<(bool)Jet_BTag[i]<<"\n";
-        //        adbxj->setJVtxf(Jet_Ntrk[i] );
-                jets.push_back(*adbxj);
-                delete adbxj;
-        }
-#ifdef __DEBUG__
-std::cout << "Jets:"<<Jet_<<std::endl;
-#endif
+        DEBUG("Photons OK:"<<i<<std::endl);
+
+    // Loop over all jets in event
+    if (branchJet != NULL)
+    for(i = 0; i < branchJet->GetEntriesFast(); ++i) { 
+      jet = (Jet*) branchJet->At(i);
+      alv.SetPtEtaPhiM( jet->PT, jet->Eta, jet->Phi, jet->Mass ); // all in GeV
+//      cout<<"This Jet pt: "<<jet->PT<<", eta: "<<jet->Eta<<", phi: "<<jet->Phi <<" T:"<<jet->T<<endl;
+      adbxj= new dbxJet(alv);
+      adbxj->setCharge(jet->Charge);
+      adbxj->setParticleIndx(i);
+      adbxj->setFlavor(jet->BTag);
+      adbxj->set_isbtagged_77(  (bool)jet->BTag ); //  btag
+
+// Loop over all jet's constituents
+      for(j = 0; j < jet->Particles.GetEntriesFast(); ++j) {
+       object = jet->Particles.At(j);
+// Check if the constituent is accessible
+       if(object == 0) continue;
+       if(object->IsA() == GenParticle::Class()) {
+        particle = (GenParticle*) object;
+//        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", phi: " << particle->Phi << endl;
+       }
+      }
+
+    jets.push_back(*adbxj);
+    delete adbxj;
+    }
+    DEBUG("Jets:"<<i<<std::endl);
+
+
 
 //GEN LEVEL particles
-        for (unsigned int i=0; i<Particle_; i++) {
-                alv.SetPtEtaPhiM( Particle_PT[i], Particle_Eta[i], Particle_Phi[i], Particle_Mass[i] ); // all in GeV
+        if (branchParticle != NULL)
+        for(i = 0; i < branchParticle->GetEntriesFast(); ++i) { 
+                particle = (GenParticle*) branchParticle->At(i);
+                alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); // all in GeV
                 adbxgen= new dbxTruth(alv);
-                adbxgen->setCharge( Particle_Charge[i] );
-                adbxgen->setPdgID(  Particle_PID[i] );
+                adbxgen->setCharge( particle->Charge );
+                adbxgen->setPdgID(  particle->PID );
                 adbxgen->setParticleIndx(i);
-                adbxgen->addAttribute( Particle_DZ[i]);
-                adbxgen->addAttribute( Particle_D0[i]     );
-                adbxgen->addAttribute( Particle_Status[i] );
-                adbxgen->addAttribute( Particle_Z[i] );
-                adbxgen->addAttribute( Particle_Y[i] );
-//                cout << "Delphes Vx:"<<Particle_X[i]<<"\n";
-                adbxgen->addAttribute( Particle_X[i] );
-                adbxgen->addAttribute( Particle_T[i] );
+                adbxgen->addAttribute( particle->DZ);
+                adbxgen->addAttribute( particle->D0);
+                adbxgen->addAttribute( particle->Status );
+                adbxgen->addAttribute( particle->Z );
+                adbxgen->addAttribute( particle->Y );
+                adbxgen->addAttribute( particle->X );
+                adbxgen->addAttribute( particle->T );
                 truth.push_back(*adbxgen);
+                unsigned int nkids=particle->D2-particle->D1 +1;
+//                cout << "Gen:"<<i<<" has "<<nkids<<" kids\n"; 
                 delete adbxgen;
         }
 
-
-
 //MET
-        met.SetMagPhi( MissingET_MET[0],  MissingET_Phi[0]);
-#ifdef __DEBUG__
-std::cout << "MET OK"<<std::endl;
-#endif
+        metd = (MissingET*) branchMET->At(0);
+        met.SetMagPhi( metd->MET,  metd->Phi);
+        DEBUG("MET OK"<<std::endl);
 
 
 //------------ auxiliary information -------
@@ -205,7 +282,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.lumiblk_no=1;
         anevt.user_evt_weight=1;
         anevt.top_hfor_type=0;
-        anevt.event_no=Event_Number[0];
+//        anevt.event_no=Event_Number[0];
         anevt.TRG_e= 1;
         anevt.TRG_m= 0;
         anevt.TRG_j= 0;
@@ -221,9 +298,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.tile_Error=0;
         anevt.core_Flags=0;
 
-#ifdef __DEBUG__
-std::cout << "Filling finished"<<std::endl;
-#endif
+        DEBUG("Filling finished"<<std::endl);
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
@@ -232,9 +307,10 @@ std::cout << "Filling finished"<<std::endl;
        ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map,  anevt};
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map,  anevt};
 
         aCtrl.RunTasks(a0);
 
