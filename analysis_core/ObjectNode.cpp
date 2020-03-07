@@ -12,7 +12,7 @@
 #include "Comb.h"
 #include "Denombrement.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -288,6 +288,7 @@ object goodjets take Jet
          continue; // will move to the next cut iterator
         } // done with constis
 //------------------------------just to see
+/*
         for ( int ipa = (ao->jets)[name].size()-1; ipa>=0; ipa--){
             DEBUG(name <<" "<<ipa<<" has ");
             TString konsname=name;
@@ -298,7 +299,7 @@ object goodjets take Jet
              int ciCount =(ao->constits).find(consname)->second.size();
             DEBUG(ciCount<<" constituents\n"); 
         }
-
+*/
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
