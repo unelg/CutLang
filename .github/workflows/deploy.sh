@@ -1,6 +1,9 @@
-cd $HOME/work/CutLang/CutLang/runs
+#!/bin/bash
+
+cd $HOME/work/test/test/runs
 wget http://www.hepforge.org/archive/cutlang/cms_opendata_ttbar.root
 wget http://www.hepforge.org/archive/cutlang/atla_opendata_had_ttbar.root
+wget -O delphes_events_ttbar.root https://drive.google.com/uc?export=download\&id=1NtdSz0f2W6QhQtZu7lY2mel2AIuwm3c5
 
 for i in $(ls |grep .adl); do
         echo "Testing $i:"
@@ -8,4 +11,6 @@ for i in $(ls |grep .adl); do
         ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i $i -e 10000
         echo "With ATLASOD"
         ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i $i -e 10000
+        echo "With DELPHES"
+        ./CLA.sh ./delphes_events_ttbar.root DELPHES -i $i -e 10000
 done
