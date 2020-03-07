@@ -7,7 +7,7 @@
 #define LoopNode_h
 #include "Node.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -55,7 +55,7 @@ public:
       // here we need to loop over all functions
        std::vector <double> result_list;
        double retval;
-       DEBUG("\nWe are in LN, "<<this->getStr()<<"\n");
+       DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
 
       for (int in=0; in<lefs.size(); in++){ // loop over all possible left branches.
        left=lefs[in];
@@ -64,25 +64,40 @@ public:
  
        bool oneParticleAtATime=false;
        for (int ii=0; ii<inputParticles.size(); ii++){
-        DEBUG("Loop:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
+        DEBUG("Loop particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                      << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
         if (inputParticles[ii]->index > 9999) oneParticleAtATime=true; 
        }
        int ipart2_max=0; // loop counter
-       if (inputParticles[0]->index == 6213 && inputParticles.size()==1) {
+       bool constiloop=false;
+//       if (inputParticles[0]->index == 6213 && inputParticles.size()==1) 
+       if (inputParticles.size()==1) 
+       {
         std::string base_collection2=inputParticles[0]->collection;
+        std::string consname;
         int base_type2=inputParticles[0]->type;
         try {
                 switch(inputParticles[0]->type){
-                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                    case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-                    case 7: ipart2_max=1; break;
-                    case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+                case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+               case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
+            case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
+                 case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+               case pureV_t: ipart2_max=1; break;
+              case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
+                case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
+                 case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+               case combo_t: ipart2_max=(ao->combos)[base_collection2].size(); break;
+              case consti_t: {constiloop=true;
+                            TString konsname=base_collection2;
+                                   konsname+="_";
+                                   konsname+=inputParticles[0]->index;
+                                   konsname+="c";
+                                   consname=(string)konsname;
+                                   ipart2_max =(ao->constits).find(consname)->second.size();
+                                   DEBUG(consname<<" has "<<ipart2_max<<" constituents\n");
+                                   base_type2=consti_t;
+                            break;}
+
 
                    default:
                        std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
@@ -95,6 +110,10 @@ public:
        DEBUG ("loop over "<< ipart2_max<<" particles\t");
        for (int ii=0;ii<ipart2_max; ii++){
         ((FuncNode*)left)->setParticleIndex(0, ii);
+        if (inputParticles[0]->index != 6213){
+          ((FuncNode*)left)->setParticleType(0, base_type2);
+          ((FuncNode*)left)->setParticleCollection(0, consname);
+        }
         retval=left->evaluate(ao);
         DEBUG("retval:"<<retval<<"\n");
         result_list.push_back(retval); 

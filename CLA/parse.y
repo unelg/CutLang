@@ -242,10 +242,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
-         | CONSTITS '(' particules ')' {  vector<myParticle*> newList;
-                                       TmpParticle.swap(newList);//then add newList to node
-                                       $$=new FuncNode(Constitsof,newList,"Constits");
-                                  }
+//       | CONSTITS '(' particules ')' {  vector<myParticle*> newList;
+//                                     TmpParticle.swap(newList);//then add newList to node
+//                                     $$=new FuncNode(Constitsof,newList,"Constits");
+//                                }
 //---------------------------------------
          | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -794,8 +794,7 @@ particules : particules particule {
                                         pnum++;
                          }
             ;
-particule : GEN '_' index    {
-				DEBUG("truth particule:"<<(int)$3<<"\n");
+particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);                            
@@ -1080,6 +1079,17 @@ particule : GEN '_' index    {
                                 a->type = 2; a->index = 6213; a->collection = "JET";
                                 TmpParticle.push_back(a);
                         }
+//-----------------------------------------------CONSTITS
+       | JET  CONSTITS   {      
+                                DEBUG("all jet particules \t");
+                                tmp="jet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type =consti_t; a->index = 6213; a->collection = "JET";
+                                TmpParticle.push_back(a);
+                        }
+
+
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;

@@ -34,6 +34,8 @@ protected:
     virtual void ResetParticles();
     void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart);
     virtual void setParticleIndex(int order, int newIndex);
+    virtual void setParticleType(int order, int newType);
+    virtual void setParticleCollection(int order, string newName);
 
 public:
     FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s,  
