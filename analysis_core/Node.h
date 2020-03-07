@@ -58,7 +58,8 @@ enum particleType{
  truth_t=10,
  tau_t=11,
  muon_t=12,
- combo_t=20
+ combo_t=20,
+ consti_t=21
 };
 
 

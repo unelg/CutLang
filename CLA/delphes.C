@@ -17,7 +17,6 @@
 #include "AnalysisController.h"
 
 //#define _CLV_
-
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -239,12 +238,26 @@ void delphes::Loop(analy_struct aselect, char *extname)
        if(object->IsA() == GenParticle::Class()) {
         particle = (GenParticle*) object;
 //        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", phi: " << particle->Phi << endl;
+        alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
+        adbxgen= new dbxTruth(alv);
+        adbxgen->setCharge( particle->Charge );
+        adbxgen->setPdgID(  particle->PID );
+        constis.push_back(*adbxgen);
+        delete adbxgen;
        }
-      }
+      }// end of loop over jets constits.
 
     jets.push_back(*adbxj);
     delete adbxj;
+    if (constis.size() > 0){
+      TString cname ="JET_";
+              cname+=i;    // jet index
+              cname+="c"; //  c for constituents
+       constits_map.insert( pair <string,vector<dbxParticle> > (cname, constis) );
+       DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
+       constis.clear();
     }
+    }// end of loop over jets
     DEBUG("Jets:"<<i<<std::endl);
 
 
@@ -304,11 +317,12 @@ void delphes::Loop(analy_struct aselect, char *extname)
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
+       ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
+    if (constits_map.size() < 1) // we only add this if it was previously empty...
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map,  anevt};
 
