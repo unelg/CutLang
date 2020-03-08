@@ -218,7 +218,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         int base_type2=inputParticles[0]->type;
         int ipart2_max=-1;
         try {
-                switch(inputParticles[0]->type){
+                switch(abs(inputParticles[0]->type)){
                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
                     case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
