@@ -3,7 +3,7 @@
 cd $HOME/work/test/test/runs
 wget http://www.hepforge.org/archive/cutlang/cms_opendata_ttbar.root
 wget http://www.hepforge.org/archive/cutlang/atla_opendata_had_ttbar.root
-wget -O delphes_events_ttbar.root https://drive.google.com/uc?export=download\&id=1NtdSz0f2W6QhQtZu7lY2mel2AIuwm3c5
+wget -O delphes_events_ttbar.root https://docs.google.com/uc?export=download\&id=1P8Pv2hmV4QcMfNWmQTsuAkqIYcEzsuxt
 
 for i in $(ls |grep .adl); do
         echo "Testing $i:"
