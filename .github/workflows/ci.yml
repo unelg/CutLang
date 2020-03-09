@@ -18,7 +18,7 @@ jobs:
       uses: actions/cache@v1.1.2
       with:
         path: ./build/
-        key: ${{ runner.os }}-build-${{ hashFiles('.github/workflows/**ci.yml') }}
+        key: ${{ runner.os }}-build-01351b8ada42c7b51b8504195dc30bdfbe5a42424fa4fef7156a57079e49b930
         restore-keys: |
           ${{ runner.os }}-build-
           ${{ runner.os }}-
@@ -43,10 +43,19 @@ jobs:
         cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
     
     - name: Build CutLang
-      run: cd ./CLA ; echo 'SHELL := /bin/bash' | cat - Makefile > temp && mv temp Makefile ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
+      run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
     
     - name: Run Tests
       run: |
         source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
         echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh
+        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh 2>&1 | tee ./output.txt
+        
+    - name: Filter Output
+      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x filter.sh ; ./filter.sh
+      
+    - name: Upload Output File
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: deploy
+        path: ./.github/workflows/final_res.txt
