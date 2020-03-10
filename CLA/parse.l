@@ -52,10 +52,11 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][uU][tT][aA][gG] return ISTAUTAG;
 [pP][dD][gG][iI][dD] return PDGID;
 [sS][tT][aA][tT][uU][sS] return STATUS;
-[vV][tT] return VERT;
-[vV][xX] return VERX;
-[vV][yY] return VERY;
-[vV][zZ] return VERZ;
+[vV][eE][rR][tT][eE][xX][tT] return VERT;
+[vV][eE][rR][tT][eE][xX][xX] return VERX;
+[vV][eE][rR][tT][eE][xX][yY] return VERY;
+[vV][eE][rR][tT][eE][xX][zZ] return VERZ;
+[vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "daughters"|"constituents" return CONSTITS;

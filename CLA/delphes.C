@@ -242,6 +242,15 @@ void delphes::Loop(analy_struct aselect, char *extname)
         adbxgen= new dbxTruth(alv);
         adbxgen->setCharge( particle->Charge );
         adbxgen->setPdgID(  particle->PID );
+        adbxgen->setParticleIndx(j);
+        adbxgen->addAttribute( particle->DZ);  //0
+        adbxgen->addAttribute( particle->D0);  
+        adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        adbxgen->addAttribute( particle->Status ); //3
+        adbxgen->addAttribute( particle->Z ); //4
+        adbxgen->addAttribute( particle->Y ); //5
+        adbxgen->addAttribute( particle->X ); //6
+        adbxgen->addAttribute( particle->T ); //7
         constis.push_back(*adbxgen);
         delete adbxgen;
        }
@@ -271,18 +280,28 @@ void delphes::Loop(analy_struct aselect, char *extname)
                 adbxgen->setCharge( particle->Charge );
                 adbxgen->setPdgID(  particle->PID );
                 adbxgen->setParticleIndx(i);
-                adbxgen->addAttribute( particle->DZ);
-                adbxgen->addAttribute( particle->D0);
-                adbxgen->addAttribute( particle->Status );
-                adbxgen->addAttribute( particle->Z );
-                adbxgen->addAttribute( particle->Y );
-                adbxgen->addAttribute( particle->X );
-                adbxgen->addAttribute( particle->T );
-                truth.push_back(*adbxgen);
+                adbxgen->addAttribute( particle->DZ);   // 0
+                adbxgen->addAttribute( particle->D0);  // 1 
+                adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+                adbxgen->addAttribute( particle->Status ); // 3
+                adbxgen->addAttribute( particle->Z );  //4
+                adbxgen->addAttribute( particle->Y );  //5
+                adbxgen->addAttribute( particle->X );  //6
+                adbxgen->addAttribute( particle->T );  //7
+                adbxgen->addAttribute( particle->D1 );  //8
+                adbxgen->addAttribute( particle->D2 );  //9
                 unsigned int nkids=particle->D2-particle->D1 +1;
-//                cout << "Gen:"<<i<<" has "<<nkids<<" kids\n"; 
+                truth.push_back(*adbxgen);
+/*
+                if (abs( particle->PID ) ==  1000021 && nkids>1 ){
+                cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
+                     <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\n"; 
+                cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
+                }
+*/
                 delete adbxgen;
         }
+    DEBUG("GENs:"<<i<<std::endl);
 
 //MET
         metd = (MissingET*) branchMET->At(0);
