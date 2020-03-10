@@ -32,6 +32,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxJet>    ljets;
    vector<dbxTruth>   truth;
    vector<dbxParticle> combos;
+   vector<dbxParticle> constis;
 
 
    map<string, vector<dbxMuon>     > muos_map;
@@ -42,6 +43,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    map<string, vector<dbxJet>     >ljets_map;
    map<string, vector<dbxTruth>    >truth_map;
    map<string, vector<dbxParticle> >combo_map;
+   map<string, vector<dbxParticle> >constits_map;
    map<string, TVector2            >  met_map;
 
    evt_data anevt;
@@ -229,9 +231,10 @@ std::cout << "Filling finished"<<std::endl;
        ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map, anevt};
+        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
 }
 
 //--------------------------------------------------------LOOP

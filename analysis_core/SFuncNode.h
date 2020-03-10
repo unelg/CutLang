@@ -46,9 +46,9 @@ private:
     std::vector<myParticle*> inputParticlesB;
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), 
-                      float val, 
-               std::string s, 
-               Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
+              float val, 
+              std::string s, 
+              Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         f=func;
         g1=NULL;
         g2=NULL;
@@ -175,14 +175,13 @@ public:
         inputParticlesB=input2;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
-    }
-
+ }
 
 //---------------------------end of externs
 virtual void setSymbol(string s) { symbol=s; }
     
 virtual double evaluate(AnalysisObjects* ao) override {
-        DEBUG("*******In SF Eval TF:"<< ext <<"\n"); 
+        DEBUG("*******In SF, Extern True/False:"<< ext <<"\n"); 
         if(userObjectA && !ext) {
            DEBUG("\t a user obj\n"); 
            userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
@@ -240,7 +239,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
              if (atype==7) ac="MET";
 
                switch (atype) { 
-		   case 10:  bPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
+		   case 10:  bPart->setTlv(  bPart->lv()+ao->truth[ac].at(ai).lv() );   break;
                    case 12:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case  1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                    case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
@@ -250,7 +249,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
                    case  8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
                    case  7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
-                            bPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
+                            bPart->setTlv(bPart->lv()+ametlv); // v from MET using same eta approx.
                             break;
                    default: std::cout<<"SFN No such object! ERROR\n";
                             break;
@@ -258,10 +257,10 @@ virtual double evaluate(AnalysisObjects* ao) override {
                } // end of switch
            }// end of for
 
-           DEBUG("aPart constructed \t");
+           DEBUG("bPart constructed \t");
         }
 
-        DEBUG("*****************EXTERN TF eval:"<< ext <<"\n");
+        DEBUG("*****************EXTERN TF evaluate? T/F:"<< ext <<"\n");
         if(ext) { 
                DEBUG("external user function evaluate\n");
               if (g1 != NULL) return (*g1)(ao, symbol, type, h1 );
@@ -302,8 +301,7 @@ double btagsf(AnalysisObjects* ao, string s, float value){
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
-
-    DEBUG("STR:"<<s<<" Type:"<<id<< "#J types:"<<ao->jets.size() << " #M types:"<<ao->muos.size()<<"\n");
+    DEBUG("STR:"<<s<<" Type:"<<pid<<" #J types:"<<ao->jets.size() << " #M types:"<<ao->muos.size()<<"\n");
     map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
@@ -317,6 +315,7 @@ double count(AnalysisObjects* ao, string s, float id) {
 
     ValueNode abc=ValueNode();
     switch (pid) {
+//   case consti_t:   return (ao->truth.at(s).size()); break;
      case truth_t:    return (ao->truth.at(s).size()); break;
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
@@ -334,7 +333,7 @@ double count(AnalysisObjects* ao, string s, float id) {
                                return (ao->combos.at(s).size() );
                       } 
                       break;
-     default:         return (-1); break;
+     default:        std::cerr<<"No such Particle Type:\n"; return (-1); break;
     }
     return (-1);
 }

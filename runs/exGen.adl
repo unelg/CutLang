@@ -10,7 +10,7 @@ object genmuons : GEN
 
 region test1
   select Size(genelectrons) == 1
- select vertexY(genelectrons_0) > 0
+  select vertexY(genelectrons_0) > 0
 
 #region test2
 # select {GEN_1}PDGID == -11
