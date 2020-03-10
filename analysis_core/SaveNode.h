@@ -95,20 +95,12 @@ public:
       
       ttsave->Fill();
 
-
-
-
-
       if (anevt.event_no == anevt.maxEvents) {
-
-	      ftsave->Write(); // Multiple unnecessary writes here; causes massive delay
-	      ftsave->Close(); // Crashes here - on second analysis call due to closed I/O Stream
-      }
-      // TODO: Execute above two lines after complete evaluation of AnalysisObjects
-	    
+	      ftsave->Write();
+	      ftsave->Close();
+      }   
       return 1;
     }
-
     virtual ~SaveNode() {}
 };
 

@@ -245,7 +245,7 @@ public:
 	int q()  { return p_charge; }
 	int pdgID() {return p_pdgID; }
 	double Attribute(int k)  { if (k>(int)p_attribute.size()){
-                                 std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
+                                 std::cerr<<"NO Such Attribute! ID:"<<k<<"\n";return -999999;} else {return p_attribute.at(k);} }
 	int nAttribute() { return p_attribute.size(); }
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }
@@ -274,12 +274,10 @@ public:
 	double SFIsoUncertaintyDown() { return p_isouncertaintydown ; }
 	double Z0() {return p_z0;}
         double Pt_Uncorrected() {return p_Pt_Uncorrected;}
-        void   addToCollection( std::string v) { p_collections.push_back(v);}
 
 
 private:
         std::vector<double> p_attribute;
-        std::vector<std::string> p_collections;
 	int p_charge;
 	int p_pdgID;
 	double p_et_cone;

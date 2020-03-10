@@ -30,7 +30,6 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
 
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
-   int prev_RunNumber=-1;
 
    map < string, int > syst_names;
         syst_names["01_jes"]       = 2;
@@ -49,7 +48,6 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
-   Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -65,6 +63,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        vector<dbxJet>     ljets;
        vector<dbxTruth>   truth;
        vector<dbxParticle> combos;
+       vector<dbxParticle> constis;
 
 
        map<string, vector<dbxMuon>     >  muos_map;
@@ -75,6 +74,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        map<string, vector<dbxJet>      > ljets_map;
        map<string, vector<dbxTruth>    > truth_map;
        map<string, vector<dbxParticle> > combo_map;
+       map<string, vector<dbxParticle> > constits_map;
        map<string, TVector2            >   met_map;
 
 //temporary variables
@@ -220,9 +220,10 @@ std::cout << "Filling finished"<<std::endl;
        ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, met_map, anevt};
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
 
         aCtrl.RunTasks(a0);
 
