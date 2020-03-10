@@ -227,6 +227,7 @@ int BPdbxA:: readAnalysisParams() {
        iter = BinCuts.begin();
        while(iter != BinCuts.end())
        { bincounts.push_back(0);
+         DEBUG("+++++ Binning: "<<iter->first<<" |"<< iter->second->getStr()<<"\n");
          iter++;
        }
 
