@@ -72,10 +72,11 @@ double     vxof( dbxParticle* apart);
 double     vyof( dbxParticle* apart);
 double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
+double    vtrof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
-double Constitsof( dbxParticle* apart);
+double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
 
 //other functions to be added

@@ -1,0 +1,30 @@
+define mintrackpT = 180
+define mintrackd0 = 2
+define minPVdistance = 0 # just an example
+define maxRDV = 120      # just an example
+define minDVmass = 2000   # just an example
+define maxZDV   = 120     # just an example
+define minDecProd = 2     # just an example
+
+object DVcandidates take GEN 
+   select abs(pdgID(GEN)) == 1000021 # for finding R hadrons
+   select daughters( GEN ) > 1    # 1 child not accepted
+#  select q(GEN daughters) <> 0  ## <> , NE means NOT equal.
+   select pT(GEN daughters) > mintrackpT # > 1GeV
+   select abs(d0(GEN daughters)) > mintrackd0 # 2mm
+
+ object DVs 
+   take DVcandidates 
+   select ALL
+   select m(DVcandidates) > minDVmass 
+#  select VertexTR(DVcandidates) > minPVdistance 
+#  select VertexTR(DVcandidates) < maxRDV 
+   select abs(VertexZ(DVcandidates)) < maxZDV
+   select daughters(DVcandidates) > minDecProd
+#  weight some efficiency
+
+
+algo testCon 
+    select ALL
+    select size(DVcandidates) > 1
+    select size(DVs) > 1

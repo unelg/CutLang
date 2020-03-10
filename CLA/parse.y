@@ -11,7 +11,7 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -74,7 +74,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
 %token MINIMIZE MAXIMIZE
-%token VERT VERX VERY VERZ STATUS CONSTITS
+%token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
@@ -242,11 +242,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
-//       | CONSTITS '(' particules ')' {  vector<myParticle*> newList;
-//                                     TmpParticle.swap(newList);//then add newList to node
-//                                     $$=new FuncNode(Constitsof,newList,"Constits");
-//                                }
-//---------------------------------------
+        | CONSTITS '(' particules ')' {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(CCountof,newList,"ChildCountOf");
+                                  } 
+        | '{' particules '}' CONSTITS {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(CCountof,newList,"ChildCountOf");
+                                  } 
          | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
@@ -255,7 +258,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
                                   }
-//---------------------------------------
          | '{' particules '}' 'P' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
@@ -264,7 +266,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Pof,newList,"p");
                                   }
-//---------------------------------------
          | '{' particules '}' 'E' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
@@ -355,6 +356,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | DZ '(' particules ')' {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dzof,newList,"dz");
+                                  }
+         | '{' particules '}' VERTR {   vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vtrof,newList,"vtr");
+                                  }
+         | VERTR '(' particules ')' {   vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(vtrof,newList,"vtr");
                                   }
          | '{' particules '}' VERZ {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -533,7 +542,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        } else {
                                            if (it != ObjectCuts->end()){
                                             int type=((ObjectNode*)it->second)->type;
-                                            $$=new SFuncNode(count,            type, it->first, it->second);
+                                            $$=new SFuncNode(count, type, it->first, it->second);
                                            } else { // new type is defined using particle class summation
                                             vector<myParticle*> newList= itdef->second;
                                            // TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
@@ -541,6 +550,13 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            }
                                        }
                            }
+   	| NUMOF '(' particules ')'  {  
+                                     vector<myParticle*> newList;
+                                     TmpParticle.swap(newList);
+                                     std::cout<<"------->"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n";
+                                     $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
+                                    }
+/*
    	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
         | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 12, "MUO");  }
@@ -550,6 +566,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
         | NUMOF '(' QGJET ')' {      $$=new SFuncNode(count, 4, "JET");  }
         | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
         | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
+*/
 //------------------------------------------
 //    | SUM '(' ID ')' {
 //                                   map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -828,25 +845,29 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 }
                         } 
 
-	 | GEN         {
-				DEBUG("all truth particles \t");
-				myParticle* a = new myParticle;
-				a->type =10; a->index = 6213; a->collection = "Truth";
-                                TmpParticle.push_back(a);
+	 | GEN         {        DEBUG("all truth particles \t");
                                 tmp="truth_6213";
                                 $$=strdup(tmp.c_str());
+				myParticle* a = new myParticle;
+				a->type =truth_t; a->index= 6213; a->collection= "Truth";
+                                TmpParticle.push_back(a);
 			}
+         | GEN CONSTITS {       DEBUG("all truth particules \t");
+                                tmp="truth_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type =consti_t; a->index= 6213; a->collection= "Truth";
+                                TmpParticle.push_back(a);
+                         }
 
-	| ELE '_' index {
-                                DEBUG("electron particule:"<<(int)$3<<"\n");
+	| ELE '_' index {       DEBUG("electron particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
                                 a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
-        | ELE '[' index ']' {
-                                myParticle* a = new myParticle;
+        | ELE '[' index ']' {   myParticle* a = new myParticle;
                                 a->type =1; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
@@ -1080,16 +1101,13 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);
                         }
 //-----------------------------------------------CONSTITS
-       | JET  CONSTITS   {      
-                                DEBUG("all jet particules \t");
+       | JET  CONSTITS   {      DEBUG("all jet particules \t");
                                 tmp="jet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type =consti_t; a->index = 6213; a->collection = "JET";
                                 TmpParticle.push_back(a);
-                        }
-
-
+                         }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1888,36 +1906,32 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                      }
-         | OBJ ID TAKE PHO criteria {
-                                        DEBUG(" "<<$2<<" is a new PhoSet\n");
+         | OBJ ID TAKE PHO criteria {   DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
-                                      }
-         | OBJ ID ':' PHO criteria {
-                                        DEBUG(" "<<$2<<" is a new PhoSet\n");
+                                    }
+         | OBJ ID ':' PHO criteria {    DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
-                                      }
-         | OBJ ID TAKE JET criteria {
-                                        DEBUG(" "<<$2<<" is a new JetSet\n");
+                                    }
+         | OBJ ID TAKE JET criteria {   DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
-                                      }
+                                    }
          | OBJ BJET ':' JET criteria {
                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
                                        YYERROR;//stops parsing if variable not found
                                       }
-         | OBJ ID ':' JET criteria {
-                                        DEBUG(" "<<$2<<" is a new JetSet\n");
+         | OBJ ID ':' JET criteria {    DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //

@@ -245,7 +245,7 @@ public:
 	int q()  { return p_charge; }
 	int pdgID() {return p_pdgID; }
 	double Attribute(int k)  { if (k>(int)p_attribute.size()){
-                                 std::cerr<<"NO Such Attribute!\n";return -999999;} else {return p_attribute.at(k);} }
+                                 std::cerr<<"NO Such Attribute! ID:"<<k<<"\n";return -999999;} else {return p_attribute.at(k);} }
 	int nAttribute() { return p_attribute.size(); }
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }

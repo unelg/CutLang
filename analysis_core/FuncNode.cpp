@@ -230,7 +230,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         int base_type2=inputParticles[0]->type;
         int ipart2_max=-1;
         try {
-                switch(inputParticles[0]->type){
+                switch(abs(inputParticles[0]->type) ){ 
                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
                     case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
@@ -429,14 +429,22 @@ double vtof( dbxParticle* apart){
    DEBUG(" vert t of:"<<v<<"\t");
    return v;
 }
+double vtrof( dbxParticle* apart){ 
+   double vx=apart->Attribute(6);
+   double vy=apart->Attribute(5);
+   double v=sqrt(vx*vx+vy*vy);
+   DEBUG(" vert tr of:"<<v<<"\t");
+   return v;
+}
 double tauisoof( dbxParticle* apart){
    double v=apart->Attribute(0);
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
-double Constitsof( dbxParticle* apart){
-   DEBUG(" CONSTITS of:\n");
-   return 1;
+double CCountof( dbxParticle* apart){
+   double v=apart->Attribute(9) - apart->Attribute(8)+1;
+   DEBUG("# Children :"<<v<<"\n");
+   return v;
 }
 
 
