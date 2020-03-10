@@ -11,7 +11,7 @@
 #include <vector>
 #include <iterator>
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -550,12 +550,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            }
                                        }
                            }
-   	| NUMOF '(' particules ')'  {  
-                                     vector<myParticle*> newList;
+   	| NUMOF '(' particules ')' {vector<myParticle*> newList;
                                      TmpParticle.swap(newList);
-                                     std::cout<<"------->"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n";
+                                     DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
                                      $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
-                                    }
+                                   }
 /*
    	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
         | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
@@ -1092,8 +1091,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 a->type = 2; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
-       | JET            {      
-                                DEBUG("all jet particules \t");
+       | JET            {       DEBUG("all jet particules \t");
                                 tmp="jet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1108,18 +1106,22 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 a->type =consti_t; a->index = 6213; a->collection = "JET";
                                 TmpParticle.push_back(a);
                          }
+        | BJET           {      tmp="bjet_6213";                        
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = 3; a->index = 6213; a->collection = "JET";
+                                TmpParticle.push_back(a);  
+                        }
         | BJET '_' index {      tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 3;
-                                a->index = (int)$3;
+                                a->type = 3; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
         | BJET '[' index ']' {  tmp="bjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 3;
-                                a->index = (int)$3;
+                                a->type = 3; a->index = (int)$3; a->collection = "JET";
                                 TmpParticle.push_back(a);  
                         }
         | BJET '[' index ':' index ']' {
@@ -1127,8 +1129,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 3;
-                                 a->index = 10000+ii;
+                                 a->type = 3; a->index = 10000+ii; a->collection = "JET";
 				 TmpParticle.push_back(a);
                                 }
                         } 
@@ -1137,8 +1138,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 3;
-                                 a->index = 10000+ii;
+                                 a->type = 3; a->index = 10000+ii; a->collection = "JET";
 				 TmpParticle.push_back(a);
                                 }
                         } 

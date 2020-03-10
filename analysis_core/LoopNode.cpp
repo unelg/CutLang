@@ -39,7 +39,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        if (inputParticles.size()==1) 
        {
         std::string base_collection2=inputParticles[0]->collection;
-        std::string consname;
+        std::string consname=base_collection2;
         int base_type2=inputParticles[0]->type;
         try {
                 switch(inputParticles[0]->type){
