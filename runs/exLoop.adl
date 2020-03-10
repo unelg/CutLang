@@ -7,16 +7,16 @@ object goodjet : JET
 
 region   signal
   select  ALL              # to count all events
-  select  Sum ( pT(JET) ) >= 20
   select  Size( JET ) > 2
-  select  Size( ELE ) > 0
-  select  min ( dR(JET[0:2], ELE[0] )) > 0.9
+  select  Sum ( pT(JET) ) >= 20
+#  select  Size( ELE ) > 0
+#  select  min ( dR(JET[0:2], ELE[0] )) > 0.9
 
 
-region   deneme
-  select ALL
-  select Size(ELE) > 0
-  select Size(goodjet) > 2
-  select min ( dR(goodjet[0:2], ELE[0] )) > 0.9
-  select Size(MUO) > 2
-  select min ( dR(MUO[0:2], ELE[0] )) > 0.9
+#region   deneme
+#  select ALL
+#  select Size(ELE) > 0
+#  select Size(goodjet) > 2
+#  select min ( dR(goodjet[0:2], ELE[0] )) > 0.9
+#  select Size(MUO) > 2
+#  select min ( dR(MUO[0:2], ELE[0] )) > 0.9
