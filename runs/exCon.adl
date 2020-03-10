@@ -1,0 +1,21 @@
+#CLA ADL example1
+
+object goodJet using JET
+  select q(JET constituents ) == 0  
+# select q(JET:constituents ) == 0  
+# select q(constituents(Jet) ) == 0  
+  select pT( JET ) > 50
+  select Sum(pT(JET constituents ) ) < 40  # PT from remaining constituents
+#        ^^^^^^^^^^^^^^\_this is a cut on one JET. loop is over the constituents
+#  select VertexTR(Jet constituents) < 4   # remove if far PrimaryVertex'ed constituents
+
+
+region   test
+  select  ALL              # to count all events
+  select  Size (goodJet) >= 5  # events with 2 or more electrons 
+##select Sum(pT(JET constituents ) ) < 40  # PT from remaining constituents
+##       ^^^^^^^ such a cut doesnt make sense here, this is event loop
+# select Sum(pT(goodJet)) > 55
+#        ^^^^^^^\_this is a loop over all jets, so it is OK.
+
+
