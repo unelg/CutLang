@@ -2045,7 +2045,11 @@ command : CMD condition { //find a way to print commands
 			NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | BINS e bins {
-                       for (int in=1; in<tmpBoxlist.size(); in++){
+                        DEBUG("< lim:"<<tmpBoxlist[0]<<"\n");
+                         Node* l2=new ValueNode(tmpBoxlist[0] );
+                         Node* c2=new BinaryNode(le,$2,l2,"<=");
+                         BinCuts->insert(make_pair(++bincount, c2));
+                        for (int in=1; in<tmpBoxlist.size(); in++){
                          DEBUG("lim:"<<tmpBoxlist[in-1]<<" -- "<< tmpBoxlist[in]<<"\n");
                          Node* l1=new ValueNode(tmpBoxlist[in-1] );
                          Node* l2=new ValueNode(tmpBoxlist[in  ] );
@@ -2053,7 +2057,12 @@ command : CMD condition { //find a way to print commands
                          Node* c2=new BinaryNode(le,$2,l2,"<=");
                          Node* cl=new BinaryNode(LogicalAnd,c1,c2,"AND");
                          BinCuts->insert(make_pair(++bincount, cl));
-                       } 
+                        }
+                        DEBUG("> lim:"<<tmpBoxlist[tmpBoxlist.size()-1]<<"\n");
+                         Node* l1=new ValueNode(tmpBoxlist[ tmpBoxlist.size()-1 ] );
+                         Node* c1=new BinaryNode(ge,$2,l1,">=");
+                         BinCuts->insert(make_pair(++bincount, c1));
+                        tmpBoxlist.clear();
                       } 
         | BINS condition {  DEBUG("a new bin is found\n"); 
                             BinCuts->insert(make_pair(++bincount, $2));
