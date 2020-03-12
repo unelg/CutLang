@@ -63,6 +63,7 @@ double 	pdgIDof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
 double  DeepBof( dbxParticle* apart);
 double   isBTag( dbxParticle* apart);
+double isTauTag( dbxParticle* apart);
 double   tau1of( dbxParticle* apart);
 double   tau2of( dbxParticle* apart);
 double   tau3of( dbxParticle* apart);

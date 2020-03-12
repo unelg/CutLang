@@ -74,7 +74,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                             case jet_t: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
                                                         inputPart->setFlavor( ao->jets[ac].at(ai).Flavor()   );
-                                                        inputPart->setIsTight( ao->jets[ac].at(ai).isbtagged_77()   );
+                                                        inputPart->setIsTight( ao->jets[ac].at(ai).isbtagged_77()+2* ao->jets[ac].at(ai).isTautagged()   );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
@@ -363,10 +363,14 @@ double DeepBof( dbxParticle* apart){
 }
 
 double isBTag( dbxParticle* apart){
-    //bool Bval=((dbxJet*)apart)->isbtagged_77();
-    bool Bval=(apart)->isTight();
+    bool Bval=((apart)->isTight())&1;
     DEBUG(" BTAG:"<<Bval<<"\t");
     return Bval;
+}
+double isTauTag( dbxParticle* apart){
+    bool Tval=((apart)->isTight())&2;
+    DEBUG(" BTAG:"<<Tauval<<"\t");
+    return Tval;
 }
 
 double tau1of( dbxParticle* apart){
