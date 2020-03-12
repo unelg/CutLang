@@ -29,8 +29,8 @@ class dbxJet: public dbxParticle {
         void setBJetEscalePos    (double v) {p_bjetescale_pos=v;     }
         void setBJetEscaleNeg    (double v) {p_bjetescale_neg=v;     }
         void setNocalibjet       (TLorentzVector lv){p_Nocalibjet=lv; }
-        //S.I
         void set_isbtagged_77(const char& flag){jet_isbtagged_77=flag;}
+        void set_isTautagged(const char& flag){jet_isTautagged=flag;}
         void setmv2c00(const float&v){m_mv2c00=v;}
         void setmv2c10(const float&v){m_mv2c10=v;}
         void setmv2c20(const float&v){m_mv2c20=v;}
@@ -38,7 +38,6 @@ class dbxJet: public dbxParticle {
         void setjvt(const float&v){m_jvt=v;}
         void settruthflav(const int&v){m_truthflav=v;}
         void setisTrueHS(const char&v){ m_isTrueHS=v;}
-        //end S.I        
         
         unsigned int Jee_status(){return p_jee_status;}
         double btag_eventW()     {return p_btag_eventW;}
@@ -61,8 +60,8 @@ class dbxJet: public dbxParticle {
         double BJetEscalePos()   {return p_bjetescale_pos;}
         double BJetEscaleNeg()   {return p_bjetescale_neg;}
         
-        //S.I       
         bool  isbtagged_77() { return jet_isbtagged_77;}
+        bool  isTautagged() { return jet_isTautagged;}
         float mv2c00()    const{return m_mv2c00;}
         float mv2c10()const{return m_mv2c10;}
         float mv2c20()const{return m_mv2c20;}
@@ -70,7 +69,6 @@ class dbxJet: public dbxParticle {
         float jvt() const{return m_jvt;}
         int   truthflav() const{return m_truthflav;}
         char isTrueHS()const{return m_isTrueHS;}
-        //end S.I
         
         TLorentzVector Nocalibjet() {return p_Nocalibjet;} 
 private:
@@ -93,7 +91,6 @@ private:
        double p_emphi;
        double p_etacorr;
        double p_jetfrac;
-       //S.I
        float m_mv2c00;
        float m_mv2c10;
        float m_mv2c20;
@@ -102,7 +99,7 @@ private:
        int m_truthflav;
        char m_isTrueHS;
        bool jet_isbtagged_77;
-       //end S.I
+       bool jet_isTautagged;
        double p_btag_eventW;
        TLorentzVector p_Nocalibjet;
      ClassDef(dbxJet,1);

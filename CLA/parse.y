@@ -277,11 +277,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 //---------------------------------------
          | '{' particules '}' ISTAUTAG {vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                        $$=new FuncNode(isTauTag,newList,"TauTAG");
                                     }
          | ISTAUTAG '(' particules ')' {vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(isBTag,newList,"TauTAG");
+                                        $$=new FuncNode(isTauTag,newList,"TauTAG");
                                     }
          | '{' particules '}' ISCTAG {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
