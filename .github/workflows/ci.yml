@@ -2,9 +2,9 @@ name: Tests
 
 on: [push, pull_request]
 
-jobs:    
-  tests (ubuntu-latest):
-
+jobs:
+  tests(ubuntu-latest):
+    
     runs-on: ubuntu-latest
 
     steps:
