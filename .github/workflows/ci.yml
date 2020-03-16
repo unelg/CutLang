@@ -64,5 +64,5 @@ jobs:
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: deploy
+        name: tests (ubuntu-latest)
         path: ./.github/workflows/final_res.txt
