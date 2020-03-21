@@ -15,14 +15,14 @@ region   test
 #  save     testfile
   Bin  MHT  0 50 100 500
 
-# Bin MHT [] 000 300 && HT [] 000  500  # 0
-# Bin MHT [] 000 300 && HT [] 500 1000  # 1
-# Bin MHT [] 000 300 && HT      > 1000  # 2
-# Bin MHT [] 300 500 && HT [] 000  500
-# Bin MHT [] 300 500 && HT [] 500 1000  # 4
-# Bin MHT [] 300 500 && HT      > 1000
-# Bin MHT [] 500 750 && HT [] 000 1000  # 6
-# Bin MHT [] 500 750 && HT      > 1000
-# Bin MHT      > 750 && HT [] 750 1500  # 8
-# Bin MHT      > 750 && HT      > 1500
+  Bin MHT [] 000 300 && HT [] 000  500  # 0
+  Bin MHT [] 000 300 && HT [] 500 1000  # 1
+  Bin MHT [] 000 300 && HT      > 1000  # 2
+  Bin MHT [] 300 500 && HT [] 000  500
+  Bin MHT [] 300 500 && HT [] 500 1000  # 4
+  Bin MHT [] 300 500 && HT      > 1000
+  Bin MHT [] 500 750 && HT [] 000 1000  # 6
+  Bin MHT [] 500 750 && HT      > 1000
+  Bin MHT      > 750 && HT [] 750 1500  # 8
+  Bin MHT      > 750 && HT      > 1500
 

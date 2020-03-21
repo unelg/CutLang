@@ -34,6 +34,8 @@ protected:
     virtual void ResetParticles();
     void partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart);
     virtual void setParticleIndex(int order, int newIndex);
+    virtual void setParticleType(int order, int newType);
+    virtual void setParticleCollection(int order, string newName);
 
 public:
     FuncNode(double (*func)(dbxParticle* apart ),std::vector<myParticle*> input,  std::string s,  
@@ -61,6 +63,7 @@ double 	pdgIDof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
 double  DeepBof( dbxParticle* apart);
 double   isBTag( dbxParticle* apart);
+double isTauTag( dbxParticle* apart);
 double   tau1of( dbxParticle* apart);
 double   tau2of( dbxParticle* apart);
 double   tau3of( dbxParticle* apart);
@@ -70,9 +73,11 @@ double     vxof( dbxParticle* apart);
 double     vyof( dbxParticle* apart);
 double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
+double    vtrof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
+double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
 
 //other functions to be added
