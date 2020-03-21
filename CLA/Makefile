@@ -26,7 +26,7 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -lz 
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -ldelphesParticles_h -lz 
 GLIBS         = $(ROOTGLIBS)
 
 
@@ -78,6 +78,7 @@ softlinks: auxiliaries
 	test -r libdbx_truth_h.so      || ( ln -s $(SUBDIRLOC)analysis_core/dbx_truth_h.so     libdbx_truth_h.so    ; ln -s libdbx_truth_h.so dbx_truth_h.so )
 	test -r libdbxParticle_cpp.so  || ( ln -s $(SUBDIRLOC)analysis_core/dbxParticle_cpp.so libdbxParticle_cpp.so; ln -s libdbxParticle_cpp.so dbxParticle_cpp.so )
 	test -r libDBXNtuple_cpp.so    || ( ln -s $(SUBDIRLOC)analysis_core/DBXNtuple_cpp.so   libDBXNtuple_cpp.so  ; ln -s libDBXNtuple_cpp.so DBXNtuple_cpp.so )
+	test -r libdelphesParticles_h.so  || ( ln -s $(SUBDIRLOC)analysis_core/delphesParticles_h.so   libdelphesParticles_h.so  ; ln -s libdelphesParticles_h.so delphesParticles.so )
 
 $(ANLOBJS): %.o : %.cxx
 	$(CXX) -c $< -o $@ $(CXXFLAGS)

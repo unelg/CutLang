@@ -20,7 +20,6 @@
 #endif
 
 
-
 ObjectNode::ObjectNode(std::string id,
                        Node* previous,
                        void (* func) (AnalysisObjects* ao, vector<Node*>* criteria, std::vector<myParticle *>* particles, std::string  name, std::string basename),
@@ -60,7 +59,7 @@ ObjectNode::ObjectNode(std::string id,
       if (id == "JET" ) type=jet_t;
       if (id == "PHO" ) type=photon_t;
       if (id == "FJET") type=fjet_t;
-      if (id == "Truth") type=fjet_t;
+      if (id == "Truth") type=truth_t;
       if (id == "TAU" ) type=tau_t;
       if (id == "Combo" ) type=combo_t;
       DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
@@ -97,19 +96,20 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     DEBUG("# iparticles:"<< particles.size()<<"\n");
     if (particles.size() >0) DEBUG("type:"<< particles[0]->type<<"\t"<<particles[0]->collection<<"\n" );
 
+    if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
       basename=anode->name;
       DEBUG("previous:"<< basename<< "  type:"<<type<<"\n"); // Combo, 20
 // is it in the map list?
        switch (type) {
-        case muon_t:       if (ao->muos.find(basename)==ao->muos.end()  ){
+        case muon_t:  if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Muos evaluated.\n");
                       } else keepworking=false;
                       break;
 
-	case truth_t:      if (ao->truth.find(basename) == ao->truth.end() ){
+	case truth_t: if (ao->truth.find(basename) == ao->truth.end() ){
 				anode->evaluate(ao);
 				DEBUG(" Truth evaluated.\n");
 		      } else keepworking=false;
@@ -186,11 +186,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
      if (itc->first == name) return 1;
     }
       
-    DEBUG("Before new set #types: J, FJ, E, M, T, P, C:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size() <<"\n"); 
+    DEBUG("Before new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<<ao->constits.size() <<"\n"); 
 //---------------
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
 //---------------
-    DEBUG(" After new set #types: J, FJ, E, M, T, P, C:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size() <<"\n"); 
+    DEBUG(" After new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<< ao->constits.size() <<"\n"); 
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #J typename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
@@ -209,43 +209,111 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
     ao->jets.insert( std::pair<string, vector<dbxJet> >(name, (ao->jets)[basename]) );
+    DEBUG("Before all constituents "<< ao->constits.size() << "\n");
+    for (int ipart=(ao->jets)[name].size()-1; ipart>=0; ipart--){ //Loop over all jets in the event.
+       TString consname=name;        TString baseconsname=basename;
+               consname+="_";                baseconsname+="_";
+               consname+=ipart;              baseconsname+=ipart;
+               consname+="c";                baseconsname+="c";
+         ao->constits.insert( std::pair<string, vector<dbxParticle> >(consname, (ao->constits)[(string)baseconsname]) );
+         DEBUG(consname<<" added.\t");
+    }
+    DEBUG("\n ALL Constits now:"<<ao->constits.size() <<"\n");
+
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->jets)[name].size();
         bool simpleloop=true;
+        bool constiloop=false;
  
-        DEBUG("Psize:"<<particles->size() <<"\n");
+        DEBUG("Nb of particles in this cut:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
-           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           DEBUG("No particle CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
 //---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
-        std::set<int> ptypeset;
+        std::set<int> ptypeset; // set of types, same type twice doesn't exist.
         int t1=particles->at(0)->type;
         int t2;
         for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
+         if (particles->at(kp)->type == consti_t) constiloop=true;
         }
+//--------------------- if we have a LoopNode(max, min, sum) no constiloop.
+        TString mycutstr=(*cutIterator)->getStr();
+        if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( ptypeset.size()==2) {simpleloop=false; }
+        if ( ptypeset.size()==2) {simpleloop=false;}
         std::set<int>::iterator ptit; 
         ptit=ptypeset.begin(); ptit++;
         t2=*ptit;
+/*
+object goodjets take Jet
+  select  q(Jet constituents ) != 0                        # remove neutral constituents
+  select pT(decayVert(Jet constituents) ) < minPVdistance  # remove far PrimaryVertex'ed constituents
+  select Sum(pT(Jet constituents ) )    < maxjetchargedpT  # PT from remaining constituents
+# example "goodJet_0c"
+*/
+//--------------------
+        if (constiloop) { // basename: previous base object, name: new object
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all particles, jets, in an event.
+            TString konsname=name;
+                    konsname+="_";
+                    konsname+=ipart;
+                    konsname+="c";
+             string consname=(string)konsname;
+             int constiCount =(ao->constits).find(consname)->second.size();
+             DEBUG("for "<<consname<<" constituents size:"<<constiCount<<"\n");
+             for (int ic=constiCount-1; ic>=0; ic--){
+//---------------these are the particles to be dealt with, like a loop!
+              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut, e.g. pT(JET_jp) > 10
+                particles->at(jp)->index=ic;
+                particles->at(jp)->collection=consname; // new name
+                particles->at(jp)->type=consti_t;
+              }
+              DEBUG("For consti:"<<ic<<" CutIte:"<<(*cutIterator)->getStr()<<"\n"); // this is like qOf, applied on each constituent
+              bool ppassed=(*cutIterator)->evaluate(ao); // check on constituents?
+              DEBUG("Result:"<<ppassed<<"\n");
+              if (!ppassed) { 
+                            DEBUG("consti "<< ic <<" failed and will be removed.\n");
+                            (ao->constits).find(consname)->second.erase( (ao->constits).find(consname)->second.begin()+ic); // erase consti
+                            }
+             }//end of loop over constituent
+           if ( (ao->constits).find(consname)->second.size() < 1) {
+               DEBUG(ipart<<"th jet removed from "<<name<<" since all constituents were removed.\n");
+               (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
+           }
+          }// end of loop over all particles (jets) in the event.
+         continue; // will move to the next cut iterator
+        } // done with constis
+//------------------------------just to see
+/*
+        for ( int ipa = (ao->jets)[name].size()-1; ipa>=0; ipa--){
+            DEBUG(name <<" "<<ipa<<" has ");
+            TString konsname=name;
+                    konsname+="_";
+                    konsname+=ipa;
+                    konsname+="c";
+             string consname=(string)konsname;
+             int ciCount =(ao->constits).find(consname)->second.size();
+            DEBUG(ciCount<<" constituents\n"); 
+        }
+*/
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
-               for (int jp=0; jp<particles->size(); jp++){
+               for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
-                DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
-                bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
+               DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\t");
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               DEBUG(ppassed<<"\n");
+               if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
-        }
-        else {
+        } else { // if not a simple loop
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -800,40 +868,122 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 //------------------------------------------------
 void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new GEN type named:"<<name<<" #Gtypes:"<<ao->truth.size()<<" #Gparticles:"<< (ao->truth)[basename].size() <<" Duplicating:"<<basename<<"\n"); 
     ao->truth.insert( std::pair<string, vector<dbxTruth> >(name, (ao->truth)[basename]) );
+    DEBUG(ao->constits.size()<< " initial constits maps\n");
+    map <string, std::vector<dbxParticle>  >::iterator itpa;
+    for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
+     DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
+    }
+
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->truth)[name].size();
         bool simpleloop=true;
- 
-        DEBUG("Psize:"<<particles->size() <<"\n");
+        bool constiloop=false;
+
+        DEBUG("Number of particles in this cut:"<<particles->size() <<"\n");
+        DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
-           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
+//---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
         std::set<int> ptypeset;
         int t1=particles->at(0)->type;
         int t2;
         for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
+         DEBUG(kp<<" th particle ID is:"<<particles->at(kp)->type<<"\n");
+         if (particles->at(kp)->type == consti_t) constiloop=true;
         }
+//--------------------- if we have a LoopNode(max, min, sum) no constiloop.
+        TString mycutstr=(*cutIterator)->getStr();
+        if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
         std::set<int>::iterator ptit;
         ptit=ptypeset.begin(); ptit++;
         t2=*ptit; 
+//----------------------------
+        if (constiloop) { // basename: previous base object, name: new object
+          DEBUG("--GEN daugther loop-- "<< ipart_max<<"\n");
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all particles, jets, in an event.
+//--------------the name is derived from particleID
+             int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
+             TString colname=name + pidx;
+             int constiCount = (ao->constits).find((string)colname)->second.size();
+             DEBUG("for "<<name<<" children size:"<<constiCount<<"\n");
+             for (int ic=constiCount-1; ic>=0; ic--){
+//---------------these are the particles to be dealt with, like a loop!
+              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut, e.g. pT(JET_jp) > 10
+                particles->at(jp)->index=ic;
+                particles->at(jp)->collection=(string)colname; // new name
+                particles->at(jp)->type=consti_t;
+              }
+              DEBUG("For child:"<<ic<<" CutIte:"<<(*cutIterator)->getStr()<<"\n"); // this is like qOf, applied on each constituent
+              bool ppassed=(*cutIterator)->evaluate(ao); // check on constituents?
+              DEBUG("Result:"<<ppassed<<"\n");
+              if (!ppassed) { 
+                   DEBUG("child "<< ic <<" failed and will be removed.\n");
+                   (ao->constits).find((string)colname)->second.erase( (ao->constits).find((string)colname)->second.begin()+ic); // erase child
+              }
+             }//end of loop over constituent
+           if ( (ao->constits).find((string)colname)->second.size() < 1) {
+               DEBUG(ipart<<"th gen removed from "<<name<<" since all constituents were removed.\n");
+               (ao->truth).find(name)->second.erase( (ao->truth).find(name)->second.begin()+ipart); // erase particle without children
+           }
+          }// end of loop over all particles (truth) in the event.
+         continue; // will move to the next cut iterator
+        } // done with constis
+        DEBUG(name <<" has " << (ao->truth)[name].size()<<" particles left after constiloop.\n");
+        map <string, std::vector<dbxParticle>  >::iterator itpa;
 
         if(simpleloop){
-            for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
+          DEBUG("--GEN simple loop-- "<< ipart_max<<"\n");
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){
+             int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
+             for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
-               }
-               bool ppassed=(*cutIterator)->evaluate(ao);
-               if (!ppassed) (ao->truth).find(name)->second.erase( (ao->truth).find(name)->second.begin()+ipart);
-            }
+             }
+             bool ppassed=(*cutIterator)->evaluate(ao);
+             DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
+             if (!ppassed) {
+                 TString dname;
+                 dname = name + pidx;
+                 itpa=(ao->constits).find((string)dname);
+                 DEBUG("will delete:"<<dname<<"\n");
+                 if (itpa!=(ao->constits).end()) (ao->constits).erase(itpa);
+                 (ao->truth).find(name)->second.erase( (ao->truth).find(name)->second.begin()+ipart);
+             }  
+          }
+          DEBUG(name <<" has " << (ao->truth)[name].size()<<" particles left after simpleloop.\n");
+//------------------------------------
+//put the children in a consti_t array
+//------------------------------------
+         DEBUG(ao->constits.size()<< " constits maps\n");
+         for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
+          DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
+         }
+         DEBUG("===============\n");
+         TString dname;
+         for (int ipart=(ao->truth)[name].size()-1; ipart>=0; ipart--){
+           int child1=(ao->truth)[name].at(ipart).Attribute(8);
+           int child2=(ao->truth)[name].at(ipart).Attribute(9);
+           int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
+           DEBUG("Id:"<< pidx <<" has children:"<<child1<<" to "<<child2<<"\t");
+           vector<dbxParticle> children;
+           string genname="Truth";
+           for (int ichild=child1; ichild<=child2; ichild++){
+             children.push_back( (ao->truth)[genname].at(ichild) );
+           }
+           dname = name + pidx;
+           (ao->constits).insert( std::pair<string, vector<dbxParticle> >((string)dname, children) );
+           DEBUG(name <<" has " << (ao->constits).find((string)dname)->second.size()<<" dauthers inserted.\n");
+         }
+//------------DONE
         }
         else {
             ValueNode abc=ValueNode();
