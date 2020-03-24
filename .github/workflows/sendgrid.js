@@ -6,7 +6,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs = require('fs'),
     filename = 'artifacts.zip',
     fileType = 'application/zip',
-    data = fs.readFileSync('./.github/workflows/' + filename);
+    data = fs.readFileSync('./.github/previous/' + filename);
 
 const msg = {
     to: ['Gokhan.Unel@cern.ch','arponpaul1995@gmail.com','jinens8@gmail.com'],
