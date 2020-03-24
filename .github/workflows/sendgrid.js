@@ -9,7 +9,7 @@ const fs = require('fs'),
     data = fs.readFileSync('./.github/workflows/' + filename);
 
 const msg = {
-    to: ['Gokhan.Unel@cern.ch','arponpaul1995@gmail.com','jinens8@gmail.com'] 
+    to: ['Gokhan.Unel@cern.ch','arponpaul1995@gmail.com','jinens8@gmail.com'],
     from: 'jinens8@gmail.com',
     subject: 'CutLang Build Report',
     text: 'Built successfully but run errors reported. Output files as attached.',
