@@ -73,7 +73,7 @@ jobs:
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js        
         
     - name: Update Artifacts
-      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh
+      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
