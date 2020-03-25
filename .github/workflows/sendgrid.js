@@ -12,7 +12,7 @@ const msg = {
     to: ['Gokhan.Unel@cern.ch','arponpaul1995@gmail.com','jinens8@gmail.com'],
     from: 'jinens8@gmail.com',
     subject: 'CutLang Build Report',
-    text: 'Built successfully but run errors reported. Output files as attached.',
+    text: 'Built successfully but run errors reported. Output file as attached.',
     attachments: [
         {
             content: data.toString('base64'),
