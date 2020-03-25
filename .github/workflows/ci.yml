@@ -11,7 +11,9 @@ jobs:
     - uses: actions/checkout@v2
         
     - name: init-cache-dir
-      run: mkdir build
+      run: mkdir build ; chmod +x ./.github/workflows/sendgrid.js
+      env:
+        flag: 'good_run'
       
     - name: Cache ROOT Build
       id: cache
@@ -57,9 +59,21 @@ jobs:
         cd $HOME/work/CutLang/CutLang/.github/previous ; unzip artifacts.zip ; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt ; rm artifacts.zip raw_output.txt errors.txt efficacy_charts.txt differences.txt 
         cd $HOME/work/CutLang/CutLang/.github/workflows ; zip artifacts.zip raw_output.txt errors.txt efficacy_charts.txt differences.txt ; mv ./artifacts.zip ../previous/
         cd $HOME/work/CutLang/CutLang/.github/workflows ; mkdir artifacts ; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
+        if [ "`cat $HOME/work/CutLang/CutLang/.github/workflows/artifacts/errors.txt`" != "Errors: " ]; then
+          echo "::set-env name=flag::bad_run"
+        else
+          echo "::set-env name=flag::good_run"
+        fi
+        
+    - name: SMTP
+      uses: peter-evans/sendgrid-action@v1
+      if: env.flag == 'bad_run'
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js        
         
     - name: Update Artifacts
-      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh
+      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0

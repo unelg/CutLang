@@ -5,4 +5,4 @@ git config user.name "bot"
 
 git add ../previous/artifacts.zip
 git commit -m "automated update" 
-git push origin master
+git push origin $1
