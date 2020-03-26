@@ -14,7 +14,7 @@ const msg = {
     to: ['Gokhan.Unel@cern.ch','arponpaul1995@gmail.com','jinens8@gmail.com'],
     from: 'jinens8@gmail.com',
     subject: 'CutLang Build Report',
-    text: 'Built successfully but run errors reported. Output file as attached.\nErrors:\n'+error_message+'\nError context in attached document.,
+    text: 'Built successfully but run errors reported. Output file as attached.\nErrors:\n'+error_message+'\nError context in attached document.',
     attachments: [
         {
             content: data.toString('base64'),
