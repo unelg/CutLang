@@ -1,0 +1,9 @@
+#CLA ADL example for external functions
+
+
+region   test
+  select  ALL              # to count all events
+  select  Size (JET) >= 2  # events with 2 or more electrons 
+  select fMT2(JET[0], JET[1], METLV[0]) > 40.0
+
+#  select fMTauTau(ELE[0], ELE[1], METLV[0]) [] 0 160

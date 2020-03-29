@@ -37,6 +37,7 @@ vector<myParticle*> CombiParticle;
 vector<myParticle*> TmpParticle;
 vector<myParticle*> AliasList;
 vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
+vector<myParticle*> TmpParticle2;//to be used for list of 3 particles
 vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
 std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
@@ -72,7 +73,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
-%token FMEGAJETS FMR FMTR FMT FMTAUTAU // RAZOR external functions
+%token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token MINIMIZE MAXIMIZE
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM
@@ -95,7 +96,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %right '^'
 %type <integer> index
 %type <node> e function condition action ifstatement
-%type <s> particule particules list description
+%type <s> particule particules list2 list3 description
 %type <s> LEPTON
 %%
 input : initializations definitions objects commands 
@@ -340,7 +341,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tau3of,newList,"tau3");
                                   }
-
          | '{' particules '}' DXY {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dxyof,newList,"dxy");
@@ -429,8 +429,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
                                   }
-//---------------------------------------
-//---------------------------------------
          | '{' particules '}' PHI {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
@@ -439,7 +437,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
                                   }
-//---------------------------------------
          | '{' particules '}' RAP {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Rapof,newList,"rap");
@@ -448,7 +445,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Rapof,newList,"rap");
                                   }
-//---------------------------------------
          | '{' particules '}' ETA {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
@@ -457,7 +453,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
-//---------------------------------------
          | ABSETA '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
@@ -466,19 +461,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
-//---------------------------------------
-         | '{' particules '}' PT {     
-                                        vector<myParticle*> newList;
+         | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
                                  }
-         | PT '(' particules ')' {     
-                                        vector<myParticle*> newList;
+         | PT '(' particules ')' {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
                                  }
-
-//---------------------------------------
          | '{' particules '}' PZ {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
@@ -496,37 +486,37 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
-         | list DR { 			vector<myParticle*> newList;
+         | list2 DR { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-         | DR list {            	vector<myParticle*> newList;
+         | DR list2 {            	vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dR,newList1,newList,"dR");
                    }
-        | list DPHI { 			vector<myParticle*> newList;
+        | list2 DPHI { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
-        | DPHI list { 			vector<myParticle*> newList;
+        | DPHI list2 { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dPhi,newList1,newList,"dPhi");
                     }
-        | list DETA { 			vector<myParticle*> newList;
+        | list2 DETA { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
-        | DETA list { 			vector<myParticle*> newList;
+        | DETA list2 { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
@@ -579,69 +569,74 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 //                                       $$=new SFuncNode(sum, type, it->first , it->second);
 //                                   }
 //                     }
-      | FMEGAJETS '(' ID ')' {
-                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                     if(it == ObjectCuts->end()) {
-                                         std::string message = "Object not defined: ";
-                                         message += $3;
-                                         yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                         YYERROR;
-                                     } else {
+    | FMT2 list3 {                  vector<myParticle*> newList;
+                                    TmpParticle.swap(newList);
+                                    vector<myParticle*> newList1;
+                                    TmpParticle1.swap(newList1);
+                                    vector<myParticle*> newList2;
+                                    TmpParticle2.swap(newList2);
+                                    int type=newList2[0]->type; // type is JETS or FJETS etc..
+                                    $$=new SFuncNode(userfuncE, fMT2, type, "XXX" , newList2,  newList1, newList);
+      }
+    | FMEGAJETS '(' ID ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
+                               if(it == ObjectCuts->end()) {
+                                        std::string message = "Object not defined: ";
+                                        message += $3;
+                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                        YYERROR;
+                               } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
                                          $$=new SFuncNode(userfuncA, fmegajets, type, "MEGAJETS" , it->second);
-                                     }
+                               }
                        }
-      | FMR '(' ID ')' {
-                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                     if(it == ObjectCuts->end()) {
+      | FMR '(' ID ')' {        map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                if(it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
-                                     } else {
+                                } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
                                          $$=new SFuncNode(userfuncB, fMR, type, $3 , it->second);
-                                     }
+                                }
                        }
 
-      | FMTR '(' ID ',' MET ')'{
-                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                     if (it == ObjectCuts->end()) {
+      | FMTR '(' ID ',' MET ')'{   map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                   if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
-                                     } else {
+                                   } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
                                          $$=new SFuncNode(userfuncC, fMTR, type, $3 , it->second);
-                                     }
+                                   }
                                }
-      | FMTR '(' ID ',' ID ')'{
-                                     map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                     map<string,vector<myParticle*> >::iterator it2 = ListParts->find($5);
-                                     if (it == ObjectCuts->end()) {
+      | FMTR '(' ID ',' ID ')'{   map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                  map<string,vector<myParticle*> >::iterator it2 = ListParts->find($5);
+                                  if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;
                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
-                                     } else if (it2 == ListParts->end() ) {
+                                  } else if (it2 == ListParts->end() ) {
                                          std::string message = "Particle not defined: ";
                                          message += $5;
                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                          YYERROR;
-                                     } 
-                                      else {
+                                  } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
                                          $$=new SFuncNode(userfuncD, fMTR2, type, $3 , it2->second,  it->second);
-                                     }
+                                  }
                        }
-        | FMTAUTAU list { 
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        vector<myParticle*> newList1;
-                                        TmpParticle1.swap(newList1);
-                                        int type=newList[0]->type; // type is JETS or FJETS etc..
-                                        $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList,  newList1);
+        | FMTAUTAU list3 {          vector<myParticle*> newList;
+                                    TmpParticle.swap(newList);
+                                    vector<myParticle*> newList1;
+                                    TmpParticle1.swap(newList1);
+                                    vector<myParticle*> newList2;
+                                    TmpParticle2.swap(newList2);
+                                    int type=newList2[0]->type; // type is JETS or FJETS etc..
+                                    $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
         | HT { $$=new SFuncNode(ht,0,"JET"); }
         | HT '(' ID  ')' {
@@ -750,13 +745,26 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    ;
 
 //------------------------------------------
-list : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
+list2 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";                        
                                                         $$=strdup(s.c_str());
                                                         }
-     | '(' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules ')' {
+      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules ')' {
+                                                        string s=$2;
+                                                        string s2=$5;
+                                                        s="{ "+s+" , "+s2+" }";
+                                                        $$=strdup(s.c_str());
+                                                        }
+     ;
+list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle.swap(TmpParticle1);} ',' particules '}' { 
+                                                        string s=$2;
+                                                        string s2=$5;
+                                                        s="{ "+s+" , "+s2+" }";                        
+                                                        $$=strdup(s.c_str());
+                                                        }
+      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle1.swap(TmpParticle1);} ',' particules ')' {
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";

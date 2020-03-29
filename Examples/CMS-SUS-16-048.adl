@@ -49,6 +49,6 @@ region w1dimuon
   select HT(jets) > 100
   select {METLV[0]}Pt / HT(jets) [] 0.6 1.4
   select Size(bjets) == 0
-  reject fMTauTau(muons[0], muons[1]) [] 0 160 
+  reject fMTauTau(muons[0], muons[1, {METLV[0]) [] 0 160 
   select MTm1 < 70 AND MTm2 < 70
 
