@@ -66,6 +66,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fmegajets" return FMEGAJETS;
 "fMR" return FMR;
 "fMTR" return FMTR;
+"fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
 "dxy"|[dD]"0" return DXY;
