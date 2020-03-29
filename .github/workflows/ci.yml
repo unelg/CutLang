@@ -65,6 +65,7 @@ jobs:
           echo "::set-env name=flag::good_run"
         fi
         chmod +x mail_body.sh ; ./mail_body.sh
+        rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
                 
     - name: SMTP
       uses: peter-evans/sendgrid-action@v1
