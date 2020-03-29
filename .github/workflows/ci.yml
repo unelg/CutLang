@@ -47,7 +47,7 @@ jobs:
     - name: Build CutLang
       run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
     
-    - name: Run Tests        chmod +x mail_body.sh ; ./mail_body.sh
+    - name: Run Tests
       run: |
         source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
         echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
