@@ -47,7 +47,7 @@ jobs:
     - name: Build CutLang
       run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
     
-    - name: Run Tests
+    - name: Run Tests        chmod +x mail_body.sh ; ./mail_body.sh
       run: |
         source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
         echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
@@ -64,8 +64,8 @@ jobs:
         else
           echo "::set-env name=flag::good_run"
         fi
-        cd $HOME/work/CutLang/CutLang/.github/workflows/artifacts ; cat errors.txt | grep -e error -e WARNING -e check -e syntax | tee ./temp.txt
-        
+        chmod +x mail_body.sh ; ./mail_body.sh
+                
     - name: SMTP
       uses: peter-evans/sendgrid-action@v1
       if: env.flag == 'bad_run'
