@@ -3,7 +3,7 @@
 
 region   test
   select  ALL              # to count all events
-  select  Size (ELE) >= 2  # events with 2 or more electrons 
+  select  Size (ELE) >= 3  # events with 2 or more electrons 
 #  weight   randWeight   1.123
 #  save     midfile
   reject   Size (ELE) > 4  # events with 2 or more electrons 
