@@ -11,6 +11,7 @@
 #include "Node.h"
 #include "Razorfunc.h"
 #include "CMSSUS16048_functions.h"
+#include "mt2_bisect.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -32,7 +33,7 @@ private:
     double (*g2)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>));
     double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 ));
     double (*g4)(AnalysisObjects*, string, int,   TLorentzVector,    double (*func)(std::vector<TLorentzVector>, TLorentzVector ));
-    double (*g5)(AnalysisObjects*, string, int, TLorentzVector, TLorentzVector,   double (*func)(TLorentzVector, TLorentzVector, TLorentzVector ));
+    double (*g5)(AnalysisObjects*, string, int, TLorentzVector, TLorentzVector, TLorentzVector,   double (*func)(TLorentzVector, TLorentzVector, TLorentzVector ));
     std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>);
                          double (*h2)(std::vector<TLorentzVector>);
                          double (*h3)(std::vector<TLorentzVector>, TVector2 );
@@ -44,6 +45,7 @@ private:
     float value = 1.0;
     std::vector<myParticle*> inputParticlesA;
     std::vector<myParticle*> inputParticlesB;
+    std::vector<myParticle*> inputParticlesC;
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), 
               float val, 
@@ -151,12 +153,13 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a1, TLorentzVector a2, double (*gunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet)),
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a1, TLorentzVector a2, TLorentzVector b1, double (*gunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet)),
               double (*tunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet),
                       int id, 
                std::string s,
                std::vector<myParticle*> input1, 
                std::vector<myParticle*> input2, 
+               std::vector<myParticle*> input3, 
                Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
         DEBUG("*****************************************EXTERN SF T5:"<<s <<"\n");
         f=NULL;
@@ -173,6 +176,7 @@ public:
         right=NULL;
         inputParticlesA=input1;
         inputParticlesB=input2;
+        inputParticlesC=input3;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
  }
@@ -194,6 +198,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
         }
         dbxParticle *aPart= new dbxParticle;
         dbxParticle *bPart= new dbxParticle;
+        dbxParticle *cPart= new dbxParticle;
 
         if ( inputParticlesA.size()>0 ){
            aPart->Reset();
@@ -259,6 +264,38 @@ virtual double evaluate(AnalysisObjects* ao) override {
 
            DEBUG("bPart constructed \t");
         }
+        if ( inputParticlesC.size()>0 ){
+           cPart->Reset();
+           TLorentzVector ametlv;
+           DEBUG("\t input particles C \n"); 
+           for(vector<myParticle*>::iterator i=inputParticlesC.begin();i!=inputParticlesC.end();i++){
+               DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
+              int atype=(*i)->type;
+                int ai=(*i)->index;
+             string ac=(*i)->collection;
+             if (atype==7) ac="MET";
+
+               switch (atype) { 
+		   case 10:  cPart->setTlv(  cPart->lv()+ao->truth[ac].at(ai).lv() );   break;
+                   case 12:  cPart->setTlv(  cPart->lv()+ao->muos[ac].at(ai).lv() );   break;
+                   case  1:  cPart->setTlv(  cPart->lv()+ao->eles[ac].at(ai).lv() );   break;
+                   case 11:  cPart->setTlv(  cPart->lv()+ao->taus[ac].at(ai).lv() );   break;
+                   case  2:  cPart->setTlv(  cPart->lv()+ao->jets[ac].at(ai).lv() );   break;
+                   case 20:  cPart->setTlv(  cPart->lv()+ao->combos[ac].at(ai).lv() ); break;
+                   case  9:  cPart->setTlv(  cPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
+                   case  8:  cPart->setTlv(  cPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+                   case  7: DEBUG("MET LV\n ");
+                            ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
+                            cPart->setTlv(cPart->lv()+ametlv); // v from MET using same eta approx.
+                            break;
+                   default: std::cout<<"SFN No such object! ERROR\n";
+                            break;
+
+               } // end of switch
+           }// end of for
+
+           DEBUG("cPart constructed \t");
+        }
 
         DEBUG("*****************EXTERN TF evaluate? T/F:"<< ext <<"\n");
         if(ext) { 
@@ -267,7 +304,7 @@ virtual double evaluate(AnalysisObjects* ao) override {
               if (g2 != NULL) return (*g2)(ao, symbol, type, h2 );
               if (g3 != NULL) return (*g3)(ao, symbol, type, h3 );
               if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4);
-              if (g5 != NULL) return (*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), h5);
+              if (g5 != NULL) return (*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
         }              
         DEBUG ("Symbol:"<<symbol<<" Value:"<<value<<"\n");
         return (*f)(ao, symbol, value);
@@ -370,7 +407,8 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
    }
     return (1);       
 }
-double userfuncB(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets ) ){
+double userfuncB(AnalysisObjects* ao, string s, int id, 
+         double (*func)(std::vector<TLorentzVector> jets ) ){
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
@@ -382,7 +420,8 @@ double userfuncB(AnalysisObjects* ao, string s, int id, double (*func)(std::vect
    double retvalue= (*func)(myjets);
    return (retvalue);       
 }
-double userfuncC(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets, TVector2 amet ) ){
+double userfuncC(AnalysisObjects* ao, string s, int id, 
+         double (*func)(std::vector<TLorentzVector> jets, TVector2 amet ) ){
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
@@ -396,7 +435,8 @@ double userfuncC(AnalysisObjects* ao, string s, int id, double (*func)(std::vect
    return (retvalue);       
 }
 
-double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*func)(std::vector<TLorentzVector> jets, TLorentzVector amet ) ){
+double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, 
+         double (*func)(std::vector<TLorentzVector> jets, TLorentzVector amet ) ){
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
@@ -409,21 +449,34 @@ double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, doub
    return (retvalue);       
 }
 
-double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLorentzVector l2, double (*func)(TLorentzVector la, TLorentzVector lb, TLorentzVector amet ) ){
+double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLorentzVector l2,  TLorentzVector m1,
+         double (*func)(TLorentzVector la, TLorentzVector lb, TLorentzVector amet ) ){
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
    DEBUG("Userfunction g5 :"<<s<<"\n");
-   TVector2 mymet=ao->met["MET"];
-   TLorentzVector lm(mymet.Px(), mymet.Py(), 0, 0);
    DEBUG("evaluating external function :"<<s<<"\n");
-   double retvalue= (*func)(l1, l2, lm);
+   double retvalue= (*func)(l1, l2, m1);
    return (retvalue);
 }
 
+double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet){
+  double retval;
+  DEBUG("MT2 function wrapper\n");
+  mt2_bisect::mt2 mt2_event;
+// Set momenta and the mass of the invisible particle, mn:
+// where array pa[0..2], pb[0..2], pmiss[0..2] contains (mass,px,py)
+  double pa[3], pb[3], pmiss[3];
+  pa[0]=lep1.M();  pb[0]=lep2.M();  pmiss[0]=amet.M();
+  pa[1]=lep1.Px(); pb[1]=lep2.Px(); pmiss[1]=amet.Px();
+  pa[2]=lep1.Py(); pb[2]=lep2.Py(); pmiss[2]=amet.Py();
+  double mn=0.0;
 
-
-
+  mt2_event.set_momenta( pa, pb, pmiss );
+  mt2_event.set_mn( mn ); 
+  retval=mt2_event.get_mt2();
+  return (retval);
+}
 
 /*
 double nbjets(AnalysisObjects* ao){
