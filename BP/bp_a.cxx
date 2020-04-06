@@ -157,16 +157,21 @@ int BPdbxA:: readAnalysisParams() {
            effCL.push_back(tempS2);
            continue;
        }
+    } // end of first look over ADL file
 
-    }
-    unsigned int bsize=effCL.size()+1; // all is always there 
+
+
+//---------save in the dir.
+    unsigned int effsize=effCL.size()+1; // all is always there 
+ 
+   
 //-----create the relevant output directory
     if (!algorithmnow) {
-       int r=dbxA::setDir(cname, bsize);  // make the relevant root directory
+       int r=dbxA::setDir(cname, effsize);  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir(cname);
     } else {
-       int r=dbxA::setDir(algoname, bsize);  // make the relevant root directory
+       int r=dbxA::setDir(algoname, effsize);  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir(algoname);
     }
@@ -184,15 +189,9 @@ int BPdbxA:: readAnalysisParams() {
           oinfo.SetName("CLA2Objs");
           oinfo.Write();
 
-// ****************************************
-// ---------------------------DBX style cuts
-       eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
-    
-//       std::vector<std::string> NameInitializations(2);
+// ---------------------------read CutLang style cuts using lex/yacc
        NameInitializations={" "," "};
-//       vector<double> TRGValues(5);
        TRGValues={1,0,0,0,0};
-
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
@@ -207,11 +206,13 @@ int BPdbxA:: readAnalysisParams() {
        cout << BinCuts.size() << " Bins\n";
        TRGe    = TRGValues[0];
        TRGm    = TRGValues[1];
-       skip_histos    = (bool) TRGValues[3];
        skip_effs    = (bool) TRGValues[2];
-      
+       skip_histos  = (bool) TRGValues[3];
+ 
+    unsigned int binsize=BinCuts.size(); // bins 
+    if (binsize>0) bineff= new TH1F("bineff","selection bins ",binsize,0.5,binsize+0.5);
+//--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
-      
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
        DEBUG("CL CUTS: \n");
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
@@ -268,10 +269,13 @@ int BPdbxA:: readAnalysisParams() {
        getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
        savebool = true;
      }
+
+
+
   return retval;
 }
 
-int BPdbxA:: printEfficiencies() {
+int BPdbxA::printEfficiencies() {
   if (skip_effs) return 0;
   cout <<"Efficiencies for analysis : "<< cname <<endl;
   cout <<"\t\t\t\t\t\t"<<algoname<<"\t";
@@ -288,7 +292,7 @@ int BPdbxA:: initGRL() {
   return retval;
 }
 
-int BPdbxA:: bookAdditionalHistos() {
+int BPdbxA::bookAdditionalHistos() {
         int retval=0;
 //        dbxA::ChangeDir(cname);
 
@@ -365,6 +369,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         if (d==1) { // inside a bin
            DEBUG(iter->first<<" Passed\n"); // do something
            bincounts[iter->first -1]++;
+           bineff->Fill(iter->first , evt_weight);
            break;
         }
         iter++; //moves on to the next cut

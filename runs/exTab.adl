@@ -2,7 +2,7 @@
 
 def effFunc = sqrt({ELE_0}pT)/({ELE_0}pT + {ELE_1}pT)
 
-table   effTable 
+table   myEvtWeight 
 #       value   min    max
           0.1   0.0   10.0 
           0.2  10.0   20.0 
@@ -10,16 +10,25 @@ table   effTable
           0.7  50.0   70.0 
           0.95 70.0   1000.0
 
-
+table   SUS-19-006_Eff_ID1 
+#       value   min    max
+          0.1   0.0   10.0 
+          0.2  10.0   20.0 
+          0.4  20.0   50.0 
+          0.7  50.0   70.0 
+          0.95 70.0   1000.0
 
 region   test
   select  ALL              # to count all events
   select  Size (ELE) >= 1  # events with 2 or more electrons 
-
   weight  randWeight   1.123
-  weight  effWeight effTable( {ELE_0}pT )  # new
-
+  weight  effWeight myEvtWeight( {ELE_0}pT )  # new
   histo   h1ept, "E0 pt (GeV)", 100, 0, 2000, {ELE_0}pT
+
+  select  SUS-19-006_Eff( {ELE}pT ) == 1  # or 0 to deselect
+
+
+
 
 
 #  weight  peffWeight effFunc   ########not yet implemented   

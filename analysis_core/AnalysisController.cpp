@@ -63,8 +63,8 @@ void AnalysisController::Initialize(char *extname) {
         for (k=0; k<dbxAnalyses.size(); k++) {
 		dbxAnalyses[k]->initGRL();
 		dbxAnalyses[k]->readAnalysisParams();
+                std::cout << " => " << k << " "<< dbxAnalyses[k]->getName() <<endl;
 		dbxAnalyses[k]->bookAdditionalHistos();
-//              std::cout << " => " << k << " "<< dbxAnalyses[k]->getName() <<endl;
         }
 }
 
