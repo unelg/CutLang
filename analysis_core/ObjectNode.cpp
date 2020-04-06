@@ -979,7 +979,8 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
            for (int ichild=child1; ichild<=child2; ichild++){
              children.push_back( (ao->truth)[genname].at(ichild) );
            }
-           dname = name + pidx;
+           dname = name;
+           dname+= pidx;
            (ao->constits).insert( std::pair<string, vector<dbxParticle> >((string)dname, children) );
            DEBUG(name <<" has " << (ao->constits).find((string)dname)->second.size()<<" dauthers inserted.\n");
          }

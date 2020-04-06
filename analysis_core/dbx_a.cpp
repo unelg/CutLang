@@ -60,13 +60,15 @@ int dbxA:: ChangeDir(char *dn) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: setDir(char *dn, unsigned int bsize) {
+int dbxA:: setDir(char *dn, unsigned int effsize) {
   int retval=0;
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
-  eff= new TH1F("eff","selection efficiencies ",bsize,0.5,bsize+0.5);
+  eff= new TH1F("eff","selection efficiencies ",effsize,0.5,effsize+0.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   return retval;
+
+//  if (binsize>0) bineff= new TH1F("bineff","selection bins ",binsize,0.5,binsize+0.5);
 }
 
