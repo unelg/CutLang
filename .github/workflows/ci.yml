@@ -56,16 +56,17 @@ jobs:
     - name: Filter Output
       run: |
         cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x filter.sh ; ./filter.sh
-        cd $HOME/work/CutLang/CutLang/.github/previous ; unzip artifacts.zip ; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt ; rm artifacts.zip raw_output.txt errors.txt efficacy_charts.txt differences.txt 
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; zip artifacts.zip raw_output.txt errors.txt efficacy_charts.txt differences.txt ; mv ./artifacts.zip ../previous/
+        cd $HOME/work/CutLang/CutLang/.github/previous ; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt ; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
+        cd $HOME/work/CutLang/CutLang/.github/workflows ; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
         cd $HOME/work/CutLang/CutLang/.github/workflows ; mkdir artifacts ; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
         if [ "`cat $HOME/work/CutLang/CutLang/.github/workflows/artifacts/errors.txt`" != "Errors: " ]; then
           echo "::set-env name=flag::bad_run"
         else
           echo "::set-env name=flag::good_run"
         fi
-        cd $HOME/work/CutLang/CutLang/.github/workflows/artifacts ; cat errors.txt | grep -e error -e WARNING -e check -e syntax | tee ./temp.txt
-        
+        chmod +x mail_body.sh ; ./mail_body.sh
+        rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
+                
     - name: SMTP
       uses: peter-evans/sendgrid-action@v1
       if: env.flag == 'bad_run'
