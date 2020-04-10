@@ -1,17 +1,17 @@
 //
-//  TableNode.hpp
+//  TableNode.cpp
 //  mm
 //
 //  Created by ngu  on Oct19.
 //  Copyright © 2019 . All rights reserved.
 //
 
-#ifndef TableNode_hpp
-#define TableNode_hpp
+#ifndef TableNode_cpp
+#define TableNode_cpp
 
 #include <stdio.h>
 #include <math.h>
-#include "Node.h"
+#include "TableNode.h"
 #include <TF1.h>
 //takes care of Table Operations
 //#define _CLV_
@@ -22,71 +22,8 @@
 #endif
 
 
-class TableNode : public Node{
-private:
-    double (*f)(double, AnalysisObjects* );
-    std::vector<float>   atable;
-    std::vector<float> errtable;
-    Node* left2;
-    bool errors; 
-
-public:
-    TableNode(double (*func)(double, AnalysisObjects*), 
-              Node* l, std::pair<std::vector<float>, bool> tabe, std::string s){
-        f=func;
-        symbol=s;
-        left=l;
-        left2=NULL;
-        errors=tabe.second;
-        right=NULL;
-        if (errors){
-          for (int ii=0; ii<tabe.first.size(); ii+=5){
-           atable.push_back( tabe.first[ii]);
-           errtable.push_back( tabe.first[ii+1]);
-           errtable.push_back( tabe.first[ii+2]);
-           atable.push_back( tabe.first[ii+3]);
-           atable.push_back( tabe.first[ii+4]);
-          }
-        } else {
-          atable=tabe.first;
-        }
-    }
-    TableNode(double (*func)(double, AnalysisObjects*), 
-              Node* l, Node* l2, std::pair<std::vector<float>, bool> tabe, std::string s){
-        f=func;
-        symbol=s;
-        left=l;
-        left2=l2;
-        errors=tabe.second;
-        right=NULL;
-        if (errors){
-          for (int ii=0; ii<tabe.first.size(); ii+=7){
-           atable.push_back( tabe.first[ii]);
-           errtable.push_back( tabe.first[ii+1]);
-           errtable.push_back( tabe.first[ii+2]);
-           atable.push_back( tabe.first[ii+3]);
-           atable.push_back( tabe.first[ii+4]);
-           atable.push_back( tabe.first[ii+5]);
-           atable.push_back( tabe.first[ii+6]);
-          }
-        } else {
-          atable=tabe.first;
-        }
-
-    }
-
-    virtual void getParticles(std::vector<myParticle *>* particles) override{
-        left->getParticles(particles);
-    }
-
-    virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{
-        left->getParticlesAt(particles,index);
-    }
-    virtual void Reset() override{
-        left->Reset();
-    }
 //---------EVALUATE---------
-    virtual double evaluate(AnalysisObjects* ao) override{
+double TableNode::evaluate(AnalysisObjects* ao) {
             double aval=left->evaluate(ao);
             double bval, tval; 
             bool range_found=false;
@@ -132,10 +69,7 @@ public:
 
     return (*f)(tval, ao);
     }
-    virtual ~TableNode() {
-    }
 
-};
 
 double tweight(double value, AnalysisObjects* ao ) {
     ao->evt.user_evt_weight *= value;
