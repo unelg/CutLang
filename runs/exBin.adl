@@ -13,7 +13,7 @@ region   test
   histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
   histo       h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 #  save     testfile
-  Bin  MHT  0 50 100 500
+  Bin  MHT  50 100 500
 
   Bin MHT [] 000 300 && HT [] 000  500  # 0
   Bin MHT [] 000 300 && HT [] 500 1000  # 1

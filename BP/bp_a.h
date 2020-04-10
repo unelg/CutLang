@@ -66,7 +66,7 @@ class BPdbxA : public dbxA {
         list<string> parts; //for def of particles as given by user
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle*> > ListParts;//for particle definition
-        map<string,vector<float> > ListTables;//for table definition
+        map<string,pair<vector<float>,bool> > ListTables;//for table definition
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects

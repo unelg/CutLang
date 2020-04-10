@@ -49,7 +49,7 @@ public:
    string getDataCardPrefix() { return dataCardPrefix; }
 
    char cname[128];
-   TH1F *eff;
+   TH1F *eff, *bineff;
 // list the analysis parameters here.
    float minpte, minptm, minptg, maxmet;
    float maxetae,maxetam,maxetag, minmetmu,minmwte,minmwtmu;  // leptons
