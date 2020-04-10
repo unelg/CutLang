@@ -23,7 +23,7 @@ extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
-                vector<string>* Initializations , vector<double>* DataFormats, map <string, vector<float> >* ListTables
+                vector<string>* Initializations , vector<double>* DataFormats, map <string, pair<vector<float>, bool> >* ListTables
                 ,const char *s) { std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
 int cutcount;
 int bincount;
@@ -64,8 +64,9 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
-%parse-param {std::map<std::string,std::vector<float> >* ListTables}
-%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC TABLE BINS
+%parse-param {std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables}
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
+%token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
@@ -74,7 +75,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
-%token MINIMIZE MAXIMIZE
+%token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM
 %token ASCEND DESCEND ALIAS 
@@ -84,6 +85,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token SIN COS TAN ABS SQRT EXP LOG HSTEP SINH COSH TANH
 %token OR AND 
 %token MIN MAX
+%token TRUE FALSE
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
 %left AND
@@ -94,7 +96,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %right '?'
 %right Unary
 %right '^'
-%type <integer> index
+%type <integer> index bool
 %type <node> e function condition action ifstatement
 %type <s> particule particules list2 list3 description
 %type <s> LEPTON
@@ -117,6 +119,8 @@ definitions : definitions definition
             ;
 
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
+
+bool: TRUE {$$ = 1;} | FALSE {$$ =  0;} ;
 
 definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
@@ -209,9 +213,9 @@ definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new par
                                           NodeVars->insert(make_pair(name,$4));
                                         }
 			      }
-    	    | TABLE ID boxlist {
-                               DEBUG("TABLE "<< $2  << "\n");
-                               map<string,vector<float> >::iterator itt;
+    	    | TABLE ID TABLETYPE ID NVARS INT ERRORS bool boxlist {
+                               DEBUG("TABLE "<< $2  << "Nvars:"<< $6<< "Err:"<< $8<< "\n");
+                               map<string, pair< vector<float>, bool>  >::iterator itt;
                                string name = $2;
                                itt = ListTables->find(name);
                                if(itt != ListTables->end()) {
@@ -221,7 +225,7 @@ definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new par
                                }
                                vector <float> newBinlist;
                                tmpBinlist.swap(newBinlist);
-                               ListTables->insert(make_pair(name,newBinlist));
+                               ListTables->insert(make_pair(name, make_pair(newBinlist, $8) ));
             }  
         ;
 //---------------------------------------
@@ -275,7 +279,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Eof,newList,"e");
                                   }
-//---------------------------------------
          | '{' particules '}' ISTAUTAG {vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isTauTag,newList,"TauTAG");
@@ -292,7 +295,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"CTAG");
                                     }
-//---------------------------------------
          | '{' particules '}' ISBTAG {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"BTAG");
@@ -477,7 +479,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Pzof,newList,"pz");
                                  }
-//---------------------------------------
          | '{' particules '}' NBF {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
@@ -486,6 +487,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
+//---------------------------------------
          | list2 DR { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         vector<myParticle*> newList1;
@@ -545,17 +547,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                      DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
                                      $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
                                    }
-/*
-   	| NUMOF '(' GEN ')'  {       $$=new SFuncNode(count, 10, "Truth");  }
-        | NUMOF '(' ELE ')'  {       $$=new SFuncNode(count, 1, "ELE");  }
-        | NUMOF '(' MUO ')'  {       $$=new SFuncNode(count, 12, "MUO");  }
-        | NUMOF '(' TAU ')'  {       $$=new SFuncNode(count, 11, "TAU"); }
-        | NUMOF '(' JET ')'  {       $$=new SFuncNode(count, 2, "JET");  }
-        | NUMOF '(' BJET ')' {       $$=new SFuncNode(count, 3, "JET");  }
-        | NUMOF '(' QGJET ')' {      $$=new SFuncNode(count, 4, "JET");  }
-        | NUMOF '(' FJET ')' {       $$=new SFuncNode(count, 9, "FJET"); }
-        | NUMOF '(' PHO ')'  {       $$=new SFuncNode(count, 8, "PHO");  }
-*/
 //------------------------------------------
 //    | SUM '(' ID ')' {
 //                                   map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -743,7 +734,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                 $$=it->second;
     } 
    ;
-
 //------------------------------------------
 list2 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
@@ -2010,13 +2000,10 @@ idlist  : ID ',' idlist { DEBUG($1<<" + ");
 boxlist : boxlist abox
         | abox
         ;
-abox : NB NB NB {
+abox : NB  {
         tmpBinlist.push_back($1);
-        tmpBinlist.push_back($2);
-        tmpBinlist.push_back($3);
        }
        ;
-
 hamhum : ALIAS ID {
           DEBUG ("ALIAS found.\t");
           TmpParticle.swap( CombiParticle);
@@ -2031,12 +2018,10 @@ hamhum : ALIAS ID {
 criteria : criteria criterion 
          | criterion 
          ;
-criterion : CMD condition {   TmpCriteria.push_back($2);
-	  }
-          | CMD action   {    TmpCriteria.push_back($2); 
-          }
-          | REJEC condition { TmpCriteria.push_back($2);
-          };
+criterion : CMD condition   { TmpCriteria.push_back($2); }
+          | CMD action      { TmpCriteria.push_back($2); }
+          | REJEC condition { TmpCriteria.push_back($2); }
+          ;
 commands : commands command 
         | 
         ;
@@ -2078,25 +2063,37 @@ command : CMD condition { //find a way to print commands
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
-        | CMD ALL {                                     
-                        Node* a = new SFuncNode(all,0, "all");
-                        NodeCuts->insert(make_pair(++cutcount,a));
+        | CMD ALL { Node* a = new SFuncNode(all,0, "all");
+                    NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-        | CMD LEPSF {    
-                        Node* a=new SFuncNode(lepsf,0,"LEPSF");
-                        NodeCuts->insert(make_pair(++cutcount,a));
+        | CMD LEPSF { Node* a=new SFuncNode(lepsf,0,"LEPSF");
+                      NodeCuts->insert(make_pair(++cutcount,a));
                     }
-        | CMD BTAGSF {    
-                        Node* a=new SFuncNode(btagsf,0,"BTAGSF");
-                        NodeCuts->insert(make_pair(++cutcount,a));
+        | CMD BTAGSF { Node* a=new SFuncNode(btagsf,0,"BTAGSF");
+                       NodeCuts->insert(make_pair(++cutcount,a));
                     }
-    	| WEIGHT ID NB {
-			Node* a = new SFuncNode(uweight,$3,$2);
+        | CMD APPLYHM '(' ID '(' function ')' EQ INT ')' { 
+                                DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $9 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $4;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$6,itt->second, "applyHM"); //function, 
+                                if ($9 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
+                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
+                                NodeCuts->insert(make_pair(++cutcount,b));
+                    }
+    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2);
 			NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
                                 DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
-                                map<string,vector<float> >::iterator itt;
+                                map<string, pair<vector<float>, bool> >::iterator itt;
                                 string name = $3;
                                 itt = ListTables->find(name);
                                 if(itt == ListTables->end()) {
@@ -2107,10 +2104,24 @@ command : CMD condition { //find a way to print commands
 				Node* a = new TableNode(tweight,$5,itt->second, $2);
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
-        | CMD ifstatement {                                         
-                                        NodeCuts->insert(make_pair(++cutcount,$2));
-    
-				}
+    	| WEIGHT ID ID '(' function ',' function ')' {
+                                DEBUG("Weight named "<< $2  <<" will be from table "<< $3<< " using variables: "<< $5 <<","<< $7 << "\n");
+                                map<string, pair<vector<float>,bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+				Node* a = new TableNode(tweight,$5, $7, itt->second, $2);
+				NodeCuts->insert(make_pair(++cutcount,a));
+			}
+
+
+
+        | CMD ifstatement {   NodeCuts->insert(make_pair(++cutcount,$2));
+		          }
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
@@ -2288,8 +2299,8 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-	   | SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
-	   | SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
+	| SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
+	| SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
 description : description HID {                                                 
                                                 char s [512];
@@ -2298,19 +2309,15 @@ description : description HID {
                                                 strcat(s,$2);
                                                 strcpy($$,s);                                       
                               }
-            | HID {if (dnum==0){
-                                                $$=strdup($1);                                                       
-                                } else{                                                
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$1);
-                                                strcpy($$,s);
-                                        }
-                                        //dnum++;
+            | HID {if (dnum==0){ $$=strdup($1);                                                       
+                               } else{     char s [512];
+                                           strcpy(s,$$); 
+                                           strcat(s," ");
+                                           strcat(s,$1);
+                                           strcpy($$,s);
+                                       }
                   }
         ;
-//--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 ifstatement : condition '?' action ':' action %prec '?' { 
                         $$=new IfNode($1,$3,$5,"if");
@@ -2328,8 +2335,6 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | e NE e { $$=new BinaryNode(ne,$1,$3,"<>"); }   
            | e MINIMIZE e { DEBUG ("MINIMIZE\n"); $$=new SearchNode(minim,$1,$3,"~="); }
            | e MAXIMIZE e { DEBUG ("MAXIMIZE\n");$$=new SearchNode(maxim,$1,$3,"!="); }
-
-		
            | e IRG e e {                Node* limit1=$3;
                                         Node* limit2=$4;
                                         Node* c1=new BinaryNode(ge,$1,limit1,">=");
@@ -2346,5 +2351,5 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | condition OR condition  { $$=new BinaryNode(LogicalOr, $1,$3,"OR"); }
 	   |           NOT condition { $$=new BinaryNode(LogicalNot,$2,$2,"NOT"); }
            | '(' condition ')' { $$=$2; } 
-            ;
+           ;
 %%

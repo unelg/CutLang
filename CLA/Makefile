@@ -58,8 +58,8 @@ CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 
 
 b.o : parse.y
-#	/usr/bin/yacc -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
-	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
+	/usr/bin/yacc -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
+#	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 
 l.o : parse.l
 #	/usr/bin/lex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
