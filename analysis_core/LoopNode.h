@@ -11,14 +11,25 @@
 class LoopNode : public Node{
 private:
     double (*f)(std::vector<double>);
+    std::vector<bool> (*g)(std::vector<double>);
     std::vector <Node*> lefs;
+    TF1 *fRandom ;
 
 protected:
     std::vector<myParticle*> inputParticles;
 
 public:
+    LoopNode(std::vector<bool> (*func)(std::vector<double>), Node* l, std::string s){
+        g=func;
+        f=NULL;
+        symbol=s;
+        left=l;
+        lefs.push_back(l);
+        right=NULL;
+    }
     LoopNode(double (*func)(std::vector<double>), Node* l, std::string s){
         f=func;
+        g=NULL;
         symbol=s;
         left=l;
         lefs.push_back(l);
@@ -26,6 +37,7 @@ public:
     }
     LoopNode(double (*func)(std::vector<double>), std::vector<Node*> ls, std::string s){
         f=func;
+        g=NULL;
         symbol=s;
         left=ls[0]; // just in case if someone asks the list of particles for example
         lefs=ls;
@@ -55,6 +67,8 @@ public:
 double sumof(std::vector<double> xlist);
 double minof(std::vector<double> xlist);
 double maxof(std::vector<double> xlist);
+std::vector<bool> hitmissA(std::vector<double> xlist);
+std::vector<bool> hitmissR(std::vector<double> xlist);
 
 
 #endif /* LoopNode_h */

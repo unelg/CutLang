@@ -17,7 +17,7 @@
 
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
-                                       vector<double>* TRGValues, map<string,vector<float> >* ListTables);
+                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables);
 
 extern FILE* yyin;
 extern int cutcount;
