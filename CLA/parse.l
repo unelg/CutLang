@@ -25,6 +25,12 @@ vardef {varname}" "?":"" "?.*"\n"
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 
+[tT][rR][uU][eE] return TRUE; 
+[fF][aA][lL][sS][eE] return FALSE; 
+[iI][nN][fF][oO] return ADLINFO;
+[Nn][Vv][Aa][Rr][Ss] return NVARS;
+[eE][rR][rR][oO][rR][sS] return ERRORS;
+[tT][aA][bB][lL][eE][tT][yY][pP][eE] return TABLETYPE;
 [tT][aA][kK][eE]|[uU][sS][iI][nN][gG] return TAKE;
 [hH][iI][sS][tT][oO] return HISTO;
 [wW][eE][iI][gG][hH][tT] return WEIGHT;
@@ -73,6 +79,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
+"applyHM" return APPLYHM;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;

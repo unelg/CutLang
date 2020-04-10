@@ -12,20 +12,67 @@
 #include <stdio.h>
 #include <math.h>
 #include "Node.h"
+#include <TF1.h>
 //takes care of Table Operations
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
 class TableNode : public Node{
 private:
     double (*f)(double, AnalysisObjects* );
-    std::vector<float> atable;
+    std::vector<float>   atable;
+    std::vector<float> errtable;
+    Node* left2;
+    bool errors; 
 
 public:
     TableNode(double (*func)(double, AnalysisObjects*), 
-              Node* l, std::vector<float> at, std::string s){
+              Node* l, std::pair<std::vector<float>, bool> tabe, std::string s){
         f=func;
         symbol=s;
         left=l;
-        atable=at;
+        left2=NULL;
+        errors=tabe.second;
         right=NULL;
+        if (errors){
+          for (int ii=0; ii<tabe.first.size(); ii+=5){
+           atable.push_back( tabe.first[ii]);
+           errtable.push_back( tabe.first[ii+1]);
+           errtable.push_back( tabe.first[ii+2]);
+           atable.push_back( tabe.first[ii+3]);
+           atable.push_back( tabe.first[ii+4]);
+          }
+        } else {
+          atable=tabe.first;
+        }
+    }
+    TableNode(double (*func)(double, AnalysisObjects*), 
+              Node* l, Node* l2, std::pair<std::vector<float>, bool> tabe, std::string s){
+        f=func;
+        symbol=s;
+        left=l;
+        left2=l2;
+        errors=tabe.second;
+        right=NULL;
+        if (errors){
+          for (int ii=0; ii<tabe.first.size(); ii+=7){
+           atable.push_back( tabe.first[ii]);
+           errtable.push_back( tabe.first[ii+1]);
+           errtable.push_back( tabe.first[ii+2]);
+           atable.push_back( tabe.first[ii+3]);
+           atable.push_back( tabe.first[ii+4]);
+           atable.push_back( tabe.first[ii+5]);
+           atable.push_back( tabe.first[ii+6]);
+          }
+        } else {
+          atable=tabe.first;
+        }
+
     }
 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
@@ -38,21 +85,52 @@ public:
     virtual void Reset() override{
         left->Reset();
     }
+//---------EVALUATE---------
     virtual double evaluate(AnalysisObjects* ao) override{
             double aval=left->evaluate(ao);
-// find the range
-            double tval; 
+            double bval, tval; 
             bool range_found=false;
-            for (int it=0; it<atable.size(); it+=3){ // 3 is for 1D only. value, min, max.
-             if ( aval>=atable[it+1] && aval<atable[it+2]){
-              range_found=true;
-              tval=atable[it];
-//              std::cout << "aval:"<<aval<<" tval:"<<tval<<"\n";
-              break;
-             } 
+            int it;
+
+            if (left2==NULL){ // 1D
+              for (it=0; it<atable.size(); it+=3){ // 3 is for 1D only. value, min, max.
+               if ( aval>=atable[it+1] && aval<atable[it+2]){
+                range_found=true;
+                tval=atable[it];
+                DEBUG("aval:"<<aval<<" tval:"<<tval<<"\n");
+                it=(it/3);
+                break;
+               } 
+              }
+            }else{ //2D
+             bval=left2->evaluate(ao);
+             for (it=0; it<atable.size(); it+=5){ // 5 is for 2D only. value, min, max, min2, max2.
+               if (aval>=atable[it+1] && aval<atable[it+2] && bval>=atable[it+3] && bval<atable[it+4]){
+                range_found=true;
+                tval=atable[it];
+                DEBUG("aval:"<<aval<< " bval:"<<bval<<"=> tval:"<<tval<<"\n");
+                it=(it/5);
+                break;
+               } 
+              }
+             
+            }// 1D & 2D ends.
+            if (!range_found) {std::cerr << "Specified value "<< aval <<" is out of table range! Setting to ZERO.\n"; tval=0;}
+
+            DEBUG(" Error condition:"<<errors<< " it:"<<it<<"\n");
+            if (errors){
+             double sigleft=errtable[it];
+             double sigright=errtable[it+1];
+             double Area=sqrt(2/3.14159265)/(sigright+sigleft);
+             TString hesap="x>";
+                     hesap+=tval;
+                     hesap+="?gaus(0):gaus(3)";
+             TF1 *f4 = new TF1("f4",hesap,0,1);
+             f4->SetParameters(Area,tval,sigleft,Area,tval,sigright);
+             DEBUG("err range"<<sigleft<<","<< sigright<<" modified tval:"<<f4->GetRandom()<<"\n"); 
             }
-            if (!range_found) {std::cout << "Specified value "<< aval <<" is out of table range! Setting to ZERO.\n"; tval=0;}
-            return (*f)(tval, ao);
+
+    return (*f)(tval, ao);
     }
     virtual ~TableNode() {
     }
@@ -62,6 +140,10 @@ public:
 double tweight(double value, AnalysisObjects* ao ) {
     ao->evt.user_evt_weight *= value;
     return 1;
+}
+double thitmiss(double value, AnalysisObjects* ao ) {
+    DEBUG( "table hitmiss retval:"<<value<<"\n");
+    return value;
 }
 
 #endif /* TableNode */
