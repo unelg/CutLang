@@ -52,7 +52,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
-                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  ");
+                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
                                                         break;
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
@@ -273,7 +273,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
          inputParticles1.clear();
         }
         inputParticles0.clear();
-        DEBUG("Sum:"<<total<<"\n");
+        DEBUG("FuncNode Sum:"<<total<<"\n");
         return total;
      } else {
         partConstruct(ao, &inputParticles, &myPart);
@@ -369,7 +369,7 @@ double isBTag( dbxParticle* apart){
 }
 double isTauTag( dbxParticle* apart){
     bool Tval=((apart)->isTight())&2;
-    DEBUG(" BTAG:"<<Tauval<<"\t");
+    DEBUG(" BTAG:"<<Tval<<"\t");
     return Tval;
 }
 

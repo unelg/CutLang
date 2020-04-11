@@ -25,7 +25,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        int ipart2_max;
 
        DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
-       DEBUG("Left size:"<<lefs.size()<<"\n");
+       DEBUG("LeftNodes size:"<<lefs.size()<<"\n");
       for (int in=0; in<lefs.size(); in++){ // loop over all possible left branches.
        left=lefs[in];
        this->getParticles(&inputParticles);       
@@ -39,7 +39,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        ipart2_max=0; // loop counter
        bool constiloop=false;
        std::string consname;
-       if (inputParticles.size()==1) // here we loop over all particles in the collection
+       if (inputParticles.size()==1 && inputParticles[0]->index==6213) // here we loop over all particles in the collection
        {
         DEBUG("Looping one by one\n");
         bcol2=inputParticles[0]->collection;
@@ -80,7 +80,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        FuncNode *pippo;
        for (int ii=0;ii<ipart2_max; ii++){
         DEBUG("now for particle "<<ii<<"\n");
-        DEBUG("0 will do: "<<left->getStr()<<"\n");
+        DEBUG("it will do: "<<left->getStr()<<"\n");
         if (pippo=dynamic_cast< FuncNode*>(left) ) {
          DEBUG("downcast OK\n");
         } else {
@@ -103,6 +103,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        }
         pippo->setParticleIndex(0, 6213);
        } else if(oneParticleAtATime){   // here we give an explicit list, like 1,3,4,6..
+        DEBUG("Explicit list in LoopNode\n");
         for (int ii=0;ii<inputParticles.size(); ii++){
            int anindex=inputParticles[ii]->index;
            if (anindex > 9999) { // Indices around 10000 are to be looped over
@@ -114,21 +115,27 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
            }
         }// endof over loop over particles
        } else {
-//--------- here we will simply evaluate the left node and push the result
+//--------- here we will simply evaluate the left node and push the result, we use this in object definition
+         DEBUG("Obj Driven Loop node, just push the result\n");
+         DEBUG("Size:"<<inputParticles.size()<<"\n");
          retval=left->evaluate(ao);
          DEBUG("retval:"<<retval<<"\n");
          result_list.push_back(retval); 
        }
      }// end of loop over multiple lefts
 
-       if (g==NULL) { return (*f)(result_list);} 
+       if (g==NULL) { return (*f)(result_list);}  // 1D case
        else {
         std::vector<bool> retvals=(*g)(result_list);
         if (inputParticles.size()==1) { // here we loop over all particles in the collection
-        if (retvals.size() != ipart2_max) {std::cerr <<"HitMiss LoopObj has a problem\n"; exit(12);}
+        if (retvals.size() < ipart2_max) {
+            std::cerr <<"HitMiss LoopObj has a problem\n"; exit(12);
+        } else { // we return the status for one particle, the loop is driven by the object loop
+         return retvals[0];
+        }
         for (int ii=ipart2_max-1; ii>=0; ii--){
          if (!retvals[ii]) { // we will kill this guy
-          DEBUG("Killing "<<ii<<" of "<<bcol2<<"\n");
+          DEBUG("Killing "<<ii<<"th of "<<bcol2<<"\n");
           switch(inputParticles[0]->type){
                 case muon_t:  ( ao->muos)[bcol2].erase((ao->muos  ).find(bcol2)->second.begin()+ii); break;
                case truth_t:  (ao->truth)[bcol2].erase((ao->truth ).find(bcol2)->second.begin()+ii); break;
