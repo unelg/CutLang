@@ -8,7 +8,7 @@
 bool isGoodRun(int,int);
 TString operator+(const TString &s, Float_t f);
 //std::string operator*=(const std::string &s, const std::string &s2){return s;}
-void PrintEfficiencies(TH1F* effh, bool skip_hist=false);
+void PrintEfficiencies(TH1D* effh, bool skip_hist=false);
 TString operator+(const TString &s, Float_t f);
 
 /*

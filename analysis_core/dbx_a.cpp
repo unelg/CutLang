@@ -65,7 +65,7 @@ int dbxA:: setDir(char *dn, unsigned int effsize) {
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
-  eff= new TH1F("eff","selection efficiencies ",effsize,0.5,effsize+0.5);
+  eff= new TH1D("eff","selection efficiencies ",effsize,0.5,effsize+0.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   return retval;
 
