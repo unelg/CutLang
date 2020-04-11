@@ -627,6 +627,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     vector<myParticle*> newList2;
                                     TmpParticle2.swap(newList2);
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
+//                                  cout<< "AAAAAAAAAAA" <<newList[0]->type<<"\n";
+//                                  cout<< "BBBBBBBBBBB" <<newList1[0]->type<<"\n";
+//                                  cout<< "CCCCCCCCCCC" <<newList2[0]->type<<"\n";
                                     $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
         | HT { $$=new SFuncNode(ht,0,"JET"); }
@@ -754,7 +757,7 @@ list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particule
                                                         s="{ "+s+" , "+s2+" }";                        
                                                         $$=strdup(s.c_str());
                                                         }
-      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle1.swap(TmpParticle1);} ',' particules ')' {
+      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle.swap(TmpParticle1);} ',' particules ')' {
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";
