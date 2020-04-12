@@ -19,7 +19,7 @@ protected:
     std::vector<myParticle*> inputParticles;
 
 public:
-    TRandom *rand3; 
+    static TRandom *rand3; 
     LoopNode(std::vector<bool> (*func)(std::vector<double>), Node* l, std::string s){
         g=func;
         f=NULL;
