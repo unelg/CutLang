@@ -8,7 +8,7 @@
 #include "LoopNode.h"
 #include "FuncNode.h"
 #include "LFuncNode.h"
-#include <TF1.h>
+#include <TRandom3.h>
 
 //#define _CLV_
 #ifdef _CLV_
@@ -183,11 +183,10 @@ double maxof(std::vector<double> xlist){
 std::vector<bool> hitmissA(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
- TF1 *fRandom ;
- fRandom=new TF1("fRandom","x",0,1);
+TRandom *rand3 = new TRandom3();
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = fRandom->GetRandom();
+ double r = rand3->Rndm(ii);
  DEBUG("hit/miss to Accept:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]< r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
@@ -198,11 +197,10 @@ std::vector<bool> hitmissA(std::vector<double> xlist){
 std::vector<bool> hitmissR(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
- TF1 *fRandom ;
- fRandom=new TF1("fRandom","x",0,1);
+TRandom *rand3 = new TRandom3();
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = fRandom->GetRandom();
+ double r = rand3->Rndm(ii);
  DEBUG("hit/miss to Reject:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]> r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
