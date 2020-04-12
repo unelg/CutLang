@@ -14,12 +14,12 @@ private:
     double (*f)(std::vector<double>);
     std::vector<bool> (*g)(std::vector<double>);
     std::vector <Node*> lefs;
- 
+    TRandom3 rand3; 
+
 protected:
     std::vector<myParticle*> inputParticles;
 
 public:
-    static TRandom *rand3; 
     LoopNode(std::vector<bool> (*func)(std::vector<double>), Node* l, std::string s){
         g=func;
         f=NULL;
@@ -27,7 +27,7 @@ public:
         left=l;
         lefs.push_back(l);
         right=NULL;
-        rand3=new TRandom3();
+     //   rand3=new TRandom3();
     }
     LoopNode(double (*func)(std::vector<double>), Node* l, std::string s){
         f=func;
@@ -36,7 +36,7 @@ public:
         left=l;
         lefs.push_back(l);
         right=NULL;
-        rand3=new TRandom3();
+   //     rand3=new TRandom3();
     }
     LoopNode(double (*func)(std::vector<double>), std::vector<Node*> ls, std::string s){
         f=func;
@@ -45,9 +45,10 @@ public:
         left=ls[0]; // just in case if someone asks the list of particles for example
         lefs=ls;
         right=NULL;
-        rand3=new TRandom3();
+ //       rand3=new TRandom3();
     }
     
+    static double getRand(); //{return (rand3.Uniform(0,1) );}
     virtual void getParticles(std::vector<myParticle *>* particles) override{
          left->getParticles(particles);
     }
