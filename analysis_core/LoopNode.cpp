@@ -17,6 +17,14 @@
 #define DEBUG(a)
 #endif
 
+TRandom3 MYrand4;
+
+double LoopNode::getRand(){
+ double rv=MYrand4.Uniform(0,1);
+ std::cout<<"RAND:"<<rv<<"\n";
+ return rv;
+};
+
 double LoopNode::evaluate(AnalysisObjects* ao) {
       // here we need to loop over all functions
        std::vector <double> result_list;
@@ -179,13 +187,15 @@ double maxof(std::vector<double> xlist){
  DEBUG("max:"<<retval<<"\n");
  return retval;
 }
- 
+//-----------------------------------------------------
 std::vector<bool> hitmissA(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = LoopNode::rand3->Uniform(0,1);
+ //double r = LoopNode::getRand();
+ double r = MYrand4.Uniform(0,1);
+// std::cout <<r<<"\n";
  DEBUG("hit/miss to Accept:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]< r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
@@ -193,12 +203,15 @@ std::vector<bool> hitmissA(std::vector<double> xlist){
  return retvals;
 }
 
+//-----------------------------------------------------
 std::vector<bool> hitmissR(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = LoopNode::rand3->Uniform(0,1);
+ double r = MYrand4.Uniform(0,1);
+// double r = LoopNode::getRand();
+// std::cout <<r<<"\n";
  DEBUG("hit/miss to Reject:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]> r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
