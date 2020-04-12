@@ -183,10 +183,9 @@ double maxof(std::vector<double> xlist){
 std::vector<bool> hitmissA(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
-TRandom *rand3 = new TRandom3();
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = rand3->Rndm(ii);
+ double r = LoopNode::rand3->Uniform(0,1);
  DEBUG("hit/miss to Accept:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]< r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
@@ -197,10 +196,9 @@ TRandom *rand3 = new TRandom3();
 std::vector<bool> hitmissR(std::vector<double> xlist){
 // random number setup is here
  std::vector<bool> retvals;
-TRandom *rand3 = new TRandom3();
 
  for (unsigned int ii=0; ii<xlist.size(); ii++) {
- double r = rand3->Rndm(ii);
+ double r = LoopNode::rand3->Uniform(0,1);
  DEBUG("hit/miss to Reject:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]> r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
