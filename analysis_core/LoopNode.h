@@ -6,6 +6,7 @@
 #ifndef LoopNode_h
 #define LoopNode_h
 #include "Node.h"
+#include <TRandom3.h>
 
 //Looping over variables
 class LoopNode : public Node{
@@ -13,12 +14,12 @@ private:
     double (*f)(std::vector<double>);
     std::vector<bool> (*g)(std::vector<double>);
     std::vector <Node*> lefs;
-    TF1 *fRandom ;
-
+ 
 protected:
     std::vector<myParticle*> inputParticles;
 
 public:
+    TRandom *rand3; 
     LoopNode(std::vector<bool> (*func)(std::vector<double>), Node* l, std::string s){
         g=func;
         f=NULL;
@@ -26,6 +27,7 @@ public:
         left=l;
         lefs.push_back(l);
         right=NULL;
+        rand3=new TRandom3();
     }
     LoopNode(double (*func)(std::vector<double>), Node* l, std::string s){
         f=func;
@@ -34,6 +36,7 @@ public:
         left=l;
         lefs.push_back(l);
         right=NULL;
+        rand3=new TRandom3();
     }
     LoopNode(double (*func)(std::vector<double>), std::vector<Node*> ls, std::string s){
         f=func;
@@ -42,6 +45,7 @@ public:
         left=ls[0]; // just in case if someone asks the list of particles for example
         lefs=ls;
         right=NULL;
+        rand3=new TRandom3();
     }
     
     virtual void getParticles(std::vector<myParticle *>* particles) override{
