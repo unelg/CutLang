@@ -210,7 +210,7 @@ int BPdbxA:: readAnalysisParams() {
        skip_histos  = (bool) TRGValues[3];
  
     unsigned int binsize=BinCuts.size(); // bins 
-    if (binsize>0) bineff= new TH1D("bineff","selection bins ",binsize,0.5,binsize+0.5);
+    if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
 //--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
@@ -369,7 +369,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         if (d==1) { // inside a bin
            DEBUG(iter->first<<" Passed\n"); // do something
            bincounts[iter->first -1]++;
-           bineff->Fill(iter->first , evt_weight);
+           hbincounts->Fill(iter->first , evt_weight);
            break;
         }
         iter++; //moves on to the next cut
