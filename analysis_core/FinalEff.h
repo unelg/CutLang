@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-void PrintEfficiencies(TH1F* effh, bool skip_histos) {
+void PrintEfficiencies(TH1D* effh, bool skip_histos) {
   using namespace std;
 
   // Prints out the efficiencies
@@ -37,5 +37,5 @@ void PrintEfficiencies(TH1F* effh, bool skip_histos) {
 }
 
 
-void FinalEff(TString file_addr, bool sh, bool se);
+void FinalEff(TString file_addr, TString bpi, bool sh, bool se);
 #endif // FINALEFF_H
