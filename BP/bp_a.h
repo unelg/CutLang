@@ -58,7 +58,7 @@ class BPdbxA : public dbxA {
       TH1D* xWHbRh2;
       TH1D* Zlm;
 */
-      int TRGe, TRGm;
+      int TRGe, TRGm, rnseed;
       bool skip_histos;
       bool skip_effs;
  

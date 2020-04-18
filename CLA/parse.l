@@ -24,6 +24,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "algo"|"region"|"algorithm" return ALGO;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
+[rR][nN][sS][eE][eE][dD] return RNSEED;
 
 [tT][rR][uU][eE] return TRUE; 
 [fF][aA][lL][sS][eE] return FALSE; 

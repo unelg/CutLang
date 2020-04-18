@@ -191,7 +191,7 @@ int BPdbxA:: readAnalysisParams() {
 
 // ---------------------------read CutLang style cuts using lex/yacc
        NameInitializations={" "," "};
-       TRGValues={1,0,0,0,0};
+       TRGValues={1,0,0,0,0,1};
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
@@ -208,12 +208,14 @@ int BPdbxA:: readAnalysisParams() {
        TRGm    = TRGValues[1];
        skip_effs    = (bool) TRGValues[2];
        skip_histos  = (bool) TRGValues[3];
+       rnseed       = TRGValues[5];
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
 //--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
+       cout<< "RNSEED:"<<rnseed<<endl;
        DEBUG("CL CUTS: \n");
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end())
