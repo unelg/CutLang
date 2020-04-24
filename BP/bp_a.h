@@ -61,6 +61,7 @@ class BPdbxA : public dbxA {
       int TRGe, TRGm;
       bool skip_histos;
       bool skip_effs;
+      vector<int> save;
  
 //relevant variables
         list<string> parts; //for def of particles as given by user
