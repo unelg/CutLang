@@ -187,7 +187,6 @@ With DELPHES
 Testing exUnion.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
