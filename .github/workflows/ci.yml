@@ -65,7 +65,6 @@ jobs:
           echo "::set-env name=flag::good_run"
         fi
         chmod +x mail_body.sh ; ./mail_body.sh
-        rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
                 
     - name: SMTP
       uses: peter-evans/sendgrid-action@v1
@@ -74,6 +73,9 @@ jobs:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js        
         
+    - name: Clear Temporary Files
+      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
+
     - name: Update Artifacts
       run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
