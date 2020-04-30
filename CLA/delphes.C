@@ -263,7 +263,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
       TString cname ="JET_";
               cname+=i;    // jet index
               cname+="c"; //  c for constituents
-       constits_map.insert( pair <string,vector<dbxParticle> > (cname, constis) );
+       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
        DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
        constis.clear();
     }

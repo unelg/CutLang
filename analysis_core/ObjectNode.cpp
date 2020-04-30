@@ -215,7 +215,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                consname+="_";                baseconsname+="_";
                consname+=ipart;              baseconsname+=ipart;
                consname+="c";                baseconsname+="c";
-         ao->constits.insert( std::pair<string, vector<dbxParticle> >(consname, (ao->constits)[(string)baseconsname]) );
+         ao->constits.insert( std::pair<string, vector<dbxParticle> >(consname.Data(), (ao->constits)[(string)baseconsname]) );
          DEBUG(consname<<" added.\t");
     }
     DEBUG("\n ALL Constits now:"<<ao->constits.size() <<"\n");
