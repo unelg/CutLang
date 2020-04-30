@@ -1,2 +1,46 @@
 Errors: 
 
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected ID, expecting DEF or OBJ or ALGO or TABLE	 at line: 48
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+With ATLASOD
+Single Analysis
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+CLA v02.02.02	compiled on Thu Apr 30 13:27:26 UTC 2020	 
+#BP  runs is 1
+--
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected ID, expecting DEF or OBJ or ALGO or TABLE	 at line: 48
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+With DELPHES
+Single Analysis
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+CLA v02.02.02	compiled on Thu Apr 30 13:27:26 UTC 2020	 
+#BP  runs is 1
+--
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected ID, expecting DEF or OBJ or ALGO or TABLE	 at line: 48
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+free(): invalid size
+./CLA.sh: line 92: 17282 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+Testing exUnion.adl:
+With CMSOD
+Single Analysis
