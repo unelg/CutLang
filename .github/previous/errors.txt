@@ -9,11 +9,16 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exTab.adl -e 10000
 With ATLASOD
 Single Analysis
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Thu Apr 30 17:21:52 UTC 2020	 
+CLA v02.02.02	compiled on Thu Apr 30 21:26:52 UTC 2020	 
 #BP  runs is 1
+#Dump runs is 0
+~Now using ATLAS Open Data files.~~~~~~ beta!
+open ./atla_opendata_had_ttbar.root
+RetVal:1
 --
  #systematic included:0
 This is BP_1
@@ -24,11 +29,16 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exTab.adl -e 10000
 With DELPHES
 Single Analysis
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Thu Apr 30 17:21:52 UTC 2020	 
+CLA v02.02.02	compiled on Thu Apr 30 21:26:52 UTC 2020	 
 #BP  runs is 1
+#Dump runs is 0
+~Now using Delphes files.~~~~~~ beta!
+open ./delphes_events_ttbar.root
+RetVal:1
 --
  #systematic included:0
 This is BP_1
@@ -40,7 +50,12 @@ End of Dumper initialization
 
 yyParse returns SYNTAX error. Check the input file
 free(): invalid size
-./CLA.sh: line 92: 17255 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+./CLA.sh: line 92: 17253 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exTab.adl -e 10000
 Testing exUnion.adl:
 With CMSOD
 Single Analysis
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+CLA v02.02.02	compiled on Thu Apr 30 21:26:52 UTC 2020	 
+#BP  runs is 1
+#Dump runs is 0
