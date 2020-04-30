@@ -359,13 +359,14 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         DEBUG("\t****Result : " << d << std::endl);
         evt_weight = ao.evt.user_evt_weight;
         if (d==0) {
-                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
-                        if(*it > iter->first) {
-                                int diff = *it - iter->first;
+		if (ao.evt.event_no == ao.evt.maxEvents) {	
+			iter = NodeCuts.begin();
+	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
+                	        int diff = *it - iter->first;
                                 for(int i = 0; i < diff; i++) iter++;
-                                iter->second->evaluate(&ao);
-                        }
-                }
+                               	iter->second->saveFile();
+        	        }
+		}
 		return iter->first;         // quits the event.
 	}
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.

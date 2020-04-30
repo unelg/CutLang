@@ -18,7 +18,9 @@ void Node::display(std::string indent){
 void Node::display(){ this->display(""); }
      TString Node::getStr(){ TString ss; this->getStr(&ss); return ss; 
 }
-     
+
+void Node::saveFile() {}
+
 Node::~ Node(){ }
 
 std::vector<dbxJet> Node::tagJets(AnalysisObjects *ao, int jtype, std::string cn) {                   

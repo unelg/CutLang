@@ -30,9 +30,13 @@ public:
 	      	ttsave->Branch("dbxAsave", ntsave);
 
 	}
-	    virtual void getParticles(std::vector<myParticle *>* particles) override{}
+    virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}
+    virtual void saveFile() override {
+	    ftsave->Write();
+	    ftsave->Close();
+    }
     virtual double evaluate(AnalysisObjects* ao) override {
       vector<dbxMuon>        muons = ao->muos.begin()->second;
       vector<dbxElectron> electrons= ao->eles.begin()->second;
@@ -94,11 +98,6 @@ public:
       ntsave->nt_truth.resize   ( truth.size()             );
       
       ttsave->Fill();
-
-      if (anevt.event_no == anevt.maxEvents) {
-	      ftsave->Write();
-	      ftsave->Close();
-      }   
       return 1;
     }
     virtual ~SaveNode() {}
