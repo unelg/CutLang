@@ -77,7 +77,7 @@ jobs:
     - name: Clear Temporary Files
       run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
 
-    - name: Update Artifacts
+#    - name: Update Artifacts
 #      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
