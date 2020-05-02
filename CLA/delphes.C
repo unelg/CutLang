@@ -263,7 +263,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
       TString cname ="JET_";
               cname+=i;    // jet index
               cname+="c"; //  c for constituents
-       constits_map.insert( pair <string,vector<dbxParticle> > (cname, constis) );
+       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
        DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
        constis.clear();
     }
@@ -321,6 +321,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
         anevt.TRG_j= 0;
         anevt.vxp_maxtrk_no= 9;
         anevt.badjet=0;
+        anevt.maxEvents=nentries;
         anevt.mcevt_weight=1.0;
         anevt.pileup_weight=1.0;
         anevt.z_vtx_weight = 1.0;

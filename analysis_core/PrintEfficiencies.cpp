@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-void PrintEfficiencies(TH1F* effh, bool skip_histos) {
+void PrintEfficiencies(TH1D* effh, bool skip_histos) {
   using namespace std;
 
   // Prints out the efficiencies
@@ -35,7 +35,7 @@ void PrintEfficiencies(TH1F* effh, bool skip_histos) {
   return;
 }
 
-void ComputeEfficiences(TH1F *eff1, double xsec1, TH1F *eff2, double xsec2) {
+void ComputeEfficiences(TH1D *eff1, double xsec1, TH1F *eff2, double xsec2) {
   using namespace std;
 
   // Compute and print out efficiencies by combining two separate samples

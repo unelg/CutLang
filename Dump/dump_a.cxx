@@ -44,7 +44,7 @@ int DumpdbxA:: initGRL() {
 
 int DumpdbxA:: bookAdditionalHistos() {
 //additional histograms are defined here
-  eff= new TH1F("eff","selection efficiencies",5,0.5,5.5);
+  eff= new TH1D("eff","selection efficiencies",5,0.5,5.5);
   getInputs();
 
   return 0;

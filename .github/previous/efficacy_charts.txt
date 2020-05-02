@@ -4,92 +4,189 @@ Testing LLP.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i LLP.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i LLP.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i LLP.adl -e 10000
+>>>>>>> master
 Testing ex1.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.01 % +-   0.01 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.06 % +- 0.0245 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex1.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   0.06 % +- 0.0245 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex1.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex1.adl -e 10000
+>>>>>>> master
 Testing ex2.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.86 % +- 0.0923 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   2.07 % +-  0.142 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   22.7 % +-   1.32 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex2.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   2.07 % +-  0.142 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex2.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   22.7 % +-   1.32 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex2.adl -e 10000
+>>>>>>> master
 Testing ex3.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.74 % +- 0.0857 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    1.6 % +-  0.125 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   34.5 % +-    1.5 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex3.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    1.6 % +-  0.125 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex3.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   34.5 % +-    1.5 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex3.adl -e 10000
+>>>>>>> master
 Testing ex4.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   1.41 % +-  0.118 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.13 % +-  0.036 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    0.3 % +-  0.173 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex4.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   0.13 % +-  0.036 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex4.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    0.3 % +-  0.173 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex4.adl -e 10000
+>>>>>>> master
 Testing ex5.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.92 % +- 0.0955 %
 					 --> Overall efficiency	 =   0.86 % +- 0.0923 %
 					 --> Overall efficiency	 =    0.8 % +- 0.0891 %
+<<<<<<< HEAD
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex5.adl -e 10000
+>>>>>>> master
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    3.3 % +-  0.179 %
 					 --> Overall efficiency	 =   2.07 % +-  0.142 %
 					 --> Overall efficiency	 =   0.68 % +- 0.0822 %
+<<<<<<< HEAD
+=======
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex5.adl -e 10000
+>>>>>>> master
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   22.7 % +-   1.32 %
 					 --> Overall efficiency	 =   22.7 % +-   1.32 %
 					 --> Overall efficiency	 =   19.7 % +-   1.26 %
+<<<<<<< HEAD
+=======
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex5.adl -e 10000
+>>>>>>> master
 Testing ex6.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.86 % +- 0.0923 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   2.06 % +-  0.142 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   22.7 % +-   1.32 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex6.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   2.06 % +-  0.142 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex6.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   22.7 % +-   1.32 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex6.adl -e 10000
+>>>>>>> master
 Testing ex7-new.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   1.86 % +-  0.135 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    1.3 % +-  0.113 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex7-new.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    1.3 % +-  0.113 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex7-new.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex7-new.adl -e 10000
+>>>>>>> master
 Testing ex7.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   14.2 % +-  0.349 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   22.2 % +-  0.416 %
@@ -106,20 +203,57 @@ With ATLASOD
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    3.2 % +-  0.557 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex7.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   22.2 % +-  0.416 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex7.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex7.adl -e 10000
+Testing exBin.adl:
+With CMSOD
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   0.64 % +- 0.0797 %
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exBin.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   3.19 % +-  0.176 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exBin.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    0.6 % +-  0.244 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exBin.adl -e 10000
+>>>>>>> master
 Testing exComb.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   3.18 % +-  0.175 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   4.53 % +-  0.208 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exComb.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   4.53 % +-  0.208 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exComb.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exComb.adl -e 10000
+>>>>>>> master
 Testing exCon.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
@@ -135,39 +269,98 @@ With ATLASOD
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exCon.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exCon.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exCon.adl -e 10000
+Testing exExtern.adl:
+With CMSOD
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   42.5 % +-  0.494 %
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exExtern.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   37.2 % +-  0.483 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exExtern.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exExtern.adl -e 10000
+>>>>>>> master
 Testing exGen.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   -nan % +-   -nan %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   -nan % +-   -nan %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exGen.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   -nan % +-   -nan %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exGen.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exGen.adl -e 10000
+>>>>>>> master
 Testing exHisto2D.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   13.5 % +-  0.342 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   21.8 % +-  0.413 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exHisto2D.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   21.8 % +-  0.413 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exHisto2D.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exHisto2D.adl -e 10000
+>>>>>>> master
 Testing exLoop.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   84.5 % +-  0.362 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   94.3 % +-  0.232 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    1.3 % +-  0.358 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exLoop.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   94.3 % +-  0.232 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exLoop.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    1.3 % +-  0.358 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exLoop.adl -e 10000
+>>>>>>> master
 Testing exSort.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.86 % +- 0.0923 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    1.1 % +-  0.104 %
@@ -184,13 +377,46 @@ With ATLASOD
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   13.6 % +-   1.08 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exSort.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =    1.1 % +-  0.104 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exSort.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =   19.7 % +-   1.26 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exSort.adl -e 10000
+Testing exTab.adl:
+With CMSOD
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exTab.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exTab.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exTab.adl -e 10000
+>>>>>>> master
 Testing exUnion.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+<<<<<<< HEAD
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =      0 % +-      0 %
+=======
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exUnion.adl -e 10000
+With ATLASOD
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exUnion.adl -e 10000
+With DELPHES
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+					 --> Overall efficiency	 =      0 % +-      0 %
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exUnion.adl -e 10000
+>>>>>>> master

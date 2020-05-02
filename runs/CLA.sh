@@ -91,11 +91,16 @@ rm histoOut-BP_*.root 2>/dev/null
 echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 if [ $? -eq 0 ]; then
-   echo "Run finished successfully, now adding histograms"
+  echo "CutLang finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root
-  rm -f histoOut-BP_*.root
-  rm -f _head.ini _algos.ini _inifile
-#  rm -f BP_*-card.ini 
+  if [ $? -eq 0 ]; then
+   echo "hadd finished successfully, now removing auxiliary files"
+   rm -f histoOut-BP_*.root
+   rm -f _head.ini _algos.ini _inifile
+   rm -f BP_*-card.ini 
+  fi
 fi
+
+

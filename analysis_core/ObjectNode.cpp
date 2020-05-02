@@ -215,7 +215,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
                consname+="_";                baseconsname+="_";
                consname+=ipart;              baseconsname+=ipart;
                consname+="c";                baseconsname+="c";
-         ao->constits.insert( std::pair<string, vector<dbxParticle> >(consname, (ao->constits)[(string)baseconsname]) );
+         ao->constits.insert( std::pair<string, vector<dbxParticle> >(consname.Data(), (ao->constits)[(string)baseconsname]) );
          DEBUG(consname<<" added.\t");
     }
     DEBUG("\n ALL Constits now:"<<ao->constits.size() <<"\n");
@@ -454,9 +454,9 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->muos)[name].size();
         bool simpleloop=true;
  
-        DEBUG("Psize:"<<particles->size() <<"\n");
+        DEBUG("Psize:"<<particles->size() <<"\t");
+        DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
-           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
            continue;
         }
@@ -473,16 +473,20 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         t2=*ptit; 
 
         if(simpleloop){
+            DEBUG("ONE particle  Muon Loop with:"<<ipart_max<<" particles \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
                bool ppassed=(*cutIterator)->evaluate(ao);
-               if (!ppassed) (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
+               if (!ppassed) { DEBUG("Killing muon:"<<ipart);
+                   (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
+               }
             }
         }
         else {
+            DEBUG("TWO particle Muon Loop\n");
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
