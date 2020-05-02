@@ -7,7 +7,7 @@
 #include "dbx_a.h"
 
 //#define __SEZEN__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -331,7 +331,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects ao ){
 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
-DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" of " << anevt.maxEvents << " \n");
+DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
 //cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
