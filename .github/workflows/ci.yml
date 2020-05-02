@@ -43,7 +43,7 @@ jobs:
       run: |
         git clone https://github.com/root-project/root.git
         cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
-        cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
+        mv ./build ./b2 ; mkdir build ; cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
     
     - name: Build CutLang
       run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
