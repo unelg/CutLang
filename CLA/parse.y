@@ -627,6 +627,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     vector<myParticle*> newList2;
                                     TmpParticle2.swap(newList2);
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
+//                                  cout<< "AAAAAAAAAAA" <<newList[0]->type<<"\n";
+//                                  cout<< "BBBBBBBBBBB" <<newList1[0]->type<<"\n";
+//                                  cout<< "CCCCCCCCCCC" <<newList2[0]->type<<"\n";
                                     $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
         | HT { $$=new SFuncNode(ht,0,"JET"); }
@@ -754,7 +757,7 @@ list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particule
                                                         s="{ "+s+" , "+s2+" }";                        
                                                         $$=strdup(s.c_str());
                                                         }
-      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle1.swap(TmpParticle1);} ',' particules ')' {
+      | '(' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particules { TmpParticle.swap(TmpParticle1);} ',' particules ')' {
                                                         string s=$2;
                                                         string s2=$5;
                                                         s="{ "+s+" , "+s2+" }";
@@ -2072,7 +2075,23 @@ command : CMD condition { //find a way to print commands
         | CMD BTAGSF { Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
-        | CMD APPLYHM '(' ID '(' function ')' EQ INT ')' { 
+        | CMD APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
+                                DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $11 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $4;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$6, $8, itt->second, "applyHM"); //function, 
+                                if ($11 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
+                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
+                                NodeCuts->insert(make_pair(++cutcount,b));
+                    }
+        | CMD APPLYHM '(' ID '(' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $9 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;
                                 string name = $4;
@@ -2325,6 +2344,38 @@ ifstatement : condition '?' action ':' action %prec '?' {
             ;
 action : condition { $$=$1; }
        | ALL { $$=new SFuncNode(all,0,"all"); }
+       | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
+                                DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$5, $7, itt->second, "applyHM"); //function, 
+                                if ($10 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
+                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
+                                $$=b;
+                    }
+        | APPLYHM '(' ID '(' e ')' EQ INT ')' { 
+                                DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $8 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$5,itt->second, "applyHM"); //function, 
+                                if ($8 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
+                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
+                                $$=b;
+                    }
        | ifstatement { $$=$1; }
        ;    
 condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }

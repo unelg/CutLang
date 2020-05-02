@@ -1,6 +1,3 @@
 [submodule "ADLLHCanalyses"]
 	path = ADLLHCanalyses
 	url = https://github.com/ADL4HEP/ADLLHCanalyses
-[submodule "LHC"]
-	path = ADLLHCanalyses
-	url = https://github.com/ADL4HEP/ADLLHCanalyses

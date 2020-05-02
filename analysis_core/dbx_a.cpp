@@ -65,10 +65,10 @@ int dbxA:: setDir(char *dn, unsigned int effsize) {
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
-  eff= new TH1F("eff","selection efficiencies ",effsize,0.5,effsize+0.5);
+  eff= new TH1D("cutflow","cutflow event counts ",effsize,0.5,effsize+0.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   return retval;
 
-//  if (binsize>0) bineff= new TH1F("bineff","selection bins ",binsize,0.5,binsize+0.5);
+//  if (binsize>0) hbincounts= new TH1F("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
 }
 
