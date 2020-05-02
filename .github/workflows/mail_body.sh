@@ -2,11 +2,19 @@
 
 cd $HOME/work/CutLang/CutLang/.github/workflows/artifacts
 
+. $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
+root --version 2>&1 | tee ./temp2.txt
+echo "" | tee -a temp2.txt
+
 cat raw_output.txt | grep -e error -e WARNING -e syntax -e CLA.sh | tee ./temp.txt
 a=''
-for i in $(cat temp.txt | grep -A1 -e CLA.sh); do
-  if [ $`echo $a | grep -q CLA.sh` == $`echo $i | grep -q CLA.sh` ]; then
-    sed -i -e 's/$a//g' ./temp.txt
-  fi
-  a='$i'
-done
+while IFS='' read -r i || [ -n "$i" ]; do
+        if echo $i | grep -q -e Aborted -e error; then
+                echo $a | tee -a temp2.txt
+                echo $i | tee -a temp2.txt
+                echo "" | tee -a temp2.txt
+        fi
+        a=$i
+done < ./temp.txt
+rm temp.txt
+mv temp2.txt temp.txt

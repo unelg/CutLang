@@ -39,10 +39,11 @@ jobs:
         sudo apt install flex bison wget ;
                    
     - name: Build ROOT
-      if: steps.cache.outputs.cache-hit != 'true'
+#      if: steps.cache.outputs.cache-hit != 'true' # ignore cache to downgrade to ROOT 6.18/04
       run: |
         git clone https://github.com/root-project/root.git
-        cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
+        cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
+        mv ./build ./b2 ; mkdir build ; cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
     
     - name: Build CutLang
       run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
