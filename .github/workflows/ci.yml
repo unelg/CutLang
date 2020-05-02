@@ -72,13 +72,13 @@ jobs:
       if: env.flag == 'bad_run'
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js        
+        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js      
         
     - name: Clear Temporary Files
       run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
 
     - name: Update Artifacts
-      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
+#      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
