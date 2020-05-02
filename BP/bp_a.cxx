@@ -359,7 +359,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         DEBUG("\t****Result : " << d << std::endl);
         evt_weight = ao.evt.user_evt_weight;
         if (d==0) {
-		if (ao.evt.event_no == ao.evt.maxEvents) {	
+		if (ao.evt.event_no == (ao.evt.maxEvents - 1)) {	
 			iter = NodeCuts.begin();
 	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
                 	        int diff = *it - iter->first;
