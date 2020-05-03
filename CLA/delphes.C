@@ -331,6 +331,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
         anevt.lar_Error=0;
         anevt.tile_Error=0;
         anevt.core_Flags=0;
+	anevt.maxEvents=nentries;
 
         DEBUG("Filling finished"<<std::endl);
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );

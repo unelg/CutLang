@@ -181,6 +181,7 @@ std::cout << "MET OK"<<std::endl;
 	anevt.lar_Error=0;
 	anevt.tile_Error=0;
 	anevt.core_Flags=0;
+	anevt.maxEvents=nentries;
 
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;

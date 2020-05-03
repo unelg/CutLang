@@ -208,6 +208,12 @@ int BPdbxA:: readAnalysisParams() {
        TRGm    = TRGValues[1];
        skip_effs    = (bool) TRGValues[2];
        skip_histos  = (bool) TRGValues[3];
+
+       std::map<int, Node*>::iterator iter = NodeCuts.begin();
+       while(iter != NodeCuts.end()) {
+                if (strcmp(iter->second->getStr()," ") == 0)    save.push_back(iter->first);
+                iter++;
+       }
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
@@ -215,7 +221,7 @@ int BPdbxA:: readAnalysisParams() {
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
        DEBUG("CL CUTS: \n");
-       std::map<int, Node*>::iterator iter = NodeCuts.begin();
+       iter = NodeCuts.begin();
        while(iter != NodeCuts.end())
        {
             DEBUG(" CUT "<<iter->first<<" ");
@@ -241,7 +247,7 @@ int BPdbxA:: readAnalysisParams() {
          for (vector<myParticle*>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
          cout << (*lit)->type << "_" << (*lit)->index << " ";
          cout << "\n";
-         }
+
 
     cout<<"\n UNParsed Particles Lists: \n";
 
@@ -352,7 +358,17 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         double d=iter->second->evaluate(&ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
         evt_weight = ao.evt.user_evt_weight;
-        if (d==0) return iter->first;         // quits the event.
+        if (d==0) {
+		if (ao.evt.event_no == (ao.evt.maxEvents - 1)) {	
+			iter = NodeCuts.begin();
+	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
+                	        int diff = *it - iter->first;
+                                for(int i = 0; i < diff; i++) iter++;
+                               	iter->second->saveFile();
+        	        }
+		}
+		return iter->first;         // quits the event.
+	}
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
