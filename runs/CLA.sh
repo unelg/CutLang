@@ -60,6 +60,11 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
+if [ -n ${datafile+x} ] && [ ! -f "$datafile" ]; then
+  tput setaf 1; echo "${datafile} does not exist."
+  tput sgr0
+fi
+
 #echo INIFILE  = "${INIFILE}"
 #echo EVENTS   = "${EVENTS}"
 #echo VERBOSE  = "${VERBOSE}"
