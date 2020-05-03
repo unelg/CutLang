@@ -27,17 +27,19 @@ public:
           	            fname+=".root";
    	        ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	        ttsave = new TTree ("nt_tree", "saving data on the grid");
-	      	ttsave->Branch("dbxAsave", ntsave);
+//	      	ttsave->Branch("dbxAsave", ntsave);
 
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}
     virtual void saveFile() override {
+	    cout << "Written";
 	    ftsave->Write();
 	    ftsave->Close();
     }
     virtual double evaluate(AnalysisObjects* ao) override {
+      ttsave->Branch("dbxAsave", ntsave);
       vector<dbxMuon>        muons = ao->muos.begin()->second;
       vector<dbxElectron> electrons= ao->eles.begin()->second;
       vector <dbxPhoton>    photons= ao->gams.begin()->second;
