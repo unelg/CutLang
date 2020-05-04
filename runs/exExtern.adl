@@ -6,7 +6,7 @@ object megajets
 
 object hemisjets
   take JET
-  select fhemisphere(JET) == 2
+  select fhemisphere(JET, 2, 3) == 2
 
 region   test
   select  ALL              # to count all events

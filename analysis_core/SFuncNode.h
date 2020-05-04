@@ -10,6 +10,7 @@
 #define SFuncNode_h
 #include "Node.h"
 #include "Razorfunc.h"
+#include "Hemisphere.h"
 #include "CMSSUS16048_functions.h"
 #include "mt2_bisect.h"
 
@@ -391,11 +392,11 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("Userfunction g1 :"<<s<<"\n");
+   DEBUG("UserfunctionA, s:"<<s<< "id: "<<id<<"\n");
 
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
-   DEBUG("evaluating external function :"<<s<<"\n");
+   DEBUG("evaluating external function on jets: :"<<s<<"\n");
    std::vector<TLorentzVector> retjets= (*func)(myjets);
    DEBUG("external function Done. size:"<<retjets.size()<<"\n");
    for (int ipart=ao->jets.at(s).size()-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
@@ -412,7 +413,7 @@ double userfuncB(AnalysisObjects* ao, string s, int id,
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("Userfunction g2 :"<<s<<"\n");
+   DEBUG("UserfunctionB :"<<s<<"\n");
 
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
@@ -425,7 +426,7 @@ double userfuncC(AnalysisObjects* ao, string s, int id,
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("Userfunction g3 :"<<s<<"\n");
+   DEBUG("UserfunctionC :"<<s<<"\n");
 
    std::vector<TLorentzVector> myjets;
         TVector2 mymet=ao->met["MET"];
@@ -440,7 +441,7 @@ double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv,
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("Userfunction g4 :"<<s<<"\n");
+   DEBUG("UserfunctionD :"<<s<<"\n");
 
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
@@ -454,10 +455,21 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("Userfunction g5 :"<<s<<"\n");
+   DEBUG("UserfunctionE :"<<s<<"\n");
    DEBUG("evaluating external function :"<<s<<"\n");
    double retvalue= (*func)(l1, l2, m1);
    return (retvalue);
+}
+
+std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets) {
+    std::vector<TLorentzVector> mynewjets;
+    TLorentzVector j1, j2;
+//------ sezens magic here
+
+    mynewjets.push_back(j1);
+    mynewjets.push_back(j2);
+    return mynewjets;
+
 }
 
 double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet){
