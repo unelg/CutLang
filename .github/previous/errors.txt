@@ -1,2 +1,61 @@
 Errors: 
 
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected JET, expecting ID	 at line: 5
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+ Generating stack trace...
+ 0x00007f452ad6c62b in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x2b from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452b4bfe8d in TObjArray::Streamer(TBuffer&) + 0xcd from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f452ad65651 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x171 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452ad6c663 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x63 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452ae2d7aa in TStreamerInfo::Streamer(TBuffer&) + 0x46a from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452ad65651 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x171 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452ad6c775 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x175 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f452b4bb18f in TList::Streamer(TBuffer&) + 0x12f from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f452ae0bfab in TKey::TKey(TObject const*, char const*, int, TDirectory*) + 0x1cb from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+--
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected JET, expecting ID	 at line: 5
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exExtern.adl -e 10000
+With DELPHES
+Single Analysis
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+CLA v02.02.02	compiled on Mon May  4 21:30:57 UTC 2020	 
+#BP  runs is 1
+#Dump runs is 0
+~Now using Delphes files.~~~~~~ beta!
+open ./delphes_events_ttbar.root
+RetVal:1
+--
+ #systematic included:0
+This is BP_1
+End of BP initialization
+End of Dumper initialization
+	 REGION:test
+==Parsing started:	ERROR: syntax error, unexpected JET, expecting ID	 at line: 5
+	 Parsing finished.==
+
+yyParse returns SYNTAX error. Check the input file
+free(): invalid pointer
+./CLA.sh: line 97: 16440 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+./CLA.sh ./delphes_events_ttbar.root DELPHES -i exExtern.adl -e 10000
+Testing exGen.adl:
+With CMSOD
+Single Analysis
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+CLA v02.02.02	compiled on Mon May  4 21:30:57 UTC 2020	 
+#BP  runs is 1
+#Dump runs is 0
