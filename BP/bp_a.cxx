@@ -211,7 +211,10 @@ int BPdbxA:: readAnalysisParams() {
 
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end()) {
-                if (strcmp(iter->second->getStr()," ") == 0)    save.push_back(iter->first);
+                if (strcmp(iter->second->getStr()," ") == 0) {
+		      save.push_back(iter->first);
+		      iter->second->createFile();
+		}
                 iter++;
        }
  
