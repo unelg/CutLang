@@ -20,6 +20,7 @@ void Node::display(){ this->display(""); }
 }
 
 void Node::saveFile() {}
+void Node::createFile() {}
 
 Node::~ Node(){ }
 
