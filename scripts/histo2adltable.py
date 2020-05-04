@@ -1,11 +1,11 @@
+#!/usr/bin/env python
+
 # Convert histograms to table format for ADL
 # Run as:
 #   ./histo2table.py <rootfilename> : lists the histograms
 #   ./histo2table.py <rootfilename> <histoname> : converts the efficiencies into a table
 #   ./histo2table.py -t/--type <tabletype> <rootfilename> <histoname> : converts the efficiencies into a table, overwrites tabletype (default is 'efficiency', can be "scalefactor', etc.)
 # Author: Sezen Sekmen, 4 May 2020
-
-#!/usr/bin/env python
 
 import os,sys
 from string import *
