@@ -12,7 +12,7 @@
 
 class SaveNode : public Node{
 private:
-	std::string name;
+	std::string name, fname;
 	DBXNtuple *ntsave;
 	TFile *ftsave;
 	TTree *ttsave;
@@ -22,19 +22,16 @@ public:
 		left = NULL;
 		right = NULL;
 		ntsave = new DBXNtuple;
-	       	std::string fname="lvl0_";
-	                    fname+=name;
-          	            fname+=".root";
-   	        ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
-	        ttsave = new TTree ("nt_tree", "saving data on the grid");
-//	      	ttsave->Branch("dbxAsave", ntsave);
-
+	       	fname = "lvl0_" + name + ".root";
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}
+    virtual void createFile() override {
+	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
+	    ttsave = new TTree ("nt_tree", "saving data on the grid");
+    }
     virtual void saveFile() override {
-	    cout << "Written";
 	    ftsave->Write();
 	    ftsave->Close();
     }

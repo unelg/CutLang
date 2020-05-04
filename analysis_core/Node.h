@@ -83,6 +83,7 @@ public:
     void display();
     virtual TString getStr();
     virtual void saveFile();
+    virtual void createFile();
     virtual void setUserObjects(Node *objectNodea = NULL, Node *objectNodeb = NULL, Node *objectNodec = NULL, Node *objectNoded = NULL){std::cout<<"Mother adds UOs.\n";
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
