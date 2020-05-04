@@ -75,6 +75,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
+%token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM

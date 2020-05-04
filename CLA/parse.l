@@ -70,6 +70,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "tau2" return TAU2;
 "tau3" return TAU3;
 "fmegajets" return FMEGAJETS;
+"fhemisphere" return FHEMISPHERE;
 "fMR" return FMR;
 "fMTR" return FMTR;
 "fMT2" return FMT2;
