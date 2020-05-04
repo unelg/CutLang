@@ -570,6 +570,20 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
                                     $$=new SFuncNode(userfuncE, fMT2, type, "XXX" , newList2,  newList1, newList);
       }
+    | FHEMISPHERE '(' ID ',' INT ',' INT ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
+                               if(it == ObjectCuts->end()) {
+                                        std::string message = "Object not defined: ";
+                                        message += $3;
+                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                        YYERROR;
+                               } else {
+                                      int seed =$5;
+                                      int assoc=$7;
+                                      //int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                      int type=100*seed+assoc;
+                                      $$=new SFuncNode(userfuncA, fhemisphere, type, "HEMISPHERE" , it->second);
+                               }
+                       }
     | FMEGAJETS '(' ID ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
                                if(it == ObjectCuts->end()) {
                                         std::string message = "Object not defined: ";
