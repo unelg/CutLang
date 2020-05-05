@@ -461,14 +461,33 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
    return (retvalue);
 }
 
-std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets) {
-    std::vector<TLorentzVector> mynewjets;
-    TLorentzVector j1, j2;
-//------ sezens magic here
-
-    mynewjets.push_back(j1);
-    mynewjets.push_back(j2);
-    return mynewjets;
+std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int seed, int assoc) {
+    // Convert
+    std::vector<float> px;
+    std::vector<float> py;
+    std::vector<float> pz;
+    std::vector<float> E;
+    for (int i=0; i<myjets.size(); i++) {
+      px.push_back(myjets[i].Px());
+      py.push_back(myjets[i].Py());
+      pz.push_back(myjets[i].Pz());
+      E.push_back(myjets[i].E());
+    }
+    // Run the hemisphere algorithm
+    Hemisphere hemis(px, py, pz, E, seed, assoc);
+    // Get the vector that gives int values for group number assigned to each jet
+    std::vector<int> hemisgroup = hemis.getGrouping();
+    // Combine jets in each group into one object
+    std::vector<TLorentzVector> myhemispheres;
+    TLorentzVector h1, h2;
+    for (int i=0; i<myjets.size(); i++) {
+      int hg = hemisgroup[i];
+      if (hg == 1) h1 += myjets[i];
+      if (hg == 2) h2 += myjets[i];
+    }
+    myhemispheres.push_back(h1);
+    myhemispheres.push_back(h2);
+    return myhemispheres;
 
 }
 
