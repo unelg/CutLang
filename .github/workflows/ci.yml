@@ -39,7 +39,7 @@ jobs:
         sudo apt install flex bison wget ;
                    
     - name: Build ROOT
-      if: steps.cache.outputs.cache-hit != 'true' # ignore cache to downgrade to ROOT 6.18/04
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         git clone https://github.com/root-project/root.git
         cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
@@ -78,6 +78,7 @@ jobs:
       run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
 
     - name: Update Artifacts
+      if: steps.cache.outputs.cache-hit == 'true'
       run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
