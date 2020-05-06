@@ -17,10 +17,9 @@ define   mTop1 : m(Top1)
 define   mTop2 : m(Top2)
 ###      chi2 for top finder
 #define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
-#define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
-define   PTj1 : pT(WH1)
-define   totchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 
-#+ Hstep(300.0 - PTj1)*(300.0/PTj1)
+define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
+#define   PTj1 : pT(WH1)
+#define   totchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 + Hstep(300.0 - PTj1)*(300.0/PTj1 - 1.0 )
 
 algo besttop
   select   ALL                   # to count all events
