@@ -351,7 +351,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         iter++;
     }
 
-    DEBUG("RESET ALL cuts\n");
+    DEBUG("Done resetting cuts.\n");
     iter = NodeCuts.begin();
 
 //----------------------execute
