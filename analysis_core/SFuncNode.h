@@ -29,13 +29,13 @@ private:
     //should add something related to trigger types
     Node* userObjectA;
     Node* userObjectB;
-    double (*f)(AnalysisObjects*, string, float);
-    double (*g1)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>));
+    double (*f)(AnalysisObjects*, string, float); // the regular
+    double (*g1)(AnalysisObjects*, string, int, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector>, int));
     double (*g2)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>));
     double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 ));
-    double (*g4)(AnalysisObjects*, string, int,   TLorentzVector,    double (*func)(std::vector<TLorentzVector>, TLorentzVector ));
+    double (*g4)(AnalysisObjects*, string, int, TLorentzVector,      double (*func)(std::vector<TLorentzVector>, TLorentzVector ));
     double (*g5)(AnalysisObjects*, string, int, TLorentzVector, TLorentzVector, TLorentzVector,   double (*func)(TLorentzVector, TLorentzVector, TLorentzVector ));
-    std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>);
+    std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>, int);
                          double (*h2)(std::vector<TLorentzVector>);
                          double (*h3)(std::vector<TLorentzVector>, TVector2 );
                          double (*h4)(std::vector<TLorentzVector>, TLorentzVector );
@@ -68,8 +68,8 @@ public:
     }
 
 //-------------------------extern.........
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets)),
-              std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets),
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets, int p1)),
+              std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets, int p1),
                       int id, 
                std::string s, 
                Node *objectNodeA = NULL, Node *objectNodeB = NULL) {
@@ -89,7 +89,7 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets)),
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets)),
               double (*tunc) (std::vector<TLorentzVector> jets),
                       int id, 
                std::string s, 
@@ -110,7 +110,7 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets, TVector2 amet)),
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets, TVector2 amet)),
               double (*tunc) (std::vector<TLorentzVector> jets, TVector2 amet),
                       int id, 
                std::string s, 
@@ -131,7 +131,7 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*gunc) (std::vector<TLorentzVector> jets, TLorentzVector amet)),
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*gunc) (std::vector<TLorentzVector> jets, TLorentzVector amet)),
               double (*tunc) (std::vector<TLorentzVector> jets, TLorentzVector amet),
                       int id, 
                std::string s,
@@ -154,7 +154,7 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
     }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a1, TLorentzVector a2, TLorentzVector b1, double (*gunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet)),
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a1, TLorentzVector a2, TLorentzVector b1, double (*gunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet)),
               double (*tunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet),
                       int id, 
                std::string s,
@@ -388,7 +388,7 @@ double ht(AnalysisObjects* ao, string s, float id){
 }
 
 
-double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets ) ){
+double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets, int p1) ){
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
@@ -397,7 +397,7 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
    DEBUG("evaluating external function on jets: :"<<s<<"\n");
-   std::vector<TLorentzVector> retjets= (*func)(myjets);
+   std::vector<TLorentzVector> retjets= (*func)(myjets, id);
    DEBUG("external function Done. size:"<<retjets.size()<<"\n");
    for (int ipart=ao->jets.at(s).size()-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
      if (ipart > (retjets.size()-1) ) { 
@@ -460,8 +460,10 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
    double retvalue= (*func)(l1, l2, m1);
    return (retvalue);
 }
-
-std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int seed, int assoc) {
+std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1) {
+//                                               int p1=100*seed+assoc;
+    int seed=int(p1/100);
+    int assoc=int(p1%10);
     // Convert
     std::vector<float> px;
     std::vector<float> py;

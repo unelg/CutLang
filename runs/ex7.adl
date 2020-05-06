@@ -17,7 +17,10 @@ define   mTop1 : m(Top1)
 define   mTop2 : m(Top2)
 ###      chi2 for top finder
 #define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
-define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
+#define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
+define   PTj1 : pT(WH1)
+define   totchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 
+#+ Hstep(300.0 - PTj1)*(300.0/PTj1)
 
 algo besttop
   select   ALL                   # to count all events
@@ -28,8 +31,8 @@ algo besttop
 #  select   totchi < 10.5 # small than a certain value of chi2
 #  histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
 #  histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
-  histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
-  histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
+#  histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
+#  histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
 
   
 
