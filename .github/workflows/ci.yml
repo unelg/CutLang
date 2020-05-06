@@ -20,7 +20,7 @@ jobs:
       uses: actions/cache@v1.1.2
       with:
         path: ./build/
-        key: ${{ runner.os }}-build-01351b8ada42c7b51b8504195dc30bdfbe5a42424fa4fef7156a57079e49b930
+        key: ${{ runner.os }}-build-6180401351b8ada42c7b51b8504195dc30bdfbe5a42424fa4fef7156a57079e49b930
         restore-keys: |
           ${{ runner.os }}-build-
           ${{ runner.os }}-
