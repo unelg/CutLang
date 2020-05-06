@@ -4,7 +4,8 @@
 #include "TLorentzVector.h"
 
   // Hemispheres:
-std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets) {
+std::vector<TLorentzVector> fmegajets(std::vector<TLorentzVector> myjets, int p1) {
+// p1 is unused, not to be deleted for compatibility reasons.
     std::vector<TLorentzVector> mynewjets;
     TLorentzVector j1, j2;
     //bool foundGood = false;

@@ -1,6 +1,6 @@
 #include "SearchNode.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -52,7 +52,8 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
 //-----TODO: put a check mechanism
 
       string s=particles.at(0)->collection;
-      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<forbidit->second.size()<< " Type:"<<type<<" Collection:"<<s<<"\n");
+      DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<forbidit->second.size()
+                  << " Type:"<<type<<" Collection:"<<s<<" ac:"<<ac<<"\n");
 
       if ((type==20) && (ao->combosA[s].tableA.size() > 0)){
        DEBUG("-------------combo-------------------\n");
@@ -85,7 +86,7 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
       DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
       unordered_set<int> Forbidden_Indices;
       if (forbidit->second.size() > 0) Forbidden_Indices=forbidit->second;
-
+          DEBUG("Before LOOP\n");
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {
            DEBUG("0:"<<ip[0]<<"\n");
            if ( Forbidden_Indices.find( ip[0] )!=Forbidden_Indices.end() ) continue;        

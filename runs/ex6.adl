@@ -11,7 +11,9 @@ define goodZreco : goodEle[-1] goodEle[-1]
 
 algo BestZ
   select      ALL                   # to count all events
-  select      Size(goodEle) >= 2    # events with 2 or more electrons 
-  select      {goodZreco}m ~= 91.2  # find the pair yielding mass closest to Z    
+  select      Size(ELE) >= 2    # events with 2 or more electrons 
+  select      {Zreco}m ~= 91.2  # find the pair yielding mass closest to Z    
+# select      Size(goodEle) >= 2    # events with 2 or more electrons 
+# select      {goodZreco}m ~= 91.2  # find the pair yielding mass closest to Z    
 #  select      {goodZreco}q == 0     # Z is neutral
 #  histo       hZReco, "Z candidate mass (GeV)", 100, 0.0, 200.0, m(goodZreco)
