@@ -18,6 +18,8 @@
 #define DEBUG(a)
 #endif
 
+//#define ERRBUG(a) std::cout<<a
+#define ERRBUG(a) std::cerr<<a
 
 extern int yylex();
 extern int yylineno;
@@ -1685,7 +1687,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         map<string, Node *>::iterator it ;
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
-                                                DEBUG($4<<" : ") ;
+                                                ERRBUG($4<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
@@ -1710,7 +1712,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         map<string, Node *>::iterator it ;
                                         it = ObjectCuts->find($4);
                                         if(it == ObjectCuts->end()) {
-                                                DEBUG($4<<" : ") ;
+                                                ERRBUG($4<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                         }
@@ -1788,7 +1790,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      map<string, Node *>::iterator it ;
                                      it = ObjectCuts->find($6);
                                      if(it == ObjectCuts->end()) {
-                                                DEBUG($6<<" : ") ;
+                                                ERRBUG($6<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                 YYERROR;
                                        }
@@ -1798,7 +1800,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                       map<string, Node *>::iterator iu ;
                                       iu = ObjectCuts->find($8);
                                       if(iu == ObjectCuts->end()) {
-                                               DEBUG($8<<" : ") ;
+                                               ERRBUG($8<<" : ") ;
                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                                YYERROR;
                                       }
