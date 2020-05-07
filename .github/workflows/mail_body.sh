@@ -9,10 +9,19 @@ cat raw_output.txt | grep -e error -e WARNING -e syntax -e CLA.sh | tee ./temp.t
 
 a=''
 while IFS='' read -r i || [ -n "$i" ]; do
-        if echo $i | grep -q -e "Check the input file" -e Aborted; then
+        if echo $i | grep -q -e "Check the input file"; then
                 echo $a | tee -a temp2.txt
                 echo $i | tee -a temp2.txt
                 echo "" | tee -a temp2.txt
+	elif echo $i | grep -q Aborted; then
+		if echo $a | grep -q "Check the input file"; then
+			a=$i
+			continue
+		else
+	                echo $a | tee -a temp2.txt
+        	        echo $i | tee -a temp2.txt
+                	echo "" | tee -a temp2.txt
+		fi
         elif echo $i | grep -q error; then
                 echo $a | tee -a temp2.txt
         fi
