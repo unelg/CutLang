@@ -87,11 +87,11 @@ With DELPHES
 Testing ex6.adl:
 With CMSOD
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-					 --> Overall efficiency	 =   0.92 % +- 0.0955 %
+					 --> Overall efficiency	 =   0.86 % +- 0.0923 %
 ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex6.adl -e 10000
 With ATLASOD
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-					 --> Overall efficiency	 =    3.3 % +-  0.179 %
+					 --> Overall efficiency	 =   2.06 % +-  0.142 %
 ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex6.adl -e 10000
 With DELPHES
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
