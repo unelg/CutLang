@@ -10,15 +10,15 @@ End of Dumper initialization
 
 yyParse returns SYNTAX error. Check the input file
  Generating stack trace...
- 0x00007f877e43e62b in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x2b from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877eb91e8d in TObjArray::Streamer(TBuffer&) + 0xcd from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
- 0x00007f877e437651 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x171 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877e43e663 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x63 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877e4ff7aa in TStreamerInfo::Streamer(TBuffer&) + 0x46a from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877e437651 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x171 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877e43e775 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) + 0x175 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
- 0x00007f877eb8d18f in TList::Streamer(TBuffer&) + 0x12f from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
- 0x00007f877e4ddfab in TKey::TKey(TObject const*, char const*, int, TDirectory*) + 0x1cb from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f255973e1fb in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:506 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f2559ee25fd in TObjArray::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/build/include/TBuffer.h:401 from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f25597370bc in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferFile.cxx:2555 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f255973e233 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:525 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f25597f044a in TStreamerInfo::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/root/io/io/src/TStreamerInfo.cxx:5197 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f25597370bc in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferFile.cxx:2555 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f255973e345 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:525 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f2559edd92f in TList::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/root/core/cont/src/TList.cxx:1256 from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f25597cf2e9 in TKey::TKey(TObject const*, char const*, int, TDirectory*) at /home/runner/work/CutLang/CutLang/root/io/io/src/TKey.cxx:252 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
 --
  #systematic included:0
 This is BP_1
@@ -29,16 +29,16 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exExtern.adl -e 10000
-With DELPHES
-Single Analysis
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Wed May  6 15:09:49 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using Delphes files.~~~~~~ beta!
-open ./delphes_events_ttbar.root
-RetVal:1
+ Generating stack trace...
+ 0x00007f56c75831fb in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:506 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c7d275fd in TObjArray::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/build/include/TBuffer.h:401 from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f56c757c0bc in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferFile.cxx:2555 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c7583233 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:525 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c763544a in TStreamerInfo::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/root/io/io/src/TStreamerInfo.cxx:5197 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c757c0bc in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferFile.cxx:2555 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c7583345 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at /home/runner/work/CutLang/CutLang/root/io/io/src/TBufferIO.cxx:525 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
+ 0x00007f56c7d2292f in TList::Streamer(TBuffer&) at /home/runner/work/CutLang/CutLang/root/core/cont/src/TList.cxx:1256 from /home/runner/work/CutLang/CutLang/build/lib/libCore.so
+ 0x00007f56c76142e9 in TKey::TKey(TObject const*, char const*, int, TDirectory*) at /home/runner/work/CutLang/CutLang/root/io/io/src/TKey.cxx:252 from /home/runner/work/CutLang/CutLang/build/lib/libRIO.so
 --
  #systematic included:0
 This is BP_1
@@ -49,13 +49,13 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
-free(): invalid size
-./CLA.sh: line 97: 16485 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i exExtern.adl -e 10000
+./CLA.sh: line 97: 16080 Segmentation fault      (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 Testing exGen.adl:
 With CMSOD
+./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exGen.adl -e 10000
 Single Analysis
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Wed May  6 15:09:49 UTC 2020	 
+CLA v02.02.02	compiled on Thu May  7 11:27:42 UTC 2020	 
 #BP  runs is 1
 #Dump runs is 0
+~Now using CMS Open Data files.~~~~~~ beta!
