@@ -1694,8 +1694,10 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         else {
                                                 Node* previous=it->second;
                                                 std::string str=newList[0]->getStr().Data();
+// forget me NOT 1/2.
                                                 if ((str.find("MEGAJETS") != std::string::npos)
                                                   ||(str.find("MR")  != std::string::npos)
+                                                  ||(str.find("HEMISPHERE")  != std::string::npos)
                                                   ||(str.find("MTR") != std::string::npos))
                                                  {
                                                   Node *anode=newList[0];
@@ -1719,8 +1721,10 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         else {
                                                 Node* previous=it->second;
                                                 std::string str=newList[0]->getStr().Data();
+// forget me NOT 2/2.
                                                 if ((str.find("MEGAJETS") != std::string::npos)
                                                   ||(str.find("MR")  != std::string::npos)
+                                                  ||(str.find("HEMISPHERE")  != std::string::npos)
                                                   ||(str.find("MTR") != std::string::npos))
                                                  {
                                                   Node *anode=newList[0];
