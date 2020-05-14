@@ -80,7 +80,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
-%token PERM COMB SORT TAKE UNION SUM
+%token PERM COMB SORT TAKE UNION SUM 
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
@@ -125,7 +125,7 @@ LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
 
 bool: TRUE {$$ = 1;} | FALSE {$$ =  0;} ;
 
-definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
+definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
@@ -140,6 +140,45 @@ definition : DEF  ID  '=' particules {  DEBUG($2<<" will be defined as a new par
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
+/*
+            | DEF ID '=' SUM '(' particle ')' {  DEBUG($2<<" will be defined as the SUM of particles.\n");
+                                   pnum=0;
+                                   string name = $2;
+                                   map<string,vector<myParticle*> >::iterator itn;
+                                   itn = ListParts->find(name);
+                                   if(itn != ListParts->end()) {
+                                           DEBUG(name<<" : ");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                           YYERROR;//stops parsing if variable already defined
+                                   }
+                                   vector<myParticle*> newpList;
+                                   TmpParticle.swap(newpList);
+                                   string partname=TmpParticle[0]->collection;
+                                   map<string, Node *>::iterator it;
+                                   it = ObjectCuts->find(partname); // find from which object we are making the new one
+                                   if(it == ObjectCuts->end()) {
+                                           ERRBUG($6<<" : ") ;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                           YYERROR;
+                                   } else {
+                                           Node* previous=it->second;
+                                           vector<Node*> newCriList; // criterion list, will only have 1 selection                             
+// fbilmemne  == 1 criterini koy
+//                                 int type=newList[0]->type; // type is JETS or FJETS etc..
+//                                 $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
+                                           string nameo=name+"obj";
+                                           Node* obj=new ObjectNode(nameo,previous,NULL,newCriList,nameo);
+                                           ObjectCuts->insert(make_pair(nameo,obj));
+// now define the 0th particle of new obj 
+                                           myParticle* a = new myParticle;
+                                           a->type = TmpParticle[0]->type ; a->index =0; a->collection = nameo;
+                                           vector<myParticle*> newList;
+                                           newList.push_back(a);
+// insert the 0th element of new obj                               
+                                           ListParts->insert(make_pair(name,newList));
+                                           parts->push_back(name+" : "+$6);
+                                   }
+*/
             |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -545,24 +584,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            }
                                        }
                            }
-   	| NUMOF '(' particules ')' {vector<myParticle*> newList;
+    | NUMOF '(' particules ')' {vector<myParticle*> newList;
                                      TmpParticle.swap(newList);
                                      DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
                                      $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
                                    }
-//------------------------------------------
-//    | SUM '(' ID ')' {
-//                                   map<string,Node*>::iterator it = ObjectCuts->find($3);
-//                                   if(it == ObjectCuts->end()) {
-//                                       std::string message = "Object not defined: ";
-//                                       message += $3;
-//                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-//                                       YYERROR;
-//                                   } else {
-//                                       int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
-//                                       $$=new SFuncNode(sum, type, it->first , it->second);
-//                                   }
-//                     }
     | FMT2 list3 {                  vector<myParticle*> newList;
                                     TmpParticle.swap(newList);
                                     vector<myParticle*> newList1;
@@ -572,6 +598,17 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
                                     $$=new SFuncNode(userfuncE, fMT2, type, "XXX" , newList2,  newList1, newList);
       }
+    | SUM '(' ID  ')'   {      map<string,Node*>::iterator it = ObjectCuts->find($3);
+                               if(it == ObjectCuts->end()) {
+                                        std::string message = "Object not defined: ";
+                                        message += $3;
+                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                        YYERROR;
+                               } else {
+                                       int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                       $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
+                               }
+                       }
     | FHEMISPHERE '(' ID ',' INT ',' INT ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
                                if(it == ObjectCuts->end()) {
                                         std::string message = "Object not defined: ";
@@ -707,10 +744,13 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
                   $$=it->second;
-                } else { cout<<$1<<"\t";
+                } else { cout<<"\t"<<$1<<"\t";
                    map<string, Node *>::iterator ito;
-                   ito = ObjectCuts->find($1);
-                   if(ito == ObjectCuts->end()) {
+//                 for (ito=ObjectCuts->begin(); ito!=ObjectCuts->end(); ito++){
+//                  cout <<"Map has Object:"<<ito->first << "-vs-"<< string($1)<<"-\n"; 
+//                 }
+                   ito = ObjectCuts->find(string($1));
+                   if(ito == ObjectCuts->end()) { //we did search for $1 as an object, not found.
                      map<string,vector<myParticle*> >::iterator itp;
                      itp=ListParts->find($1);
                      if(itp==ListParts->end() ) {
@@ -724,8 +764,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                        $$=NULL;
                      }
                    } else { 
-                   yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is not a known variable, but known as an object.");
-                   YYERROR;//stops parsing if variable not found
+                     cout <<"found as an object\n";
+                     yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is known as an object.");
+                     YYERROR;//stops parsing if variable not found
                    }
                 } 
         }
@@ -1282,7 +1323,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         }
         | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                DEBUG("ID ---[]---\t");
+                DEBUG("ID with [ index ]\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1478,7 +1519,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
              }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                DEBUG("ID --_----\t");
+                DEBUG("Particle candidate "<< $1 <<" has _ and index:"<< $3<<"\n" );
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -1575,8 +1616,8 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                 if(it == ListParts->end()) {
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find($1);
-                       DEBUG($1<<" : "); //------------new ID
-                       if(ito != ObjectCuts->end()) {
+                       DEBUG($1<<" := "); //------------new ID
+                       if(ito != ObjectCuts->end()) { // means found as an object
                         DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
                         int otype=((ObjectNode*) ito->second)->type;
 
@@ -1652,10 +1693,12 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                           YYERROR;//stops parsing if particle not found 
                         }
                         cout <<  $1 << " is a node variable, this is a particle. TmpCri:"<<TmpCriteria.size() <<"\n";
-                        YYERROR;//stops parsing if particle not found 
-//                      TmpCriteria.push_back(ito->second );
-//                      tmp="MAGIC";
-//                      $$=strdup(tmp.c_str());               
+                        cout << "doing some MAGIC\n";
+//                      YYERROR;//stops parsing if particle not found 
+                        TmpCriteria.push_back(ito->second );
+                        //TmpParticle.push_back(ito->second );
+                        tmp="MAGIC";
+                        $$=strdup(tmp.c_str());               
                        }
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
@@ -1685,7 +1728,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
                                         map<string, Node *>::iterator it ;
-                                        it = ObjectCuts->find($4);
+                                        it = ObjectCuts->find($4); // find from which object we are making the new one
                                         if(it == ObjectCuts->end()) {
                                                 ERRBUG($4<<" : ") ;
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
@@ -1698,6 +1741,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 if ((str.find("MEGAJETS") != std::string::npos)
                                                   ||(str.find("MR")  != std::string::npos)
                                                   ||(str.find("HEMISPHERE")  != std::string::npos)
+                                                  ||(str.find("SUMOBJ")  != std::string::npos)
                                                   ||(str.find("MTR") != std::string::npos))
                                                  {
                                                   Node *anode=newList[0];
@@ -1725,6 +1769,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 if ((str.find("MEGAJETS") != std::string::npos)
                                                   ||(str.find("MR")  != std::string::npos)
                                                   ||(str.find("HEMISPHERE")  != std::string::npos)
+                                                  ||(str.find("SUMOBJ")  != std::string::npos)
                                                   ||(str.find("MTR") != std::string::npos))
                                                  {
                                                   Node *anode=newList[0];

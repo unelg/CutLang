@@ -392,10 +392,11 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
 // string contains what to send
 // id contains the particle type ASSUME ID=JET TYPE,
 
-   DEBUG("UserfunctionA, s:"<<s<< "id: "<<id<<"\n");
+   DEBUG("UserfunctionA, s:"<<s<<" id: "<<id<<"\n");
 
    std::vector<TLorentzVector> myjets;
    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) myjets.push_back(ao->jets.at(s).at(i).lv() );
+
    DEBUG("evaluating external function on jets: :"<<s<<"\n");
    std::vector<TLorentzVector> retjets= (*func)(myjets, id);
    DEBUG("external function Done. size:"<<retjets.size()<<"\n");
@@ -460,6 +461,17 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
    double retvalue= (*func)(l1, l2, m1);
    return (retvalue);
 }
+
+std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1) {
+ TLorentzVector h1;
+ for (int i=0; i<myjets.size(); i++) {
+  h1+=myjets[i];
+ }
+ std::vector<TLorentzVector> retval;
+ retval.push_back(h1);
+ return (retval);
+}
+
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1) {
 //                                               int p1=100*seed+assoc;
     int seed=int(p1/100);
@@ -510,6 +522,8 @@ double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet){
   retval=mt2_event.get_mt2();
   return (retval);
 }
+
+
 
 /*
 double nbjets(AnalysisObjects* ao){
