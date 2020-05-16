@@ -80,7 +80,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
-%token PERM COMB SORT TAKE UNION SUM 
+%token PERM COMB SORT TAKE UNION SUM ADD
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
@@ -140,8 +140,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
-/*
-            | DEF ID '=' SUM '(' particle ')' {  DEBUG($2<<" will be defined as the SUM of particles.\n");
+
+            | DEF ID '=' ADD '(' particule ')' {  DEBUG($2<<" will be defined as the ADDition of particles.\n");
                                    pnum=0;
                                    string name = $2;
                                    map<string,vector<myParticle*> >::iterator itn;
@@ -153,7 +153,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                    }
                                    vector<myParticle*> newpList;
                                    TmpParticle.swap(newpList);
-                                   string partname=TmpParticle[0]->collection;
+                                   string partname=newpList[0]->collection;
+                                   int ptype=newpList[0]->type; // type is JETS or FJETS etc..
                                    map<string, Node *>::iterator it;
                                    it = ObjectCuts->find(partname); // find from which object we are making the new one
                                    if(it == ObjectCuts->end()) {
@@ -161,24 +162,26 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                            YYERROR;
                                    } else {
-                                           Node* previous=it->second;
-                                           vector<Node*> newCriList; // criterion list, will only have 1 selection                             
-// fbilmemne  == 1 criterini koy
-//                                 int type=newList[0]->type; // type is JETS or FJETS etc..
-//                                 $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
                                            string nameo=name+"obj";
+                                           Node* previous=it->second;
+                                           Node* v0= new ValueNode(1);
+                                           Node* c1= new SFuncNode(userfuncA, sumobj, ptype, nameo, it->second);
+                                           Node* n1= new BinaryNode(eq,c1,v0,"==");
+                                           vector<Node*> newCriList; // criterion list, will only have 1 selection                             
+                                           newCriList.push_back(n1);
                                            Node* obj=new ObjectNode(nameo,previous,NULL,newCriList,nameo);
                                            ObjectCuts->insert(make_pair(nameo,obj));
 // now define the 0th particle of new obj 
                                            myParticle* a = new myParticle;
-                                           a->type = TmpParticle[0]->type ; a->index =0; a->collection = nameo;
+                                           a->type = ptype; a->index =0; a->collection = nameo;
                                            vector<myParticle*> newList;
                                            newList.push_back(a);
+                                   DEBUG("here 4\n");
 // insert the 0th element of new obj                               
                                            ListParts->insert(make_pair(name,newList));
                                            parts->push_back(name+" : "+$6);
                                    }
-*/
+            }
             |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -579,8 +582,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                             $$=new SFuncNode(count, type, it->first, it->second);
                                            } else { // new type is defined using particle class summation
                                             vector<myParticle*> newList= itdef->second;
-                                           // TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
-                                           // $$=new SFuncNode(count,100, itdef->
                                            }
                                        }
                            }
@@ -703,7 +704,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | ALL {  $$=new SFuncNode(all,0, "all"); }
         ;
 //-------------------------------------------------------------------------
- e :  e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
+ e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
    | e '-' e { $$=new BinaryNode(sub,$1,$3,"-"); }
    | e '*' e { $$=new BinaryNode(mult,$1,$3,"*"); }
    | e '/' e { $$=new BinaryNode(div,$1,$3,"/"); }
@@ -1703,12 +1704,43 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                 } else {
                         DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
                         vector<myParticle*> newList= it->second;
-                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
-                        DEBUG("NO PROBLEM\n");
+                        DEBUG("Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n");
+                        DEBUG("Checking if it was previously checked.\n");
+// check all cuts here, if we see size( $1) OK, otherwise add.
+                        std::map<int, Node*>::iterator iter = NodeCuts->begin();
+                        std::size_t sfound=std::string::npos;
+                        string aparticle=newList[0]->collection;
+                        while(iter != NodeCuts->end()) {
+                           string pippo=iter->second->getStr().Data();
+//                           cout << "******* Strg:"<<pippo<<"\n";
+                           sfound=pippo.find(aparticle);
+                           if (sfound !=std::string::npos) {
+                              DEBUG($1<< "found in previous cuts, nothing to do.\n");
+                              break;
+                           }
+                           iter++;
+                        }
+                        if (sfound == std::string::npos){ 
+                         cout << aparticle<< " is seen first time, Adding size>0 cut.\t";
+                         map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
+                         if (it == ObjectCuts->end() ) {
+                            std::string message = "OBJect not defined: ";
+                            message += aparticle;
+                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                            YYERROR;
+                         } else {
+                            int type=((ObjectNode*)it->second)->type;
+                            Node* ac=new SFuncNode(count, type, it->first, it->second);
+                            Node* v0= new ValueNode(0);
+                            Node* n1= new BinaryNode(ge,ac,v0,">=");
+                            NodeCuts->insert(make_pair(++cutcount,n1));
+                            cout << "done.\n";
+                        }
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                 }
              }
+        }
         ;
 //----------------------------------------
 index : '-' INT {$$=-$2;}

@@ -140,7 +140,6 @@ void FuncNode::setParticleCollection(int order, string newName){
                 inputParticles.at(order)->collection=newName;
 }
 
-
 void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objectNodec, Node *objectNoded){
         userObjectA=objectNodea;
         userObjectB=objectNodeb;
@@ -200,7 +199,7 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 }
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
-     DEBUG("\nIn function Node evaluate, #p:"<< inputParticles.size() <<"\n");
+     DEBUG("\nIn function Node evaluate, #particles:"<< inputParticles.size() <<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
      if(userObjectA) { userObjectA->evaluate(ao); 
                        int thistype=((ObjectNode*)userObjectA)->type;
@@ -223,13 +222,14 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      if ( userObjectA || userObjectB || userObjectC || userObjectD ) DEBUG("UOs EVALUATED:"<< getStr() <<"\n");
 
      DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
-                     << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
+                      << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
-    if (inputParticles[0]->index == 6213) {
-        string base_collection2=inputParticles[0]->collection;
-        int base_type2=inputParticles[0]->type;
-        int ipart2_max=-1;
-        try {
+
+   if (inputParticles[0]->index == 6213) {
+     string base_collection2=inputParticles[0]->collection;
+     int base_type2=inputParticles[0]->type;
+     int ipart2_max=-1;
+     try {
                 switch(abs(inputParticles[0]->type) ){ 
                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
@@ -244,10 +244,12 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
                    default:
                        std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
                 }
-        } catch(...) {
+     } catch(...) {
+//                    is it an object we can create?
+//                    userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
                             std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n";
                             _Exit(-1);
-        }
+     }
         // now we know how many we want
         DEBUG ("loop over "<< ipart2_max<<" particles\t");
         std::vector<myParticle*>  inputParticles1;
@@ -276,6 +278,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         DEBUG("FuncNode Sum:"<<total<<"\n");
         return total;
      } else {
+//------------simply execute
         partConstruct(ao, &inputParticles, &myPart);
      }
      DEBUG("Particle constructed \t");

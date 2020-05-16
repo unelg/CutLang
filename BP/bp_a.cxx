@@ -161,8 +161,31 @@ int BPdbxA:: readAnalysisParams() {
 
 
 
+
+// ---------------------------read CutLang style cuts using lex/yacc
+       NameInitializations={" "," "};
+       TRGValues={1,0,0,0,0};
+       yyin=fopen(CardName,"r");
+       if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
+       cutcount=0;
+       cout <<"==Parsing started:\t";
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
+       cout <<"\t Parsing finished.==\n";
+       if (retval){
+         cout << "\nyyParse returns SYNTAX error. Check the input file\n";
+         exit (99); 
+       }
+       cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
+       cout << BinCuts.size() << " Bins\n";
+       TRGe    = TRGValues[0];
+       TRGm    = TRGValues[1];
+       skip_effs    = (bool) TRGValues[2];
+       skip_histos  = (bool) TRGValues[3];
+
+
 //---------save in the dir.
-    unsigned int effsize=effCL.size()+1; // all is always there 
+//    unsigned int effsize=effCL.size()+1; // all is always there 
+    unsigned int effsize=NodeCuts.size()+1; // all is always there 
  
    
 //-----create the relevant output directory
@@ -189,28 +212,11 @@ int BPdbxA:: readAnalysisParams() {
           oinfo.SetName("CLA2Objs");
           oinfo.Write();
 
-// ---------------------------read CutLang style cuts using lex/yacc
-       NameInitializations={" "," "};
-       TRGValues={1,0,0,0,0};
-       yyin=fopen(CardName,"r");
-       if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
-       cutcount=0;
-       cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
-       cout <<"\t Parsing finished.==\n";
-       if (retval){
-         cout << "\nyyParse returns SYNTAX error. Check the input file\n";
-         exit (99); 
-       }
-       cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
-       cout << BinCuts.size() << " Bins\n";
-       TRGe    = TRGValues[0];
-       TRGm    = TRGValues[1];
-       skip_effs    = (bool) TRGValues[2];
-       skip_histos  = (bool) TRGValues[3];
+
 
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end()) {
+//                cout << "**-- BP sees:"<<iter->second->getStr()<<"\n";
                 if (strcmp(iter->second->getStr()," ") == 0) {
 		      save.push_back(iter->first);
 		      iter->second->createFile();
@@ -225,15 +231,34 @@ int BPdbxA:: readAnalysisParams() {
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
        DEBUG("CL CUTS: \n");
        iter = NodeCuts.begin();
+       int labelSkip=0;
        while(iter != NodeCuts.end())
        {
             DEBUG(" CUT "<<iter->first<<" ");
-            DEBUG("--->"<<iter->second->getStr()<<"\n");
-//           TString newLabels=iter->second->getStr();
-            TString newLabels=effCL[ iter->first -1];
-            eff->GetXaxis()->SetBinLabel(iter->first+1,newLabels); // labels
-            iter++; 
+            DEBUG(" :"<<iter->second->getStr()<<"\t");
+            string newNLabels=iter->second->getStr().Data();
+            std::size_t posf1 = newNLabels.find_first_not_of(' ');
+            std::size_t posf2 = newNLabels.find_first_of(' ', posf1);
+            string firstword = newNLabels.substr(posf1, posf2-1);
+            if ((iter->first -1+labelSkip) >= 0) {
+             DEBUG(" |"<< firstword<<"|-->"<<effCL[ iter->first -1+labelSkip]<<"\n");
+             TString ELabels=effCL[ iter->first -1+labelSkip];
+             TString KLabels=effCL[ iter->first -1+labelSkip];
+                     KLabels.ToLower();
+             string elabels =KLabels.Data();
+             if (elabels.find(firstword) != std::string::npos ){ //              found this one,
+                DEBUG("Found:"<<ELabels<<"\n");
+                eff->GetXaxis()->SetBinLabel(iter->first+1,ELabels.Data()); // labels
+             } else {
+                DEBUG("NOT Found:"<<newNLabels<<"\n");
+                string newlabels="Size "+newNLabels; 
+                eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
+                labelSkip-=1;
+             }
+           }
+           iter++; 
        }
+ DEBUG("BIN CUTS: \n");
        iter = BinCuts.begin();
        while(iter != BinCuts.end())
        { bincounts.push_back(0);
@@ -246,11 +271,11 @@ int BPdbxA:: readAnalysisParams() {
 
      for (map<string,vector<myParticle*> >::iterator it1 = ListParts.begin(); it1 != ListParts.end(); it1++)
          {
-         cout << (*it1)->first << ": ";
+         cout << it1->first << ": ";
          for (vector<myParticle*>::iterator lit = it1->second.begin(); lit  != it1->second.end(); lit++)
          cout << (*lit)->type << "_" << (*lit)->index << " ";
          cout << "\n";
-
+      }
 
     cout<<"\n UNParsed Particles Lists: \n";
 

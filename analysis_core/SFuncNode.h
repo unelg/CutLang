@@ -67,7 +67,7 @@ public:
         userObjectB = objectNodeB;
     }
 
-//-------------------------extern.........
+//-------------------------extern function types.........
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets, int p1)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets, int p1),
                       int id, 
@@ -182,7 +182,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         userObjectB = objectNodeB;
  }
 
-//---------------------------end of externs
+//---------------------------end of extern function types
 virtual void setSymbol(string s) { symbol=s; }
     
 virtual double evaluate(AnalysisObjects* ao) override {

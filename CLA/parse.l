@@ -116,6 +116,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "#".*"\n" ;
 [ \t\n] ;
 [sS][uU][mM] return SUM;
+[aA][dD][dD] return ADD;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
