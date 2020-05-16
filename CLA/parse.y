@@ -1702,44 +1702,46 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         $$=strdup(tmp.c_str());               
                        }
                 } else {
-                        DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
+                        DEBUG("IDSize:"<<TmpParticle.size()<<" ");
                         vector<myParticle*> newList= it->second;
                         DEBUG("Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n");
                         DEBUG("Checking if it was previously checked.\n");
 // check all cuts here, if we see size( $1) OK, otherwise add.
-                        std::map<int, Node*>::iterator iter = NodeCuts->begin();
-                        std::size_t sfound=std::string::npos;
-                        string aparticle=newList[0]->collection;
-                        while(iter != NodeCuts->end()) {
-                           string pippo=iter->second->getStr().Data();
-//                           cout << "******* Strg:"<<pippo<<"\n";
-                           sfound=pippo.find(aparticle);
-                           if (sfound !=std::string::npos) {
-                              DEBUG($1<< "found in previous cuts, nothing to do.\n");
-                              break;
+                        if (NodeCuts->size() > 0) {
+                          std::map<int, Node*>::iterator iter = NodeCuts->begin();
+                          std::size_t sfound=std::string::npos;
+                          string aparticle=newList[0]->collection;
+                          while(iter != NodeCuts->end()) {
+                             string pippo=iter->second->getStr().Data();
+                             cout << "******* Strg:"<<pippo<<"\n";
+                             sfound=pippo.find(aparticle);
+                             if (sfound !=std::string::npos) {
+                                DEBUG($1<< "found in previous cuts, nothing to do.\n");
+                                break;
+                             }
+                             iter++;
+                          }
+                          if (sfound == std::string::npos){ 
+                           cout << aparticle<< " is seen first time, Adding size>0 cut.\t";
+                           map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
+                           if (it == ObjectCuts->end() ) {
+                              std::string message = "OBJect not defined: ";
+                              message += aparticle;
+                              yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                              YYERROR;
+                           } else {
+                              int type=((ObjectNode*)it->second)->type;
+                              Node* ac=new SFuncNode(count, type, it->first, it->second);
+                              Node* v0= new ValueNode(0);
+                              Node* n1= new BinaryNode(ge,ac,v0,">=");
+                              NodeCuts->insert(make_pair(++cutcount,n1));
+                              cout << "done.\n";
                            }
-                           iter++;
-                        }
-                        if (sfound == std::string::npos){ 
-                         cout << aparticle<< " is seen first time, Adding size>0 cut.\t";
-                         map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
-                         if (it == ObjectCuts->end() ) {
-                            std::string message = "OBJect not defined: ";
-                            message += aparticle;
-                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                            YYERROR;
-                         } else {
-                            int type=((ObjectNode*)it->second)->type;
-                            Node* ac=new SFuncNode(count, type, it->first, it->second);
-                            Node* v0= new ValueNode(0);
-                            Node* n1= new BinaryNode(ge,ac,v0,">=");
-                            NodeCuts->insert(make_pair(++cutcount,n1));
-                            cout << "done.\n";
+                          }
                         }
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
-                }
-             }
+                 }
         }
         ;
 //----------------------------------------
