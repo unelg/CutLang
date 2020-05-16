@@ -6,7 +6,7 @@ tar_date_int=$(date -d $target_date +%s)
 cur_date_int=$(date -d $cur_date +%s)
 
 if [ $tar_date_int -le $cur_date_int ]; then
-	exit 1
+	exit 0
 fi
 
 git config user.email "jinens8@gmail.com"
