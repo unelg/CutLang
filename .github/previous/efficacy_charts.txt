@@ -126,16 +126,19 @@ With DELPHES
 Testing exBin.adl:
 With CMSOD
 ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exBin.adl -e 10000
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
+../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   0.64 % +- 0.0797 %
+					 --> Overall efficiency	 =    100 % +-      0 %
 With ATLASOD
 ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exBin.adl -e 10000
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
+../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   3.19 % +-  0.176 %
+					 --> Overall efficiency	 =   99.5 % +-   0.48 %
 With DELPHES
 ./CLA.sh ./delphes_events_ttbar.root DELPHES -i exBin.adl -e 10000
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
+../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =    0.6 % +-  0.244 %
+					 --> Overall efficiency	 =    100 % +-      0 %
 Testing exComb.adl:
 With CMSOD
 ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exComb.adl -e 10000
