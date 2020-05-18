@@ -1,7 +1,8 @@
 #CLA ADL example on bins
 
 
-define MHT = pT(ELE_0) +  pT(ELE_1)
+define EHT = pT(ELE_0) +  pT(ELE_1)
+define MHT = pT(MUO_0) +  pT(MUO_1)
 
 region   test
   select  ALL              # to count all events
@@ -10,16 +11,23 @@ region   test
 #  weight   randWeight   1.123
 #  save     midfile
   reject   Size (ELE) > 4  # events with 2 or more electrons 
-  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
-  histo       h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
+  histo    h1eReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+  histo    h1eEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 #  save     testfile
-  Bin MHT [] 0.0 300 && HT [] 000  500  # 0
-  Bin MHT [] 0.0 300 && HT [] 500 1000  # 1
-  Bin MHT [] 0.0 300 && HT      > 1000  # 2
-  Bin MHT [] 300 500 && HT [] 000  500
-  Bin MHT [] 300 500 && HT [] 500 1000  # 4
-  Bin MHT [] 300 500 && HT      > 1000
-  Bin MHT [] 500 750 && HT [] 000 1000  # 6
-  Bin MHT [] 500 750 && HT      > 1000
-  Bin MHT      > 750 && HT [] 750 1500  # 8
-  Bin MHT      > 750 && HT      > 1500
+  Bin EHT [] 0.0 300 && HT [] 000  500  # 0
+  Bin EHT [] 0.0 300 && HT [] 500 1000  # 1
+  Bin EHT [] 0.0 300 && HT      > 1000  # 2
+  Bin EHT [] 300 500 && HT [] 000  500
+  Bin EHT [] 300 500 && HT [] 500 1000  # 4
+  Bin EHT [] 300 500 && HT      > 1000
+  Bin EHT [] 500 750 && HT [] 000 1000  # 6
+  Bin EHT [] 500 750 && HT      > 1000
+  Bin EHT      > 750 && HT [] 750 1500  # 8
+  Bin EHT      > 750 && HT      > 1500  # 9
+
+region   mest
+  select  Size (MUO) >= 2  # events with 2 or more electrons 
+  histo   h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {MUO_0 MUO_1}m
+  select  MHT <1300 && HT < 1500
+  Bin MHT [] 0.0 1300 && HT [] 00  1500  # 10
+  Bin MHT      >  750 && HT      > 1500  # 11
