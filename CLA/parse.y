@@ -162,7 +162,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                            YYERROR;
                                    } else {
-                                           string nameo=name+"obj";
+                                           string nameo=name+"internalObj";
                                            Node* previous=it->second;
                                            Node* v0= new ValueNode(1);
                                            Node* c1= new SFuncNode(userfuncA, sumobj, ptype, nameo, it->second);
@@ -176,7 +176,6 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            a->type = ptype; a->index =0; a->collection = nameo;
                                            vector<myParticle*> newList;
                                            newList.push_back(a);
-                                   DEBUG("here 4\n");
 // insert the 0th element of new obj                               
                                            ListParts->insert(make_pair(name,newList));
                                            parts->push_back(name+" : "+$6);
@@ -577,7 +576,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                           if (it != ObjectCuts->end()){
+                                           if (it != ObjectCuts->end()) {
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count, type, it->first, it->second);
                                            } else { // new type is defined using particle class summation
@@ -1713,7 +1712,6 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                           string aparticle=newList[0]->collection;
                           while(iter != NodeCuts->end()) {
                              string pippo=iter->second->getStr().Data();
-                             cout << "******* Strg:"<<pippo<<"\n";
                              sfound=pippo.find(aparticle);
                              if (sfound !=std::string::npos) {
                                 DEBUG($1<< "found in previous cuts, nothing to do.\n");
@@ -1735,6 +1733,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                               Node* v0= new ValueNode(0);
                               Node* n1= new BinaryNode(ge,ac,v0,">=");
                               NodeCuts->insert(make_pair(++cutcount,n1));
+                              DataFormats->push_back(double(cutcount));
                               cout << "done.\n";
                            }
                           }

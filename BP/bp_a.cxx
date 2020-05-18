@@ -181,7 +181,7 @@ int BPdbxA:: readAnalysisParams() {
        TRGm    = TRGValues[1];
        skip_effs    = (bool) TRGValues[2];
        skip_histos  = (bool) TRGValues[3];
-
+// ------------------------------------4 is reserved for future use.
 
 //---------save in the dir.
 //    unsigned int effsize=effCL.size()+1; // all is always there 
@@ -223,39 +223,48 @@ int BPdbxA:: readAnalysisParams() {
 		}
                 iter++;
        }
+#ifdef _CLV_
+// check if the user injects cuts or not.
+     for (int jt=0; jt<TRGValues.size(); jt++){
+      cout <<"Cut @:"<<jt<<" value:"<<TRGValues.at(jt)<<"\n";
+     }
+#endif
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
 //--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
-       DEBUG("CL CUTS: \n");
+       DEBUG("CL CUTS:"<< NodeCuts.size()<< " eff:"<<effCL.size() <<"\n");
        iter = NodeCuts.begin();
        int labelSkip=0;
+       bool usecpp=true;
+       int inserted=TRGValues.size()-5;
+       if (inserted>0) {
+              std::cout<<"Auto inserted cuts:"<< inserted<<"\n";
+       }
        while(iter != NodeCuts.end())
        {
-            DEBUG(" CUT "<<iter->first<<" ");
-            DEBUG(" :"<<iter->second->getStr()<<"\t");
-            string newNLabels=iter->second->getStr().Data();
-            std::size_t posf1 = newNLabels.find_first_not_of(' ');
-            std::size_t posf2 = newNLabels.find_first_of(' ', posf1);
-            string firstword = newNLabels.substr(posf1, posf2-1);
-            if ((iter->first -1+labelSkip) >= 0) {
-             DEBUG(" |"<< firstword<<"|-->"<<effCL[ iter->first -1+labelSkip]<<"\n");
-             TString ELabels=effCL[ iter->first -1+labelSkip];
-             TString KLabels=effCL[ iter->first -1+labelSkip];
-                     KLabels.ToLower();
-             string elabels =KLabels.Data();
- //            if (elabels.find(firstword) != std::string::npos ){ //              found this one,
-                DEBUG("Found:"<<ELabels<<"\n");
+          DEBUG(" CUT "<<iter->first<<" ");
+          DEBUG(" :"<<iter->second->getStr()<<"\t");
+          string newNLabels=iter->second->getStr().Data();
+          DEBUG("-->"<<effCL[ iter->first -1-labelSkip]<<"\t");
+          TString ELabels=effCL[ iter->first -1-labelSkip];
+
+          if (inserted>0) {
+            if ( TRGValues.at(labelSkip+5) == iter->first ) { usecpp=false; inserted--; } 
+          } else usecpp=true;
+
+          if (usecpp) {
+                DEBUG("From C++:"<<ELabels<<"\n");
                 eff->GetXaxis()->SetBinLabel(iter->first+1,ELabels.Data()); // labels
-  //           } else {
-   //             DEBUG("NOT Found:"<<newNLabels<<"\n");
-   //             string newlabels="Size "+newNLabels; 
-    //            eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
-     //           labelSkip-=1;
-      //       }
-           }
+          } else {
+                DEBUG("from yacc:"<<newNLabels<<"\n");
+                string newlabels="Size "+newNLabels; 
+                eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
+                labelSkip++;
+          } 
+           
            iter++; 
        }
  DEBUG("BIN CUTS: \n");
@@ -298,11 +307,6 @@ int BPdbxA:: readAnalysisParams() {
 
 #endif
 
-// check if the user wants to save or NOT.
-     if (TRGValues.at(4)>0) {
-       getInputs( NameInitializations[0] ); // verifier si la commande est bon ou pas
-       savebool = true;
-     }
 
 
 
