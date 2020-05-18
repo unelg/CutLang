@@ -21,6 +21,7 @@ extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,ve
 
 extern FILE* yyin;
 extern int cutcount;
+extern int bincount;
 
 int BPdbxA::getInputs(std::string aname) {
         int retval=0;
@@ -168,6 +169,7 @@ int BPdbxA:: readAnalysisParams() {
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
+       bincount=0;
        cout <<"==Parsing started:\t";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
        cout <<"\t Parsing finished.==\n";
