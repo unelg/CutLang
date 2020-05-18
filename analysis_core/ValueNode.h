@@ -18,7 +18,10 @@ public:
                 value=v;
                 left=NULL;
                 right=NULL;
-                symbol=std::to_string(v);
+                char buf[64];
+                std::sprintf(buf, "%.2f", v);
+                symbol=std::string(buf);
+               // symbol=std::to_string(v);
             }
     
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
