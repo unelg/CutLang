@@ -1,209 +1,5 @@
 Errors: 
 
-End of Dumper initialization
-	 ALGO:preselection
-==Parsing started:	ELE is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: ELE	 at line: 3
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With ATLASOD
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex5.adl -e 10000
-Analysis with Multiple Regions
-A region named:      [preselection] 	 is defined in lines from 1 to 5
-A region named:             [testA] 	 is defined in lines from 5 to 10
-   this region depends on: preselection
-A region named:             [testB] 	 is defined in lines from 10 to 15
-   this region depends on: preselection
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
---
-End of Dumper initialization
-	 ALGO:preselection
-==Parsing started:	ELE is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: ELE	 at line: 3
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With DELPHES
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex5.adl -e 10000
-Analysis with Multiple Regions
-A region named:      [preselection] 	 is defined in lines from 1 to 5
-A region named:             [testA] 	 is defined in lines from 5 to 10
-   this region depends on: preselection
-A region named:             [testB] 	 is defined in lines from 10 to 15
-   this region depends on: preselection
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
---
-End of Dumper initialization
-	 ALGO:preselection
-==Parsing started:	ELE is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: ELE	 at line: 3
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-Testing ex6.adl:
-With CMSOD
-./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex6.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using CMS Open Data files.~~~~~~ beta!
-open ./cms_opendata_ttbar.root
---
-	bj1	 is a particle, we wrongly assumed it was a variable. trying to rectify...
- still recovering...	Done .
-MAGIC needed. We shouldnt be here. Top2
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With ATLASOD
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex7-new.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using ATLAS Open Data files.~~~~~~ beta!
-open ./atla_opendata_had_ttbar.root
-RetVal:1
---
-	bj1	 is a particle, we wrongly assumed it was a variable. trying to rectify...
- still recovering...	Done .
-MAGIC needed. We shouldnt be here. Top2
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With DELPHES
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex7-new.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using Delphes files.~~~~~~ beta!
-open ./delphes_events_ttbar.root
-RetVal:1
---
-	bj1	 is a particle, we wrongly assumed it was a variable. trying to rectify...
- still recovering...	Done .
-MAGIC needed. We shouldnt be here. Top2
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-Testing ex7.adl:
-With CMSOD
-./CLA.sh ./cms_opendata_ttbar.root CMSOD -i ex7.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using CMS Open Data files.~~~~~~ beta!
-open ./cms_opendata_ttbar.root
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 10
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With ATLASOD
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i ex7.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using ATLAS Open Data files.~~~~~~ beta!
-open ./atla_opendata_had_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 10
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With DELPHES
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i ex7.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using Delphes files.~~~~~~ beta!
-open ./delphes_events_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 10
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-Testing exBin.adl:
-With CMSOD
-./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exBin.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using CMS Open Data files.~~~~~~ beta!
-open ./cms_opendata_ttbar.root
---
-End of Dumper initialization
-	 REGION:testA
-==Parsing started:	Combo is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: Combo	 at line: 7
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With ATLASOD
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exComb.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using ATLAS Open Data files.~~~~~~ beta!
-open ./atla_opendata_had_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 REGION:testA
-==Parsing started:	Combo is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: Combo	 at line: 7
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With DELPHES
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i exComb.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using Delphes files.~~~~~~ beta!
-open ./delphes_events_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 REGION:testA
-==Parsing started:	Combo is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: Combo	 at line: 7
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-Testing exCon.adl:
-With CMSOD
-./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exCon.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using CMS Open Data files.~~~~~~ beta!
-open ./cms_opendata_ttbar.root
---
  #systematic included:0
 This is BP_1
 End of BP initialization
@@ -217,7 +13,7 @@ With ATLASOD
 ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exExtern.adl -e 10000
 Single Analysis
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
+CLA v02.02.02	compiled on Sat May 16 17:12:38 UTC 2020	 
 #BP  runs is 1
 #Dump runs is 0
 ~Now using ATLAS Open Data files.~~~~~~ beta!
@@ -237,7 +33,7 @@ With DELPHES
 ./CLA.sh ./delphes_events_ttbar.root DELPHES -i exExtern.adl -e 10000
 Single Analysis
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
+CLA v02.02.02	compiled on Sat May 16 17:12:38 UTC 2020	 
 #BP  runs is 1
 #Dump runs is 0
 ~Now using Delphes files.~~~~~~ beta!
@@ -258,58 +54,7 @@ With CMSOD
 ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exGen.adl -e 10000
 Single Analysis
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using CMS Open Data files.~~~~~~ beta!
-open ./cms_opendata_ttbar.root
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 6
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With ATLASOD
-./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exHisto2D.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using ATLAS Open Data files.~~~~~~ beta!
-open ./atla_opendata_had_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 6
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-With DELPHES
-./CLA.sh ./delphes_events_ttbar.root DELPHES -i exHisto2D.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
-#BP  runs is 1
-#Dump runs is 0
-~Now using Delphes files.~~~~~~ beta!
-open ./delphes_events_ttbar.root
-RetVal:1
---
-End of Dumper initialization
-	 ALGO:besttop
-==Parsing started:	JET is seen first time, Adding size>0 cut.	ERROR: OBJect not defined: JET	 at line: 6
-	 Parsing finished.==
-
-yyParse returns SYNTAX error. Check the input file
-Testing exLoop.adl:
-With CMSOD
-./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exLoop.adl -e 10000
-Single Analysis
-../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sat May 16 15:55:24 UTC 2020	 
+CLA v02.02.02	compiled on Sat May 16 17:12:38 UTC 2020	 
 #BP  runs is 1
 #Dump runs is 0
 ~Now using CMS Open Data files.~~~~~~ beta!
