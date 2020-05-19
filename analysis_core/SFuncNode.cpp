@@ -15,7 +15,6 @@
 #else
 #define DEBUG(a)
 #endif
-
     
 double SFuncNode::evaluate(AnalysisObjects* ao) {
 
@@ -333,4 +332,21 @@ double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet){
   return (retval);
 }
 
+double all(AnalysisObjects* ao, string s, float id){
+    return 1;
+}
 
+double uweight(AnalysisObjects* ao, string s, float value){
+        ao->evt.user_evt_weight *= value;
+        return 1;
+}
+
+double lepsf(AnalysisObjects* ao, string s, float value){
+        ao->evt.user_evt_weight *= ao->evt.weight_leptonSF;
+        return 1;
+}
+
+double btagsf(AnalysisObjects* ao, string s, float value){
+        ao->evt.user_evt_weight *= ao->evt.weight_bTagSF_77;
+        return 1;
+}
