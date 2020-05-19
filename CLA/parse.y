@@ -1,7 +1,9 @@
 %error-verbose
 //%define parse.error verbose
 %{ 
+
 #include "NodeTree.h"
+#include "ExternFunctions.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>

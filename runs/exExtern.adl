@@ -4,15 +4,18 @@ object megajets
   take JET
   select fmegajets(JET) == 2
 
-object hemisjets
-  take JET
-  select fhemisphere(JET, 2, 3) == 2
+#object hemisjets
+#  take JET
+#  select fhemisphere(JET, 2, 3) == 2
 
 region   test
   select  ALL              # to count all events
   select  Size (JET) >= 2  # events with 2 or more electrons 
-  select fMT2(JET[0], JET[1], METLV[0]) > 40.0
-  select fMT2(hemisjets[0], hemisjets[1], METLV[0]) > 40.0
+#  select fMT2(hemisjets[0], hemisjets[1], METLV[0]) > 40.0
+
+  select  fMT2(JET[0], JET[1], METLV[0]) > 40.0
+  select  fMT2(JET[0], JET[1], METLV[0]) > 140.0
+  select  fMT2(JET[0], JET[1], METLV[0]) > 240.0
 
 
 
