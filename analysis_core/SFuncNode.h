@@ -25,7 +25,7 @@ using namespace std;
 
 class SFuncNode : public Node {
 private:
-    static std::map< std::string, std::vector<double> > BUFFERED_VALUES;
+    static std::map< std::string, double > BUFFERED_VALUES;
     //should add something related to trigger types
     Node* userObjectA;
     Node* userObjectB;

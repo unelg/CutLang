@@ -44,7 +44,8 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<myParticle*> TmpParticle2;//to be used for list of 3 particles
 vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
-std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
+std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
+std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
