@@ -33,16 +33,21 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
         dbxParticle *bPart= new dbxParticle;
         dbxParticle *cPart= new dbxParticle;
 
+          TString unikID="_";
+
         if ( inputParticlesA.size()>0 ){
            aPart->Reset();
            TLorentzVector ametlv;
-           DEBUG("\t input particles A\n"); 
+           DEBUG("\n input particles A "); 
            for(vector<myParticle*>::iterator i=inputParticlesA.begin();i!=inputParticlesA.end();i++){
                DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
               int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
+
              if (atype==7) ac="MET";
+               unikID+=ac;             
+               unikID+=ai;             
 
                switch (atype) { 
 		  case 10:  aPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
@@ -68,16 +73,18 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
         if ( inputParticlesB.size()>0 ){
            bPart->Reset();
            TLorentzVector ametlv;
-           DEBUG("\t input particles B \n"); 
+           DEBUG("\n input particles B "); 
            for(vector<myParticle*>::iterator i=inputParticlesB.begin();i!=inputParticlesB.end();i++){
                DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
               int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
              if (atype==7) ac="MET";
+               unikID+=ac;             
+               unikID+=ai;             
 
                switch (atype) { 
-		   case 10:  bPart->setTlv(  bPart->lv()+ao->truth[ac].at(ai).lv() );   break;
+		   case 10:  bPart->setTlv(  bPart->lv()+ao->truth[ac].at(ai).lv() );  break;
                    case 12:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case  1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                    case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
@@ -100,15 +107,17 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
         if ( inputParticlesC.size()>0 ){
            cPart->Reset();
            TLorentzVector ametlv;
-           DEBUG("\t input particles C \n"); 
+           DEBUG("\n input particles C "); 
            for(vector<myParticle*>::iterator i=inputParticlesC.begin();i!=inputParticlesC.end();i++){
                DEBUG("type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
               int atype=(*i)->type;
                 int ai=(*i)->index;
              string ac=(*i)->collection;
              if (atype==7) ac="MET";
+               unikID+=ac;             
+               unikID+=ai;             
 
-               switch (atype) { 
+             switch (atype) { 
 		   case 10:  cPart->setTlv(  cPart->lv()+ao->truth[ac].at(ai).lv() );   break;
                    case 12:  cPart->setTlv(  cPart->lv()+ao->muos[ac].at(ai).lv() );   break;
                    case  1:  cPart->setTlv(  cPart->lv()+ao->eles[ac].at(ai).lv() );   break;
@@ -130,21 +139,39 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
            DEBUG("cPart constructed \t");
         }
 
-        DEBUG("*****************EXTERN TF evaluate? T/F:"<< ext <<"\n");
-        if(ext) { 
-               DEBUG("external user function evaluate\n");
-              if (g1 != NULL) return (*g1)(ao, symbol, type, h1 );
-              if (g2 != NULL) return (*g2)(ao, symbol, type, h2 );
-              if (g3 != NULL) return (*g3)(ao, symbol, type, h3 );
-              if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4);
-              if (g5 != NULL) return (*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
+        DEBUG ("Before Symbol:"<<symbol<<" Value:"<<value<< " Type:"<<type<<"\n");
+        if(ext) {
+             TString extkey =symbol;
+                     extkey+="_";
+                     extkey+=value;
+                     extkey+="_";
+                     extkey+=type;
+                     extkey+=unikID;
+
+             std::map< std::string, double >::iterator keyit; 
+
+              DEBUG("external user function evaluation. initial Key:"<< extkey<<"\n");
+              if (g1 != NULL) return (*g1)(ao, symbol, type, h1 ); // A
+              if (g2 != NULL) return (*g2)(ao, symbol, type, h2 ); // B
+              if (g3 != NULL) return (*g3)(ao, symbol, type, h3 ); // C
+              if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4); // D
+              if (g5 != NULL) { // E
+                if ( BUFFERED_VALUES.find(extkey.Data()) !=BUFFERED_VALUES.end() ){
+                   DEBUG("Returning buffered value:"<<(BUFFERED_VALUES[extkey.Data()]) << "\n");
+                   return (BUFFERED_VALUES[extkey.Data()]);
+                } else { 
+                 double g5retval=(*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
+                 BUFFERED_VALUES.insert(std::pair<string, double >(extkey.Data(), g5retval));
+                 return g5retval;
+                }
+              }
         }              
-        DEBUG ("Symbol:"<<symbol<<" Value:"<<value<<"\n");
         return (*f)(ao, symbol, value);
 }
 
 void SFuncNode::Reset() {
       DEBUG (" Resetting cache \n");
+      BUFFERED_VALUES.clear();
     }
 
 double count(AnalysisObjects* ao, string s, float id) {
