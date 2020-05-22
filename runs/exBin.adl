@@ -28,7 +28,10 @@ region   test
 region   mest
   select  Size (MUO) >= 2  # events with 2 or more electrons 
   histo   h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {MUO_0 MUO_1}m
-  select  MHT <1300 && HT < 1500
+#  select  MHT <1300 && HT < 1500
 #  Bin MHT [] 0.0 1300 && HT [] 00  1500  # 10
 #  Bin MHT      >  750 && HT      > 1500  # 11
-  bin MHT 300 500 700 1000
+#  bin MHT 300 500 700 1000
+   Bin MHT 300 500
+   Bin MHT 500 700
+   Bin MHT 700 1000
