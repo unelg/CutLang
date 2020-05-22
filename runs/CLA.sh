@@ -100,7 +100,7 @@ if [ $? -eq 0 ]; then
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   rm   histoOut-${rbase}.root
   hadd histoOut-${rbase}.root histoOut-BP_*.root
-  if [ $? -eq 0 ]; then
+  if [ $? -eq 120 ]; then
    echo "hadd finished successfully, now removing auxiliary files"
    rm -f histoOut-BP_*.root
    rm -f _head.ini _algos.ini _inifile

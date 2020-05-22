@@ -1,6 +1,13 @@
 #include "TParameter.h"
 #include <TRandom.h>
 #include "TText.h"
+#include <iostream>
+#include <sstream>      // std::istringstream
+#include <string>
+#include <map>
+#include <iterator>
+#include <vector>
+
 
 #include "bp_a.h"
 #include "analysis_core.h"
@@ -49,9 +56,8 @@ int BPdbxA:: readAnalysisParams() {
 // ---------------------------DBX style defs, objects and cuts
     string tempLine;
     string tempS1, tempS2;
-    string subdelimiter = " ";
     string hashdelimiter = "#";
-    size_t found, foundp, foundr, foundw, founds;
+    size_t found, foundp, foundr, foundw, founds, foundsave;
     TString DefList2file="\n";
     TString CutList2file="\n";
     TString ObjList2file="\n";
@@ -60,82 +66,61 @@ int BPdbxA:: readAnalysisParams() {
 
     while ( ! cardfile.eof() ) {
        getline( cardfile, tempLine );
-       if ( tempLine[0] == '#' ) continue; // skip comment lines
-       if (tempLine.find_first_of("#") != std::string::npos ){
+       if ( tempLine[0] == '#' ) continue; // skip comment lines starting with #
+       if (tempLine.find_first_of("#") != std::string::npos ){ // skip anything after #
          tempLine.erase(tempLine.find_first_of("#"));
        }
-/*
-    for(auto& c : tempLine) { c = tolower(c); }
-*/
+//     cout << tempLine<<"\n";
+       if (tempLine.size() < 3) continue; // remove the junk
+
+//-------------tokenize with space or tab 
+       std::istringstream iss(tempLine);
+       std::vector<std::string> resultstr((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
+       if (resultstr.size() < 1) continue;
+       string firstword=resultstr[0];
+       for(auto& c : firstword) { c = tolower(c); } // convert to lowercase
+       string toplam;
+       if (resultstr.size() >1) for(int ic=1; ic<resultstr.size(); ic++) {
+//                cout << resultstr[ic] <<".\n";
+                  toplam+=resultstr[ic];
+                  if (ic<resultstr.size()-1) toplam+=" ";
+       }              
+
 
 //---------obj
-       found = tempLine.find("obj ");
-       if (found!=std::string::npos) {
-           ObjList2file+=tempLine;
-           ObjList2file+="\n";
-           continue;
-       }
-       found = tempLine.find("object ");
-       if (found!=std::string::npos) {
+       if ((firstword == "obj") || (firstword == "object") ) {
            ObjList2file+=tempLine;
            ObjList2file+="\n";
            continue;
        }
 
-//---------algo
-       found =tempLine.find("algo ") ;
-       if (found!=std::string::npos) {
-           tempS1 = tempLine.substr(found+5, std::string::npos );
-           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
-           if (tempS1[0]==' ') tempS1 = tempS1.substr(tempS1.find_first_not_of(" \n\r\t"), std::string::npos );
-           cout <<"\t ALGO:"<< tempS1 <<"\n";
+//---------algo / region etc.
+       if ((firstword == "algo") || (firstword=="region"))  {
+           cout <<"\t REGION/ALGO:"<< resultstr[1] <<"\n";
            algorithmnow=true;
-           sprintf (algoname,"%s",tempS1.c_str());
-           continue;
-       }
-       found =tempLine.find("region ") ;
-       if (found!=std::string::npos) {
-           tempS1 = tempLine.substr(found+7, std::string::npos );
-           tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
-           if (tempS1[0]==' ') tempS1 = tempS1.substr(tempS1.find_first_not_of(" "), std::string::npos );
-           cout <<"\t REGION:"<< tempS1 <<"\n";
-           algorithmnow=true;
-           sprintf (algoname,"%s",tempS1.c_str());
+           sprintf (algoname,"%s",resultstr[1].c_str());
            continue;
        }
 //---------defs
-       found = tempLine.find("def ");
-       if (found!=std::string::npos) {
-           DefList2file+=tempLine;
-           DefList2file+="\n";
-           continue;
-       }
-       found = tempLine.find("define ");
-       if (found!=std::string::npos) {
+       if ((firstword == "def") || (firstword=="define"))  {
            DefList2file+=tempLine;
            DefList2file+="\n";
            continue;
        }
 
-//---------cmds
-        found=tempLine.find("cmd ")  ;
-       founds=tempLine.find("Sort ")  ;
-       foundw=tempLine.find("weight ")  ;
-       foundp=tempLine.find("select ")  ;
-       foundr=tempLine.find("reject ")  ;
-       if ((found!=std::string::npos) ||(foundp!=std::string::npos) || (foundr!=std::string::npos) || (foundw!=std::string::npos) || (founds!=std::string::npos) ) {
+//---------other cmds
+       if (  (firstword=="cmd")  || (firstword=="sort")   || (firstword=="reject")
+          || (firstword=="save") || (firstword=="weight") || (firstword=="select")
+          ) {
            if (algorithmnow) {
               CutList2file+=tempLine;
               CutList2file+="\n";
-              size_t apos=tempLine.find(hashdelimiter);
-              if       (found!=std::string::npos) { tempS1 = tempLine.substr(found +4, apos); }
-              else if (foundw!=std::string::npos) { tempS1 = tempLine.substr(foundw+7, apos); }
-              else if (foundp!=std::string::npos) { tempS1 = tempLine.substr(foundp+7, apos); }
-              else if (founds!=std::string::npos) { tempS1 = tempLine.substr(founds  , apos); }
-              else                                { tempS1 = tempLine.substr(foundr+7, apos); tempS1="reject "+tempS1; }
-              tempS1.erase(tempS1.find_last_not_of(" \n\r\t")+1);
-              effCL.push_back(tempS1);
-//              cout <<tempS1<<"\n";
+              if (firstword=="save"){
+               tempS2 = "[Save] ";
+               tempS2 += toplam;
+               effCL.push_back(tempS2);
+              } else effCL.push_back(toplam);
+//            cout <<toplam<<"\n";
            } else {
               ObjList2file+=tempLine;
               ObjList2file+="\n";
@@ -143,23 +128,31 @@ int BPdbxA:: readAnalysisParams() {
            continue;
        }
 //---------histos
-       found=tempLine.find("histo ");
-       if (found!=std::string::npos) {
+       if (firstword=="histo") {
            CutList2file+=tempLine;
            CutList2file+="\n";
-           size_t apos=tempLine.find(hashdelimiter);
-           tempS1 = tempLine.substr(found+5, apos); // without the comments
-           apos=tempS1.find_first_of('"');
-           size_t bpos=tempS1.find_last_of('"');
-           tempS1 = tempS1.substr(apos+1, bpos-apos-1); // without the comments
+           size_t apos=toplam.find_first_of('"');
+           size_t bpos=toplam.find_last_of('"');
+           tempS1 = toplam.substr(apos+1, bpos-apos-1); // without the quotation marks
            tempS2 = "[Histo] ";
            tempS2 += tempS1;
 //           cout <<tempS2<<"\n";
            effCL.push_back(tempS2);
            continue;
        }
+
     } // end of first look over ADL file
 
+//-----create the relevant output directory
+    if (!algorithmnow) {
+       int r=dbxA::setDir(cname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(cname);
+    } else {
+       int r=dbxA::setDir(algoname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(algoname);
+    }
 
 
 
@@ -186,20 +179,10 @@ int BPdbxA:: readAnalysisParams() {
 // ------------------------------------4 is reserved for future use.
 
 //---------save in the dir.
-//    unsigned int effsize=effCL.size()+1; // all is always there 
     unsigned int effsize=NodeCuts.size()+1; // all is always there 
  
-   
-//-----create the relevant output directory
-    if (!algorithmnow) {
-       int r=dbxA::setDir(cname, effsize);  // make the relevant root directory
-       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-       dbxA::ChangeDir(cname);
-    } else {
-       int r=dbxA::setDir(algoname, effsize);  // make the relevant root directory
-       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-       dbxA::ChangeDir(algoname);
-    }
+//-----create the eff histograms
+       int r=dbxA::defHistos( effsize);  // enough room
 
 //----------put into output file as text
     TText cinfo(0,0,CutList2file.Data());
@@ -215,12 +198,12 @@ int BPdbxA:: readAnalysisParams() {
           oinfo.Write();
 
 
-
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end()) {
-//                cout << "**-- BP sees:"<<iter->second->getStr()<<"\n";
-                if (strcmp(iter->second->getStr()," ") == 0) {
+//              cout << "**-- BP sees:"<<iter->second->getStr().Data()<<".\n";
+                if (iter->second->getStr().CompareTo(" save") == 0 ) {
 		      save.push_back(iter->first);
+//                    cout <<"Saving at "<<iter->first<<"\n";
 		      iter->second->createFile();
 		}
                 iter++;
