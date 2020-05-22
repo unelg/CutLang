@@ -42,6 +42,7 @@ class BPdbxA : public dbxA {
       char cname[CHMAX];
       char algoname[CHMAX];
       std::vector<TString> effCL;
+      std::vector< string> binCL;
 
 
       // Sezen's handmade histograms

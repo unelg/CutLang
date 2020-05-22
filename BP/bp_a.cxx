@@ -86,7 +86,6 @@ int BPdbxA:: readAnalysisParams() {
                   if (ic<resultstr.size()-1) toplam+=" ";
        }              
 
-
 //---------obj
        if ((firstword == "obj") || (firstword == "object") ) {
            ObjList2file+=tempLine;
@@ -105,6 +104,11 @@ int BPdbxA:: readAnalysisParams() {
        if ((firstword == "def") || (firstword=="define"))  {
            DefList2file+=tempLine;
            DefList2file+="\n";
+           continue;
+       }
+//---------bins
+       if (firstword == "bin")  {
+           binCL.push_back(toplam);
            continue;
        }
 
@@ -217,6 +221,9 @@ int BPdbxA:: readAnalysisParams() {
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
+    for (int jbin=0; jbin<binsize; jbin++){
+      hbincounts->GetXaxis()->SetBinLabel(jbin,binCL[jbin].c_str() );
+    }
 //--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
        cout << "TRGe:"<<TRGe<<"  TRGm:"<<TRGm<<"\n";
