@@ -123,7 +123,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 							inputPart->setPdgID(inputPart->pdgID()+ao->constits[ac].at(ai).pdgID()  );
                                                         break;
 
-                                            default: std::cout<<" FN No such object of type " <<atype<< " ERROR!\n";
+                                            default: std::cout<<"FN. No such object of type "<<atype<<" collection:"<<ac<<" idx:"<<ai<<" ERROR!\n";
                                                         break;
                                 } // end of case
         }// end of for

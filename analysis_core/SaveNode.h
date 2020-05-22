@@ -18,6 +18,7 @@ private:
 	TTree *ttsave;
 public:
 	SaveNode(std::string s){
+                symbol="save";
 		name = s;
 		left = NULL;
 		right = NULL;
