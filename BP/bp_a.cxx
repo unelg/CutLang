@@ -221,8 +221,16 @@ int BPdbxA:: readAnalysisParams() {
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
-    for (int jbin=0; jbin<binsize; jbin++){
-      hbincounts->GetXaxis()->SetBinLabel(jbin,binCL[jbin].c_str() );
+    if (binsize==binCL.size() ) {
+     for (int jbin=0; jbin<binsize; jbin++){
+       hbincounts->GetXaxis()->SetBinLabel(jbin,binCL[jbin].c_str() );
+     }
+    } else {
+     std::map<int, Node*>::iterator biter = BinCuts.begin();
+     while(biter != BinCuts.end()) {    
+       hbincounts->GetXaxis()->SetBinLabel(biter->first, biter->second->getStr().Data() );
+       biter++;
+     }
     }
 //--------effciency names and debugs     
        eff->GetXaxis()->SetBinLabel(1,"all Events"); // this is hard coded.
