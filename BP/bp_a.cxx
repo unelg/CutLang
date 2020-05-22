@@ -223,11 +223,13 @@ int BPdbxA:: readAnalysisParams() {
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
     if (binsize==binCL.size() ) {
      for (int jbin=0; jbin<binsize; jbin++){
-       hbincounts->GetXaxis()->SetBinLabel(jbin,binCL[jbin].c_str() );
+       DEBUG("Bin from C++:"<<binCL[jbin]<<"\n");
+       hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
      }
     } else {
      std::map<int, Node*>::iterator biter = BinCuts.begin();
      while(biter != BinCuts.end()) {    
+       DEBUG("Bin from yacc:"<<biter->second->getStr()<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(biter->first, biter->second->getStr().Data() );
        biter++;
      }
