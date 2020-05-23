@@ -30,6 +30,11 @@ extern FILE* yyin;
 extern int cutcount;
 extern int bincount;
 
+bool is_number(const std::string& s)
+{
+    return( strspn( s.c_str(), "-.0123456789" ) == s.size() );
+}
+
 int BPdbxA::getInputs(std::string aname) {
         int retval=0;
         return retval;
@@ -108,7 +113,27 @@ int BPdbxA:: readAnalysisParams() {
        }
 //---------bins
        if (firstword == "bin")  {
-           binCL.push_back(toplam);
+//            cout << toplam <<"\n";
+           if (is_number(resultstr[2]) ){   // MHT 0 300 400, do magic
+//            cout <<"magic needed \n";    //  1   2  3   4
+            TString con1 =resultstr[1];
+                    con1+=" <= ";
+                    con1+=resultstr[2];
+            binCL.push_back(con1.Data());
+            for(int ic=3; ic<resultstr.size(); ic++) {
+                con1 =resultstr[1];
+                con1+=" [] ";
+                con1+=resultstr[ic-1];
+                con1+=" ";
+                con1+=resultstr[ic];
+                binCL.push_back(con1.Data());
+            }
+            con1 =resultstr[1];
+            con1+=" >= ";
+            con1+=resultstr[resultstr.size()-1];
+            binCL.push_back(con1.Data());
+            
+           } else binCL.push_back(toplam); // no magic
            continue;
        }
 

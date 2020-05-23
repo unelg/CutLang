@@ -31,7 +31,7 @@ region   mest
 #  select  MHT <1300 && HT < 1500
 #  Bin MHT [] 0.0 1300 && HT [] 00  1500  # 10
 #  Bin MHT      >  750 && HT      > 1500  # 11
-#  bin MHT 300 500 700 1000
-   Bin MHT 300 500
-   Bin MHT 500 700
-   Bin MHT 700 1000
+   bin MHT 300 500 700 1000
+#  Bin MHT 300 500   #### this is terrible!
+#  Bin MHT 500 700   #### DONT USE THIS
+#  Bin MHT 700 1000  #### DONT USE THIS
