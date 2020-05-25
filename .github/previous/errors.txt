@@ -7,14 +7,14 @@ End of Dumper initialization
 
 yyParse returns SYNTAX error. Check the input file
 munmap_chunk(): invalid pointer
-./CLA.sh: line 97: 13166 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+./CLA.sh: line 97: 13850 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 With ATLASOD
 ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exBin.adl -e 10000
 Analysis with Multiple Regions
 A region named:              [test] 	 is defined in lines from 1 to 19
 A region named:              [mest] 	 is defined in lines from 19 to 23
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sun May 24 22:52:58 UTC 2020	 
+CLA v02.02.02	compiled on Mon May 25 09:45:39 UTC 2020	 
 #BP  runs is 2
 --
 End of Dumper initialization
@@ -23,15 +23,15 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
-free(): invalid pointer
-./CLA.sh: line 97: 13281 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+munmap_chunk(): invalid pointer
+./CLA.sh: line 97: 13969 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 With DELPHES
 ./CLA.sh ./delphes_events_ttbar.root DELPHES -i exBin.adl -e 10000
 Analysis with Multiple Regions
 A region named:              [test] 	 is defined in lines from 1 to 19
 A region named:              [mest] 	 is defined in lines from 19 to 23
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sun May 24 22:52:58 UTC 2020	 
+CLA v02.02.02	compiled on Mon May 25 09:45:39 UTC 2020	 
 #BP  runs is 2
 --
 End of Dumper initialization
@@ -40,13 +40,13 @@ End of Dumper initialization
 	 Parsing finished.==
 
 yyParse returns SYNTAX error. Check the input file
-free(): invalid size
-./CLA.sh: line 97: 13402 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+munmap_chunk(): invalid pointer
+./CLA.sh: line 97: 14085 Aborted                 (core dumped) ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
 Testing exComb.adl:
 With CMSOD
 ./CLA.sh ./cms_opendata_ttbar.root CMSOD -i exComb.adl -e 10000
 Single Analysis
 ../CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 10000 -V 5000 -ST 0
-CLA v02.02.02	compiled on Sun May 24 22:52:58 UTC 2020	 
+CLA v02.02.02	compiled on Mon May 25 09:45:39 UTC 2020	 
 #BP  runs is 1
 #Dump runs is 0
