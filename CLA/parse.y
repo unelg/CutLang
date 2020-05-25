@@ -2385,8 +2385,6 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 TmpCriteria.push_back(h);
 				}
-	| SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
-	| SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
           ;
 commands : commands command 
