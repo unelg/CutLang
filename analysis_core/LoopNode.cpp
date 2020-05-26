@@ -103,8 +103,6 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
       {
        DEBUG("Looping one by one\n");
        FuncNode *pippo;
-       for (int ii=0;ii<ipart2_max; ii++){
-        DEBUG("now for particle "<<ii<<"\n");
         DEBUG("it will do: "<<left->getStr()<<"\n");
         if (pippo=dynamic_cast< FuncNode*>(left) ) {
          DEBUG("downcast OK\n");
@@ -115,6 +113,8 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
           }
         }
         
+       for (int ii=0;ii<ipart2_max; ii++){
+        DEBUG("now for particle "<<ii<<"\n");
         pippo->setParticleIndex(0, ii);
         DEBUG("I will do: "<<left->getStr()<<"\t");
         DEBUG("over: "<<right<<"\n");
