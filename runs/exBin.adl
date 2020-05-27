@@ -1,16 +1,19 @@
 #CLA ADL example on bins
 
+object jets : JET
+ select Pt(JET) >  10
 
 define EHT = pT(ELE_0) +  pT(ELE_1)
 define MHT = pT(MUO_0) +  pT(MUO_1)
+define  HT = fHT(jets)
 
 region   test
   select  ALL              # to count all events
-  select  Size(JET) >= 2
+  select  Size(jets) >= 2
   select  Size (ELE) >= 2  # events with 2 or more electrons 
 #  weight   randWeight   1.123
 #  save     midfile
-  reject   Size (ELE) > 4  # events with 2 or more electrons 
+#  reject   Size (ELE) > 4  # events with 2 or more electrons 
   histo    h1eReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
   histo    h1eEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 #  save     testfile
