@@ -136,7 +136,7 @@ With ATLASOD
 ./CLA.sh ./atla_opendata_had_ttbar.root ATLASOD -i exBin.adl -e 10000
 ../CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 10000 -V 5000 -ST 0
 					 --> Overall efficiency	 =   3.19 % +-  0.176 %
-					 --> Overall efficiency	 =    100 % +-      0 %
+					 --> Overall efficiency	 =   99.5 % +-   0.48 %
 With DELPHES
 ./CLA.sh ./delphes_events_ttbar.root DELPHES -i exBin.adl -e 10000
 ../CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 10000 -V 5000 -ST 0
