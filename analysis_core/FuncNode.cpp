@@ -8,10 +8,15 @@
 #endif
 
 void FuncNode::ResetParticles(){
-            for(int i=0;i<originalParticles.size();i++){
-            DEBUG("Recall orig i:"<<originalParticles[i].index);
-                    *(inputParticles[i])=originalParticles[i];
-            }
+      for(int i=0;i<originalParticles.size();i++){
+       if (originalParticles[i].type == 49 ) { 
+        cout <<"O Collection:"<<originalParticles[i].collection<<" type:"<< originalParticles[i].type<<" index:"<<originalParticles[i].index<<"\n";
+        cout <<"R Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
+        exit (12); 
+       }
+        DEBUG("Recall orig i:"<<originalParticles[i].index);
+        *(inputParticles[i])=originalParticles[i];
+      }
 }
     
 void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
@@ -124,6 +129,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
 
                                             default: std::cout<<"FN. No such object of type "<<atype<<" collection:"<<ac<<" idx:"<<ai<<" ERROR!\n";
+                                                        exit(1);
                                                         break;
                                 } // end of case
         }// end of for
@@ -160,11 +166,13 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
        DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
 
       for (int i=0; i<input.size(); i++){
+//       cout <<" Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
        DEBUG(" orig i:"<<input[i]->index);
        apart.index=input[i]->index;
        apart.type=input[i]->type;
        apart.collection=input[i]->collection;
        originalParticles.push_back(apart);
+ //      cout <<"O Collection:"<<originalParticles[i].collection<<" type:"<< originalParticles[i].type<<" index:"<<originalParticles[i].index<<"\n";
       }
         left=NULL;
         right=NULL;

@@ -495,6 +495,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         $$=new FuncNode(Rapof,newList,"rap");
                                   }
          | '{' particules '}' ETA {     vector<myParticle*> newList;
+                                        DEBUG("Eta with "<<TmpParticle.size()<<" particles\n");
+                                        for (int ij=0; ij<TmpParticle.size(); ij++){
+                                          DEBUG("Col:"<<TmpParticle[ij]->collection<< " type:"<<TmpParticle[ij]->type<<" idx:"<<TmpParticle[ij]->index<<"\n");
+                                        }
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
@@ -826,47 +830,50 @@ list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particule
                                                         }
      ;
 particules : particules particule {                                                 
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);                                       
+                            DEBUG("Got a new particle"<<$2<<", size:"<<TmpParticle.size()<<"\t");
+                            int ip=TmpParticle.size()-1;
+                            DEBUG("collection:"<<TmpParticle[ip]->collection<<" t:"<<TmpParticle[ip]->type<<" i:"<<TmpParticle[ip]->index<<"\n");
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
+                            DEBUG("Check the new particle, size:"<<TmpParticle.size()<<"\t");
+                            int ik=TmpParticle.size()-1;
+                            DEBUG("collection:"<<TmpParticle[ik]->collection<<" t:"<<TmpParticle[ik]->type<<" i:"<<TmpParticle[ik]->index<<"\n");
                                   }
             | particules '+' particule {
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$3);
-                                                strcpy($$,s);                                       
+                                                string s=$$;
+                                                string s2=$3;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                   }
             | particule {   if (pnum==0){ $$=strdup($1);    }
                                         else{                                                
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$1);
-                                                strcpy($$,s);
+                                                string s=$$;
+                                                string s2=$1;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                         }
                                         pnum++;
+                            DEBUG("Got the first particle, size:"<<TmpParticle.size()<<"\t");
+                            DEBUG("collection:"<<TmpParticle[0]->collection<<" t:"<<TmpParticle[0]->type<<" i:"<<TmpParticle[0]->index<<"\n");
                          }
 //          | '+' particule  {   if (pnum==0){ $$=strdup($2); }
 //                                      else{                                                
-//                                              char s [512];
-//                                              strcpy(s,$$); 
-//                                              strcat(s," ");
-//                                              strcat(s,$2);
-//                                              strcpy($$,s);
+//                                              string s=$$;
+//                                              string s2=$1;
+//                                              s=s+" "+s2;
+//                                              $$=strdup(s.c_str());
 //                                      }
 //                                      pnum++;
 //                       }
             | '-' particule {  if (pnum==0){ 
                                             $$=strdup($2); }
                                         else{
-                                                char s [512];
-                                                strcpy(s,$$);
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                         }
                                         TmpParticle[ TmpParticle.size()-1]->type*=-1;
                                         pnum++;
@@ -929,15 +936,16 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);
                          }
 
-	| ELE '_' index {       DEBUG("electron particule:"<<(int)$3<<"\n");
-                                myParticle* a = new myParticle;
+	| ELE '_' index {       DEBUG("found an electron particule:"<<(int)$3<<"\t");
+                                myParticle *a= new myParticle;
                                 a->type =1; a->index = (int)$3; a->collection = "ELE";
-                                TmpParticle.push_back(a);                            
+                                TmpParticle.push_back(a);
+                                DEBUG("type:"<<a->type<<"\n");                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
         | ELE '[' index ']' {   myParticle* a = new myParticle;
-                                a->type =1; a->index = (int)$3; a->collection = "ELE";
+                                a->type =electron_t; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -945,7 +953,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | ELE               {
                                 DEBUG("all electron particules \t");
                                 myParticle* a = new myParticle;
-                                a->type =1; a->index = 6213; a->collection = "ELE";
+                                a->type =electron_t; a->index = 6213; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_6213";
                                 $$=strdup(tmp.c_str());
@@ -955,7 +963,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
+                                 a->type = electron_t; a->index = 10000+ii; a->collection = "ELE";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -968,7 +976,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
+                                 a->type = electron_t; a->index = 10000+ii; a->collection = "ELE";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -2234,6 +2242,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
           | REJEC condition { Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
                               TmpCriteria.push_back(a); }
+
           | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($12);
@@ -2540,6 +2549,7 @@ command : CMD condition { //find a way to print commands
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
+                                                DEBUG("all INT 1D func histo defined.\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
@@ -2661,18 +2671,17 @@ command : CMD condition { //find a way to print commands
 	| SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
 description : description HID {                                                 
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);                                       
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                               }
             | HID {if (dnum==0){ $$=strdup($1);                                                       
-                               } else{     char s [512];
-                                           strcpy(s,$$); 
-                                           strcat(s," ");
-                                           strcat(s,$1);
-                                           strcpy($$,s);
+                               } else{  
+                                                string s=$$;
+                                                string s2=$1;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                        }
                   }
         ;
