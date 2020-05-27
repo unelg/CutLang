@@ -69,7 +69,7 @@ public:
         right=NULL;
     }
 
-    virtual void Reset() override{ }
+    virtual void Reset() override{ left->Reset(); } // reset right as well 
     virtual void getParticles(std::vector<myParticle *>* particles) override{
          left->getParticles(particles);
     }
@@ -77,6 +77,7 @@ public:
     virtual double evaluate(AnalysisObjects* ao) override {
         if (dim == 1) // this if has to go. we can make 2 independent and similar classes
 		{
+
                   this->getParticles(&inputParticles);
                   for (int ii=0; ii<inputParticles.size(); ii++){
                       DEBUG("Histo particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
@@ -135,7 +136,8 @@ public:
 		             ahisto1->Fill(value, ao->evt.user_evt_weight);
                            }
                            pippo->setParticleIndex(0, 6213);
-                  } else {
+                  } else 
+                  {
                            double value = left->evaluate(ao);
 		           ahisto1->Fill(value, ao->evt.user_evt_weight);
                   }
