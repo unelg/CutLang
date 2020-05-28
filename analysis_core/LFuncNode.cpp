@@ -83,14 +83,16 @@ void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objec
 
    
 double LFuncNode::evaluate(AnalysisObjects* ao)  {
-        DEBUG("In L function Node evaluate\n");
+        DEBUG("In L function Node evaluate: "<< inputParticles.size() << ","<< inputParticles2.size()<<"\n");
 
         if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectC)  userObjectC->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
 
-        DEBUG("P0_0 Type:"<<inputParticles[0]->type<< " index:"<<inputParticles[0]->index<<"\n");
+        for (int jj=0; jj< inputParticles.size(); jj++){
+         DEBUG("P0_"<<jj<<" Type:"<<inputParticles[jj]->type<< " index:"<<inputParticles[jj]->index<<"\n");
+        }
         DEBUG("P1_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
         if ( inputParticles2[0]->index == 6213) {
            string base_collection2=inputParticles2[0]->collection;

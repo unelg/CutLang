@@ -47,12 +47,13 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        ipart2_max=0; // loop counter
        bool constiloop=false;
        std::string consname;
-       if (inputParticles.size()==1 && inputParticles[0]->index==6213) // here we loop over all particles in the collection
+       int base_type2=inputParticles[0]->type;
+       std::vector<myParticle*> spareParticles;
+
+       if (inputParticles[0]->index==16213 || inputParticles[0]->index==6213) // here we loop over all particles in the collection
        {
-        DEBUG("Looping one by one\n");
         bcol2=inputParticles[0]->collection;
         consname=bcol2;
-        int base_type2=inputParticles[0]->type;
         try {
                 switch(inputParticles[0]->type){
                 case muon_t: ipart2_max=(ao->muos).at(bcol2).size(); break;
@@ -84,10 +85,24 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
                             _Exit(-1);
         }
        // now we know how many we want
-       DEBUG ("loop over "<< ipart2_max<<" particles\t");
+       DEBUG ("loop over "<< ipart2_max<<" particles\n");
+      if (inputParticles[0]->index==16213) {
+       for (int ii=0; ii<ipart2_max; ii++) {
+        myParticle* a = new myParticle;
+                    a->type = base_type2; a->index =ii; a->collection =bcol2;
+                    spareParticles.push_back(a); 
+       }
+      }
+       for (int ii=0; ii<spareParticles.size(); ii++){
+        DEBUG("Loop spare particle ID:"<<ii<<" Type:"<<spareParticles[ii]->type<<" collection:"
+                     << spareParticles[ii]->collection << " index:"<<spareParticles[ii]->index<<"\n");
+       }
+      }
+
+      if (inputParticles.size()==1 && inputParticles[0]->index==6213) // here we loop over all particles in the collection
+      {
+       DEBUG("Looping one by one\n");
        FuncNode *pippo;
-       for (int ii=0;ii<ipart2_max; ii++){
-        DEBUG("now for particle "<<ii<<"\n");
         DEBUG("it will do: "<<left->getStr()<<"\n");
         if (pippo=dynamic_cast< FuncNode*>(left) ) {
          DEBUG("downcast OK\n");
@@ -98,6 +113,8 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
           }
         }
         
+       for (int ii=0;ii<ipart2_max; ii++){
+        DEBUG("now for particle "<<ii<<"\n");
         pippo->setParticleIndex(0, ii);
         DEBUG("I will do: "<<left->getStr()<<"\t");
         DEBUG("over: "<<right<<"\n");
@@ -110,8 +127,9 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
         result_list.push_back(retval); 
        }
         pippo->setParticleIndex(0, 6213);
-       } else if(oneParticleAtATime){   // here we give an explicit list, like 1,3,4,6..
-        DEBUG("Explicit list in LoopNode\n");
+      } else if(oneParticleAtATime){   // here we give an explicit list, like 1,3,4,6..
+        DEBUG("Explicit list in LoopNode #:"<<inputParticles.size()<<" #spares:"<< spareParticles.size() <<"\n");
+        if (spareParticles.size() == 0 )
         for (int ii=0;ii<inputParticles.size(); ii++){
            int anindex=inputParticles[ii]->index;
            if (anindex > 9999) { // Indices around 10000 are to be looped over
@@ -121,8 +139,21 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
             result_list.push_back(retval); 
             ((LFuncNode*)left)->setParticleIndex(ii, anindex );
            }
-        }// endof over loop over particles
-       } else {
+         DEBUG("end of loop\n");
+        }// endof over loop over particles for explicit list
+        else {
+        for (int ii=0;ii<spareParticles.size(); ii++){
+           int anindex=spareParticles[ii]->index;
+            ((LFuncNode*)left)->setParticleIndex(0, anindex);
+            retval=left->evaluate(ao);
+            DEBUG("retval:"<<retval<<"\n");
+            result_list.push_back(retval); 
+        }
+        ((LFuncNode*)left)->setParticleIndex(0, 16213);
+        DEBUG("end of loop\n");
+        }// endof over loop over particles for implicit list, 0 to many
+
+      } else {
 //--------- here we will simply evaluate the left node and push the result, we use this in object definition
          DEBUG("Obj Driven Loop node, just push the result\n");
          DEBUG("Size:"<<inputParticles.size()<<"\n");
