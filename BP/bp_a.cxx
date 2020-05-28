@@ -166,7 +166,15 @@ int BPdbxA:: readAnalysisParams() {
            tempS2 = "[Histo] ";
            tempS2 += tempS1;
 //           cout <<tempS2<<"\n";
-           effCL.push_back(tempS2);
+           if (algorithmnow) {
+            effCL.push_back(tempS2);
+            CutList2file+=tempLine;
+            CutList2file+="\n";
+           } else {
+              ObjList2file+=tempLine;
+              ObjList2file+="\n";
+           }
+
            continue;
        }
 
