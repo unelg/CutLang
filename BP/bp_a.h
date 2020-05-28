@@ -30,7 +30,7 @@ class BPdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(AnalysisObjects ao );
+      int makeAnalysis(AnalysisObjects *ao, int controlword, int preResults );
       int Finalize();
       int saveHistos() {
         int r = dbxA::saveHistos();

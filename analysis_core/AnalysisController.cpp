@@ -71,9 +71,12 @@ void AnalysisController::Initialize(char *extname) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisObjects> analysis_objs_map){
 
-   int evret=0;
+   int evret=0; // return value of each analysis
    std::string delimiter = "_";
    std::string sysnam="";
+   AnalysisObjects refA0=a0;
+   int controlword=0; // no dependency, all cuts executed.
+   int mainAresults;
    for (int k=0; k<dbxAnalyses.size(); k++) 
    {
         bool aDumper=false; 
@@ -97,8 +100,28 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
        
         if (sysnam.size()< 1){ // not a systematics run condition
              if (!aDumper){ //not a dumper, i.e. BP run
+//-----------------------------assume initial analysis returns this:
+//2:     1,pass  0,fail
+//5:     1,pass  1,pass  1,pass  1,pass  0,fail
+//10005: 1,pass  1,pass  1,pass  1,pass  1,pass
+
+//-------------at this point we should know if anAnalysis depends on Another.
                 DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
-	        evret=dbxAnalyses[k]->makeAnalysis(a0); // regular analysis
+                int lastpass=0;
+                if (k==1) {
+                   if (mainAresults < 10000) controlword=mainAresults;
+                   else {
+                      lastpass=1;
+                      controlword=(mainAresults-10000);
+                   }
+                }
+//----------------------------------------------
+	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
+//----------------------------------------------
+                if (k==0) {
+                    mainAresults=evret; // save the results from main;
+                    std::cout<<"Main at "<<k<<" has evret:"<<evret<<"\n";
+                }
              } else {      // the below is a dumper
                 DEBUG(dbxAnalyses[k]->getName()<<" to be executed with Dumper specials"<<endl);
 		std::map <int, TVector2> metsmap;
@@ -109,14 +132,14 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 			metsmap.insert ( std::pair<int, TVector2> (kmet, a_met));
 			kmet++;
 		}
-		evret=dbxAnalyses[k]->makeAnalysis(a0,metsmap, m_quad_unc);
+		evret=dbxAnalyses[k]->makeAnalysis(&a0,metsmap, m_quad_unc);
              }
-        } else {
+        } else { //systematics run
              map<string, AnalysisObjects>::iterator il=analysis_objs_map.find(sysnam);
              if (il==analysis_objs_map.end()) {cout<<"Systematics name mismatch. "<<sysnam<<" not found, MAJOR error\n"; exit (888);};
                 DEBUG( k<<" "<<dbxAnalyses[k]->getName()<<" also known as "<< il->first<<" to be executed with systematics"<<endl );
 		AnalysisObjects these_objs=il->second;
-		evret=dbxAnalyses[k]->makeAnalysis(these_objs); // generic
+		evret=dbxAnalyses[k]->makeAnalysis(&these_objs); // generic
                 DEBUG("retval=:"<<evret<<endl);
         }
    }

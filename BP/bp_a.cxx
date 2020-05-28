@@ -14,7 +14,7 @@
 #include "dbx_a.h"
 
 //#define __SEZEN__
-//#define _CLV_
+#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -379,14 +379,14 @@ int BPdbxA::bookAdditionalHistos() {
 }
 
 /////////////////////////
-int BPdbxA::makeAnalysis( AnalysisObjects ao ){
+int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass){
 
-  evt_data anevt = ao.evt;
+  evt_data anevt = ao->evt;
 
   DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-  double evt_weight = ao.evt.user_evt_weight;  
+  double evt_weight = ao->evt.user_evt_weight;  
   if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
-  ao.evt.user_evt_weight*=evt_weight;
+  ao->evt.user_evt_weight*=evt_weight;
 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
@@ -413,12 +413,23 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
-        DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
-        double d=iter->second->evaluate(&ao); // execute the selection cut
-        DEBUG("\t****Result : " << d << std::endl);
-        evt_weight = ao.evt.user_evt_weight;
+        double d;
+        DEBUG("**********Selecting: "<<iter->first<<" | ");
+        if ( iter->first < controlword ) {
+// controlword 5 means 1 1 1 1 0, first 4 cuts passed.
+         DEBUG ("preset");
+         d=1;
+// if only 5cuts were there, and all 5 passed, we get a  10000+4
+         } else if (iter->first == controlword ){
+         DEBUG ("preset");
+         d=lastCutPass;
+         }
+         else d=iter->second->evaluate(ao); // execute the selection cut
+         
+        DEBUG("\t***Result : " << d << std::endl);
+        evt_weight = ao->evt.user_evt_weight;
         if (d==0) {
-		if (ao.evt.event_no == (ao.evt.maxEvents - 1)) {	
+		if (ao->evt.event_no == (ao->evt.maxEvents - 1)) {	
 			iter = NodeCuts.begin();
 	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
                 	        int diff = *it - iter->first;
@@ -438,9 +449,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != BinCuts.end())
     {
         DEBUG("+++++ Binning: "<<iter->first<<" |"<<"\t");
-        double d=iter->second->evaluate(&ao); // execute the selection cut
+        double d=iter->second->evaluate(ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
-        evt_weight = ao.evt.user_evt_weight;
+        evt_weight = ao->evt.user_evt_weight;
         if (d==1) { // inside a bin
            DEBUG(iter->first<<" Passed\n"); // do something
            bincounts[iter->first -1]++;
@@ -451,7 +462,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     }// loop over all binnings   
 
 // les cuts sont finis ici.
-    return 1;
+    return 10000+NodeCuts.size();
 }
 
 int BPdbxA::Finalize(){       

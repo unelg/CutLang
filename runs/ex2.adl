@@ -6,3 +6,7 @@ region   testZ
   histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
   select      {ELE[0] ELE[1] }q == 0   # Z is neutral
   histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+
+region testdep
+ testZ
+ select      Size (ELE) < 2
