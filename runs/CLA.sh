@@ -17,6 +17,10 @@ if [ $# -lt 2 ]; then
  exit 1
 fi
 
+
+
+
+
 POSITIONAL=()
 while [[ $# -gt 2 ]]
 do
@@ -25,6 +29,19 @@ key="$3"
 case $key in
     -i|--inifile)
     INIFILE="$4"
+    cat ${INIFILE} | grep -v '#' | grep "region " > pippo
+    cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
+    Nalgo=`cat pippo | wc -l`
+    rm pippo
+
+    if [ $Nalgo -gt 1 ]; then
+     echo Analysis with Multiple Regions
+     ../scripts/separate_algos.sh ${INIFILE}
+    else
+     echo Single Analysis
+     cp ${INIFILE} BP_1-card.ini
+     Nalgo=1
+    fi
     shift # past argument
     shift # past value
     ;;
@@ -45,7 +62,10 @@ case $key in
     exit 1
     ;;
     -d|--deps)
-    DEPS=`cat algdeps.cmd`
+    if [ -f "algdeps.cmd" ]; then
+     DEPS=`cat algdeps.cmd`
+     rm -f algdeps.cmd
+    fi
     shift # past argument
     ;;
     -v|--verbose)
@@ -70,24 +90,6 @@ if [ -n ${datafile+x} ] && [ ! -f "$datafile" ]; then
   tput sgr0
 fi
 
-#echo INIFILE  = "${INIFILE}"
-#echo EVENTS   = "${EVENTS}"
-#echo VERBOSE  = "${VERBOSE}"
-
-
-cat ${INIFILE} | grep -v '#' | grep "region " > pippo
-cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
-Nalgo=`cat pippo | wc -l`
-rm pippo
-
-if [ $Nalgo -gt 1 ]; then
- echo Analysis with Multiple Regions
- ../scripts/separate_algos.sh ${INIFILE}
-else
- echo Single Analysis
- cp ${INIFILE} BP_1-card.ini
- Nalgo=1
-fi
 
 # for ialgo in `seq $Nalgo`; do
 #  ../scripts/ini2txt.sh  BP_$ialgo
@@ -103,7 +105,9 @@ echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOS
 if [ $? -eq 0 ]; then
   echo "CutLang finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-  rm   histoOut-${rbase}.root
+  if [ -f "histoOut-${rbase}.root" ]; then
+    rm -f  histoOut-${rbase}.root
+  fi
   hadd histoOut-${rbase}.root histoOut-BP_*.root
   if [ $? -eq 120 ]; then
    echo "hadd finished successfully, now removing auxiliary files"
