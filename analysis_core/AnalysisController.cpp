@@ -13,7 +13,6 @@
 AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string, int> systematics) 
 {
 	extra_analysis_count=1;
-
 	// ----- how many do we run in parallel ----
 	if (iselect->dosystematics) {
 		for( map<string,int>::iterator it=systematics.begin(); it!=systematics.end(); ++it) {
@@ -21,8 +20,25 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
 		}
 	}
 	aselect=*iselect;
-
 	cout << " #systematic included:"<<syst_names.size() <<endl;
+
+        do_deps=false;
+	string prereqs=aselect.dependencies;
+	if (prereqs.length()>2 ){
+          do_deps=true;
+	  size_t kol=prereqs.find_first_of(':',0);
+	  if (kol == std::string::npos){ cerr<<"Wrong dependency list format. Use: m:i,j,k \n"; exit (14);}
+	  mainAnalysis= atoi(prereqs.substr(0,kol).c_str());
+	  cout<<"Indep region ID:"<<mainAnalysis<<"\n";
+	  std::string depStr = prereqs.substr(kol+1, prereqs.length());
+	  for (size_t i=0,n; i <= depStr.length(); i=n+1) {
+	   n = depStr.find_first_of(',',i);
+	   if (n == std::string::npos) n = depStr.length();
+	     std::string tmp = depStr.substr(i,n-i);
+	     cout <<"Dep region id:"<<atoi(tmp.c_str() )<<"\n";
+             depAnalyses.insert(atoi(tmp.c_str()) );
+	  }
+	} 
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,29 +49,24 @@ void AnalysisController::Initialize(char *extname) {
         int last_a=0;
 
 /*
- *
  *  The BP analysis
- *
  */
 	for (int i=0; i<aselect.BPcount; i++) {
 		char tmp[32];
 		sprintf (tmp,"BP_%i",i+1);
 		dbxAnalyses.push_back( new BPdbxA(tmp) ); // BP analysis with name
 	}
-	cout << "End of BP initialization"<<endl;
-
+	DEBUG("End of BP initialization\n");
 
 /*
- *
  *  Dump analysis
- *
  */
 	for (int i=0; i<aselect.Dumpcount; i++) {
 		char tmp[32];
 		sprintf (tmp,"Dump_%i",i+1);
 		dbxAnalyses.push_back( new DumpdbxA(tmp) ); // Dump analysis with name
 	}
-	cout << "End of Dumper initialization"<<endl;
+	DEBUG("End of Dumper initialization\n");
 
 
 // common suff for all analyses
@@ -70,13 +81,14 @@ void AnalysisController::Initialize(char *extname) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisObjects> analysis_objs_map){
-
+//-------------------------------------------------this is called for each event read from the ntuple file
    int evret=0; // return value of each analysis
    std::string delimiter = "_";
    std::string sysnam="";
    AnalysisObjects refA0=a0;
    int controlword=0; // no dependency, all cuts executed.
    int mainAresults;
+
    for (int k=0; k<dbxAnalyses.size(); k++) 
    {
         bool aDumper=false; 
@@ -90,12 +102,14 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
          ana.erase(0, pos + delimiter.length());
          token_cnt++;
          if (token=="Dump") { aDumper=true; break;}
+/*
          if (token_cnt>1) { // systematics or QCD or WHF
            if ((ana.find("WHF") == std::string::npos) && (ana.find("qcd") == std::string::npos ) ){
             sysnam=ana;
             break;
            }
          }
+*/
         }
        
         if (sysnam.size()< 1){ // not a systematics run condition
@@ -108,19 +122,23 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 //-------------at this point we should know if anAnalysis depends on Another.
                 DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
                 int lastpass=0;
-                if (k==1) {
-                   if (mainAresults < 10000) controlword=mainAresults;
+               if(do_deps) {
+                if ( depAnalyses.find(k) != depAnalyses.end() ){ // if this is analysis 1, we are dependent, get info from 0.
+                   if (mainAresults < 10000) controlword=mainAresults; // means last cut fails.
                    else {
                       lastpass=1;
                       controlword=(mainAresults-10000);
                    }
                 }
+               }
 //----------------------------------------------
 	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
 //----------------------------------------------
-                if (k==0) {
+               if(do_deps) {
+                   if (k==mainAnalysis) {
                     mainAresults=evret; // save the results from main;
                     std::cout<<"Main at "<<k<<" has evret:"<<evret<<"\n";
+                   }
                 }
              } else {      // the below is a dumper
                 DEBUG(dbxAnalyses[k]->getName()<<" to be executed with Dumper specials"<<endl);

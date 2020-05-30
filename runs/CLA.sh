@@ -5,6 +5,7 @@ EVENTS=0
 INIFILE=CLA.ini
 VERBOSE=5000
 STRT=0
+DEPS=" "
 datafile=$1
 datatype=$2
 
@@ -42,6 +43,10 @@ case $key in
     cat $0 | grep '|-'|grep -v grep| cut -f1 -d')'
     echo "ROOT file type can be:"; grep "inptype ==" ../CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
     exit 1
+    ;;
+    -d|--deps)
+    DEPS=`cat algdeps.cmd`
+    shift # past argument
     ;;
     -v|--verbose)
     VERBOSE="$4"
@@ -93,8 +98,8 @@ if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
 fi
 
 rm histoOut-BP_*.root 2>/dev/null 
-echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
-../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
+../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
 if [ $? -eq 0 ]; then
   echo "CutLang finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`

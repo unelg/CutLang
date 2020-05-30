@@ -9,4 +9,8 @@ region   testZ
 
 region testdep
  testZ
- select      Size (ELE) < 2
+ select      Size (JET) >= 2
+
+region mapkap
+ testZ
+ select      Size (MUO) == 2

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 INIFILE=CLA.ini
 
 if [ $# == 1 ]; then
@@ -20,7 +19,7 @@ initot=`wc -l ${INIFILE} |  awk '{ print $1 }'`
 
 head -n $inihead ${INIFILE} | grep -v algo > _head.ini
 tail -n $(( initot - $inihead +1 )) ${INIFILE} > _algos.ini
-
+rm -rf out1
 
 algo_list=`cat _algos.ini | grep -n algo | cut -f1 -d":"`
 
@@ -30,6 +29,8 @@ for an_algo in $algo_list ; do
  algo1p=$(( an_algo + 1  ))
  thisline=`head -n $an_algo _algos.ini| tail -n 1`
  nextline=`head -n $algo1p  _algos.ini| tail -n 1`
+ depalgo=-1
+ mainalgo=-1
 
 ### echo $an_algo  $thisline $nextline
 
@@ -38,20 +39,35 @@ for an_algo in $algo_list ; do
  if [ $next_rline == $an_algo ]; then
    next_rline=`wc -l _algos.ini |  awk '{ print $1+1 }'`
  fi
- printf 'A region named:%20s \t is defined in lines from %d to %d\n' "[$this_region_name]" "$an_algo" "$next_rline"
+ printf 'A region, ID:%3s named:%20s \t is defined in lines from %d to %d\n' "$((iregion -1 ))" "[$this_region_name]" "$an_algo" "$next_rline"
 
  if [[ $nextline != *"cmd "* ]] && [[ $nextline != *"select "* ]] && [[ $nextline != *"histo "* ]]; then
   echo "   this region depends on:"  $nextline
   cat $nextline > $this_region_name
   awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart+1 && NR < lfinish' _algos.ini >> $this_region_name 
-  
+  depalgo=$((iregion -1 ))
  else
   awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart && NR < lfinish' _algos.ini > $this_region_name 
+  mainalgo=$((iregion -1 ))
  fi
  cat _head.ini > BP_${iregion}-card.ini
  echo $thisline >> BP_${iregion}-card.ini
  cat $this_region_name >> BP_${iregion}-card.ini
+ 
+# echo  $mainalgo ":" $depalgo
+ if [[ $mainalgo -gt -1 ]] && [[ $depalgo -eq -1 ]]; then
+   echo -n ${mainalgo}":">> out1
+ fi
+ if [[ $mainalgo -eq -1 ]] && [[ $depalgo -gt -1 ]]; then
+   echo -n  $depalgo",">> out1
+ fi
+
 done
+echo >> out1
+depregs=`cat out1 | grep ','| sed 's/.$//'`
+if [ ${#depregs} -gt 0 ]; then
+ echo "-P ${depregs}" >algdeps.cmd
+fi
 
 # CLEAN the region names
 for an_algo in $algo_list ; do
