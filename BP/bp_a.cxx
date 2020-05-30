@@ -14,7 +14,7 @@
 #include "dbx_a.h"
 
 //#define __SEZEN__
-#define _CLV_
+//#define _CLV_
 
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
@@ -437,14 +437,15 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         DEBUG("\t***Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
         if (d==0) {
-		if (ao->evt.event_no == (ao->evt.maxEvents - 1)) {	
-			iter = NodeCuts.begin();
+		if (ao->evt.event_no == (ao->evt.maxEvents - 1)) {	// to close
+			std::map<int, Node*>::iterator jter = NodeCuts.begin();
 	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
-                	        int diff = *it - iter->first;
-                                for(int i = 0; i < diff; i++) iter++;
-                               	iter->second->saveFile();
+                	        int diff = *it - jter->first;
+                                for(int i = 0; i < diff; i++) jter++;
+                               	jter->second->saveFile();
         	        }
 		}
+                DEBUG("Return:"<<iter->first<<"\n");
 		return iter->first;         // quits the event.
 	}
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.

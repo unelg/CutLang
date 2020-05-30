@@ -137,7 +137,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                if(do_deps) {
                    if (k==mainAnalysis) {
                     mainAresults=evret; // save the results from main;
-                    std::cout<<"Main at "<<k<<" has evret:"<<evret<<"\n";
+                    DEBUG("Main at "<<k<<" has evret:"<<evret<<"\n");
                    }
                 }
              } else {      // the below is a dumper
