@@ -41,7 +41,7 @@ for an_algo in $algo_list ; do
  fi
  printf 'A region, ID:%3s named:%20s \t is defined in lines from %d to %d\n' "$((iregion -1 ))" "[$this_region_name]" "$an_algo" "$next_rline"
 
- if [[ $nextline != *"cmd "* ]] && [[ $nextline != *"select "* ]] && [[ $nextline != *"histo "* ]]; then
+ if [[ $nextline != *"cmd "* ]] && [[ $nextline != *"select "* ]] && [[ $nextline != *"histo "* ]] && [[ $nextline != *"weight "* ]]; then
   echo "   this region depends on:"  $nextline
   cat $nextline > $this_region_name
   awk -v lstart=$an_algo -v lfinish=$next_rline  'NR > lstart+1 && NR < lfinish' _algos.ini >> $this_region_name 
