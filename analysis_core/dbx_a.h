@@ -34,13 +34,14 @@ public:
    virtual int makeAnalysis(AnalysisObjects ao, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
 
    virtual int saveHistos();
+   virtual int defHistos(unsigned int);
    string getName() { return cname;}
    virtual int initGRL() { return 0;}
    virtual int readAnalysisParams() { return 0;}
    virtual int bookAdditionalHistos() { return 0;}
    virtual int setQCD() { return 0;}
    virtual int printEfficiencies() { return 0;}
-   virtual int setDir(char *, unsigned int a); // to have multiple directories
+   virtual int setDir(char *); // to have multiple directories
    virtual int ChangeDir(char *); // to be able to cd later on
    virtual int addRunLumiInfo(int rn, int lbn); // to have list of run and lumi block numbers
    static const string perName[NPERIOD];

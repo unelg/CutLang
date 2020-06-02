@@ -1,6 +1,5 @@
 // mtautau used in CMS-SUS-16-048
 #include "TLorentzVector.h"
-
 //namespace softdilepton {
 
   // Find m(tautau) for boosted taus with alligned decay products.
@@ -49,3 +48,4 @@
 
 }
 */
+

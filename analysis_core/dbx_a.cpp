@@ -44,7 +44,7 @@ int dbxA:: makeAnalysis(AnalysisObjects ao, int idx) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: saveHistos() {
+int dbxA::saveHistos() {
   int retval=0;
   cout << "saving...\t";
   histoOut->Flush();
@@ -54,17 +54,22 @@ int dbxA:: saveHistos() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: ChangeDir(char *dn) {
+int dbxA::ChangeDir(char *dn) {
  histoOut->cd(dn);
  return 0;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: setDir(char *dn, unsigned int effsize) {
+int dbxA::setDir(char *dn) {
   int retval=0;
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
+  return retval;
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int dbxA::defHistos( unsigned int effsize) {
+  int retval=0;
   eff= new TH1D("cutflow","cutflow event counts ",effsize,0.5,effsize+0.5);
   rntuple = new TNtuple("rntuple","run info","rn:lb");
   return retval;

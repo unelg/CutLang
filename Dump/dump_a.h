@@ -20,8 +20,9 @@ class DumpdbxA : public dbxA {
       DumpdbxA(char *aname) : dbxA ( aname)
          {
          sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-         int r=dbxA::setDir(cname, 30);  // make the relevant root directory
+         int r=dbxA::setDir(cname);  // make the relevant root directory
          if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+         r=dbxA::defHistos(30);  // make the relevant root directory
          //grl_cut=false;
          }
       int getInputs();

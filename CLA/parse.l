@@ -93,7 +93,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [dD][eE][tT][aA] return DETA;
 [sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs
 "nbf" return NBF;
-"HT" return HT;
+"fHT" return HT;
 "METMWT" return METMWT;
 "MWT" return MWT;
 "MET" return MET;
@@ -116,6 +116,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "#".*"\n" ;
 [ \t\n] ;
 [sS][uU][mM] return SUM;
+[aA][dD][dD] return ADD;
 [sS][aA][vV][eE] return SAVE;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
