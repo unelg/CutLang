@@ -1,7 +1,9 @@
 %error-verbose
 //%define parse.error verbose
 %{ 
+
 #include "NodeTree.h"
+#include "ExternFunctions.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -42,7 +44,8 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<myParticle*> TmpParticle2;//to be used for list of 3 particles
 vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
-std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST; 
+std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
+std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -80,7 +83,7 @@ std::map< std::string, unordered_set<int> > SearchNode::FORBIDDEN_INDEX_LIST;
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
-%token PERM COMB SORT TAKE UNION SUM 
+%token PERM COMB SORT TAKE UNION SUM ADD
 %token ASCEND DESCEND ALIAS 
 %token <real> NB
 %token <integer> INT
@@ -140,8 +143,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
-/*
-            | DEF ID '=' SUM '(' particle ')' {  DEBUG($2<<" will be defined as the SUM of particles.\n");
+
+            | DEF ID '=' ADD '(' particule ')' {  DEBUG($2<<" will be defined as the ADDition of particles.\n");
                                    pnum=0;
                                    string name = $2;
                                    map<string,vector<myParticle*> >::iterator itn;
@@ -153,7 +156,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                    }
                                    vector<myParticle*> newpList;
                                    TmpParticle.swap(newpList);
-                                   string partname=TmpParticle[0]->collection;
+                                   string partname=newpList[0]->collection;
+                                   int ptype=newpList[0]->type; // type is JETS or FJETS etc..
                                    map<string, Node *>::iterator it;
                                    it = ObjectCuts->find(partname); // find from which object we are making the new one
                                    if(it == ObjectCuts->end()) {
@@ -161,24 +165,25 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
                                            YYERROR;
                                    } else {
+                                           string nameo=name+"internalObj";
                                            Node* previous=it->second;
+                                           Node* v0= new ValueNode(1);
+                                           Node* c1= new SFuncNode(userfuncA, sumobj, ptype, nameo, it->second);
+                                           Node* n1= new BinaryNode(eq,c1,v0,"==");
                                            vector<Node*> newCriList; // criterion list, will only have 1 selection                             
-// fbilmemne  == 1 criterini koy
-//                                 int type=newList[0]->type; // type is JETS or FJETS etc..
-//                                 $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
-                                           string nameo=name+"obj";
+                                           newCriList.push_back(n1);
                                            Node* obj=new ObjectNode(nameo,previous,NULL,newCriList,nameo);
                                            ObjectCuts->insert(make_pair(nameo,obj));
 // now define the 0th particle of new obj 
                                            myParticle* a = new myParticle;
-                                           a->type = TmpParticle[0]->type ; a->index =0; a->collection = nameo;
+                                           a->type = ptype; a->index =0; a->collection = nameo;
                                            vector<myParticle*> newList;
                                            newList.push_back(a);
 // insert the 0th element of new obj                               
                                            ListParts->insert(make_pair(name,newList));
                                            parts->push_back(name+" : "+$6);
                                    }
-*/
+            }
             |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
@@ -490,6 +495,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         $$=new FuncNode(Rapof,newList,"rap");
                                   }
          | '{' particules '}' ETA {     vector<myParticle*> newList;
+                                        DEBUG("Eta with "<<TmpParticle.size()<<" particles\n");
+                                        for (int ij=0; ij<TmpParticle.size(); ij++){
+                                          DEBUG("Col:"<<TmpParticle[ij]->collection<< " type:"<<TmpParticle[ij]->type<<" idx:"<<TmpParticle[ij]->index<<"\n");
+                                        }
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Etaof,newList,"eta");
                                   }
@@ -574,13 +583,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                           if (it != ObjectCuts->end()){
+                                           if (it != ObjectCuts->end()) {
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count, type, it->first, it->second);
                                            } else { // new type is defined using particle class summation
                                             vector<myParticle*> newList= itdef->second;
-                                           // TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
-                                           // $$=new SFuncNode(count,100, itdef->
                                            }
                                        }
                            }
@@ -703,7 +710,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | ALL {  $$=new SFuncNode(all,0, "all"); }
         ;
 //-------------------------------------------------------------------------
- e :  e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
+ e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
    | e '-' e { $$=new BinaryNode(sub,$1,$3,"-"); }
    | e '*' e { $$=new BinaryNode(mult,$1,$3,"*"); }
    | e '/' e { $$=new BinaryNode(div,$1,$3,"/"); }
@@ -823,47 +830,50 @@ list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particule
                                                         }
      ;
 particules : particules particule {                                                 
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);                                       
+                            DEBUG("Got a new particle"<<$2<<", size:"<<TmpParticle.size()<<"\t");
+                            int ip=TmpParticle.size()-1;
+                            DEBUG("collection:"<<TmpParticle[ip]->collection<<" t:"<<TmpParticle[ip]->type<<" i:"<<TmpParticle[ip]->index<<"\n");
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
+                            DEBUG("Check the new particle, size:"<<TmpParticle.size()<<"\t");
+                            int ik=TmpParticle.size()-1;
+                            DEBUG("collection:"<<TmpParticle[ik]->collection<<" t:"<<TmpParticle[ik]->type<<" i:"<<TmpParticle[ik]->index<<"\n");
                                   }
             | particules '+' particule {
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$3);
-                                                strcpy($$,s);                                       
+                                                string s=$$;
+                                                string s2=$3;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                   }
             | particule {   if (pnum==0){ $$=strdup($1);    }
                                         else{                                                
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$1);
-                                                strcpy($$,s);
+                                                string s=$$;
+                                                string s2=$1;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                         }
                                         pnum++;
+                            DEBUG("Got the first particle, size:"<<TmpParticle.size()<<"\t");
+                            DEBUG("collection:"<<TmpParticle[0]->collection<<" t:"<<TmpParticle[0]->type<<" i:"<<TmpParticle[0]->index<<"\n");
                          }
 //          | '+' particule  {   if (pnum==0){ $$=strdup($2); }
 //                                      else{                                                
-//                                              char s [512];
-//                                              strcpy(s,$$); 
-//                                              strcat(s," ");
-//                                              strcat(s,$2);
-//                                              strcpy($$,s);
+//                                              string s=$$;
+//                                              string s2=$1;
+//                                              s=s+" "+s2;
+//                                              $$=strdup(s.c_str());
 //                                      }
 //                                      pnum++;
 //                       }
             | '-' particule {  if (pnum==0){ 
                                             $$=strdup($2); }
                                         else{
-                                                char s [512];
-                                                strcpy(s,$$);
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                         }
                                         TmpParticle[ TmpParticle.size()-1]->type*=-1;
                                         pnum++;
@@ -890,7 +900,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 10; a->index = 10000+ii; a->collection = "Truth";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | GEN '_' index ':' index {
@@ -899,7 +913,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 10; a->index = 10000+ii; a->collection = "Truth";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
 
@@ -918,15 +936,16 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);
                          }
 
-	| ELE '_' index {       DEBUG("electron particule:"<<(int)$3<<"\n");
-                                myParticle* a = new myParticle;
+	| ELE '_' index {       DEBUG("found an electron particule:"<<(int)$3<<"\t");
+                                myParticle *a= new myParticle;
                                 a->type =1; a->index = (int)$3; a->collection = "ELE";
-                                TmpParticle.push_back(a);                            
+                                TmpParticle.push_back(a);
+                                DEBUG("type:"<<a->type<<"\n");                            
                                 tmp="ele_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                           }
         | ELE '[' index ']' {   myParticle* a = new myParticle;
-                                a->type =1; a->index = (int)$3; a->collection = "ELE";
+                                a->type =electron_t; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -934,7 +953,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | ELE               {
                                 DEBUG("all electron particules \t");
                                 myParticle* a = new myParticle;
-                                a->type =1; a->index = 6213; a->collection = "ELE";
+                                a->type =electron_t; a->index = 6213; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 tmp="ele_6213";
                                 $$=strdup(tmp.c_str());
@@ -944,8 +963,12 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
-                                 TmpParticle.push_back(a);
+                                 a->type = electron_t; a->index = 10000+ii; a->collection = "ELE";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | ELE '_' index ':' index {
@@ -953,8 +976,12 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1; a->index = 10000+ii; a->collection = "ELE";
-                                 TmpParticle.push_back(a);
+                                 a->type = electron_t; a->index = 10000+ii; a->collection = "ELE";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | MUO '[' index ']' {   
@@ -985,7 +1012,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 12; a->index = 10000+ii; a->collection = "MUO";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
 
@@ -995,7 +1026,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 12; a->index = 10000+ii; a->collection = "MUO";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | TAU '[' index ']' {   
@@ -1021,7 +1056,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 11; a->index = 10000+ii; a->collection = "TAU";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | TAU '_' index ':' index {
@@ -1030,7 +1069,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 11; a->index = 10000+ii; a->collection = "TAU";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
 
@@ -1045,8 +1088,8 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1; 
-                                if(DataFormats->at(1)>0) a->type = 12; 
+                                a->type = 1; a->collection = "ELE";
+                                if(DataFormats->at(1)>0) { a->type = 12;  a->collection = "MUO";}
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
@@ -1055,10 +1098,14 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 12;
+                                 a->type = 1; a->collection = "ELE";
+                                 if(DataFormats->at(1)>0) { a->type = 12;  a->collection = "MUO";}
                                  a->index = 10000+ii;
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | LEP '_' index ':' index {
@@ -1066,18 +1113,21 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 1;
-				 if(DataFormats->at(1)>0) a->type = 12;
+                                 a->type = 1; a->collection = "ELE";
+                                 if(DataFormats->at(1)>0) { a->type = 12;  a->collection = "MUO";}
                                  a->index = 10000+ii;
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 1;
-                                if(DataFormats->at(1)>0) a->type = 12;
-                                a->index = (int)$3;
+                                a->index = (int)$3; a->type = 1; a->collection = "ELE";
+                                if(DataFormats->at(1)>0) { a->type = 12;  a->collection = "MUO";}
                                 TmpParticle.push_back(a);  
                         }
 
@@ -1100,7 +1150,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 8; a->index = 10000+ii; a->collection = "PHO";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | PHO '_' index ':' index {
@@ -1109,7 +1163,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 8; a->index = 10000+ii; a->collection = "PHO";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
        | PHO            {      
@@ -1132,7 +1190,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 2; a->index = 10000+ii; a->collection = "JET";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | JET '_' index ':' index {
@@ -1141,7 +1203,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 2; a->index = 10000+ii; a->collection = "JET";
-                                 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | JET '_' index {       tmp="jet_"+to_string((int)$3);                        
@@ -1189,7 +1255,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 3; a->index = 10000+ii; a->collection = "JET";
-				 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | BJET '_' index ':' index {
@@ -1198,7 +1268,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 3; a->index = 10000+ii; a->collection = "JET";
-				 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | FJET '_' index {      tmp="fjet_"+to_string((int)$3);                        
@@ -1219,7 +1293,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 9; a->index = 10000+ii; a->collection = "FJET";
-				 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | FJET '_' index ':' index {
@@ -1228,7 +1306,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
                                  a->type = 9; a->index = 10000+ii; a->collection = "FJET";
-				 TmpParticle.push_back(a);
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
        | FJET           {      
@@ -1242,15 +1324,13 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | QGJET '[' index ']' { tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 4;
-                                a->index = (int)$3;
+                                a->type = 4; a->index = (int)$3; a->collection = "QCJET";
                                 TmpParticle.push_back(a);  
                         }
         | QGJET '_' index {      tmp="qgjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 4;
-                                a->index = (int)$3;
+                                a->type = 4; a->index = (int)$3; a->collection = "QCJET";
                                 TmpParticle.push_back(a);  
                         }
         | QGJET '[' index ':' index ']' {
@@ -1258,9 +1338,12 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 4;
-                                 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
+                                 a->type = 4; a->index = 10000+ii; a->collection = "QCJET";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | QGJET '_' index ':' index {
@@ -1268,9 +1351,12 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 4;
-                                 a->index = 10000+ii;
-				 TmpParticle.push_back(a);
+                                 a->type = 4; a->index = 10000+ii; a->collection = "QCJET";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
         | NUMET '_' index {     tmp="numet_"+to_string((int)$3);                        
@@ -1285,6 +1371,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
+/*
         | NUMET '[' index ':' index ']' {
                                 tmp="numet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
@@ -1307,6 +1394,7 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
 				 TmpParticle.push_back(a);
                                 }
                         } 
+*/
         | METLV '[' index ']' { tmp="metlv_"+to_string((int)$3);            
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1322,7 +1410,6 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);  
                         }
         | ID '[' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-                //ngu
                 DEBUG("ID with [ index ]\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
@@ -1413,7 +1500,6 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                 }
              }
         | ID '[' index ':' index ']' { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-                //ngu
                 DEBUG("ID ---[]---\t");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
@@ -1433,7 +1519,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 2; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
                         else if (otype == 20 ) {
@@ -1443,7 +1533,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 20; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
 			else if (otype == 10 ) {
@@ -1453,7 +1547,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 10; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         } 
                         else if (otype == 1 ) {
@@ -1463,7 +1561,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 1; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
                         else if (otype==12 ) {
@@ -1473,7 +1575,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 12; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
                         else if (otype==11 ) {
@@ -1483,7 +1589,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 11; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
                         else if (otype==8 ) {
@@ -1493,7 +1603,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 8; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
                         else if (otype==9 ) {
@@ -1503,7 +1617,11 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                   myParticle* a = new myParticle;
                                   a->type = 9; a->index=10000+ii; a->collection = $1;
-                                  TmpParticle.push_back(a);
+                                  if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
                                 }
                         }
                        } else {
@@ -1701,14 +1819,47 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         $$=strdup(tmp.c_str());               
                        }
                 } else {
-                        DEBUG("IDSize:"<<TmpParticle.size()<<"\n");
+                        DEBUG("IDSize:"<<TmpParticle.size()<<" ");
                         vector<myParticle*> newList= it->second;
-                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
-                        DEBUG("NO PROBLEM\n");
+                        DEBUG("Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n");
+                        DEBUG("Checking if it was previously checked.\n");
+// check all cuts here, if we see size( $1) OK, otherwise add.
+                        if (NodeCuts->size() > 0) {
+                          std::map<int, Node*>::iterator iter = NodeCuts->begin();
+                          std::size_t sfound=std::string::npos;
+                          string aparticle=newList[0]->collection;
+                          while(iter != NodeCuts->end()) {
+                             string pippo=iter->second->getStr().Data();
+                             sfound=pippo.find(aparticle);
+                             if (sfound !=std::string::npos) {
+                                DEBUG($1<< "found in previous cuts, nothing to do.\n");
+                                break;
+                             }
+                             iter++;
+                          }
+                          if (sfound == std::string::npos){ 
+                           cout << aparticle<< " is seen first time, Adding size>0 cut.\t";
+                           map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
+                           if (it == ObjectCuts->end() ) {
+                              std::string message = "OBJect not defined: ";
+                              message += aparticle;
+                              yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                              YYERROR;
+                           } else {
+                              int type=((ObjectNode*)it->second)->type;
+                              Node* ac=new SFuncNode(count, type, it->first, it->second);
+                              Node* v0= new ValueNode(0);
+                              Node* n1= new BinaryNode(ge,ac,v0,">=");
+                              NodeCuts->insert(make_pair(++cutcount,n1));
+                              DataFormats->push_back(double(cutcount));
+                              cout << "done.\n";
+                           }
+                          }
+                        }
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
-                }
-             }
+                 }
+        }
         ;
 //----------------------------------------
 index : '-' INT {$$=-$2;}
@@ -2089,7 +2240,161 @@ criteria : criteria criterion
          ;
 criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
-          | REJEC condition { TmpCriteria.push_back($2); }
+          | REJEC condition { Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+                              TmpCriteria.push_back(a); }
+
+          | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($12);
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($12<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
+                                                TmpCriteria.push_back(h);
+                                        }
+    
+				}
+        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($12);
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($12<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
+                                                TmpCriteria.push_back(h);
+                                        }
+    
+				}
+        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                TmpCriteria.push_back(h);
+				}
+        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                TmpCriteria.push_back(h);
+				}
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
+					map<string, Node *>::iterator it1 ;
+					map<string, Node *>::iterator it2 ;
+                                        it1 = NodeVars->find($18);
+					it2 = NodeVars->find($20);
+                        
+                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
+                                                Node* child1=it1->second;
+						Node* child2=it2->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                TmpCriteria.push_back(h);
+                                        }
+                                        else {
+						DEBUG($18 <<"or" << $20 <<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' ID {
+					map<string, Node *>::iterator it1 ;
+					map<string, Node *>::iterator it2 ;
+                                        it1 = NodeVars->find($18);
+					it2 = NodeVars->find($20);
+                        
+                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
+                                                Node* child1=it1->second;
+						Node* child2=it2->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                TmpCriteria.push_back(h);
+                                        }
+                                        else {
+						DEBUG($18 <<"or" << $20 <<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' function {
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($18);
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($18<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                TmpCriteria.push_back(h);
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' function {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($18);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($18<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                TmpCriteria.push_back(h);
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' ID {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($20);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($20<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                                TmpCriteria.push_back(h);
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' ID {
+                                        //find child node
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($20);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($20<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+					}
+
+	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' function {
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                TmpCriteria.push_back(h);
+				}
+        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' function{
+                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                TmpCriteria.push_back(h);
+				}
+	;
           ;
 commands : commands command 
         | 
@@ -2208,9 +2513,7 @@ command : CMD condition { //find a way to print commands
         | CMD ifstatement {   NodeCuts->insert(make_pair(++cutcount,$2));
 		          }
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
-                                        //find child node
                                         map<string, Node *>::iterator it ;
-//                                      DEBUG( "\nID:"<< $12 <<"\n");
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
@@ -2220,16 +2523,13 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
     
 				}
         | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
-                                        //find child node
                                         map<string, Node *>::iterator it ;
-//                                        DEBUG( "\nID:"<< $12 <<"\n");
                                         it = NodeVars->find($12);
                         
                                         if(it == NodeVars->end()) {
@@ -2239,34 +2539,29 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
     
 				}
         | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<<" @"<<child<<"\n");
+                                                DEBUG("all INT 1D func histo defined.\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-// Nant was here
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;
-//                                        DEBUG( "\nID:"<< $18 <<"\n");
                                         it1 = NodeVars->find($18);
 					it2 = NodeVars->find($20);
                         
                                         if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
                                                 Node* child1=it1->second;
 						Node* child2=it2->second;
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child1<<" @"<<child2<<"\n" );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -2280,14 +2575,12 @@ command : CMD condition { //find a way to print commands
 	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;
-//                                        DEBUG( "\nID:"<< $18 <<"\n");
                                         it1 = NodeVars->find($18);
 					it2 = NodeVars->find($20);
                         
                                         if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
                                                 Node* child1=it1->second;
 						Node* child2=it2->second;
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child1<<" @"<<child2<<"\n" );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -2301,7 +2594,6 @@ command : CMD condition { //find a way to print commands
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' function {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        DEBUG( "\nID:"<< $18 <<"\n");
                                         it = NodeVars->find($18);
                         
                                         if(it == NodeVars->end()) {
@@ -2311,7 +2603,6 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child<< $20"\n" );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -2320,7 +2611,6 @@ command : CMD condition { //find a way to print commands
 	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' function {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        DEBUG( "\nID:"<< $18 <<"\n");
                                         it = NodeVars->find($18);
                         
                                         if(it == NodeVars->end()) {
@@ -2330,7 +2620,6 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< " @"<<child<< $20"\n" );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -2339,7 +2628,6 @@ command : CMD condition { //find a way to print commands
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        DEBUG( "\nID:"<< $20 <<"\n");
                                         it = NodeVars->find($20);
                         
                                         if(it == NodeVars->end()) {
@@ -2349,7 +2637,6 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<<$18<<" @"<<child<<"\n"  );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
@@ -2358,7 +2645,6 @@ command : CMD condition { //find a way to print commands
 	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
-//                                        DEBUG( "\nID:"<< $20 <<"\n");
                                         it = NodeVars->find($20);
                         
                                         if(it == NodeVars->end()) {
@@ -2368,19 +2654,16 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-//                                              DEBUG(  "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<<$18<<" @"<<child<<"\n"  );
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
 
 	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' function {
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< $18 << $20);
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
         | HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' function{
-//                                              DEBUG( "\nnew node:"<< $2 <<" t:"<<$4<<"| "<< $6 <<" "<< $8 <<" " << $10<< $12<< $14<< $16<< $18 << $20);
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
@@ -2388,18 +2671,17 @@ command : CMD condition { //find a way to print commands
 	| SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;
 description : description HID {                                                 
-                                                char s [512];
-                                                strcpy(s,$$); 
-                                                strcat(s," ");
-                                                strcat(s,$2);
-                                                strcpy($$,s);                                       
+                                                string s=$$;
+                                                string s2=$2;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                               }
             | HID {if (dnum==0){ $$=strdup($1);                                                       
-                               } else{     char s [512];
-                                           strcpy(s,$$); 
-                                           strcat(s," ");
-                                           strcat(s,$1);
-                                           strcpy($$,s);
+                               } else{  
+                                                string s=$$;
+                                                string s2=$1;
+                                                s=s+" "+s2;
+                                                $$=strdup(s.c_str());
                                        }
                   }
         ;
