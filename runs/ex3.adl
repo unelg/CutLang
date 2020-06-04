@@ -4,6 +4,7 @@ define Zreco : MUO[0] MUO[1]
 
 region   test
   select      ALL              # to count all events
+  histo       hamet, "MET (GeV) ", 100, 0.0, 2000.0, MET
   select      Size (MUO) >= 2  # events with 2 or more electrons 
   histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
   select      {Zreco}q == 0   # Z is neutral
