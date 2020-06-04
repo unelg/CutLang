@@ -77,13 +77,14 @@ public:
     virtual double evaluate(AnalysisObjects* ao) override {
         if (dim == 1) // this if has to go. we can make 2 independent and similar classes
 		{
-
                   this->getParticles(&inputParticles);
+                  DEBUG("Histo received particles:"<< inputParticles.size()<<"\n");
                   for (int ii=0; ii<inputParticles.size(); ii++){
                       DEBUG("Histo particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                         << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
                   }
-                  if (inputParticles[0]->index == 6213){
+                  if (inputParticles.size()>0 ) { 
+                    if (inputParticles[0]->index == 6213){
                       std::string bcol2=inputParticles[0]->collection;
                       bool constiloop=false;
                       std::string consname;
@@ -136,8 +137,8 @@ public:
 		             ahisto1->Fill(value, ao->evt.user_evt_weight);
                            }
                            pippo->setParticleIndex(0, 6213);
-                  } else 
-                  {
+                   }// end of inner if
+                  } else {
                            double value = left->evaluate(ao);
 		           ahisto1->Fill(value, ao->evt.user_evt_weight);
                   }
