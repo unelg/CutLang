@@ -64,6 +64,9 @@ typedef struct evt_data
                 weight_pileup=right.weight_pileup;
               weight_leptonSF=right.weight_leptonSF;
              weight_bTagSF_77=right.weight_bTagSF_77;
+      	    correction_weight=right.correction_weight;
+      	    luminosity_weight=right.luminosity_weight;
+		 weight_xsec =right.weight_xsec; 
                 weight_jvt   =right.weight_jvt;
        weight_sherpa_22_vjets=right.weight_sherpa_22_vjets;
              weight_pileup_UP=right.weight_pileup_UP;
@@ -135,6 +138,9 @@ typedef struct evt_data
    Float_t         weight_pileup;
    Float_t         weight_leptonSF;
    Float_t         weight_bTagSF_77;
+   Float_t         correction_weight;
+   Float_t         luminosity_weight;
+   Float_t         weight_xsec;
    Float_t         weight_jvt;
    Float_t         weight_sherpa_22_vjets;
    Float_t         weight_pileup_UP;
