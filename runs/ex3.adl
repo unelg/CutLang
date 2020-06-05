@@ -9,3 +9,7 @@ region   test
   histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
   select      {Zreco}q == 0   # Z is neutral
   histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
+ 
+region mest
+  test
+  select size(JET) > 2
