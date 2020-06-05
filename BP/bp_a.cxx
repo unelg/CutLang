@@ -389,17 +389,18 @@ int BPdbxA::bookAdditionalHistos() {
 /////////////////////////
 int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass){
 
-  evt_data anevt = ao->evt;
+  evt_data anevt = ao->evt; // event information
 
-  DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-  double evt_weight = ao->evt.user_evt_weight;  
-  if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
-  ao->evt.user_evt_weight*=evt_weight;
+  DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
+  double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
+  if (controlword == 0){
+    if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+    ao->evt.user_evt_weight*=evt_weight;
+  }
 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
-//cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -448,6 +449,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                 DEBUG("Return:"<<iter->first<<"\n");
 		return iter->first;         // quits the event.
 	}
+        DEBUG("W:"<<evt_weight<<"\n");
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts

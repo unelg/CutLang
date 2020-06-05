@@ -130,6 +130,8 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                       controlword=(mainAresults-10000);
                    }
                 }
+               } else {
+                  a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                }
 //----------------------------------------------
 	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
