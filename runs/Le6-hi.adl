@@ -30,7 +30,7 @@ define      totmetwpt : { Wreco }Pt + { METLV_0 }Pt
 ###### EVENT SELECTION
 algo  preselection
 select      ALL            # to count all events
-#select      XSLumiCorrSF
+select      XSLumiCorrSF
 select      Size(goodMUO) >= 2
 select      Size(goodELE) >= 1
 select      Size(goodJET) >= 2
@@ -57,7 +57,6 @@ select      { goodELE_0 }Pt >= 40
 select      MET >= 40
 ##### 2nd HISTO GROUP #####
 histo      LeWm2 , "LeW reconst (GeV)", 50, 0, 0, m(LeW)
-histo     eleadpt1 , "e Pt (GeV)", 40, 0, 400, { goodELE_0 }Pt
 histo     Lem1 , "LeZ reconst (GeV)", 50, 100, 250, m(LeZ)
 #histo     Lem01 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
 histo     met1 , "MET (GeV)", 40, 0, 500, { METLV_0 }Pt

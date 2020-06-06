@@ -4,6 +4,7 @@
 
 #include "NodeTree.h"
 #include "ExternFunctions.h"
+#include "bp_a.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -46,6 +47,8 @@ vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
 std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
+std::map< int, vector<myParticle *> > BPdbxA::particleBank;
+
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
