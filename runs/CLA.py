@@ -21,6 +21,21 @@ def removePattern(pattern):
         for i in pattern:
             os.remove(i)
 
+
+def getStringCount(filename, query):
+    n = 0
+    if type(query) is str:
+        for line in open(filename).readlines():
+            if query in line:
+                n += 1
+    elif type(query) is list:
+        for line in open(filename).readlines():
+            for single_query in query:
+                if single_query in line:
+                    n += 1
+    return n
+
+
 placeholders = [
     ["-i", "--inifile"],
     ["-e", "--events"],
@@ -33,7 +48,7 @@ if len(sys.argv) < 2:
     help()
     sys.exit(1)
 
-arguments = {'inputfile': "CLA.ini",
+arguments = {'inifile': "CLA.ini",
              'datafile': sys.argv[1],
              'datatype': sys.argv[2],
              'verbose': 5000,
@@ -52,27 +67,29 @@ for i, arg in enumerate(sys.argv[3::2]):
 if not os.path.exists(arguments['datafile']):
     sys.exit(arguments['datafile'] + " does not exist.")
 
-algorithm_count = int(os.popen("cat " + arguments['inputfile'] + " | grep -v '#' | grep -e \"region \" -e \"algo \" | wc -l").read())
+algorithm_count = getStringCount(arguments['inifile'], ['region', 'algo'])
 if algorithm_count > 1:
     print("Analysis with Multiple Regions")
-    os.system("../scripts/separate_algos.sh " + arguments['inputfile'])
+    os.system("../scripts/separate_algos.sh " + arguments['inifile'])
 else:
     print("Single Analysis")
-    os.system("cp " + arguments['inputfile'] + " BP_1-card.ini")
+    os.system("cp " + arguments['inifile'] + " BP_1-card.ini")
 
 removePattern('histoOut-BP_*.root')
 print(r'../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT')
 res = os.system('export PATH=$PATH:$ROOTSYS/bin ;\
            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system:../CLA/ ;\
-           ../CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V '+ str(arguments['verbose']) + ' -ST ' + str(arguments['strt']))
+           ../CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
+    algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V ' + str(arguments['verbose']) + ' -ST ' + str(
+    arguments['strt']))
 
 if res == 0:
     print('CutLang finished successfully, now adding histograms')
     try:
-        os.remove('histoOut-' + arguments['inputfile'][:-4] + '.root')
+        os.remove('histoOut-' + arguments['inifile'][:-4] + '.root')
     except FileNotFoundError:
         pass
-    hadd_query = 'hadd histoOut-' + arguments['inputfile'][:-4] + '.root'
+    hadd_query = 'hadd histoOut-' + arguments['inifile'][:-4] + '.root'
     for i in glob.glob('histoOut-BP_*.root'):
         hadd_query += " " + i
     res = os.system(hadd_query)
