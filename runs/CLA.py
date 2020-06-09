@@ -26,12 +26,13 @@ def getStringCount(filename, query):
     n = 0
     if type(query) is str:
         for line in open(filename).readlines():
-            if query in line:
+            if query in line and '#' not in line:
+                print(line)
                 n += 1
     elif type(query) is list:
         for line in open(filename).readlines():
             for single_query in query:
-                if single_query in line:
+                if single_query in line and '#' not in line:
                     n += 1
     return n
 
@@ -68,6 +69,7 @@ if not os.path.exists(arguments['datafile']):
     sys.exit(arguments['datafile'] + " does not exist.")
 
 algorithm_count = getStringCount(arguments['inifile'], ['region', 'algo'])
+print(algorithm_count)
 if algorithm_count > 1:
     print("Analysis with Multiple Regions")
     os.system("../scripts/separate_algos.sh " + arguments['inifile'])
