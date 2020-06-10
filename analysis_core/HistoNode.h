@@ -21,6 +21,8 @@ private:
     int dim = 1;
     TH1D *ahisto1;
     TH2D *ahisto2;
+    std::vector<myParticle*> inputParticles;
+
 
 public:
 
@@ -42,4 +44,3 @@ public:
     };
 
 #endif
-
