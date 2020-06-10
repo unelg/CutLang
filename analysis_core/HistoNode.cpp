@@ -10,7 +10,7 @@
 
 using namespace std;
 
-    HistoNode( std::string id,std::string desc,int n, float l1, float l2,Node* l){
+ virtual void   HistoNode( std::string id,std::string desc,int n, float l1, float l2,Node* l){
         this->id=id;
         Desciption=desc;
         lowerLimitx=l1;
