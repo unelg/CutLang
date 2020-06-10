@@ -6,6 +6,8 @@
 #include "TH1F.h"
 #include "TH2F.h"
 
+using namespace std;
+
 class HistoNode : public Node{
 private:
     std::string id;
