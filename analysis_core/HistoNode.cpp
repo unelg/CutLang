@@ -23,12 +23,12 @@ using namespace std;
         right=NULL;
     }
 
-    virtual void Reset() override{ left->Reset(); } // reset right as well 
-    virtual void getParticles(std::vector<myParticle *>* particles) override{
+     void Reset() override{ left->Reset(); } // reset right as well 
+     void getParticles(std::vector<myParticle *>* particles) override{
          left->getParticles(particles);
     }
-    virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{}
-    virtual double evaluate(AnalysisObjects* ao) override {
+     void getParticlesAt(std::vector<myParticle *>* particles, int index) override{}
+     double evaluate(AnalysisObjects* ao) override {
         if (dim == 1) // this if has to go. we can make 2 independent and similar classes
 		{
 
@@ -105,7 +105,7 @@ using namespace std;
         	      return 1;
 		}
     }
-    virtual ~HistoNode() {
+    HistoNode::~HistoNode() {
         if (left!=NULL) delete left;
 	if (right!=NULL) delete right;
     }
