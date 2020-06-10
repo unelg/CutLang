@@ -106,8 +106,8 @@ using namespace std;
 		}
     }
     HistoNode::~HistoNode() {
-        if (left!=NULL) delete left;
-	if (right!=NULL) delete right;
+//        if (left!=NULL) delete left;
+//	if (right!=NULL) delete right;
     }
     
 }
