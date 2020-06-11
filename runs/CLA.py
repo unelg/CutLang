@@ -118,7 +118,7 @@ for i, arg in enumerate(sys.argv[3::2]):
         arguments[placeholders[i][1][2:]] = sys.argv[i * 2 + 4]
 
 arguments['parallel'] = int(arguments['parallel']) // 1
-if arguments['events'] == 0 and platform.system() == 'Darwin':
+if int(arguments['events']) == 0 and platform.system() == 'Darwin':
     sys.exit('Max event count not implemented for OSX. Provide a specific event count.')
 if not os.path.exists(arguments['datafile']):
     sys.exit(arguments['datafile'] + " does not exist.")
