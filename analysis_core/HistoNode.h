@@ -137,15 +137,14 @@ public:
 		             ahisto1->Fill(value, ao->evt.user_evt_weight);
                            }
                            pippo->setParticleIndex(0, 6213);
+                           return 1;
                    }// end of inner if
-                  } else {
-                           double value = left->evaluate(ao);
-		           ahisto1->Fill(value, ao->evt.user_evt_weight);
-                  }
-		  return 1;
-		}
-	else
-		{
+		} // end of >0
+                double value = left->evaluate(ao);
+                DEBUG("Filling with:"<<value<<"\n");
+		ahisto1->Fill(value, ao->evt.user_evt_weight);
+		return 1;
+	} else { // 2D
 		      double value1=left->evaluate(ao);
 		      double value2=right->evaluate(ao);
         	      ahisto2->Fill(value1, value2, ao->evt.user_evt_weight);
