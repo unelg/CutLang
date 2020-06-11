@@ -377,3 +377,10 @@ double btagsf(AnalysisObjects* ao, string s, float value){
         ao->evt.user_evt_weight *= ao->evt.weight_bTagSF_77;
         return 1;
 }
+
+double xslumicorrsf(AnalysisObjects* ao, string s, float value){
+	ao->evt.user_evt_weight *= ao->evt.correction_weight;
+	ao->evt.user_evt_weight *= ao->evt.luminosity_weight;
+	ao->evt.user_evt_weight *= ao->evt.weight_xsec;
+	return 1;
+}

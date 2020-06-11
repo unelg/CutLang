@@ -31,8 +31,8 @@ class DumpdbxA : public dbxA {
       int readAnalysisParams();
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(AnalysisObjects ao);
-      int makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_map, vector <double> uncs);
+      int makeAnalysis(AnalysisObjects *ao);
+      int makeAnalysis(AnalysisObjects *ao, map < int, TVector2 > met_syst_map, vector <double> uncs);
 
       int saveHistos() {
         Finalize();

@@ -60,7 +60,7 @@ int DumpdbxA:: getInputs() {
 }
 
 /////////////////////////do not call this for this analysis//////////////////////
-int DumpdbxA::makeAnalysis(AnalysisObjects ao) {
+int DumpdbxA::makeAnalysis(AnalysisObjects *ao) {
     map < int, TVector2 > mymap;
     TVector2 a; 
     mymap[1]=a;      
@@ -68,17 +68,17 @@ int DumpdbxA::makeAnalysis(AnalysisObjects ao) {
     return makeAnalysis(ao, mymap, b); 
 }
 /////////////////////////////Analysis for Dump/////////////////////////////////
-int DumpdbxA::makeAnalysis(AnalysisObjects ao, map < int, TVector2 > met_syst_map, vector <double> uncs ){
-  vector<dbxMuon>        muons = ao.muos.begin()->second;
-  vector<dbxElectron> electrons= ao.eles.begin()->second;
-  vector <dbxPhoton>    photons= ao.gams.begin()->second;
-  vector<dbxJet>           jets= ao.jets.begin()->second;
-  vector<dbxJet>          ljets= ao.ljets.begin()->second;
-  vector<dbxTau>           taus= ao.taus.begin()->second;
-  vector<dbxTruth>        truth= ao.truth.begin()->second;
-  vector<dbxParticle>    combos= ao.combos.begin()->second;
-  TVector2 met = ao.met.begin()->second;
-  evt_data anevt = ao.evt;
+int DumpdbxA::makeAnalysis(AnalysisObjects *ao, map < int, TVector2 > met_syst_map, vector <double> uncs ){
+  vector<dbxMuon>        muons = ao->muos.begin()->second;
+  vector<dbxElectron> electrons= ao->eles.begin()->second;
+  vector <dbxPhoton>    photons= ao->gams.begin()->second;
+  vector<dbxJet>           jets= ao->jets.begin()->second;
+  vector<dbxJet>          ljets= ao->ljets.begin()->second;
+  vector<dbxTau>           taus= ao->taus.begin()->second;
+  vector<dbxTruth>        truth= ao->truth.begin()->second;
+  vector<dbxParticle>    combos= ao->combos.begin()->second;
+  TVector2 met = ao->met.begin()->second;
+  evt_data anevt = ao->evt;
 
 //      here we save the DBXNTuple
          ntsave->Clean();
@@ -175,12 +175,6 @@ ttsave->Fill();
   eff->Fill(cur_cut, anevt.mcevt_weight);
   cur_cut++;
 
-
-//cout <<"Before calling mother class.\n";
-
-// ............ do NOT remove .....
-  dbxA::makeAnalysis (ao);
-// ............ do NOT remove .....
 
 for (int k=cur_cut; k<=eff->GetNbinsX(); k++) eff->Fill(k,anevt.mcevt_weight);
   return 0;
