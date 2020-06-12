@@ -222,7 +222,6 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         int MaxDepth=indices.size();//number of nested loops needed
         DEBUG("Depth:"<<MaxDepth<<"\n");
         if(indices.size()>0){
-
                     int type=particles.at(indices[0])->type;
                     string ac=particles.at(indices[0])->collection;
                     int Max;
@@ -247,7 +246,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     int maxFound = bestIndices.size();
 //                    if (MaxDepth < bestIndices.size()) maxFound = MaxDepth;
                     for(int i=0;i<maxFound;i++){
-                        particles.at(indices[i])->index=bestIndices[i];//directly changing the concerned particle
+                        particles.at(indices[i])->index=bestIndices[i]; //directly changing the concerned particle -i-->bestIndices[i]
                         //-------------------add found indices to FORBIDDEN 
                         forbidit=FORBIDDEN_INDEX_LIST.find( ac );
                         DEBUG("forbidding:"<<bestIndices[i]<<" for "<<ac<<"\n");
@@ -280,6 +279,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
     }
 
     void SearchNode::getParticles(std::vector<myParticle *>* particles) {
+     left->getParticles(particles);
     }
     void SearchNode::getParticlesAt(std::vector<myParticle *>* particles, int index) {
         
@@ -289,9 +289,22 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 //        if (left!=NULL) delete left;
 //        if (right!=NULL) delete right;
     }
+//-------set particles
+   void SearchNode::setParticles(std::vector<myParticle *>* bankParticles) {
+     particles.clear();
+     left->getParticles(&particles);//should fill with particles pointers no more cast needed
+     int frombank=0;
+     for(int i=0;i<particles.size();i++){
+         DEBUG("Fill Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<<"\n");
+         if(particles.at(i)->index<0) {
+                 particles.at(i)->index=bankParticles->at(frombank)->index;
+                 frombank++;
+                 DEBUG("Filled.\n");
+         }
+     }
+   }
 
-
-
+//---------------------------------------------------------------------general functions
 double maxim( double difference, double current_difference){
     return (fabs(difference) > current_difference );
 }

@@ -7,7 +7,7 @@
 #include <map>
 #include <iterator>
 #include <vector>
-
+#include "SearchNode.h"
 
 #include "bp_a.h"
 #include "analysis_core.h"
@@ -237,11 +237,15 @@ int BPdbxA:: readAnalysisParams() {
 
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end()) {
-//              cout << "**-- BP sees:"<<iter->second->getStr().Data()<<".\n";
+//               cout << "**-- BP sees:"<<iter->second->getStr().Data()<<".\n";
                 if (iter->second->getStr().CompareTo(" save") == 0 ) {
 		      save.push_back(iter->first);
 //                    cout <<"Saving at "<<iter->first<<"\n";
 		      iter->second->createFile();
+		}
+                if (iter->second->getStr().Contains("~=") ) {
+	            optimize.insert(iter->first);
+//                    cout <<"Optimize at "<<iter->first<<"\n";
 		}
                 iter++;
        }
@@ -342,9 +346,6 @@ int BPdbxA:: readAnalysisParams() {
 
 #endif
 
-
-
-
   return retval;
 }
 
@@ -385,58 +386,105 @@ int BPdbxA::bookAdditionalHistos() {
 
   return retval;
 }
+//------------------------
+int BPdbxA::Finalize(){       
+  return 1;
+}
 
 /////////////////////////
-int BPdbxA::makeAnalysis( AnalysisObjects ao ){
+int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass){
 
-  evt_data anevt = ao.evt;
+  evt_data anevt = ao->evt; // event information
 
-  DEBUG("-------------------------------------------------------------------- "<<cname<<"\n");
-  double evt_weight = ao.evt.user_evt_weight;  
-  if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
-  ao.evt.user_evt_weight*=evt_weight;
+  DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
+  double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
+  if (controlword == 0){
+    if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+    ao->evt.user_evt_weight*=evt_weight;
+  }else { // this is a dependent region, with pre-selection that failed at some point
+// no need to calculate something that we know will fail.
+   if (!lastCutPass) return 0;
+  } 
 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
-//cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
 /// CutLang execution starts-------here*
 // *************************************
 
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
-    DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
 //----------------------reset 
 
+  if (controlword == 0){
+    DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
     while(iter != NodeCuts.end())
     {   
         iter->second->Reset();
         iter++;
     }
-
+    particleBank.clear();
     DEBUG("Done resetting cuts.\n");
     iter = NodeCuts.begin();
+   } else {
+     for (int in:optimize){
+      DEBUG("Get Optimals from:"<< in<<"\t");
+      DEBUG("names:"<<  NodeCuts[ in ]->getStr()<<"\n");
+      for (int ip=0; ip<particleBank[in].size(); ip++){
+          DEBUG("Bank-> Coll:"<<particleBank[in].at(ip)->collection<<" type:"<< particleBank[in].at(ip)->type
+                             <<" index:"<<particleBank[in].at(ip)->index<<"\n");
+      }
+      ((SearchNode *)NodeCuts[in])->setParticles(&particleBank[in]);
+     }
+     for (int aa=0; aa<controlword; aa++) iter++;
+
+  }
 
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
-        DEBUG("**********Selecting: "<<iter->first<<" |"<<"\t");
-        double d=iter->second->evaluate(&ao); // execute the selection cut
-        DEBUG("\t****Result : " << d << std::endl);
-        evt_weight = ao.evt.user_evt_weight;
+        double d;
+        DEBUG("**********Selecting: "<<iter->first<<" | ");
+        if ( iter->first < controlword ) {
+// controlword 5 means 1 1 1 1 0, first 4 cuts passed.
+         DEBUG ("preset");
+         d=1;
+// if only 5cuts were there, and all 5 passed, we get a  10000+4
+         } else if (iter->first == controlword ){
+         DEBUG ("preset");
+         d=lastCutPass;
+         }
+         else d=iter->second->evaluate(ao); // execute the selection cut
+         
+        DEBUG("\t***Result : " << d << std::endl);
+        evt_weight = ao->evt.user_evt_weight;
         if (d==0) {
-		if (ao.evt.event_no == (ao.evt.maxEvents - 1)) {	
-			iter = NodeCuts.begin();
+		if (ao->evt.event_no == (ao->evt.maxEvents - 1)) {	// to close
+			std::map<int, Node*>::iterator jter = NodeCuts.begin();
 	                for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
-                	        int diff = *it - iter->first;
-                                for(int i = 0; i < diff; i++) iter++;
-                               	iter->second->saveFile();
+                	        int diff = *it - jter->first;
+                                for(int i = 0; i < diff; i++) jter++;
+                               	jter->second->saveFile();
         	        }
 		}
+                DEBUG("Return:"<<iter->first<<"\n");
 		return iter->first;         // quits the event.
 	}
+        DEBUG("W:"<<evt_weight<<"\n");
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
+        if ((controlword == 0) && (optimize.size()>0)) {
+           if (optimize.find(iter->first) != optimize.end()){
+             DEBUG("This optimized results are to be saved.\n");
+             vector<myParticle *> theseParticles;
+             iter->second->getParticles(&theseParticles);
+             DEBUG("#particles:"<< theseParticles.size()<<".\n");
+             for (int ip=0; ip<theseParticles.size(); ip++){
+               DEBUG("Bank] Coll:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<"\n");
+             }
+               particleBank.insert(make_pair(iter->first, theseParticles) );
+           }
+        }
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
@@ -446,9 +494,9 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != BinCuts.end())
     {
         DEBUG("+++++ Binning: "<<iter->first<<" |"<<"\t");
-        double d=iter->second->evaluate(&ao); // execute the selection cut
+        double d=iter->second->evaluate(ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
-        evt_weight = ao.evt.user_evt_weight;
+        evt_weight = ao->evt.user_evt_weight;
         if (d==1) { // inside a bin
            DEBUG(iter->first<<" Passed\n"); // do something
            bincounts[iter->first -1]++;
@@ -459,9 +507,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     }// loop over all binnings   
 
 // les cuts sont finis ici.
-    return 1;
+    return 10000+NodeCuts.size();
 }
 
-int BPdbxA::Finalize(){       
-  return 1;
-}
