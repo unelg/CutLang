@@ -29,6 +29,11 @@ key="$3"
 case $key in
     -i|--inifile)
     INIFILE="$4"
+    if [ ! -f "$INIFILE" ]; then
+      echo "$INIFILE does NOT exist!"
+      exit 1
+    fi
+
     cat ${INIFILE} | grep -v '#' | grep "region " > pippo
     cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`

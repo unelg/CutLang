@@ -1,4 +1,5 @@
 #include "HistoNode.h"
+#include "FuncNode.h"
 
 //#define _CLV_
 
@@ -10,16 +11,15 @@
 
 using namespace std;
 
-
-double Histonode::evaluate(AnalysisObjects* ao) override {
+double HistoNode::evaluate(AnalysisObjects* ao) {
         if (dim == 1) // this if has to go. we can make 2 independent and similar classes
 		{
-
                   this->getParticles(&inputParticles);
                   for (int ii=0; ii<inputParticles.size(); ii++){
                       DEBUG("Histo particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                         << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
                   }
+                  if (inputParticles.size()>0 ) {
                   if (inputParticles[0]->index == 6213){
                       std::string bcol2=inputParticles[0]->collection;
                       bool constiloop=false;
@@ -73,15 +73,14 @@ double Histonode::evaluate(AnalysisObjects* ao) override {
 		             ahisto1->Fill(value, ao->evt.user_evt_weight);
                            }
                            pippo->setParticleIndex(0, 6213);
-                  } else 
-                  {
-                           double value = left->evaluate(ao);
-		           ahisto1->Fill(value, ao->evt.user_evt_weight);
-                  }
-		  return 1;
-		}
-	else
-		{
+                           return 1;
+                          }// end of inner if with 6213
+                    } // end of >0
+                    double value = left->evaluate(ao);
+                    DEBUG("Filling with:"<<value<<"\n");
+		    ahisto1->Fill(value, ao->evt.user_evt_weight);
+		    return 1;
+                } else {
 		      double value1=left->evaluate(ao);
 		      double value2=right->evaluate(ao);
         	      ahisto2->Fill(value1, value2, ao->evt.user_evt_weight);
