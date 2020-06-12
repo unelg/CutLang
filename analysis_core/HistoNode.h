@@ -56,15 +56,15 @@ public:
     }
 virtual void Reset() override{ left->Reset(); } 
 
-	 virtual void getParticles(std::vector<myParticle *>* particles) override{
+virtual void getParticles(std::vector<myParticle *>* particles) override{
          left->getParticles(particles);
     }
- 	virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{}
-     double evaluate(AnalysisObjects* ao) override;
+virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{}
+double evaluate(AnalysisObjects* ao) override;
 virtual ~HistoNode(){
-        if (left!=NULL) delete left;
+  if (left!=NULL) delete left;
 	if (right!=NULL) delete right;
-    }
+}
     
 
 };

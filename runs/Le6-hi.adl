@@ -1,0 +1,135 @@
+#btag_lowthreshold_ATLASOD = 0.7892
+#btag_lowthreshold_CMSOD   = 1.7400
+
+TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+#SkipEffs = 1
+SkipHistos = 1
+
+object goodELE : ELE
+select AbsEta(ELE_) < 2.47  # max pseudorapidity of electrons
+select AbsEta(ELE_) ][ 1.37 1.52  # exclude pseudorapidity of electrons (support section of ATLAS detector)
+select Pt(ELE_) > 15.0  # min pt of electrons
+
+object goodMUO : MUO
+select Pt(MUO_) > 15.0  # min pt of muons
+select AbsEta(MUO_) < 2.5  # max pseudorapidity of electrons
+
+object goodJET : JET
+select Pt(JET_) > 15.0  # min pt of jets
+select AbsEta(JET_) < 5.5  # max pseudorapidity of electrons
+
+###### USER DEFINITIONS
+define      Zreco : goodMUO_-1 goodMUO_-1
+define      Wreco : goodJET[-1] goodJET[-1]
+define      BELE : goodELE_0
+define      LeZ : Zreco BELE
+define      LeW : Wreco METLV_0
+define      totmetwpt : { Wreco }Pt + { METLV_0 }Pt
+
+###### EVENT SELECTION
+algo  preselection
+select      ALL            # to count all events
+select      XSLumiCorrSF
+select      Size(goodMUO) >= 2
+select      Size(goodELE) >= 1
+select      Size(goodJET) >= 2
+select      m(Wreco) ~= 80
+histo       bb1 , " Mass of W (GeV)", 50, 0, 250, m(Wreco)
+select      m(Wreco) [] 50 110
+select      m(Zreco) ~= 91
+select      m(Zreco) [] 80 100
+select      q(Zreco) == 0
+
+algo  cuts
+##### 1st HISTO GROUP #####
+preselection
+histo     eleadpt0 , "Leading e Pt (GeV)", 40, 0, 400, { goodELE_0 }Pt
+histo     Lem0 , "LeZ reconst (GeV)", 50, 100, 250, m(LeZ)
+histo     met0 , "MET (GeV)", 50, 0, 500, { METLV_0 }Pt
+histo     Zlm0 , "Z reconstruction  (GeV)", 50, 70, 110, m( Zreco )
+histo     eeta0 , "e_eta ", 50, 0, 0, { goodELE_0 }Eta
+histo     Zeta0 , "Z_eta ", 25, 0, 0, { Zreco }Eta
+histo     eZang0 , "angle between (e and Z) ", 50, 0, 0, { goodELE_0 , Zreco }dR
+histo     LeZeta0 , "eta of L_{e} from Ze" , 25, 0, 0, { LeZ }Eta
+#### CUTS 1 #####
+select      { goodELE_0 }Pt >= 40
+select      MET >= 40
+##### 2nd HISTO GROUP #####
+histo      LeWm2 , "LeW reconst (GeV)", 50, 0, 0, m(LeW)
+histo     Lem1 , "LeZ reconst (GeV)", 50, 100, 250, m(LeZ)
+#histo     Lem01 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
+histo     met1 , "MET (GeV)", 40, 0, 500, { METLV_0 }Pt
+histo     Zlm1 , "Z reconstruction  (GeV)", 50, 70, 110, m(Zreco)
+histo     eeta1 , "e_eta" , 25, 0, 0, { goodELE_0 }Eta
+histo     Zeta1 , "Z_eta" , 25, 0, 0, { Zreco }Eta
+histo     eZang1 , "angle between (e and Z)" , 50, 0, 8, { goodELE_0 , Zreco }dR
+histo     LeZeta1 , "eta_of L_{e} from Ze" , 25, 0, 0, { LeZ }Eta
+##### CUTS 2 #####h
+histo     eleadpt2 , "e Pt (GeV)", 20, 0, 400, { goodELE_0 }Pt
+histo     LeZm2 , "LeZ mass reconst (GeV)", 10, 150, 350, m(LeZ)
+histo     Lem02 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
+histo     met2 , "MET (GeV)", 25, 0, 500, { METLV_0 }Pt
+histo     Zlm2 , "Z reconstruction  (GeV)", 20, 70, 110, m(Zreco)
+histo     eeta2 , "e eta"  , 25, 0, 0, { goodELE_0 }Eta
+histo     Zeta2 , "Z eta" , 25, 0, 0, { Zreco }Eta
+histo     eZang2 , "(e and Z) ", 50, 0, 8, { goodELE_0 , Zreco }dR
+histo     Wm0 , "W mass reconstruction  (GeV)", 15, 0, 300, m(Wreco)
+histo     Weta0 , "W eta", 25, 0, 0, { Wreco }Eta
+histo     Wpt0 , "W pt  (GeV)", 25, 0, 500, { Wreco }Pt
+histo     Wptplusmet0 , "W pt plus MET (GeV)", 35, 0, 700, totmetwpt
+histo     WZang0 , "(W and Z)" , 50, 0, 8, { Wreco , Zreco }dR
+histo     LeZeta2 , "eta_of L_{e} from Ze" , 25, 0, 0, { LeZ}Eta
+histo     LeZLeWang0 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+histo     angle1le2 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+histo     eleadpt3 , "e Pt (GeV)", 20, 0, 400, { goodELE_0 }Pt
+histo     Lem3 , "LeZ mass reconst (GeV)", 10, 150, 350, m(LeZ)
+histo     Lem03 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
+histo     met3 , "MET (GeV)", 25, 0, 500, { METLV_0 }Pt
+histo     Zlm3 , "Z reconstruction  (GeV)", 20, 70, 110, m(Zreco)
+histo     eeta3 , "e eta " , 25, 0, 0, { goodELE_0 }Eta
+histo     Zeta3 , "Z eta" , 25, 0, 0, { Zreco }Eta
+histo     eZang3 , "(e and Z)" , 50, 0, 8, { goodELE_0 , Zreco }dR
+histo     Wm1 , "W mass reconstruction  (GeV)", 15, 0, 300, m(Wreco)
+histo     Weta1 , "W eta", 25, 0, 0, { Wreco }Eta
+histo     Wpt1 , "W pt  (GeV)", 25, 0, 500, { Wreco }Pt
+histo     Wptplusmet1 , "W pt plus MET (GeV)", 35, 0, 700, totmetwpt
+histo     WZang1 , "(W and Z)" , 50, 0, 8, { Wreco , Zreco }dR
+histo     LeZeta3 , "eta_of L_{e} from Ze" , 25, 0, 0, { LeZ }Eta
+histo     LeZLeWang1 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+select      { goodELE_0 }AbsEta <= 1.9
+histo     eleadpt4 , "e Pt (GeV)", 20, 0, 400, { goodELE_0 }Pt
+histo     Lem4 , "LeZ mass reconst (GeV)", 10, 150, 350, m(LeZ)
+histo     Lem04 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
+histo     met4 , "MET (GeV)", 25, 0, 500, { METLV_0 }Pt
+histo     Zlm4 , "Z reconstruction  (GeV)", 20, 70, 110, m(Zreco)
+histo     eeta4 , "e eta " , 25, 0, 0, { goodELE_0 }Eta
+histo     Zeta4 , "Z eta" , 25, 0, 0, { Zreco }Eta
+histo     eZang4 , "(e and Z)" , 50, 0, 8, { goodELE_0 , Zreco }dR
+histo     Wm2 , "W mass reconstruction  (GeV)", 15, 0, 300, m(Wreco)
+histo     Weta2 , "W eta", 25, 0, 0, { Wreco }Eta
+histo     Wpt2 , "W pt  (GeV)", 25, 0, 500, { Wreco }Pt
+histo     Wptplusmet2 , "W pt plus MET (GeV)", 35, 0, 700, totmetwpt
+histo     WZang2 , "(W and Z)" , 50, 0, 8, { Wreco , Zreco }dR
+histo     LeZeta4 , "eta_of L_{e} from Ze ", 25, 0, 0, { LeZ}Eta
+histo     LeZLeWang2 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+select      { goodELE_0 , Zreco }dR < 2.7
+histo     eleadpt5 , "e Pt (GeV)", 20, 0, 400, { goodELE_0 }Pt
+histo     Lem5 , "LeZ mass reconst (GeV)", 10, 150, 350, m(LeZ)
+histo     Lem05 , "LeZ reconst (GeV)", 75, 0, 1500, m(LeZ)
+histo     met5 , "MET (GeV)", 25, 0, 500, { METLV_0 }Pt
+histo     Zlm5 , "Z reconstruction  (GeV)", 20, 70, 110, m(Zreco)
+histo     eeta5 , "e eta " , 25, 0, 0, { goodELE_0 }Eta
+histo     Zeta5 , "Z eta" , 25, 0, 0, { Zreco }Eta
+histo     eZang5 , "(e and Z)" , 50, 0, 8, { goodELE_0 , Zreco }dR
+histo     Wm3 , "W mass reconstruction  (GeV)", 15, 0, 300, m(Wreco)
+histo     Weta3 ," W eta", 25, 0, 0, { Wreco }Eta
+histo     Wpt3 , "W pt  (GeV)", 25, 0, 500, { Wreco }Pt
+histo     Wptplusmet3 , "W pt plus MET (GeV)", 35, 0, 700, totmetwpt
+histo     WZang3 , "(W and Z) ", 50, 0, 8, { Wreco , Zreco }dR
+histo     LeZeta5 , "eta_of L_{e} from Ze" , 25, 0, 0, { LeZ}Eta
+histo     LeZLeWang3 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+histo     angggle1le2 , "(le_{hadronic} and le_{leptonic})", 50, 0, 8, { LeZ, LeW }dR
+select      { LeZ }m [] 100 200
+histo     Lem06 , "LeZ mass reconst (GeV)", 50, 100, 250, m(LeZ)
+histo     LemW06 , "LeW mass reconst (GeV)", 75, 0, 400, m(LeW)
