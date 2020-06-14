@@ -30,7 +30,7 @@ class BPdbxA : public dbxA {
       int plotVariables(int sel);
       int printEfficiencies();
       int bookAdditionalHistos();
-      int makeAnalysis(AnalysisObjects ao );
+      int makeAnalysis(AnalysisObjects *ao, int controlword, int preResults );
       int Finalize();
       int saveHistos() {
         int r = dbxA::saveHistos();
@@ -61,6 +61,9 @@ class BPdbxA : public dbxA {
       bool skip_histos;
       bool skip_effs;
       vector<int> save;
+      unordered_set<int> optimize;
+      static map<int, vector<myParticle *> > particleBank;
+
  
 //relevant variables
         list<string> parts; //for def of particles as given by user

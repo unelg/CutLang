@@ -197,6 +197,7 @@ double all(AnalysisObjects* ao, string s, float id);
 double uweight(AnalysisObjects* ao, string s, float value);
 double lepsf(AnalysisObjects* ao, string s, float value);
 double btagsf(AnalysisObjects* ao, string s, float value);
+double xslumicorrsf(AnalysisObjects* ao, string s, float value);
 double count(AnalysisObjects* ao, string s, float id);
 double met(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);

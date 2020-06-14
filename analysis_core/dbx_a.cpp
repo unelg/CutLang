@@ -37,11 +37,14 @@ int dbxA:: addRunLumiInfo(int rn, int lbn) {  // to keep track of the lumi
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: makeAnalysis(AnalysisObjects ao, int idx) {
-  int retval=0;
-  return retval;
+int dbxA:: makeAnalysis(AnalysisObjects *ao, int idx) {
+  return 0;
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int dbxA:: makeAnalysis(AnalysisObjects *ao, int idx, int a) {
+  return 0;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA::saveHistos() {

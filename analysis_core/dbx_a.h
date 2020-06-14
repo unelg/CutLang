@@ -29,9 +29,10 @@ public:
 	dbxA( char*);
 	~dbxA();
 
-   virtual int makeAnalysis(AnalysisObjects ao, int);
-   virtual int makeAnalysis(AnalysisObjects ao) { return makeAnalysis(ao,0); }
-   virtual int makeAnalysis(AnalysisObjects ao, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
+   virtual int makeAnalysis(AnalysisObjects *ao, int, int);
+   virtual int makeAnalysis(AnalysisObjects *ao, int);
+   virtual int makeAnalysis(AnalysisObjects *ao) { return makeAnalysis(ao,0); } // execute default
+   virtual int makeAnalysis(AnalysisObjects *ao, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
 
    virtual int saveHistos();
    virtual int defHistos(unsigned int);

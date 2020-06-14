@@ -7,6 +7,7 @@
 #include "VLLMin.h"
 #include "CMSnanoAOD.h"
 #include "AtlMin.h"
+#include "VLLBG3.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
 #include <TH2.h>
@@ -47,12 +48,12 @@ int main(int argc, char*argv[])
  bool use_cmsod=false;
  bool use_cmsnano=false;
  bool use_vllmin=false;
- bool use_proof=false;
+ bool use_vllbg3 =false;
 
  string inptype;
  char *username=NULL;
 
- cout << "CLA v02.02.02\t";
+ cout << "CLA v02.9.00\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
@@ -65,8 +66,8 @@ for (int i = 2; i < argc; i++) {
              aselect.dosystematics = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-Q") { // do QCD
              aselect.doQCD = atoi(argv[i + 1]);  i++;
-         } else if (std::string(argv[i]) == "-P") { // use proof
-             use_proof=true;
+         } else if (std::string(argv[i]) == "-P") { // use prereqs
+             aselect.dependencies=argv[i + 1];  i++;
          } else if (std::string(argv[i]) == "-UN") { // username to be added to histoname
              username = argv[i + 1];  i++;
          } else if (std::string(argv[i]) == "-V") { // verbosity frequency in #events
@@ -83,12 +84,12 @@ for (int i = 2; i < argc; i++) {
  }
 
 
- std::cout << "#BP  runs is "<< aselect.BPcount<<std::endl;
- std::cout << "#Dump runs is "<< aselect.Dumpcount<<std::endl;
+ std::cout << "Analysis run count is "<< aselect.BPcount<<std::endl;
+ if (aselect.Dumpcount > 0) std::cout << "#Dump runs is "<< aselect.Dumpcount<<std::endl;
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
-             std::cout << argv[0] << " d3pd.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO]\n"
+             std::cout << argv[0] << " filename.root \n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -104,6 +105,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
+ else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
@@ -188,8 +190,7 @@ if (ival==0) {
   std::vector<std::string> fileList;
   for (size_t i=0,n; i <= argStr.length(); i=n+1) {
      n = argStr.find_first_of(',',i);
-     if (n == std::string::npos)
-       n = argStr.length();
+     if (n == std::string::npos) n = argStr.length();
      std::string tmp = argStr.substr(i,n-i);
      fileList.push_back(tmp);
   }
@@ -223,6 +224,9 @@ if (ival==0) {
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
    chain = new TChain("Delphes");
+  }else if (use_vllbg3){
+   cout << "~Now using ATLAS v3 background files.~~~~~~ alpha!\n";
+   chain = new TChain("NOSYS/physics");
   }else{
    chain = new TChain("physics");
   }
@@ -265,6 +269,9 @@ if (ival==0) {
    } else if (use_delphes){
     delphes *delphesa=new delphes("XXX",chain);
              delphesa->Loop(aselect, username);
+   } else if (use_vllbg3){
+    VLLBG3 *VLLBG3a=new VLLBG3("XXX",chain);
+           VLLBG3a->Loop(aselect, username);
   }
 
   cout << "finished."<<endl;
