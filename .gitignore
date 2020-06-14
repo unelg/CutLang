@@ -5,9 +5,14 @@ parser_test/b.hpp
 parser_test/b.output
 parser_test/l.cpp
 
+*/*.o
+*/*.pcm
+
 CLA/b.cpp
 CLA/b.hpp
 CLA/b.output
 CLA/l.cpp
+CLA/CLA.C
+CLA/CLA.exe
 .DS_Store
 .github/previous/*
