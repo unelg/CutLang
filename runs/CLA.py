@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import glob
-import multiprocessing
+import platform
+import concurrent.futures
 
 
 # noinspection PyShadowingBuiltins,PyShadowingNames
@@ -65,7 +68,6 @@ def singleAnalysis(arguments, histoId=None):
     if res == 0:
         print('CutLang finished successfully, now adding histograms')
         try:
-            print('histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root')
             os.remove('histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root')
         except FileNotFoundError:
             pass
@@ -92,8 +94,9 @@ placeholders = [
     ["-v", "--verbose"],
     ["-h", "--help"]]
 
-if len(sys.argv) < 2:
-    print("ERROR: Not enough arguments")
+if len(sys.argv) < 3:
+    if '-h' not in sys.argv or '--help' not in sys.argv:
+        print("ERROR: Not enough arguments")
     help()
     sys.exit(1)
 
@@ -113,8 +116,10 @@ for i, arg in enumerate(sys.argv[3::2]):
         sys.exit(1)
     elif arg in placeholders[i]:
         arguments[placeholders[i][1][2:]] = sys.argv[i * 2 + 4]
-arguments['parallel'] = int(arguments['parallel']) // 1
 
+arguments['parallel'] = int(arguments['parallel']) // 1
+if arguments['events'] == 0 and platform.system() == 'Darwin':
+    sys.exit('Max event count not implemented for OSX. Provide a specific event count.')
 if not os.path.exists(arguments['datafile']):
     sys.exit(arguments['datafile'] + " does not exist.")
 
@@ -142,29 +147,36 @@ if arguments['parallel'] > 1:
           base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}',
           sep='\n')
 
-    os.system('rm temp -r')
-    os.mkdir('temp')
+    os.system('rm -r temp')
     temp_dir = 'temp'
+    os.mkdir(temp_dir)
     for i in range(arguments['parallel']):
-        dir_name = 'temp_runs' + str(i)
+        dir_name = 'cut_' + str(i)
         os.mkdir(os.path.join(temp_dir, dir_name))
-        os.system('cp ' + base_dir + 'runs/* ' + os.path.join(temp_dir, dir_name) + ' -r')
+        os.system(
+            'mkdir ' + os.path.join(temp_dir, dir_name) + '/runs; cp ' + base_dir + 'runs/* ' + os.path.join(temp_dir,
+                                                                                                             dir_name) + '/runs/')
+        os.system('cp -r ' + base_dir + 'CLA ' + os.path.join(temp_dir, dir_name))
+        os.system('cp -r ' + base_dir + 'analysis_core ' + os.path.join(temp_dir, dir_name))
+        os.system('cp -r ' + base_dir + 'BP ' + os.path.join(temp_dir, dir_name))
+        # Copied {runs, CLA, analysis_core, BP}
         removePattern('histoOut-BP_*.root')
         print(dir_name, 'copied from runs')
 
     interval = int(arguments['events']) // arguments['parallel']
-
     processes = []
     for i in range(arguments['parallel']):
         cur_arguments = arguments.copy()
         cur_arguments['start'] = cur_arguments['start'] + interval * i
         cur_arguments['events'] = interval
-        cur_arguments['inifile'] = temp_dir + '/temp_runs' + str(i) + '/' + arguments['inifile']
-        p = multiprocessing.Process(target=singleAnalysis, args=(cur_arguments, i))
-        processes.append(p)
-        p.start()
-    for process in processes:
-        process.join()
+        if i + 1 == arguments['parallel']:
+            cur_arguments['events'] += int(arguments['events']) % interval
+        cur_arguments['inifile'] = temp_dir + '/cut_' + str(i) + '/runs/' + arguments['inifile']
+        processes.append(cur_arguments)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=arguments['parallel']) as executor:
+        executor.map(singleAnalysis, processes)
+        executor.shutdown(wait=True)
 
     try:
         os.remove('histoOut-' + arguments['inifile'][:-4] + '.root')
@@ -172,17 +184,18 @@ if arguments['parallel'] > 1:
         pass
     arguments['inifile'] = arguments['inifile'].split('/')[-1][:-4]
     res = 0
-    # noinspection PyShadowingBuiltins
-    for file in glob.glob('histoOut-' + arguments['inifile'] + '*.root'):
-        res = os.system('hadd -a histoOut-' + arguments['inifile'] + '.root ' + file)
+
+    for i in os.listdir(base_dir + 'runs/temp/'):
+        res = os.system(
+            'hadd -a histoOut-' + arguments['inifile'] + '.root ' + base_dir + 'runs/temp/' + i + '/runs/histoOut-' +
+            arguments['inifile'] + '.root')
     print("removing auxiliary files")
     if res == 0:
         os.system('root -l -q \'' + base_dir + 'analysis_core/FinalEff.C("' + base_dir + 'runs/histoOut-' + arguments[
             'inifile'] + '.root", \'' + str(skip_histos) + '\', \'' + str(skip_effs) + '\')\'')
-    removePattern(glob.glob('histoOut-' + arguments['inifile'] + '?.root'))
     removePattern('histoOut-BP_*.root')
     removePattern(['_head.ini', '_algos.ini', '_inifile'])
     removePattern('BP_*-card.ini')
-    os.system('rm temp -r')
+    os.system('rm -r temp')
 else:
     singleAnalysis(arguments)
