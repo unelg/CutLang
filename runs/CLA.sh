@@ -5,6 +5,7 @@ EVENTS=0
 INIFILE=CLA.ini
 VERBOSE=5000
 STRT=0
+DEPS=" "
 datafile=$1
 datatype=$2
 
@@ -16,6 +17,10 @@ if [ $# -lt 2 ]; then
  exit 1
 fi
 
+
+
+
+
 POSITIONAL=()
 while [[ $# -gt 2 ]]
 do
@@ -24,6 +29,24 @@ key="$3"
 case $key in
     -i|--inifile)
     INIFILE="$4"
+    if [ ! -f "$INIFILE" ]; then
+      echo "$INIFILE does NOT exist!"
+      exit 1
+    fi
+
+    cat ${INIFILE} | grep -v '#' | grep "region " > pippo
+    cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
+    Nalgo=`cat pippo | wc -l`
+    rm pippo
+
+    if [ $Nalgo -gt 1 ]; then
+     echo Analysis with Multiple Regions
+     ../scripts/separate_algos.sh ${INIFILE}
+    else
+     echo Single Analysis
+     cp ${INIFILE} BP_1-card.ini
+     Nalgo=1
+    fi
     shift # past argument
     shift # past value
     ;;
@@ -42,6 +65,13 @@ case $key in
     cat $0 | grep '|-'|grep -v grep| cut -f1 -d')'
     echo "ROOT file type can be:"; grep "inptype ==" ../CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
     exit 1
+    ;;
+    -d|--deps)
+    if [ -f "algdeps.cmd" ]; then
+     DEPS=`cat algdeps.cmd`
+     rm -f algdeps.cmd
+    fi
+    shift # past argument
     ;;
     -v|--verbose)
     VERBOSE="$4"
@@ -65,24 +95,6 @@ if [ -n ${datafile+x} ] && [ ! -f "$datafile" ]; then
   tput sgr0
 fi
 
-#echo INIFILE  = "${INIFILE}"
-#echo EVENTS   = "${EVENTS}"
-#echo VERBOSE  = "${VERBOSE}"
-
-
-cat ${INIFILE} | grep -v '#' | grep "region " > pippo
-cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
-Nalgo=`cat pippo | wc -l`
-rm pippo
-
-if [ $Nalgo -gt 1 ]; then
- echo Analysis with Multiple Regions
- ../scripts/separate_algos.sh ${INIFILE}
-else
- echo Single Analysis
- cp ${INIFILE} BP_1-card.ini
- Nalgo=1
-fi
 
 # for ialgo in `seq $Nalgo`; do
 #  ../scripts/ini2txt.sh  BP_$ialgo
@@ -93,12 +105,14 @@ if [ `echo $LD_LIBRARY_PATH | grep CLA > /dev/null ; echo $?` -ne 0 ]; then
 fi
 
 rm histoOut-BP_*.root 2>/dev/null 
-echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
-../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT
+echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
+../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
 if [ $? -eq 0 ]; then
   echo "CutLang finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-  rm   histoOut-${rbase}.root
+  if [ -f "histoOut-${rbase}.root" ]; then
+    rm -f  histoOut-${rbase}.root
+  fi
   hadd histoOut-${rbase}.root histoOut-BP_*.root
   if [ $? -eq 120 ]; then
    echo "hadd finished successfully, now removing auxiliary files"

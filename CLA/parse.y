@@ -4,6 +4,7 @@
 
 #include "NodeTree.h"
 #include "ExternFunctions.h"
+#include "bp_a.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -46,6 +47,8 @@ vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
 std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
+std::map< int, vector<myParticle *> > BPdbxA::particleBank;
+
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -76,7 +79,7 @@ std::map< std::string, double > SFuncNode::BUFFERED_VALUES;
 %token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
@@ -2445,6 +2448,10 @@ command : CMD condition { //find a way to print commands
                     }
         | CMD BTAGSF { Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                        NodeCuts->insert(make_pair(++cutcount,a));
+                    }
+        | CMD XSLUMICORRSF {    
+                        Node* a=new SFuncNode(xslumicorrsf,0,"XSLUMICORRSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $11 <<"\n");
