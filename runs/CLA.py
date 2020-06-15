@@ -14,7 +14,7 @@ def help():
             print(j, end=' ')
         print("")
     print('ROOT file type can be:')
-    os.system('grep "inptype ==" ' + base_dir + 'CLA/CLA.C | cut -f3 -d\'=\' | cut -f1 -d\')\'')
+    os.system('grep "inptype ==" ../CLA/CLA.C | cut -f3 -d\'=\' | cut -f1 -d\')\'')
 
 
 # noinspection PyShadowingNames,SpellCheckingInspection
@@ -94,9 +94,12 @@ placeholders = [
     ["-v", "--verbose"],
     ["-h", "--help"]]
 
+if '-h' in sys.argv or '--help' in sys.argv:
+    help()
+    sys.exit(1)
+
 if len(sys.argv) < 3:
-    if '-h' not in sys.argv or '--help' not in sys.argv:
-        print("ERROR: Not enough arguments")
+    print("ERROR: Not enough arguments")
     help()
     sys.exit(1)
 
@@ -118,7 +121,7 @@ for i, arg in enumerate(sys.argv[3::2]):
         arguments[placeholders[i][1][2:]] = sys.argv[i * 2 + 4]
 
 arguments['parallel'] = int(arguments['parallel']) // 1
-if arguments['events'] == 0 and platform.system() == 'Darwin':
+if int(arguments['events']) == 0 and platform.system() == 'Darwin':
     sys.exit('Max event count not implemented for OSX. Provide a specific event count.')
 if not os.path.exists(arguments['datafile']):
     sys.exit(arguments['datafile'] + " does not exist.")

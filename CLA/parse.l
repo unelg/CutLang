@@ -100,6 +100,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "ALL" return ALL;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
+"XSLumiCorrSF" return XSLUMICORRSF;
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
