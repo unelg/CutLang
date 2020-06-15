@@ -72,9 +72,9 @@ def singleAnalysis(arguments, histoId=None):
         except FileNotFoundError:
             pass
         if histoId is not None:
-            hadd_query = 'hadd histoOut-' + arguments['inifile'].split('/')[-1][:-4] + str(histoId) + '.root'
+            hadd_query = 'hadd -f histoOut-' + arguments['inifile'].split('/')[-1][:-4] + str(histoId) + '.root'
         else:
-            hadd_query = 'hadd histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root'
+            hadd_query = 'hadd -f histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root'
         for i in glob.glob('histoOut-BP_*.root'):
             hadd_query += " " + i
         res = os.system(hadd_query)
@@ -136,13 +136,7 @@ if arguments['parallel'] > 1:
     skip_effs = getStringCount(arguments['inifile'], 'SkipEffs')
     print("Using", arguments['parallel'], "cores")
     if int(arguments['events']) == 0:
-        events = int(os.popen(
-            'export PATH=$PATH:$ROOTSYS/bin ;\
-            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system:' + base_dir + 'CLA/; dt=$(grep "\"' +
-            arguments[
-                'datatype'] + '\"" ' + base_dir + 'CLA/CLA.C | cut -d \'{\' -f 2 | head -c -9 | cut -c 2-); chn=$(grep -A2 "if ($dt)" ' + base_dir + 'CLA/CLA.C | grep "TChain(" | cut -d \'"\' -f 2); TotalEvents="$(root -l -q \'' + base_dir + 'analysis_core/getentries.cxx("\'' +
-            arguments[
-                'datafile'] + '\'" ,"\'${chn}\'")\')"; EVENTS="$(echo $TotalEvents | awk \'{print $NF}\')"; echo $EVENTS').read())
+        arguments['events'] = int(os.popen('../scripts/event_count.sh ' + arguments['datafile']).read().split()[-1])
     print("*" * 100,
           base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}',
           sep='\n')
