@@ -25,9 +25,25 @@ vardef {varname}" "?":"" "?.*"\n"
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 
+[iI][nN][fF][oO] return ADLINFO;
+"experiment" return PAPEXPERIMENT;
+"id" return PAPID;
+"publication" return PAPPUBLICATION;
+"sqrtS" return PAPSQRTS;
+"lumi"  return PAPLUMI;
+"arXiv" return PAPARXIV;
+"hepdata" return PAPHEPDATA;
+"doi"    return PAPDOI;
+
+"counts"  return COUNTS;
+"countsformat" return COUNTSFORMAT;
+"stat" return ERR_STAT;
+"syst" return ERR_SYST;
+"process" return PROCESS;
+
+
 [tT][rR][uU][eE] return TRUE; 
 [fF][aA][lL][sS][eE] return FALSE; 
-[iI][nN][fF][oO] return ADLINFO;
 [Nn][Vv][Aa][Rr][Ss] return NVARS;
 [eE][rR][rR][oO][rR][sS] return ERRORS;
 [tT][aA][bB][lL][eE][tT][yY][pP][eE] return TABLETYPE;
@@ -100,6 +116,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "ALL" return ALL;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
+"XSLumiCorrSF" return XSLUMICORRSF;
 "=="|"EQ" return EQ;//comparison operators
 "<>"|"NE" return NE;
 "!=" return MAXIMIZE;
@@ -136,8 +153,10 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][eE][rR][mM] return PERM;
 [mM][iI][nN] return MIN;
 [mM][aA][xX] return MAX;
+"+-"|"-+" return PM;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
+{real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\"".*"\"" yylval.s=strdup(yytext);return HID;

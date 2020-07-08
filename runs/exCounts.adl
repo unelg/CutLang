@@ -1,0 +1,21 @@
+#CLA ADL example2
+
+countsformat results
+  process est, "Total estimated BG", stat, syst 
+  process obs, "Observed data"
+
+countsformat bgests
+  process lostlep, "Lost lepton background", stat, syst
+  process zinv, "Z --> vv background", stat, syst
+  process qcd, "QCD background", stat, syst
+
+
+region   testZ
+  select      ALL              # to count all events
+  select      Size (ELE) >= 2  # events with 2 or more electrons 
+  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+#  select      {ELE[0] ELE[1] }q == 0   # Z is neutral
+#  histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+#  counts results 230.0 + 16.0 - 10.0 + 10.0 - 12.0  , 224.0
+#  counts bgests 105.0 +16.0 - 10.0 +-1.0 , 123.0 +-2.0 +-12.0 , 2.3 +-0.5 +-1.4 
+

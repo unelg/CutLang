@@ -2,6 +2,7 @@
 #define _AnalysisController_h
 
 #include <vector>
+#include <unordered_set>
 #include <map>
 #include <string>
 #include "dbx_electron.h"
@@ -33,8 +34,11 @@ class AnalysisController {
      std::map <std::string, int>  syst_names;
                              int  extra_analysis_count;
               std::vector<dbxA*>  dbxAnalyses;
-              std::map <string, int> snull;
+          std::map <string, int>  snull;
               std::map <std::string, AnalysisObjects> anull;
+                             int  mainAnalysis;
+         std::unordered_set<int>  depAnalyses;
+                            bool  do_deps;
 };
 
 #endif

@@ -4,6 +4,7 @@
 
 #include "NodeTree.h"
 #include "ExternFunctions.h"
+#include "bp_a.h"
 #include <math.h>
 #include "stdlib.h"
 #include <iostream>
@@ -46,6 +47,8 @@ vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
 std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
+std::map< int, vector<myParticle *> > BPdbxA::particleBank;
+
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -70,13 +73,15 @@ std::map< std::string, double > SFuncNode::BUFFERED_VALUES;
 %parse-param {std::vector<std::string>* Initializations}
 %parse-param {std::vector<double>* DataFormats}
 %parse-param {std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables}
+%token COUNTSFORMAT COUNTS ERR_SYST ERR_STAT PROCESS
+%token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID //simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
@@ -84,8 +89,9 @@ std::map< std::string, double > SFuncNode::BUFFERED_VALUES;
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD
-%token ASCEND DESCEND ALIAS 
-%token <real> NB
+%token ASCEND DESCEND ALIAS PM
+%token <real> PNB
+%token <real> NB 
 %token <integer> INT
 %token <s> ID HID 
 %token SIN COS TAN ABS SQRT EXP LOG HSTEP SINH COSH TANH
@@ -95,7 +101,7 @@ std::map< std::string, double > SFuncNode::BUFFERED_VALUES;
 %token LT GT LE GE EQ NE IRG ERG
 %left OR
 %left AND
-%token NOT
+%token NOT 
 %nonassoc LT GT LE GE EQ NE IRG ERG
 %left '+' '-'
 %left '*' '/'
@@ -106,12 +112,14 @@ std::map< std::string, double > SFuncNode::BUFFERED_VALUES;
 %type <node> e function condition action ifstatement
 %type <s> particule particules list2 list3 description
 %type <s> LEPTON
+%type <s> ERRTYPE
+%type <real> NUMBER
 %%
-input : initializations definitions objects commands 
-      | initializations objects definitions  commands 
-      | initializations objects definitions objects commands 
-      | initializations definitions objects definitions  commands 
-     ;
+input : initializations countformats definitions objects commands 
+      | initializations countformats objects definitions  commands 
+      | initializations countformats objects definitions objects commands 
+      | initializations countformats definitions objects definitions  commands 
+      ;
 initializations : initializations initialization 
         | 
         ;
@@ -124,7 +132,22 @@ definitions : definitions definition
             | 
             ;
 
+countformats : countformats countformat
+             |
+             ;
+
+countformat : COUNTSFORMAT ID { DEBUG($2<<" is a new format type\n"); }
+            | PROCESS ID ',' description  { DEBUG($2<<" has name "<< $4 <<" without err \n"); 
+              } // no err
+            | PROCESS ID ',' description ',' ERRTYPE ',' ERRTYPE { 
+               DEBUG($2<<" has name "<< $4 <<" err1:"<< $6<<" err2:"<< $8<<" \n"); 
+              }
+            ;
+NUMBER : INT { $$ = (float)$1; } 
+       | NB  { $$ = $1; }
+       ;
 LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
+ERRTYPE: ERR_SYST { $$="ERR_SYST";} | ERR_STAT { $$="ERR_STAT";}
 
 bool: TRUE {$$ = 1;} | FALSE {$$ =  0;} ;
 
@@ -2217,6 +2240,15 @@ idlist  : ID ',' idlist { DEBUG($1<<" + ");
                TmpIDList.push_back(it->second);
          }
         ;
+counts  : acount 
+        | counts ',' acount 
+        ;
+acount  : NB '+' NB '-' NB '+' NB '-' NB { DEBUG(" + - +  -\n"); }
+        | NB PM NB PM NB { DEBUG(" 2 +-\n"); }
+        | NB PM NB '+' NB '-' NB { DEBUG(" +- +  -\n"); }
+        | NB '+' NB '-' NB PM NB { DEBUG(" + -  +-\n"); }
+        | NB { DEBUG("no err\n");}
+        ;
 boxlist : boxlist abox
         | abox
         ;
@@ -2243,7 +2275,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
           | REJEC condition { Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
                               TmpCriteria.push_back(a); }
 
-          | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
+          | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($12);
                                         if(it == NodeVars->end()) {
@@ -2258,30 +2290,11 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                         }
     
 				}
-        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($12);
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
-                                                TmpCriteria.push_back(h);
-                                        }
-    
-				}
-        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
+        | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 TmpCriteria.push_back(h);
 				}
-        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
-                                                TmpCriteria.push_back(h);
-				}
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;
                                         it1 = NodeVars->find($18);
@@ -2299,27 +2312,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' ID {
-					map<string, Node *>::iterator it1 ;
-					map<string, Node *>::iterator it2 ;
-                                        it1 = NodeVars->find($18);
-					it2 = NodeVars->find($20);
-                        
-                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
-                                                Node* child1=it1->second;
-						Node* child2=it2->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
-                                                TmpCriteria.push_back(h);
-                                        }
-                                        else {
-						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' function {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' function {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($18);
                                         if(it == NodeVars->end()) {
@@ -2333,25 +2326,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                                 TmpCriteria.push_back(h);
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' function {
-                                        //find child node
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($18);
-                        
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
-                                                TmpCriteria.push_back(h);
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' ID {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($20);
@@ -2368,34 +2343,11 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                                 TmpCriteria.push_back(h);
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' ID {
-                                        //find child node
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($20);
-                        
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
-                                                TmpCriteria.push_back(h);
-				}
-        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' function{
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 TmpCriteria.push_back(h);
 				}
 	;
-          ;
 commands : commands command 
         | 
         ;
@@ -2445,6 +2397,10 @@ command : CMD condition { //find a way to print commands
                     }
         | CMD BTAGSF { Node* a=new SFuncNode(btagsf,0,"BTAGSF");
                        NodeCuts->insert(make_pair(++cutcount,a));
+                    }
+        | CMD XSLUMICORRSF {    
+                        Node* a=new SFuncNode(xslumicorrsf,0,"XSLUMICORRSF");
+                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $11 <<"\n");
@@ -2512,7 +2468,10 @@ command : CMD condition { //find a way to print commands
 
         | CMD ifstatement {   NodeCuts->insert(make_pair(++cutcount,$2));
 		          }
-        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' ID {
+        | COUNTS ID counts { DEBUG ("Getting counts fmt: "<<$2<<"\n");
+                     }
+
+        | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($12);
                         
@@ -2526,39 +2485,17 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
-    
 				}
-        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' ID {
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($12);
-                        
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($12<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-    
-				}
-        | HISTO ID ',' description ',' INT ',' NB ',' NB ',' function {
+        | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
+                                                DEBUG("INT NB NB 1D func histo defined.\n");
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
-        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' function {
-                                                DEBUG("all INT 1D func histo defined.\n");
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-				}
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' ID {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;
                                         it1 = NodeVars->find($18);
 					it2 = NodeVars->find($20);
-                        
                                         if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
                                                 Node* child1=it1->second;
 						Node* child2=it2->second;
@@ -2571,27 +2508,7 @@ command : CMD condition { //find a way to print commands
                                                 YYERROR;//stops parsing if variable not found
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' ID {
-					map<string, Node *>::iterator it1 ;
-					map<string, Node *>::iterator it2 ;
-                                        it1 = NodeVars->find($18);
-					it2 = NodeVars->find($20);
-                        
-                                        if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
-                                                Node* child1=it1->second;
-						Node* child2=it2->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-                                        else {
-						DEBUG($18 <<"or" << $20 <<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' ID ',' function {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' function {
                                         //find child node
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($18);
@@ -2607,29 +2524,10 @@ command : CMD condition { //find a way to print commands
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' ID ',' function {
-                                        //find child node
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($18);
-                        
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' ID {
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' ID {
                                         //find child node
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($20);
-                        
                                         if(it == NodeVars->end()) {
                                                 DEBUG($20<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
@@ -2641,29 +2539,7 @@ command : CMD condition { //find a way to print commands
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
-
-	| HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' ID {
-                                        //find child node
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($20);
-                        
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($20<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-					}
-
-	| HISTO ID ',' description ',' INT ',' NB ',' NB ',' INT ',' NB ',' NB ',' function ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-				}
-        | HISTO ID ',' description ',' INT ',' INT ',' INT ',' INT ',' INT ',' INT ',' function ',' function{
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
                                                 Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
