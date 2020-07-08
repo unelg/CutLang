@@ -9,11 +9,10 @@
 
 void FuncNode::ResetParticles(){
       for(int i=0;i<originalParticles.size();i++){
-       if (originalParticles[i].type == 49 ) { 
+/*
         cout <<"O Collection:"<<originalParticles[i].collection<<" type:"<< originalParticles[i].type<<" index:"<<originalParticles[i].index<<"\n";
         cout <<"R Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
-        exit (12); 
-       }
+*/
         DEBUG("Recall orig i:"<<originalParticles[i].index);
         *(inputParticles[i])=originalParticles[i];
       }
