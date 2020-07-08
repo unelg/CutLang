@@ -5,16 +5,12 @@ region   test
   select  ALL              # to count all events
   select  Size (ELE) >= 2  # events with 2 or more electrons 
   weight   randWeight   1.123
-  save     mid1file
 # reject   Size (ELE) > 4  # events with 2 or more electrons 
   histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
   histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
-  save     end1file
 
  region mest
   select  ALL
   select  Size (MUO) >= 2 
   select  Size (ELE) >= 2  # events with 2 or more electrons 
-  save    mid2file
   weight  bWeight   2.321
-  Save    end2file
