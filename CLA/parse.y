@@ -2259,23 +2259,27 @@ idlist  : ID ',' idlist { DEBUG($1<<" + ");
 counts  : acount 
         | counts ',' acount 
         ;
-acount  : NB '+' NB '-' NB '+' NB '-' NB { DEBUG(" + - +  -\n"); 
+acount  : NUMBER '+' NUMBER '-' NUMBER '+' NUMBER '-' NUMBER { DEBUG(" + - +  -\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($5);
                                                                    chist_syst_p.push_back($7); chist_syst_n.push_back($9);
                                          }
-        | NB PM NB PM NB { DEBUG(" 2 +-\n"); 
+        | NUMBER '+' NUMBER '+' NUMBER '-' NUMBER '-' NUMBER { DEBUG(" + + -  -\n");
+                                            chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($7);
+                                                                   chist_syst_p.push_back($5); chist_syst_n.push_back($9);
+                                         }
+        | NUMBER PM NUMBER PM NUMBER { DEBUG(" 2 +-\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($3);
                                                                    chist_syst_p.push_back($5); chist_syst_n.push_back($5);
                          }
-        | NB PM NB '+' NB '-' NB { DEBUG(" +- +  -\n"); 
+        | NUMBER PM NUMBER '+' NUMBER '-' NUMBER { DEBUG(" +- +  -\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($3);
                                                                    chist_syst_p.push_back($5); chist_syst_n.push_back($7);
                                  }
-        | NB '+' NB '-' NB PM NB { DEBUG(" + -  +-\n"); 
+        | NUMBER '+' NUMBER '-' NUMBER PM NUMBER { DEBUG(" + -  +-\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($5);
                                                                    chist_syst_p.push_back($7); chist_syst_n.push_back($7);
                                  }
-        | NB { DEBUG("no err\n"); 
+        | NUMBER { DEBUG("no err\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back(0); chist_stat_n.push_back(0);
                                                                    chist_syst_p.push_back(0); chist_syst_n.push_back(0);
           }
