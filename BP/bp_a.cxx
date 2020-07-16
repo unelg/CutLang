@@ -24,7 +24,8 @@
 
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
-                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables);
+                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
+                                       map<string, vector<cntHisto> >*cntHistos);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -201,7 +202,7 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        bincount=0;
        cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos);
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
@@ -313,6 +314,25 @@ int BPdbxA:: readAnalysisParams() {
          DEBUG("+++++ Binning: "<<iter->first<<" |"<< iter->second->getStr()<<"\n");
          iter++;
        }
+//---------------------- count histos
+for (map<string,vector<cntHisto> >::iterator ichi = cntHistos.begin(); ichi != cntHistos.end(); ichi++){
+  cout << ichi->first << " \n ------- \n ";
+         for (vector<cntHisto>::iterator ih=ichi->second.begin(); ih!=ichi->second.end(); ih++){
+           cout<< ih->cH_name<< " "<< ih->cH_title<<":"<< ih->cH_means.size()<<"\n";
+           TH1D* chistoM= new TH1D(ih->cH_name.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           string upname=ih->cH_name; upname+="_up";
+           string downname=ih->cH_name; downname+="_down";
+           TH1D* chistoU= new TH1D(  upname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           TH1D* chistoD= new TH1D(downname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           for (int iv=0; iv<ih->cH_means.size(); iv++){
+             cout<< ih->cH_means[iv] << " stat +" << ih->cH_StatErr_p[iv] << " -"<<ih->cH_StatErr_n[iv] 
+                                     << "  sys +" << ih->cH_SystErr_p[iv] << " -"<<ih->cH_SystErr_n[iv] <<"\n";  
+             chistoM->SetBinContent(1+iv, ih->cH_means[iv]);
+             chistoU->SetBinContent(1+iv, sqrt(ih->cH_StatErr_p[iv]*ih->cH_StatErr_p[iv] + ih->cH_SystErr_p[iv]*ih->cH_SystErr_p[iv]));
+             chistoD->SetBinContent(1+iv, sqrt(ih->cH_StatErr_n[iv]*ih->cH_StatErr_n[iv] + ih->cH_SystErr_n[iv]*ih->cH_SystErr_n[iv]));
+           }
+         }
+}
 
 #ifdef _CLV__
      cout<<"\n Parsed Particle Lists: \n";

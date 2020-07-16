@@ -12,6 +12,19 @@
 #endif
 
 
+struct cntHisto {
+ std::string cH_name;
+ std::string cH_title;
+ std::vector<float> cH_means;
+ std::vector<float> cH_StatErr_p;
+ std::vector<float> cH_StatErr_n;
+ std::vector<float> cH_SystErr_p;
+ std::vector<float> cH_SystErr_n;
+ bool cH_StatErr;
+ bool cH_SystErr;
+};
+
+
 struct analy_struct {   // Declare analysis types
 	int BPcount;
 	int Dumpcount;
@@ -22,7 +35,7 @@ struct analy_struct {   // Declare analysis types
 	bool doQCD;
 	bool doHF;
         std::string dependencies;
-} ;
+};
 
 typedef struct evt_data
 {
