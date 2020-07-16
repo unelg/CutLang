@@ -13,7 +13,6 @@
 #include "TTree.h"
 
 
-
 class BPdbxA : public dbxA {
   public: 
       BPdbxA(char *aname) : dbxA ( aname)
@@ -70,6 +69,7 @@ class BPdbxA : public dbxA {
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle*> > ListParts;//for particle definition
         map<string,pair<vector<float>,bool> > ListTables;//for table definition
+        map<string, vector<cntHisto> > cntHistos;
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects
