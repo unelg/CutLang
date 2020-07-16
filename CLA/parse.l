@@ -28,6 +28,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [iI][nN][fF][oO] return ADLINFO;
 "experiment" return PAPEXPERIMENT;
 "id" return PAPID;
+"title" return PAPTITLE;
 "publication" return PAPPUBLICATION;
 "sqrtS" return PAPSQRTS;
 "lumi"  return PAPLUMI;
