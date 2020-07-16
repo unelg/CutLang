@@ -1,15 +1,14 @@
 #CLA ADL example1
 info analysis
-  title "Search for electroweak production of charginos and neutralinos in WH events in 
- proton-proton collisions at sqrt(s) = 13TeV"
+  title "Search for electroweak production of charginos and neutralinos in WH events in proton-proton collisions at sqrt(s) = 13TeV"
   experiment CMS
-  id SUS-16-043
-  publication JHEP 11 (2017) 029
+  id "SUS-16-043"
+  publication "JHEP 11 (2017) 029"
   sqrtS 13.0
   lumi 35.9
-  arXiv 1706.09933
-  hepdata 
-  doi 10.1007/JHEP11(2017)029
+  arXiv "1706.09933"
+# hepdata 
+  doi "10.1007/JHEP11(2017)029"
 
 
 region   test

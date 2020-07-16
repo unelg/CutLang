@@ -78,7 +78,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %parse-param {std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables}
 %parse-param {std::map<std::string, std::vector<cntHisto> >* cntHistos}
 %token COUNTSFORMAT COUNTS ERR_SYST ERR_STAT PROCESS
-%token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI
+%token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI PAPTITLE
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
@@ -131,6 +131,15 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                 | TRGM  '=' INT {DataFormats->at(1)=$3; }
                 | SKPH  '=' INT {DataFormats->at(3)=$3; }
                 | SKPE  '=' INT {DataFormats->at(2)=$3; }
+                | ADLINFO ID { }
+                | PAPTITLE description { }
+                | PAPEXPERIMENT ID { }
+                | PAPID description { }
+                | PAPPUBLICATION description { }
+                | PAPSQRTS NUMBER { }
+                | PAPLUMI NUMBER { }
+                | PAPARXIV description { }
+                | PAPDOI description { }
                 ;
 definitions : definitions definition 
             | 
@@ -2279,6 +2288,14 @@ acount  : NUMBER '+' NUMBER '-' NUMBER '+' NUMBER '-' NUMBER { DEBUG(" + - +  -\
                                             chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($5);
                                                                    chist_syst_p.push_back($7); chist_syst_n.push_back($7);
                                  }
+        | NUMBER '+' NUMBER '-' NUMBER { DEBUG(" + -  \n"); 
+                                            chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($5);
+                                                                    chist_syst_p.push_back(0); chist_syst_n.push_back(0);
+                                 }
+        | NUMBER   PM    NUMBER  { DEBUG(" +-  \n"); 
+                                            chist_a.push_back($1); chist_stat_p.push_back($3); chist_stat_n.push_back($3);
+                                                                    chist_syst_p.push_back(0); chist_syst_n.push_back(0);
+                                 }
         | NUMBER { DEBUG("no err\n"); 
                                             chist_a.push_back($1); chist_stat_p.push_back(0); chist_stat_n.push_back(0);
                                                                    chist_syst_p.push_back(0); chist_syst_n.push_back(0);
@@ -2386,10 +2403,8 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
 commands : commands command 
         | 
         ;
-bins    : bins NB {tmpBoxlist.push_back($2);}
-        | bins INT {tmpBoxlist.push_back($2);}
-        | NB {tmpBoxlist.push_back($1);}
-        | INT {tmpBoxlist.push_back($1);}
+bins    : bins NUMBER {tmpBoxlist.push_back($2);}
+        | NUMBER {tmpBoxlist.push_back($1);}
         ;
 command : CMD condition { //find a way to print commands                                     
                         NodeCuts->insert(make_pair(++cutcount,$2));
