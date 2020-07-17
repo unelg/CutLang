@@ -140,6 +140,7 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                 | PAPLUMI NUMBER { }
                 | PAPARXIV description { }
                 | PAPDOI description { }
+                | PAPHEPDATA description { }
                 ;
 definitions : definitions definition 
             | 
@@ -2337,13 +2338,13 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
+                                                Node* h=new HistoNode1D($2,$4,$6,$8,$10,child);
                                                 TmpCriteria.push_back(h);
                                         }
     
 				}
         | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                Node* h=new HistoNode1D($2,$4,$6,$8,$10,$12);
                                                 TmpCriteria.push_back(h);
 				}
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
@@ -2355,7 +2356,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                         if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
                                                 Node* child1=it1->second;
 						Node* child2=it2->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
                                                 TmpCriteria.push_back(h);
                                         }
                                         else {
@@ -2374,7 +2375,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
                                                 TmpCriteria.push_back(h);
                                         }
 					}
@@ -2390,13 +2391,13 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                                 TmpCriteria.push_back(h);
                                         }
 					}
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 TmpCriteria.push_back(h);
 				}
 	;
@@ -2545,13 +2546,13 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,child);
+                                                Node* h=new HistoNode1D($2,$4,$6,$8,$10,child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 				}
         | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
                                                 DEBUG("INT NB NB 1D func histo defined.\n");
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12);
+                                                Node* h=new HistoNode1D($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
@@ -2562,7 +2563,7 @@ command : CMD condition { //find a way to print commands
                                         if(it1 != NodeVars->end() && it2 != NodeVars->end()) {
                                                 Node* child1=it1->second;
 						Node* child2=it2->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16,child1,child2);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
                                         else {
@@ -2583,7 +2584,7 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16,child,$20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
@@ -2598,12 +2599,12 @@ command : CMD condition { //find a way to print commands
                                         }
                                         else {
                                                 Node* child=it->second;
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, child);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
-                                                Node* h=new HistoNode($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
 	| SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
