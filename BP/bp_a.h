@@ -43,19 +43,6 @@ class BPdbxA : public dbxA {
       std::vector<TString> effCL;
       std::vector< string> binCL;
 
-
-      // Sezen's handmade histograms
-/*
-      TH1D* mWHh1;
-      TH1D* mWHh2;
-      TH1D* mTopHh1;
-      TH1D* mTopHh2;
-      TH1D* WHbRh1;
-      TH1D* WHbRh2;
-      TH1D* xWHbRh1;
-      TH1D* xWHbRh2;
-      TH1D* Zlm;
-*/
       int TRGe, TRGm;
       bool skip_histos;
       bool skip_effs;

@@ -7,7 +7,7 @@ info analysis
   sqrtS 13.0
   lumi 35.9
   arXiv "1706.09933"
-# hepdata 
+  hepdata " http://adress "
   doi "10.1007/JHEP11(2017)029"
 
 
