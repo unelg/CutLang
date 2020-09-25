@@ -13,7 +13,6 @@
 #include "TTree.h"
 
 
-
 class BPdbxA : public dbxA {
   public: 
       BPdbxA(char *aname) : dbxA ( aname)
@@ -44,19 +43,6 @@ class BPdbxA : public dbxA {
       std::vector<TString> effCL;
       std::vector< string> binCL;
 
-
-      // Sezen's handmade histograms
-/*
-      TH1D* mWHh1;
-      TH1D* mWHh2;
-      TH1D* mTopHh1;
-      TH1D* mTopHh2;
-      TH1D* WHbRh1;
-      TH1D* WHbRh2;
-      TH1D* xWHbRh1;
-      TH1D* xWHbRh2;
-      TH1D* Zlm;
-*/
       int TRGe, TRGm;
       bool skip_histos;
       bool skip_effs;
@@ -70,6 +56,7 @@ class BPdbxA : public dbxA {
         map<string,Node*> NodeVars;//for variable defintion
         map<string,vector<myParticle*> > ListParts;//for particle definition
         map<string,pair<vector<float>,bool> > ListTables;//for table definition
+        map<string, vector<cntHisto> > cntHistos;
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects

@@ -11,12 +11,10 @@
 
 using namespace std;
 
-double HistoNode::evaluate(AnalysisObjects* ao) {
-        if (dim == 1) // this if has to go. we can make 2 independent and similar classes
-		{
+double HistoNode1D::evaluate(AnalysisObjects* ao) {
                   this->getParticles(&inputParticles);
                   for (int ii=0; ii<inputParticles.size(); ii++){
-                      DEBUG("Histo particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
+                      DEBUG("1DHisto particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                         << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
                   }
                   if (inputParticles.size()>0 ) {
@@ -80,11 +78,20 @@ double HistoNode::evaluate(AnalysisObjects* ao) {
                     DEBUG("Filling with:"<<value<<"\n");
 		    ahisto1->Fill(value, ao->evt.user_evt_weight);
 		    return 1;
-                } else {
+};
+//-----
+
+double HistoNode2D::evaluate(AnalysisObjects* ao) {
+/*
+                  this->getParticles(&inputParticles);
+                  for (int ii=0; ii<inputParticles.size(); ii++){
+                      DEBUG("1DHisto particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
+                        << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
+                  }
+*/
 		      double value1=left->evaluate(ao);
 		      double value2=right->evaluate(ao);
         	      ahisto2->Fill(value1, value2, ao->evt.user_evt_weight);
         	      return 1;
-		}
-    }
+};
 
