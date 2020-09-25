@@ -96,10 +96,10 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->setCharge(Muon_charge[i] );
 //                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
 //                adbxm->setPtCone(Muon_IsolationVar[i]        );
-                adbxm->addAttribute( Muon_dz[i]);
-                adbxm->addAttribute( Muon_dxy[i]     );
-                adbxm->addAttribute( Muon_miniPFRelIso_all[i]     );
-                adbxm->addAttribute( Muon_softId[i]     );
+                adbxm->addAttribute( Muon_dz[i]);         // attri 0
+                adbxm->addAttribute( Muon_dxy[i]     );   // attri 1
+                adbxm->addAttribute( Muon_miniPFRelIso_all[i]     ); // attri 2
+                adbxm->addAttribute( Muon_softId[i]     ); // attri 3
                 adbxm->setParticleIndx(i);
                 muons.push_back(*adbxm);
                 delete adbxm;
@@ -114,9 +114,9 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_charge[i] );
                 adbxe->setParticleIndx(i);
-                adbxe->addAttribute( Electron_dz[i]);
-                adbxe->addAttribute( Electron_dxy[i]     );
-                adbxe->addAttribute( Electron_miniPFRelIso_all[i]     );
+                adbxe->addAttribute( Electron_dz[i]);       // attri 0
+                adbxe->addAttribute( Electron_dxy[i]     ); // attri 1
+                adbxe->addAttribute( Electron_miniPFRelIso_all[i]  ); // attri 2 
                 electrons.push_back(*adbxe);
                 delete adbxe;
         }
@@ -159,10 +159,10 @@ std::cout << "Jets:"<<nJet<<std::endl;
                 adbxj->setParticleIndx(i);
                 adbxj->setFlavor(FatJet_btagDeepB[i] );
                 adbxj->set_isbtagged_77( (FatJet_btagDeepB[i]>0.8) ); // 5 is btag
-                adbxj->addAttribute( FatJet_msoftdrop[i]);
-                adbxj->addAttribute( FatJet_tau1[i]     );
-                adbxj->addAttribute( FatJet_tau2[i]     );
-                adbxj->addAttribute( FatJet_tau3[i]     );
+                adbxj->addAttribute( FatJet_msoftdrop[i]); // attri 0
+                adbxj->addAttribute( FatJet_tau1[i]     ); // attri 1
+                adbxj->addAttribute( FatJet_tau2[i]     ); // attri 2
+                adbxj->addAttribute( FatJet_tau3[i]     ); // attri 3
                 ljets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -176,7 +176,12 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->setCharge(-99);
                 adbxt->setParticleIndx(i);
                 adbxt->setIsolation(Tau_idMVAnewDM2017v2[i] );
-                adbxt->addAttribute(Tau_idMVAnewDM2017v2[i] );
+                adbxt->addAttribute(Tau_idMVAnewDM2017v2[i] ); // attri 0
+                adbxt->addAttribute(Tau_idDecayMode[i] ); // attri 1
+                adbxt->addAttribute(Tau_idIsoTight[i] ); // attri 2
+                adbxt->addAttribute(Tau_idAntiEleTight[i] ); // attri 3
+                adbxt->addAttribute(Tau_idAntiMuTight[i] ); // attri 4
+//--------added tau variables for SS.
                 taus.push_back(*adbxt);
                 delete adbxt;
         }

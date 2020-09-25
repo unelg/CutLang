@@ -503,7 +503,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | RELISO '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
-
+                                     }
          | '{' particules '}' IDDECAYMODE {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
@@ -511,7 +511,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | RELISO '(' IDDECAYMODE ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
-
+                                     }
          | '{' particules '}' IDISOTIGHT {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idisotightof,newList,"idIsoTight");
@@ -519,7 +519,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | IDISOTIGHT '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idisotightof,newList,"idIsoTight");
-
+                                  }
          | '{' particules '}' IDANTIELETIGHT {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
@@ -527,7 +527,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | IDANTIELETIGHT '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
-
+                                  }
          | '{' particules '}' IDANTIMUTIGHT {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");

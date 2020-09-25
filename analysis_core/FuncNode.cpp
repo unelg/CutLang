@@ -451,7 +451,7 @@ double vtrof( dbxParticle* apart){
    return v;
 }
 double tauisoof( dbxParticle* apart){
-   double v=apart->Attribute(0);
+   double v=apart->Attribute(0); // tau attri0
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
@@ -460,8 +460,9 @@ double CCountof( dbxParticle* apart){
    DEBUG("# Children :"<<v<<"\n");
    return v;
 }
+//---------for tau's added by SS
 double iddecaymodeof( dbxParticle* apart){
-   double v=apart->Attribute(2);
+   double v=apart->Attribute(1);
    DEBUG(" iddecaymode:"<<v<<"\t");
    return v;
 }
@@ -471,12 +472,12 @@ double idisotightof( dbxParticle* apart){
    return v;
 }
 double idantieletightof( dbxParticle* apart){
-   double v=apart->Attribute(2);
+   double v=apart->Attribute(3);
    DEBUG(" idantieletight:"<<v<<"\t");
    return v;
 }
 double idantimutightof( dbxParticle* apart){
-   double v=apart->Attribute(2);
+   double v=apart->Attribute(4);
    DEBUG(" idantimutight:"<<v<<"\t");
    return v;
 }
