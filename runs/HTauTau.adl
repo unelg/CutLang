@@ -1,0 +1,34 @@
+object goodmuons 
+  take MUO
+  select { MUO }Pt > 20
+
+object goodtaus 
+  take TAU
+  select { TAU }Pt > 20
+
+object goodjets : JET
+  select  {JET}Pt > 10
+  select  {JET}Eta < 4
+
+
+object HTauTaus : COMB( goodmuons[-1] goodtaus[-1] ) alias aHCandi
+#object HTauTaus : COMB( goodtaus[-1] goodtaus[-2] ) alias aHCandi
+  select { aHCandi }AbsEta < 3.0
+#  select { goodmuons[-1], goodtaus[-2]}dR > 0.5
+define bestHTauTau : HTauTaus[-1]
+
+define myMuon  : goodmuons[-1]
+define myTau   : goodtaus[-1]
+define myHiggs : myMuon myTau
+define big     : 9999
+
+define chi2 = big*HStep({myMuon, myTau}dR - 0.5) + 1/{myMuon}Pt + {myTau}Iso
+
+region preselect
+     select ALL 
+     select size( goodmuons ) >= 1  # atleast 1 muon
+     select size( goodtaus  ) >= 1
+#     select size( HTauTaus  ) >= 1
+
+     
+ 
