@@ -25,7 +25,8 @@ private:
         Node* userObjectC;
         Node* userObjectD;
 
-        friend class HistoNode;
+        friend class HistoNode1D;
+        friend class HistoNode2D;
         friend class LoopNode;
         friend class TableNode;
 protected:
