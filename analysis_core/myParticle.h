@@ -6,6 +6,8 @@
 //  Copyright © 2018 Anna-Monica. All rights reserved.
 //
 #include <string>
+#include <vector>
+
 #ifndef myParticle_h
 #define myParticle_h
 struct myParticle{
@@ -13,4 +15,17 @@ struct myParticle{
     int index;
     std::string collection;
 };
+
+struct cntHisto {
+ std::string cH_name;
+ std::string cH_title;
+ std::vector<float> cH_means;
+ std::vector<float> cH_StatErr_p;
+ std::vector<float> cH_StatErr_n;
+ std::vector<float> cH_SystErr_p;
+ std::vector<float> cH_SystErr_n;
+ bool cH_StatErr;
+ bool cH_SystErr;
+};
+
 #endif /* myParticle_h */
