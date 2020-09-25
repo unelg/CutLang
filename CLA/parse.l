@@ -98,6 +98,10 @@ vardef {varname}" "?":"" "?.*"\n"
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
 "applyHM" return APPLYHM;
+"idDecayMode" return IDDECAYMODE;
+"idIsoTight" return IDISOTIGHT;
+"idAntiEleTight" return IDANTIELETIGHT; 
+"idAntiMuTight" return IDANTIMUTIGHT;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;

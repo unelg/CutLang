@@ -88,6 +88,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
+%token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
@@ -502,6 +503,38 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | RELISO '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
+
+         | '{' particules '}' IDDECAYMODE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
+                                  }
+         | RELISO '(' IDDECAYMODE ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
+
+         | '{' particules '}' IDISOTIGHT {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idisotightof,newList,"idIsoTight");
+                                  }
+         | IDISOTIGHT '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idisotightof,newList,"idIsoTight");
+
+         | '{' particules '}' IDANTIELETIGHT {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
+                                  }
+         | IDANTIELETIGHT '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
+
+         | '{' particules '}' IDANTIMUTIGHT {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");
+                                  }
+         | IDANTIMUTIGHT '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");
                                   }
          | '{' particules '}' SOFTID {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);

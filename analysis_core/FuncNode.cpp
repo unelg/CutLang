@@ -460,6 +460,26 @@ double CCountof( dbxParticle* apart){
    DEBUG("# Children :"<<v<<"\n");
    return v;
 }
+double iddecaymodeof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" iddecaymode:"<<v<<"\t");
+   return v;
+}
+double idisotightof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" idisotight:"<<v<<"\t");
+   return v;
+}
+double idantieletightof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" idantieletight:"<<v<<"\t");
+   return v;
+}
+double idantimutightof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" idantimutight:"<<v<<"\t");
+   return v;
+}
 
 
 //------------------------------
