@@ -102,6 +102,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "idIsoTight" return IDISOTIGHT;
 "idAntiEleTight" return IDANTIELETIGHT; 
 "idAntiMuTight" return IDANTIMUTIGHT;
+"tightId" return TIGHTID;
+"puId" return PUID;
+"genPartIdx" return GENPARTIDX;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
