@@ -89,6 +89,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
+%token TIGHTID PUID GENPARTIDX
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
@@ -508,7 +509,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
                                   }
-         | RELISO '(' IDDECAYMODE ')' {  vector<myParticle*> newList;
+         | IDDECAYMODE '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
                                      }
@@ -535,6 +536,31 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | IDANTIMUTIGHT '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");
+
+                                  }
+         | '{' particules '}' TIGHTID {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tightidof,newList,"tightId");
+                                  }
+         | TIGHTID '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(tightidof,newList,"tightId");
+                                  }
+         | '{' particules '}' PUID {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(puidof,newList,"puId");
+                                  }
+         | PUID '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(puidof,newList,"puId");
+                                  }
+         | '{' particules '}' GENPARTIDX {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(genpartidxof,newList,"genPartIdx");
+                                  }
+         | GENPARTIDX '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(genpartidxof,newList,"genPartIdx");
                                   }
          | '{' particules '}' SOFTID {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);

@@ -481,6 +481,21 @@ double idantimutightof( dbxParticle* apart){
    DEBUG(" idantimutight:"<<v<<"\t");
    return v;
 }
+double tightidof( dbxParticle* apart){
+   double v=apart->Attribute(4);
+   DEBUG(" tightID for mus:"<<v<<"\t");
+   return v;
+}
+double puidof( dbxParticle* apart){
+   double v=apart->Attribute(0);
+   DEBUG(" PU ID for jets:"<<v<<"\t");
+   return v;
+}
+double genpartidxof( dbxParticle* apart){
+   double v=apart->Attribute(5);
+   DEBUG(" genPartIdx:"<<v<<"\t");
+   return v;
+}
 
 
 //------------------------------
