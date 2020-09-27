@@ -93,6 +93,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
+"relIsoall" return RELISOALL;
+"pfRelIso03all" return PFRELISO03ALL;
 "dxy"|[dD]"0" return DXY;
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;

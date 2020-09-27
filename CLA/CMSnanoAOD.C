@@ -102,6 +102,7 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->addAttribute( Muon_softId[i]     ); // attri 3
                 adbxm->addAttribute( Muon_tightId[i]    ); // attri 4
                 adbxm->addAttribute( Muon_genPartIdx[i]    ); // attri 5
+                adbxm->addAttribute( Muon_pfRelIso03_all[i]    ); // attri 6
                 adbxm->setParticleIndx(i);
                 muons.push_back(*adbxm);
                 delete adbxm;
@@ -185,6 +186,7 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->addAttribute(Tau_idAntiEleTight[i] ); // attri 3
                 adbxt->addAttribute(Tau_idAntiMuTight[i] ); // attri 4
                 adbxt->addAttribute(Tau_genPartIdx[i] ); // attri 5
+                adbxt->addAttribute(Tau_relIso_all[i] ); // attri 6
 //--------added tau variables for SS.
                 taus.push_back(*adbxt);
                 delete adbxt;
