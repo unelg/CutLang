@@ -496,7 +496,16 @@ double genpartidxof( dbxParticle* apart){
    DEBUG(" genPartIdx:"<<v<<"\t");
    return v;
 }
-
+double relisoallof( dbxParticle* apart){
+   double v=apart->Attribute(6);
+   DEBUG(" tau reliso_all:"<<v<<"\t");
+   return v;
+}
+double pfreliso03allof( dbxParticle* apart){
+   double v=apart->Attribute(6);
+   DEBUG(" muon pfRelIso03_all:"<<v<<"\t");
+   return v;
+}
 
 //------------------------------
 double nbfof( dbxParticle* apart){

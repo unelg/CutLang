@@ -78,6 +78,8 @@ double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
+double relisoallof( dbxParticle* apart);
+double pfreliso03allof( dbxParticle* apart);
 double iddecaymodeof( dbxParticle* apart);
 double idisotightof( dbxParticle* apart);
 double idantieletightof( dbxParticle* apart);
