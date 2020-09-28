@@ -123,8 +123,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;
 "=="|"EQ" return EQ;//comparison operators
-"<>"|"NE" return NE;
-"!=" return MAXIMIZE;
+"!="|"NE" return NE;
+"~!" return MAXIMIZE;
 "~=" return MINIMIZE;
 "<="|"LE" return LE;
 ">="|"GE" return GE;

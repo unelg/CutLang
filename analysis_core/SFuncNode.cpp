@@ -9,7 +9,7 @@
 #include "SFuncNode.h"
 #include "ValueNode.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -202,11 +202,11 @@ double count(AnalysisObjects* ao, string s, float id) {
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      case combo_t:    if (ao->combosA.find(s)!=ao->combosA.end() ){
-                           DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row
-                                  <<" "<< ao->combosA.at(s).max_col<<"\n");
-                             return (ao->combosA.at(s).max_row);
-                      } else { DEBUG(s<<" Normal\n");    // to be continued     
-                               return (ao->combos.at(s).size() );
+                           DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row <<" "<< ao->combosA.at(s).max_col<<"\n");
+                           return (ao->combosA.at(s).max_row);
+                      } else { 
+                           DEBUG(s<<" Normal\n");    // to be continued     
+                           return (ao->combos.at(s).size() );
                       }
                       break;
      default:        std::cerr<<"No such Particle Type:\n"; return (-1); break;

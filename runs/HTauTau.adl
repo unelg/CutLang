@@ -11,24 +11,39 @@ object goodjets : JET
   select  {JET}Eta < 4
 
 
-object HTauTaus : COMB( goodmuons[-1] goodtaus[-1] ) alias aHCandi
+define bestM : goodmuons[-1]
+define bestT : goodtaus[-2]
+
 #object HTauTaus : COMB( goodtaus[-1] goodtaus[-2] ) alias aHCandi
-  select { aHCandi }AbsEta < 3.0
+#  select { goodtaus[-1], goodtaus[-2]}dR > 0.5
+#  select { goodtaus[-1] }pT > 12.5 
+
+#object HTauTaus : COMB( goodmuons[-1] goodtaus[-2] ) alias aHCandi
 #  select { goodmuons[-1], goodtaus[-2]}dR > 0.5
-define bestHTauTau : HTauTaus[-1]
+#  select Pt( goodmuons[-1] ) - max(pT( goodmuons )) ~= 0 
 
-define myMuon  : goodmuons[-1]
-define myTau   : goodtaus[-1]
-define myHiggs : myMuon myTau
-define big     : 9999
 
-define chi2 = big*HStep({myMuon, myTau}dR - 0.5) + 1/{myMuon}Pt + {myTau}Iso
+object HTauTaus : COMB( bestM bestT ) alias aHCandi
+  select { bestM, bestT }dR > 0.2
+  select max(pT( goodmuons )) - pT(goodmuons[-1]) == 0  #make sure good muon is in
+
+#define bestH : HTauTaus[-1]
+
 
 region preselect
      select ALL 
-     select size( goodmuons ) >= 1  # atleast 1 muon
-     select size( goodtaus  ) >= 1
-#     select size( HTauTaus  ) >= 1
+     select size( goodmuons ) == 2  # atleast 1 muon
+     select size( goodtaus  ) == 3
+     select size( HTauTaus  ) >= 1
+#     select Pt(bestM)  ~!  0         # find best muon, as far as possible
 
-     
+
+
+
+
+
+
+
+#    select iso(bestT) ~= 0         # find best tau , as close as possible
+#    select size(jet) !=  2 #----not equal
  
