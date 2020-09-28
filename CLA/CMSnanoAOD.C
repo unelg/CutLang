@@ -100,6 +100,9 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->addAttribute( Muon_dxy[i]     );   // attri 1
                 adbxm->addAttribute( Muon_miniPFRelIso_all[i]     ); // attri 2
                 adbxm->addAttribute( Muon_softId[i]     ); // attri 3
+                adbxm->addAttribute( Muon_tightId[i]    ); // attri 4
+                adbxm->addAttribute( Muon_genPartIdx[i]    ); // attri 5
+                adbxm->addAttribute( Muon_pfRelIso03_all[i]    ); // attri 6
                 adbxm->setParticleIndx(i);
                 muons.push_back(*adbxm);
                 delete adbxm;
@@ -145,6 +148,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setFlavor(Jet_btagDeepB[i] );
                 adbxj->set_isbtagged_77( (Jet_btagDeepB[i]>0.8) ); // 5 is btag
         //        adbxj->setJVtxf(Jet_Ntrk[i] );
+                adbxj->addAttribute( Jet_puId[i]);       // attri 0
                 jets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -181,6 +185,8 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->addAttribute(Tau_idIsoTight[i] ); // attri 2
                 adbxt->addAttribute(Tau_idAntiEleTight[i] ); // attri 3
                 adbxt->addAttribute(Tau_idAntiMuTight[i] ); // attri 4
+                adbxt->addAttribute(Tau_genPartIdx[i] ); // attri 5
+                adbxt->addAttribute(Tau_relIso_all[i] ); // attri 6
 //--------added tau variables for SS.
                 taus.push_back(*adbxt);
                 delete adbxt;

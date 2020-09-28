@@ -93,6 +93,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
+"relIsoall" return RELISOALL;
+"pfRelIso03all" return PFRELISO03ALL;
 "dxy"|[dD]"0" return DXY;
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
@@ -102,6 +104,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "idIsoTight" return IDISOTIGHT;
 "idAntiEleTight" return IDANTIELETIGHT; 
 "idAntiMuTight" return IDANTIMUTIGHT;
+"tightId" return TIGHTID;
+"puId" return PUID;
+"genPartIdx" return GENPARTIDX;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
