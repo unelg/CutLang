@@ -67,7 +67,7 @@ public:
         userObjectB = objectNodeB;
 
 }
-//-------------------------
+//------------------------- g1 with userfuncA
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets, int p1)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets, int p1),
                       int id, 
@@ -199,6 +199,7 @@ double lepsf(AnalysisObjects* ao, string s, float value);
 double btagsf(AnalysisObjects* ao, string s, float value);
 double xslumicorrsf(AnalysisObjects* ao, string s, float value);
 double count(AnalysisObjects* ao, string s, float id);
+double getIndex(AnalysisObjects* ao, string s, float id); // new internal function
 double met(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);
 double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets, int p1) );

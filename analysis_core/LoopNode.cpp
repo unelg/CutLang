@@ -10,7 +10,7 @@
 #include "LFuncNode.h"
 #include <TRandom3.h>
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
