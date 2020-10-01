@@ -56,7 +56,7 @@ typedef struct evt_data
 		bad_lar_feb  =right.bad_lar_feb;
 		met_loose    =right.met_loose;
 		maxEvents    =right.maxEvents;
-		tile_Error   =right.tile_Error;
+		HLT_IsoMu17_eta2p1_LooseIsoPFTau20   =right.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
 		core_Flags   =right.core_Flags;
 		z_vtx_weight =right.z_vtx_weight;
 
@@ -128,7 +128,7 @@ typedef struct evt_data
 	bool bad_lar_feb;
 	TVector2 met_loose;
 	unsigned int maxEvents;
-	unsigned int tile_Error;
+	bool HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
 	unsigned int core_Flags;
 	float z_vtx_weight;
         double user_evt_weight;

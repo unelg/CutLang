@@ -20,10 +20,10 @@ define bestT = daughters( HTauTaus[0],  goodtaus[-2] )
 
 region preselect
        select ALL 
+       select HLT_IsoMu17_eta2p1_LooseIsoPFTau20 == 1    
        select size( goodmuons ) == 2  # atleast 1 muon
        select size( goodtaus  ) == 3
        select size( HTauTaus  ) >= 1
-       select   pT( bestM     ) >  25   
-       select   pT( bestT     ) >  15   
-     
+       select   pT( bestM     ) >  5   
+       select   pT( bestT     ) >  5   
 

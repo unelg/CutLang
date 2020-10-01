@@ -95,7 +95,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD
-%token ASCEND DESCEND ALIAS PM
+%token ASCEND DESCEND ALIAS PM HLT_ISO_MU
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -224,15 +224,13 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                   }
                                   string nameo=name+"internalObj";
                                   Node* previous=itC->second; //--------- pdgID should be the same
-//                                Node* c1= new FuncNode(Qof,newPList,"q", itC->second, partMname);
-//                                Node* c1= new SFuncNode(userfuncA, sumobj, newListC[0]->type, nameo, itC->second);
                                   Node* c1= new SFuncNode(getIndex, newListC[0]->type, partMname, itC->second);
 //--------------------------------------------------------   fun            id          str      Node*
                                   Node* n1= new UnaryAONode(abs,c1,"kill");
                                   vector<Node*> newCriList; // criterion list, will only have 1 selection                             
                                   newCriList.push_back(n1);
                                   Node* obj=new ObjectNode(nameo,previous,NULL,newCriList,nameo);
-                                  ObjectCuts->insert(make_pair(nameo,obj));
+                                  ObjectCuts->insert(make_pair(nameo,obj) );
 
 // now define the 0th particle of new obj 
                                   myParticle* a = new myParticle;
@@ -880,6 +878,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        }
                          }
        | MET {  $$=new SFuncNode(met,0, "MET"); }
+       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,0, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
        | ALL {  $$=new SFuncNode(all,0, "all"); }
         ;
 //-------------------------------------------------------------------------

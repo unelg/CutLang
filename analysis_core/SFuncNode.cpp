@@ -241,6 +241,13 @@ double met(AnalysisObjects* ao, string s, float id){
     return ( ao->met["MET"].Mod() );
 }
 
+double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
+     bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
+     DEBUG("HLT_ISO_MU:" << retval <<"\n");
+    return ( (double)retval );
+}
+
+
 double ht(AnalysisObjects* ao, string s, float id){
     double sum_htjet=0;
     for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();
