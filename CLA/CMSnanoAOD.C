@@ -148,7 +148,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setFlavor(Jet_btagDeepB[i] );
                 adbxj->set_isbtagged_77( (Jet_btagDeepB[i]>0.8) ); // 5 is btag
         //        adbxj->setJVtxf(Jet_Ntrk[i] );
-                adbxj->addAttribute( Jet_puId[i]);       // attri 0
+                adbxj->addAttribute( (double)Jet_puId[i]);       // attri 0
                 jets.push_back(*adbxj);
                 delete adbxj;
         }
