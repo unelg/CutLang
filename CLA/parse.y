@@ -194,7 +194,56 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
+            | DEF ID '=' CONSTITS list2 {  DEBUG($2<<" will be defined as the children of particles.\n");
+                                   pnum=0;
+                                   string name = $2;
+                                   map<string,vector<myParticle*> >::iterator itn;
+                                   itn = ListParts->find(name);
+                                   if(itn != ListParts->end()) {
+                                           DEBUG(name<<" : ");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
+                                           YYERROR;//stops parsing if variable already defined
+                                   }
+                                  vector<myParticle*> newListM; TmpParticle1.swap(newListM);
+                                  vector<myParticle*> newListC; TmpParticle.swap(newListC);
+                                  string partMname=newListM[0]->collection;
+                                  string partCname=newListC[0]->collection;
+                              //    DEBUG( partMname <<" has child "<< partCname <<"\n");
+                                  std::cout<< partMname <<" has child "<< partCname <<"\n";
+                                  map<string, Node *>::iterator itM = ObjectCuts->find(partMname);
+                                  map<string, Node *>::iterator itC = ObjectCuts->find(partCname);
+                                  if(itM == ObjectCuts->end()) {
+                                           ERRBUG(partMname<<" : ") ;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                           YYERROR;
+                                  }
+                                  if(itC == ObjectCuts->end()) {
+                                           ERRBUG(partCname<<" : ") ;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Object not defined");
+                                           YYERROR;
+                                  }
+                                  string nameo=name+"internalObj";
+                                  Node* previous=itC->second; //--------- pdgID should be the same
+//                                Node* c1= new FuncNode(Qof,newPList,"q", itC->second, partMname);
+//                                Node* c1= new SFuncNode(userfuncA, sumobj, newListC[0]->type, nameo, itC->second);
+                                  Node* c1= new SFuncNode(getIndex, newListC[0]->type, partMname, itC->second);
+//--------------------------------------------------------   fun            id          str      Node*
+                                  Node* n1= new UnaryAONode(abs,c1,"kill");
+                                  vector<Node*> newCriList; // criterion list, will only have 1 selection                             
+                                  newCriList.push_back(n1);
+                                  Node* obj=new ObjectNode(nameo,previous,NULL,newCriList,nameo);
+                                  ObjectCuts->insert(make_pair(nameo,obj));
 
+// now define the 0th particle of new obj 
+                                  myParticle* a = new myParticle;
+                                  a->type = newListC[0]->type; a->index =0; a->collection = nameo;
+                                  vector<myParticle*> newList;
+                                  newList.push_back(a);
+// insert the 0th element of new obj                               
+                                  ListParts->insert(make_pair(name,newList));
+                                  parts->push_back(name+" : "+partCname);
+
+				}
             | DEF ID '=' ADD '(' particule ')' {  DEBUG($2<<" will be defined as the ADDition of particles.\n");
                                    pnum=0;
                                    string name = $2;

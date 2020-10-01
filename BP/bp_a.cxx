@@ -255,19 +255,22 @@ int BPdbxA:: readAnalysisParams() {
      for (int jt=0; jt<TRGValues.size(); jt++){
       cout <<"Cut @:"<<jt<<" value:"<<TRGValues.at(jt)<<"\n";
      }
+     for (int jt=0; jt<effCL.size(); jt++){
+      cout << "Eff @:"<<jt<<" val:"<<effCL.at(jt)<<"\n";
+     }
 #endif
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
     if (binsize==binCL.size() ) {
      for (int jbin=0; jbin<binsize; jbin++){
-       DEBUG("Bin from C++:"<<binCL[jbin]<<"\n");
+       DEBUG("Bin from User C++:"<<binCL[jbin]<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
      }
     } else {
      std::map<int, Node*>::iterator biter = BinCuts.begin();
      while(biter != BinCuts.end()) {    
-       DEBUG("Bin from yacc:"<<biter->second->getStr()<<"\n");
+       DEBUG("Bin from Auto yacc:"<<biter->second->getStr()<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(biter->first, biter->second->getStr().Data() );
        biter++;
      }
@@ -283,26 +286,28 @@ int BPdbxA:: readAnalysisParams() {
        if (inserted>0) {
               std::cout<<"Auto inserted cuts:"<< inserted<<"\n";
        }
+       bool nextcpp=false;
        while(iter != NodeCuts.end())
-       {
-          DEBUG(" CUT "<<iter->first<<" ");
+       {  
+          DEBUG(" CUT "<<iter->first<<" LabelSkip:"<<labelSkip<< " inserted:"<<inserted << " ");
           DEBUG(" :"<<iter->second->getStr()<<"\t");
           string newNLabels=iter->second->getStr().Data();
           DEBUG("-->"<<effCL[ iter->first -1-labelSkip]<<"\t");
           TString ELabels=effCL[ iter->first -1-labelSkip];
-
-          if (inserted>0) {
-            if ( TRGValues.at(labelSkip+5) == iter->first ) { usecpp=false; inserted--; } 
+          if (inserted>0 && !nextcpp) { //5-0 yacc, 6-1: c++,
+            if ( iter->first == TRGValues.at(labelSkip+5)  ) { usecpp=false; inserted-=1;  } 
           } else usecpp=true;
-
+         
           if (usecpp) {
                 DEBUG("From C++:"<<ELabels<<"\n");
                 eff->GetXaxis()->SetBinLabel(iter->first+1,ELabels.Data()); // labels
+                nextcpp=false;
           } else {
                 DEBUG("from yacc:"<<newNLabels<<"\n");
                 string newlabels="Size "+newNLabels; 
                 eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
                 labelSkip++;
+                nextcpp=true;
           } 
            
            iter++; 

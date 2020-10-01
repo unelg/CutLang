@@ -10,40 +10,20 @@ object goodjets : JET
   select  {JET}Pt > 10
   select  {JET}Eta < 4
 
+object HTauTaus : COMB( goodmuons[-1] goodtaus[-2] ) alias aHCandi
+  select { goodmuons[-1], goodtaus[-2] }dR > 0.2
+  select max(        pT( goodmuons )) - pT(goodmuons[-1]) == 0        #make sure good muon is in
+  select min( relIsoall(goodtaus   )) - relIsoall(goodtaus[-2]) == 0  #
 
-define bestM : goodmuons[-1]
-define bestT : goodtaus[-2]
-
-#object HTauTaus : COMB( goodtaus[-1] goodtaus[-2] ) alias aHCandi
-#  select { goodtaus[-1], goodtaus[-2]}dR > 0.5
-#  select { goodtaus[-1] }pT > 12.5 
-
-#object HTauTaus : COMB( goodmuons[-1] goodtaus[-2] ) alias aHCandi
-#  select { goodmuons[-1], goodtaus[-2]}dR > 0.5
-#  select Pt( goodmuons[-1] ) - max(pT( goodmuons )) ~= 0 
-
-
-object HTauTaus : COMB( bestM bestT ) alias aHCandi
-  select { bestM, bestT }dR > 0.2
-  select max(pT( goodmuons )) - pT(goodmuons[-1]) == 0  #make sure good muon is in
-
-#define bestH : HTauTaus[-1]
-
+define bestM = daughters( HTauTaus[0], goodmuons[-1] )
+define bestT = daughters( HTauTaus[0],  goodtaus[-2] )
 
 region preselect
-     select ALL 
-     select size( goodmuons ) == 2  # atleast 1 muon
-     select size( goodtaus  ) == 3
-     select size( HTauTaus  ) >= 1
-#     select Pt(bestM)  ~!  0         # find best muon, as far as possible
+       select ALL 
+       select size( goodmuons ) == 2  # atleast 1 muon
+       select size( goodtaus  ) == 3
+       select size( HTauTaus  ) >= 1
+       select   pT( bestM     ) >  25   
+       select   pT( bestT     ) >  15   
+     
 
-
-
-
-
-
-
-
-#    select iso(bestT) ~= 0         # find best tau , as close as possible
-#    select size(jet) !=  2 #----not equal
- 

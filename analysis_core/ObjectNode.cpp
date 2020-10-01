@@ -12,7 +12,7 @@
 #include "Comb.h"
 #include "Denombrement.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -92,9 +92,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     std::string basename="xxx";
     bool keepworking=true;
 
-    DEBUG("inital sets #types: J, FJ, E, M, T, P:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size() <<"\n"); 
+    DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size() <<"\n"); 
     DEBUG("# iparticles:"<< particles.size()<<"\n");
-    if (particles.size() >0) DEBUG("type:"<< particles[0]->type<<"\t"<<particles[0]->collection<<"\n" );
+    if (particles.size() >0) DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
 
     if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
     while(left!=NULL && keepworking) {
@@ -185,12 +185,13 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itc=ao->combos.begin();itc!=ao->combos.end();itc++){
      if (itc->first == name) return 1;
     }
-      
+    DEBUG("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");  
     DEBUG("Before new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<<ao->constits.size() <<"\n"); 
 //---------------
     (*createNewSet)(ao,&criteria,&particles, name, basename);//modify analysis object based on criteria here
 //---------------
     DEBUG(" After new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<< ao->constits.size() <<"\n"); 
+    DEBUG("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");  
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jet typename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
@@ -447,17 +448,33 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 }
 
 void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new MUOtype named:"<<name<<" #MUOtypes:"<<ao->muos.size()<< " Duplicating:"<<basename<<"\t");
     ao->muos.insert( std::pair<string, vector<dbxMuon> >(name, (ao->muos)[basename]) );
+    DEBUG(" #MUOtypes:"<<ao->muos.size()<< " Duplicated.\n");
+
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->muos)[name].size();
         bool simpleloop=true;
  
-        DEBUG("Psize:"<<particles->size() <<"\t");
-        DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+        DEBUG("Psize:"<<particles->size() <<"\t"<<" ipart_max:"<<ipart_max<<"\n");
         if ( particles->size()==0) {
-           bool ppassed=(*cutIterator)->evaluate(ao);
+           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool kill_all=false;
+           TString mycutstr=(*cutIterator)->getStr();
+           if ( mycutstr.Contains("kill") ) kill_all=true;
+
+           int retval=(*cutIterator)->evaluate(ao);
+           DEBUG("RetVal:"<<retval<<"\n");
+           if (kill_all) {
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               if (retval != ipart) { DEBUG("Killing muon:"<<ipart);
+                   (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
+               }
+            }
+           }
+           DEBUG("M---------------------------------\n");
            continue;
         }
         std::set<int> ptypeset;
@@ -473,7 +490,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         t2=*ptit; 
 
         if(simpleloop){
-            DEBUG("ONE particle  Muon Loop with:"<<ipart_max<<" particles \n");
+            DEBUG("ONE particle  Muon Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
@@ -706,7 +723,20 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
-           bool ppassed=(*cutIterator)->evaluate(ao);
+           bool kill_all=false;
+           TString mycutstr=(*cutIterator)->getStr();
+           if ( mycutstr.Contains("kill") ) kill_all=true;
+
+           int retval=(*cutIterator)->evaluate(ao);
+           DEBUG("RetVal:"<<retval<<"\n");
+           if (kill_all) {
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               if (retval != ipart) { DEBUG("Killing muon:"<<ipart);
+                   (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
+               }
+            }
+           }
+           DEBUG("T---------------------------------\n");
            continue;
         }
         std::set<int> ptypeset;
@@ -1256,12 +1286,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
            DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
            for (int ipart=ipart_max-1; ipart>=0; ipart--){ //----------these are the combinations
                std::vector< vector<int> >::iterator itb; // bad list iterator
+               DEBUG("\n===> combi index:"<<ipart<<"\n");
                itb=find (bad_combinations.begin(), bad_combinations.end(), combi_out[ipart]);
                if ( itb!= bad_combinations.end() ) {
                   DEBUG("SKIP aldeady bad combi\n");
                   continue; // skip the bad indices
                }
-               DEBUG("\n===> combi index:"<<ipart<<"\n");
                DEBUG("Going to evaluate "<< combi_out[ipart][0] <<" " <<combi_out[ipart][1]  <<"\n");
 
                for (int jp=0; jp<particles->size(); jp++){ //
@@ -1402,12 +1432,20 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       DEBUG(" -> " << index_B[distance(good_combinations.begin(), it)] << endl);
     }
     DEBUG(endl <<"After removing the bads : " << endl);
+
+    vector<vector<int>> table_B;
     for (int ipa1=0;  ipa1<out_selection.size(); ipa1++) {
-       for (int ipa2=0;  ipa2<out_selection[ipa1].size(); ipa2++) DEBUG( out_selection[ipa1][ipa2] << "  ");
+       vector<int> aRow;
+       for (int ipa2=0;  ipa2<out_selection[ipa1].size(); ipa2++) {
+                 DEBUG( out_selection[ipa1][ipa2] << "  " );
+                 aRow.push_back(out_selection[ipa1][ipa2] );
+            }
+       table_B.push_back(aRow);
        DEBUG("\n");
     }
     
-    vector<vector<int>> table_B(out_selection.size());
+/* 
+     vector<vector<int>> table_B(out_selection.size());
 
     for(int ii=0; ii<out_selection.size(); ii++)
     {
@@ -1416,7 +1454,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     		step_add_a_comb(out_selection[ii], *it, table_B[ii], distance(good_combinations.begin(), it), out_selection[ii].size()/requested_size, requested_size);
     	}
     }
-
+*/
     DEBUG( endl << "Converting combinations to index:" << endl);
     int amaxrow=0;
     for(int i = 0; i<table_B.size(); i++) {
