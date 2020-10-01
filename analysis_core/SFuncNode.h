@@ -67,6 +67,23 @@ public:
         userObjectB = objectNodeB;
 
 }
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), Node *child, std::string s, 
+              Node *objectNodeA = NULL, Node *objectNodeB = NULL){
+        f=func;
+        g1=NULL;
+        g2=NULL;
+        g3=NULL;
+        g4=NULL;
+        g5=NULL;
+        ext=false;
+        symbol=s;
+        left=child;
+        right=NULL;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+
+}
+
 //------------------------- g1 with userfuncA
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets, int p1)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets, int p1),

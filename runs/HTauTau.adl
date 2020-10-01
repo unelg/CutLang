@@ -12,6 +12,7 @@ object realtaus
 #  select abs(pdgId(GEN[ genPartIdx( goodtaus ) ] ) )  == 15
 
 object goodjets : JET
+  select puId(JET) >= 1
   select  {JET}Pt > 10
   select  {JET}Eta < 4
 
@@ -28,8 +29,8 @@ region preselect
        select ALL 
 #       select HLT_IsoMu17_eta2p1_LooseIsoPFTau20 == 1    
 #      select size( goodmuons ) == 2  # atleast 1 muon
-       select size( TAU ) >= 3
        select size( goodtaus  ) == 3
+       select size( goodjets  ) >= 1
 #      select GEN[ genPartIdx( goodtaus[0] ) ]  == 15
 #      select pdgId(GEN[ abc ])  == 15
 #       select size( realtaus  ) == 3

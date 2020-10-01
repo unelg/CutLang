@@ -9,7 +9,7 @@
 #include "SFuncNode.h"
 #include "ValueNode.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -137,6 +137,9 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
            }// end of for
 
            DEBUG("cPart constructed \t");
+        }
+        if (left != NULL) {
+          value =left->evaluate(ao);
         }
 
         DEBUG ("Before Symbol:"<<symbol<<" Value:"<<value<< " Type:"<<type<<"\n");

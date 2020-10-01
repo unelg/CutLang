@@ -10,17 +10,18 @@ info analysis
   hepdata " http://adress "
   doi "10.1007/JHEP11(2017)029"
 
+define www = 123.1/10
 
 region   test
   select  ALL              # to count all events
   select  Size (ELE) >= 1  # events with 2 or more electrons 
-  weight   randWeight   1.123
-  reject   Size (ELE) > 4  # events with 2 or more electrons 
-  histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
-  histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
+  weight   randWeight www
+# reject   Size (ELE) > 4  # events with 2 or more electrons 
+# histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+# histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 
- region mest
-  select  ALL
-  select  Size (MUO) >= 2 
-  select  Size (ELE) >= 2  # events with 2 or more electrons 
-  weight  bWeight   2.321
+#region mest
+# select  ALL
+# select  Size (MUO) >= 2 
+# select  Size (ELE) >= 2  # events with 2 or more electrons 
+# weight  bWeight   2.321
