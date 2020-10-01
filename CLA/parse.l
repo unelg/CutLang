@@ -107,6 +107,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "tightId" return TIGHTID;
 "puId" return PUID;
 "genPartIdx" return GENPARTIDX;
+"HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
