@@ -202,7 +202,7 @@ public :
    Int_t           Jet_nConstituents[nJet_];   //[nJet]
    Int_t           Jet_nElectrons[nJet_];   //[nJet]
    Int_t           Jet_nMuons[nJet_];   //[nJet]
-   Int_t           Jet_puId[nJet_];   //[nJet]
+   Bool_t          Jet_puId[nJet_];   //[nJet]
    Float_t         LHE_HT;
    Float_t         LHE_HTIncoming;
    Float_t         LHE_Vpt;
