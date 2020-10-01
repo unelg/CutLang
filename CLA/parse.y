@@ -864,7 +864,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 //                                  cout<< "CCCCCCCCCCC" <<newList2[0]->type<<"\n";
                                     $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
-        | HT { $$=new SFuncNode(ht,0,"JET"); }
+        | HT { $$=new SFuncNode(ht,1,"JET"); }
         | HT '(' ID  ')' {
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if(it == ObjectCuts->end()) {
@@ -877,9 +877,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            $$=new SFuncNode(ht,id, it->first, it->second);
                                        }
                          }
-       | MET {  $$=new SFuncNode(met,0, "MET"); }
-       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,0, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
-       | ALL {  $$=new SFuncNode(all,0, "all"); }
+       | MET {  $$=new SFuncNode(met,1, "MET"); }
+       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
+       | ALL {  $$=new SFuncNode(all,1, "all"); }
         ;
 //-------------------------------------------------------------------------
  e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
@@ -1058,7 +1058,15 @@ particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
 			     }
-
+/*
+	 | GEN '[' e ']' { 
+				myParticle* a = new myParticle;
+                                a->type =10; a->index = (int)$3; a->collection = "Truth";
+                                TmpParticle.push_back(a);
+                                tmp="truth_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+			     }
+*/
 	 | GEN '[' index ']' { 
 				myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
@@ -2563,17 +2571,17 @@ command : CMD condition { //find a way to print commands
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
-        | CMD ALL { Node* a = new SFuncNode(all,0, "all");
+        | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-        | CMD LEPSF { Node* a=new SFuncNode(lepsf,0,"LEPSF");
+        | CMD LEPSF { Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
                     }
-        | CMD BTAGSF { Node* a=new SFuncNode(btagsf,0,"BTAGSF");
+        | CMD BTAGSF { Node* a=new SFuncNode(btagsf,1,"BTAGSF");
                        NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD XSLUMICORRSF {    
-                        Node* a=new SFuncNode(xslumicorrsf,0,"XSLUMICORRSF");
+                        Node* a=new SFuncNode(xslumicorrsf,1,"XSLUMICORRSF");
                         NodeCuts->insert(make_pair(++cutcount,a));
                     }
         | CMD APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
@@ -2608,7 +2616,19 @@ command : CMD condition { //find a way to print commands
                                 else b = new LoopNode(hitmissA, a,"hitmissAcc");
                                 NodeCuts->insert(make_pair(++cutcount,b));
                     }
-    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2);
+    	| WEIGHT ID ID {  map<string, Node *>::iterator it ;
+                          it = NodeVars->find($3);
+                          if(it == NodeVars->end()) {
+                                DEBUG($3<<" : ");
+                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Weight variable not defined");
+                                YYERROR;//stops parsing if variable not found
+                           } 
+                           Node* child=it->second;
+                           Node* a = new SFuncNode(uweight, child ,$2);
+			   NodeCuts->insert(make_pair(++cutcount,a));
+                        }
+ 
+    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
 			NodeCuts->insert(make_pair(++cutcount,a));
 			}
     	| WEIGHT ID ID '(' function ')' {
@@ -2754,7 +2774,7 @@ ifstatement : condition '?' action ':' action %prec '?' {
                         } 
             ;
 action : condition { $$=$1; }
-       | ALL { $$=new SFuncNode(all,0,"all"); }
+       | ALL { $$=new SFuncNode(all,1,"all"); }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

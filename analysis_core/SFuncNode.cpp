@@ -138,6 +138,9 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
 
            DEBUG("cPart constructed \t");
         }
+        if (left != NULL) {
+          value =left->evaluate(ao);
+        }
 
         DEBUG ("Before Symbol:"<<symbol<<" Value:"<<value<< " Type:"<<type<<"\n");
         if(ext) {
