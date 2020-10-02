@@ -402,7 +402,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                   } 
          | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
-                                       $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                       if (TmpCriteria.size() < 1) {
+                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                       } else {
+                                        $$=new FuncNode(pdgIDof,newList,"pdgID", TmpCriteria[0]);
+                                       }
                                   }
          | '{' particules '}' PDGID {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -1051,22 +1055,24 @@ particules : particules particule {
                                         pnum++;
                          }
             ;
-particule : GEN '_' index    {  DEBUG("truth particule:"<<(int)$3<<"\n");
+particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);                            
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
-			     }
-/*
-	 | GEN '[' e ']' { 
-				myParticle* a = new myParticle;
-                                a->type =10; a->index = (int)$3; a->collection = "Truth";
-                                TmpParticle.push_back(a);
-                                tmp="truth_"+to_string((int)$3);
-                                $$=strdup(tmp.c_str());
-			     }
-*/
+			    }
+
+	 | GEN '[' e ']' {     Node* child=$3;
+                               cout << "TmpCri:"<<TmpCriteria.size()<<"\n";
+                               TmpCriteria.push_back(child);
+			       myParticle* a = new myParticle;
+                               a->type =10; a->index = 6213; a->collection = "Truth";
+                               TmpParticle.push_back(a);
+                               tmp="truth_6213";
+                               $$=strdup(tmp.c_str());
+			  }
+
 	 | GEN '[' index ']' { 
 				myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
