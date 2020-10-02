@@ -208,11 +208,13 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("\nIn function Node evaluate, #particles:"<< inputParticles.size() <<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
-     if(userObjectA) { userObjectA->evaluate(ao); 
+     if(userObjectA) { double retval=userObjectA->evaluate(ao); 
+                       DEBUG("RetVal:"<< retval  <<"\n");
                        int thistype=((ObjectNode*)userObjectA)->type;
                        string realname=((ObjectNode*)userObjectA)->name;
                        DEBUG("A t,n:"<<thistype<<" , "<< realname <<"\n");
                        for (int ipa=0; ipa<inputParticles.size(); ipa++){
+                        DEBUG("T:"<<inputParticles[ipa]->type<<" idx:"<<inputParticles[ipa]->index<<"\n");
                         if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
                        }
                      } // replace collection if needed

@@ -18,8 +18,8 @@ object goodjets : JET
 
 object HTauTaus : COMB( goodmuons[-1] goodtaus[-2] ) alias aHCandi
   select { goodmuons[-1], goodtaus[-2] }dR > 0.2
-  select max(        pT( goodmuons )) - pT(goodmuons[-1]) == 0        #make sure good muon is in
-  select min( relIsoall(goodtaus   )) - relIsoall(goodtaus[-2]) == 0  #
+  select max(        pT( goodmuons )) - pT(goodmuons[-1]) ~= 0        #make sure good muon is in
+  select min( relIsoall(goodtaus   )) - relIsoall(goodtaus[-2]) ~= 0  #
 
 define bestM = daughters( HTauTaus[0], goodmuons[-1] )
 define bestT = daughters( HTauTaus[0],  goodtaus[-2] )
@@ -28,13 +28,13 @@ define abc = sqrt(4)
 region preselect
        select ALL 
 #       select HLT_IsoMu17_eta2p1_LooseIsoPFTau20 == 1    
-#      select size( goodmuons ) == 2  # atleast 1 muon
-       select size( goodtaus  ) == 3
-       select size( goodjets  ) >= 1
+       select size( goodmuons ) >= 1  # atleast 1 muon
+       select size( goodtaus  ) >= 1
+#      select size( goodjets  ) >= 1
 #      select GEN[ genPartIdx( goodtaus[0] ) ]  == 15
-#      select pdgId(GEN[ abc ])  == 15
+#      select pdgId(GEN[ sqrt(4) ]) == 15
 #       select size( realtaus  ) == 3
-#       select size( HTauTaus  ) >= 1
-#       select   pT( bestM     ) >  5   
-#       select   pT( bestT     ) >  5   
+        select size( HTauTaus  ) >= 1
+        select   pT( bestM     ) >  5   
+        select   pT( bestT     ) >  5   
 
