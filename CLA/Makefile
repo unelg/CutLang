@@ -17,6 +17,11 @@ VPATH = $(subst -I,:,$(INCLUDES))
 
 JUPY	      = $(shell uname -n | grep -c 'jupyter')
 
+BISONV     = $(shell which bison)
+YACCV      = $(shell which yacc)
+FLEXV      = $(shell which flex)
+LEXEV      = $(shell which lex)
+
 CXX           = $(shell root-config --cxx) -g -O2  -D__GRID__  -D__STANDALONE__  
 #-D_CLV_
 #-D__DEBUG__
@@ -28,6 +33,25 @@ SOFLAGS       = -shared
 CXXFLAGS     += $(ROOTCFLAGS)
 LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -ldelphesParticles_h -lz 
 GLIBS         = $(ROOTGLIBS)
+
+BISEXE = 1
+LEXEXE = 1
+
+ifneq ($(YACCV),)
+BISEXE = yacc
+endif
+
+ifneq ($(BISONV),)
+BISEXE = bison
+endif
+
+ifneq ($(LEXV),)
+LEXEXE = lex
+endif
+
+ifneq ($(FLEXV),)
+LEXEXE = flex
+endif
 
 
 ifeq (1, ${DJUPY})
@@ -49,21 +73,26 @@ else
 	LDFLAGS = -undefined dynamic_lookup
 endif
 
-
 .PHONY: clean cleanall auxiliaries softlinks
 
-CLA.exe : auxiliaries $(OBJS_1) $(OBJS_2) softlinks
+CLA.exe : checks auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 	sed "s/XXXXYYYYZZZZ/$(TODAYDATE)/g"  CLA.Q > CLA.C ; $(CXX) $(CXXFLAGS) $(INCLUDES) -c CLA.C
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) CLA.o $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS)  $(LIBS)
 
+checks:
+ifeq (${BISEXE},1)
+	@echo no yacc or bison. Can NOT Continue.
+	exit 1
+endif
+	@echo yacc:$(YACCV) bison:$(BISONV) executable:$(BISEXE)
+	@echo lex:$(LEXV) flex:$(FLEXV) executable:$(LEXEXE)
+
 
 b.o : parse.y
-	/usr/bin/yacc -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
-#	bison -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
+	$(BISEXE) -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
 
 l.o : parse.l
-#	/usr/bin/lex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
-	flex -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
+	$(LEXEXE) -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 
 auxiliaries:
 	$(MAKE) -C $(SUBDIRLOC)analysis_core
@@ -85,7 +114,7 @@ $(ANLOBJS): %.o : %.cxx
 
 # clean
 clean:
-	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _* b.cpp l.cpp  b.hpp
+	rm -f *~ *.o *.so *.o~ *.d core DBX2analysis a.out CLA.exe _* b.* l.cpp 
 	$(MAKE) -C $(SUBDIRLOC)analysis_core clean
 
 # clean everything including the auxiliaries we depend on
