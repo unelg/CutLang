@@ -5,7 +5,7 @@ This is the repository for CutLang V3
 ## Installation
 
 Requirements
-* ROOT (root.cern.ch) 
+* ROOT6 (root.cern.ch) 
 * command line compilation utilities (make, gcc, g++...) 
 * flex
 * bison #without installing flex and bison, the make command gets interrupted by a fatal error.
@@ -21,6 +21,10 @@ Install the package using
 ## Running
 
 ```bash
- ./CLA.sh [inputrootfile] [inputeventformat] -i [adlfilename]
+ ./CLA.sh [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
 ```
+* Input event formats can be: DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format) 
+* Number of events is optional.
+
+The output will be saved in __histoOut-<adlfilename>.root__.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region.  The histogram(s) __cutflow__ (and bincounts, in case search bins are specified in the region) exist by default.  
 
