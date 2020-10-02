@@ -81,7 +81,11 @@ CLA.exe : checks auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 
 checks:
 ifeq (${BISEXE},1)
-	@echo no yacc or bison. Can NOT Continue.
+	@echo no yacc or bison. Can NOT Continue. Please install bison
+	exit 1
+endif
+ifeq (${LEXEXE},1)
+	@echo no lex or flex. Can NOT Continue. Please install flex
 	exit 1
 endif
 	@echo yacc:$(YACCV) bison:$(BISONV) executable:$(BISEXE)

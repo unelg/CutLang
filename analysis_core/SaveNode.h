@@ -33,6 +33,7 @@ public:
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
     }
     virtual void saveFile() override {
+            std::cout << "Closing file\n";
 	    ftsave->Write();
 	    ftsave->Close();
     }
@@ -47,8 +48,7 @@ public:
       vector<dbxTruth>        truth= ao->truth.begin()->second;
       vector<dbxParticle>    combos= ao->combos.begin()->second;
       //-----------------------------------------
-      
-      
+
       TVector2 met = ao->met.begin()->second;
       evt_data anevt = ao->evt;
       //      here we save the DBXNTuple

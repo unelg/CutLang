@@ -413,6 +413,7 @@ int BPdbxA::bookAdditionalHistos() {
 }
 //------------------------
 int BPdbxA::Finalize(){       
+  std::cout <<"finalize.\n";
   return 1;
 }
 
