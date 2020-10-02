@@ -199,14 +199,14 @@ SearchNode::SearchNode(double (*func)(double, double), Node* l, Node* r, std::st
 }
 
 double SearchNode::evaluate(AnalysisObjects* ao) {
-        DEBUG("\n---------------"<<getStr()<<"\n"); 
+        DEBUG("\nSearchN ---------------"<<getStr()<<"\n"); 
         particles.clear();
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
 
         std::map<string,unordered_set<int> >::iterator forbidit;
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
-                DEBUG("Part:"<<i<<"  idx:"<<particles.at(i)->index<< "  addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<<"\n");
+                DEBUG("SearchN Part:"<<i<<" idx:"<<particles.at(i)->index<< " addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<<"\n");
                 if(particles.at(i)->index<0) indices.push_back(i);
                 else {
                      forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  );
@@ -220,8 +220,8 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         }
 
         int MaxDepth=indices.size();//number of nested loops needed
-        DEBUG("Depth:"<<MaxDepth<<"\n");
-        if(indices.size()>0){
+        DEBUG("SearchN Depth:"<<MaxDepth<<"\n");
+        if(MaxDepth>0){
                     int type=particles.at(indices[0])->type;
                     string ac=particles.at(indices[0])->collection;
                     int Max;
@@ -261,10 +261,16 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<"@"<<indices[i] <<" type:"<<particles.at(indices[i])->type<<"  addr:"<<particles.at(indices[i]) <<" \n");
                     }
         } else{
-                DEBUG("No negative index found... Returning\n");
-            }
-            DEBUG("\n");
-            return 1;
+                DEBUG("SearchN No negative index found... Returning evaluation as is.\n");
+                double  leftval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+                DEBUG("SearchN left:"<<leftval<<"\t");
+                double rightval=right->evaluate(ao);
+                DEBUG(" right:"<<rightval<<"\n");
+                if (leftval == rightval) { return 1; }
+                else { return 0;} // NGU TODO we should improve.
+        }
+        DEBUG("\n");
+        return 1;
     }
 
     void SearchNode::Reset() {
