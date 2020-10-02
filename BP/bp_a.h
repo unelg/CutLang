@@ -33,6 +33,12 @@ class BPdbxA : public dbxA {
       int Finalize();
       int saveHistos() {
         int r = dbxA::saveHistos();
+        std::map<int, Node*>::iterator jter = NodeCuts.begin();
+        for (std::vector<int>::iterator it = save.begin() ; it != save.end(); ++it) {
+             int diff = *it - jter->first;
+             for(int i = 0; i < diff; i++) jter++;
+             jter->second->saveFile();
+        }
         return r;
       }
       
