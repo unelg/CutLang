@@ -503,6 +503,11 @@ double relisoallof( dbxParticle* apart){
    DEBUG(" tau reliso_all:"<<v<<"\t");
    return v;
 }
+double decaymodeof( dbxParticle* apart){
+   double v=apart->Attribute(7);
+   DEBUG(" tau decay mode:"<<v<<"\t");
+   return v;
+}
 double pfreliso03allof( dbxParticle* apart){
    double v=apart->Attribute(6);
    DEBUG(" muon pfRelIso03_all:"<<v<<"\t");

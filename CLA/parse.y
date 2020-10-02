@@ -89,7 +89,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
-%token TIGHTID PUID GENPARTIDX
+%token TIGHTID PUID GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
@@ -629,6 +629,15 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(genpartidxof,newList,"genPartIdx");
                                   }
+         | '{' particules '}' DECAYMODE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(decaymodeof,newList,"decayMode");
+                                  }
+         | DECAYMODE '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(decaymodeof,newList,"decayMode");
+                                  }
+
          | '{' particules '}' SOFTID {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(softIdof,newList,"softId");

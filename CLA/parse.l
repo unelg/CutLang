@@ -107,6 +107,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "tightId" return TIGHTID;
 "puId" return PUID;
 "genPartIdx" return GENPARTIDX;
+"decayMode" return DECAYMODE;
 "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 
 [pP][hT][iI] return PHI;//functions
