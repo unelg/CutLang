@@ -87,6 +87,7 @@ double idantimutightof( dbxParticle* apart);
 double tightidof( dbxParticle* apart);
 double    puidof( dbxParticle* apart);
 double genpartidxof( dbxParticle* apart);
+double decaymodeof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
 double CCountof( dbxParticle* apart);

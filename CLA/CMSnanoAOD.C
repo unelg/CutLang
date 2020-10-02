@@ -187,6 +187,7 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->addAttribute(Tau_idAntiMuTight[i] ); // attri 4
                 adbxt->addAttribute(Tau_genPartIdx[i] ); // attri 5
                 adbxt->addAttribute(Tau_relIso_all[i] ); // attri 6
+                adbxt->addAttribute(Tau_decayMode[i] ); // attri 5
 //--------added tau variables for SS.
                 taus.push_back(*adbxt);
                 delete adbxt;
