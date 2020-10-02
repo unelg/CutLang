@@ -20,8 +20,10 @@ Install the package using
 
 ## Running
 
+CutLang is run using the `CLA.sh` or `CLA.py` script as
+
 ```bash
- ./CLA.sh [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
+ ./CLA.sh (or ./CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
 ```
 * Input event formats can be: DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format) 
 * Number of events is optional.
