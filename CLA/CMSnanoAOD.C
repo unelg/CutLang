@@ -85,6 +85,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        dbxMuon     *adbxm;
        dbxTau      *adbxt;
        dbxPhoton   *adbxp;
+       dbxTruth    *adbxg;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
@@ -94,6 +95,7 @@ std::cout << "Begin Filling"<<std::endl;
                 alv.SetPtEtaPhiM( Muon_pt[i], Muon_eta[i], Muon_phi[i], (105.658/1E3) ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_charge[i] );
+                adbxm->setPdgID(-13*Muon_charge[i] );
 //                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
 //                adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->addAttribute( Muon_dz[i]);         // attri 0
@@ -116,6 +118,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 alv.SetPtEtaPhiM( Electron_pt[i], Electron_eta[i], Electron_phi[i], (0.511/1E3) ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_charge[i] );
+                adbxm->setPdgID(-11*Electron_charge[i] );
                 adbxe->setParticleIndx(i);
                 adbxe->addAttribute( Electron_dz[i]);       // attri 0
                 adbxe->addAttribute( Electron_dxy[i]     ); // attri 1
@@ -125,7 +128,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
         }
 
 #ifdef __DEBUG__
-std::cout << "Electrons OK:"<< Electron_ <<std::endl;
+std::cout << "Electrons OK:"<< nElectron <<std::endl;
 #endif
 //PHOTONS
         for (unsigned int i=0; i<nPhoton; i++) {
@@ -137,8 +140,28 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
                 delete adbxp;
         }
 #ifdef __DEBUG__
-std::cout << "Photons OK:"<<Photon_size<<std::endl;
+std::cout << "Photons OK:"<<nPhoton<<std::endl;
 #endif
+//GENS
+        for (unsigned int i=0; i<nGenPart; i++) {
+                alv.SetPtEtaPhiM( GenPart_pt[i], GenPart_eta[i], GenPart_phi[i], GenPart_mass[i] ); // all in GeV
+                adbxg= new dbxTruth(alv);
+                adbxg->setPdgID(GenPart_pdgId[i] );
+                adbxg->setCharge(GenPart_pdgId[i]/abs(GenPart_pdgId[i]) );
+                adbxg->setParticleIndx(i);
+                adbxg->addAttribute( 0);   // 0
+                adbxg->addAttribute( 0);  // 1 
+                adbxg->addAttribute( 0); // 2 
+                adbxg->addAttribute( GenPart_status[i] ); // 3
+                truth.push_back(*adbxg);
+                delete adbxg;
+        }
+#ifdef __DEBUG__
+std::cout << "Truth OK:"<<nGenPart<<std::endl;
+#endif
+
+
+
 //JETS
         for (unsigned int i=0; i<nJet; i++) {
                 alv.SetPtEtaPhiM( Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i] ); // all in GeV
