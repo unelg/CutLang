@@ -34,6 +34,8 @@ CXXFLAGS     += $(ROOTCFLAGS)
 LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -ldelphesParticles_h -lz 
 GLIBS         = $(ROOTGLIBS)
 
+#LIBS += -lzstd -lCling -lpng -ltbb -lssl -lcrypto
+
 BISEXE = 1
 LEXEXE = 1
 
