@@ -77,6 +77,7 @@ double     vyof( dbxParticle* apart);
 double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
+double  sieieof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
 double relisoallof( dbxParticle* apart);
 double pfreliso03allof( dbxParticle* apart);

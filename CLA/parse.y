@@ -1,4 +1,4 @@
-%error-verbose
+%define parse.error verbose
 //%define parse.error verbose
 %{ 
 
@@ -96,6 +96,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU
+%token SIEIE  // CMSnano photon attribs
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -547,6 +548,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | VERT '(' particules ')' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(vtof,newList,"vt");
+                                  }
+         | '{' particules '}' SIEIE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sieieof,newList,"SIEIEOF");
+                                  }
+         | SIEIE '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sieieof,newList,"SIEIEOF");
                                   }
          | '{' particules '}' RELISO {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
