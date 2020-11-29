@@ -106,6 +106,8 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                          case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
+                                                        ka=ao->gams[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
                                                         break;
                                            case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
@@ -503,6 +505,14 @@ double relisoallof( dbxParticle* apart){
    DEBUG(" tau reliso_all:"<<v<<"\t");
    return v;
 }
+
+double sieieof( dbxParticle* apart){
+   double v=apart->Attribute(0);
+   DEBUG(" Photon sieie:"<<v<<"\t");
+   return v;
+}
+
+
 double decaymodeof( dbxParticle* apart){
    double v=apart->Attribute(7);
    DEBUG(" tau decay mode:"<<v<<"\t");

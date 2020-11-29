@@ -34,7 +34,9 @@ region preselect
        histo hpi , "GoodTau_0 particle index",41,0,40, genPartIdx( goodtaus[0] )
 #      histo hpdi ,"pdgID of Gen",41,0,40, pdgId(GEN[genPartIdx( goodtaus[0]) ] ) 
        histo hpdi ,"pdgID of Gen",41,0,40, pdgId(GEN[0] )   
+
        select abs(pdgId(GEN[ genPartIdx( goodtaus[0] ) ] )) == 15
+
 #      select pdgId(GEN[ sqrt(4) ]) == 15
 #       select size( realtaus  ) == 3
         select size( HTauTaus  ) >= 1

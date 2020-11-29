@@ -87,6 +87,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        dbxPhoton   *adbxp;
        dbxTruth    *adbxg;
 
+//#define __DEBUG__
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
 #endif
@@ -110,7 +111,7 @@ std::cout << "Begin Filling"<<std::endl;
                 delete adbxm;
         }
 #ifdef __DEBUG__
-std::cout << "Muons OK:"<< Muon_<<std::endl;
+std::cout << "Muons OK:"<< nMuon<<std::endl;
 #endif
 //ELECTRONS
 
@@ -118,7 +119,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 alv.SetPtEtaPhiM( Electron_pt[i], Electron_eta[i], Electron_phi[i], (0.511/1E3) ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_charge[i] );
-                adbxm->setPdgID(-11*Electron_charge[i] );
+                adbxe->setPdgID(-11*Electron_charge[i] );
                 adbxe->setParticleIndx(i);
                 adbxe->addAttribute( Electron_dz[i]);       // attri 0
                 adbxe->addAttribute( Electron_dxy[i]     ); // attri 1
@@ -136,6 +137,7 @@ std::cout << "Electrons OK:"<< nElectron <<std::endl;
                 adbxp= new dbxPhoton(alv);
                 adbxp->setCharge(0);
                 adbxp->setParticleIndx(i);
+                adbxp->addAttribute( Photon_sieie[i]);   // 0
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
@@ -216,7 +218,7 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 delete adbxt;
         }
 #ifdef __DEBUG__
-std::cout << "Taus:"<<Tau_<<std::endl;
+std::cout << "Taus:"<<nTau<<std::endl;
 #endif
 //MET
         met.SetMagPhi( MET_pt,  MET_phi);

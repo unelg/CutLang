@@ -109,6 +109,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "genPartIdx" return GENPARTIDX;
 "decayMode" return DECAYMODE;
 "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
+"sieie" return SIEIE;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
