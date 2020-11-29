@@ -16,8 +16,8 @@ void FinalEff(TString file_addr, bool sh, bool se){
      TClass *cl = gROOT->GetClass(key->GetClassName());
      if (cl->InheritsFrom("TDirectoryFile")) {
        TString nm = key->GetName();
-       TH1F *ee;
-       rootFile->GetObject(nm+"/eff",ee);
+       TH1D *ee;
+       rootFile->GetObject(nm+"/cutflow",ee);
        cout <<"\t\t\t\t\t\t"<<nm<<"\t";
        PrintEfficiencies(ee,sh);
      }

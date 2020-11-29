@@ -145,7 +145,10 @@ elif [ ${PRLL} -ne 1 ]; then
     chn=$(grep -A2 "if ($dt)" ../CLA/CLA.C | grep "TChain(" | cut -d '"' -f 2)
     TotalEvents="$(root -l -q '../analysis_core/getentries.cxx("'${datafile}'" ,"'${chn}'")')"
     EVENTS="$(echo $TotalEvents | awk '{print $NF}')"
+    intrvl=$(( (EVENTS-STRT)/PRLL)) # workload division
     # echo Total number of events: $EVENTS
+  else
+    intrvl=$(( EVENTS/PRLL)) # workload division
   fi
   echo "**********************************************************************************************"
   echo ../CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}
@@ -165,7 +168,6 @@ elif [ ${PRLL} -ne 1 ]; then
       ./CLA_multicore.sh $datafile $datatype -i tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE
     fi
   }
-  intrvl=$(( (EVENTS-STRT)/PRLL)) # workload division
   if [ $? -eq 0 ]; then # multithreading
     for ((i = 0 ; i < ${PRLL} ; i++)); do
       multitask "$i" &
