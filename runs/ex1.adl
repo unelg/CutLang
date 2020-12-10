@@ -14,10 +14,11 @@ define www = 123.1/10
 
 region   test
   select  ALL              # to count all events
-  select  Size (ELE) >= 1  # events with 2 or more electrons 
-  weight   randWeight www
-# reject   Size (ELE) > 4  # events with 2 or more electrons 
-# histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+  select  Size (ELE) == 2 and Size(MUO) == 2 # events with 2 or more electrons 
+#  weight   randWeight www
+#  reject   Size (ELE) >= 2  # events with 2 or more electrons 
+  histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+  histo    h1eReco, "Z candidate mass (GeV)", 100, 0, 200, {MUO_0 MUO_1}m
 # histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 
 #region mest
