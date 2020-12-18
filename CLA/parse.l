@@ -25,9 +25,26 @@ vardef {varname}" "?":"" "?.*"\n"
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 
+[iI][nN][fF][oO] return ADLINFO;
+"experiment" return PAPEXPERIMENT;
+"id" return PAPID;
+"title" return PAPTITLE;
+"publication" return PAPPUBLICATION;
+"sqrtS" return PAPSQRTS;
+"lumi"  return PAPLUMI;
+"arXiv" return PAPARXIV;
+"hepdata" return PAPHEPDATA;
+"doi"    return PAPDOI;
+
+"counts"  return COUNTS;
+"countsformat" return COUNTSFORMAT;
+"stat" return ERR_STAT;
+"syst" return ERR_SYST;
+"process" return PROCESS;
+
+
 [tT][rR][uU][eE] return TRUE; 
 [fF][aA][lL][sS][eE] return FALSE; 
-[iI][nN][fF][oO] return ADLINFO;
 [Nn][Vv][Aa][Rr][Ss] return NVARS;
 [eE][rR][rR][oO][rR][sS] return ERRORS;
 [tT][aA][bB][lL][eE][tT][yY][pP][eE] return TABLETYPE;
@@ -76,11 +93,23 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
 "miniPFRelIsoAll" return RELISO;
+"relIsoall" return RELISOALL;
+"pfRelIso03all" return PFRELISO03ALL;
 "dxy"|[dD]"0" return DXY;
 "dz" return DZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
 "applyHM" return APPLYHM;
+"idDecayMode" return IDDECAYMODE;
+"idIsoTight" return IDISOTIGHT;
+"idAntiEleTight" return IDANTIELETIGHT; 
+"idAntiMuTight" return IDANTIMUTIGHT;
+"tightId" return TIGHTID;
+"puId" return PUID;
+"genPartIdx" return GENPARTIDX;
+"decayMode" return DECAYMODE;
+"HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
+"sieie" return SIEIE;
 
 [pP][hT][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
@@ -102,8 +131,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;
 "=="|"EQ" return EQ;//comparison operators
-"<>"|"NE" return NE;
-"!=" return MAXIMIZE;
+"!="|"NE" return NE;
+"~!" return MAXIMIZE;
 "~=" return MINIMIZE;
 "<="|"LE" return LE;
 ">="|"GE" return GE;
@@ -137,8 +166,10 @@ vardef {varname}" "?":"" "?.*"\n"
 [pP][eE][rR][mM] return PERM;
 [mM][iI][nN] return MIN;
 [mM][aA][xX] return MAX;
+"+-"|"-+" return PM;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
+{real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\"".*"\"" yylval.s=strdup(yytext);return HID;

@@ -1,16 +1,28 @@
 #CLA ADL example1
+info analysis
+  title "Search for electroweak production of charginos and neutralinos in WH events in proton-proton collisions at sqrt(s) = 13TeV"
+  experiment CMS
+  id "SUS-16-043"
+  publication "JHEP 11 (2017) 029"
+  sqrtS 13.0
+  lumi 35.9
+  arXiv "1706.09933"
+  hepdata " http://adress "
+  doi "10.1007/JHEP11(2017)029"
 
+define www = 123.1/10
 
 region   test
   select  ALL              # to count all events
-  select  Size (ELE) >= 2  # events with 2 or more electrons 
-  weight   randWeight   1.123
+  select  Size (ELE) == 2 and Size(MUO) == 2 # events with 2 or more electrons 
+#  weight   randWeight www
+#  reject   Size (ELE) >= 2  # events with 2 or more electrons 
   histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
-  histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
-  reject   Size (ELE) > 4  # events with 2 or more electrons 
+  histo    h1eReco, "Z candidate mass (GeV)", 100, 0, 200, {MUO_0 MUO_1}m
+# histo    h1mEta, "Z candidate Eta", 100, -5, 5, {ELE_0 ELE_1}Eta
 
- region mest
-  select  ALL
-  select  Size (MUO) >= 2 
-  select  Size (ELE) >= 2  # events with 2 or more electrons 
-  weight  bWeight   2.321
+#region mest
+# select  ALL
+# select  Size (MUO) >= 2 
+# select  Size (ELE) >= 2  # events with 2 or more electrons 
+# weight  bWeight   2.321

@@ -25,7 +25,8 @@ private:
         Node* userObjectC;
         Node* userObjectD;
 
-        friend class HistoNode;
+        friend class HistoNode1D;
+        friend class HistoNode2D;
         friend class LoopNode;
         friend class TableNode;
 protected:
@@ -76,7 +77,18 @@ double     vyof( dbxParticle* apart);
 double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
+double  sieieof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
+double relisoallof( dbxParticle* apart);
+double pfreliso03allof( dbxParticle* apart);
+double iddecaymodeof( dbxParticle* apart);
+double idisotightof( dbxParticle* apart);
+double idantieletightof( dbxParticle* apart);
+double idantimutightof( dbxParticle* apart);
+double tightidof( dbxParticle* apart);
+double    puidof( dbxParticle* apart);
+double genpartidxof( dbxParticle* apart);
+double decaymodeof( dbxParticle* apart);
 double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
 double CCountof( dbxParticle* apart);

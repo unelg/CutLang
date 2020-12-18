@@ -9,11 +9,10 @@
 
 void FuncNode::ResetParticles(){
       for(int i=0;i<originalParticles.size();i++){
-       if (originalParticles[i].type == 49 ) { 
+/*
         cout <<"O Collection:"<<originalParticles[i].collection<<" type:"<< originalParticles[i].type<<" index:"<<originalParticles[i].index<<"\n";
         cout <<"R Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
-        exit (12); 
-       }
+*/
         DEBUG("Recall orig i:"<<originalParticles[i].index);
         *(inputParticles[i])=originalParticles[i];
       }
@@ -107,6 +106,8 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                          case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
+                                                        ka=ao->gams[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
                                                         break;
                                            case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
@@ -209,11 +210,13 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("\nIn function Node evaluate, #particles:"<< inputParticles.size() <<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
-     if(userObjectA) { userObjectA->evaluate(ao); 
+     if(userObjectA) { double retval=userObjectA->evaluate(ao); 
+                       DEBUG("RetVal:"<< retval  <<"\n");
                        int thistype=((ObjectNode*)userObjectA)->type;
                        string realname=((ObjectNode*)userObjectA)->name;
                        DEBUG("A t,n:"<<thistype<<" , "<< realname <<"\n");
                        for (int ipa=0; ipa<inputParticles.size(); ipa++){
+                        DEBUG("T:"<<inputParticles[ipa]->type<<" idx:"<<inputParticles[ipa]->index<<"\n");
                         if (inputParticles[ipa]->type == thistype) inputParticles[ipa]->collection=realname;
                        }
                      } // replace collection if needed
@@ -452,7 +455,7 @@ double vtrof( dbxParticle* apart){
    return v;
 }
 double tauisoof( dbxParticle* apart){
-   double v=apart->Attribute(0);
+   double v=apart->Attribute(0); // tau attri0
    DEBUG(" Tau iso of:"<<v<<"\t");
    return v;
 }
@@ -461,7 +464,65 @@ double CCountof( dbxParticle* apart){
    DEBUG("# Children :"<<v<<"\n");
    return v;
 }
+//---------for tau's added by SS
+double iddecaymodeof( dbxParticle* apart){
+   double v=apart->Attribute(1);
+   DEBUG(" iddecaymode:"<<v<<"\t");
+   return v;
+}
+double idisotightof( dbxParticle* apart){
+   double v=apart->Attribute(2);
+   DEBUG(" idisotight:"<<v<<"\t");
+   return v;
+}
+double idantieletightof( dbxParticle* apart){
+   double v=apart->Attribute(3);
+   DEBUG(" idantieletight:"<<v<<"\t");
+   return v;
+}
+double idantimutightof( dbxParticle* apart){
+   double v=apart->Attribute(4);
+   DEBUG(" idantimutight:"<<v<<"\t");
+   return v;
+}
+double tightidof( dbxParticle* apart){
+   double v=apart->Attribute(4);
+   DEBUG(" tightID for mus:"<<v<<"\t");
+   return v;
+}
+double puidof( dbxParticle* apart){
+   double v=apart->Attribute(0);
+   DEBUG(" PU ID for jets:"<<v<<"\t");
+   return v;
+}
+double genpartidxof( dbxParticle* apart){
+   double v=apart->Attribute(5);
+   DEBUG(" genPartIdx:"<<v<<"\t");
+   return v;
+}
+double relisoallof( dbxParticle* apart){
+   double v=apart->Attribute(6);
+   DEBUG(" tau reliso_all:"<<v<<"\t");
+   return v;
+}
 
+double sieieof( dbxParticle* apart){
+   double v=apart->Attribute(0);
+   DEBUG(" Photon sieie:"<<v<<"\t");
+   return v;
+}
+
+
+double decaymodeof( dbxParticle* apart){
+   double v=apart->Attribute(7);
+   DEBUG(" tau decay mode:"<<v<<"\t");
+   return v;
+}
+double pfreliso03allof( dbxParticle* apart){
+   double v=apart->Attribute(6);
+   DEBUG(" muon pfRelIso03_all:"<<v<<"\t");
+   return v;
+}
 
 //------------------------------
 double nbfof( dbxParticle* apart){

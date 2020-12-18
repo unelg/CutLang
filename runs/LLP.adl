@@ -9,7 +9,7 @@ define minDecProd = 2     # just an example
 object DVcandidates take GEN 
    select abs(pdgID(GEN)) == 1000021 # for finding R hadrons
    select daughters( GEN ) > 1    # 1 child not accepted
-#  select q(GEN daughters) <> 0  ## <> , NE means NOT equal.
+#  select q(GEN daughters) NE 0  ## <> , NE means NOT equal.
    select pT(GEN daughters) > mintrackpT # > 1GeV
    select abs(d0(GEN daughters)) > mintrackd0 # 2mm
 

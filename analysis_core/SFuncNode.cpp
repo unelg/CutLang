@@ -20,14 +20,14 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
 
         DEBUG("*******In SF, Extern True/False:"<< ext <<"\n"); 
         if(userObjectA && !ext) {
-           DEBUG("\t a user obj\n"); 
+           DEBUG("\t start user obj A\n"); 
            userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-           DEBUG("user obj done.\n"); 
+           DEBUG("user obj A done.\n"); 
         }
         if(userObjectB && !ext) {
-           DEBUG("\t b user obj\n"); 
+           DEBUG("\t B user obj\n"); 
            userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
-           DEBUG("user obj done.\n"); 
+           DEBUG("user obj B done.\n"); 
         }
         dbxParticle *aPart= new dbxParticle;
         dbxParticle *bPart= new dbxParticle;
@@ -138,6 +138,9 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
 
            DEBUG("cPart constructed \t");
         }
+        if (left != NULL) {
+          value =left->evaluate(ao);
+        }
 
         DEBUG ("Before Symbol:"<<symbol<<" Value:"<<value<< " Type:"<<type<<"\n");
         if(ext) {
@@ -165,14 +168,36 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                  return g5retval;
                 }
               }
-        }              
-        return (*f)(ao, symbol, value);
+        }
+        double arv=(*f)(ao, symbol, value);              
+        DEBUG("ARV="<<arv<<"\n");
+        return arv;
+//        return (*f)(ao, symbol, value);
 }
 
 void SFuncNode::Reset() {
       DEBUG (" Resetting cache \n");
       BUFFERED_VALUES.clear();
     }
+
+double getIndex(AnalysisObjects* ao, string s, float id){ // new internal function
+    particleType pid = (particleType)id;
+    DEBUG("GETINDEX function\n");
+    DEBUG("STR:"<<s<<" Type:"<<pid<<" #Combos types:"<<ao->combos.size() << " #Table types:"<<ao->combosA.size()<<"\n");
+    map <string,  indicesA  >::iterator itp;
+    for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){
+      DEBUG("#Combo typename:"<<itp->first<<"  Table  size:"<<itp->second.tableA.size() <<" maxRow:" 
+                              <<itp->second.max_row<< " maxCol:"<< itp->second.max_col <<"\n");
+      std::vector< std::vector <int> > mytable= itp->second.tableA;
+      for (int anidx=0; anidx < mytable.size(); anidx++) {
+         DEBUG(mytable[anidx][0] <<" "<< mytable[anidx][1]); // asume 2 cols
+         DEBUG("\n");
+         if (pid==muon_t) return mytable[anidx][0];
+         if (pid==tau_t ) return mytable[anidx][1];
+      }
+    }
+    return (123); // never here
+}
 
 double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
@@ -202,11 +227,11 @@ double count(AnalysisObjects* ao, string s, float id) {
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      case combo_t:    if (ao->combosA.find(s)!=ao->combosA.end() ){
-                           DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row
-                                  <<" "<< ao->combosA.at(s).max_col<<"\n");
-                             return (ao->combosA.at(s).max_row);
-                      } else { DEBUG(s<<" Normal\n");    // to be continued     
-                               return (ao->combos.at(s).size() );
+                           DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row <<" "<< ao->combosA.at(s).max_col<<"\n");
+                           return (ao->combosA.at(s).max_row);
+                      } else { 
+                           DEBUG(s<<" Normal\n");    // to be continued     
+                           return (ao->combos.at(s).size() );
                       }
                       break;
      default:        std::cerr<<"No such Particle Type:\n"; return (-1); break;
@@ -218,6 +243,13 @@ double met(AnalysisObjects* ao, string s, float id){
      DEBUG("MET:" << ao->met["MET"].Mod() <<"\n");
     return ( ao->met["MET"].Mod() );
 }
+
+double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
+     bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
+     DEBUG("HLT_ISO_MU:" << retval <<"\n");
+    return ( (double)retval );
+}
+
 
 double ht(AnalysisObjects* ao, string s, float id){
     double sum_htjet=0;

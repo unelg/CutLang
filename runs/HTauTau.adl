@@ -1,0 +1,45 @@
+object goodmuons 
+  take MUO
+  select { MUO }Pt > 20
+
+object goodtaus 
+  take TAU
+  select { TAU }Pt > 20
+
+object realtaus
+   take goodtaus
+   select ALL
+#  select abs(pdgId(GEN[ genPartIdx( goodtaus ) ] ) )  == 15
+
+object goodjets : JET
+  select puId(JET) >= 1
+  select  {JET}Pt > 10
+  select  {JET}Eta < 4
+
+object HTauTaus : COMB( goodmuons[-1] goodtaus[-2] ) alias aHCandi
+  select { goodmuons[-1], goodtaus[-2] }dR > 0.2
+  select max(        pT( goodmuons )) - pT(goodmuons[-1]) ~= 0        #make sure good muon is in
+  select min( relIsoall(goodtaus   )) - relIsoall(goodtaus[-2]) ~= 0  #
+
+define bestM = daughters( HTauTaus[0], goodmuons[-1] )
+define bestT = daughters( HTauTaus[0],  goodtaus[-2] )
+define abc = sqrt(4)
+
+region preselect
+       select ALL 
+#       select HLT_IsoMu17_eta2p1_LooseIsoPFTau20 == 1    
+       select size( goodmuons ) >= 1  # atleast 1 muon
+       select size( goodtaus  ) >= 1
+#      select size( goodjets  ) >= 1
+       histo hpi , "GoodTau_0 particle index",41,0,40, genPartIdx( goodtaus[0] )
+#      histo hpdi ,"pdgID of Gen",41,0,40, pdgId(GEN[genPartIdx( goodtaus[0]) ] ) 
+       histo hpdi ,"pdgID of Gen",41,0,40, pdgId(GEN[0] )   
+
+       select abs(pdgId(GEN[ genPartIdx( goodtaus[0] ) ] )) == 15
+
+#      select pdgId(GEN[ sqrt(4) ]) == 15
+#       select size( realtaus  ) == 3
+        select size( HTauTaus  ) >= 1
+        select   pT( bestM     ) >  5   
+        select   pT( bestT     ) >  5   
+#        save abuzittin
