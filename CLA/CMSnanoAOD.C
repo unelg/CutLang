@@ -85,7 +85,9 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        dbxMuon     *adbxm;
        dbxTau      *adbxt;
        dbxPhoton   *adbxp;
+       dbxTruth    *adbxg;
 
+//#define __DEBUG__
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
 #endif
@@ -94,18 +96,22 @@ std::cout << "Begin Filling"<<std::endl;
                 alv.SetPtEtaPhiM( Muon_pt[i], Muon_eta[i], Muon_phi[i], (105.658/1E3) ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_charge[i] );
+                adbxm->setPdgID(-13*Muon_charge[i] );
 //                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
 //                adbxm->setPtCone(Muon_IsolationVar[i]        );
-                adbxm->addAttribute( Muon_dz[i]);
-                adbxm->addAttribute( Muon_dxy[i]     );
-                adbxm->addAttribute( Muon_miniPFRelIso_all[i]     );
-                adbxm->addAttribute( Muon_softId[i]     );
+                adbxm->addAttribute( Muon_dz[i]);         // attri 0
+                adbxm->addAttribute( Muon_dxy[i]     );   // attri 1
+                adbxm->addAttribute( Muon_miniPFRelIso_all[i]     ); // attri 2
+                adbxm->addAttribute( Muon_softId[i]     ); // attri 3
+                adbxm->addAttribute( Muon_tightId[i]    ); // attri 4
+                adbxm->addAttribute( Muon_genPartIdx[i]    ); // attri 5
+                adbxm->addAttribute( Muon_pfRelIso03_all[i]    ); // attri 6
                 adbxm->setParticleIndx(i);
                 muons.push_back(*adbxm);
                 delete adbxm;
         }
 #ifdef __DEBUG__
-std::cout << "Muons OK:"<< Muon_<<std::endl;
+std::cout << "Muons OK:"<< nMuon<<std::endl;
 #endif
 //ELECTRONS
 
@@ -113,16 +119,17 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
                 alv.SetPtEtaPhiM( Electron_pt[i], Electron_eta[i], Electron_phi[i], (0.511/1E3) ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_charge[i] );
+                adbxe->setPdgID(-11*Electron_charge[i] );
                 adbxe->setParticleIndx(i);
-                adbxe->addAttribute( Electron_dz[i]);
-                adbxe->addAttribute( Electron_dxy[i]     );
-                adbxe->addAttribute( Electron_miniPFRelIso_all[i]     );
+                adbxe->addAttribute( Electron_dz[i]);       // attri 0
+                adbxe->addAttribute( Electron_dxy[i]     ); // attri 1
+                adbxe->addAttribute( Electron_miniPFRelIso_all[i]  ); // attri 2 
                 electrons.push_back(*adbxe);
                 delete adbxe;
         }
 
 #ifdef __DEBUG__
-std::cout << "Electrons OK:"<< Electron_ <<std::endl;
+std::cout << "Electrons OK:"<< nElectron <<std::endl;
 #endif
 //PHOTONS
         for (unsigned int i=0; i<nPhoton; i++) {
@@ -130,12 +137,33 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
                 adbxp= new dbxPhoton(alv);
                 adbxp->setCharge(0);
                 adbxp->setParticleIndx(i);
+                adbxp->addAttribute( Photon_sieie[i]);   // 0
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
 #ifdef __DEBUG__
-std::cout << "Photons OK:"<<Photon_size<<std::endl;
+std::cout << "Photons OK:"<<nPhoton<<std::endl;
 #endif
+//GENS
+        for (unsigned int i=0; i<nGenPart; i++) {
+                alv.SetPtEtaPhiM( GenPart_pt[i], GenPart_eta[i], GenPart_phi[i], GenPart_mass[i] ); // all in GeV
+                adbxg= new dbxTruth(alv);
+                adbxg->setPdgID(GenPart_pdgId[i] );
+                adbxg->setCharge(GenPart_pdgId[i]/abs(GenPart_pdgId[i]) );
+                adbxg->setParticleIndx(i);
+                adbxg->addAttribute( 0);   // 0
+                adbxg->addAttribute( 0);  // 1 
+                adbxg->addAttribute( 0); // 2 
+                adbxg->addAttribute( GenPart_status[i] ); // 3
+                truth.push_back(*adbxg);
+                delete adbxg;
+        }
+#ifdef __DEBUG__
+std::cout << "Truth OK:"<<nGenPart<<std::endl;
+#endif
+
+
+
 //JETS
         for (unsigned int i=0; i<nJet; i++) {
                 alv.SetPtEtaPhiM( Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i] ); // all in GeV
@@ -145,6 +173,7 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 adbxj->setFlavor(Jet_btagDeepB[i] );
                 adbxj->set_isbtagged_77( (Jet_btagDeepB[i]>0.8) ); // 5 is btag
         //        adbxj->setJVtxf(Jet_Ntrk[i] );
+                adbxj->addAttribute( (double)Jet_puId[i]);       // attri 0
                 jets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -159,10 +188,10 @@ std::cout << "Jets:"<<nJet<<std::endl;
                 adbxj->setParticleIndx(i);
                 adbxj->setFlavor(FatJet_btagDeepB[i] );
                 adbxj->set_isbtagged_77( (FatJet_btagDeepB[i]>0.8) ); // 5 is btag
-                adbxj->addAttribute( FatJet_msoftdrop[i]);
-                adbxj->addAttribute( FatJet_tau1[i]     );
-                adbxj->addAttribute( FatJet_tau2[i]     );
-                adbxj->addAttribute( FatJet_tau3[i]     );
+                adbxj->addAttribute( FatJet_msoftdrop[i]); // attri 0
+                adbxj->addAttribute( FatJet_tau1[i]     ); // attri 1
+                adbxj->addAttribute( FatJet_tau2[i]     ); // attri 2
+                adbxj->addAttribute( FatJet_tau3[i]     ); // attri 3
                 ljets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -176,12 +205,20 @@ std::cout << "FatJets:"<<nFatJet<<std::endl;
                 adbxt->setCharge(-99);
                 adbxt->setParticleIndx(i);
                 adbxt->setIsolation(Tau_idMVAnewDM2017v2[i] );
-                adbxt->addAttribute(Tau_idMVAnewDM2017v2[i] );
+                adbxt->addAttribute(Tau_idMVAnewDM2017v2[i] ); // attri 0
+                adbxt->addAttribute(Tau_idDecayMode[i] ); // attri 1
+                adbxt->addAttribute(Tau_idIsoTight[i] ); // attri 2
+                adbxt->addAttribute(Tau_idAntiEleTight[i] ); // attri 3
+                adbxt->addAttribute(Tau_idAntiMuTight[i] ); // attri 4
+                adbxt->addAttribute(Tau_genPartIdx[i] ); // attri 5
+                adbxt->addAttribute(Tau_relIso_all[i] ); // attri 6
+                adbxt->addAttribute(Tau_decayMode[i] ); // attri 5
+//--------added tau variables for SS.
                 taus.push_back(*adbxt);
                 delete adbxt;
         }
 #ifdef __DEBUG__
-std::cout << "Taus:"<<Tau_<<std::endl;
+std::cout << "Taus:"<<nTau<<std::endl;
 #endif
 //MET
         met.SetMagPhi( MET_pt,  MET_phi);
@@ -206,7 +243,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
         anevt.lar_Error=0;
-        anevt.tile_Error=0;
+        anevt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20=HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

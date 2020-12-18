@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-void PrintEfficiencies(TH1F* effh, bool skip_histos) {
+void PrintEfficiencies(TH1D* effh, bool skip_histos) {
   using namespace std;
 
   // Prints out the efficiencies

@@ -232,9 +232,11 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal, vector<vector<int>> t
     }
 }
 
-Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReconstr), nJetTotal(JetTotal)
+Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReconstr), nJetTotal(JetTotal) //,nParticles(JetTotal)
 {
-    if(JetTotal>2)
+//---------------------------combine JetReconstr particles, out of JetTotal 
+//   if (nParticles.size()<2){
+    if (nJetTotal>2)
     {
         vector<int> tab(nJetTotal+1);
         for(int i = 0; i<nJetTotal+1 ; ++i) { tab[i] = i; }
@@ -244,6 +246,9 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReco
         Comb simple_combination = Comb(nJetTotal+1, nJetRecontr);
         out = simple_combination.output();
     }
+//   } else { // now we have 2 particle types to be merged, like muons and taus, 
+
+//   }
 }
 
 Denombrement::~Denombrement()

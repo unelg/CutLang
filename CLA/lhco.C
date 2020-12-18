@@ -179,7 +179,6 @@ std::cout << "MET OK"<<std::endl;
 	anevt.z_vtx_weight = 1.1;
 	anevt.vxpType=0;
 	anevt.lar_Error=0;
-	anevt.tile_Error=0;
 	anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

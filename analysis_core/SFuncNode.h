@@ -67,7 +67,24 @@ public:
         userObjectB = objectNodeB;
 
 }
-//-------------------------
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), Node *child, std::string s, 
+              Node *objectNodeA = NULL, Node *objectNodeB = NULL){
+        f=func;
+        g1=NULL;
+        g2=NULL;
+        g3=NULL;
+        g4=NULL;
+        g5=NULL;
+        ext=false;
+        symbol=s;
+        left=child;
+        right=NULL;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+
+}
+
+//------------------------- g1 with userfuncA
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*gunc) (std::vector<TLorentzVector> jets, int p1)),
               std::vector<TLorentzVector> (*tunc) (std::vector<TLorentzVector> jets, int p1),
                       int id, 
@@ -199,7 +216,9 @@ double lepsf(AnalysisObjects* ao, string s, float value);
 double btagsf(AnalysisObjects* ao, string s, float value);
 double xslumicorrsf(AnalysisObjects* ao, string s, float value);
 double count(AnalysisObjects* ao, string s, float id);
+double getIndex(AnalysisObjects* ao, string s, float id); // new internal function
 double met(AnalysisObjects* ao, string s, float id);
+double hlt_iso_mu(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);
 double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets, int p1) );
 double userfuncB(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets ) );

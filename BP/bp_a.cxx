@@ -24,7 +24,8 @@
 
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
-                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables);
+                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
+                                       map<string, vector<cntHisto> >*cntHistos);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -201,7 +202,7 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        bincount=0;
        cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos);
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error. Check the input file\n";
@@ -254,19 +255,22 @@ int BPdbxA:: readAnalysisParams() {
      for (int jt=0; jt<TRGValues.size(); jt++){
       cout <<"Cut @:"<<jt<<" value:"<<TRGValues.at(jt)<<"\n";
      }
+     for (int jt=0; jt<effCL.size(); jt++){
+      cout << "Eff @:"<<jt<<" val:"<<effCL.at(jt)<<"\n";
+     }
 #endif
  
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
     if (binsize==binCL.size() ) {
      for (int jbin=0; jbin<binsize; jbin++){
-       DEBUG("Bin from C++:"<<binCL[jbin]<<"\n");
+       DEBUG("Bin from User C++:"<<binCL[jbin]<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
      }
     } else {
      std::map<int, Node*>::iterator biter = BinCuts.begin();
      while(biter != BinCuts.end()) {    
-       DEBUG("Bin from yacc:"<<biter->second->getStr()<<"\n");
+       DEBUG("Bin from Auto yacc:"<<biter->second->getStr()<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(biter->first, biter->second->getStr().Data() );
        biter++;
      }
@@ -282,26 +286,28 @@ int BPdbxA:: readAnalysisParams() {
        if (inserted>0) {
               std::cout<<"Auto inserted cuts:"<< inserted<<"\n";
        }
+       bool nextcpp=false;
        while(iter != NodeCuts.end())
-       {
-          DEBUG(" CUT "<<iter->first<<" ");
+       {  
+          DEBUG(" CUT "<<iter->first<<" LabelSkip:"<<labelSkip<< " inserted:"<<inserted << " ");
           DEBUG(" :"<<iter->second->getStr()<<"\t");
           string newNLabels=iter->second->getStr().Data();
           DEBUG("-->"<<effCL[ iter->first -1-labelSkip]<<"\t");
           TString ELabels=effCL[ iter->first -1-labelSkip];
-
-          if (inserted>0) {
-            if ( TRGValues.at(labelSkip+5) == iter->first ) { usecpp=false; inserted--; } 
+          if (inserted>0 && !nextcpp) { //5-0 yacc, 6-1: c++,
+            if ( iter->first == TRGValues.at(labelSkip+5)  ) { usecpp=false; inserted-=1;  } 
           } else usecpp=true;
-
+         
           if (usecpp) {
                 DEBUG("From C++:"<<ELabels<<"\n");
                 eff->GetXaxis()->SetBinLabel(iter->first+1,ELabels.Data()); // labels
+                nextcpp=false;
           } else {
                 DEBUG("from yacc:"<<newNLabels<<"\n");
                 string newlabels="Size "+newNLabels; 
                 eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
                 labelSkip++;
+                nextcpp=true;
           } 
            
            iter++; 
@@ -313,6 +319,25 @@ int BPdbxA:: readAnalysisParams() {
          DEBUG("+++++ Binning: "<<iter->first<<" |"<< iter->second->getStr()<<"\n");
          iter++;
        }
+//---------------------- count histos
+for (map<string,vector<cntHisto> >::iterator ichi = cntHistos.begin(); ichi != cntHistos.end(); ichi++){
+ // cout << ichi->first << " \n ------- \n ";
+         for (vector<cntHisto>::iterator ih=ichi->second.begin(); ih!=ichi->second.end(); ih++){
+   //        cout<< ih->cH_name<< " "<< ih->cH_title<<":"<< ih->cH_means.size()<<"\n";
+           TH1D* chistoM= new TH1D(ih->cH_name.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           string upname=ih->cH_name; upname+="_up";
+           string downname=ih->cH_name; downname+="_down";
+           TH1D* chistoU= new TH1D(  upname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           TH1D* chistoD= new TH1D(downname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
+           for (int iv=0; iv<ih->cH_means.size(); iv++){
+     //        cout<< ih->cH_means[iv] << " stat +" << ih->cH_StatErr_p[iv] << " -"<<ih->cH_StatErr_n[iv] 
+      //                               << "  sys +" << ih->cH_SystErr_p[iv] << " -"<<ih->cH_SystErr_n[iv] <<"\n";  
+             chistoM->SetBinContent(1+iv, ih->cH_means[iv]);
+             chistoU->SetBinContent(1+iv, sqrt(ih->cH_StatErr_p[iv]*ih->cH_StatErr_p[iv] + ih->cH_SystErr_p[iv]*ih->cH_SystErr_p[iv]));
+             chistoD->SetBinContent(1+iv, sqrt(ih->cH_StatErr_n[iv]*ih->cH_StatErr_n[iv] + ih->cH_SystErr_n[iv]*ih->cH_SystErr_n[iv]));
+           }
+         }
+}
 
 #ifdef _CLV__
      cout<<"\n Parsed Particle Lists: \n";
@@ -388,6 +413,7 @@ int BPdbxA::bookAdditionalHistos() {
 }
 //------------------------
 int BPdbxA::Finalize(){       
+  std::cout <<"finalize.\n";
   return 1;
 }
 
