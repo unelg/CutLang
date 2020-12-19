@@ -77,7 +77,7 @@ jobs:
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
         
     - name: Clear Temporary Files
-      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm flag 
+      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm -f flag 
 
     - name: Update Artifacts
       if: steps.cache.outputs.cache-hit == 'true'
