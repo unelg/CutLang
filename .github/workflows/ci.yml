@@ -75,10 +75,9 @@ jobs:
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
-      run: rm flag 
         
     - name: Clear Temporary Files
-      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
+      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm flag 
 
     - name: Update Artifacts
       if: steps.cache.outputs.cache-hit == 'true'
