@@ -17,8 +17,8 @@ parser.add_option("--delete", action="store_true", dest="delete", default=False,
 
 # Get the user function name
 if len(args) < 1:
-    print "Please specify the name of the user function"
-    print "For help, run python %s -h" % (sys.argv[0])
+    print ("Please specify the name of the user function")
+    print ("For help, run python %s -h", (sys.argv[0]) )
     sys.exit()
 name = args[0]
 delete = option.delete
@@ -43,10 +43,10 @@ if not delete:
         while ianswer == -1:
             answer = str(raw_input(question+' (y/n): ')).lower().strip()
             if answer[0] in yes:
-                print 'Deleting '+funcfile
+                print ('Deleting '+funcfile)
                 ianswer = 1
             if answer[0] in no:
-                print 'Keeping '+funcfile+' and exiting.'
+                print ('Keeping '+funcfile+' and exiting.')
                 ianswer = 0
                 sys.exit(0)
 
@@ -89,7 +89,7 @@ private:
     # Copy the contents of the user function under analysis_core
     open(funcfile, 'w').write(userfunccont)
 
-    print '\nCreated the user function analysis_core/dbx_'+names['name']+'.h. \nPlease edit and recompile.\n'
+    print ('\nCreated the user function analysis_core/dbx_'+names['name']+'.h. \nPlease edit and recompile.\n')
 
 # Delete the user function header
 else:
@@ -109,10 +109,10 @@ dcutall = open('../analysis_core/dbxCut.cpp', 'r').read()
 if not delete:
     # Check if the information is already in dbxCut.h, if so, delete
     if incname in dcutall:
-        print 'include already in dbxCut.h, deleting...'
+        print ('include already in dbxCut.h, deleting...')
         dcutall.replace(incline, '')
     if funcname in dcutall:
-        print 'function already in dbxCut.h cutlist, deleting...'
+        print ('function already in dbxCut.h cutlist, deleting...')
         dcutall.replace(incline, '')
 
     # Find the place to add the information
@@ -136,15 +136,15 @@ if not delete:
     # Write the new content into dbxCut.cpp
     open('../analysis_core/dbxCut.cpp', 'w').write(dcutall)
 
-    print 'Made necessary changes in analysis_core/dbxCut.cpp .\n'
+    print ('Made necessary changes in analysis_core/dbxCut.cpp .\n')
 
 # Delete user function information from dbxCut.h
 else:
     if incline not in dcutall and funcline not in dcutall and not os.path.exists('../analysis_core/dbxCut_'+name+'.h'):
-        print 'User function '+name+' already nonexistent.  Nothing to delete.'
+        print ('User function '+name+' already nonexistent.  Nothing to delete.')
         sys.exit(0)
     dcutall = dcutall.replace(incline, '')    
     dcutall = dcutall.replace(funcline, '')
     open('../analysis_core/dbxCut.cpp', 'w').write(dcutall)    
-    print 'Deleted the user function '+name
+    print ('Deleted the user function '+name)
 
