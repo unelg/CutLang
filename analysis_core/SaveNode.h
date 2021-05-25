@@ -31,6 +31,7 @@ public:
     virtual void createFile() override {
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
+			ttsave->Branch("dbxAsave", ntsave);
     }
     virtual void saveFile() override {
             std::cout << "Closing file\n";
@@ -38,7 +39,6 @@ public:
 	    ftsave->Close();
     }
     virtual double evaluate(AnalysisObjects* ao) override {
-      ttsave->Branch("dbxAsave", ntsave);
       vector<dbxMuon>        muons = ao->muos.begin()->second;
       vector<dbxElectron> electrons= ao->eles.begin()->second;
       vector <dbxPhoton>    photons= ao->gams.begin()->second;
