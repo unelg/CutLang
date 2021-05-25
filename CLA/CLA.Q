@@ -8,6 +8,7 @@
 #include "CMSnanoAOD.h"
 #include "AtlMin.h"
 #include "VLLBG3.h"
+#include "VLLMinSignal.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
 #include <TH2.h>
@@ -49,6 +50,7 @@ int main(int argc, char*argv[])
  bool use_cmsnano=false;
  bool use_vllmin=false;
  bool use_vllbg3 =false;
+ bool use_vllsignal =false;
 
  string inptype;
  char *username=NULL;
@@ -89,7 +91,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3]\n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -106,6 +108,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "CMSOD")   { use_cmsod =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
+ else if (inptype == "VLLSIGNAL")	{ use_vllsignal =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
@@ -227,6 +230,9 @@ if (ival==0) {
   }else if (use_vllbg3){
    cout << "~Now using ATLAS v3 background files.~~~~~~ alpha!\n";
    chain = new TChain("NOSYS/physics");
+  }else if (use_vllsignal){
+   cout << "~Now using ATLAS VLL Signal files.~~~~~~ alpha!\n";
+   chain = new TChain("physics");
   }else{
    chain = new TChain("physics");
   }
@@ -272,6 +278,9 @@ if (ival==0) {
    } else if (use_vllbg3){
     VLLBG3 *VLLBG3a=new VLLBG3("XXX",chain);
            VLLBG3a->Loop(aselect, username);
+   } else if (use_vllsignal){
+    VLLMinSignal *VLLMinSignala=new VLLMinSignal("XXX",chain);
+          VLLMinSignala->Loop(aselect, username);
   }
 
   cout << "finished."<<endl;
