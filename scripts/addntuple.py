@@ -25,9 +25,6 @@ if len(args) < 1:
 name = args[0]
 delete = option.delete
 
-# Put variables in a dictionary
-name = name
-
 # Create (or delete) the c file for the new ntuple
 funcfile = '../CLA/'+name+'.C'
 
