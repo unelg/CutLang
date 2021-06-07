@@ -91,7 +91,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL | ]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
