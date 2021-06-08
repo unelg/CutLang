@@ -2,20 +2,25 @@
 Script for adding (or deleting) new ntuples into CutLang
 run as python3 addntuple.py <ntuplename>
 To delete an already added ntuple, run python3 addntuple.py <ntuplename> --delete
+To create an ntuple template, run python3 addntuple.py <ntuplename> --create
 To edit template, change templates/default_ntuple_template.c
 '''
 
 import os
+from re import template
 import sys
 from jinja2 import Environment, FileSystemLoader
 from optparse import OptionParser
 import fileinput
+import shutil
 
 # Parsing options
 usage = "Usage: python3 %prog <ntuplename>"
 parser = OptionParser(usage=usage)
 parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple")
+parser.add_option("--create", action="store_true",
+                  dest="create", default=False, help="create the ntuple template")
 (option, args) = parser.parse_args()
 
 # Get the new ntuple name
@@ -27,9 +32,12 @@ name = args[0]
 uppername = name.upper()
 lowername = name.lower()
 delete = option.delete
+create = option.create
 
 # Create (or delete) the c file for the new ntuple
 c_file = '../CLA/'+name+'.C'
+# Create the C file for the new ntuple template
+template_c_file = 'templates/'+name+'.C'
 
 # Edit CLA.Q file
 
@@ -118,8 +126,25 @@ def remove_files():
     claq.file.close()
 
 
+def create_template():
+    # Copy the contents of the new ntuple template under templates
+    f = open(os.getcwd()+"/"+template_c_file, "w")
+    f.close()
+    shutil.copy2(os.getcwd()+"/templates/default_ntuple_content_template.C",
+                 os.getcwd()+"/"+template_c_file)
+    print("New template created at "+os.getcwd()+"/"+template_c_file)
+
+
+# Create blank ntuple template
+if create:
+    create_template()
 # Create the new ntuple
-if not delete:
+elif not delete:
+    if not os.path.exists("./templates/"+name+".C"):
+        create_template()
+        print("Template not found, created one for you, please edit " +
+              os.getcwd()+"/"+template_c_file)
+        sys.exit(0)
     # Check if the ntuple already exists
     if os.path.exists(c_file):
         question = 'Ntuple '+c_file + \
