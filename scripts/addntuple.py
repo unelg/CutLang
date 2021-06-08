@@ -7,7 +7,7 @@ To edit template, change templates/default_ntuple_template.c
 
 import os
 import sys
-from string import Template
+from jinja2 import Environment, FileSystemLoader
 from optparse import OptionParser
 import fileinput
 
@@ -139,17 +139,17 @@ if not delete:
                 sys.exit(0)
 
     # Read template
-    f = open(os.getcwd()+"/templates/default_ntuple_template.C", "r")
-    ntuple_tmp = f.read()
+    file_loader = FileSystemLoader("templates")
+    env = Environment(loader=file_loader)
 
     # Fill out the template
-    ntuple_filled = Template(ntuple_tmp).substitute(name=name)
+    template_c = env.get_template(name+".C")
+
+    # Extract marks
+    output_c = template_c.render(name=name)
 
     # Copy the contents of the new ntuple under CLA
-    open(c_file, 'w').write(ntuple_filled)
-
-    print('\nCreated the ntuple CLA/' +
-          name+'.C. \nPlease edit and recompile.\n')
+    open(c_file, 'w').write(output_c)
 
     claq = FILE_HELPER('../CLA/CLA.Q')
     claq.file.write('#include "'+name+'.h"\n'+claq.content)
@@ -179,6 +179,9 @@ if not delete:
     claq.find_and_write_with_delete(objs_1, objs_1.replace(
         "$(ANLOBJS) ", "$(ANLOBJS) "+name+".o "))
     claq.file.close()
+
+    print('\nCreated the ntuple CLA/' +
+          name+'.C. \nPlease edit and recompile.\n')
 
 
 # Delete the user function header
