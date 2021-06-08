@@ -13,6 +13,7 @@ from jinja2 import Environment, FileSystemLoader
 from optparse import OptionParser
 import fileinput
 import shutil
+import datetime
 
 # Parsing options
 usage = "Usage: python3 %prog <ntuplename>"
@@ -36,8 +37,11 @@ create = option.create
 
 # Create (or delete) the c file for the new ntuple
 c_file = '../CLA/'+name+'.C'
+h_file = '../analysis_core/'+name+'.h'
 # Create the C file for the new ntuple template
 template_c_file = 'templates/'+name+'.C'
+# Create the h file for the new ntuple template
+template_h_file = 'templates/'+name+'.h'
 
 # Edit CLA.Q file
 
@@ -94,6 +98,7 @@ def remove_files():
     # remove exist c_file
     if os.path.exists(c_file):
         os.remove(c_file)
+        os.remove(h_file)
     else:
         return print("nothing")
 
@@ -132,7 +137,12 @@ def create_template():
     f.close()
     shutil.copy2(os.getcwd()+"/templates/default_ntuple_content_template.C",
                  os.getcwd()+"/"+template_c_file)
-    print("New template created at "+os.getcwd()+"/"+template_c_file)
+    print("New template C created at "+os.getcwd()+"/"+template_c_file)
+    f = open(os.getcwd()+"/"+template_h_file, "w")
+    f.close()
+    shutil.copy2(os.getcwd()+"/templates/default_ntuple_content_template.h",
+                 os.getcwd()+"/"+template_h_file)
+    print("New template h created at "+os.getcwd()+"/"+template_h_file)
 
 
 # Create blank ntuple template
@@ -143,7 +153,7 @@ elif not delete:
     if not os.path.exists("./templates/"+name+".C"):
         create_template()
         print("Template not found, created one for you, please edit " +
-              os.getcwd()+"/"+template_c_file)
+              os.getcwd()+"/"+template_c_file+" and "+os.getcwd()+"/"+template_h_file)
         sys.exit(0)
     # Check if the ntuple already exists
     if os.path.exists(c_file):
@@ -169,12 +179,15 @@ elif not delete:
 
     # Fill out the template
     template_c = env.get_template(name+".C")
+    template_h = env.get_template(name+".h")
 
     # Extract marks
     output_c = template_c.render(name=name)
+    output_h = template_h.render(name=name, date=datetime.datetime.now())
 
     # Copy the contents of the new ntuple under CLA
     open(c_file, 'w').write(output_c)
+    open(h_file, 'w').write(output_h)
 
     claq = FILE_HELPER('../CLA/CLA.Q')
     claq.file.write('#include "'+name+'.h"\n'+claq.content)
