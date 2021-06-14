@@ -42,9 +42,10 @@ vardef {varname}" "?":"" "?.*"\n"
 "syst" return ERR_SYST;
 "process" return PROCESS;
 
+"systematic" return SYSTEMATIC;
 
-[tT][rR][uU][eE] return TRUE; 
-[fF][aA][lL][sS][eE] return FALSE; 
+[oO][nN]|[tT][rR][uU][eE] return TRUE; 
+[oO][fF][fF]|[fF][aA][lL][sS][eE] return FALSE; 
 [Nn][Vv][Aa][Rr][Ss] return NVARS;
 [eE][rR][rR][oO][rR][sS] return ERRORS;
 [tT][aA][bB][lL][eE][tT][yY][pP][eE] return TABLETYPE;

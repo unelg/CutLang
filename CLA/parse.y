@@ -27,9 +27,9 @@ extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
-                vector<string>* Initializations , vector<double>* DataFormats, map <string, pair<vector<float>, bool> >* ListTables,
+                vector<string>* Initializations , vector<int>* DataFormats, map <string, pair<vector<float>, bool> >* ListTables,
                 map<string, vector<cntHisto> > *cntHistos, const char *s) { 
-                   std::cerr << "ERROR: " << s << "\t" << " at line: " << yylineno <<  std::endl; } 
+                   std::cerr << "ERROR: " << s << "\t at line: " << yylineno <<  std::endl; } 
 int cutcount;
 int bincount;
 using namespace std;
@@ -73,12 +73,12 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %parse-param {std::map<int,Node*>* BinCuts}
 %parse-param {std::map<std::string,Node*>* ObjectCuts}
 %parse-param {std::vector<std::string>* Initializations}
-%parse-param {std::vector<double>* DataFormats}
+%parse-param {std::vector<int>* DataFormats}
 %parse-param {std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables}
 %parse-param {std::map<std::string, std::vector<cntHisto> >* cntHistos}
 %token COUNTSFORMAT COUNTS ERR_SYST ERR_STAT PROCESS
 %token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI PAPTITLE
-%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC SYSTEMATIC
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SKPE SKPH SAVE
@@ -143,6 +143,11 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                 | PAPARXIV description { }
                 | PAPDOI description { }
                 | PAPHEPDATA description { }
+                | SYSTEMATIC bool ID {
+                   cout <<$3<<" is set to "<< $2<<"\n";
+//here we prepare a bit coded integer containing the systematics
+                    DataFormats->at(4)=3;
+                  } 
                 ;
 definitions : definitions definition 
             | 
@@ -808,6 +813,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
                                }
                        }
+// TODO: add {} version
     | FHEMISPHERE '(' ID ',' INT ',' INT ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
                                if(it == ObjectCuts->end()) {
                                         std::string message = "Object not defined: ";
@@ -2054,7 +2060,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                               Node* v0= new ValueNode(0);
                               Node* n1= new BinaryNode(ge,ac,v0,">=");
                               NodeCuts->insert(make_pair(++cutcount,n1));
-                              DataFormats->push_back(double(cutcount));
+                              DataFormats->push_back(cutcount);
                               cout << "done.\n";
                            }
                           }
