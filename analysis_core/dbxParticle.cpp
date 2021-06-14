@@ -35,12 +35,6 @@ dbxParticle:: dbxParticle (TLorentzVector lv){
   p_scalefactorid=1.;
   p_scalefactortrig=1.;
   p_escalefactor=999.;
-  p_recouncertaintyup = 1.;
-  p_recouncertaintydown = 1.;
-  p_triguncertaintyup = 1.;
-  p_triguncertaintydown = 1.;
-  p_iduncertaintyup = 1.;
-  p_iduncertaintydown = 1.;
   p_z0 = -999;
 }
 
@@ -57,12 +51,6 @@ dbxParticle:: dbxParticle (TLorentzVector lv, int q){
   p_lvector=lv;
   p_scalefactor=1.;
   p_escalefactor=999.;
-  p_recouncertaintyup = 1.;
-  p_recouncertaintydown = 1.;
-  p_triguncertaintyup = 1.;
-  p_triguncertaintydown = 1.;
-  p_iduncertaintyup = 1.;
-  p_iduncertaintydown = 1.;
   p_z0=-999;
 
 }
@@ -181,18 +169,6 @@ int dbxParticle:: setZ0(double q){
   p_z0=q;
  return 0;
 }
-
-int dbxParticle:: setSFRecoUncertaintyUp( double sf ) { p_recouncertaintyup = sf; return 0; }
-int dbxParticle:: setSFRecoUncertaintyDown( double sf ) { p_recouncertaintydown = sf; return 0; }
-int dbxParticle:: setSFTrigUncertaintyUp( double sf ) { p_triguncertaintyup = sf; return 0; }
-int dbxParticle:: setSFTrigUncertaintyDown( double sf ) { p_triguncertaintydown = sf; return 0; }
-int dbxParticle:: setSFTrigMcEffUncertaintyUp( double sf ) { p_trigmceffuncertaintyup = sf; return 0; }
-int dbxParticle:: setSFTrigMcEffUncertaintyDown( double sf ) { p_trigmceffuncertaintydown = sf; return 0; }
-int dbxParticle:: setSFIDUncertaintyUp( double sf ) { p_iduncertaintyup = sf; return 0; }
-int dbxParticle:: setSFIDUncertaintyDown( double sf ) { p_iduncertaintydown = sf; return 0; }
-int dbxParticle:: setSFIsoUncertaintyUp( double sf ) { p_isouncertaintyup = sf; return 0; }
-int dbxParticle:: setSFIsoUncertaintyDown( double sf ) { p_isouncertaintydown = sf; return 0; }
-
 
 void dbxParticle:: dump (){
  std::cout << "Px="<<p_lvector.Px()<< "  Py="<<p_lvector.Py()<< "  Pz="<<p_lvector.Pz()<< "  E="<<p_lvector.E()<<std::endl;

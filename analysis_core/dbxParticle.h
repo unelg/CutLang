@@ -230,19 +230,8 @@ public:
 	int setScaleFactorUncertainty ( double );
 	int setScaleFactorUncertaintyUp ( double );
 	int setScaleFactorUncertaintyDown ( double );
-	int setSFRecoUncertaintyUp( double );
-	int setSFRecoUncertaintyDown( double );
-	int setSFTrigUncertaintyUp( double );
-	int setSFTrigUncertaintyDown( double );
-	int setSFTrigMcEffUncertaintyUp( double );
-	int setSFTrigMcEffUncertaintyDown( double );
-	int setSFIDUncertaintyUp( double );
-	int setSFIDUncertaintyDown( double );
-	int setSFIsoUncertaintyUp( double );
-	int setSFIsoUncertaintyDown( double );
 	int scaleLorentzVector ( double );
 	int setZ0 (double );
-        void setPt_Uncorrected(double v){p_Pt_Uncorrected=v;}
 	void setAttribute(int k, double v) {
                   if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
                   } else { p_attribute[k]=v; }
@@ -269,18 +258,7 @@ public:
 	double ScaleFactorUncertainty()  { return p_escalefactor; }
 	double ScaleFactorUncertaintyUp()  { return p_scalefactorup; }
 	double ScaleFactorUncertaintyDown()  { return p_scalefactordown; }
-	double SFRecoUncertaintyUp() { return p_recouncertaintyup ; }
-	double SFRecoUncertaintyDown() { return p_recouncertaintydown; }
-	double SFTrigUncertaintyUp() { return p_triguncertaintyup ; }
-	double SFTrigUncertaintyDown() { return p_triguncertaintydown; }
-	double SFTrigMcEffUncertaintyUp() { return p_trigmceffuncertaintyup ; }
-	double SFTrigMcEffUncertaintyDown() { return p_trigmceffuncertaintydown; }
-	double SFIDUncertaintyUp() { return p_iduncertaintyup ; }
-	double SFIDUncertaintyDown() { return p_iduncertaintydown ; }
-	double SFIsoUncertaintyUp() { return p_isouncertaintyup ; }
-	double SFIsoUncertaintyDown() { return p_isouncertaintydown ; }
 	double Z0() {return p_z0;}
-        double Pt_Uncorrected() {return p_Pt_Uncorrected;}
 
 
 private:
@@ -302,18 +280,7 @@ private:
 	double p_scalefactorup;
 	double p_scalefactordown;
 	int p_istight;
-	double p_recouncertaintyup ;
-	double p_recouncertaintydown;
-	double p_triguncertaintyup ;
-	double p_triguncertaintydown;
-	double p_trigmceffuncertaintyup ;
-	double p_trigmceffuncertaintydown;
-	double p_iduncertaintyup ;
-	double p_iduncertaintydown ;
-	double p_isouncertaintyup ;
-	double p_isouncertaintydown ;
 	double p_z0;
-        double p_Pt_Uncorrected;
 
 	ClassDef(dbxParticle,2);
 };
