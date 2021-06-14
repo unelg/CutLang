@@ -12,8 +12,6 @@ jobs:
         
     - name: init-cache-dir
       run: mkdir build ; chmod +x ./.github/workflows/sendgrid.js
-      env:
-        flag: 'good_run'
       
     - name: Cache ROOT Build
       id: cache
@@ -61,21 +59,25 @@ jobs:
         cd $HOME/work/CutLang/CutLang/.github/workflows ; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
         cd $HOME/work/CutLang/CutLang/.github/workflows ; mkdir artifacts ; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
         if [ "`cat $HOME/work/CutLang/CutLang/.github/workflows/artifacts/errors.txt`" != "Errors: " ]; then
-          echo "::set-env name=flag::bad_run"
-        else
-          echo "::set-env name=flag::good_run"
+          touch flag
         fi
         chmod +x mail_body.sh ; ./mail_body.sh
-                
+
+    - name: Check for Bad Run Flag
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "flag"
+
     - name: SMTP
       uses: peter-evans/sendgrid-action@v1
-      if: env.flag == 'bad_run'
+      if: steps.check_files.outputs.files_exists == 'true'
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js      
+        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
         
     - name: Clear Temporary Files
-      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt
+      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm -f flag 
 
     - name: Update Artifacts
       if: steps.cache.outputs.cache-hit == 'true'
