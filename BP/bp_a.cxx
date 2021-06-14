@@ -31,6 +31,7 @@ extern FILE* yyin;
 extern int cutcount;
 extern int bincount;
 extern int yylineno;
+extern char * yytext;
 
 
 bool is_number(const std::string& s)
@@ -208,12 +209,7 @@ int BPdbxA:: readAnalysisParams() {
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
-         cout << "Offending line is:\n";
-         TString execme="head -";
-                 execme+=yylineno;
-                 execme+=" _inifile| tail -1";
-         system(execme);
-         cout << "\n";
+         cout << "Offending text is: "<< yytext<<"\n";
          exit (99); 
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
