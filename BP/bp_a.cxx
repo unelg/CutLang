@@ -24,12 +24,14 @@
 
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
-                                       vector<double>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
+                                       vector<int>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
                                        map<string, vector<cntHisto> >*cntHistos);
 
 extern FILE* yyin;
 extern int cutcount;
 extern int bincount;
+extern int yylineno;
+
 
 bool is_number(const std::string& s)
 {
@@ -205,7 +207,13 @@ int BPdbxA:: readAnalysisParams() {
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos);
        cout <<"\t Parsing finished.==\n";
        if (retval){
-         cout << "\nyyParse returns SYNTAX error. Check the input file\n";
+         cout << "\nyyParse returns SYNTAX error in the input file.\n";
+         cout << "Offending line is:\n";
+         TString execme="head -";
+                 execme+=yylineno;
+                 execme+=" _inifile| tail -1";
+         system(execme);
+         cout << "\n";
          exit (99); 
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
@@ -214,7 +222,9 @@ int BPdbxA:: readAnalysisParams() {
        TRGm    = TRGValues[1];
        skip_effs    = (bool) TRGValues[2];
        skip_histos  = (bool) TRGValues[3];
-// ------------------------------------4 is reserved for future use.
+       systematics_bci = TRGValues[4];
+       cout << "Systematics:"<<systematics_bci<<"\n";
+// ------------------------------------4 is reserved for systematics use.
 
 //---------save in the dir.
     unsigned int effsize=NodeCuts.size()+1; // all is always there 
