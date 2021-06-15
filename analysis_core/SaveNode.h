@@ -22,7 +22,7 @@ public:
 		name = s;
 		left = NULL;
 		right = NULL;
-		ntsave = new DBXNtuple;
+		ntsave = new DBXNtuple();
 	       	fname = "lvl0_" + name + ".root";
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
@@ -31,7 +31,7 @@ public:
     virtual void createFile() override {
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
-			ttsave->Branch("dbxAsave", ntsave);
+            ttsave->Branch("dbxAsave", ntsave);
     }
     virtual void saveFile() override {
             std::cout << "Closing file\n";
@@ -57,6 +57,7 @@ public:
       for ( int i=0; i<(int)electrons.size(); i++) {
 	ntsave->nt_eles.push_back(electrons.at(i) );
       }
+  
       ntsave->nMuo=muons.size();
       for ( int i=0; i<(int)muons.size(); i++) {
 	ntsave->nt_muos.push_back(muons.at(i) );
@@ -85,11 +86,11 @@ public:
       for ( int i=0; i<(int)combos.size(); i++) {
 	ntsave->nt_combos.push_back(combos.at(i) );
       }
-      
+        
       ntsave->nt_met=met;
       ntsave->nt_evt=anevt;
-      ntsave->nt_muos.resize    ( muons.size()             );
       ntsave->nt_eles.resize    ( electrons.size()         );
+      ntsave->nt_muos.resize    ( muons.size()             );
       ntsave->nt_taus.resize    ( taus.size()              );
       ntsave->nt_jets.resize    ( jets.size()              );
       ntsave->nt_ljets.resize   ( ljets.size()             );

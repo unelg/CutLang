@@ -1,5 +1,5 @@
 #CLA ADL example1
-info analysis
+info analysisExample
   title "Search for electroweak production of charginos and neutralinos in WH events in proton-proton collisions at sqrt(s) = 13TeV"
   experiment CMS
   id "SUS-16-043"
@@ -10,11 +10,17 @@ info analysis
   hepdata " http://adress "
   doi "10.1007/JHEP11(2017)029"
 
+systematic ON  JVT
+systematic Off JES
+systematic On  JER
+
+
 define www = 123.1/10
 
 region   test
   select  ALL              # to count all events
   select  Size (ELE) >= 2  # events with 2 or more electrons 
+ 
 # weight   randWeight www
 # reject   Size (ELE) > 4  # events with 2 or more electrons 
   histo    h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m

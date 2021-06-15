@@ -40,7 +40,6 @@ private:
                          double (*h3)(std::vector<TLorentzVector>, TVector2 );
                          double (*h4)(std::vector<TLorentzVector>, TLorentzVector );
                          double (*h5)(TLorentzVector, TLorentzVector, TLorentzVector );
-
     bool ext;
     int type = 1;
     float value = 1.0;

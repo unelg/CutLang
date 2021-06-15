@@ -49,7 +49,8 @@ class BPdbxA : public dbxA {
       std::vector<TString> effCL;
       std::vector< string> binCL;
 
-      int TRGe, TRGm;
+      unsigned short int TRGe, TRGm;
+      unsigned int systematics_bci;
       bool skip_histos;
       bool skip_effs;
       vector<int> save;
@@ -67,7 +68,7 @@ class BPdbxA : public dbxA {
         map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects
         std::vector<std::string> NameInitializations;
-        vector<double> TRGValues;
+        vector<int> TRGValues;
         vector<double> bincounts;
 };
 #endif
