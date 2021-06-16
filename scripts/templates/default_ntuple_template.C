@@ -45,6 +45,14 @@ void {{name}}::GetPhysicsObjects(Long64_t j, AnalysisObjects *a0)
    map<string, vector<dbxParticle> >constits_map;
    map<string, TVector2            >  met_map;
 
+   //temporary variables
+   TLorentzVector  alv;
+   TVector2 met;
+   dbxJet      *adbxj;
+   dbxElectron *adbxe;
+   dbxMuon     *adbxm;
+   dbxTau      *adbxt;
+   dbxPhoton   *adbxp;
    {% block GET_PHYS_TEMP_VAR %}{% endblock %}
 
    DEBUG("Begin Filling")

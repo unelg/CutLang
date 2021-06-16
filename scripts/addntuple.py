@@ -14,10 +14,13 @@ from optparse import OptionParser
 import fileinput
 import shutil
 import datetime
+from ROOT import TFile, TH1F
 
 # Parsing options
 usage = "Usage: python3 %prog <ntuplename>"
 parser = OptionParser(usage=usage)
+parser.add_option("--file", action="store",
+                  dest="file", default="", help="root file")
 parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple")
 parser.add_option("--create", action="store_true",
@@ -34,6 +37,7 @@ uppername = name.upper()
 lowername = name.lower()
 delete = option.delete
 create = option.create
+FILE = option.file
 
 # Create (or delete) the c file for the new ntuple
 c_file = '../CLA/'+name+'.C'
@@ -132,16 +136,216 @@ def remove_files():
 
 
 def create_template():
+
+    if not FILE:
+        print("create option needs file option!")
+        sys.exit(0)
+
+    # ROOT
+    CONTENT_GET_PHYS_TEMP_VAR = ""
+    CONTENT_PHOTONS = ""
+    CONTENT_MUONS = ""
+    CONTENT_ELECTRONS = ""
+    CONTENT_JETS = ""
+    CONTENT_MET = ""
+    CONTENT_POST_FINISH = ""
+
+    f = TFile(FILE)
+    fTreeName = str(f.GetListOfKeys()[0]).split(" ")[1]
+    tree = f.Get(fTreeName)
+    leaves = tree.GetListOfLeaves()
+
+    leafTypes = ["Px", "Py", "Pz", "E", "Pt", "eta", "phi", "M"]
+
+    photonSearchList = ["photon", "Photon", "PHOTON"]
+    photonLeafNames = {}
+
+    muonSearchList = ["muon", "Muon", "mu", "Mu", "MUON", "MU"]
+    muonLeafNames = {}
+
+    electronSearchList = ["electron", "Electron", "ELECTRON"]
+    electronLeafNames = {}
+
+    jetSearchList = ["Jet", "jet", "JET"]
+    jetLeafNames = {}
+
+    metSearchList = ["met", "Met", "MET"]
+    metLeafNames = {}
+
+    def fill_names(searchList, leafNames):
+        for l in searchList:
+            if l in leafName:
+                for leafType in leafTypes:
+                    if (
+                        leafName.endswith("_" + leafType) or leafName.endswith("." + leafType) or
+                        leafName.endswith("_" + leafType.lower()) or leafName.endswith("." + leafType.lower()) or
+                        leafName.endswith(
+                            "_" + leafType.upper()) or leafName.endswith("." + leafType.upper())
+                    ):
+                        leafNames[leafType] = leafName
+
+    for i in leaves:
+        leafName = str(i).split(" ")[1]
+
+        fill_names(photonSearchList, photonLeafNames)
+        fill_names(muonSearchList, muonLeafNames)
+        fill_names(electronSearchList, electronLeafNames)
+        fill_names(jetSearchList, jetLeafNames)
+        fill_names(metSearchList, metLeafNames)
+
+    # Fill photons content
+    controller = False
+    if ("Px" in photonLeafNames and "Py" in photonLeafNames and "Pz" in photonLeafNames and "E" in photonLeafNames):
+        CONTENT_PHOTONS += "\talv.SetPxPyPzE("+photonLeafNames["Px"]+"[i], "+photonLeafNames["Py"] + \
+            "[i], "+photonLeafNames["Pz"]+"[i], " + \
+            photonLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in photonLeafNames and "eta" in photonLeafNames and "phi" in photonLeafNames and "E" in photonLeafNames):
+        CONTENT_PHOTONS += "\talv.SetPtEtaPhiE("+photonLeafNames["Pt"]+"[i], "+photonLeafNames["eta"] + \
+            "[i], "+photonLeafNames["phi"]+"[i], " + \
+            photonLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in photonLeafNames and "eta" in photonLeafNames and "phi" in photonLeafNames and "M" in photonLeafNames):
+        CONTENT_PHOTONS += "\talv.SetPtEtaPhiM("+photonLeafNames["Pt"]+"[i], "+photonLeafNames["eta"] + \
+            "[i], "+photonLeafNames["phi"]+"[i], " + \
+            photonLeafNames["M"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in photonLeafNames and "eta" in photonLeafNames and "phi" in photonLeafNames):
+        CONTENT_PHOTONS += "\talv.SetPtEtaPhiM("+photonLeafNames["Pt"]+"[i], "+photonLeafNames["eta"] + \
+            "[i], "+photonLeafNames["phi"]+"[i], (105.658/1E3));\n"
+        controller = True
+    if controller:
+        CONTENT_PHOTONS += "\tadbxp = new dbxPhoton(alv);\n"
+
+        CONTENT_PHOTONS += "\tdelete adbxp;\n"
+
+    # Fill muons content
+    if ("Px" in muonLeafNames and "Py" in muonLeafNames and "Pz" in muonLeafNames and "E" in muonLeafNames):
+        CONTENT_MUONS += "\talv.SetPxPyPzE("+muonLeafNames["Px"]+"[i], "+muonLeafNames["Py"] + \
+            "[i], "+muonLeafNames["Pz"]+"[i], " + \
+            muonLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in muonLeafNames and "eta" in muonLeafNames and "phi" in muonLeafNames and "E" in muonLeafNames):
+        CONTENT_MUONS += "\talv.SetPtEtaPhiE("+muonLeafNames["Pt"]+"[i], "+muonLeafNames["eta"] + \
+            "[i], "+muonLeafNames["phi"]+"[i], " + \
+            muonLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in muonLeafNames and "eta" in muonLeafNames and "phi" in muonLeafNames and "M" in muonLeafNames):
+        CONTENT_MUONS += "\talv.SetPtEtaPhiM("+muonLeafNames["Pt"]+"[i], "+muonLeafNames["eta"] + \
+            "[i], "+muonLeafNames["phi"]+"[i], " + \
+            muonLeafNames["M"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in muonLeafNames and "eta" in muonLeafNames and "phi" in muonLeafNames):
+        CONTENT_MUONS += "\talv.SetPtEtaPhiM("+muonLeafNames["Pt"]+"[i], "+muonLeafNames["eta"] + \
+            "[i], "+muonLeafNames["phi"]+"[i], (105.658/1E3));\n"
+        controller = True
+    if controller:
+        CONTENT_MUONS += "\tadbxm = new dbxMuon(alv);\n"
+
+        CONTENT_MUONS += "\tdelete adbxm;\n"
+
+    # Fill electrons content
+    if ("Px" in electronLeafNames and "Py" in electronLeafNames and "Pz" in electronLeafNames and "E" in electronLeafNames):
+        CONTENT_ELECTRONS += "\talv.SetPxPyPzE("+electronLeafNames["Px"]+"[i], "+electronLeafNames["Py"] + \
+            "[i], "+electronLeafNames["Pz"]+"[i], " + \
+            electronLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in electronLeafNames and "eta" in electronLeafNames and "phi" in electronLeafNames and "E" in electronLeafNames):
+        CONTENT_ELECTRONS += "\talv.SetPtEtaPhiE("+electronLeafNames["Pt"]+"[i], "+electronLeafNames["eta"] + \
+            "[i], "+electronLeafNames["phi"]+"[i], " + \
+            electronLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in electronLeafNames and "eta" in electronLeafNames and "phi" in electronLeafNames and "M" in electronLeafNames):
+        CONTENT_ELECTRONS += "\talv.SetPtEtaPhiM("+electronLeafNames["Pt"]+"[i], "+electronLeafNames["eta"] + \
+            "[i], "+electronLeafNames["phi"]+"[i], " + \
+            electronLeafNames["M"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in electronLeafNames and "eta" in electronLeafNames and "phi" in electronLeafNames):
+        CONTENT_ELECTRONS += "\talv.SetPtEtaPhiM("+electronLeafNames["Pt"]+"[i], "+electronLeafNames["eta"] + \
+            "[i], "+electronLeafNames["phi"]+"[i], (105.658/1E3));\n"
+        controller = True
+    if controller:
+        CONTENT_ELECTRONS += "\tadbxe = new dbxElectron(alv);\n"
+
+        CONTENT_ELECTRONS += "\tdelete adbxe;\n"
+
+    # Fill jets content
+    if ("Px" in jetLeafNames and "Py" in jetLeafNames and "Pz" in jetLeafNames and "E" in jetLeafNames):
+        CONTENT_JETS += "\talv.SetPxPyPzE("+jetLeafNames["Px"]+"[i], "+jetLeafNames["Py"] + \
+            "[i], "+jetLeafNames["Pz"]+"[i], " + \
+            jetLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in jetLeafNames and "eta" in jetLeafNames and "phi" in jetLeafNames and "E" in jetLeafNames):
+        CONTENT_JETS += "\talv.SetPtEtaPhiE("+jetLeafNames["Pt"]+"[i], "+jetLeafNames["eta"] + \
+            "[i], "+jetLeafNames["phi"]+"[i], " + \
+            jetLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in jetLeafNames and "eta" in jetLeafNames and "phi" in jetLeafNames and "M" in jetLeafNames):
+        CONTENT_JETS += "\talv.SetPtEtaPhiM("+jetLeafNames["Pt"]+"[i], "+jetLeafNames["eta"] + \
+            "[i], "+jetLeafNames["phi"]+"[i], " + \
+            jetLeafNames["M"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in jetLeafNames and "eta" in jetLeafNames and "phi" in jetLeafNames):
+        CONTENT_JETS += "\talv.SetPtEtaPhiM("+jetLeafNames["Pt"]+"[i], "+jetLeafNames["eta"] + \
+            "[i], "+jetLeafNames["phi"]+"[i], (105.658/1E3));\n"
+        controller = True
+    if controller:
+        CONTENT_JETS += "\tadbxj = new dbxJet(alv);\n"
+
+        CONTENT_JETS += "\tdelete adbxj;\n"
+
+    # Fill mets content ???
+    if ("Px" in metLeafNames and "Py" in metLeafNames and "Pz" in metLeafNames and "E" in metLeafNames):
+        CONTENT_MET += "\talv.SetPxPyPzE("+metLeafNames["Px"]+"[i], "+metLeafNames["Py"] + \
+            "[i], "+metLeafNames["Pz"]+"[i], " + \
+            metLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in metLeafNames and "eta" in metLeafNames and "phi" in metLeafNames and "E" in metLeafNames):
+        CONTENT_MET += "\talv.SetPtEtaPhiE("+metLeafNames["Pt"]+"[i], "+metLeafNames["eta"] + \
+            "[i], "+metLeafNames["phi"]+"[i], " + \
+            metLeafNames["E"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in metLeafNames and "eta" in metLeafNames and "phi" in metLeafNames and "M" in metLeafNames):
+        CONTENT_MET += "\talv.SetPtEtaPhiM("+metLeafNames["Pt"]+"[i], "+metLeafNames["eta"] + \
+            "[i], "+metLeafNames["phi"]+"[i], " + \
+            metLeafNames["M"]+"[i]);\n"
+        controller = True
+    elif ("Pt" in metLeafNames and "eta" in metLeafNames and "phi" in metLeafNames):
+        CONTENT_MET += "\talv.SetPtEtaPhiM("+metLeafNames["Pt"]+"[i], "+metLeafNames["eta"] + \
+            "[i], "+metLeafNames["phi"]+"[i], (105.658/1E3));\n"
+        controller = True
+    if controller:
+        #CONTENT_MET+="\tadbxp = new dbxMet(alv);\n"
+
+        #CONTENT_MET+="\tdelete adbxp;\n"
+        pass
+
+    print("photonData", photonLeafNames)
+    print("muonData", muonLeafNames)
+    print("electronData", electronLeafNames)
+    print("jetData", jetLeafNames)
+    print("metData", metLeafNames)
+    # ROOT
+
+    # Read template
+    file_loader = FileSystemLoader("templates")
+    env = Environment(loader=file_loader)
+
+    # Fill out the template
+    template_c = env.get_template("default_ntuple_content_template.C")
+    template_h = env.get_template("default_ntuple_content_template.h")
+
+    # Extract marks
+    output_c = template_c.render(name=name,
+                                 CONTENT_GET_PHYS_TEMP_VAR=CONTENT_GET_PHYS_TEMP_VAR, CONTENT_PHOTONS=CONTENT_PHOTONS, CONTENT_MUONS=CONTENT_MUONS,
+                                 CONTENT_ELECTRONS=CONTENT_ELECTRONS, CONTENT_JETS=CONTENT_JETS, CONTENT_MET=CONTENT_MET, CONTENT_POST_FINISH=CONTENT_POST_FINISH)
+    output_h = template_h.render(name=name, date=datetime.datetime.now())
+
     # Copy the contents of the new ntuple template under templates
-    f = open(os.getcwd()+"/"+template_c_file, "w")
-    f.close()
-    shutil.copy2(os.getcwd()+"/templates/default_ntuple_content_template.C",
-                 os.getcwd()+"/"+template_c_file)
+    open(template_c_file, 'w').write(output_c)
     print("New template C created at "+os.getcwd()+"/"+template_c_file)
-    f = open(os.getcwd()+"/"+template_h_file, "w")
-    f.close()
-    shutil.copy2(os.getcwd()+"/templates/default_ntuple_content_template.h",
-                 os.getcwd()+"/"+template_h_file)
+
+    open(template_h_file, 'w').write(output_h)
     print("New template h created at "+os.getcwd()+"/"+template_h_file)
 
 
@@ -149,7 +353,7 @@ def create_template():
 if create:
     create_template()
 # Create the new ntuple
-elif not delete:
+if not delete:
     if not os.path.exists("./templates/"+name+".C"):
         create_template()
         print("Template not found, created one for you, please edit " +
