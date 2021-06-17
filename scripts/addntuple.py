@@ -220,6 +220,7 @@ def create_template():
         CONTENT_PHOTONS += "\tdelete adbxp;\n"
 
     # Fill muons content
+    controller = False
     if ("Px" in muonLeafNames and "Py" in muonLeafNames and "Pz" in muonLeafNames and "E" in muonLeafNames):
         CONTENT_MUONS += "\talv.SetPxPyPzE("+muonLeafNames["Px"]+"[i], "+muonLeafNames["Py"] + \
             "[i], "+muonLeafNames["Pz"]+"[i], " + \
@@ -245,6 +246,7 @@ def create_template():
         CONTENT_MUONS += "\tdelete adbxm;\n"
 
     # Fill electrons content
+    controller = False
     if ("Px" in electronLeafNames and "Py" in electronLeafNames and "Pz" in electronLeafNames and "E" in electronLeafNames):
         CONTENT_ELECTRONS += "\talv.SetPxPyPzE("+electronLeafNames["Px"]+"[i], "+electronLeafNames["Py"] + \
             "[i], "+electronLeafNames["Pz"]+"[i], " + \
@@ -270,6 +272,7 @@ def create_template():
         CONTENT_ELECTRONS += "\tdelete adbxe;\n"
 
     # Fill jets content
+    controller = False
     if ("Px" in jetLeafNames and "Py" in jetLeafNames and "Pz" in jetLeafNames and "E" in jetLeafNames):
         CONTENT_JETS += "\talv.SetPxPyPzE("+jetLeafNames["Px"]+"[i], "+jetLeafNames["Py"] + \
             "[i], "+jetLeafNames["Pz"]+"[i], " + \
@@ -295,6 +298,7 @@ def create_template():
         CONTENT_JETS += "\tdelete adbxj;\n"
 
     # Fill mets content ???
+    controller = False
     if ("Px" in metLeafNames and "Py" in metLeafNames and "Pz" in metLeafNames and "E" in metLeafNames):
         CONTENT_MET += "\talv.SetPxPyPzE("+metLeafNames["Px"]+"[i], "+metLeafNames["Py"] + \
             "[i], "+metLeafNames["Pz"]+"[i], " + \
