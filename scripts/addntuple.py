@@ -173,25 +173,25 @@ def create_template():
     metLeafNames = {}
 
     def fill_names(searchList, leafNames):
-        for l in searchList:
-            if l in leafName:
-                for leafType in leafTypes:
-                    if (
-                        leafName.endswith("_" + leafType) or leafName.endswith("." + leafType) or
-                        leafName.endswith("_" + leafType.lower()) or leafName.endswith("." + leafType.lower()) or
-                        leafName.endswith(
-                            "_" + leafType.upper()) or leafName.endswith("." + leafType.upper())
-                    ):
-                        leafNames[leafType] = leafName
+        for i in leaves:
+            leafName = str(i).split(" ")[1]
+            for l in searchList:
+                if l in leafName:
+                    for leafType in leafTypes:
+                        if (
+                            leafName.endswith("_" + leafType) or leafName.endswith("." + leafType) or
+                            leafName.endswith("_" + leafType.lower()) or leafName.endswith("." + leafType.lower()) or
+                            leafName.endswith(
+                                "_" + leafType.upper()) or leafName.endswith("." + leafType.upper())
+                        ):
+                            leafNames[leafType] = leafName
 
-    for i in leaves:
-        leafName = str(i).split(" ")[1]
 
-        fill_names(photonSearchList, photonLeafNames)
-        fill_names(muonSearchList, muonLeafNames)
-        fill_names(electronSearchList, electronLeafNames)
-        fill_names(jetSearchList, jetLeafNames)
-        fill_names(metSearchList, metLeafNames)
+    fill_names(photonSearchList, photonLeafNames)
+    fill_names(muonSearchList, muonLeafNames)
+    fill_names(electronSearchList, electronLeafNames)
+    fill_names(jetSearchList, jetLeafNames)
+    fill_names(metSearchList, metLeafNames)
 
     # Fill photons content
     controller = False
