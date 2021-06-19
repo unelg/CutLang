@@ -83,7 +83,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRGE TRGM SKPE SKPH SAVE
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
-%token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA //functions
+%token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
@@ -711,6 +711,22 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
+         | '{' particules '}' PTCONE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(PtConeof,newList,"ptcone");
+                                 }
+         | PTCONE '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(PtConeof,newList,"ptcone");
+                                 }
+         | '{' particules '}' ETCONE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(EtConeof,newList,"etcone");
+                                 }
+         | ETCONE '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(EtConeof,newList,"etcone");
+                                 }
          | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
