@@ -364,7 +364,7 @@ double Phiof( dbxParticle* apart){
     DEBUG(" phi:"<<phi<<"\t");
     return phi;
 }
-//NGU
+
 double MsoftDof( dbxParticle* apart){
     double MsoftD=apart->Attribute(0) ;
     DEBUG(" MsoftD:"<<MsoftD<<"\t");
@@ -374,6 +374,16 @@ double DeepBof( dbxParticle* apart){
     double DeepB=apart->Flavor();
     DEBUG(" DeepB:"<<DeepB<<"\t");
     return DeepB;
+}
+double PtConeof( dbxParticle* apart){
+    double ptc=apart->PtCone();
+    DEBUG(" PTC:"<<ptc<<"\t");
+    return ptc;
+}
+double EtConeof( dbxParticle* apart){
+    double etc=apart->EtCone();
+    DEBUG(" ETC:"<<etc<<"\t");
+    return etc;
 }
 
 double isBTag( dbxParticle* apart){
