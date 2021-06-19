@@ -58,6 +58,8 @@ double      Eof( dbxParticle* apart);
 double      Pof( dbxParticle* apart);
 double     Pzof( dbxParticle* apart);
 double     Ptof( dbxParticle* apart);
+double PtConeof( dbxParticle* apart);
+double EtConeof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
 double    Etaof( dbxParticle* apart);
 double    Rapof( dbxParticle* apart);
