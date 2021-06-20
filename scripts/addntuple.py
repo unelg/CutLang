@@ -7,7 +7,7 @@ To edit template, change templates/default_ntuple_template.c
 '''
 
 import os
-from re import template
+from string import Template
 import sys
 from jinja2 import Environment, FileSystemLoader
 from optparse import OptionParser
@@ -332,24 +332,23 @@ def create_template():
     # ROOT
 
     # Read template
-    file_loader = FileSystemLoader("templates")
-    env = Environment(loader=file_loader)
+    fC = open(os.getcwd()+"/templates/default_ntuple_content_template.C", "r")
+    ntuple_tmp_c = fC.read()
+    fh = open(os.getcwd()+"/templates/default_ntuple_content_template.h", "r")
+    ntuple_tmp_h = fh.read()
 
     # Fill out the template
-    template_c = env.get_template("default_ntuple_content_template.C")
-    template_h = env.get_template("default_ntuple_content_template.h")
-
-    # Extract marks
-    output_c = template_c.render(name=name,
-                                 CONTENT_GET_PHYS_TEMP_VAR=CONTENT_GET_PHYS_TEMP_VAR, CONTENT_PHOTONS=CONTENT_PHOTONS, CONTENT_MUONS=CONTENT_MUONS,
-                                 CONTENT_ELECTRONS=CONTENT_ELECTRONS, CONTENT_JETS=CONTENT_JETS, CONTENT_MET=CONTENT_MET, CONTENT_POST_FINISH=CONTENT_POST_FINISH)
-    output_h = template_h.render(name=name, date=datetime.datetime.now())
+    ntuple_filled_c = Template(ntuple_tmp_c).substitute(
+        CONTENT_GET_PHYS_TEMP_VAR=CONTENT_GET_PHYS_TEMP_VAR, CONTENT_PHOTONS=CONTENT_PHOTONS, CONTENT_MUONS=CONTENT_MUONS,
+                                 CONTENT_ELECTRONS=CONTENT_ELECTRONS, CONTENT_JETS=CONTENT_JETS, CONTENT_MET=CONTENT_MET, CONTENT_POST_FINISH=CONTENT_POST_FINISH
+    )
+    ntuple_filled_h = Template(ntuple_tmp_h).substitute()
 
     # Copy the contents of the new ntuple template under templates
-    open(template_c_file, 'w').write(output_c)
+    open(template_c_file, 'w').write(ntuple_filled_c)
     print("New template C created at "+os.getcwd()+"/"+template_c_file)
 
-    open(template_h_file, 'w').write(output_h)
+    open(template_h_file, 'w').write(ntuple_filled_h)
     print("New template h created at "+os.getcwd()+"/"+template_h_file)
 
 
