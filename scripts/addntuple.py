@@ -345,11 +345,18 @@ def create_template():
     ntuple_filled_h = Template(ntuple_tmp_h).substitute()
 
     # Copy the contents of the new ntuple template under templates
-    open(template_c_file, 'w').write(ntuple_filled_c)
+    f=open(template_c_file, 'w')
+    f.write(ntuple_filled_c)
+    f.close()
     print("New template C created at "+os.getcwd()+"/"+template_c_file)
 
-    open(template_h_file, 'w').write(ntuple_filled_h)
+    f=open(template_h_file, 'w')
+    f.write(ntuple_filled_h)
+    f.close()
     print("New template h created at "+os.getcwd()+"/"+template_h_file)
+
+    fC.close()
+    fh.close()
 
 
 # Create blank ntuple template
@@ -358,7 +365,8 @@ if create:
 # Create the new ntuple
 if not delete:
     if not os.path.exists("./templates/"+name+".C"):
-        create_template()
+        if not create:
+            create_template()
         print("Template not found, created one for you, please edit " +
               os.getcwd()+"/"+template_c_file+" and "+os.getcwd()+"/"+template_h_file)
         sys.exit(0)
@@ -430,5 +438,5 @@ if not delete:
 
 
 # Delete the user function header
-else:
+elif delete:
     remove_files()
