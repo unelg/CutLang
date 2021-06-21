@@ -12,6 +12,8 @@ from optparse import OptionParser
 from ROOT import TFile, gInterpreter, gSystem, gROOT
 import csv
 import os
+import datetime
+import json
 
 # Parsing options
 usage = "Usage: python3 %prog <ntuplename>"
@@ -47,7 +49,6 @@ h_file = workPath+'/analysis_core/'+name+'.h'
 
 templates_dir = filePath+'/templates'
 templates_dir_with_name = filePath+'/templates/'+name
-csv_dir = templates_dir_with_name+"/variables.csv"
 
 
 class FILE_HELPER:
@@ -55,9 +56,9 @@ class FILE_HELPER:
         self.file_name = file
         self.file = open(file, 'r+')
         self.seek_zero()
-    
+
     def content(self):
-        content=self.file.read()
+        content = self.file.read()
         self.file.close()
         self.file = open(self.file_name, 'r+')
         return content
@@ -112,15 +113,41 @@ def create_template():
     if not FILE:
         print("create option needs file option!")
         sys.exit(0)
+    #gInterpreter.AddIncludePath(workPath+"/analysis_core/")
+    #gSystem.AddIncludePath("-I. -I"+workPath+"/analysis_core")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_electron.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_electron_h.so")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_muon.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_muon_h.so")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_jet.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_jet_h.so")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_tau.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_tau_h.so")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_a.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_a")
+    #gROOT.LoadMacro(workPath+"/analysis_core/DBXNtuple.h")
+    #gSystem.Load(workPath+"/analysis_core/DBXNtuple")
+    #gROOT.LoadMacro(workPath+"/analysis_core/analysis_core.h")
+    ##gSystem.Load(workPath+"/analysis_core/analysis_core.so")
+    #gROOT.LoadMacro(workPath+"/analysis_core/AnalysisController.h")
+    #gSystem.Load(workPath+"/analysis_core/AnalysisController")
     f = TFile(FILE)
     listKeys = f.GetListOfKeys()
 
     leaves = ""
     branchName = ""
     tree = ""
+    treeName = ""
+    treeTitle = ""
 
     if branchname:
-        tree = f.Get(branchname)
+        try:
+            tree = f.Get(branchname)
+            treeName = tree.GetName()
+            treeTitle = tree.GetTitle()
+        except:
+            print("Tree name is incorrect")
+            sys.exit(0)
         try:
             leaves = tree.GetListOfLeaves()
             branchName = branchname
@@ -129,7 +156,14 @@ def create_template():
             print(branchname+" has no leaf, so it was skipped")
     else:
         for key in listKeys:
-            tree = f.Get(key.GetName())
+            try:
+                tree = f.Get(key.GetName())
+                treeName = tree.GetName()
+                treeTitle = tree.GetTitle()
+            except:
+                print("Tree name is incorrect")
+                sys.exit(0)
+
             try:
                 leaves = tree.GetListOfLeaves()
                 branchName = key.GetName()
@@ -155,6 +189,10 @@ def create_template():
         leafTitle = leaf.GetTitle()
         if "[" in leafTitle and "]" in leafTitle:
             leafTitleType = str(leaf.GetTitle()).split("[")[-1].split("]")[0]
+        elif "_" in leafTitle:
+            leafTitleType = "___NONE___" + str(leaf.GetTitle()).split("_")[0]
+        elif "." in leafTitle:
+            leafTitleType = "___NONE___" + str(leaf.GetTitle()).split(".")[0]
         else:
             leafTitleType = "___NONE___"
         leafNData = leaf.GetNdata()
@@ -166,19 +204,25 @@ def create_template():
     if not os.path.exists(templates_dir_with_name):
         os.makedirs(templates_dir_with_name)
 
-    #gInterpreter.AddIncludePath(workPath+"/analysis_core/")
-    #gSystem.AddIncludePath("-I. -I"+workPath+"/analysis_core")
-    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_electron.h")
-    #gSystem.Load(workPath+"/analysis_core/dbx_electron_h.so")
     tree.MakeClass(name)
     os.rename(os.getcwd()+"/"+name+".C", templates_dir_with_name+"/"+name+".C")
     os.rename(os.getcwd()+"/"+name+".h", templates_dir_with_name+"/"+name+".h")
 
     fC = FILE_HELPER(templates_dir_with_name+"/"+name+".C")
 
-    loop_selector="void "+name+"::Loop()"
+    content = fC.content()
+    fC.file.write(
+        '''//////////////////////////////////////////////////////////
+// This file has been automatically generated on
+// {now} by CutLang
+// from TTree {treeName}/{treeTitle}
+// found on file: {file}
+//////////////////////////////////////////////////////////
+'''.format(file=FILE, treeName=treeName, treeTitle=treeTitle, now=datetime.datetime.now())+content)
 
-    fC.find_and_write(loop_selector,'''
+    loop_selector = "void "+name+"::Loop()"
+
+    fC.find_and_write(loop_selector, '''
 // >>> "include" anchor >>>
 #include <signal.h>
 #include "dbx_electron.h"
@@ -201,7 +245,7 @@ extern void _fsig_handler (int) ;
 extern bool fctrlc;
 // <<< "include" anchor <<<
     ''')
-    fC.find_and_write(loop_selector,'''   
+    fC.find_and_write(loop_selector, '''   
 void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {{
 
@@ -216,7 +260,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     vector<dbxJet>     ljets;
     vector<dbxTruth>    truth;
     vector<dbxParticle> combos;
-    vector<dbxParticle> constis;
+    vector<dbxParticle> constits;
 
     map<string, vector<dbxMuon>     > muos_map;
     map<string, vector<dbxElectron> > eles_map;
@@ -245,8 +289,8 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 }}
 
     '''.format(name=name))
-    
-    fC.find_and_write_with_delete("if (fChain == 0) return;",'''
+
+    fC.find_and_write_with_delete("if (fChain == 0) return;", '''
     // >>> "if (fChain == 0) return" anchor >>>
     // if(fChain == 0) return;
     cout << "I am in {name}.C " << endl;
@@ -265,7 +309,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     cout << "End of analysis initialization"<<endl;
     // <<< "if (fChain == 0) return" anchor <<<
     '''.format(name=name))
-    fC.find_and_write_with_delete("Long64_t nentries = fChain->GetEntriesFast();",'''
+    fC.find_and_write_with_delete("Long64_t nentries = fChain->GetEntriesFast();", '''
     // >>> "Long64_t nentries" anchor >>>
     // Long64_t nentries =  fChain->GetEntriesFast();
     Long64_t nentries =  fChain->GetEntriesFast();
@@ -287,7 +331,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     cout << "last entry " << lastevent << endl;
     // <<< "Long64_t nentries" anchor <<<
     ''')
-    fC.find_and_write_with_delete("for (Long64_t jentry=0; jentry<nentries;jentry++) {",'''
+    fC.find_and_write_with_delete("for (Long64_t jentry=0; jentry<nentries;jentry++) {", '''
     // >>> "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor >>>
     // for (Long64_t jentry=0;jentry<nentries;jentry++) {
     for (Long64_t j=startevent; j<lastevent; ++j) {
@@ -305,7 +349,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         // <<< "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor <<<
         /*
     ''')
-    content=fC.content()
+    content = fC.content()
     fC.file.write(content+'''
 */
 }
@@ -347,27 +391,191 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
     truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
     combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constits) );
     met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
     *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
     
     ''')
 
-    fC.find_and_write_with_delete(loop_selector,"void "+name+"::Loop(analy_struct aselect, char *extname)")
+    fC.find_and_write_with_delete(
+        loop_selector, "void "+name+"::Loop(analy_struct aselect, char *extname)")
 
     fC.file.close()
 
     fh = FILE_HELPER(templates_dir_with_name+"/"+name+".h")
 
-    fh.find_and_write("// Header file for the classes stored in the TTree if any.", '#include "dbxParticle.h"\n')
+    fh.find_and_write(
+        "// Header file for the classes stored in the TTree if any.", '#include "dbxParticle.h"\n')
 
     fh.file.close()
 
-    with open(csv_dir, 'w', encoding='UTF8', newline='') as f:
+    with open(templates_dir_with_name+"/variables.csv", 'w', encoding='UTF8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+        f.close()
+
+    #muon -> muon
+    #electron -> electron
+    #photon -> photon
+    #jet -> jet
+    #tau -> tau
+    #ljet -> fatjet
+    #truth -> genPart
+    #combo ->
+    #constits ->
+    #met -> met
+
+    variables = {
+        'muon': {
+            '_fields_': ['muon', 'mu']
+        },
+        'electron': {
+            '_fields_': ['electron', 'ele']
+        },
+        'photon': {
+            '_fields_': ['photon', 'pho']
+        },
+        'jet': {
+            '_fields_': ['jet']
+        },
+        'tau': {
+            '_fields_': ['tau']
+        },
+        'ljet': {
+            '_fields_': ['fatjet']
+        },
+        'truth': {
+            '_fields_': ['genpart']
+        },
+        'combo': {
+            '_fields_': ['_combo_']
+        },
+        'constits': {
+            '_fields_': ['_constits_']
+        },
+        'met': {
+            '_fields_': ['met', 'missinget']
+        },
+    }
+    usedRows = []
+    usedRowsName = []  # for print
+    unusedRows = []
+    unusedRowsName = []  # for print
+
+    with open(templates_dir_with_name+"/variables.csv", newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            isRowUsed = False
+            var_typeName = row['type_name']       # example: Double_t
+            var_branchName = row['branch_name']   # example: MyTree
+            # example: electrons.fUniqueId
+            var_name = row['name']
+            # example: fUniqueId[electrons_]
+            var_title = row['title']
+            var_titleType = row['title_type']     # example: electrons_
+            var_nData = row['n_data']             # example: 1
+            for _var in variables.keys():
+                for var in variables[_var]['_fields_']:
+                    if var == var_titleType.lower()[1:] or var == var_titleType.lower()[2:] or var == var_titleType.lower()[:-1] or var == var_titleType.lower()[:-2]:
+                        varType = var_title.split(
+                            "[")[0].split("_")[-1].lower()
+                        _varType = var_title.split("[")[0].split("_")
+                        if len(_varType) == 1:
+                            varType = var_title.split(
+                                "[")[0].split(".")[-1].lower()
+                            _varType = var_title.split(
+                                "[")[0].split(".")
+                        if len(varType) == 1:
+                            varType = var_title.split("[")[0].lower()
+                            #print("There is a problem", "385743", row)
+                            #sys.exit(0)
+                        variables[_var][varType] = var_name
+                        isRowUsed = True
+
+            if not isRowUsed:
+                for _var in variables.keys():
+                    for var in variables[_var]['_fields_']:
+                        if var == var_title[1:].lower():
+                            variables[_var]["___"] = var_title
+                            isRowUsed = True
+                        elif var == var_title[:-1].lower():
+                            variables[_var]["___"] = var_title
+                            isRowUsed = True
+
+            if not isRowUsed:
+                for _var in variables.keys():
+                    for var in variables[_var]['_fields_']:
+                        if ("_" in var_title and var == var_title.split("_")[0].lower()) or ("." in var_title and var == var_title.split(".")[0].lower()):
+                            varType = var_title.split("_")
+                            if len(varType) == 1:
+                                varType = var_title.split(".")
+                            if len(varType) == 1:
+                                print("There is a problem", "45993", row)
+                                #sys.exit(0)
+                            varType = varType[-1].lower()
+                            variables[_var][varType] = var_name
+                            isRowUsed = True
+
+            if isRowUsed:
+                usedRows.append({'type_name': var_typeName, 'branch_name': var_branchName, 'name': var_name,
+                                'title': var_title, 'title_type': var_titleType, 'n_data': var_nData})
+                usedRowsName.append(var_name)
+            else:
+                unusedRows.append({'type_name': var_typeName, 'branch_name': var_branchName,
+                                  'name': var_name, 'title': var_title, 'title_type': var_titleType, 'n_data': var_nData})
+                unusedRowsName.append(var_name)
+
+        csvfile.close()
+
+    with open(templates_dir_with_name+"/variables_used.csv", 'w', encoding='UTF8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(usedRows)
+        f.close()
+
+    with open(templates_dir_with_name+"/variables_unused.csv", 'w', encoding='UTF8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(unusedRows)
+        f.close()
+
+    with open(templates_dir_with_name+"/variables_use.json", 'w') as json_file:
+        json.dump(variables, json_file, indent=4, sort_keys=True)
+
+    print("\n")
+    print("<<<<<<<<< usedRows <<<<<<<<<")
+    usedRowsName.sort()
+    print(usedRowsName)
+    print(">>>>>>>>> usedRows >>>>>>>>>")
+    print("\n")
+    print("<<<<<<<<< unusedRows <<<<<<<<<")
+    unusedRowsName.sort()
+    print(unusedRowsName)
+    print(">>>>>>>>> unusedRows >>>>>>>>>")
+    print("\n")
+    print("<<<<<<<<< variables <<<<<<<<<")
+    print(json.dumps(variables, sort_keys=True))
+    print(">>>>>>>>> variables >>>>>>>>>")
+
+    fToBeFilled = open(filePath+"/templates/"+name +
+                       "/"+name+"_to_be_filled.C", "w")
+    fToBeFilled.close()
+    fToBeFilled = FILE_HELPER(
+        filePath+"/templates/"+name + "/"+name+"_to_be_filled.C")
+
+    fToBeFilled.file.write(
+        '''
+// !!!TEMP!!!
+#ifdef __DEBUG__
+std::cout << "FatJets:"<<nFatJet<<std::endl;
+#endif
+// !!!TEMP!!!
+'''
+    )
+
+    fToBeFilled.file.close()
 
 
 if create:
