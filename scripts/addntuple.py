@@ -487,7 +487,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
                                 "[")[0].split(".")[-1].lower()
                             _varType = var_title.split(
                                 "[")[0].split(".")
-                        if len(varType) == 1:
+                        if len(_varType) == 1:
                             varType = var_title.split("[")[0].lower()
                             #print("There is a problem", "385743", row)
                             #sys.exit(0)
