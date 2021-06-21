@@ -1,6 +1,7 @@
 #include "fcc.h"
 #include "lhco.h"
 #include "atlasopen.h"
+#include "atlasopenR2.h"
 #include "cmsod.h"
 #include "delphes.h"
 #include "lvl0.h"
@@ -45,6 +46,7 @@ int main(int argc, char*argv[])
  bool use_lvl0=false;
  bool use_delphes=false;
  bool use_atlasod=false;
+ bool use_atlasodR2=false;
  bool use_atlmin=false;
  bool use_cmsod=false;
  bool use_cmsnano=false;
@@ -91,7 +93,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL | ]\n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | ATLASODR2 | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -105,6 +107,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "ATLASVLL"){ use_vllmin =true;}
  else if (inptype == "ATLMIN")  { use_atlmin =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
+ else if (inptype == "ATLASODR2") { use_atlasodR2 =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
@@ -215,7 +218,7 @@ if (ival==0) {
   }else if (use_cmsnano){
    cout << "~Now using CMS NanoAOD files.~~~~~~ beta!\n";
    chain = new TChain("Events");
-  }else if (use_atlasod){
+  }else if (use_atlasod|use_atlasodR2){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("mini");
   }else if (use_atlmin){
@@ -262,6 +265,9 @@ if (ival==0) {
            cmsoda->Loop(aselect, username);
    } else if (use_atlasod){
     atlasopen *atlasoda=new atlasopen("XXX",chain);
+               atlasoda->Loop(aselect, username);
+   } else if (use_atlasodR2){
+    atlasopenR2 *atlasoda=new atlasopenR2("XXX",chain);
                atlasoda->Loop(aselect, username);
    } else if (use_vllmin){
      VLLMin *vllmina=new VLLMin("XXX",chain);
