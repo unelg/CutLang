@@ -543,6 +543,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
     with open(templates_dir_with_name+"/variables_use.json", 'w') as json_file:
         json.dump(variables, json_file, indent=4, sort_keys=True)
+        json_file.close()
 
     print("\n")
     print("<<<<<<<<< usedRows <<<<<<<<<")
