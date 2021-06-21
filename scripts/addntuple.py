@@ -37,19 +37,30 @@ create = option.create
 FILE = option.file
 branchname = option.branchname
 
-# Create (or delete) the c file for the new ntuple
-c_file = '../CLA/'+name+'.C'
-h_file = '../analysis_core/'+name+'.h'
+full_path = os.path.realpath(__file__)
+filePath, fileName = os.path.split(full_path)
+workPath = os.path.dirname(filePath)
 
-templates_dir_with_name='templates/'+name
-csv_dir=templates_dir_with_name+"/variables.csv"
+# Create (or delete) the c file for the new ntuple
+c_file = workPath+'/CLA/'+name+'.C'
+h_file = workPath+'/analysis_core/'+name+'.h'
+
+templates_dir = filePath+'/templates'
+templates_dir_with_name = filePath+'/templates/'+name
+csv_dir = templates_dir_with_name+"/variables.csv"
 
 
 class FILE_HELPER:
     def __init__(self, file):
+        self.file_name = file
         self.file = open(file, 'r+')
-        self.content = self.file.read()
         self.seek_zero()
+    
+    def content(self):
+        content=self.file.read()
+        self.file.close()
+        self.file = open(self.file_name, 'r+')
+        return content
 
     def seek_zero(self):
         self.file.seek(0)
@@ -73,6 +84,8 @@ class FILE_HELPER:
         lines = self.file.readlines()
         find_line = self.find_line(text, lines)
         self.remove(find_line, lines)
+        self.file.close()
+        self.file = open(self.file_name, 'r+')
 
     def find_and_write(self, search, add):
         self.seek_zero()
@@ -83,8 +96,10 @@ class FILE_HELPER:
         self.file.write("".join(lines))
 
     def find_and_write_with_delete(self, search, add):
-        self.find_and_write(search, add)
+        self.find_and_write(search, add+"\n")
         self.remove_from_file(search)
+        self.file.close()
+        self.file = open(self.file_name, 'r+')
 
     def find(self, search):
         self.seek_zero()
@@ -128,25 +143,128 @@ def create_template():
         print("Please select true type")
         sys.exit(0)
 
-    fieldnames = ['type_name', 'branch_name', 'name', 'title', 'title_type', 'n_data']
-    rows=[]
+    fieldnames = ['type_name', 'branch_name',
+                  'name', 'title', 'title_type', 'n_data']
+    rows = []
 
-    leafTitleType=""
+    leafTitleType = ""
     for leaf in leaves:
-        leafTypeName=leaf.GetTypeName()
-        leafBranchName=branchName
-        leafName=leaf.GetName()
-        leafTitle=leaf.GetTitle()
+        leafTypeName = leaf.GetTypeName()
+        leafBranchName = branchName
+        leafName = leaf.GetName()
+        leafTitle = leaf.GetTitle()
         if "[" in leafTitle and "]" in leafTitle:
             leafTitleType = str(leaf.GetTitle()).split("[")[-1].split("]")[0]
         else:
-            leafTitleType="___NONE___"
+            leafTitleType = "___NONE___"
         leafNData = leaf.GetNdata()
         rows.append({'type_name': leafTypeName, 'branch_name': leafBranchName, 'name': leafName,
-               'title': leafTitle, 'title_type': leafTitleType, 'n_data': leafNData})
-               
+                     'title': leafTitle, 'title_type': leafTitleType, 'n_data': leafNData})
+
+    if not os.path.exists(templates_dir):
+        os.makedirs(templates_dir)
     if not os.path.exists(templates_dir_with_name):
         os.makedirs(templates_dir_with_name)
+
+    tree.MakeClass(name)
+    os.rename(os.getcwd()+"/"+name+".C", templates_dir_with_name+"/"+name+".C")
+    os.rename(os.getcwd()+"/"+name+".h", templates_dir_with_name+"/"+name+".h")
+    fC = FILE_HELPER(templates_dir_with_name+"/"+name+".C")
+
+    loop_selector="void "+name+"::Loop()"
+
+    fC.find_and_write(loop_selector,"#include <signal.h>\n")
+    
+    fC.find_and_write(loop_selector,'#include "dbx_electron.h"\n')
+    fC.find_and_write(loop_selector,'#include "dbx_muon.h"\n')
+    fC.find_and_write(loop_selector,'#include "dbx_jet.h"\n')
+    fC.find_and_write(loop_selector,'#include "dbx_tau.h"\n')
+    fC.find_and_write(loop_selector,'#include "dbx_a.h"\n')
+    fC.find_and_write(loop_selector,'#include "DBXNtuple.h"\n')
+    fC.find_and_write(loop_selector,'#include "analysis_core.h"\n')
+    fC.find_and_write(loop_selector,'#include "AnalysisController.h"\n\n')
+
+    fC.find_and_write(loop_selector,'//#define _CLV_\n')
+    fC.find_and_write(loop_selector,'#ifdef _CLV_\n')
+    fC.find_and_write(loop_selector,'#define DEBUG(a) std::cout<<a\n')
+    fC.find_and_write(loop_selector,'#else\n')
+    fC.find_and_write(loop_selector,'#define DEBUG(a)\n')
+    fC.find_and_write(loop_selector,'#endif\n\n')
+    
+    fC.find_and_write_with_delete("if (fChain == 0) return;",'''
+    // >>> "if (fChain == 0) return" anchor >>>
+    cout << "I am in {name}.C " << endl;
+    if (fChain == 0) {{
+        cout <<"Error opening the data file"<<endl; return;
+    }}
+    int verboseFreq(aselect.verbfreq);
+
+    map < string, int > syst_names;
+    syst_names["01_jes"]       = 2;
+
+    AnalysisController aCtrl(&aselect, syst_names);
+    aCtrl.Initialize(extname);
+    cout << "End of analysis initialization"<<endl;
+    // <<< "if (fChain == 0) return" anchor <<<
+    '''.format(name=name))
+    fC.find_and_write_with_delete("Long64_t nentries = fChain->GetEntriesFast();",'''
+    // >>> "Long64_t nentries" anchor >>>
+    Long64_t nentries =  fChain->GetEntriesFast();
+
+    if (aselect.maxEvents > 0 ) {{
+        nentries=aselect.maxEvents;
+    }}
+    cout << "number of entries " << nentries << endl;
+    Long64_t startevent = 0;
+    if (aselect.startpt > 0 ) {{
+        startevent=aselect.startpt;
+    }}
+    cout << "starting entry " << startevent << endl;
+    Long64_t lastevent = startevent + nentries;
+    if (lastevent > fChain->GetEntriesFast() ) {{
+        lastevent=fChain->GetEntriesFast();
+        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
+    }}
+    cout << "last entry " << lastevent << endl;
+    // <<< "Long64_t nentries" anchor <<<
+    ''')
+    fC.find_and_write_with_delete("for (Long64_t jentry=0; jentry<nentries;jentry++) {",'''
+    // >>> "for (Long64_t jentry=0; jentry<nentries;jentry++) {{" anchor >>>
+    for (Long64_t j=startevent; j<lastevent; ++j) {
+
+        //  if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
+        if (0 > LoadTree (j)) break;
+        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
+
+        AnalysisObjects a0;
+        GetPhysicsObjects(j, &a0);
+        aCtrl.RunTasks(a0);
+
+        //Long64_t ientry = LoadTree(jentry);
+        //if (ientry < 0)
+        //   break;
+        //nb = fChain->GetEntry(jentry);
+        //nbytes += nb;
+        // if (Cut(ientry) < 0) continue;
+    }// event loop ends.
+    aCtrl.Finalize();
+        // <<< "for (Long64_t jentry=0; jentry<nentries;jentry++) {" anchor <<<
+        /*
+    ''')
+    content=fC.content()
+    fC.file.write(content+'''
+*/
+}
+    ''')
+    fC.remove_from_file("   for (Long64_t jentry=0; jentry<nentries;jentry++) {")
+    fC.remove_from_file("      Long64_t ientry = LoadTree(jentry);")
+    fC.remove_from_file("      if (ientry < 0) break;")
+    fC.remove_from_file("      nb = fChain->GetEntry(jentry);   nbytes += nb;")
+    fC.remove_from_file("      // if (Cut(ientry) < 0) continue;")
+
+    fC.find_and_write_with_delete(loop_selector,"void "+name+"::Loop(analy_struct aselect, char *extname)")
+
+    fC.file.close()
 
     with open(csv_dir, 'w', encoding='UTF8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
