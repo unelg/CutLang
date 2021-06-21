@@ -10,14 +10,16 @@ import sys
 import fileinput
 from optparse import OptionParser
 from ROOT import TFile
+import csv
+import os
 
 # Parsing options
 usage = "Usage: python3 %prog <ntuplename>"
 parser = OptionParser(usage=usage)
 parser.add_option("--file", action="store",
                   dest="file", default="", help="root file")
-parser.add_option("--treekey", action="store",
-                  dest="treekey", default="", help="root file selected tree key")
+parser.add_option("--branchname", action="store",
+                  dest="branchname", default="", help="root file selected tree key")
 parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple")
 parser.add_option("--create", action="store_true",
@@ -33,11 +35,14 @@ name = args[0]
 delete = option.delete
 create = option.create
 FILE = option.file
-treekey = option.treekey
+branchname = option.branchname
 
 # Create (or delete) the c file for the new ntuple
 c_file = '../CLA/'+name+'.C'
 h_file = '../analysis_core/'+name+'.h'
+
+templates_dir_with_name='templates/'+name
+csv_dir=templates_dir_with_name+"/variables.csv"
 
 
 class FILE_HELPER:
@@ -96,122 +101,57 @@ def create_template():
     listKeys = f.GetListOfKeys()
 
     leaves = ""
-    listKeyName = ""
+    branchName = ""
     tree = ""
 
-    if treekey:
-        tree = f.Get(treekey)
+    if branchname:
+        tree = f.Get(branchname)
         try:
             leaves = tree.GetListOfLeaves()
-            listKeyName = treekey
-            print(listKeyName+" was selected")
+            branchName = branchname
+            print(branchName+" was selected")
         except:
-            print(treekey+" has no leaf, so it was skipped")
+            print(branchname+" has no leaf, so it was skipped")
     else:
         for key in listKeys:
             tree = f.Get(key.GetName())
             try:
                 leaves = tree.GetListOfLeaves()
-                listKeyName = key.GetName()
-                print(listKeyName+" was selected")
+                branchName = key.GetName()
+                print(branchName+" was selected")
             except:
                 print(key.GetName()+" has no leaf, so it was skipped")
                 continue
             break
 
-    if listKeyName == "":
+    if branchName == "":
         print("Please select true type")
         sys.exit(0)
 
-    selectedLeavesTypes = {}
-    _selectedTypes=[]
-    notSelectedLeaves = []
+    fieldnames = ['type_name', 'branch_name', 'name', 'title', 'title_type', 'n_data']
+    rows=[]
 
-
+    leafTitleType=""
     for leaf in leaves:
-        # Select leaf names which is important
-        try:
-            leafType = str(leaf.GetTitle().split("[")[1].split("]")[0])
-            selectedLeafTypeName = ""
-            if leafType.lower().startswith("n"):
-                selectedLeafTypeName = leafType[1:].lower()
-                if selectedLeafTypeName not in selectedLeavesTypes:
-                    selectedLeavesTypes[selectedLeafTypeName] = {}
-            elif leafType.endswith("_"):
-                selectedLeafTypeName = leafType[:-1].lower()
-                if selectedLeafTypeName not in selectedLeavesTypes:
-                    selectedLeavesTypes[selectedLeafTypeName] = {}
-            else:
-                print("There was problem!")
-                sys.exit(0)
+        leafTypeName=leaf.GetTypeName()
+        leafBranchName=branchName
+        leafName=leaf.GetName()
+        leafTitle=leaf.GetTitle()
+        if "[" in leafTitle and "]" in leafTitle:
+            leafTitleType = str(leaf.GetTitle()).split("[")[-1].split("]")[0]
+        else:
+            leafTitleType="___NONE___"
+        leafNData = leaf.GetNdata()
+        rows.append({'type_name': leafTypeName, 'branch_name': leafBranchName, 'name': leafName,
+               'title': leafTitle, 'title_type': leafTitleType, 'n_data': leafNData})
+               
+    if not os.path.exists(templates_dir_with_name):
+        os.makedirs(templates_dir_with_name)
 
-            leafType = str(leaf.GetTitle().split("[")[0].split("_")[-1])
-            if leafType=="":
-                leafType = str(leaf.GetTitle().split("[")[0].split("_")[0])
-            selectedLeavesTypes[selectedLeafTypeName][leafType.lower(
-            )] = leaf.GetName()
-            _selectedTypes.append(leaf.GetName())
-
-            # print(leaf)
-        except:
-            notSelectedLeaves.append(leaf)
-            pass
-
-    # Check others
-    for i, leaf in enumerate(notSelectedLeaves):
-        for leafType in selectedLeavesTypes:
-            if leafType in leaf.GetTitle().lower():
-                selectedLeafPropertyTypeName = leaf.GetTitle().split(
-                    "_")[-1].lower()
-                if selectedLeafPropertyTypeName != "":
-                    selectedLeavesTypes[leafType][selectedLeafPropertyTypeName] = leaf.GetName(
-                    )
-                    _selectedTypes.append(leaf.GetName())
-                else:
-                    selectedLeafPropertyTypeName = leaf.GetTitle().split(
-                    "_")[0].lower()
-                    selectedLeavesTypes[leafType][selectedLeafPropertyTypeName] = leaf.GetName(
-                    )
-                    _selectedTypes.append(leaf.GetName())
-
-    # Collect some other types
-    for i, leaf in enumerate(notSelectedLeaves):
-        if (leaf.GetTitle().lower().split("_")[-1] == "px" or leaf.GetTitle().lower().split("_")[-1] == "py" or leaf.GetTitle().lower().split("_")[-1] == "pz"
-                or leaf.GetTitle().lower().split("_")[-1] == "pt" or leaf.GetTitle().lower().split("_")[-1] == "phi"):
-            selectedLeafPropertyTypeName = leaf.GetTitle().lower().split(
-                "_")[0]
-            if selectedLeafPropertyTypeName not in selectedLeavesTypes:
-                selectedLeavesTypes[selectedLeafPropertyTypeName]={}
-            selectedLeavesTypes[selectedLeafPropertyTypeName][leaf.GetTitle(
-            ).lower().split("_")[-1]] = leaf.GetName()
-            _selectedTypes.append(leaf.GetName())
-
-    # notSelectedLeaves humanize
-    for i, leaf in enumerate(notSelectedLeaves):
-        notSelectedLeaves[i] = leaf.GetName()
-
-    # Clear notSelectedLeaves
-    for i in selectedLeavesTypes:
-        for leafType in selectedLeavesTypes[i]:
-            clearType=selectedLeavesTypes[i][leafType]
-            if clearType in notSelectedLeaves:
-                notSelectedLeaves.remove(clearType)
-
-    #for i in leaves:
-        #print(i)
-    counterSelectedLeavesTypes=0
-    for i in selectedLeavesTypes:
-        for leafType in selectedLeavesTypes[i]:
-            #print(selectedLeavesTypes[i][leafType])
-            counterSelectedLeavesTypes+=1
-    #for leaf in leaves:
-        #if leaf.GetName() not in _selectedTypes:
-            #print(leaf.GetName(),"error")
-    print(selectedLeavesTypes, "selectedLeavesTypes")
-    print(notSelectedLeaves,"notSelectedLeaves")
-    print(counterSelectedLeavesTypes+len(notSelectedLeaves),
-          "counterSelectedLeavesTypes+notSelectedLeaves")
-    print(len(leaves),"len(leaves)")
+    with open(csv_dir, 'w', encoding='UTF8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 if create:
