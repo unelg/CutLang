@@ -9,7 +9,7 @@ To edit template, change templates/default_ntuple_template.c
 import sys
 import fileinput
 from optparse import OptionParser
-from ROOT import TFile
+from ROOT import TFile, gInterpreter, gSystem, gROOT
 import csv
 import os
 
@@ -124,7 +124,7 @@ def create_template():
         try:
             leaves = tree.GetListOfLeaves()
             branchName = branchname
-            print(branchName+" was selected")
+            print("Selected branch name: "+branchName)
         except:
             print(branchname+" has no leaf, so it was skipped")
     else:
@@ -133,7 +133,7 @@ def create_template():
             try:
                 leaves = tree.GetListOfLeaves()
                 branchName = key.GetName()
-                print(branchName+" was selected")
+                print("Selected branch name: "+branchName)
             except:
                 print(key.GetName()+" has no leaf, so it was skipped")
                 continue
@@ -166,34 +166,92 @@ def create_template():
     if not os.path.exists(templates_dir_with_name):
         os.makedirs(templates_dir_with_name)
 
+    #gInterpreter.AddIncludePath(workPath+"/analysis_core/")
+    #gSystem.AddIncludePath("-I. -I"+workPath+"/analysis_core")
+    #gROOT.LoadMacro(workPath+"/analysis_core/dbx_electron.h")
+    #gSystem.Load(workPath+"/analysis_core/dbx_electron_h.so")
     tree.MakeClass(name)
     os.rename(os.getcwd()+"/"+name+".C", templates_dir_with_name+"/"+name+".C")
     os.rename(os.getcwd()+"/"+name+".h", templates_dir_with_name+"/"+name+".h")
+
     fC = FILE_HELPER(templates_dir_with_name+"/"+name+".C")
 
     loop_selector="void "+name+"::Loop()"
 
-    fC.find_and_write(loop_selector,"#include <signal.h>\n")
-    
-    fC.find_and_write(loop_selector,'#include "dbx_electron.h"\n')
-    fC.find_and_write(loop_selector,'#include "dbx_muon.h"\n')
-    fC.find_and_write(loop_selector,'#include "dbx_jet.h"\n')
-    fC.find_and_write(loop_selector,'#include "dbx_tau.h"\n')
-    fC.find_and_write(loop_selector,'#include "dbx_a.h"\n')
-    fC.find_and_write(loop_selector,'#include "DBXNtuple.h"\n')
-    fC.find_and_write(loop_selector,'#include "analysis_core.h"\n')
-    fC.find_and_write(loop_selector,'#include "AnalysisController.h"\n\n')
+    fC.find_and_write(loop_selector,'''
+// >>> "include" anchor >>>
+#include <signal.h>
+#include "dbx_electron.h"
+#include "dbx_muon.h"
+#include "dbx_jet.h"
+#include "dbx_tau.h"
+#include "dbx_a.h"
+#include "DBXNtuple.h"
+#include "analysis_core.h"
+#include "AnalysisController.h"
 
-    fC.find_and_write(loop_selector,'//#define _CLV_\n')
-    fC.find_and_write(loop_selector,'#ifdef _CLV_\n')
-    fC.find_and_write(loop_selector,'#define DEBUG(a) std::cout<<a\n')
-    fC.find_and_write(loop_selector,'#else\n')
-    fC.find_and_write(loop_selector,'#define DEBUG(a)\n')
-    fC.find_and_write(loop_selector,'#endif\n\n')
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+extern void _fsig_handler (int) ;
+extern bool fctrlc;
+// <<< "include" anchor <<<
+    ''')
+    fC.find_and_write(loop_selector,'''   
+void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
+{{
+
+    // >>> GetPhysicsObjects >>>
+
+    fChain->GetEntry(j);
+    vector<dbxMuon>     muons;
+    vector<dbxElectron> electrons;
+    vector<dbxPhoton>   photons;
+    vector<dbxJet>      jets;
+    vector<dbxTau>      taus;
+    vector<dbxJet>     ljets;
+    vector<dbxTruth>    truth;
+    vector<dbxParticle> combos;
+    vector<dbxParticle> constis;
+
+    map<string, vector<dbxMuon>     > muos_map;
+    map<string, vector<dbxElectron> > eles_map;
+    map<string, vector<dbxTau>      > taus_map;
+    map<string, vector<dbxPhoton>   > gams_map;
+    map<string, vector<dbxJet>      > jets_map;
+    map<string, vector<dbxJet>     >ljets_map;
+    map<string, vector<dbxTruth>    >truth_map;
+    map<string, vector<dbxParticle> >combo_map;
+    map<string, vector<dbxParticle> >constits_map;
+    map<string, TVector2            >  met_map;
+    
+    evt_data anevt;
+    
+    //temporary variables
+    TLorentzVector  alv;
+    //TLorentzVector dummyTlv(0.,0.,0.,0.);
+    TVector2 met;
+    dbxJet      *adbxj;
+    dbxElectron *adbxe;
+    dbxMuon     *adbxm;
+    dbxPhoton   *adbxp;
+
+// <<< GetPhysicsObjects <<<
+
+}}
+
+    '''.format(name=name))
     
     fC.find_and_write_with_delete("if (fChain == 0) return;",'''
     // >>> "if (fChain == 0) return" anchor >>>
+    // if(fChain == 0) return;
     cout << "I am in {name}.C " << endl;
+    // Signal HANDLER
+    signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
     if (fChain == 0) {{
         cout <<"Error opening the data file"<<endl; return;
     }}
@@ -209,46 +267,42 @@ def create_template():
     '''.format(name=name))
     fC.find_and_write_with_delete("Long64_t nentries = fChain->GetEntriesFast();",'''
     // >>> "Long64_t nentries" anchor >>>
+    // Long64_t nentries =  fChain->GetEntriesFast();
     Long64_t nentries =  fChain->GetEntriesFast();
 
-    if (aselect.maxEvents > 0 ) {{
+    if (aselect.maxEvents > 0 ) {
         nentries=aselect.maxEvents;
-    }}
+    }
     cout << "number of entries " << nentries << endl;
     Long64_t startevent = 0;
-    if (aselect.startpt > 0 ) {{
+    if (aselect.startpt > 0 ) {
         startevent=aselect.startpt;
-    }}
+    }
     cout << "starting entry " << startevent << endl;
     Long64_t lastevent = startevent + nentries;
-    if (lastevent > fChain->GetEntriesFast() ) {{
+    if (lastevent > fChain->GetEntriesFast() ) {
         lastevent=fChain->GetEntriesFast();
         cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
-    }}
+    }
     cout << "last entry " << lastevent << endl;
     // <<< "Long64_t nentries" anchor <<<
     ''')
     fC.find_and_write_with_delete("for (Long64_t jentry=0; jentry<nentries;jentry++) {",'''
-    // >>> "for (Long64_t jentry=0; jentry<nentries;jentry++) {{" anchor >>>
+    // >>> "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor >>>
+    // for (Long64_t jentry=0;jentry<nentries;jentry++) {
     for (Long64_t j=startevent; j<lastevent; ++j) {
 
-        //  if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
+        if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
         if (0 > LoadTree (j)) break;
         if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
         AnalysisObjects a0;
         GetPhysicsObjects(j, &a0);
         aCtrl.RunTasks(a0);
-
-        //Long64_t ientry = LoadTree(jentry);
-        //if (ientry < 0)
-        //   break;
-        //nb = fChain->GetEntry(jentry);
-        //nbytes += nb;
-        // if (Cut(ientry) < 0) continue;
     }// event loop ends.
+
     aCtrl.Finalize();
-        // <<< "for (Long64_t jentry=0; jentry<nentries;jentry++) {" anchor <<<
+        // <<< "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor <<<
         /*
     ''')
     content=fC.content()
@@ -256,15 +310,59 @@ def create_template():
 */
 }
     ''')
-    fC.remove_from_file("   for (Long64_t jentry=0; jentry<nentries;jentry++) {")
-    fC.remove_from_file("      Long64_t ientry = LoadTree(jentry);")
-    fC.remove_from_file("      if (ientry < 0) break;")
-    fC.remove_from_file("      nb = fChain->GetEntry(jentry);   nbytes += nb;")
-    fC.remove_from_file("      // if (Cut(ientry) < 0) continue;")
+
+    fC.find_and_write("// <<< GetPhysicsObjects <<<", '''
+    DEBUG("Begin filling\\n")
+
+    {to_be_filled}
+
+    //------------ auxiliary information -------
+    anevt.run_no=runNumber;
+    anevt.user_evt_weight=1.0;
+    anevt.lumiblk_no=1;
+    anevt.top_hfor_type=0;
+    anevt.event_no=eventNumber;
+    anevt.TRG_e= trigE;
+    anevt.TRG_m= trigM;
+    anevt.TRG_j= 0;
+    anevt.vxp_maxtrk_no= 9;
+    anevt.badjet=0;
+    anevt.mcevt_weight=mcWeight;
+    anevt.pileup_weight=1.0;
+    anevt.z_vtx_weight = 1.0;
+    anevt.weight_bTagSF_77 = scaleFactor_BTAG;
+    anevt.weight_leptonSF = scaleFactor_LepTRIGGER;
+    anevt.vxpType=0;
+    anevt.lar_Error=0;
+    anevt.core_Flags=0;
+    anevt.maxEvents=nentries;
+
+    DEBUG("Filling finished\\n")
+    
+    muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+    eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+    taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+    gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+    jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+    ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
+    truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+    combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
+    met_map.insert( pair <string,TVector2>             ("MET",           met) );
+
+    *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
+    
+    ''')
 
     fC.find_and_write_with_delete(loop_selector,"void "+name+"::Loop(analy_struct aselect, char *extname)")
 
     fC.file.close()
+
+    fh = FILE_HELPER(templates_dir_with_name+"/"+name+".h")
+
+    fh.find_and_write("// Header file for the classes stored in the TTree if any.", '#include "dbxParticle.h"\n')
+
+    fh.file.close()
 
     with open(csv_dir, 'w', encoding='UTF8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
