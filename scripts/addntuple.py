@@ -4,7 +4,7 @@ run as python3 addntuple.py
 To create an ntuple template, run python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branchname <branchname>]
 To save an already added ntuple, run python3 addntuple.py --name <ntuplename> --save
 To delete an already added ntuple, run python3 addntuple.py --name <ntuplename> --delete
-To edit template, change templates/default_ntuple_template.c
+To edit template, change templates/<ntuplename>
 '''
 
 import sys
