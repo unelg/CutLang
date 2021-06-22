@@ -1,8 +1,9 @@
 '''
 Script for adding (or deleting) new ntuples into CutLang
-run as python3 addntuple.py <ntuplename>
-To delete an already added ntuple, run python3 addntuple.py <ntuplename> --delete
-To create an ntuple template, run python3 addntuple.py <ntuplename> --create
+run as python3 addntuple.py
+To create an ntuple template, run python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branchname <branchname>]
+To save an already added ntuple, run python3 addntuple.py --name <ntuplename> --save
+To delete an already added ntuple, run python3 addntuple.py --name <ntuplename> --delete
 To edit template, change templates/default_ntuple_template.c
 '''
 
@@ -16,7 +17,15 @@ import json
 from time import gmtime, strftime
 
 # Parsing options
-usage = "Usage: python3 %prog <ntuplename> --[name | file | branchname | delete | create | save]"
+usage = '''
+python3 %prog --[name | file | branchname | delete | create | save]
+To create an ntuple template, run:
+    python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branchname <branchname>]
+To save an already added ntuple, run:
+    python3 addntuple.py --name <ntuplename> --save
+To delete an already added ntuple, run:
+    python3 addntuple.py --name <ntuplename> --delete
+'''
 parser = OptionParser(usage=usage)
 parser.add_option("--name", action="store",
                   dest="name", default="", help="template name")
@@ -869,7 +878,7 @@ def delete_template():
         print("deleted "+c_file)
     else:
         print("nothing "+c_file)
-        
+
     # remove exist h_file
     if os.path.exists(h_file):
         os.remove(h_file)
