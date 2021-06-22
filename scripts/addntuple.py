@@ -746,9 +746,9 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     if "et" in var_met and "phi" in var_met:
         fToBeFilled.file.write('''
     // >>> MET >>>
-    met.SetMagPhi({et},  {pt}); //mev-->gev
+    met.SetMagPhi({et},  {phi}); //mev-->gev
     // <<< MET <<<
-        '''.format(et=var_met["et"], pt=var_met["pt"]))
+        '''.format(et=var_met["et"], phi=var_met["phi"]))
     elif "px" in var_met and "py" in var_met:
         fToBeFilled.file.write('''
     // >>> MET >>>
