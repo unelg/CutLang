@@ -11,7 +11,7 @@ from time import gmtime, strftime
 usage = '''
 Script for adding (or deleting) new ntuples into CutLang - CutLang/scripts/addntuple.py
 
-python3 %prog --<create | delete | find | save> --[name | file | branch]
+python3 %prog --<create | delete | find | recreate | save> --[name | file | branch]
 
 To create an ntuple template, run:
     python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
