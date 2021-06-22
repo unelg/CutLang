@@ -16,7 +16,7 @@ import json
 from time import gmtime, strftime
 
 # Parsing options
-usage = "Usage: python3 %prog <ntuplename> --[name | file | create | branchname]"
+usage = "Usage: python3 %prog <ntuplename> --[name | file | branchname | delete | create | save]"
 parser = OptionParser(usage=usage)
 parser.add_option("--name", action="store",
                   dest="name", default="", help="template name")
@@ -25,9 +25,11 @@ parser.add_option("--file", action="store",
 parser.add_option("--branchname", action="store",
                   dest="branchname", default="", help="branch name to select (optional)")
 parser.add_option("--delete", action="store_true",
-                  dest="delete", default=False, help="delete the ntuple")
+                  dest="delete", default=False, help="delete the ntuple (needs --name flag)")
 parser.add_option("--create", action="store_true",
-                  dest="create", default=False, help="create the ntuple template (needs --file flag)")
+                  dest="create", default=False, help="create the ntuple template (needs --file and --name flag)")
+parser.add_option("--save", action="store_true",
+                  dest="save", default=False, help="save the ntuple template (needs --name flag)")
 (option, args) = parser.parse_args()
 
 # Get the new ntuple name
@@ -36,6 +38,7 @@ delete = option.delete
 create = option.create
 FILE = option.file
 branchname = option.branchname
+save = option.save
 
 full_path = os.path.realpath(__file__)
 filePath, fileName = os.path.split(full_path)
@@ -283,7 +286,7 @@ extern bool fctrlc;
 // <<< "include" anchor <<<
     ''')
     fC.find_and_write(loop_selector, '''   
-void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
+void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
 {{
 
     // >>> GetPhysicsObjects >>>
@@ -372,7 +375,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
         AnalysisObjects a0;
-        GetPhysicsObjects(j, &a0);
+        GetPhysicsObjects(j, &a0, nentries);
         aCtrl.RunTasks(a0);
     }// event loop ends.
 
@@ -389,7 +392,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     fC.find_and_write("// <<< GetPhysicsObjects <<<", '''
     DEBUG("Begin filling\\n")
 
-    {to_be_filled}
+___to_be_filled___
 
     //------------ auxiliary information -------
     anevt.run_no=runNumber;
@@ -588,7 +591,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
     fToBeFilled.file.write(
         '''//////////////////////////////////////////////////////////
-// This file has been automatically generated on
+// This content for filled has been automatically generated on
 // {now} by CutLang
 // from TTree {treeName}/{treeTitle}
 // found on file: {file}
@@ -668,11 +671,38 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
                     dbxAllParticleSetList[particleName][index] + \
                     "("+var_particle[var]+"[i]);\n\t\t"
             else:
-                _adbxSetSomethingOrAddAttribute += _adbxName+"->addAttribute(" + \
-                    var_particle[var]+"[i]);\n\t\t"
+                if var != "px" and var != "py" and var != "pz" and var != "e" and var != "pt" and var != "eta" and var != "phi" and var != "m":
+                    _adbxSetSomethingOrAddAttribute += _adbxName+"->addAttribute(" + \
+                        var_particle[var]+"[i]);\n\t\t"
         return _adbxSetSomethingOrAddAttribute
 
     def fill_something_with_event_size(particleName, __adbxName, _dbxName):
+        def getParticleNotFound(message):
+            return '''
+    /*
+    {message}
+    // >>> {particleNameUpper} >>>
+
+    {_dbxName} *{__adbxName};
+    for (unsigned int i=0; i<n{particleNameUpper}_example; i++) {{
+        _alv_example.SetPtEtaPhiM(Muon_pt_example[i], Muon_eta_example[i], Muon_phi_example[i],  (105.658/1E3)_example); // all in GeV
+
+        {__adbxName} = new {_dbxName}(alv);
+
+        {__adbxName}_example->addAttribute(PARTICLE_dxy_example[i]);
+        {__adbxName}_example->setCharge(PARTICLE_charge_example[i]);
+
+        {__adbxName}->setParticleIndx(i);
+        {particleNameLower}s.push_back(*{__adbxName});
+        delete {__adbxName};
+    }}
+
+    DEBUG("{particleNameUpper} OK\\n")
+
+    // <<< {particleNameUpper} <<<
+    {message}
+    */
+                    '''.format(message=message, _dbxName=_dbxName, particleNameLower=particleName.lower(), particleNameUpper=particleName.upper(), __adbxName=__adbxName)
         var_particle = variables[particleName]
         if len(var_particle) > 1:
             if ("size" in var_particle or "___" in var_particle):
@@ -701,21 +731,28 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         {adbxSetSomethingOrAddAttribute}
 
         {__adbxName}->setParticleIndx(i);
-        muons.push_back(*{__adbxName});
+        {particleNameLower}s.push_back(*{__adbxName});
         delete {__adbxName};
     }}
 
     DEBUG("{particleNameUpper} OK\\n")
 
     // <<< {particleNameUpper} <<<
-                        '''.format(_dbxName=_dbxName, particleNameUpper=particleName.upper(), particleSize=particleSize, alvTLorentzVector=alvTLorentzVector, adbxSetSomethingOrAddAttribute=adbxSetSomethingOrAddAttribute, __adbxName=__adbxName))
+                        '''.format(_dbxName=_dbxName, particleNameLower=particleName.lower(), particleNameUpper=particleName.upper(), particleSize=particleSize, alvTLorentzVector=alvTLorentzVector, adbxSetSomethingOrAddAttribute=adbxSetSomethingOrAddAttribute, __adbxName=__adbxName))
                 else:
-                    print(particleName+" px,py,pz,e,eta,phi,m not found!")
+                    notFoundMessage = particleName+" px,py,pz,e,eta,phi,m not found!"
+                    fToBeFilled.file.write(
+                        getParticleNotFound(notFoundMessage))
+                    print(notFoundMessage)
 
             else:
-                print(particleName+" size not found!")
+                notFoundMessage = particleName+" size not found!"
+                fToBeFilled.file.write(getParticleNotFound(notFoundMessage))
+                print(notFoundMessage)
         else:
-            print(particleName+" not found!!!")
+            notFoundMessage = particleName+" not found!!!"
+            fToBeFilled.file.write(getParticleNotFound(notFoundMessage))
+            print(notFoundMessage)
     #muon -> muon
     fill_something_with_event_size("muon", "adbxm", "dbxMuon")
 
@@ -768,7 +805,19 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     // <<< MET <<<
         '''.format(pt=var_met["pt"], phi=var_met["phi"]))
     else:
+        fToBeFilled.file.write('''
+    /*
+    Met variables not found!!!
+    // >>> MET >>>
+    met.SetMagPhi({pt},  {phi}); //mev-->gev
+    // <<< MET <<<
+    Met variables not found!!!
+    */
+        '''.format(pt=var_met["pt"], phi=var_met["phi"]))
         print("Met variables not found!!!")
+
+    fToBeFilledContent=fToBeFilled.file.read()
+    fToBeFilled.file.write(fToBeFilledContent+"\n// FILLED CONTENT END")
 
     fToBeFilled.file.close()
 
@@ -779,5 +828,60 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
               templates_dir_with_name+"/history/"+dateNow+" ********** ")
 
 
+def save_template():
+    if not name:
+        print("save option needs name option!")
+        sys.exit(0)
+
+    fC_to_be_filled = open(filePath+"/templates/"+name +
+                           "/"+name+"_to_be_filled.C", "r")
+    contentC_to_be_filled = fC_to_be_filled.read()
+    fC_to_be_filled.close()
+
+    fC = open(filePath+"/templates/"+name +
+                       "/"+name+".C", "r")
+    contentC = fC.read()
+    contentC = contentC.replace("___to_be_filled___", contentC_to_be_filled)
+    fC.close()
+
+    fh = open(filePath+"/templates/"+name +
+                       "/"+name+".h", "r")
+    contenth = fh.read()
+    fh.close()
+
+    fC_new = open(c_file, "w")
+    fC_new.write(contentC)
+    print("saved "+c_file)
+    fC_new.close()
+
+    fC_new = open(h_file, "w")
+    fC_new.write(contenth)
+    print("saved "+h_file)
+    fC_new.close()
+
+def delete_template():
+    if not name:
+        print("delete option needs name option!")
+        sys.exit(0)
+    # remove exist c_file
+    if os.path.exists(c_file):
+        os.remove(c_file)
+        print("deleted "+c_file)
+    else:
+        print("nothing "+c_file)
+        
+    # remove exist h_file
+    if os.path.exists(h_file):
+        os.remove(h_file)
+        print("deleted "+h_file)
+    else:
+        print("nothing "+h_file)
+
 if create:
     create_template()
+elif save:
+    save_template()
+elif delete:
+    delete_template()
+else:
+    print("nothing, please get help from 'python3 addntuple.py -h'")
