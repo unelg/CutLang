@@ -3,6 +3,7 @@ Script for adding (or deleting) new ntuples into CutLang
 To create an ntuple template, run python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
 To delete an already added ntuple, run python3 addntuple.py --delete --name <ntuplename>
 To find an already added ntuple, run python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
+To recreate an already added ntuple, run python3 addntuple.py --recreate --name <ntuplename> --file <rootfile> [--branch <branchname>]
 To save an already added ntuple, run python3 addntuple.py --save --name <ntuplename>
 To edit template, change templates/<ntuplename>
 '''
@@ -25,6 +26,8 @@ To delete an already added ntuple, run:
     python3 addntuple.py --delete --name <ntuplename>
 To find an already added ntuple, run:
     python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
+To recreate an already added ntuple, run:
+    python3 addntuple.py --recreate --name <ntuplename> --file <rootfile> [--branch <branchname>]
 To save an already added ntuple, run:
     python3 addntuple.py --save --name <ntuplename>
 '''
@@ -39,6 +42,8 @@ parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple (needs --name flag)")
 parser.add_option("--create", action="store_true",
                   dest="create", default=False, help="create the ntuple template (needs --file and --name flags, optional --branchname flag)")
+parser.add_option("--recreate", action="store_true",
+                  dest="recreate", default=False, help="recreate the ntuple template (needs --file and --name flags, optional --branchname flag)")
 parser.add_option("--save", action="store_true",
                   dest="save", default=False, help="save the ntuple template (needs --name flag)")
 parser.add_option("--find", action="store_true",
@@ -53,6 +58,7 @@ FILE = option.file
 branchname = option.branch
 save = option.save
 find = option.find
+recreate = option.recreate
 
 full_path = os.path.realpath(__file__)
 filePath, fileName = os.path.split(full_path)
@@ -974,6 +980,8 @@ elif delete:
     delete_template()
 elif find:
     find_template()
+elif recreate:
+    create_template(True)
 elif save:
     save_template()
 else:
