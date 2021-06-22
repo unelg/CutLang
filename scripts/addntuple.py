@@ -1,13 +1,3 @@
-'''
-Script for adding (or deleting) new ntuples into CutLang
-To create an ntuple template, run python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
-To delete an already added ntuple, run python3 addntuple.py --delete --name <ntuplename>
-To find an already added ntuple, run python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
-To recreate an already added ntuple, run python3 addntuple.py --recreate --name <ntuplename> --file <rootfile> [--branch <branchname>]
-To save an already added ntuple, run python3 addntuple.py --save --name <ntuplename>
-To edit template, change templates/<ntuplename>
-'''
-
 import sys
 import fileinput
 from optparse import OptionParser
@@ -19,7 +9,10 @@ from time import gmtime, strftime
 
 # Parsing options
 usage = '''
+Script for adding (or deleting) new ntuples into CutLang - CutLang/scripts/addntuple.py
+
 python3 %prog --<create | delete | find | save> --[name | file | branch]
+
 To create an ntuple template, run:
     python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
 To delete an already added ntuple, run:
@@ -28,8 +21,12 @@ To find an already added ntuple, run:
     python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
 To recreate an already added ntuple, run:
     python3 addntuple.py --recreate --name <ntuplename> --file <rootfile> [--branch <branchname>]
-To save an already added ntuple, run:
+To save an already added ntuple into CLA and analysis_core, run:
     python3 addntuple.py --save --name <ntuplename>
+
+To edit template, change CutLang/scripts/templates/<ntuplename>
+
+!Old templates are backed up to CutLang/scripts/templates/<ntuplename>/history
 '''
 parser = OptionParser(usage=usage)
 parser.add_option("--name", action="store",
