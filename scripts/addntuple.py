@@ -1,9 +1,10 @@
 '''
 Script for adding (or deleting) new ntuples into CutLang
 run as python3 addntuple.py
-To create an ntuple template, run python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branchname <branchname>]
+To create an ntuple template, run python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branch <branchname>]
 To save an already added ntuple, run python3 addntuple.py --name <ntuplename> --save
 To delete an already added ntuple, run python3 addntuple.py --name <ntuplename> --delete
+To find an already added ntuple, run python3 addntuple.py --file <rootfile> --find [--branch <branchname>]
 To edit template, change templates/<ntuplename>
 '''
 
@@ -18,27 +19,31 @@ from time import gmtime, strftime
 
 # Parsing options
 usage = '''
-python3 %prog --[name | file | branchname | delete | create | save]
+python3 %prog --[name | file | branch | delete | create | save]
 To create an ntuple template, run:
-    python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branchname <branchname>]
+    python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branch <branchname>]
 To save an already added ntuple, run:
     python3 addntuple.py --name <ntuplename> --save
 To delete an already added ntuple, run:
     python3 addntuple.py --name <ntuplename> --delete
+To find an already added ntuple, run:
+    python3 addntuple.py --file <rootfile> --find [--branch <branchname>]
 '''
 parser = OptionParser(usage=usage)
 parser.add_option("--name", action="store",
                   dest="name", default="", help="template name")
 parser.add_option("--file", action="store",
                   dest="file", default="", help="root file")
-parser.add_option("--branchname", action="store",
-                  dest="branchname", default="", help="branch name to select (optional)")
+parser.add_option("--branch", action="store",
+                  dest="branch", default="", help="branch name to select (optional)")
 parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple (needs --name flag)")
 parser.add_option("--create", action="store_true",
-                  dest="create", default=False, help="create the ntuple template (needs --file and --name flag)")
+                  dest="create", default=False, help="create the ntuple template (needs --file and --name flags, optional --branchname flag)")
 parser.add_option("--save", action="store_true",
                   dest="save", default=False, help="save the ntuple template (needs --name flag)")
+parser.add_option("--find", action="store_true",
+                  dest="find", default=False, help="find the ntuple template name (needs --file flag, optional --branchname flag)")
 (option, args) = parser.parse_args()
 
 # Get the new ntuple name
@@ -46,8 +51,9 @@ name = option.name
 delete = option.delete
 create = option.create
 FILE = option.file
-branchname = option.branchname
+branchname = option.branch
 save = option.save
+find = option.find
 
 full_path = os.path.realpath(__file__)
 filePath, fileName = os.path.split(full_path)
@@ -825,7 +831,7 @@ ___to_be_filled___
         '''.format(pt=var_met["pt"], phi=var_met["phi"]))
         print("Met variables not found!!!")
 
-    fToBeFilledContent=fToBeFilled.file.read()
+    fToBeFilledContent = fToBeFilled.file.read()
     fToBeFilled.file.write(fToBeFilledContent+"\n// FILLED CONTENT END")
 
     fToBeFilled.file.close()
@@ -868,6 +874,7 @@ def save_template():
     print("saved "+h_file)
     fC_new.close()
 
+
 def delete_template():
     if not name:
         print("delete option needs name option!")
@@ -886,11 +893,89 @@ def delete_template():
     else:
         print("nothing "+h_file)
 
+
+def find_template():
+    if not FILE:
+        print("find option needs file option!")
+        sys.exit(0)
+
+    f = TFile(FILE)
+    listKeys = f.GetListOfKeys()
+
+    leaves = ""
+    branchName = ""
+    tree = ""
+    treeName = ""
+    treeTitle = ""
+
+    if branchname:
+        try:
+            tree = f.Get(branchname)
+            treeName = tree.GetName()
+            treeTitle = tree.GetTitle()
+        except:
+            print("Tree name is incorrect")
+            sys.exit(0)
+        try:
+            leaves = tree.GetListOfLeaves()
+            branchName = branchname
+            print("Selected branch name: "+branchName)
+        except:
+            print(branchname+" has no leaf, so it was skipped")
+    else:
+        for key in listKeys:
+            try:
+                tree = f.Get(key.GetName())
+                treeName = tree.GetName()
+                treeTitle = tree.GetTitle()
+            except:
+                print("Tree name is incorrect")
+                sys.exit(0)
+
+            try:
+                leaves = tree.GetListOfLeaves()
+                branchName = key.GetName()
+                print("Selected branch name: "+branchName)
+            except:
+                print(key.GetName()+" has no leaf, so it was skipped")
+                continue
+            break
+
+    if branchName == "":
+        print("Please select true type")
+        sys.exit(0)
+
+    _variables = ['muon', 'electron', 'photon', 'jet',
+                  'tau', 'ljet', 'truth', 'combo', 'constits', 'met']
+    leaves_names = []
+
+    for leaf in leaves:
+        leaves_names.append(leaf.GetName())
+
+    folder_names = os.listdir(templates_dir)
+    for folder_name in folder_names:
+        counter = 0
+        with open(templates_dir+"/"+folder_name+"/variables_use.json", 'r') as variables_use:
+            variables = json.loads(variables_use.read())
+            for _var in _variables:
+                for var in variables[_var]:
+                    if var != "_fields_":
+                        if variables[_var][var].lower() not in list(map(lambda x: x.lower(), leaves_names)):
+                            counter += 1
+            variables_use.close()
+        if counter == 0:
+            print("Match found with "+folder_name+" template")
+        else:
+            print("Counter found mismatch "+str(counter)+" times in "+folder_name+" template")
+
+
 if create:
     create_template()
 elif save:
     save_template()
 elif delete:
     delete_template()
+elif find:
+    find_template()
 else:
     print("nothing, please get help from 'python3 addntuple.py -h'")
