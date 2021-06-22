@@ -1,10 +1,9 @@
 '''
 Script for adding (or deleting) new ntuples into CutLang
-run as python3 addntuple.py
-To create an ntuple template, run python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branch <branchname>]
-To save an already added ntuple, run python3 addntuple.py --name <ntuplename> --save
-To delete an already added ntuple, run python3 addntuple.py --name <ntuplename> --delete
-To find an already added ntuple, run python3 addntuple.py --file <rootfile> --find [--branch <branchname>]
+To create an ntuple template, run python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
+To delete an already added ntuple, run python3 addntuple.py --delete --name <ntuplename>
+To find an already added ntuple, run python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
+To save an already added ntuple, run python3 addntuple.py --save --name <ntuplename>
 To edit template, change templates/<ntuplename>
 '''
 
@@ -19,15 +18,15 @@ from time import gmtime, strftime
 
 # Parsing options
 usage = '''
-python3 %prog --[name | file | branch | delete | create | save]
+python3 %prog --<create | delete | find | save> --[name | file | branch]
 To create an ntuple template, run:
-    python3 addntuple.py --name <ntuplename> --file <rootfile> --create [--branch <branchname>]
-To save an already added ntuple, run:
-    python3 addntuple.py --name <ntuplename> --save
+    python3 addntuple.py --create --name <ntuplename> --file <rootfile> [--branch <branchname>]
 To delete an already added ntuple, run:
-    python3 addntuple.py --name <ntuplename> --delete
+    python3 addntuple.py --delete --name <ntuplename>
 To find an already added ntuple, run:
-    python3 addntuple.py --file <rootfile> --find [--branch <branchname>]
+    python3 addntuple.py --find --file <rootfile> [--branch <branchname>]
+To save an already added ntuple, run:
+    python3 addntuple.py --save --name <ntuplename>
 '''
 parser = OptionParser(usage=usage)
 parser.add_option("--name", action="store",
@@ -971,11 +970,11 @@ def find_template():
 
 if create:
     create_template()
-elif save:
-    save_template()
 elif delete:
     delete_template()
 elif find:
     find_template()
+elif save:
+    save_template()
 else:
     print("nothing, please get help from 'python3 addntuple.py -h'")
