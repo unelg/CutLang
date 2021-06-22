@@ -12,20 +12,20 @@ from optparse import OptionParser
 from ROOT import TFile, gInterpreter, gSystem, gROOT
 import csv
 import os
-import datetime
 import json
+from time import gmtime, strftime
 
 # Parsing options
-usage = "Usage: python3 %prog <ntuplename>"
+usage = "Usage: python3 %prog <ntuplename> --[file | create | branchname]"
 parser = OptionParser(usage=usage)
 parser.add_option("--file", action="store",
                   dest="file", default="", help="root file")
 parser.add_option("--branchname", action="store",
-                  dest="branchname", default="", help="root file selected tree key")
+                  dest="branchname", default="", help="branch name to select (optional)")
 parser.add_option("--delete", action="store_true",
                   dest="delete", default=False, help="delete the ntuple")
 parser.add_option("--create", action="store_true",
-                  dest="create", default=False, help="create the ntuple template")
+                  dest="create", default=False, help="create the ntuple template (needs --file flag)")
 (option, args) = parser.parse_args()
 
 # Get the new ntuple name
@@ -49,6 +49,8 @@ h_file = workPath+'/analysis_core/'+name+'.h'
 
 templates_dir = filePath+'/templates'
 templates_dir_with_name = filePath+'/templates/'+name
+
+dateNow=strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 
 class FILE_HELPER:
@@ -109,7 +111,7 @@ class FILE_HELPER:
         return lines[find_line]
 
 
-def create_template():
+def create_template(recreate=False):
     if not FILE:
         print("create option needs file option!")
         sys.exit(0)
@@ -131,6 +133,33 @@ def create_template():
     ##gSystem.Load(workPath+"/analysis_core/analysis_core.so")
     #gROOT.LoadMacro(workPath+"/analysis_core/AnalysisController.h")
     #gSystem.Load(workPath+"/analysis_core/AnalysisController")
+
+    if os.path.exists(templates_dir_with_name+"/"+name+".C") and recreate == False:
+        question = 'Ntuple template for ' + name + \
+            ' already exists.  Do you want to recreate it?'
+        yes = {'yes', 'y', 'ye', ''}
+        no = {'no', 'n'}
+        ianswer = -1
+        while ianswer == -1:
+            answer = str(input(question+' (y/n): ')).lower().strip()
+            if answer[0] in yes:
+                print('Recreating '+templates_dir_with_name+"/"+name+".C")
+                ianswer = 1
+                file_names = os.listdir(templates_dir_with_name)
+                for file_name in file_names:
+                    if file_name != "history":
+                        if not os.path.exists(templates_dir_with_name+"/history/"+dateNow):
+                            os.makedirs(templates_dir_with_name+"/history/"+dateNow)
+                        os.rename(templates_dir_with_name+"/"+file_name,
+                                templates_dir_with_name+"/history/"+dateNow+"/"+file_name)
+                create_template(True)
+                sys.exit(0)
+            if answer[0] in no:
+                print('Keeping '+templates_dir_with_name +
+                      "/"+name+".C"+' and exiting.')
+                ianswer = 0
+                sys.exit(0)
+
     f = TFile(FILE)
     listKeys = f.GetListOfKeys()
 
@@ -203,6 +232,11 @@ def create_template():
         os.makedirs(templates_dir)
     if not os.path.exists(templates_dir_with_name):
         os.makedirs(templates_dir_with_name)
+    if not os.path.exists(templates_dir_with_name+"/history"):
+        os.makedirs(templates_dir_with_name+"/history")
+        history_gitkeepF = open(
+            templates_dir_with_name+"/history/.gitkeep", "w")
+        history_gitkeepF.close()
 
     tree.MakeClass(name)
     os.rename(os.getcwd()+"/"+name+".C", templates_dir_with_name+"/"+name+".C")
@@ -218,7 +252,7 @@ def create_template():
 // from TTree {treeName}/{treeTitle}
 // found on file: {file}
 //////////////////////////////////////////////////////////
-'''.format(file=FILE, treeName=treeName, treeTitle=treeTitle, now=datetime.datetime.now())+content)
+'''.format(file=FILE, treeName=treeName, treeTitle=treeTitle, now=dateNow)+content)
 
     loop_selector = "void "+name+"::Loop()"
 
