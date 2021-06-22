@@ -16,8 +16,10 @@ import json
 from time import gmtime, strftime
 
 # Parsing options
-usage = "Usage: python3 %prog <ntuplename> --[file | create | branchname]"
+usage = "Usage: python3 %prog <ntuplename> --[name | file | create | branchname]"
 parser = OptionParser(usage=usage)
+parser.add_option("--name", action="store",
+                  dest="name", default="", help="template name")
 parser.add_option("--file", action="store",
                   dest="file", default="", help="root file")
 parser.add_option("--branchname", action="store",
@@ -29,11 +31,7 @@ parser.add_option("--create", action="store_true",
 (option, args) = parser.parse_args()
 
 # Get the new ntuple name
-if len(args) < 1:
-    print("Please specify the name of the new ntuple")
-    print("For help, run python3 addntuple.py -h")
-    sys.exit()
-name = args[0]
+name = option.name
 delete = option.delete
 create = option.create
 FILE = option.file
@@ -50,7 +48,7 @@ h_file = workPath+'/analysis_core/'+name+'.h'
 templates_dir = filePath+'/templates'
 templates_dir_with_name = filePath+'/templates/'+name
 
-dateNow=strftime("%Y-%m-%d %H:%M:%S", gmtime())
+dateNow = strftime("%Y-%m-%d_%H-%M-%S", gmtime())
 
 
 class FILE_HELPER:
@@ -115,6 +113,9 @@ def create_template(recreate=False):
     if not FILE:
         print("create option needs file option!")
         sys.exit(0)
+    if not name:
+        print("create option needs name option!")
+        sys.exit(0)
     #gInterpreter.AddIncludePath(workPath+"/analysis_core/")
     #gSystem.AddIncludePath("-I. -I"+workPath+"/analysis_core")
     #gROOT.LoadMacro(workPath+"/analysis_core/dbx_electron.h")
@@ -149,9 +150,10 @@ def create_template(recreate=False):
                 for file_name in file_names:
                     if file_name != "history":
                         if not os.path.exists(templates_dir_with_name+"/history/"+dateNow):
-                            os.makedirs(templates_dir_with_name+"/history/"+dateNow)
+                            os.makedirs(templates_dir_with_name +
+                                        "/history/"+dateNow)
                         os.rename(templates_dir_with_name+"/"+file_name,
-                                templates_dir_with_name+"/history/"+dateNow+"/"+file_name)
+                                  templates_dir_with_name+"/history/"+dateNow+"/"+file_name)
                 create_template(True)
                 sys.exit(0)
             if answer[0] in no:
@@ -263,6 +265,7 @@ def create_template(recreate=False):
 #include "dbx_muon.h"
 #include "dbx_jet.h"
 #include "dbx_tau.h"
+#include "dbx_truth.h"
 #include "dbx_a.h"
 #include "DBXNtuple.h"
 #include "analysis_core.h"
@@ -310,13 +313,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     evt_data anevt;
     
     //temporary variables
-    TLorentzVector  alv;
-    //TLorentzVector dummyTlv(0.,0.,0.,0.);
     TVector2 met;
-    dbxJet      *adbxj;
-    dbxElectron *adbxe;
-    dbxMuon     *adbxm;
-    dbxPhoton   *adbxp;
 
 // <<< GetPhysicsObjects <<<
 
@@ -450,17 +447,6 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         writer.writerows(rows)
         f.close()
 
-    #muon -> muon
-    #electron -> electron
-    #photon -> photon
-    #jet -> jet
-    #tau -> tau
-    #ljet -> fatjet
-    #truth -> genPart
-    #combo ->
-    #constits ->
-    #met -> met
-
     variables = {
         'muon': {
             '_fields_': ['muon', 'mu']
@@ -579,20 +565,20 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         json.dump(variables, json_file, indent=4, sort_keys=True)
         json_file.close()
 
-    print("\n")
-    print("<<<<<<<<< usedRows <<<<<<<<<")
-    usedRowsName.sort()
-    print(usedRowsName)
-    print(">>>>>>>>> usedRows >>>>>>>>>")
-    print("\n")
-    print("<<<<<<<<< unusedRows <<<<<<<<<")
-    unusedRowsName.sort()
-    print(unusedRowsName)
-    print(">>>>>>>>> unusedRows >>>>>>>>>")
-    print("\n")
-    print("<<<<<<<<< variables <<<<<<<<<")
-    print(json.dumps(variables, sort_keys=True))
-    print(">>>>>>>>> variables >>>>>>>>>")
+    #print("\n")
+    #print("<<<<<<<<< usedRows <<<<<<<<<")
+    #usedRowsName.sort()
+    #print(usedRowsName)
+    #print(">>>>>>>>> usedRows >>>>>>>>>")
+    #print("\n")
+    #print("<<<<<<<<< unusedRows <<<<<<<<<")
+    #unusedRowsName.sort()
+    #print(unusedRowsName)
+    #print(">>>>>>>>> unusedRows >>>>>>>>>")
+    #print("\n")
+    #print("<<<<<<<<< variables <<<<<<<<<")
+    #print(json.dumps(variables, sort_keys=True))
+    #print(">>>>>>>>> variables >>>>>>>>>")
 
     fToBeFilled = open(filePath+"/templates/"+name +
                        "/"+name+"_to_be_filled.C", "w")
@@ -601,16 +587,196 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
         filePath+"/templates/"+name + "/"+name+"_to_be_filled.C")
 
     fToBeFilled.file.write(
-        '''
-// !!!TEMP!!!
-#ifdef __DEBUG__
-std::cout << "FatJets:"<<nFatJet<<std::endl;
-#endif
-// !!!TEMP!!!
-'''
-    )
+        '''//////////////////////////////////////////////////////////
+// This file has been automatically generated on
+// {now} by CutLang
+// from TTree {treeName}/{treeTitle}
+// found on file: {file}
+//////////////////////////////////////////////////////////
+
+    //temporary variables
+    TLorentzVector  alv;
+    //TLorentzVector dummyTlv(0.,0.,0.,0.);
+'''.format(file=FILE, treeName=treeName, treeTitle=treeTitle, now=dateNow))
+
+    def TLorentzVectorSetter(particle):
+        alvTLorentzVector = ""
+        if ("px" in particle and "py" in particle and "pz" in particle and "e" in particle):
+            alvTLorentzVector = "alv.SetPxPyPzE("+particle["px"]+"[i], "+particle["py"] + \
+                "[i], "+particle["pz"]+"[i], " + \
+                particle["e"]+"[i]); // all in GeV"
+        elif ("px" in particle and "py" in particle and "pz" in particle and "m" in particle):
+            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"]+"[i], "+particle["py"] + \
+                "[i], "+particle["pz"]+"[i], " + \
+                particle["m"]+"[i]); // all in GeV"
+        elif ("pt" in particle and "eta" in particle and "phi" in particle and "e" in particle):
+            alvTLorentzVector = "alv.SetPtEtaPhiE("+particle["pt"]+"[i], "+particle["eta"] + \
+                "[i], "+particle["phi"]+"[i], " + \
+                particle["e"]+"[i]); // all in GeV"
+        elif ("pt" in particle and "eta" in particle and "phi" in particle and "m" in particle):
+            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"]+"[i], "+particle["eta"] + \
+                "[i], "+particle["phi"]+"[i],  " + \
+                particle["m"]+"[i]); // all in GeV"
+        elif ("px" in particle and "py" in particle and "pz" in particle):
+            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"]+"[i], "+particle["py"] + \
+                "[i], "+particle["pz"]+"[i],  (105.658/1E3)); // all in GeV"
+        elif ("pt" in particle and "eta" in particle and "phi" in particle):
+            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"]+"[i], "+particle["eta"] + \
+                "[i], "+particle["phi"]+"[i],  (105.658/1E3)); // all in GeV"
+        return alvTLorentzVector
+
+	#int setParticleIndx ( int );
+	#int setTlv( TLorentzVector );
+    #void setPPPE(float px, float py, float pz, float Ee ){p_lvector.SetPxPyPzE(px, py, pz, Ee ); }
+	#void setAttribute(int k, double v) {
+    #              if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
+    #              } else { p_attribute[k]=v; }
+    #    }
+    dbxParticleSetList = ["Charge", "PdgID", "EtCone", "PtCone", "Flavor", "IsTight", "ScaleFactor", "ScaleFactorReco", "ScaleFactorId", "ScaleFactorTrig", "ScaleFactorTrigMcEff",
+                          "ScaleFactorIso", "ScaleFactorUncertainty", "ScaleFactorUncertaintyUp", "ScaleFactorUncertaintyDown", "ScaleFactorUncertaintyDown", "scaleLorentzVector", "Z0"]
+    dbxAllParticleSetList = {
+        "muon": ["MuTriggerMatch", "MuIdTheta", "MuIdPhi", "TopMuInTrigger", "PtMsup", "PtMsdown", "PtIdup", "PtIddown", "PtScup", "PtScdown",
+                 "d0", "delta_z0_sintheta", "true_type", "true_origin", "trigMatch_HLT_mu26_ivarmedium", "trigMatch_HLT_mu50", "trigMatch_HLT_mu20_iloose_L1MU15", "isZCand"],
+        "electron": ["ElTriggerDR", "ElTriggerMatch", "TrkTheta", "TrkEta", "TrkPhi", "BestEt", "PtCone30", "EtCone20", "Ep_elE_up", "Ep_elE_down",
+                     "ClusterE", "ClusterEta", "d0sig", "delta_z0_sintheta", "true_type", "true_origin", "true_typebkg", "true_originbkg", "trigMatch_HLT_e60_lhmedium_nod0", "trigMatch_HLT_e26_lhtight_nod0_ivarloose", "trigMatch_HLT_e140_lhloose_nod0", "trigMatch_HLT_e60_lhmedium", "trigMatch_HLT_e24_lhmedium_L1EM20VH", "trigMatch_HLT_e120_lhloose", "isZCand"],
+        "photon": ["ElTriggerDR", "ElTriggerMatch", "TrkTheta", "TrkEta", "TrkPhi", "BestEt", "PtCone30", "EtCone20", "Ep_elE_up", "Ep_elE_down",
+                   "ClusterE", "ClusterEta"],
+        #void setNocalibjet       (TLorentzVector lv){p_Nocalibjet=lv; }
+        "jet": ["Sv0mass", "Sv0nt2", "Sv0svok", "Sv0ntrk", "Sv0ntrkv", "Sv0ntrkj", "Sv0efrc", "JVtxf", "EmEta", "EmPhi",
+                "EtaCorr", "JesuRelativePos", "JesuRelativeNeg", "JerUncert", "JetFrac", "JLabel", "Jee_status", "Calibjetscale", "BJetEscalePos", "BJetEscaleNeg",
+                "_isbtagged_77", "_isTautagged", "mv2c00", "mv2c10", "mv2c20", "ip3dsv1", "jvt", "truthflav", "isTrueHS"],
+        "tau": ["Isolation"],
+        "ljet": [],
+        "truth": []
+    }
+
+    def adbx_fill(var_particle, particleSize, particleName, _adbxName):
+        _adbxSetSomethingOrAddAttribute = ""
+        for var in var_particle:
+            if var == "_fields_" or var_particle[var] == particleSize:
+                continue
+            if var in list(map(lambda x: x.lower(), dbxParticleSetList)):
+                index = list(
+                    map(lambda x: x.lower(), dbxParticleSetList)).index(var)
+                _adbxSetSomethingOrAddAttribute += _adbxName+"->set" + \
+                    dbxParticleSetList[index] + \
+                    "("+var_particle[var]+"[i]);\n\t\t"
+            elif var in list(map(lambda x: x.lower(), dbxAllParticleSetList[particleName])):
+                index = list(
+                    map(lambda x: x.lower(), dbxAllParticleSetList[particleName])).index(var)
+                _adbxSetSomethingOrAddAttribute += _adbxName+"->set" + \
+                    dbxAllParticleSetList[particleName][index] + \
+                    "("+var_particle[var]+"[i]);\n\t\t"
+            else:
+                _adbxSetSomethingOrAddAttribute += _adbxName+"->addAttribute(" + \
+                    var_particle[var]+"[i]);\n\t\t"
+        return _adbxSetSomethingOrAddAttribute
+
+    def fill_something_with_event_size(particleName, __adbxName, _dbxName):
+        var_particle = variables[particleName]
+        if len(var_particle) > 1:
+            if ("size" in var_particle or "___" in var_particle):
+                particleSize = ""
+                if "size" in var_particle:
+                    particleSize = var_particle["size"]
+                else:
+                    particleSize = var_particle["___"]
+                if not ("px" not in var_particle and "py" not in var_particle and "pz" not in var_particle and "e" not in var_particle and "eta" not in var_particle and "phi" not in var_particle and "m" not in var_particle):
+                    alvTLorentzVector = TLorentzVectorSetter(var_particle)
+                    if len(alvTLorentzVector) == 0:
+                        print(particleName+" tlorentzvector problem")
+                    else:
+                        adbxSetSomethingOrAddAttribute = adbx_fill(
+                            var_particle, particleSize, particleName, __adbxName)
+
+                        fToBeFilled.file.write('''
+    // >>> {particleNameUpper} >>>
+
+    {_dbxName} *{__adbxName};
+    for (unsigned int i=0; i<{particleSize}; i++) {{
+        {alvTLorentzVector}
+
+        {__adbxName} = new {_dbxName}(alv);
+
+        {adbxSetSomethingOrAddAttribute}
+
+        {__adbxName}->setParticleIndx(i);
+        muons.push_back(*{__adbxName});
+        delete {__adbxName};
+    }}
+
+    DEBUG("{particleNameUpper} OK\\n")
+
+    // <<< {particleNameUpper} <<<
+                        '''.format(_dbxName=_dbxName, particleNameUpper=particleName.upper(), particleSize=particleSize, alvTLorentzVector=alvTLorentzVector, adbxSetSomethingOrAddAttribute=adbxSetSomethingOrAddAttribute, __adbxName=__adbxName))
+                else:
+                    print(particleName+" px,py,pz,e,eta,phi,m not found!")
+
+            else:
+                print(particleName+" size not found!")
+        else:
+            print(particleName+" not found!!!")
+    #muon -> muon
+    fill_something_with_event_size("muon", "adbxm", "dbxMuon")
+
+    #electron -> electron
+    fill_something_with_event_size("electron", "adbxe", "dbxElectron")
+
+    #photon -> photon
+    fill_something_with_event_size("photon", "adbxp", "dbxPhoton")
+
+    #jet -> jet
+    fill_something_with_event_size("jet", "adbxj", "dbxJet")
+
+    #tau -> tau
+    fill_something_with_event_size("tau", "adbxt", "dbxTau")
+
+    #ljet -> fatjet
+    fill_something_with_event_size("ljet", "adbxj", "dbxJet")
+
+    #truth -> genPart
+    fill_something_with_event_size("truth", "adbxgen", "dbxTruth")
+
+    #combo -> ???
+
+    #constits -> ???
+
+    #met -> met (et,phi | px,py | met,phi | pt,phi)
+    var_met = variables["met"]
+    if "et" in var_met and "phi" in var_met:
+        fToBeFilled.file.write('''
+    // >>> MET >>>
+    met.SetMagPhi({et},  {pt}); //mev-->gev
+    // <<< MET <<<
+        '''.format(et=var_met["et"], pt=var_met["pt"]))
+    elif "px" in var_met and "py" in var_met:
+        fToBeFilled.file.write('''
+    // >>> MET >>>
+    met.SetMagPhi({px},  {py}); //mev-->gev
+    // <<< MET <<<
+        '''.format(px=var_met["px"], py=var_met["py"]))
+    elif "met" in var_met and "phi" in var_met:
+        fToBeFilled.file.write('''
+    // >>> MET >>>
+    met.SetMagPhi({met},  {phi}); //mev-->gev
+    // <<< MET <<<
+        '''.format(met=var_met["met"], phi=var_met["phi"]))
+    elif "pt" in var_met and "phi" in var_met:
+        fToBeFilled.file.write('''
+    // >>> MET >>>
+    met.SetMagPhi({pt},  {phi}); //mev-->gev
+    // <<< MET <<<
+        '''.format(pt=var_met["pt"], phi=var_met["phi"]))
+    else:
+        print("Met variables not found!!!")
 
     fToBeFilled.file.close()
+
+    print(" ********** "+name+" template created at " +
+          templates_dir_with_name+" ********** ")
+    if recreate:
+        print(" ********** "+"old template was moved to " +
+              templates_dir_with_name+"/history/"+dateNow+" ********** ")
 
 
 if create:
