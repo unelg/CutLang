@@ -1,6 +1,6 @@
 channels:
   - conda-forge
 dependencies:
-  - root=6.18.04
+  - root=6.22.02
   - bison
   - flex
