@@ -247,6 +247,12 @@ def create_template(recreate=False):
         else:
             leafTitleType = "___NONE___"
         leafNData = leaf.GetNdata()
+
+        # cms open data trick
+        if leafName == "Photons_E":
+            leafName = "Photon_E"
+        # cms open data trick
+
         rows.append({'type_name': leafTypeName, 'branch_name': leafBranchName, 'name': leafName,
                      'title': leafTitle, 'title_type': leafTitleType, 'n_data': leafNData})
 
@@ -315,7 +321,7 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentri
     vector<dbxJet>      jets;
     vector<dbxTau>      taus;
     vector<dbxJet>     ljets;
-    vector<dbxTruth>    truth;
+    vector<dbxTruth>    truths;
     vector<dbxParticle> combos;
     vector<dbxParticle> constits;
 
@@ -412,25 +418,27 @@ void {name}::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentri
 ___to_be_filled___
 
     //------------ auxiliary information -------
-    anevt.run_no=runNumber;
+    //anevt.run_no=runNumber;
+    //anevt.user_evt_weight=1.0;
+    //anevt.lumiblk_no=1;
+    //anevt.top_hfor_type=0;
+    //anevt.event_no=eventNumber;
+    //anevt.TRG_e= trigE;
+    //anevt.TRG_m= trigM;
+    //anevt.TRG_j= 0;
+    //anevt.vxp_maxtrk_no= 9;
+    //anevt.badjet=0;
+    //anevt.mcevt_weight=mcWeight;
+    //anevt.pileup_weight=1.0;
+    //anevt.z_vtx_weight = 1.0;
+    //anevt.weight_bTagSF_77 = scaleFactor_BTAG;
+    //anevt.weight_leptonSF = scaleFactor_LepTRIGGER;
+    //anevt.vxpType=0;
+    //anevt.lar_Error=0;
+    //anevt.core_Flags=0;
+    //anevt.maxEvents=nentries;
+    
     anevt.user_evt_weight=1.0;
-    anevt.lumiblk_no=1;
-    anevt.top_hfor_type=0;
-    anevt.event_no=eventNumber;
-    anevt.TRG_e= trigE;
-    anevt.TRG_m= trigM;
-    anevt.TRG_j= 0;
-    anevt.vxp_maxtrk_no= 9;
-    anevt.badjet=0;
-    anevt.mcevt_weight=mcWeight;
-    anevt.pileup_weight=1.0;
-    anevt.z_vtx_weight = 1.0;
-    anevt.weight_bTagSF_77 = scaleFactor_BTAG;
-    anevt.weight_leptonSF = scaleFactor_LepTRIGGER;
-    anevt.vxpType=0;
-    anevt.lar_Error=0;
-    anevt.core_Flags=0;
-    anevt.maxEvents=nentries;
 
     DEBUG("Filling finished\\n")
     
@@ -440,7 +448,7 @@ ___to_be_filled___
     gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
     jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
     ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-    truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+    truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truths) );
     combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
     constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constits) );
     met_map.insert( pair <string,TVector2>             ("MET",           met) );
@@ -457,7 +465,19 @@ ___to_be_filled___
     fh = FILE_HELPER(templates_dir_with_name+"/"+name+".h")
 
     fh.find_and_write(
-        "// Header file for the classes stored in the TTree if any.", '#include "dbxParticle.h"\n')
+        "// Header file for the classes stored in the TTree if any.", 
+'''#include "dbxParticle.h"
+#include "Node.h"
+#include "TRefArray.h"
+#include "TRef.h"
+''')
+    
+    fh.find_and_write('   virtual void     Loop();', 
+'''   virtual void     GetPhysicsObjects(Long64_t entry, AnalysisObjects *a0, Long64_t nentries );
+''')
+    fh.find_and_write_with_delete('   virtual void     Loop();', 
+'''      virtual void     Loop(analy_struct aselect, char *extname);
+''')
 
     fh.file.close()
 
@@ -622,27 +642,27 @@ ___to_be_filled___
     def TLorentzVectorSetter(particle):
         alvTLorentzVector = ""
         if ("px" in particle and "py" in particle and "pz" in particle and "e" in particle):
-            alvTLorentzVector = "alv.SetPxPyPzE("+particle["px"]+"[i], "+particle["py"] + \
-                "[i], "+particle["pz"]+"[i], " + \
-                particle["e"]+"[i]); // all in GeV"
+            alvTLorentzVector = "alv.SetPxPyPzE("+particle["px"].replace(".", "_")+"[i], "+particle["py"].replace(".", "_") + \
+                "[i], "+particle["pz"].replace(".", "_")+"[i], " + \
+                particle["e"].replace(".", "_")+"[i]); // all in GeV"
         elif ("px" in particle and "py" in particle and "pz" in particle and "m" in particle):
-            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"]+"[i], "+particle["py"] + \
-                "[i], "+particle["pz"]+"[i], " + \
-                particle["m"]+"[i]); // all in GeV"
+            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"].replace(".", "_")+"[i], "+particle["py"].replace(".", "_") + \
+                "[i], "+particle["pz"].replace(".", "_")+"[i], " + \
+                particle["m"].replace(".", "_")+"[i]); // all in GeV"
         elif ("pt" in particle and "eta" in particle and "phi" in particle and "e" in particle):
-            alvTLorentzVector = "alv.SetPtEtaPhiE("+particle["pt"]+"[i], "+particle["eta"] + \
-                "[i], "+particle["phi"]+"[i], " + \
-                particle["e"]+"[i]); // all in GeV"
+            alvTLorentzVector = "alv.SetPtEtaPhiE("+particle["pt"].replace(".", "_")+"[i], "+particle["eta"].replace(".", "_") + \
+                "[i], "+particle["phi"].replace(".", "_")+"[i], " + \
+                particle["e"].replace(".", "_")+"[i]); // all in GeV"
         elif ("pt" in particle and "eta" in particle and "phi" in particle and "m" in particle):
-            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"]+"[i], "+particle["eta"] + \
-                "[i], "+particle["phi"]+"[i],  " + \
-                particle["m"]+"[i]); // all in GeV"
+            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"].replace(".", "_")+"[i], "+particle["eta"].replace(".", "_") + \
+                "[i], "+particle["phi"].replace(".", "_")+"[i],  " + \
+                particle["m"].replace(".", "_")+"[i]); // all in GeV"
         elif ("px" in particle and "py" in particle and "pz" in particle):
-            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"]+"[i], "+particle["py"] + \
-                "[i], "+particle["pz"]+"[i],  (105.658/1E3)); // all in GeV"
+            alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"].replace(".", "_")+"[i], "+particle["py"].replace(".", "_") + \
+                "[i], "+particle["pz"].replace(".", "_")+"[i],  (105.658/1E3)); // all in GeV"
         elif ("pt" in particle and "eta" in particle and "phi" in particle):
-            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"]+"[i], "+particle["eta"] + \
-                "[i], "+particle["phi"]+"[i],  (105.658/1E3)); // all in GeV"
+            alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"].replace(".", "_")+"[i], "+particle["eta"].replace(".", "_") + \
+                "[i], "+particle["phi"].replace(".", "_")+"[i],  (105.658/1E3)); // all in GeV"
         return alvTLorentzVector
 
 	#int setParticleIndx ( int );
@@ -680,17 +700,17 @@ ___to_be_filled___
                     map(lambda x: x.lower(), dbxParticleSetList)).index(var)
                 _adbxSetSomethingOrAddAttribute += _adbxName+"->set" + \
                     dbxParticleSetList[index] + \
-                    "("+var_particle[var]+"[i]);\n\t\t"
+                    "("+var_particle[var].replace(".", "_")+"[i]);\n\t\t"
             elif var in list(map(lambda x: x.lower(), dbxAllParticleSetList[particleName])):
                 index = list(
                     map(lambda x: x.lower(), dbxAllParticleSetList[particleName])).index(var)
                 _adbxSetSomethingOrAddAttribute += _adbxName+"->set" + \
                     dbxAllParticleSetList[particleName][index] + \
-                    "("+var_particle[var]+"[i]);\n\t\t"
+                    "("+var_particle[var].replace(".", "_")+"[i]);\n\t\t"
             else:
                 if var != "px" and var != "py" and var != "pz" and var != "e" and var != "pt" and var != "eta" and var != "phi" and var != "m":
                     _adbxSetSomethingOrAddAttribute += _adbxName+"->addAttribute(" + \
-                        var_particle[var]+"[i]);\n\t\t"
+                        var_particle[var].replace(".", "_")+"[i]);\n\t\t"
         return _adbxSetSomethingOrAddAttribute
 
     def fill_something_with_event_size(particleName, __adbxName, _dbxName):
@@ -786,7 +806,7 @@ ___to_be_filled___
     fill_something_with_event_size("tau", "adbxt", "dbxTau")
 
     #ljet -> fatjet
-    fill_something_with_event_size("ljet", "adbxj", "dbxJet")
+    fill_something_with_event_size("ljet", "adbxlj", "dbxJet")
 
     #truth -> genPart
     fill_something_with_event_size("truth", "adbxgen", "dbxTruth")
@@ -802,25 +822,25 @@ ___to_be_filled___
     // >>> MET >>>
     met.SetMagPhi({et},  {phi}); //mev-->gev
     // <<< MET <<<
-        '''.format(et=var_met["et"], phi=var_met["phi"]))
+        '''.format(et=var_met["et"].replace(".", "_"), phi=var_met["phi"].replace(".", "_")))
     elif "px" in var_met and "py" in var_met:
         fToBeFilled.file.write('''
     // >>> MET >>>
     met.SetMagPhi({px},  {py}); //mev-->gev
     // <<< MET <<<
-        '''.format(px=var_met["px"], py=var_met["py"]))
+        '''.format(px=var_met["px"].replace(".", "_"), py=var_met["py"].replace(".", "_")))
     elif "met" in var_met and "phi" in var_met:
         fToBeFilled.file.write('''
     // >>> MET >>>
     met.SetMagPhi({met},  {phi}); //mev-->gev
     // <<< MET <<<
-        '''.format(met=var_met["met"], phi=var_met["phi"]))
+        '''.format(met=var_met["met"].replace(".", "_"), phi=var_met["phi"].replace(".", "_")))
     elif "pt" in var_met and "phi" in var_met:
         fToBeFilled.file.write('''
     // >>> MET >>>
     met.SetMagPhi({pt},  {phi}); //mev-->gev
     // <<< MET <<<
-        '''.format(pt=var_met["pt"], phi=var_met["phi"]))
+        '''.format(pt=var_met["pt"].replace(".", "_"), phi=var_met["phi"].replace(".", "_")))
     else:
         fToBeFilled.file.write('''
     /*
@@ -830,13 +850,18 @@ ___to_be_filled___
     // <<< MET <<<
     Met variables not found!!!
     */
-        '''.format(pt=var_met["pt"], phi=var_met["phi"]))
+        '''.format(pt=var_met["pt"].replace(".", "_"), phi=var_met["phi"].replace(".", "_")))
         print("Met variables not found!!!")
 
     fToBeFilledContent = fToBeFilled.file.read()
     fToBeFilled.file.write(fToBeFilledContent+"\n// FILLED CONTENT END")
 
     fToBeFilled.file.close()
+
+    brancF = open(filePath+"/templates/"+name+"/branch_name.txt", "w")
+    brancF.write(branchName)
+    print("saved "+h_file)
+    brancF.close()
 
     print(" ********** "+name+" template created at " +
           templates_dir_with_name+" ********** ")
@@ -845,10 +870,56 @@ ___to_be_filled___
               templates_dir_with_name+"/history/"+dateNow+" ********** ")
 
 
+def fill_claq(branchName):
+    claq = FILE_HELPER(workPath+"/CLA/CLA.Q")
+
+    claq.find_and_write('#include "dbxParticle.h"', '#include "'+name+'.h"\n')
+
+    claq.find_and_write('string inptype;', ' bool use_'+name+'=false;\n')
+
+    inp = claq.find('<< " [-inp LVL0 |').rstrip()
+    claq.find_and_write_with_delete(inp, inp.replace(
+        'LVL0 | ', 'LVL0 | '+name.upper()+' | '))
+
+    claq.find_and_write('else if (inptype == "LVL0")    { use_lvl0 =true;}',
+                        ' else if (inptype == "'+name.upper()+'")    { use_'+name+' =true;}\n')
+
+    claq.find_and_write('}else if (use_lvl0){',
+                        '''     }}else if (use_{name}){{
+   cout << "~Now using {nameUpper} files.~\\n";
+   chain = new TChain("{branchName}");
+'''.format(name=name, nameUpper=name.upper(), branchName=branchName))
+
+    claq.find_and_write('   } else if (use_lvl0){',
+                        '''   }} else if (use_{name}){{
+    {name} *{name}a=new {name}(chain);
+          {name}a->Loop(aselect, username);
+'''.format(name=name, nameUpper=name.upper(), branchName=branchName))
+
+    claq.file.close()
+
+def fill_Makefile():
+    makeFile = FILE_HELPER(workPath+"/CLA/Makefile")
+
+    OBSJ_1 = makeFile.find('OBJS_1        = $(ANLOBJS) lhco.o lvl0.o').rstrip()
+    makeFile.find_and_write_with_delete(OBSJ_1, OBSJ_1.replace(
+        'lvl0.o', 'lvl0.o '+name+'.o'))
+
+    makeFile.file.close()
+
+
 def save_template():
     if not name:
         print("save option needs name option!")
         sys.exit(0)
+
+    if os.path.exists(c_file):
+        print("template already saved")
+        sys.exit(0)
+
+    branchNameF = FILE_HELPER(filePath+"/templates/"+name+"/branch_name.txt")
+    branchName = branchNameF.content()
+    branchNameF.file.close()
 
     fC_to_be_filled = open(filePath+"/templates/"+name +
                            "/"+name+"_to_be_filled.C", "r")
@@ -875,6 +946,28 @@ def save_template():
     fC_new.write(contenth)
     print("saved "+h_file)
     fC_new.close()
+
+    fill_claq(branchName)
+    print("updated "+workPath+"/CLA/CLA.Q")
+
+    fill_Makefile()
+    print("updated "+workPath+"/CLA/Makefile")
+
+    question = 'You will need to recompile the project would you like us to do it for you?'
+    yes = {'yes', 'y', 'ye', ''}
+    no = {'no', 'n'}
+    ianswer = -1
+    while ianswer == -1:
+        answer = str(input(question+' (y/n): ')).lower().strip()
+        if answer[0] in yes:
+            print('Being compiled')
+            ianswer = 1
+            os.system('cd '+workPath+'/CLA && make')
+            sys.exit(0)
+        if answer[0] in no:
+            print('Please recompile the project')
+            ianswer = 0
+            sys.exit(0)
 
 
 def delete_template():
@@ -952,7 +1045,15 @@ def find_template():
     leaves_names = []
 
     for leaf in leaves:
-        leaves_names.append(leaf.GetName())
+
+        leafName=leaf.GetName()
+
+        # cms open data trick
+        if leafName == "Photons_E":
+            leafName = "Photon_E"
+        # cms open data trick
+
+        leaves_names.append(leafName)
 
     folder_names = os.listdir(templates_dir)
     for folder_name in folder_names:
@@ -968,7 +1069,8 @@ def find_template():
         if counter == 0:
             print("Match found with "+folder_name+" template")
         else:
-            print("Counter found mismatch "+str(counter)+" times in "+folder_name+" template")
+            print("Counter found mismatch "+str(counter) +
+                  " times in "+folder_name+" template")
 
 
 if create:
