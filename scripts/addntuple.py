@@ -860,7 +860,7 @@ ___to_be_filled___
 
     brancF = open(filePath+"/templates/"+name+"/branch_name.txt", "w")
     brancF.write(branchName)
-    print("saved "+h_file)
+    print("saved "+filePath+"/templates/"+name+"/branch_name.txt")
     brancF.close()
 
     print(" ********** "+name+" template created at " +
