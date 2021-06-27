@@ -465,18 +465,18 @@ ___to_be_filled___
     fh = FILE_HELPER(templates_dir_with_name+"/"+name+".h")
 
     fh.find_and_write(
-        "// Header file for the classes stored in the TTree if any.", 
-'''#include "dbxParticle.h"
+        "// Header file for the classes stored in the TTree if any.",
+        '''#include "dbxParticle.h"
 #include "Node.h"
 #include "TRefArray.h"
 #include "TRef.h"
 ''')
-    
-    fh.find_and_write('   virtual void     Loop();', 
-'''   virtual void     GetPhysicsObjects(Long64_t entry, AnalysisObjects *a0, Long64_t nentries );
+
+    fh.find_and_write('   virtual void     Loop();',
+                      '''   virtual void     GetPhysicsObjects(Long64_t entry, AnalysisObjects *a0, Long64_t nentries );
 ''')
-    fh.find_and_write_with_delete('   virtual void     Loop();', 
-'''      virtual void     Loop(analy_struct aselect, char *extname);
+    fh.find_and_write_with_delete('   virtual void     Loop();',
+                                  '''      virtual void     Loop(analy_struct aselect, char *extname);
 ''')
 
     fh.file.close()
@@ -659,10 +659,12 @@ ___to_be_filled___
                 particle["m"].replace(".", "_")+"[i]); // all in GeV"
         elif ("px" in particle and "py" in particle and "pz" in particle):
             alvTLorentzVector = "alv.SetPxPyPzM("+particle["px"].replace(".", "_")+"[i], "+particle["py"].replace(".", "_") + \
-                "[i], "+particle["pz"].replace(".", "_")+"[i],  (105.658/1E3)); // all in GeV"
+                "[i], "+particle["pz"].replace(".", "_") + \
+                "[i],  (105.658/1E3)); // all in GeV"
         elif ("pt" in particle and "eta" in particle and "phi" in particle):
             alvTLorentzVector = "alv.SetPtEtaPhiM("+particle["pt"].replace(".", "_")+"[i], "+particle["eta"].replace(".", "_") + \
-                "[i], "+particle["phi"].replace(".", "_")+"[i],  (105.658/1E3)); // all in GeV"
+                "[i], "+particle["phi"].replace(".", "_") + \
+                "[i],  (105.658/1E3)); // all in GeV"
         return alvTLorentzVector
 
 	#int setParticleIndx ( int );
@@ -887,7 +889,7 @@ def fill_claq(branchName):
     claq.find_and_write('}else if (use_lvl0){',
                         '''     }}else if (use_{name}){{
    cout << "~Now using {nameUpper} files.~\\n";
-   chain = new TChain("{branchName}");
+   chain = new TChain("{branchName}"); //{name} anchor
 '''.format(name=name, nameUpper=name.upper(), branchName=branchName))
 
     claq.find_and_write('   } else if (use_lvl0){',
@@ -897,6 +899,7 @@ def fill_claq(branchName):
 '''.format(name=name, nameUpper=name.upper(), branchName=branchName))
 
     claq.file.close()
+
 
 def fill_Makefile():
     makeFile = FILE_HELPER(workPath+"/CLA/Makefile")
@@ -970,10 +973,51 @@ def save_template():
             sys.exit(0)
 
 
+def delete_claq(branchName):
+    claq = FILE_HELPER(workPath+"/CLA/CLA.Q")
+
+    claq.remove_from_file('#include "'+name+'.h"')
+
+    claq.remove_from_file("bool use_"+name+"=false;")
+
+    inp = claq.find('<< " [-inp LVL0 |').rstrip()
+    claq.find_and_write_with_delete(inp, inp.replace(
+        name.upper()+' | ', ''))
+
+    claq.remove_from_file(
+        ' else if (inptype == "'+name.upper()+'")    { use_'+name+' =true;}')
+
+    claq.remove_from_file('}else if (use_'+name+'){')
+    claq.remove_from_file('cout << "~Now using '+name.upper()+' files.~\\n";')
+    claq.remove_from_file(
+        'chain = new TChain("'+branchName+'"); //'+name+" anchor")
+
+    claq.remove_from_file('} else if (use_'+name+'){')
+    claq.remove_from_file(name+' *'+name+'a=new '+name+'(chain);')
+    claq.remove_from_file(name+'a->Loop(aselect, username);')
+
+    claq.file.close()
+
+
+def delete_Makefile():
+    makeFile = FILE_HELPER(workPath+"/CLA/Makefile")
+
+    OBSJ_1 = makeFile.find('OBJS_1        = $(ANLOBJS) lhco.o lvl0.o').rstrip()
+    makeFile.find_and_write_with_delete(OBSJ_1, OBSJ_1.replace(
+        name+'.o ', ''))
+
+    makeFile.file.close()
+
+
 def delete_template():
     if not name:
         print("delete option needs name option!")
         sys.exit(0)
+
+    branchNameF = FILE_HELPER(filePath+"/templates/"+name+"/branch_name.txt")
+    branchName = branchNameF.content()
+    branchNameF.file.close()
+
     # remove exist c_file
     if os.path.exists(c_file):
         os.remove(c_file)
@@ -987,6 +1031,9 @@ def delete_template():
         print("deleted "+h_file)
     else:
         print("nothing "+h_file)
+
+    delete_claq(branchName)
+    delete_Makefile()
 
 
 def find_template():
@@ -1046,7 +1093,7 @@ def find_template():
 
     for leaf in leaves:
 
-        leafName=leaf.GetName()
+        leafName = leaf.GetName()
 
         # cms open data trick
         if leafName == "Photons_E":
