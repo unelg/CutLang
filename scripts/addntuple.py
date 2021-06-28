@@ -848,11 +848,11 @@ ___to_be_filled___
     /*
     Met variables not found!!!
     // >>> MET >>>
-    met.SetMagPhi({pt},  {phi}); //mev-->gev
+    met.SetMagPhi(MET_pt_example,  MET_phi_example); //mev-->gev
     // <<< MET <<<
     Met variables not found!!!
     */
-        '''.format(pt=var_met["pt"].replace(".", "_"), phi=var_met["phi"].replace(".", "_")))
+        ''')
         print("Met variables not found!!!")
 
     fToBeFilledContent = fToBeFilled.file.read()
