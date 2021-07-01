@@ -1,0 +1,9 @@
+name: CutLang
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - root=6.24.0
+  - flex=2.6.4
+  - bison=3.4
+  - make=4.2.1
