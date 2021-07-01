@@ -29,7 +29,7 @@ Requirements
 
 Install the package using
 ```bash
- git clone https://github.com/unelg/CutLang.git
+ git clone https://github.com/shenburak/CutLang.git
  cd CutLang/CLA
  make
  cd ..
@@ -59,7 +59,7 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 
 Compile CutLang, and build and run the container using
 ```bash
- git clone https://github.com/unelg/CutLang.git
+ git clone https://github.com/shenburak/CutLang.git
  cd CutLang/CLA
  make
  cd ..
