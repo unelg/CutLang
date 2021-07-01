@@ -41,3 +41,5 @@ RUN apt install -y bison flex
 RUN echo "source /src/setup.sh" >> ~/.bashrc
 
 WORKDIR /src
+
+CMD [ "tail", "-f", "/dev/null" ]
