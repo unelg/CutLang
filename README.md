@@ -66,4 +66,7 @@ Compile CutLang, and build and run the container using
 Exec the container using (in the another terminal window)
 ```bash
  docker exec -it cutlang-dev bash
+ # then you should run in docker (just first time)
+ cd CLA
+ make
 ```
