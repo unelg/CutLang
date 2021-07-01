@@ -50,3 +50,22 @@ CutLang is run anywhere using the `CLA.sh` script (with **CLA** alias) or using 
 * Number of events is optional.
 
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region.  The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
+
+## Contributing
+
+### Setting up the development environment
+
+#### Using docker
+
+Compile CutLang, and build and run the container using
+```bash
+ git clone https://github.com/unelg/CutLang.git
+ cd CutLang/CLA
+ make
+ cd ..
+ docker-compose up
+```
+Exec the container using (in the another terminal window)
+```bash
+ docker exec -it cutlang-dev bash
+```
