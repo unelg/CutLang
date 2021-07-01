@@ -1,11 +1,11 @@
 version: "3.9"
 
 services:
-  dev:
+  src:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./:/CutLang-dev
+      - ./:/src
     stdin_open: true # docker run -i
     tty: true        # docker run -t
