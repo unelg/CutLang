@@ -2,10 +2,16 @@ version: "3.9"
 
 services:
   src:
+    container_name: cutlang-dev
+    image: cutlang-dev_image
+    # !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
+    # container_name: cutlang
+    # !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
+    # image: shenburak/cutlang
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ./:/src
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+    #stdin_open: true # docker run -i
+    #tty: true        # docker run -t
