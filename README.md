@@ -4,6 +4,14 @@ This is the repository for CutLang V3
 
 ## Installation
 
+### Using conda
+
+Create and activate the environment using
+```bash
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang # download CutLang package and create environment
+ conda activate <my-environment> # activate environment
+```
+Now, you can use CutLang (please see [Running](#running) part)
 ### Using docker
 
 Download the image and run the container using
@@ -39,7 +47,7 @@ Install the package using
  # to keep it active all the time
 ```
 
-## Running
+## <a name="running"></a> Running
 
 CutLang is run anywhere using the `CLA.sh` script (with **CLA** alias) or using the `runs/CLA.py` script
 
@@ -54,6 +62,18 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 ## Contributing
 
 ### Setting up the development environment
+
+#### Using conda
+
+Create and activate the environment using
+```bash
+ conda env create -f environment.yml # create environment with dependencies
+ conda activate CutLang-dev # activate development environment
+ source setup.sh
+ # if you want, you can run
+ # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
+ # to keep it active all the time
+```
 
 #### Using docker
 
