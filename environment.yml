@@ -1,4 +1,4 @@
-name: CutLang
+name: CutLang-dev
 channels:
   - conda-forge
   - defaults
