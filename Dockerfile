@@ -29,7 +29,13 @@ RUN echo "source /root_framework/root/bin/thisroot.sh" >> ~/.bashrc
 
 #SHELL ["/bin/bash", "-c", "source /root_framework/root/bin/thisroot.sh"]
 
-WORKDIR /CutLang
+# !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
+# WORKDIR /CutLang
+# !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
+# COPY . .
+# !!!!!!the following line must be added to the comment line before deploying a new container!!!!!! (for production)
+WORKDIR /src
+# !!!!!!the following line must be added to the comment line before deploying a new container!!!!!! (for production)
 COPY . .
 
 RUN apt install -y bison flex
