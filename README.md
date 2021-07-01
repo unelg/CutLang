@@ -67,6 +67,8 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 
 Create and activate the environment using
 ```bash
+ git clone https://github.com/shenburak/CutLang.git
+ cd CutLang
  conda env create -f environment.yml # create environment with dependencies
  conda activate CutLang-dev # activate development environment
  source setup.sh
@@ -89,4 +91,18 @@ Exec the container using (in the another terminal window)
  # then you should run in docker (just first time)
  cd CLA
  make
+```
+
+### Build and deploy environment
+#### Conda
+
+Requirements
+- [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
+```bash
+ git clone https://github.com/shenburak/CutLang.git
+ cd CutLang
+ conda-build -c conda-forge .
+ # You will see the "anaconda upload /file/path/to/upload" command at the end of the logs after the compile process is finished, you can upload the package to the relevant conda channel by using this.
+ # and then it can be used with:
+ # conda create -c conda-forge -c <your-username> --name <your-environment> cutlang
 ```
