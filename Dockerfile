@@ -33,8 +33,7 @@ WORKDIR /CutLang
 COPY . .
 
 RUN apt install -y bison flex
-# !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
-# RUN source /root_framework/root/bin/thisroot.sh && cd /CutLang/CLA && make
+RUN source /root_framework/root/bin/thisroot.sh && cd /CutLang/CLA && make
 # !!!!!!the following line must be removed from the comment line before deploying a new container!!!!!! (for production)
 # RUN echo "source /CutLang/setup.sh" >> ~/.bashrc
 # !!!!!!the following line must be added to the comment line before deploying a new container!!!!!! (for production)
