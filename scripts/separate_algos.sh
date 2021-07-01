@@ -1,5 +1,9 @@
 #!/bin/bash
 
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
 _SCRIPTS_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 _SCRIPT=`realpath -s $0`
 SCRIPT=`realpath $0`            # /home/.../CutLang/scripts/seperate_algos.sh
