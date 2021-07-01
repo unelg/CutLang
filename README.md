@@ -6,7 +6,7 @@ This is the repository for CutLang V3
 
 ### Using docker
 
-Install the image and run the container using
+Download the image and run the container using
 ```bash
  docker pull shenburak/cutlang # download image
  docker run -d -v $PWD/:/src --name CutLang shenburak/cutlang # run container in current directory from downloaded image
