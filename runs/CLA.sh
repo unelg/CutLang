@@ -53,6 +53,15 @@ case $key in
     cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
     rm pippo
+    
+    if grep -q HistoList "$INIFILE"; then
+        a=$(awk '/HistoList/{ print NR; }' "$INIFILE")
+        echo ${a}
+        histFile=$(awk -v a="$a" 'FNR == a {print $2}' ${INIFILE})
+        echo ${histFile}
+        sed "${a}d" ${INIFILE} > ${INIFILE}.tmp && sed -e "${a}r ${histFile}" ${INIFILE}.tmp && mv ${INIFILE}.tmp ${INIFILE}
+    fi
+
 
     if [ $Nalgo -gt 1 ]; then
      echo Analysis with Multiple Regions
