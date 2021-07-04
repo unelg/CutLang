@@ -38,7 +38,16 @@ case $key in
     cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
     rm pippo
-
+    
+    # for HistoList command
+    while grep -q "HistoList" "$INIFILE"  > /dev/null; #while there is a HistoList command in the .ini file, loop continues
+        do
+        a=($(awk '/HistoList/{ print NR; }' "$INIFILE")) #get the line numbers where HistoList command written
+        b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
+        histFile=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
+        sed "${b}d" ${INIFILE} > ${INIFILE}.tmp && sed -e "${b}r ${histFile}" ${INIFILE}.tmp > ${INIFILE} && rm -f ${INIFILE}.tmp
+    done
+    
     if [ $Nalgo -gt 1 ]; then
      echo Analysis with Multiple Regions
      ../scripts/separate_algos.sh ${INIFILE}
