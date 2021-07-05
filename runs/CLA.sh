@@ -40,12 +40,17 @@ case $key in
     rm pippo
     
     # for HistoList command
-    while grep -q "HistoList" "$INIFILE"  > /dev/null; #while there is a HistoList command in the .ini file, loop continues
-        do
-        a=($(awk '/HistoList/{ print NR; }' "$INIFILE")) #get the line numbers where HistoList command written
+    while grep -q "histoList" "$INIFILE"; do #while there is a histoList command in the .ini file, loop continues
+        a=($(awk '/histoList/{ print NR; }' "$INIFILE")) #get the line numbers where histoList command written
         b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
-        histFile=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
-        sed "${b}d" ${INIFILE} > ${INIFILE}.tmp && sed -e "${b}r ${histFile}" ${INIFILE}.tmp > ${INIFILE} && rm -f ${INIFILE}.tmp
+        histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
+        c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
+        let c++
+        whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
+        while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
+            awk -v c="$c" -v d="${whereToInsert}" 'NR==c{store=$0;next}1;NR==d{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+        done
+        sed "/${histListName}/d" ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
     done
     
     if [ $Nalgo -gt 1 ]; then
