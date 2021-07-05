@@ -4,6 +4,20 @@ This is the repository for CutLang V3
 
 ## Installation
 
+### Using conda + [install.sh](https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh)
+
+Create and install CutLang using
+```bash
+ # Please fill <my-environment> with environment name you want
+ bash -c "$(curl https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh | bash -s install <my-environment>)"
+```
+
+Activate the conda environment using (from new terminal)
+```bash
+ conda activate <my-environment>
+```
+Now, you can use CutLang (please see [Running](#running) part)
+
 ### Using conda
 
 Create and activate the environment using
