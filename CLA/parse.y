@@ -804,11 +804,32 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            }
                                        }
                            }
-    | NUMOF '(' particules ')' {vector<myParticle*> newList;
+        | '{' ID '}' NUMOF  {          map<string,vector<myParticle*> >::iterator itdef=ListParts->find($2);
+                                       map<string,Node*>::iterator it = ObjectCuts->find($2);
+                                       if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
+                                           std::string message = "OBJect not defined: ";
+                                           message += $2;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           if (it != ObjectCuts->end()) {
+                                            int type=((ObjectNode*)it->second)->type;
+                                            $$=new SFuncNode(count, type, it->first, it->second);
+                                           } else { // new type is defined using particle class summation
+                                            vector<myParticle*> newList= itdef->second;
+                                           }
+                                       }
+                           }
+    | NUMOF '(' particules ')' {     vector<myParticle*> newList;
                                      TmpParticle.swap(newList);
                                      DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
                                      $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
-                                   }
+                               }
+    | '{' particules '}' NUMOF {     vector<myParticle*> newList;
+                                     TmpParticle.swap(newList);
+                                     DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
+                                     $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
+                                }
     | FMT2 list3 {                  vector<myParticle*> newList;
                                     TmpParticle.swap(newList);
                                     vector<myParticle*> newList1;
