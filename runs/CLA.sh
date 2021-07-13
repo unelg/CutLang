@@ -44,6 +44,7 @@ case $key in
         a=($(awk '/histoList/{ print NR; }' "$INIFILE")) #get the line numbers where histoList command written
         b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
         histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
+        echo "************", $histListName
         c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
         let c++
         whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
