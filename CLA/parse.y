@@ -1500,6 +1500,13 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
+       | FJET  CONSTITS   {     DEBUG("all fat jet particules \t");
+                                tmp="fjet_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type =consti_t; a->index = 6213; a->collection = "FJET";
+                                TmpParticle.push_back(a);
+                         }
         | FJET '_' index {      tmp="fjet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -1513,7 +1520,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);  
                         }
         | FJET '[' index ':' index ']' {
-                                tmp="bjet_"+to_string((int)$3);
+                                tmp="fjet_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
