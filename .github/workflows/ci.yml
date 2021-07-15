@@ -14,6 +14,11 @@ jobs:
     - name: init-cache-dir
       run: mkdir build ; chmod +x ./.github/workflows/sendgrid.js
       
+    - name: CutLang Dependencies
+      run: |
+        sudo apt update ;
+        sudo apt install flex bison wget make ;
+
     - name: Build CutLang
       run: cd ./CLA ; make
     
