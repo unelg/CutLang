@@ -1,0 +1,1 @@
+FROM shenburak/cutlang:latest

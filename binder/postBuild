@@ -1,8 +1,0 @@
-#!/bin/bash
-
-cd CLA
-make DJUPY=1 
-cd ../runs
-for f in ../analysis_core/*.pcm; do ln -s $f .; done
-ls
-
