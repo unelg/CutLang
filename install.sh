@@ -1,4 +1,3 @@
-#!/bin/bash
 NAME=$2
 if [ $1 = "install" ]; then
     mkdir -p ~/CutLang_repo

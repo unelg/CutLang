@@ -1,3 +1,2 @@
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export PATH=$DIR/runs:$PATH
-alias CLA='CLA.sh'
+export CUTLANG_PATH=$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")
+export PATH=$CUTLANG_PATH/runs:$PATH

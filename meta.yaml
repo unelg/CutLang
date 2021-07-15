@@ -1,37 +1,32 @@
 {% set name = "CutLang" %}
-{% set version = "0.0.1" %}
+{% set version = "0.0.3" %}
 
 package:
   name: "{{ name|lower }}"
   version: "{{ version }}"
 
 source:
-  #url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
-  #sha256: 8c04c11192119b1ef78ea049e0a6f0463e4c48ef00a30160c704337586f3ad7a
   path: .
 
 build:
   number: 0
-  #script: "echo 'test'"
 
 requirements:
   host:
-    - root=6.24.0
+    - root_base=6.24.0
+    - jupyterlab=3.0.16
+    - metakernel=0.27.5
     - flex=2.6.4
     - bison=3.4
     - make=4.2.1
   run:
-    - root=6.24.0
+    - root_base=6.24.0
+    - jupyterlab=3.0.16
+    - metakernel=0.27.5
 
 about:
-  home: The package home page
-  license: BSD
-  license_family: BSD
-  license_file: 
-  summary: "Composable command line interface toolkit"
-  doc_url: 
-  dev_url: 
+  summary: "A Particle Physics Analysis Description Language and Runtime Interpreter"
 
 extra:
   recipe-maintainers:
-    - your-github-id-here
+    - unelg
