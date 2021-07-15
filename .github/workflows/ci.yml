@@ -16,8 +16,8 @@ jobs:
       
     - name: CutLang Dependencies
       run: |
-        sudo apt update ;
-        sudo apt install flex bison wget make ;
+        apt update ;
+        apt install flex bison wget make ;
 
     - name: Build CutLang
       run: cd ./CLA ; make
