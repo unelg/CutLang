@@ -105,6 +105,9 @@ Create and activate the environment using
  cd CutLang
  conda env create -f environment.yml # create environment with dependencies
  conda activate CutLang-dev # activate development environment
+ cd CLA
+ make clean
+ make
  source setup.sh
  # if you want, you can run
  # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
