@@ -1,10 +1,14 @@
 # CutLang
-This is the repository for CutLang V3 
+This is the repository for CutLang V3
+
+*A Particle Physics Analysis Description Language and Runtime Interpreter*
+
+**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/shenburak/CutLang/HEAD)
 
 
 ## Installation
 
-### Using conda + [install.sh](https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh)
+### Using conda + [install.sh](https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh) -> (beta - may not work)
 
 Create and install CutLang using
 ```bash
@@ -30,12 +34,13 @@ Now, you can use CutLang (please see [Running](#running) part)
 
 Download the image and run the container using
 ```bash
- docker pull shenburak/cutlang # download image
- docker run -d -v $PWD/:/src --name CutLang shenburak/cutlang # run container in current directory from downloaded image
- # for windows: docker run -d -v %cd%/:/src --name CutLang shenburak/cutlang
+ docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
+ # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang shenburak/cutlang
  # if you want to re-run by mounting another directory, you should run:
  # docker stop CutLang && docker container rm CutLang
- # and go back step 2 with different path 'docker run -d -v /path/to/you/want/:/src ...'
+ # and go back step 2 with different path 'docker run -p 8888:8888 -d -v /path/to/you/want/:/src ...'
+ # example:
+ # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
 ```
 Exec the container using
 ```bash
@@ -63,16 +68,31 @@ Install the package using
 
 ## <a name="running"></a> Running
 
-CutLang is run anywhere using the `CLA.sh` script (with **CLA** alias) or using the `runs/CLA.py` script
+CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scripts
 
 ```bash
- CLA (or ./runs/CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
+ CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
 ```
 * Input event formats can be: DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format) 
 * Number of events is optional.
 
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region.  The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
+## Tutorial
+**Launch with binder:**
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/shenburak/CutLang/HEAD)
+or
+Self host:
+* **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
+* To setup the tutorial if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
+```bash
+  ./setup_tutorial.sh  
+```
+* To start the tutorial (you can run it anywhere)
+```bash
+  CLA_tutorial
+  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
+```
 ## Contributing
 
 ### Setting up the development environment
@@ -97,6 +117,7 @@ Compile CutLang, and build and run the container using
 ```bash
  git clone https://github.com/shenburak/CutLang.git
  cd CutLang
+ ./docker_util.sh dev
  docker-compose up
 ```
 Exec the container using (in the another terminal window)
@@ -104,6 +125,7 @@ Exec the container using (in the another terminal window)
  docker exec -it cutlang-dev bash
  # then you should run in docker (just first time)
  cd CLA
+ make clean
  make
 ```
 
@@ -119,4 +141,17 @@ Requirements
  # You will see the "anaconda upload /file/path/to/upload" command at the end of the logs after the compile process is finished, you can upload the package to the relevant conda channel by using this.
  # and then it can be used with:
  # conda create -c conda-forge -c <your-username> --name <your-environment> cutlang
+```
+#### Docker
+
+See https://hub.docker.com/
+
+```bash
+ git clone https://github.com/shenburak/CutLang.git
+ cd CutLang
+ ./docker_util.sh prod
+ docker compose build
+ docker push <your-username>/<your-image-name>:<tagname>
+ # example:
+ # docker push shenburak/cutlang:latest
 ```
