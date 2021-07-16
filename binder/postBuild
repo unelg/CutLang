@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd CLA
+make DJUPY=1 
+
+../setup_tutorial.sh
+
+cd ../runs
+for f in ../analysis_core/*.pcm; do ln -s $f .; done
+ls
