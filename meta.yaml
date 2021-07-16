@@ -19,6 +19,7 @@ requirements:
     - flex=2.6.4
     - bison=3.4
     - make=4.2.1
+    - wget=1.20.1
   run:
     - root_base=6.24.0
     - jupyterlab=3.0.16

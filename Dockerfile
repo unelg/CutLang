@@ -9,7 +9,7 @@ RUN apt install python3-pip -y
 RUN pip install jupyterlab metakernel
 RUN mkdir -p $(jupyter --data-dir)/kernels/cutlang
 
-RUN apt install -y bison flex make
+RUN apt install -y bison flex make wget
 
 RUN cd /CutLang/CLA && make clean && make
 RUN echo "source /CutLang/setup.sh" >> ~/.bashrc
