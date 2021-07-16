@@ -23,7 +23,7 @@ Activate the conda environment using (from new terminal)
 Now, you can use CutLang (please see [Running](#running) part)
 
 ### Using conda
-[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/version.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/latest_release_date.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/platforms.svg)](https://anaconda.org/shenburak/cutlang)
+[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/version.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/latest_release_relative_date.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/platforms.svg)](https://anaconda.org/shenburak/cutlang)
 
 - Create and activate the environment using (If root is already installed on the system)
 ```bash
