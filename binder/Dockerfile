@@ -1,2 +1,2 @@
 FROM shenburak/cutlang:latest
-CMD ["CLA_tutorial"]
+CMD jupyter lab --ip 0.0.0.0 --allow-root
