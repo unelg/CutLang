@@ -49,13 +49,13 @@ Now, you can use CutLang (please see [Running](#running) part)
 
 Download the image and run the container using
 ```bash
- docker run -p 80:80 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
- # for windows: docker run -p 80:80 -d -v %cd%/:/src --name CutLang shenburak/cutlang
+ docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
+ # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang shenburak/cutlang
  # if you want to re-run by mounting another directory, you should run:
  # docker stop CutLang && docker container rm CutLang
- # and go back step 2 with different path 'docker run -p 80:80 -d -v /path/to/you/want/:/src ...'
+ # and go back step 2 with different path 'docker run -p 8888:8888 -d -v /path/to/you/want/:/src ...'
  # example:
- # docker run -p 80:80 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
+ # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
 ```
 Exec the container using
 ```bash
@@ -66,7 +66,7 @@ Exec the container using
  docker pull shenburak/cutlang:latest # install the latest image
  # and
  docker stop CutLang && docker container rm CutLang
- docker run -p 80:80 -d -v $PWD/:/src --name CutLang shenburak/cutlang
+ docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang
 ```
 ### From source
 
@@ -113,7 +113,7 @@ Self host:
 * To start the tutorial (you can run it anywhere)
 ```bash
   CLA_tutorial
-  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:80/... in the logs
+  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
 ```
 ## JupyterLab
 *Starts JupyterLab with "ROOT c++ with CutLang" kernel*
@@ -126,7 +126,7 @@ Self host:
 * To start the JupyterLab
 ```bash
   CLA_JupyterLab
-  # Jupyter lab will be started, you can use by using the link 127.0.0.1:80/... in the logs
+  # Jupyter lab will be started, you can use by using the link 127.0.0.1:8888/... in the logs
 ```
 ## Contributing
 

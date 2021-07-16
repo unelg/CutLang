@@ -10,4 +10,4 @@ services:
     volumes:
       - ./:/src
     ports:
-      - "80:80"
+      - "8888:8888"
