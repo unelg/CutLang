@@ -2,9 +2,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - root_base=6.24.0
-  - jupyterlab=3.0.16
-  - metakernel=0.27.5
-  - flex=2.6.4
-  - bison=3.4
-  - make=4.2.1
+  - cutlang=0.0.4
