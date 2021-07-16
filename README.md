@@ -43,7 +43,7 @@ Now, you can use CutLang (please see [Running](#running) part)
  # or
  conda create -c conda-forge -c shenburak --name <my-environment> cutlang root_base # remove the existing environment and install the latest version with root
  # or just
- conda update cutlang # run in environment with cutlang installed
+ conda update -c conda-forge -c shenburak cutlang # run in environment with cutlang installed
 ```
 ### Using docker
 
