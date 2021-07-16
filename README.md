@@ -29,6 +29,9 @@ Now, you can use CutLang (please see [Running](#running) part)
 ```bash
  conda create -c conda-forge -c shenburak --name <my-environment> cutlang # download CutLang package and create environment
  conda activate <my-environment> # activate environment
+ # If you want use PyROOT, you should use the command
+ # root-config --python-version
+ # and you should have installed the python version suitable for your root framework
 ```
 - Create and activate the environment using (If root is not installed on the system and you want to install the root conda package with CutLang)
 ```bash
