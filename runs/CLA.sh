@@ -54,15 +54,26 @@ case $key in
     Nalgo=`cat pippo | wc -l`
     rm pippo
     
-    if grep -q HistoList "$INIFILE"; then
-        a=$(awk '/HistoList/{ print NR; }' "$INIFILE")
-        echo ${a}
-        histFile=$(awk -v a="$a" 'FNR == a {print $2}' ${INIFILE})
-        echo ${histFile}
-        sed "${a}d" ${INIFILE} > ${INIFILE}.tmp && sed -e "${a}r ${histFile}" ${INIFILE}.tmp && mv ${INIFILE}.tmp ${INIFILE}
+    # for HistoList command
+    if grep -q "histoList" "$INIFILE"; then
+     cp ${INIFILE} ${INIFILE}.tmp
+     INIFILE=${INIFILE}.tmp
     fi
-
-
+    
+    while grep -q "histoList" "$INIFILE"; do #while there is a histoList command in the .ini file, loop continues
+     a=($(awk '/histoList/{ print NR; }' "$INIFILE")) #get the line numbers where histoList command written
+     b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
+     histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
+     echo "************", $histListName
+     c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
+     let c++
+     whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
+     while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
+      awk -v c="$c" -v d="${whereToInsert}" 'NR==c{store=$0;next}1;NR==d{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+     done
+     sed "/${histListName}/d" ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+    done
+    
     if [ $Nalgo -gt 1 ]; then
      echo Analysis with Multiple Regions
      $WORK_PATH/scripts/separate_algos.sh ${INIFILE}
@@ -138,13 +149,17 @@ if [ $? -eq 0 ]; then
     rm -f  $PWD/histoOut-${rbase}.root
   fi
   hadd $PWD/histoOut-${rbase}.root $PWD/histoOut-BP_*.root
+  #if histoList command is given, the ${INIFILE}.tmp is produced, and now it gets deleted.
+  if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
+    rm -f ${INIFILE}
+  fi
   if [ $? -eq 0 ]; then
    echo "hadd finished successfully, now removing auxiliary files"
    rm -f $PWD/histoOut-BP_*.root
    rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
    rm -f $PWD/BP_*-card.ini 
    rm -f $PWD/out1 
-   rm -f $PWD/algdeps.cmd 
+   rm -f $PWD/algdeps.cmd
   fi
 fi
 
