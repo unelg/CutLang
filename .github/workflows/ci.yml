@@ -50,15 +50,15 @@ jobs:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
         
-    - name: Clear Temporary Files
-      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm -f flag 
+    #- name: Clear Temporary Files
+    #  run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm -f flag 
 
-    - name: Update Artifacts
-      if: steps.cache.outputs.cache-hit == 'true'
-      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
+    #- name: Update Artifacts
+    #  if: steps.cache.outputs.cache-hit == 'true'
+    #  run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
       
-    - name: Upload Output File
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: tests (ubuntu-latest)
-        path: ./.github/workflows/artifacts
+    #- name: Upload Output File
+    #  uses: actions/upload-artifact@v1.0.0
+    #  with:
+    #    name: tests (ubuntu-latest)
+    #    path: ./.github/workflows/artifacts
