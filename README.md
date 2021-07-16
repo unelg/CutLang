@@ -153,7 +153,7 @@ See https://hub.docker.com/
  git clone https://github.com/shenburak/CutLang.git
  cd CutLang
  ./docker_util.sh prod
- docker compose build
+ docker-compose build
  docker push <your-username>/<your-image-name>:<tagname>
  # example:
  # docker push shenburak/cutlang:latest
