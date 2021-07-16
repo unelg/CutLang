@@ -1,4 +1,5 @@
-export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
+export ROOTSYS=$CONDA_PREFIX
+export CUTLANG_PATH=$ROOTSYS/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
 
 mkdir -p $(jupyter --data-dir)/kernels/cutlang
