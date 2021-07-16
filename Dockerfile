@@ -16,7 +16,9 @@ RUN echo "source /CutLang/setup.sh" >> ~/.bashrc
 RUN echo "alias python=python3" >> ~/.bashrc
 
 RUN echo "cp /CutLang/kernel/kernel.json $(jupyter --data-dir)/kernels/cutlang/kernel.json" >> ~/.bashrc
+
 RUN echo "cp /CutLang/kernel/magics/cutlangmagic.py $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py" >> ~/.bashrc
+
 RUN echo "cp /CutLang/kernel/cutlangmagic.py $ROOTSYS/lib/JupyROOT/magics/cutlangmagic.py" >> ~/.bashrc
 
 WORKDIR /src

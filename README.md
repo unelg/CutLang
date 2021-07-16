@@ -23,28 +23,50 @@ Activate the conda environment using (from new terminal)
 Now, you can use CutLang (please see [Running](#running) part)
 
 ### Using conda
+[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/version.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/latest_release_date.svg)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/platforms.svg)](https://anaconda.org/shenburak/cutlang)
 
-Create and activate the environment using
+- Create and activate the environment using (If root is already installed on the system)
 ```bash
  conda create -c conda-forge -c shenburak --name <my-environment> cutlang # download CutLang package and create environment
  conda activate <my-environment> # activate environment
 ```
-Now, you can use CutLang (please see [Running](#running) part)
+- Create and activate the environment using (If root is not installed on the system and you want to install the root conda package with CutLang)
+```bash
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang root_base # download CutLang and root package and create environment
+ conda activate <my-environment> # activate environment
+```
+*Now, you can use CutLang (please see [Running](#running) part)*
+
+- **Update** the environment using
+```bash
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang # remove the existing environment and install the latest version without root
+ # or
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang root_base # remove the existing environment and install the latest version with root
+ # or just
+ conda update cutlang # run in environment with cutlang installed
+```
 ### Using docker
 
 Download the image and run the container using
 ```bash
- docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
- # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang shenburak/cutlang
+ docker run -p 80:80 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
+ # for windows: docker run -p 80:80 -d -v %cd%/:/src --name CutLang shenburak/cutlang
  # if you want to re-run by mounting another directory, you should run:
  # docker stop CutLang && docker container rm CutLang
- # and go back step 2 with different path 'docker run -p 8888:8888 -d -v /path/to/you/want/:/src ...'
+ # and go back step 2 with different path 'docker run -p 80:80 -d -v /path/to/you/want/:/src ...'
  # example:
- # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
+ # docker run -p 80:80 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
 ```
 Exec the container using
 ```bash
  docker exec -it CutLang bash
+```
+**Update** the docker image using
+```bash
+ docker pull shenburak/cutlang:latest # install the latest image
+ # and
+ docker stop CutLang && docker container rm CutLang
+ docker run -p 80:80 -d -v $PWD/:/src --name CutLang shenburak/cutlang
 ```
 ### From source
 
@@ -83,15 +105,28 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 or
 Self host:
 * **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
-* To setup the tutorial if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
+* To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
 ```bash
-  ./setup_tutorial.sh  
+  ./setup_kernel.sh  
 ```
 * To start the tutorial (you can run it anywhere)
 ```bash
   CLA_tutorial
-  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
+  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:80/... in the logs
+```
+## JupyterLab
+*Starts JupyterLab with "ROOT c++ with CutLang" kernel*
+* **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
+* To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
+
+```bash
+  ./setup_kernel.sh  
+```
+* To start the JupyterLab
+```bash
+  CLA_JupyterLab
+  # Jupyter lab will be started, you can use by using the link 127.0.0.1:80/... in the logs
 ```
 ## Contributing
 
@@ -137,6 +172,9 @@ Exec the container using (in the another terminal window)
 
 Requirements
 - [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
+
+See https://anaconda.org
+
 ```bash
  git clone https://github.com/shenburak/CutLang.git
  cd CutLang
@@ -147,7 +185,7 @@ Requirements
 ```
 #### Docker
 
-See https://hub.docker.com/
+See https://hub.docker.com
 
 ```bash
  git clone https://github.com/shenburak/CutLang.git
