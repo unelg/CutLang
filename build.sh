@@ -8,7 +8,6 @@ rm -rf $PREFIX/bin/cutlang/.github
 rm -rf $PREFIX/bin/cutlang/.git
 
 cd $PREFIX/bin/cutlang/CLA
-make clean
 make
 
 echo "build.sh done"

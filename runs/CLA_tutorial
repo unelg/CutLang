@@ -1,1 +1,1 @@
-jupyter-lab --ip=0.0.0.0 --allow-root --notebook-dir="$CUTLANG_PATH"
+jupyter-lab --ip=0.0.0.0 --port=80 --allow-root --notebook-dir="$CUTLANG_PATH"
