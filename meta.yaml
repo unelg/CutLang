@@ -1,5 +1,5 @@
 {% set name = "CutLang" %}
-{% set version = "0.1.4" %}
+{% set version = "0.1.5" %}
 
 package:
   name: "{{ name|lower }}"
@@ -13,7 +13,7 @@ build:
 
 requirements:
   host:
-    - root_base=6.24.0
+    - root_base=6.24.2
     - jupyterlab=3.0.16
     - metakernel=0.27.5
     - flex=2.6.4
@@ -21,7 +21,7 @@ requirements:
     - make=4.2.1
     - wget=1.20.1
   run:
-    - root_base=6.24.0
+    - root_base=6.24.2
     - jupyterlab=3.0.16
     - metakernel=0.27.5
     - wget=1.20.1
