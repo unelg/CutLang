@@ -123,13 +123,13 @@ set_environment()
       export LIBPATH
    fi
 
-   if [ -z "${PYTHONPATH}" ]; then
+   #if [ -z "${PYTHONPATH}" ]; then
       PYTHONPATH=$ROOTSYS/lib
       export PYTHONPATH       # Linux, ELF HP-UX
-   else
-      PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
-      export PYTHONPATH
-   fi
+   #else
+   #   PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+   #   export PYTHONPATH
+   #fi
 
    if [ -z "${MANPATH}" ]; then
       MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
@@ -143,17 +143,17 @@ set_environment()
       CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
    fi
 
-   if [ -z "${JUPYTER_PATH}" ]; then
+   #if [ -z "${JUPYTER_PATH}" ]; then
       JUPYTER_PATH=$ROOTSYS/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
-   else
-      JUPYTER_PATH=$ROOTSYS/etc/notebook:$JUPYTER_PATH; export JUPYTER_PATH
-   fi
+   #else
+   #   JUPYTER_PATH=$ROOTSYS/etc/notebook:$JUPYTER_PATH; export JUPYTER_PATH
+   #fi
 
-   if [ -z "${JUPYTER_CONFIG_DIR}" ]; then
+   #if [ -z "${JUPYTER_CONFIG_DIR}" ]; then
       JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook; export JUPYTER_CONFIG_DIR # Linux, ELF HP-UX
-   else
-      JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook:$JUPYTER_CONFIG_DIR; export JUPYTER_CONFIG_DIR
-   fi
+   #else
+   #   JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook:$JUPYTER_CONFIG_DIR; export JUPYTER_CONFIG_DIR
+   #fi
 }
 
 

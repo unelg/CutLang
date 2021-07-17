@@ -20,8 +20,8 @@ PATH=${PATH#:}; PATH=${PATH%:}
 unset CUTLANG_PATH
 unset CUTLANG_JUPYTER_DATA_DIR
 
-if [ -n "${old_rootsys_before_CLA}" ] ; then
-   source $old_rootsys_before_CLA/bin/thisroot.sh
-fi
+#if [ -n "${old_rootsys_before_CLA}" ] ; then
+#   source $old_rootsys_before_CLA/bin/thisroot.sh
+#fi
 
-unset old_rootsys_before_CLA
+#unset old_rootsys_before_CLA

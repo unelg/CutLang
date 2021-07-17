@@ -1,6 +1,6 @@
-if [ -n "${ROOTSYS}" ] ; then
-   export old_rootsys_before_CLA=${ROOTSYS}
-fi
+#if [ -n "${ROOTSYS}" ] ; then
+#   export old_rootsys_before_CLA=${ROOTSYS}
+#fi
 
 export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
