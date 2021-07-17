@@ -13,10 +13,10 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
-#else
+#else 
 #define DEBUG(a)
 #endif
 
@@ -31,7 +31,7 @@ void yyerror(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<m
                 map<string, vector<cntHisto> > *cntHistos, const char *s) { 
                    std::cerr << "ERROR: " << s << "\t at line: " << yylineno <<  std::endl; } 
 int cutcount;
-int bincount;
+int bincount; 
 using namespace std;
 string tmp;
 int pnum;
@@ -287,11 +287,12 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            parts->push_back(name+" : "+$6);
                                    }
             }
-            |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle.\n");
+            |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle using :.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
+                                        DEBUG("here\n");
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
@@ -317,10 +318,17 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
 //                                      }
 //                                        
                                         } else {
+                                         DEBUG("in else\n");
                                          parts->push_back(name+" : "+$4);
                                          vector<myParticle*> newList;
+                                         DEBUG("Particle list\n");
+                                         for (int ip=0; ip<TmpParticle.size(); ip++){
+                                           cout <<TmpParticle[ip]->type << "  "<<TmpParticle[ip]->index<< " "<< TmpParticle[ip]->collection;
+                                           cout <<"------------\n";
+                                         }
                                          TmpParticle.swap(newList);
                                          ListParts->insert(make_pair(name,newList));
+                                         DEBUG("end else\n");
                                         }
                                 }
            |  DEF ID  ':' e { DEBUG($2<<" is being worked on as a node variable.\n");
@@ -379,7 +387,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
             }  
         ;
 //---------------------------------------
-function : '{' particules '}' 'm' {    vector<myParticle*> newList;
+function : '{' particules '}' 'm' {    std::cout<<"mass of particles with {}\n";
+                                       vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function with:"<< newList.size() <<" particles.\n");
@@ -788,27 +797,12 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
+// TODO ID should perhaps not be here. all should be done as particles since it also contains IDs
         | NUMOF '(' ID ')'  {          map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
                                            std::string message = "OBJect not defined: ";
                                            message += $3;
-                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                                           YYERROR;
-                                       } else {
-                                           if (it != ObjectCuts->end()) {
-                                            int type=((ObjectNode*)it->second)->type;
-                                            $$=new SFuncNode(count, type, it->first, it->second);
-                                           } else { // new type is defined using particle class summation
-                                            vector<myParticle*> newList= itdef->second;
-                                           }
-                                       }
-                           }
-        | '{' ID '}' NUMOF  {          map<string,vector<myParticle*> >::iterator itdef=ListParts->find($2);
-                                       map<string,Node*>::iterator it = ObjectCuts->find($2);
-                                       if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
-                                           std::string message = "OBJect not defined: ";
-                                           message += $2;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
