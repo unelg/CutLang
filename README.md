@@ -25,29 +25,16 @@ Now, you can use CutLang (please see [Running](#running) part)
 ### Using conda
 [![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/version.svg?v=1)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/latest_release_relative_date.svg?v=1)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/platforms.svg?v=1)](https://anaconda.org/shenburak/cutlang)
 
-- Create and activate the environment using (If root is already installed on the system)
+- Create and activate the environment using
 ```bash
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang python=$(root-config --python-version) # download CutLang package and create environment
- conda activate <my-environment> # activate environment
- # If you want use PyROOT, you should use the command
- # root-config --python-version
- # and you should have installed the python version suitable for your root framework
-
- # then you should run in conda environment (just first time)
- CLA_recompile
-```
-- Create and activate the environment using (If root is not installed on the system and you want to install the root conda package with CutLang)
-```bash
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang root_base=6.24 # download CutLang and root package and create environment
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang # download CutLang and create environment
  conda activate <my-environment> # activate environment
 ```
 *Now, you can use CutLang (please see [Running](#running) part)*
 
 - **Update** the environment using
 ```bash
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang python=$(root-config --python-version) # remove the existing environment and install the latest version without root
- # or
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang root_base=6.24 # remove the existing environment and install the latest version with root
+ conda create -c conda-forge -c shenburak --name <my-environment> cutlang # remove the existing environment and install the latest version
  # or just
  conda update -c conda-forge -c shenburak cutlang # run in environment with cutlang installed
 ```
