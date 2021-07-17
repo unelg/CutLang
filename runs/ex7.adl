@@ -7,7 +7,8 @@ define   WH2  : JET[-3] JET[-3] # -3 here is different than -1, so these are two
 # --------------> Jet1 + Jet2 = Jet2 + Jet1
 
 ###      chi2 for W finder
-define   Wchi2 : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 
+#define   Wchi2 : (( m(WH1 ) - 80.4)/2.1)^2 + (( m(WH2) - 80.4)/2.1)^2 
+define   Wchi2 : (( {WH1}m - 80.4)/2.1)^2 + (( {WH2}m - 80.4)/2.1)^2 
 
 ## top quarks without b tagging 
 define   Top1 : WH1 JET[-2] # take another jet
@@ -26,14 +27,14 @@ algo besttop
   select   Size(JET) >= 6        # at least 6 jets
   histo    hdrjj  , "dT between jjs", 100, 0.0, 6.2, dR(JET_1, JET_0) 
 #  select   MET < 100             # no large MET
-  select   totchi  ~= 0  # find the tops and ws
-  histo    hchi , "Histo of chi2", 50, 0, 500, totchi
-  select   totchi < 10.5 # small than a certain value of chi2
-  histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
-  histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
-  histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
-  histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
-  histo    hdrtt  , "dT between tops", 100, 0.0, 6.2, dR(Top1, Top2) 
+ select   totchi  ~= 0  # find the tops and ws
+ histo    hchi , "Histo of chi2", 50, 0, 500, totchi
+ select   totchi < 10.5 # small than a certain value of chi2
+ histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
+ histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
+ histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
+ histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
+ histo    hdrtt  , "dT between tops", 100, 0.0, 6.2, dR(Top1, Top2) 
 
   
 
