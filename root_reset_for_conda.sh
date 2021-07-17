@@ -85,11 +85,11 @@ clean_environment()
 
 set_environment()
 {
-   #if [ -z "${PATH}" ]; then
-   #   PATH=$ROOTSYS/bin; export PATH
-   #else
-   #   PATH=$ROOTSYS/bin:$PATH; export PATH
-   #fi
+   if [ -z "${PATH}" ]; then
+      PATH=$ROOTSYS/bin; export PATH
+   else
+      PATH=$ROOTSYS/bin:$PATH; export PATH
+   fi
 
    if [ -z "${LD_LIBRARY_PATH}" ]; then
       LD_LIBRARY_PATH=$ROOTSYS/lib
