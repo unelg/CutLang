@@ -1,8 +1,8 @@
 if [ -n "${ROOTSYS}" ] ; then
-   old_rootsys_CLA=${ROOTSYS}
+   export old_rootsys_before_CLA=${ROOTSYS}
 fi
 
-source $CUTLANG_PATH/root_unset.sh
+source $CUTLANG_PATH/root_reset_for_conda.sh
 
 export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
