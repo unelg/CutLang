@@ -85,43 +85,43 @@ clean_environment()
 
 set_environment()
 {
-   if [ -z "${PATH}" ]; then
-      PATH=$ROOTSYS/bin; export PATH
-   else
-      PATH=$ROOTSYS/bin:$PATH; export PATH
-   fi
+   #if [ -z "${PATH}" ]; then
+   #   PATH=$ROOTSYS/bin; export PATH
+   #else
+   #   PATH=$ROOTSYS/bin:$PATH; export PATH
+   #fi
 
-   if [ -z "${LD_LIBRARY_PATH}" ]; then
-      LD_LIBRARY_PATH=$ROOTSYS/lib
-      export LD_LIBRARY_PATH       # Linux, ELF HP-UX
-   else
-      LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
-      export LD_LIBRARY_PATH
-   fi
+   #if [ -z "${LD_LIBRARY_PATH}" ]; then
+   #   LD_LIBRARY_PATH=$ROOTSYS/lib
+   #   export LD_LIBRARY_PATH       # Linux, ELF HP-UX
+   #else
+   #   LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+   #   export LD_LIBRARY_PATH
+   #fi
 
-   if [ -z "${DYLD_LIBRARY_PATH}" ]; then
-      DYLD_LIBRARY_PATH=$ROOTSYS/lib
-      export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
-   else
-      DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH
-      export DYLD_LIBRARY_PATH
-   fi
+   #if [ -z "${DYLD_LIBRARY_PATH}" ]; then
+   #   DYLD_LIBRARY_PATH=$ROOTSYS/lib
+   #   export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
+   #else
+   #   DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH
+   #   export DYLD_LIBRARY_PATH
+   #fi
 
-   if [ -z "${SHLIB_PATH}" ]; then
-      SHLIB_PATH=$ROOTSYS/lib
-      export SHLIB_PATH       # Linux, ELF HP-UX
-   else
-      SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
-      export SHLIB_PATH
-   fi
+   #if [ -z "${SHLIB_PATH}" ]; then
+   #   SHLIB_PATH=$ROOTSYS/lib
+   #   export SHLIB_PATH       # Linux, ELF HP-UX
+   #else
+   #   SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
+   #   export SHLIB_PATH
+   #fi
 
-   if [ -z "${LIBPATH}" ]; then
-      LIBPATH=$ROOTSYS/lib
-      export LIBPATH       # Linux, ELF HP-UX
-   else
-      LIBPATH=$ROOTSYS/lib:$LIBPATH
-      export LIBPATH
-   fi
+   #if [ -z "${LIBPATH}" ]; then
+   #   LIBPATH=$ROOTSYS/lib
+   #   export LIBPATH       # Linux, ELF HP-UX
+   #else
+   #   LIBPATH=$ROOTSYS/lib:$LIBPATH
+   #   export LIBPATH
+   #fi
 
    #if [ -z "${PYTHONPATH}" ]; then
       PYTHONPATH=$ROOTSYS/lib
@@ -131,17 +131,17 @@ set_environment()
    #   export PYTHONPATH
    #fi
 
-   if [ -z "${MANPATH}" ]; then
-      MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
-   else
-      MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
-   fi
+   #if [ -z "${MANPATH}" ]; then
+   #   MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
+   #else
+   #   MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
+   #fi
 
-   if [ -z "${CMAKE_PREFIX_PATH}" ]; then
-      CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
-   else
-      CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
-   fi
+   #if [ -z "${CMAKE_PREFIX_PATH}" ]; then
+   #   CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
+   #else
+   #   CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
+   #fi
 
    #if [ -z "${JUPYTER_PATH}" ]; then
       JUPYTER_PATH=$ROOTSYS/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
@@ -169,7 +169,7 @@ fi
 
 export ROOTSYS=$CONDA_PREFIX
 
-clean_environment
+#clean_environment
 set_environment
 
 # Prevent Cppyy from checking the PCH (and avoid warning)
