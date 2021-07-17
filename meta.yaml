@@ -1,5 +1,5 @@
 {% set name = "CutLang" %}
-{% set version = "0.0.9" %}
+{% set version = "0.0.10" %}
 
 package:
   name: "{{ name|lower }}"
@@ -21,6 +21,7 @@ requirements:
     - make=4.2.1
     - wget=1.20.1
   run:
+    - root_base=6.24.0
     - jupyterlab=3.0.16
     - metakernel=0.27.5
     - wget=1.20.1

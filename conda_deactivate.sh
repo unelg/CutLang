@@ -19,3 +19,7 @@ PATH=${PATH#:}; PATH=${PATH%:}
 
 unset CUTLANG_PATH
 unset CUTLANG_JUPYTER_DATA_DIR
+
+#if [ -n "${old_rootsys_CLA}" ] ; then
+#   source $old_rootsys_CLA/bin/thisroot.sh
+#fi
