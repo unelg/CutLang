@@ -1,3 +1,9 @@
+if [ -n "${ROOTSYS}" ] ; then
+   old_rootsys_CLA=${ROOTSYS}
+fi
+
+source $CUTLANG_PATH/root_unset.sh
+
 export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
 export CUTLANG_JUPYTER_DATA_DIR=$(jupyter --data-dir)
