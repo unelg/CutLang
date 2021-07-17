@@ -1,0 +1,3 @@
+cd $CUTLANG_PATH/CLA
+make clean
+make
