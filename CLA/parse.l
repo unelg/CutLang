@@ -123,7 +123,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [dD][rR] return DR;
 [dD][pP][hH][iI] return DPHI;
 [dD][eE][tT][aA] return DETA;
-[sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs
+[sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs 
 "nbf" return NBF;
 "fHT" return HT;
 "METMWT" return METMWT;
