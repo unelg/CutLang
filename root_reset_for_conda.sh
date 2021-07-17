@@ -91,13 +91,13 @@ set_environment()
    #   PATH=$ROOTSYS/bin:$PATH; export PATH
    #fi
 
-   #if [ -z "${LD_LIBRARY_PATH}" ]; then
-   #   LD_LIBRARY_PATH=$ROOTSYS/lib
-   #   export LD_LIBRARY_PATH       # Linux, ELF HP-UX
-   #else
-   #   LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
-   #   export LD_LIBRARY_PATH
-   #fi
+   if [ -z "${LD_LIBRARY_PATH}" ]; then
+      LD_LIBRARY_PATH=$ROOTSYS/lib
+      export LD_LIBRARY_PATH       # Linux, ELF HP-UX
+   else
+      LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH
+   fi
 
    #if [ -z "${DYLD_LIBRARY_PATH}" ]; then
    #   DYLD_LIBRARY_PATH=$ROOTSYS/lib
