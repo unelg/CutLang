@@ -107,21 +107,21 @@ set_environment()
    #   export DYLD_LIBRARY_PATH
    #fi
 
-   if [ -z "${SHLIB_PATH}" ]; then
-      SHLIB_PATH=$ROOTSYS/lib
-      export SHLIB_PATH       # Linux, ELF HP-UX
-   else
-      SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
-      export SHLIB_PATH
-   fi
+   #if [ -z "${SHLIB_PATH}" ]; then
+   #   SHLIB_PATH=$ROOTSYS/lib
+   #   export SHLIB_PATH       # Linux, ELF HP-UX
+   #else
+   #   SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
+   #   export SHLIB_PATH
+   #fi
 
-   if [ -z "${LIBPATH}" ]; then
-      LIBPATH=$ROOTSYS/lib
-      export LIBPATH       # Linux, ELF HP-UX
-   else
-      LIBPATH=$ROOTSYS/lib:$LIBPATH
-      export LIBPATH
-   fi
+   #if [ -z "${LIBPATH}" ]; then
+   #   LIBPATH=$ROOTSYS/lib
+   #   export LIBPATH       # Linux, ELF HP-UX
+   #else
+   #   LIBPATH=$ROOTSYS/lib:$LIBPATH
+   #   export LIBPATH
+   #fi
 
    #if [ -z "${PYTHONPATH}" ]; then
       PYTHONPATH=$ROOTSYS/lib
@@ -131,17 +131,17 @@ set_environment()
    #   export PYTHONPATH
    #fi
 
-   if [ -z "${MANPATH}" ]; then
-      MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
-   else
-      MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
-   fi
+   #if [ -z "${MANPATH}" ]; then
+   #   MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
+   #else
+   #   MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
+   #fi
 
-   if [ -z "${CMAKE_PREFIX_PATH}" ]; then
-      CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
-   else
-      CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
-   fi
+   #if [ -z "${CMAKE_PREFIX_PATH}" ]; then
+   #   CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
+   #else
+   #   CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
+   #fi
 
    #if [ -z "${JUPYTER_PATH}" ]; then
       JUPYTER_PATH=$ROOTSYS/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
