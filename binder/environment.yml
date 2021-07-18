@@ -3,5 +3,4 @@ channels:
   - shenburak
   - defaults
 dependencies:
-  - cutlang=0.0.5
-  - root=6.24.2
+  - cutlang=0.1.8
