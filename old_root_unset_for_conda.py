@@ -12,6 +12,6 @@ for i, key in enumerate(PATH):
     for filename in filenames:
         if "thisroot.sh" == filename.lower() and (ROOTSYS not in key):
             old_root_path=os.path.abspath(os.path.join(os.path.dirname( key )))
-            PATH=os.pathsep.join(PATH).replace(key+os.pathsep, "").split(os.pathsep)
+            #PATH=os.pathsep.join(PATH).replace(key+os.pathsep, "").split(os.pathsep)
 
 print(old_root_path)
