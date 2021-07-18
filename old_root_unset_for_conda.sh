@@ -87,6 +87,8 @@ old_rootsys=$(python ./root_unset_for_conda.py)
 
 clean_environment
 
+export OLD_ROOTSYS_BEFORE_CLA=$old_rootsys
+
 unset old_rootsys
 unset -f drop_from_path
 unset -f clean_environment
