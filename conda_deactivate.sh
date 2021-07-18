@@ -5,6 +5,9 @@ PATH=${PATH#:}; PATH=${PATH%:}
 
 #rm -rf $CUTLANG_JUPYTER_DATA_DIR/kernels/cutlang
 
+#rm $ROOTSYS/lib/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
+
 #rm $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 
@@ -17,14 +20,5 @@ PATH=${PATH#:}; PATH=${PATH%:}
 #rm $ROOTSYS/lib/JupyROOT/magics/shellmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 
-source $CUTLANG_PATH/root_unset_for_conda.sh
-source $CUTLANG_PATH/root_unset_for_conda.sh
-
 unset CUTLANG_PATH
 unset CUTLANG_JUPYTER_DATA_DIR
-
-#if [ -n "${old_rootsys_before_CLA}" ] ; then
-#   source $old_rootsys_before_CLA/bin/thisroot.sh
-#fi
-
-#unset old_rootsys_before_CLA
