@@ -83,8 +83,8 @@ clean_environment()
    fi
 }
 
-if [ -n "${ROOTSYS}" ] ; then
-   old_rootsys=${ROOTSYS}
+if [ -n "${_ROOTSYS}" ] ; then
+   old_rootsys=${_ROOTSYS}
 fi
 
 _ROOTSYS=$ROOTSYS
