@@ -162,7 +162,7 @@ set_environment()
 
 if [ -n "${ROOTSYS}" ] ; then
    old_rootsys=${ROOTSYS}
-   old_rootsys_before_CLA=${ROOTSYS}
+   #old_rootsys_before_CLA=${ROOTSYS}
 fi
 
 
@@ -196,9 +196,9 @@ clean_environment
 # Prevent Cppyy from checking the PCH (and avoid warning)
 export CLING_STANDARD_PCH=none
 
-if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
-   ROOTSYS="`cygpath -w $ROOTSYS`"
-fi
+#if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
+#   ROOTSYS="`cygpath -w $ROOTSYS`"
+#fi
 
 unset old_rootsys
 unset thisroot
