@@ -86,73 +86,73 @@ clean_environment()
 set_environment()
 {
    if [ -z "${PATH}" ]; then
-      PATH=$ROOTSYS/bin; export PATH
+      PATH=$CONDA_PREFIX/bin; export PATH
    else
-      PATH=$ROOTSYS/bin:$PATH; export PATH
+      PATH=$CONDA_PREFIX/bin:$PATH; export PATH
    fi
 
-   if [ -z "${LD_LIBRARY_PATH}" ]; then
-      LD_LIBRARY_PATH=$ROOTSYS/lib
-      export LD_LIBRARY_PATH       # Linux, ELF HP-UX
-   else
-      LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
-      export LD_LIBRARY_PATH
-   fi
+#  if [ -z "${LD_LIBRARY_PATH}" ]; then
+#     LD_LIBRARY_PATH=$CONDA_PREFIX/lib
+#     export LD_LIBRARY_PATH       # Linux, ELF HP-UX
+#  else
+#     LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+#     export LD_LIBRARY_PATH
+#  fi
 
-   if [ -z "${DYLD_LIBRARY_PATH}" ]; then
-      DYLD_LIBRARY_PATH=$ROOTSYS/lib
-      export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
-   else
-      DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH
-      export DYLD_LIBRARY_PATH
-   fi
+#  if [ -z "${DYLD_LIBRARY_PATH}" ]; then
+#     DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib
+#     export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
+#  else
+#     DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$DYLD_LIBRARY_PATH
+#     export DYLD_LIBRARY_PATH
+#  fi
 
-   if [ -z "${SHLIB_PATH}" ]; then
-      SHLIB_PATH=$ROOTSYS/lib
-      export SHLIB_PATH       # Linux, ELF HP-UX
-   else
-      SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
-      export SHLIB_PATH
-   fi
+#  if [ -z "${SHLIB_PATH}" ]; then
+#     SHLIB_PATH=$CONDA_PREFIX/lib
+#     export SHLIB_PATH       # Linux, ELF HP-UX
+#  else
+#     SHLIB_PATH=$CONDA_PREFIX/lib:$SHLIB_PATH
+#     export SHLIB_PATH
+#  fi
 
-   if [ -z "${LIBPATH}" ]; then
-      LIBPATH=$ROOTSYS/lib
-      export LIBPATH       # Linux, ELF HP-UX
-   else
-      LIBPATH=$ROOTSYS/lib:$LIBPATH
-      export LIBPATH
-   fi
+#  if [ -z "${LIBPATH}" ]; then
+#     LIBPATH=$CONDA_PREFIX/lib
+#     export LIBPATH       # Linux, ELF HP-UX
+#  else
+#     LIBPATH=$CONDA_PREFIX/lib:$LIBPATH
+#     export LIBPATH
+#  fi
 
    if [ -z "${PYTHONPATH}" ]; then
-      PYTHONPATH=$ROOTSYS/lib
+      PYTHONPATH=$CONDA_PREFIX/lib
       export PYTHONPATH       # Linux, ELF HP-UX
    else
-      PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+      PYTHONPATH=$CONDA_PREFIX/lib:$PYTHONPATH
       export PYTHONPATH
    fi
 
-   if [ -z "${MANPATH}" ]; then
-      MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
-   else
-      MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
-   fi
+#  if [ -z "${MANPATH}" ]; then
+#     MANPATH=$CONDA_PREFIX/man:${default_manpath}; export MANPATH
+#  else
+#     MANPATH=$CONDA_PREFIX/man:$MANPATH; export MANPATH
+#  fi
 
-   if [ -z "${CMAKE_PREFIX_PATH}" ]; then
-      CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
-   else
-      CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
-   fi
+#  if [ -z "${CMAKE_PREFIX_PATH}" ]; then
+#     CMAKE_PREFIX_PATH=$CONDA_PREFIX; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
+#else
+#     CMAKE_PREFIX_PATH=$CONDA_PREFIX:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
+#  fi
 
    if [ -z "${JUPYTER_PATH}" ]; then
-      JUPYTER_PATH=$ROOTSYS/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
+      JUPYTER_PATH=$CONDA_PREFIX/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
    else
-      JUPYTER_PATH=$ROOTSYS/etc/notebook:$JUPYTER_PATH; export JUPYTER_PATH
+      JUPYTER_PATH=$CONDA_PREFIX/etc/notebook:$JUPYTER_PATH; export JUPYTER_PATH
    fi
 
    if [ -z "${JUPYTER_CONFIG_DIR}" ]; then
-      JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook; export JUPYTER_CONFIG_DIR # Linux, ELF HP-UX
+      JUPYTER_CONFIG_DIR=$CONDA_PREFIX/etc/notebook; export JUPYTER_CONFIG_DIR # Linux, ELF HP-UX
    else
-      JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook:$JUPYTER_CONFIG_DIR; export JUPYTER_CONFIG_DIR
+      JUPYTER_CONFIG_DIR=$CONDA_PREFIX/etc/notebook:$JUPYTER_CONFIG_DIR; export JUPYTER_CONFIG_DIR
    fi
 }
 
@@ -190,7 +190,7 @@ fi
 
 
 clean_environment
-#set_environment
+set_environment
 
 
 # Prevent Cppyy from checking the PCH (and avoid warning)
