@@ -38,10 +38,10 @@ clean_environment()
          drop_from_path "$LD_LIBRARY_PATH" "${old_rootsys}/lib"
          LD_LIBRARY_PATH=$newpath
       fi
-      if [ -n "${DYLD_LIBRARY_PATH}" ]; then
-         drop_from_path "$DYLD_LIBRARY_PATH" "${old_rootsys}/lib"
-         DYLD_LIBRARY_PATH=$newpath
-      fi
+      #if [ -n "${DYLD_LIBRARY_PATH}" ]; then
+      #   drop_from_path "$DYLD_LIBRARY_PATH" "${old_rootsys}/lib"
+      #   DYLD_LIBRARY_PATH=$newpath
+      #fi
       if [ -n "${SHLIB_PATH}" ]; then
          drop_from_path "$SHLIB_PATH" "${old_rootsys}/lib"
          SHLIB_PATH=$newpath
@@ -83,14 +83,16 @@ clean_environment()
    fi
 }
 
-if [ -n "${_ROOTSYS}" ] ; then
-   old_rootsys=${_ROOTSYS}
+if [ -n "${ROOTSYS}" ] ; then
+   old_rootsys=${ROOTSYS}
 fi
+
+_ROOTSYS=$ROOTSYS
 
 clean_environment
 
 unset old_rootsys
-unset thisroot
 unset -f drop_from_path
 unset -f clean_environment
 unset -f set_environment
+unset _ROOTSYS
