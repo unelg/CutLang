@@ -2,6 +2,9 @@ mkdir -p $(jupyter --data-dir)/kernels/cutlang
 
 cp $CUTLANG_PATH/kernel/kernel.json $(jupyter --data-dir)/kernels/cutlang/kernel.json
 
+cp $ROOTSYS/lib/JupyROOT/kernel/rootkernel.py $ROOTSYS/lib/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
+cp $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/rootkernel.py $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
+
 cp $CUTLANG_PATH/kernel/magics/cutlangmagic.py $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 cp $CUTLANG_PATH/kernel/magics/cutlangmagic.py $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 
