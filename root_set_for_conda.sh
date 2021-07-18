@@ -97,7 +97,7 @@ set_environment()
    #fi
 }
 
-_ROOTSYS=$ROOTSYS
+export _ROOTSYS=$ROOTSYS
 
 set_environment
 
@@ -105,7 +105,4 @@ if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
    _ROOTSYS="`cygpath -w $_ROOTSYS`"
 fi
 
-unset thisroot
-unset -f drop_from_path
-unset -f clean_environment
 unset -f set_environment
