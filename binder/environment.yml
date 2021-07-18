@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
   - cutlang=0.0.5
-  - root_base=6.24.2
+  - root=6.24.2
