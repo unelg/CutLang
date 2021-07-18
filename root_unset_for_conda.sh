@@ -94,5 +94,4 @@ clean_environment
 unset old_rootsys
 unset -f drop_from_path
 unset -f clean_environment
-unset -f set_environment
 unset _ROOTSYS
