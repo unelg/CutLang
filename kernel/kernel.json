@@ -1,10 +1,10 @@
 {
  "language": "c++",
- "display_name": "ROOT C++ with CutLang.",
+ "display_name": "ROOT C++ with CutLang",
  "argv": [
   "python",
   "-m",
-  "JupyROOT.kernel.rootkernel_with_cutlang",
+  "JupyROOT.kernel.rootkernel",
   "-f",
   "{connection_file}"
  ]

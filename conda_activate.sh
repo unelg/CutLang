@@ -1,15 +1,16 @@
+#if [ -n "${ROOTSYS}" ] ; then
+#   export old_rootsys_before_CLA=${ROOTSYS}
+#fi
+
 export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
 export CUTLANG_JUPYTER_DATA_DIR=$(jupyter --data-dir)
 
-source $CUTLANG_PATH/old_root_unset_for_conda.sh
+source $CUTLANG_PATH/root_set_for_conda.sh
 
 mkdir -p $CUTLANG_JUPYTER_DATA_DIR/kernels/cutlang
 
 cp $CUTLANG_PATH/kernel/kernel.json $CUTLANG_JUPYTER_DATA_DIR/kernels/cutlang/kernel.json
-
-cp $ROOTSYS/lib/JupyROOT/kernel/rootkernel.py $ROOTSYS/lib/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
-cp $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/rootkernel.py $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/rootkernel_with_cutlang.py 2>>/dev/null
 
 cp $CUTLANG_PATH/kernel/magics/cutlangmagic.py $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 cp $CUTLANG_PATH/kernel/magics/cutlangmagic.py $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
