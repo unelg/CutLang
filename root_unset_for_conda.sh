@@ -89,10 +89,6 @@ fi
 
 clean_environment
 
-if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
-   _ROOTSYS="`cygpath -w $_ROOTSYS`"
-fi
-
 unset old_rootsys
 unset thisroot
 unset -f drop_from_path
