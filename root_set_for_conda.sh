@@ -106,3 +106,5 @@ if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
 fi
 
 unset -f set_environment
+
+unset DYLD_LIBRARY_PATH
