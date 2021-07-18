@@ -32,10 +32,10 @@ set_environment()
    #   DYLD_LIBRARY_PATH=$_ROOTSYS/lib
    #   export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
    #else
-      DYLD_LIBRARY_PATH=$_ROOTSYS/lib:$DYLD_LIBRARY_PATH
-      export DYLD_LIBRARY_PATH
-      DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$_ROOTSYS/lib
-      export DYLD_LIBRARY_PATH
+   #   DYLD_LIBRARY_PATH=$_ROOTSYS/lib:$DYLD_LIBRARY_PATH
+   #   export DYLD_LIBRARY_PATH
+   #   DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$_ROOTSYS/lib
+   #   export DYLD_LIBRARY_PATH
    #fi
 
    #if [ -z "${SHLIB_PATH}" ]; then
@@ -96,6 +96,8 @@ set_environment()
       JUPYTER_CONFIG_DIR=$JUPYTER_CONFIG_DIR:$_ROOTSYS/etc/notebook; export JUPYTER_CONFIG_DIR
    #fi
 }
+
+_ROOTSYS=$ROOTSYS
 
 set_environment
 
