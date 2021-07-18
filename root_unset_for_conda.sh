@@ -38,10 +38,10 @@ clean_environment()
          drop_from_path "$LD_LIBRARY_PATH" "${old_rootsys}/lib"
          LD_LIBRARY_PATH=$newpath
       fi
-      #if [ -n "${DYLD_LIBRARY_PATH}" ]; then
-      #   drop_from_path "$DYLD_LIBRARY_PATH" "${old_rootsys}/lib"
-      #   DYLD_LIBRARY_PATH=$newpath
-      #fi
+      if [ -n "${DYLD_LIBRARY_PATH}" ]; then
+         drop_from_path "$DYLD_LIBRARY_PATH" "${old_rootsys}/lib"
+         DYLD_LIBRARY_PATH=$newpath
+      fi
       if [ -n "${SHLIB_PATH}" ]; then
          drop_from_path "$SHLIB_PATH" "${old_rootsys}/lib"
          SHLIB_PATH=$newpath
@@ -83,15 +83,125 @@ clean_environment()
    fi
 }
 
-if [ -n "${_ROOTSYS}" ] ; then
-   old_rootsys=${_ROOTSYS}
+set_environment()
+{
+   if [ -z "${PATH}" ]; then
+      PATH=$ROOTSYS/bin; export PATH
+   else
+      PATH=$ROOTSYS/bin:$PATH; export PATH
+   fi
+
+   if [ -z "${LD_LIBRARY_PATH}" ]; then
+      LD_LIBRARY_PATH=$ROOTSYS/lib
+      export LD_LIBRARY_PATH       # Linux, ELF HP-UX
+   else
+      LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH
+   fi
+
+   if [ -z "${DYLD_LIBRARY_PATH}" ]; then
+      DYLD_LIBRARY_PATH=$ROOTSYS/lib
+      export DYLD_LIBRARY_PATH       # Linux, ELF HP-UX
+   else
+      DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH
+      export DYLD_LIBRARY_PATH
+   fi
+
+   if [ -z "${SHLIB_PATH}" ]; then
+      SHLIB_PATH=$ROOTSYS/lib
+      export SHLIB_PATH       # Linux, ELF HP-UX
+   else
+      SHLIB_PATH=$ROOTSYS/lib:$SHLIB_PATH
+      export SHLIB_PATH
+   fi
+
+   if [ -z "${LIBPATH}" ]; then
+      LIBPATH=$ROOTSYS/lib
+      export LIBPATH       # Linux, ELF HP-UX
+   else
+      LIBPATH=$ROOTSYS/lib:$LIBPATH
+      export LIBPATH
+   fi
+
+   if [ -z "${PYTHONPATH}" ]; then
+      PYTHONPATH=$ROOTSYS/lib
+      export PYTHONPATH       # Linux, ELF HP-UX
+   else
+      PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+      export PYTHONPATH
+   fi
+
+   if [ -z "${MANPATH}" ]; then
+      MANPATH=$ROOTSYS/man:${default_manpath}; export MANPATH
+   else
+      MANPATH=$ROOTSYS/man:$MANPATH; export MANPATH
+   fi
+
+   if [ -z "${CMAKE_PREFIX_PATH}" ]; then
+      CMAKE_PREFIX_PATH=$ROOTSYS; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
+   else
+      CMAKE_PREFIX_PATH=$ROOTSYS:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
+   fi
+
+   if [ -z "${JUPYTER_PATH}" ]; then
+      JUPYTER_PATH=$ROOTSYS/etc/notebook; export JUPYTER_PATH       # Linux, ELF HP-UX
+   else
+      JUPYTER_PATH=$ROOTSYS/etc/notebook:$JUPYTER_PATH; export JUPYTER_PATH
+   fi
+
+   if [ -z "${JUPYTER_CONFIG_DIR}" ]; then
+      JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook; export JUPYTER_CONFIG_DIR # Linux, ELF HP-UX
+   else
+      JUPYTER_CONFIG_DIR=$ROOTSYS/etc/notebook:$JUPYTER_CONFIG_DIR; export JUPYTER_CONFIG_DIR
+   fi
+}
+
+
+### main ###
+
+
+if [ -n "${ROOTSYS}" ] ; then
+   old_rootsys=${ROOTSYS}
+   old_rootsys_before_CLA=${ROOTSYS}
 fi
 
-_ROOTSYS=$ROOTSYS
+
+#SOURCE=${BASH_ARGV[0]}
+#if [ "x$SOURCE" = "x" ]; then
+#   SOURCE=${(%):-%N} # for zsh
+#fi
+
+
+#if [ "x${SOURCE}" = "x" ]; then
+#   if [ -f bin/thisroot.sh ]; then
+#      ROOTSYS="$PWD"; export ROOTSYS
+#   elif [ -f ./thisroot.sh ]; then
+#      ROOTSYS=$(cd ..  > /dev/null; pwd); export ROOTSYS
+#   else
+#      echo ERROR: must "cd where/root/is" before calling ". bin/thisroot.sh" for this version of bash!
+#      ROOTSYS=; export ROOTSYS
+#      return 1
+#   fi
+#else
+#   # get param to "."
+#   thisroot=$(dirname ${SOURCE})
+#   ROOTSYS=$(cd ${thisroot}/.. > /dev/null;pwd); export ROOTSYS
+#fi
+
 
 clean_environment
+#set_environment
+
+
+# Prevent Cppyy from checking the PCH (and avoid warning)
+export CLING_STANDARD_PCH=none
+
+if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
+   ROOTSYS="`cygpath -w $ROOTSYS`"
+fi
 
 unset old_rootsys
+unset thisroot
 unset -f drop_from_path
 unset -f clean_environment
-unset _ROOTSYS
+unset -f set_environment
