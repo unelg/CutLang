@@ -56,6 +56,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        TLorentzVector dummyTlv(0.,0.,0.,0.);
        TVector2 met;
        dbxJet      *adbxj;
+       dbxJet      *adbxlj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
        //dbxTau      *adbxt;
@@ -155,6 +156,29 @@ std::cout << "Jets OK:"<< jet_pt->size() <<std::endl;
 #ifdef __DEBUG__
 std::cout << "MET OK"<<std::endl;
 #endif
+    
+    //LJETS
+         
+         for (unsigned int i=0; i<rcjet_pt->size(); i++) {
+             alv.SetPtEtaPhiE( rcjet_pt->at(i)*0.001, rcjet_eta->at(i), rcjet_phi->at(i), rcjet_e->at(i)*0.001 ); // all in GeV
+             adbxlj= new dbxJet(alv);
+             //adbxlj->set_rcjetsub_mv2c10_isbtagged(rcjetsub_mv2c10->at(i));
+             /*for (unsigned int i=0; i<rcjetsub_mv2c10->size(); i++) {
+                 adbxlj->rcjetsub_mv2c10_isbtagged(rcjetsub_mv2c10->at(i));
+             }*/
+             
+             bool is_bljet = false;
+             for (unsigned int j=0; j<rcjetsub_mv2c10->at(i).size(); j++) {
+                 if (rcjetsub_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
+             }
+             adbxlj->set_isbtagged_77(is_bljet);
+             
+             ljets.push_back(*adbxlj);
+             delete adbxlj;
+         }
+     #ifdef __DEBUG__
+         std::cout << "LJets OK:"<< rcjet_pt->size() <<std::endl;
+     #endif
 
 
         anevt.run_no=runNumber;
