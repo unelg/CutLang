@@ -6,7 +6,7 @@ export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang
 export PATH=$CUTLANG_PATH/runs:$PATH
 export CUTLANG_JUPYTER_DATA_DIR=$(jupyter --data-dir)
 
-source $CUTLANG_PATH/root_reset_for_conda.sh
+source $CUTLANG_PATH/root_set_for_conda.sh
 
 mkdir -p $CUTLANG_JUPYTER_DATA_DIR/kernels/cutlang
 
