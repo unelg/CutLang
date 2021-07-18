@@ -84,11 +84,7 @@ set_environment()
 
 export _ROOTSYS=$OLD_ROOTSYS_BEFORE_CLA
 
-set_environment
-
-if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
-   _ROOTSYS="`cygpath -w $_ROOTSYS`"
-fi
+#set_environment
 
 unset -f set_environment
 unset OLD_ROOTSYS_BEFORE_CLA
