@@ -140,7 +140,7 @@ set_environment()
 #  if [ -z "${CMAKE_PREFIX_PATH}" ]; then
 #     CMAKE_PREFIX_PATH=$CONDA_PREFIX; export CMAKE_PREFIX_PATH       # Linux, ELF HP-UX
 #else
-#     CMAKE_PREFIX_PATH=$CONDA_PREFIX:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
+#     CMAKE_PREFIX_PATH=$CONDA_PREFIX:$CMAKE_PREFIX_PATH; export CMAKE_PREFIX_PATH
 #  fi
 
    if [ -z "${JUPYTER_PATH}" ]; then
