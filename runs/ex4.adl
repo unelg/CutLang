@@ -27,14 +27,14 @@ region   test
   select      Size(BJET)    == 1  # events with 2 or more jets 
   select      bTag(JET[0])  > 0
   select      bTag(JET[0])  == 1 
-#  select      Size(BiJET)   >= 1  # events with 2 or more jets 
-#  select      Size(ELE)     >= 2  # events with 2 or more electrons 
-#  select      Size(goodEle) >= 2  # events with 2 or more electrons 
-#  select      Size(MUO) >= 2  # events with 2 or more electrons 
-#  select      Size(myMu) >= 2  # events with 2 or more electrons 
-#  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
-#  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
-#  select      {Zreco}q == 0       # Z is neutral
-#  select      {goodZreco}q == 0   # Z is neutral
-#  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
-#  histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
+  select      Size(BiJET)   >= 1  # events with 2 or more jets 
+  select      Size(ELE)     >= 2  # events with 2 or more electrons 
+  select      Size(goodEle) >= 2  # events with 2 or more electrons 
+  select      Size(MUO) >= 2  # events with 2 or more electrons 
+  select      Size(myMu) >= 2  # events with 2 or more electrons 
+  histo       h1mReco,     "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
+  histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
+  select      {Zreco}q == 0       # Z is neutral
+  select      {goodZreco}q == 0   # Z is neutral
+  histo       h2mReco    , "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
+  histo       h2mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, m(goodZreco)
