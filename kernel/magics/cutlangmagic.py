@@ -22,7 +22,7 @@ class CutLangMagics(Magic):
             f.write(self.code)
             f.close()
             print(PWD, "pwd", 'CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
-            os.system('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
+            print(os.popen('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName).read())
             os.remove(adlName)
         self.evaluate = False
 
