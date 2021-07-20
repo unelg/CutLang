@@ -7,15 +7,23 @@ PATH=${PATH#:}; PATH=${PATH%:}
 
 #rm $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.8/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.7/site-packages/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
 
 #rm $ROOTSYS/lib/JupyROOT/magics/cutlangmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/magics/cutlangmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.8/site-packages/JupyROOT/magics/cutlangmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.7/site-packages/JupyROOT/magics/cutlangmagic.py 2>>/dev/null
 
 #rm $ROOTSYS/lib/JupyROOT/kernel/magics/shellmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/kernel/magics/shellmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.8/site-packages/JupyROOT/kernel/magics/shellmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.7/site-packages/JupyROOT/kernel/magics/shellmagic.py 2>>/dev/null
 
 #rm $ROOTSYS/lib/JupyROOT/magics/shellmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.9/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.8/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
+#rm $ROOTSYS/lib/python3.7/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 
 #source $CUTLANG_PATH/root_set_for_conda.sh
 
