@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  src:
+    container_name: cutlang-dev
+    image: cutlang-dev_image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/src
+    ports:
+      - "8888:8888"
+  
