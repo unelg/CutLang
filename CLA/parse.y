@@ -125,6 +125,7 @@ input : initializations countformats definitions objects commands
       | initializations countformats objects definitions  commands 
       | initializations countformats objects definitions objects commands 
       | initializations countformats definitions objects definitions  commands 
+      | initializations countformats definitions objects definitions objects definitions commands 
       ;
 initializations : initializations initialization 
         | 
@@ -323,8 +324,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                          vector<myParticle*> newList;
                                          DEBUG("Particle list\n");
                                          for (int ip=0; ip<TmpParticle.size(); ip++){
-                                           cout <<TmpParticle[ip]->type << "  "<<TmpParticle[ip]->index<< " "<< TmpParticle[ip]->collection;
-                                           cout <<"------------\n";
+                                           DEBUG(TmpParticle[ip]->type <<" "<<TmpParticle[ip]->index<< " "<< TmpParticle[ip]->collection<<"\n");
                                          }
                                          TmpParticle.swap(newList);
                                          ListParts->insert(make_pair(name,newList));
