@@ -19,6 +19,7 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def"|"define" return DEF;//case sensitive in this case
 "cmd"|"cut"|"select"|"command" return CMD;
+"set" return SET;
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
