@@ -7,40 +7,13 @@ info analysisExample
   sqrtS 13.0
   lumi 35.9
   arXiv "1706.09933"
-  hepdata " http://adress "
+  hepdata " http://adress.org "
   doi "10.1007/JHEP11(2017)029"
 
-#systematic ON  JVT
-#systematic Off JES
-#systematic On  JER
-
-define www = 123.1/10
-
-
-region   preselection
-  select  ALL
-  select  Size (ELE) >= 1
-  select  Size (MUO) >= 1 
-histo h1Pt1, "Pt of muon1 (GeV)", 100, 0, 200, { MUO_0 }Pt
-histo h1Pt2, "Pt of muon2 (GeV)", 100, 0, 200, { MUO_1 }Pt
-
-region   sigsel
-  preselection
-  select  Size (ELE) >= 2
-#  1DelectronHistos
-
-#region   test
-#  select  ALL              # to count all events
-#  1DelectronHistos
-#  select  Size (ELE) >= 2  # events with 2 or more electrons 
-#  weight   randWeight www
-#  reject   Size (ELE) > 4  # events with 2 or more electrons 
-
-# region mest
-#  select  ALL
-#  select  Size (MUO) >= 2 
-#  select  Size (ELE) >= 2  # events with 2 or more electrons 
-#  weight  bWeight   2.321
-#  1DelectronHistos
-
+region   testZ
+  select      ALL              # to count all events
+  select      Size (ELE) >= 2  # events with 2 or more electrons 
+  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
+  select      {ELE[0] ELE[1] }q == 0   # Z is neutral
+  histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, {ELE_0 ELE_1}m
 

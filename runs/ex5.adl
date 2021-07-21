@@ -11,6 +11,7 @@ object goodEle : ELE
   select     {ELE}AbsEta ][  1.442 1.556
 
 define goodZreco : goodEle[0] goodEle[1]
+define  wmc = 12.3 / 1.5
 
 algo        preselection
   select      ALL              # to count all events
@@ -18,6 +19,7 @@ algo        preselection
 
 algo        testg
   preselection
+  weight      mcweight    wmc
   select      Size(goodEle) >= 2  # events with 2 or more electrons 
   histo       h1mgoodReco, "Z candidate mass (GeV)", 100, 0, 200, {goodZreco}m
   select      {goodZreco}q == 0   # Z is neutral

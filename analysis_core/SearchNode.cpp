@@ -226,13 +226,13 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[0])->collection;
                     int Max;
                     switch(type){//assuming all particles have the same type // FIXME
-                       case muon_t: Max=ao->muos[ac].size();break;
-                       case electron_t: Max=ao->eles[ac].size();break;
-                       case jet_t: Max=ao->jets[ac].size();break;
-                       case fjet_t : Max=ao->ljets[ac].size();break;
+                        case muon_t: Max=ao->muos[ac].size();break;
+                        case electron_t: Max=ao->eles[ac].size();break;
+                        case jet_t: Max=ao->jets[ac].size();break;
+                        case fjet_t : Max=ao->ljets[ac].size();break;
                         case bjet_t: Max=left->tagJets(ao,1,ac).size();break;
                         case lightjet_t: Max=left->tagJets(ao,0,ac).size();break;
-		   case photon_t: Max=ao->gams[ac].size();break;
+		        case photon_t: Max=ao->gams[ac].size();break;
 			case tau_t: Max=ao->taus[ac].size();break;
 			case combo_t: Max=ao->combos[ac].size();break;
                       default :
