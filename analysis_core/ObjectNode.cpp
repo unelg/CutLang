@@ -811,17 +811,17 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    dbxParticle *adbxp;
    TLorentzVector  alv;
    std::string collectionName;
-   int ipart_max;
+   int ipart_max=0;
 
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
         particles->clear();
         (*cutIterator)->getParticles(particles);
 
+     dbxParticle bdbxp; // to sum particles
      DEBUG("Psize:"<<particles->size() <<"\n");
       for (int jj=0; jj<particles->size(); jj++){
        DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
        collectionName=particles->at(jj)->collection;
-
        switch(particles->at(jj)->type){
                   case muon_t: 
                             if ( (ao->muos).find(collectionName) == ao->muos.end() ) {
@@ -829,14 +829,22 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
                                exit (1);
                             }
-                            ipart_max=(ao->muos)[collectionName].size();
-                            for (int ipart=0; ipart<ipart_max; ipart++){
-                                alv=(ao->muos)[collectionName].at(ipart).lv();
-                                adbxp= new dbxParticle(alv);
-                                adbxp->setCharge((ao->muos)[collectionName].at(ipart).q() );
-                                adbxp->setPdgID( (ao->muos)[collectionName].at(ipart).pdgID() );
-                                combination.push_back(*adbxp);
-                                delete adbxp;
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->muos)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->muos)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->muos)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->muos)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                            } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->muos)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv);
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->muos)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->muos)[collectionName].at(ipart).pdgID() );
                             }
                             break;
                     case electron_t: 
@@ -845,44 +853,125 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                     << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
                                exit (1);
                             }
-                            ipart_max=(ao->eles)[collectionName].size();
-                            for (int ipart=0; ipart<ipart_max; ipart++){
-                                alv=(ao->eles)[collectionName].at(ipart).lv();
-                                adbxp= new dbxParticle(alv);
-                                adbxp->setCharge((ao->eles)[collectionName].at(ipart).q() );
-                                adbxp->setPdgID( (ao->eles)[collectionName].at(ipart).pdgID() );
-                                combination.push_back(*adbxp);
-                                delete adbxp;
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->eles)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->eles)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->eles)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->eles)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                             } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->eles)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv);
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->eles)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->eles)[collectionName].at(ipart).pdgID() );
+                             }
+                            break;
+		    case truth_t: ipart_max=(ao->truth)[collectionName].size();
+                        break;
+                    case jet_t: 
+                            if ( (ao->jets).find(collectionName) == ao->jets.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->jets)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->jets)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->jets)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->jets)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                            } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->jets)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv); 
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->jets)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->jets)[collectionName].at(ipart).pdgID() );
                             }
                             break;
-		    case 10: ipart_max=(ao->truth)[collectionName].size();
-                        break;
-                    case 2: ipart_max=(ao->jets)[collectionName].size();
-                        break;
 //                  case 3: ipart_max=abc.tagJets(ao, 1).size(); //b-jets
 //                      break;
 //                  case 4: ipart_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
-                    case 8: ipart_max=(ao->gams)[collectionName].size(); break;
-                    case 9: ipart_max=(ao->ljets)[collectionName].size(); break;
-                   case 11: ipart_max=(ao->taus)[collectionName].size();
-                            for (int ipart=0; ipart<ipart_max; ipart++){
-                                alv=(ao->taus)[collectionName].at(ipart).lv();
-                                adbxp= new dbxParticle(alv);
-                                adbxp->setCharge((ao->taus)[collectionName].at(ipart).q() );
-                                adbxp->setPdgID( (ao->taus)[collectionName].at(ipart).pdgID() );
-                                combination.push_back(*adbxp);
-                                delete adbxp;
+                    case photon_t: ipart_max=(ao->gams)[collectionName].size(); break;
+                    case fjet_t: 
+                            if ( (ao->ljets).find(collectionName) == ao->ljets.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->ljets)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->ljets)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->ljets)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->ljets)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                            } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->ljets)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv);
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->ljets)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->ljets)[collectionName].at(ipart).pdgID() );
                             }
                             break;
-                   case 20: ipart_max=(ao->combos)[collectionName].size(); 
-                            for (int ipart=0; ipart<ipart_max; ipart++){
-                                alv=(ao->combos)[collectionName].at(ipart).lv();
-                                adbxp= new dbxParticle(alv);
-                                adbxp->setCharge((ao->combos)[collectionName].at(ipart).q() );
-                                adbxp->setPdgID( (ao->combos)[collectionName].at(ipart).pdgID() );
-                                combination.push_back(*adbxp);
-                                delete adbxp;
+                    case tau_t:
+                           if ( (ao->taus).find(collectionName) == ao->taus.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }   
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->taus)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->taus)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->taus)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->taus)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                            } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->taus)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv);
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->taus)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->taus)[collectionName].at(ipart).pdgID() );
+                            }
+                            break;
+                 case combo_t: 
+                           if ( (ao->combos).find(collectionName) == ao->combos.end() ) {
+                               cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                               exit (1);
+                            }   
+                            if (particles->at(jj)->index == 6213) {
+                               ipart_max=(ao->combos)[collectionName].size();
+                               for (int ipart=0; ipart<ipart_max; ipart++){
+                                   alv=(ao->combos)[collectionName].at(ipart).lv();
+                                   adbxp= new dbxParticle(alv);
+                                   adbxp->setCharge((ao->combos)[collectionName].at(ipart).q() );
+                                   adbxp->setPdgID( (ao->combos)[collectionName].at(ipart).pdgID() );
+                                   combination.push_back(*adbxp);
+                                   delete adbxp;
+                               }
+                            } else {
+                                   int ipart=particles->at(jj)->index;
+                                   alv=(ao->combos)[collectionName].at(ipart).lv();
+                                   bdbxp.setTlv(bdbxp.lv()+alv);
+                                   bdbxp.setCharge( bdbxp.q()    +(ao->combos)[collectionName].at(ipart).q() );
+                                   bdbxp.setPdgID(  bdbxp.pdgID()+(ao->combos)[collectionName].at(ipart).pdgID() );
                             }
                             break;
                     default:
@@ -892,6 +981,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         DEBUG("Adding # particles:"<<ipart_max<<"\n");
 
       } //end of particle loop
+      if ( particles->at(0)->index != 6213 ) combination.push_back(bdbxp);
    }// end of  cut iterator loop
    ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
