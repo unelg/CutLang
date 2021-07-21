@@ -6,63 +6,46 @@ jobs:
   build:
     
     runs-on: ubuntu-latest
+    container: rootproject/root:6.24.00-ubuntu20.04
 
     steps:
     - uses: actions/checkout@v2
-        
-    - name: init-cache-dir
-      run: mkdir build ; chmod +x ./.github/workflows/sendgrid.js
+    - name: chmod
+      working-directory: .github/workflows
+      run: |
+        ls -la
+        chmod +x ./sendgrid.js
+        chmod +x deploy.sh
+        chmod +x filter.sh
+        chmod +x mail_body.sh 
+        chmod +x commit.sh
       
-    - name: Cache ROOT Build
-      id: cache
-      uses: actions/cache@v1.1.2
-      with:
-        path: ./build/
-        key: ${{ runner.os }}-build-6180401351b8ada42c7b51b8504195dc30bdfbe5a42424fa4fef7156a57079e49b930
-        restore-keys: |
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-          
-    - name: ROOT Dependencies
+    - name: CutLang Dependencies
       run: |
-        sudo apt update ; 
-        sudo apt install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
-        libxft-dev libxext-dev ;
-        sudo apt install gfortran libssl-dev libpcre3-dev \
-        xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
-        libmysqlclient-dev libfftw3-dev libcfitsio-dev \
-        graphviz-dev libavahi-compat-libdnssd-dev \
-        libldap2-dev python-dev libxml2-dev libkrb5-dev \
-        libgsl0-dev libqt4-dev ;
-        sudo apt install flex bison wget ;
+        apt update
+        apt install -y flex bison wget
                    
-    - name: Build ROOT
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        git clone https://github.com/root-project/root.git
-        cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
-        mv ./build ./b2 ; mkdir build ; cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
-    
     - name: Build CutLang
-      run: cd ./CLA ; . $HOME/work/CutLang/CutLang/build/bin/thisroot.sh ; make
+      working-directory: CLA
+      run: make
     
     - name: Run Tests
+      working-directory: .github/workflows
       run: |
-        source $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
-        echo /lib/root > root.conf ; sudo mv ./root.conf /etc/ld.so.conf.d/ ; sudo ldconfig
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x deploy.sh ; ./deploy.sh 2>&1 | tee ./raw_output.txt
+        ./deploy.sh 2>&1 | tee ./raw_output.txt
       
     - name: Filter Output
+      working-directory: .github/workflows
       run: |
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x filter.sh ; ./filter.sh
-        cd $HOME/work/CutLang/CutLang/.github/previous ; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt ; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
-        cd $HOME/work/CutLang/CutLang/.github/workflows ; mkdir artifacts ; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
-        if [ "`cat $HOME/work/CutLang/CutLang/.github/workflows/artifacts/errors.txt`" != "Errors: " ]; then
+        ./filter.sh
+        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
+        cd ../workflows; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
+        mkdir artifacts; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
+        if [ "`cat ${{ github.workspace }}/.github/workflows/artifacts/errors.txt`" != "Errors: " ]; then
           touch flag
         fi
-        chmod +x mail_body.sh ; ./mail_body.sh
-
+        ./mail_body.sh
+    
     - name: Check for Bad Run Flag
       id: check_files
       uses: andstor/file-existence-action@v1
@@ -76,12 +59,9 @@ jobs:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
         
-    - name: Clear Temporary Files
-      run: rm $HOME/work/CutLang/CutLang/.github/workflows/artifacts/temp.txt ; rm -f flag 
-
     - name: Update Artifacts
       if: steps.cache.outputs.cache-hit == 'true'
-      run: cd $HOME/work/CutLang/CutLang/.github/workflows ; chmod +x commit.sh ; ./commit.sh ${GITHUB_REF##*/}
+      run: cd ./.github/workflows ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
