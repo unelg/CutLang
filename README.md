@@ -133,13 +133,16 @@ Create and activate the environment using
  cd CutLang
  conda env create -f environment.yml # create environment with dependencies
  conda activate CutLang-dev # activate development environment
- cd CLA
- make clean
- make
  source setup.sh
  # if you want, you can run
  # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
  # to keep it active all the time
+
+ # then you should run (just first time)
+ CLA_recompile # this will run the following in order
+ # cd $CUTLANG_PATH/CLA
+ # make clean
+ # make
 ```
 
 #### Using docker
@@ -155,9 +158,10 @@ Exec the container using (in the another terminal window)
 ```bash
  docker exec -it cutlang-dev bash
  # then you should run in docker (just first time)
- cd CLA
- make clean
- make
+ CLA_recompile # this will run the following in order
+ # cd $CUTLANG_PATH/CLA
+ # make clean
+ # make
 ```
 
 ### Build and deploy environment
