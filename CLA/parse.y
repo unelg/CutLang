@@ -121,11 +121,8 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %type <s> ERRTYPE
 %type <real> NUMBER
 %%
-input : initializations countformats definitions objects commands 
-      | initializations countformats objects definitions  commands 
-      | initializations countformats objects definitions objects commands 
-      | initializations countformats definitions objects definitions  commands 
-      | initializations countformats definitions objects definitions objects definitions commands 
+input : initializations countformats definitions_objects commands 
+      | initializations countformats objects_definitions commands
       ;
 initializations : initializations initialization 
         | 
@@ -150,6 +147,15 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
                     DataFormats->at(4)=3;
                   } 
                 ;
+
+definitions_objects : definitions objects_definitions
+            |
+            ;
+
+objects_definitions : objects definitions_objects
+            |
+            ;
+
 definitions : definitions definition 
             | 
             ;

@@ -29,45 +29,45 @@ drop_from_path()
 clean_environment()
 {
 
-   if [ -n "${old_rootsys}" ] ; then
+   if [ -n "${CONDA_PREFIX}" ] ; then
       if [ -n "${PATH}" ]; then
-         drop_from_path "$PATH" "${old_rootsys}/bin"
+         drop_from_path "$PATH" "${CONDA_PREFIX}/bin"
          PATH=$newpath
       fi
       if [ -n "${LD_LIBRARY_PATH}" ]; then
-         drop_from_path "$LD_LIBRARY_PATH" "${old_rootsys}/lib"
+         drop_from_path "$LD_LIBRARY_PATH" "${CONDA_PREFIX}/lib"
          LD_LIBRARY_PATH=$newpath
       fi
       if [ -n "${DYLD_LIBRARY_PATH}" ]; then
-         drop_from_path "$DYLD_LIBRARY_PATH" "${old_rootsys}/lib"
+         drop_from_path "$DYLD_LIBRARY_PATH" "${CONDA_PREFIX}/lib"
          DYLD_LIBRARY_PATH=$newpath
       fi
       if [ -n "${SHLIB_PATH}" ]; then
-         drop_from_path "$SHLIB_PATH" "${old_rootsys}/lib"
+         drop_from_path "$SHLIB_PATH" "${CONDA_PREFIX}/lib"
          SHLIB_PATH=$newpath
       fi
       if [ -n "${LIBPATH}" ]; then
-         drop_from_path "$LIBPATH" "${old_rootsys}/lib"
+         drop_from_path "$LIBPATH" "${CONDA_PREFIX}/lib"
          LIBPATH=$newpath
       fi
       if [ -n "${PYTHONPATH}" ]; then
-         drop_from_path "$PYTHONPATH" "${old_rootsys}/lib"
+         drop_from_path "$PYTHONPATH" "${CONDA_PREFIX}/lib"
          PYTHONPATH=$newpath
       fi
       if [ -n "${MANPATH}" ]; then
-         drop_from_path "$MANPATH" "${old_rootsys}/man"
+         drop_from_path "$MANPATH" "${CONDA_PREFIX}/man"
          MANPATH=$newpath
       fi
       if [ -n "${CMAKE_PREFIX_PATH}" ]; then
-         drop_from_path "$CMAKE_PREFIX_PATH" "${old_rootsys}"
+         drop_from_path "$CMAKE_PREFIX_PATH" "${CONDA_PREFIX}"
          CMAKE_PREFIX_PATH=$newpath
       fi
       if [ -n "${JUPYTER_PATH}" ]; then
-         drop_from_path "$JUPYTER_PATH" "${old_rootsys}/etc/notebook"
+         drop_from_path "$JUPYTER_PATH" "${CONDA_PREFIX}/etc/notebook"
          JUPYTER_PATH=$newpath
       fi
       if [ -n "${JUPYTER_CONFIG_DIR}" ]; then
-         drop_from_path "$JUPYTER_CONFIG_DIR" "${old_rootsys}/etc/notebook"
+         drop_from_path "$JUPYTER_CONFIG_DIR" "${CONDA_PREFIX}/etc/notebook"
          JUPYTER_CONFIG_DIR=$newpath
       fi
    fi
@@ -188,7 +188,7 @@ set_environment()
 #fi
 
 
-#clean_environment
+clean_environment
 #set_environment
 
 if [ -n "${old_rootsys_before_CLA}" ] ; then
@@ -202,6 +202,8 @@ fi
 #if [ "x`root-config --arch | grep -v win32gcc | grep -i win32`" != "x" ]; then
 #   ROOTSYS="`cygpath -w $ROOTSYS`"
 #fi
+
+ROOTSYS=$old_rootsys_before_CLA
 
 unset old_rootsys
 unset old_rootsys_before_CLA
