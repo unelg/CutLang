@@ -162,7 +162,7 @@ set_environment()
 
 if [ -n "${ROOTSYS}" ] ; then
    old_rootsys=${ROOTSYS}
-   #old_rootsys_before_CLA=${ROOTSYS}
+   old_rootsys_before_CLA=${ROOTSYS}
 fi
 
 

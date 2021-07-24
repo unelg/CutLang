@@ -22,7 +22,10 @@ class CutLangMagics(Magic):
             f.write(self.code)
             f.close()
             print(PWD, "pwd", 'CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
-            os.system('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
+            if(os.path.isfile(os.environ["CUTLANG_PATH"]+'/mybinder_true')):
+                print(os.popen('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName).read())
+            else:
+                os.system('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
             os.remove(adlName)
         self.evaluate = False
 
