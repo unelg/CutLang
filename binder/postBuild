@@ -1,0 +1,6 @@
+#!/bin/bash
+
+notebook_env=$CONDA_DIR/envs/notebook
+CUTLANG_PATH=$notebook_env/bin/cutlang
+
+touch $CUTLANG_PATH/mybinder_true
