@@ -186,7 +186,7 @@ void FuncNode::Reset() {
 void FuncNode::getParticles(std::vector<myParticle *>* particles) {
         int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
-            
+            DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
                 if (inputParticles[i]->index==particles->at(j)->index)
@@ -211,7 +211,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("\nIn function Node evaluate, #particles:"<< inputParticles.size() <<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
      if(userObjectA) { double retval=userObjectA->evaluate(ao); 
-                       DEBUG("RetVal:"<< retval  <<"\n");
+                       DEBUG("UOA RetVal:"<< retval  <<"\n");
                        int thistype=((ObjectNode*)userObjectA)->type;
                        string realname=((ObjectNode*)userObjectA)->name;
                        DEBUG("A t,n:"<<thistype<<" , "<< realname <<"\n");

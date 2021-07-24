@@ -19,7 +19,6 @@ vardef {varname}" "?":"" "?.*"\n"
 %%
 "def"|"define" return DEF;//case sensitive in this case
 "cmd"|"cut"|"select"|"command" return CMD;
-"set" return SET;
 "reject" return REJEC;
 "obj"|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
@@ -126,7 +125,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [dD][eE][tT][aA] return DETA;
 [sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs 
 "nbf" return NBF;
-"fHT" return HT;
+"fHT" return HT; // attention
 "METMWT" return METMWT;
 "MWT" return MWT;
 "MET" return MET;
