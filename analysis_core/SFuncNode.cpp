@@ -8,6 +8,7 @@
 //
 #include "SFuncNode.h"
 #include "ValueNode.h"
+#include "ObjectNode.hpp"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -15,13 +16,15 @@
 #else
 #define DEBUG(a)
 #endif
-    
+
 double SFuncNode::evaluate(AnalysisObjects* ao) {
 
-        DEBUG("*******In SF, Extern True/False:"<< ext <<"\n"); 
+        DEBUG("*******In SF,"<<symbol<<" Extern True/False:"<< ext <<"\n"); 
         if(userObjectA && !ext) {
-           DEBUG("\t start user obj A\n"); 
+           DEBUG("\t start user obj A type:"<< ((ObjectNode*)userObjectA)->type<<"\n"); 
+
            userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
+           value=((ObjectNode*)userObjectA)->type; //ngu added this as a temporary solution as he uses 2nd creator
            DEBUG("user obj A done.\n"); 
         }
         if(userObjectB && !ext) {
@@ -33,7 +36,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
         dbxParticle *bPart= new dbxParticle;
         dbxParticle *cPart= new dbxParticle;
 
-          TString unikID="_";
+        TString unikID="_";
 
         if ( inputParticlesA.size()>0 ){
            aPart->Reset();
@@ -138,7 +141,8 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
 
            DEBUG("cPart constructed \t");
         }
-        if (left != NULL) {
+        DEBUG ("Before Eval:"<<symbol<<" Value:"<<value<< " Type:"<<type<<"\n");
+        if (left != NULL && !userObjectA ) { // there is a child node to evalute, like a weight function. there must be no userObjA.
           value =left->evaluate(ao);
         }
 
@@ -226,6 +230,7 @@ double count(AnalysisObjects* ao, string s, float id) {
      case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
+//     case consti_t:   return (ao->constits.at(s).size()); break;
      case combo_t:    if (ao->combosA.find(s)!=ao->combosA.end() ){
                            DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row <<" "<< ao->combosA.at(s).max_col<<"\n");
                            return (ao->combosA.at(s).max_row);
@@ -234,7 +239,7 @@ double count(AnalysisObjects* ao, string s, float id) {
                            return (ao->combos.at(s).size() );
                       }
                       break;
-     default:        std::cerr<<"No such Particle Type:\n"; return (-1); break;
+     default:        std::cerr<<"count No such Particle Type:"<<pid<<" for collection:"<<s<<"\n"; return (-1); break;
     }
     return (-1);
 }
@@ -253,8 +258,20 @@ double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
 
 double ht(AnalysisObjects* ao, string s, float id){
     double sum_htjet=0;
-    for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();
-    return (sum_htjet  );
+    particleType pid = (particleType)id;
+    switch (pid){
+     case truth_t:    for (UInt_t i=0; i<ao->truth.at(s).size(); i++) sum_htjet+=ao->truth.at(s).at(i).lv().Pt(); break;
+     case muon_t:     for (UInt_t i=0; i<ao->muos.at(s).size(); i++) sum_htjet+=ao->muos.at(s).at(i).lv().Pt(); break;
+     case electron_t: for (UInt_t i=0; i<ao->eles.at(s).size(); i++) sum_htjet+=ao->eles.at(s).at(i).lv().Pt(); break;
+     case tau_t:      for (UInt_t i=0; i<ao->taus.at(s).size(); i++) sum_htjet+=ao->taus.at(s).at(i).lv().Pt(); break;
+     case jet_t:      for (UInt_t i=0; i<ao->jets.at(s).size(); i++) sum_htjet+=ao->jets.at(s).at(i).lv().Pt();   break;
+     case fjet_t:     for (UInt_t i=0; i<ao->ljets.at(s).size(); i++) sum_htjet+=ao->ljets.at(s).at(i).lv().Pt(); break;
+     case photon_t:   for (UInt_t i=0; i<ao->gams.at(s).size(); i++) sum_htjet+=ao->gams.at(s).at(i).lv().Pt(); break;
+     case combo_t:    for (UInt_t i=0; i<ao->combos.at(s).size(); i++) sum_htjet+=ao->combos.at(s).at(i).lv().Pt(); break;
+
+     default:        std::cerr<<"ht No such Particle Type:"<<pid <<"\n"; return (-1); break;
+    }
+    return (sum_htjet);
 }
 
 double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVector> (*func)(std::vector<TLorentzVector> jets, int p1) ){

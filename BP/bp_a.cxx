@@ -470,7 +470,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
       ((SearchNode *)NodeCuts[in])->setParticles(&particleBank[in]);
      }
      for (int aa=0; aa<controlword; aa++) iter++;
-
   }
 
 //----------------------execute
@@ -514,7 +513,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
              for (int ip=0; ip<theseParticles.size(); ip++){
                DEBUG("Bank] Coll:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<"\n");
              }
-               particleBank.insert(make_pair(iter->first, theseParticles) );
+               particleBank.insert(make_pair(iter->first, theseParticles) ); //cut ID, particles
            }
         }
         iter++; //moves on to the next cut

@@ -42,10 +42,12 @@ private:
                          double (*h5)(TLorentzVector, TLorentzVector, TLorentzVector );
     bool ext;
     int type = 1;
-    float value = 1.0;
+    float value = -1.0;
     std::vector<myParticle*> inputParticlesA;
     std::vector<myParticle*> inputParticlesB;
     std::vector<myParticle*> inputParticlesC;
+
+
 public:
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), 
               float val, 
@@ -64,9 +66,11 @@ public:
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        DEBUG("** SF node with no left right nodes.\n");
 
 }
-    SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val), Node *child, std::string s, 
+    SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val),
+              Node *child, std::string s, 
               Node *objectNodeA = NULL, Node *objectNodeB = NULL){
         f=func;
         g1=NULL;
@@ -80,7 +84,7 @@ public:
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
-
+        DEBUG("** SF node with child node as left.\n");
 }
 
 //------------------------- g1 with userfuncA

@@ -40,6 +40,7 @@ ObjectNode::ObjectNode(std::string id,
 
     left=previous;
     right=NULL;
+    DEBUG("Object node with "<<symbol<<"\n");
 
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
@@ -78,7 +79,13 @@ void ObjectNode::Reset(){
 }
 
 void ObjectNode::getParticles(std::vector<myParticle *>* particles){
-    cout<<"Calling get particles on ObjectNode-----doing nothing\n";
+    cout<<"Calling get particles on ObjectNode-----doing NO nothing\n";
+    if (left) left->getParticles(particles);
+    DEBUG("# iparticles:"<< particles->size()<<"\n");
+    for (int kk=0; kk<particles->size(); kk++) {
+             DEBUG("type:"<< (particles->at(kk))->type<<"\t index:"<<(particles->at(kk))->index <<"name:"<<(particles->at(kk))->collection<<"\n" );
+    }
+    DEBUG("---------\n");
 }
 
 void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
@@ -88,14 +95,15 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
     DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
-    this->Reset(); ///////NGU
+    //this->Reset(); ///////NGU
     std::string basename="xxx";
     bool keepworking=true;
 
     DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size() <<"\n"); 
     DEBUG("# iparticles:"<< particles.size()<<"\n");
-    if (particles.size() >0) DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
-
+    if (particles.size() >0) {
+             DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
+    }
     if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
     while(left!=NULL && keepworking) {
       ObjectNode* anode=(ObjectNode*)left;
@@ -813,12 +821,17 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    std::string collectionName;
    int ipart_max=0;
 
+   DEBUG("initially we have "<<particles->size()<<" particles\n");
+   for (int jj=0; jj<particles->size(); jj++){
+       DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+   }
+
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
         particles->clear();
         (*cutIterator)->getParticles(particles);
 
      dbxParticle bdbxp; // to sum particles
-     DEBUG("Psize:"<<particles->size() <<"\n");
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<<particles->size() <<"\n");
       for (int jj=0; jj<particles->size(); jj++){
        DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
        collectionName=particles->at(jj)->collection;

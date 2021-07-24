@@ -81,7 +81,7 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC SYSTEMATIC
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
-%token TRGE TRGM SKPE SKPH SAVE SET
+%token TRGE TRGM SKPE SKPH SAVE 
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
@@ -387,8 +387,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
             }  
         ;
 //---------------------------------------
-function : '{' particules '}' 'm' {    std::cout<<"mass of particles with {}\n";
-                                       vector<myParticle*> newList;
+function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
                                        DEBUG("Mass function with:"<< newList.size() <<" particles.\n");
@@ -797,21 +796,18 @@ function : '{' particules '}' 'm' {    std::cout<<"mass of particles with {}\n";
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
-// TODO ID should perhaps not be here. all should be done as particles since it also contains IDs
-        | NUMOF '(' ID ')'  {          map<string,vector<myParticle*> >::iterator itdef=ListParts->find($3);
+// ID should be here. it contains object IDs
+        | NUMOF '(' ID ')'  {     //     map<string,vector<myParticle*> >::iterator itdef=ListParts->find("HiggsBoosted");
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
-                                       if (itdef == ListParts->end() && (it == ObjectCuts->end()) ) {
+                                       if (it == ObjectCuts->end() ) {
                                            std::string message = "OBJect not defined: ";
                                            message += $3;
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                           if (it != ObjectCuts->end()) {
+                                            DEBUG("NumOf with ID:"<<$3<<" is an object node.\n");
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count, type, it->first, it->second);
-                                           } else { // new type is defined using particle class summation
-                                            vector<myParticle*> newList= itdef->second;
-                                           }
                                        }
                            }
     | NUMOF '(' particules ')' {     vector<myParticle*> newList;
@@ -931,7 +927,7 @@ function : '{' particules '}' 'm' {    std::cout<<"mass of particles with {}\n";
                                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
                                            YYERROR;
                                        } else {
-                                           int id=((ObjectNode*)it->second)->type;
+                                           int id=((ObjectNode*)it->second)->type;  //type is used in a swicth to loop over particles
                                            $$=new SFuncNode(ht,id, it->first, it->second);
                                        }
                          }
@@ -2244,6 +2240,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 YYERROR;
                                      } 
                                      if(it != ObjectCuts->end() ){
+                                      DEBUG("Union with object type\n");
                                       ObjectNode* child1=(ObjectNode*)it->second;
                                       a->type =child1->type; a->collection = $6;
                                       newList.push_back(a);
@@ -2252,11 +2249,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                                        DEBUG("Union with 1st particle\n");
                                        for (int np=0; np<ik->second.size(); np++) {
                                         DEBUG("t:" <<ik->second.at(np)->type  << " i:"<<ik->second.at(np)->index<< " c:"<<ik->second.at(np)->collection<<"\n");
-                                        a->index=  ik->second.at(np)->index;
-                                        a->type = ik->second.at(np)->type;
-                                        a->collection = ik->second.at(np)->collection;
-                                        newList.push_back(a);
                                        }
+                                        newList=ik->second ; //newlist is <particle*> so is ik->second
                                      }
 //------------------second particle
                                       map<string, Node *>::iterator iu ;
@@ -2277,23 +2271,20 @@ objectBloc : OBJ ID TAKE ID criteria {
                                        DEBUG("Union with 2nd particle\n");
                                        for (int np=0; np<iy->second.size(); np++) {
                                         DEBUG("t:" <<iy->second.at(np)->type  << " i:"<<iy->second.at(np)->index<< " c:"<<iy->second.at(np)->collection<<"\n");
-                                        b->index=  iy->second.at(np)->index;
-                                        b->type = iy->second.at(np)->type;
-                                        b->collection = iy->second.at(np)->collection;
-                                        new2List.push_back(b);
                                        }
+                                        new2List=iy->second ;
                                      }
                                      DEBUG("newList size:"<<newList.size()<<"\n");
-                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     Node* nnode= new FuncNode(Qof,newList,"qo");  //ik->second
                                      vector<Node*> newNList; // cut list
                                      newNList.push_back(nnode);
                                      if (iy != ListParts->end() ){
-                                      Node* n2node= new FuncNode(Qof,new2List,"q");
+                                      Node* n2node= new FuncNode(Qof,iy->second,"qo");
                                       newNList.push_back(n2node);
                                      }
 
                                      Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
-                                     Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
+                                     Node*      obj=new ObjectNode($2,  previous,NULL    ,     newNList,  $2 );
                                      ObjectCuts->insert(make_pair($2,obj));
                                   }
         | OBJ ID ':' UNION '(' LEPTON ',' LEPTON ',' LEPTON ')' {
@@ -2876,30 +2867,6 @@ ifstatement : condition '?' action ':' action %prec '?' {
             ;
 action : condition { $$=$1; }
        | ALL { $$=new SFuncNode(all,1,"all"); }
-       | SET ID '=' particules {
-                              DEBUG ("Setting new ID with particles\n");
-
-                              map<string,vector<myParticle*> >::iterator it ;
-                              string name = $2;
-                              it = ListParts->find(name);
-                              DEBUG(name<<" : ");
-                              if(it != ListParts->end()) {
-                                      DEBUG ("Found ID, good. \n");
-                                      vector<myParticle*> newList;
-                                      for (int ip=0; ip<TmpParticle.size(); ip++){
-                                           cout <<"t:"<<TmpParticle[ip]->type << "  i:"<<TmpParticle[ip]->index<< " c:"<< TmpParticle[ip]->collection;
-                                           cout <<" -----------\n";
-                                      }
-                                      TmpParticle.swap(newList);
-                              //        it->second=newList;
-                              } else {
-                                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule not defined");
-                                      YYERROR;//stops parsing if variable already defined
-                              }
-
-                              $$=new SFuncNode(all,1,"all");
-                              DEBUG(" SET OK.\n");
-                              }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;
