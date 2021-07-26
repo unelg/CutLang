@@ -3,7 +3,7 @@ version: "3.9"
 services:
   src:
     container_name: cutlang
-    image: shenburak/cutlang
+    image: cutlang/cutlang
     build:
       context: .
       dockerfile: Dockerfile
