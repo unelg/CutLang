@@ -220,8 +220,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                   vector<myParticle*> newListC; TmpParticle.swap(newListC);
                                   string partMname=newListM[0]->collection;
                                   string partCname=newListC[0]->collection;
-                              //    DEBUG( partMname <<" has child "<< partCname <<"\n");
-                                  std::cout<< partMname <<" has child "<< partCname <<"\n";
+                                  DEBUG( partMname <<" has child "<< partCname <<"\n");
                                   map<string, Node *>::iterator itM = ObjectCuts->find(partMname);
                                   map<string, Node *>::iterator itC = ObjectCuts->find(partCname);
                                   if(itM == ObjectCuts->end()) {
@@ -819,7 +818,13 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
     | NUMOF '(' particules ')' {     vector<myParticle*> newList;
                                      TmpParticle.swap(newList);
                                      DEBUG("Nb:"<<newList.size()<< " t:"<<newList[0]->type<<" c:"<<newList[0]->collection<<"\n");
-                                     $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
+                                     if (newList[0]->type != 21 ) {
+                                       $$=new SFuncNode(count, newList[0]->type, newList[0]->collection);  
+                                     } else {
+                                       if (newList[0]->collection == "FJET") newList[0]->type=9;
+                                       if (newList[0]->collection == "JET") newList[0]->type=2;
+                                       $$=new FuncNode(CCountof,newList,"ChildCountOf");
+                                     }
                                }
     | '{' particules '}' NUMOF {     vector<myParticle*> newList;
                                      TmpParticle.swap(newList);
@@ -919,9 +924,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     vector<myParticle*> newList2;
                                     TmpParticle2.swap(newList2);
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
-//                                  cout<< "AAAAAAAAAAA" <<newList[0]->type<<"\n";
-//                                  cout<< "BBBBBBBBBBB" <<newList1[0]->type<<"\n";
-//                                  cout<< "CCCCCCCCCCC" <<newList2[0]->type<<"\n";
                                     $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
         | HT { $$=new SFuncNode(ht,1,"JET"); }

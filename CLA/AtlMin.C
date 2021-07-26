@@ -14,7 +14,13 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 
-//#define __DEBUG__
+//#define _CLV_
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
 //extern void _fsig_handler (int) ;
 //extern bool fctrlc;
 
@@ -61,6 +67,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        dbxMuon     *adbxm;
        //dbxTau      *adbxt;
        dbxPhoton   *adbxp;
+       dbxParticle *adbxparticle;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
@@ -168,17 +175,40 @@ std::cout << "MET OK"<<std::endl;
              }*/
              
              bool is_bljet = false;
-             for (unsigned int j=0; j<rcjetsub_mv2c10->at(i).size(); j++) {
-                 if (rcjetsub_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
+             for (unsigned int j=0; j<rcjetsub_mv2c10->at(i).size(); j++) { // this is loop over subjets
+               alv.SetPtEtaPhiE( rcjetsub_pt->at(i).at(j)*0.001, rcjetsub_eta->at(i).at(j), rcjetsub_phi->at(i).at(j), rcjetsub_e->at(i).at(j)*0.001);
+               adbxparticle = new dbxParticle(alv);
+               constis.push_back(*adbxparticle);
+               delete adbxparticle;              
+               if (rcjetsub_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
              }
+             DEBUG("FJET:"<<i<< "  #childen:"<< rcjetsub_mv2c10->at(i).size()<<"\n");
+             adbxlj->setParticleIndx(i);
              adbxlj->set_isbtagged_77(is_bljet);
+             adbxlj->addAttribute( 0);   // 0
+             adbxlj->addAttribute( 0);  // 1 
+             adbxlj->addAttribute( 0); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+             adbxlj->addAttribute( 0); // 3
+             adbxlj->addAttribute( 0);  //4
+             adbxlj->addAttribute( 0);  //5
+             adbxlj->addAttribute( 0);  //6
+             adbxlj->addAttribute( 0);  //7
+             adbxlj->addAttribute( 1);  //8
+             adbxlj->addAttribute( rcjetsub_mv2c10->at(i).size() );  //9
              
              ljets.push_back(*adbxlj);
              delete adbxlj;
-         }
-     #ifdef __DEBUG__
-         std::cout << "LJets OK:"<< rcjet_pt->size() <<std::endl;
-     #endif
+
+             if (constis.size() > 0){
+               TString cname ="FJET_";
+               cname+=i;    // ljet index
+               cname+="c"; //  c for constituents
+               constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
+               DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
+               constis.clear();
+             }
+           }// end of loop over ljets
+           DEBUG("LJets OK:"<< rcjet_pt->size() <<std::endl);
 
 
         anevt.run_no=runNumber;

@@ -664,13 +664,16 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         t2=*ptit;
  
         if(simpleloop){
-            DEBUG("Simple Loop\n");
+            DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
+                DEBUG("n:"<<name<<" idx:"<<ipart<<"\n");
                }
+               DEBUG("FJet:"<< ipart<<" Cut ite:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
+               DEBUG(ppassed<<"\n");
                if (!ppassed) (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
             }
         }
