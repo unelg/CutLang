@@ -8,12 +8,12 @@ This is the repository for CutLang V3
 
 ## Installation
 
-### Using conda + [install.sh](https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh) -> (beta - may not work)
+### Using conda + [install.sh](https://raw.githubusercontent.com/unelg/CutLang/master/install.sh) -> (beta - may not work)
 
 Create and install CutLang using
 ```bash
  # Please fill <my-environment> with environment name you want
- bash -c "$(curl https://raw.githubusercontent.com/shenburak/CutLang/master/install.sh | bash -s install <my-environment>)"
+ bash -c "$(curl https://raw.githubusercontent.com/unelg/CutLang/master/install.sh | bash -s install <my-environment>)"
 ```
 
 Activate the conda environment using (from new terminal)
@@ -71,7 +71,7 @@ Requirements
 
 Install the package using
 ```bash
- git clone https://github.com/shenburak/CutLang.git
+ git clone https://github.com/unelg/CutLang.git
  cd CutLang/CLA
  make
  cd ..
@@ -129,7 +129,7 @@ Self host:
 
 Create and activate the environment using
 ```bash
- git clone https://github.com/shenburak/CutLang.git
+ git clone https://github.com/unelg/CutLang.git
  cd CutLang
  conda env create -f environment.yml # create environment with dependencies
  conda activate CutLang-dev # activate development environment
@@ -149,7 +149,7 @@ Create and activate the environment using
 
 Compile CutLang, and build and run the container using
 ```bash
- git clone https://github.com/shenburak/CutLang.git
+ git clone https://github.com/unelg/CutLang.git
  cd CutLang
  ./docker_util.sh dev
  docker-compose up
@@ -173,7 +173,7 @@ Requirements
 See https://anaconda.org
 
 ```bash
- git clone https://github.com/shenburak/CutLang.git
+ git clone https://github.com/unelg/CutLang.git
  cd CutLang
  conda-build -c conda-forge .
  # You will see the "anaconda upload /file/path/to/upload" command at the end of the logs after the compile process is finished, you can upload the package to the relevant conda channel by using this.
@@ -185,7 +185,7 @@ See https://anaconda.org
 See https://hub.docker.com
 
 ```bash
- git clone https://github.com/shenburak/CutLang.git
+ git clone https://github.com/unelg/CutLang.git
  cd CutLang
  ./docker_util.sh prod
  docker-compose build
