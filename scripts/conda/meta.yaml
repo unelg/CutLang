@@ -1,5 +1,5 @@
 {% set name = "CutLang" %}
-{% set version = "0.2.8" %}
+{% set version = "0.2.9" %}
 
 package:
   name: "{{ name|lower }}"
@@ -10,6 +10,7 @@ source:
 
 build:
   number: 0
+  skip: True  # [win]
 
 requirements:
   host:
@@ -27,8 +28,14 @@ requirements:
     - wget=1.20.1
 
 about:
-  summary: "A Particle Physics Analysis Description Language and Runtime Interpreter"
+  home: 'https://github.com/unelg/CutLang'
+  license: LGPL-2.1-only
+  summary: |
+    A Particle Physics Analysis Description Language and Runtime Interpreter
+  description: |
+    A Particle Physics Analysis Description Language and Runtime Interpreter
 
 extra:
   recipe-maintainers:
     - unelg
+    - shenburak
