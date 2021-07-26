@@ -3,7 +3,7 @@ This is the repository for CutLang V3
 
 *A Particle Physics Analysis Description Language and Runtime Interpreter*
 
-**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/shenburak/CutLang/HEAD)
+**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
 
 
 ## Installation
@@ -13,7 +13,7 @@ This is the repository for CutLang V3
 Create and install CutLang using
 ```bash
  # Please fill <my-environment> with environment name you want
- bash -c "$(curl https://raw.githubusercontent.com/unelg/CutLang/master/install.sh | bash -s install <my-environment>)"
+ bash -c "$(curl https://raw.githubusercontent.com/unelg/CutLang/master/scripts/install.sh | bash -s install <my-environment>)"
 ```
 
 Activate the conda environment using (from new terminal)
@@ -42,13 +42,13 @@ Now, you can use CutLang (please see [Running](#running) part)
 
 Download the image and run the container using
 ```bash
- docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang # download image and run container in current directory from downloaded image
- # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang shenburak/cutlang
+ docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang cutlang/cutlang # download image and run container in current directory from downloaded image
+ # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang cutlang/cutlang
  # if you want to re-run by mounting another directory, you should run:
  # docker stop CutLang && docker container rm CutLang
  # and go back step 2 with different path 'docker run -p 8888:8888 -d -v /path/to/you/want/:/src ...'
  # example:
- # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang shenburak/cutlang
+ # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang cutlang/cutlang
 ```
 Exec the container using
 ```bash
@@ -56,10 +56,10 @@ Exec the container using
 ```
 **Update** the docker image using
 ```bash
- docker pull shenburak/cutlang:latest # install the latest image
+ docker pull cutlang/cutlang:latest # install the latest image
  # and
  docker stop CutLang && docker container rm CutLang
- docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang shenburak/cutlang
+ docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang cutlang/cutlang
 ```
 ### From source
 
@@ -94,19 +94,20 @@ CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scr
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region.  The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 ## Tutorial
 **Launch with binder:**
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/shenburak/CutLang/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
 or
 Self host:
 * **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
 * To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
 ```bash
-  ./setup_kernel.sh  
+  ./scripts/setup_kernel.sh  
 ```
 * To start the tutorial (you can run it anywhere)
 ```bash
   CLA_tutorial
   # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
+  # Then you can browse example1 and other ipynb files in binder folder
 ```
 ## JupyterLab
 *Starts JupyterLab with "ROOT c++ with CutLang" kernel*
@@ -114,7 +115,7 @@ Self host:
 * To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
 ```bash
-  ./setup_kernel.sh  
+  ./scripts/setup_kernel.sh  
 ```
 * To start the JupyterLab
 ```bash
@@ -131,7 +132,7 @@ Create and activate the environment using
 ```bash
  git clone https://github.com/unelg/CutLang.git
  cd CutLang
- conda env create -f environment.yml # create environment with dependencies
+ conda env create -f scripts/environment.yml # create environment with dependencies
  conda activate CutLang-dev # activate development environment
  source setup.sh
  # if you want, you can run
@@ -151,7 +152,8 @@ Compile CutLang, and build and run the container using
 ```bash
  git clone https://github.com/unelg/CutLang.git
  cd CutLang
- ./docker_util.sh dev
+ ./scripts/docker/util.sh dev
+ # ! Do not add the dockerfile created for the development environment to the git
  docker-compose up
 ```
 Exec the container using (in the another terminal window)
@@ -175,6 +177,7 @@ See https://anaconda.org
 ```bash
  git clone https://github.com/unelg/CutLang.git
  cd CutLang
+ cd scripts/conda
  conda-build -c conda-forge .
  # You will see the "anaconda upload /file/path/to/upload" command at the end of the logs after the compile process is finished, you can upload the package to the relevant conda channel by using this.
  # and then it can be used with:
@@ -187,7 +190,8 @@ See https://hub.docker.com
 ```bash
  git clone https://github.com/unelg/CutLang.git
  cd CutLang
- ./docker_util.sh prod
+ ./scripts/docker/util.sh prod
+ # you need to edit docker-compose.yml image name <your-username/cutlang>
  docker-compose build
  docker push <your-username>/<your-image-name>:<tagname>
  # example:
