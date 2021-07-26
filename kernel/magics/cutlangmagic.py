@@ -16,17 +16,17 @@ class CutLangMagics(Magic):
             args[arg.split("=")[0].replace("-", "")]=arg.split("=")[1]
         if self.code.strip():
             PWD = sp.getoutput('pwd')
-            adlName = "/tmp/" + args["name"] + ".adl"
-            print(adlName)
-            f = open(adlName, "a")
+            adlName = args["name"] + ".adl"
+            print("/tmp/" + adlName)
+            f = open("/tmp/" +adlName, "a")
             f.write(self.code)
             f.close()
-            print(PWD, "pwd", 'CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
+            print(PWD, "pwd", 'CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + "/tmp/" + adlName)
             if(os.path.isfile(os.environ["CUTLANG_PATH"]+'/mybinder_true')):
-                print(os.popen('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName).read())
+                print(os.popen('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + "/tmp/" + adlName).read())
             else:
-                os.system('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + adlName)
-            os.remove(adlName)
+                os.system('CLA ' + PWD + "/" + args["file"] + ' ' + args["filetype"] + ' -i ' + "/tmp/" + adlName)
+            os.remove("/tmp/" + adlName)
         self.evaluate = False
 
 def register_magics(kernel):

@@ -29,7 +29,7 @@ PATH=${PATH#:}; PATH=${PATH%:}
 #rm $ROOTSYS/lib/python3.7/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 #rm $ROOTSYS/lib/python3.6/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 
-source $CUTLANG_PATH/root_set_for_conda.sh
+source $CUTLANG_PATH/scripts/conda/root_set_for_conda.sh
 
 unset CUTLANG_PATH
 unset CUTLANG_JUPYTER_DATA_DIR
