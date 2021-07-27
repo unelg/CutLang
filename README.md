@@ -23,20 +23,20 @@ Activate the conda environment using (from new terminal)
 Now, you can use CutLang (please see [Running](#running) part)
 
 ### Using conda
-[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/version.svg?v=2)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/latest_release_relative_date.svg?v=2)](https://anaconda.org/shenburak/cutlang)[![Anaconda-Server Badge](https://anaconda.org/shenburak/cutlang/badges/platforms.svg?v=2)](https://anaconda.org/shenburak/cutlang)
+[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=2)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=2)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=2)](https://anaconda.org/cutlang/cutlang)
 
 - Create and activate the environment using
 ```bash
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang # download CutLang and create environment
+ conda create -c conda-forge -c cutlang --name <my-environment> cutlang # download CutLang and create environment
  conda activate <my-environment> # activate environment
 ```
 *Now, you can use CutLang (please see [Running](#running) part)*
 
 - **Update** the environment using
 ```bash
- conda create -c conda-forge -c shenburak --name <my-environment> cutlang # remove the existing environment and install the latest version
+ conda create -c conda-forge -c cutlang --name <my-environment> cutlang # remove the existing environment and install the latest version
  # or just
- conda update -c conda-forge -c shenburak cutlang # run in environment with cutlang installed
+ conda update -c conda-forge -c cutlang cutlang # run in environment with cutlang installed
 ```
 ### Using docker
 
@@ -195,5 +195,5 @@ See https://hub.docker.com
  docker-compose build
  docker push <your-username>/<your-image-name>:<tagname>
  # example:
- # docker push shenburak/cutlang:latest
+ # docker push cutlang/cutlang:latest
 ```
