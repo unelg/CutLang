@@ -220,7 +220,6 @@ double count(AnalysisObjects* ao, string s, float id) {
 
     ValueNode abc=ValueNode();
     switch (pid) {
-//   case consti_t:   return (ao->truth.at(s).size()); break;
      case truth_t:    return (ao->truth.at(s).size()); break;
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
@@ -230,7 +229,7 @@ double count(AnalysisObjects* ao, string s, float id) {
      case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
-//     case consti_t:   return (ao->constits.at(s).size()); break;
+     case consti_t:   return (ao->constits.at(s).size()); break;
      case combo_t:    if (ao->combosA.find(s)!=ao->combosA.end() ){
                            DEBUG(s<<" tableA max r,c:"<<ao->combosA.at(s).max_row <<" "<< ao->combosA.at(s).max_col<<"\n");
                            return (ao->combosA.at(s).max_row);
