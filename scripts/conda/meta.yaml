@@ -1,5 +1,5 @@
 {% set name = "CutLang" %}
-{% set version = "0.2.9" %}
+{% set version = "0.3.0" %}
 
 package:
   name: "{{ name|lower }}"
@@ -14,22 +14,23 @@ build:
 
 requirements:
   host:
-    - root=6.24.2
-    - jupyterlab=3.0.16
-    - metakernel=0.27.5
-    - flex=2.6.4
-    - bison=3.4
-    - make=4.2.1
-    - wget=1.20.1
+    - root ==6.24.2
+    - jupyterlab ==3.0.16
+    - metakernel ==0.27.5
+    - flex ==2.6.4
+    - bison ==3.4
+    - make ==4.2.1
+    - wget ==1.20.1
   run:
-    - root=6.24.2
-    - jupyterlab=3.0.16
-    - metakernel=0.27.5
-    - wget=1.20.1
+    - root ==6.24.2
+    - jupyterlab ==3.0.16
+    - metakernel ==0.27.5
+    - wget ==1.20.1
 
 about:
   home: 'https://github.com/unelg/CutLang'
   license: LGPL-2.1-only
+  #license_file: LICENSE
   summary: |
     A Particle Physics Analysis Description Language and Runtime Interpreter
   description: |
