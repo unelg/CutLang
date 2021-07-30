@@ -175,5 +175,5 @@ vardef {varname}" "?":"" "?.*"\n"
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
-"\"".*"\"" yylval.s=strdup(yytext);return HID;
+"\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
 %%
