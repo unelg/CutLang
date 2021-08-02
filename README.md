@@ -29,7 +29,7 @@ This is the repository for CutLang V3
   - [How should I follow the tutorial ?](#tutorial-how-should-i-follow-the-tutorial)
 - [JupyterLab CutLang magic](#jupyterlab-cutlang-magic)
 - [FAQ](#faq)
-  - [Where to find an example ntuple](#faq-where-to-find-an-example-ntuple)
+  - [Where to find an example ntuple ?](#faq-where-to-find-an-example-ntuple)
 - [Contributing](#contributing)
   - [Setting up the development environment](#contributing-setting-up-the-development-environment)
     - [From source](#contributing-setting-up-the-development-environment-from-source)
