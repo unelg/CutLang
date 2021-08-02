@@ -12,13 +12,14 @@ class CutLangMagics(Magic):
     @option('adl', 'adlfile', action="store", help='HistoOut file name')
     @option('events', action="store", help='Number of events')
     @option('start', action="store", help='Starting event')
-    @option('help', action="store", help='Help')
-    @option('deps', action="store", help='DEPS')
+    #@option('help', action="store", help='Help')
+    #@option('deps', action="store", help='DEPS')
     @option('verbose', action="store", help='Verbose frequency')
 
     def cell_cutlang(self, __args): # real
         _args = __args.split(" ")
-        args = {"file": "", "filetype": "", "adlfile": "cutlang-adl-name", "events": "0", "start": "0", "help": "", "deps": "", "verbose": "5000"}
+        args = {"file": "", "filetype": "", "adlfile": "cutlang-adl-name", "events": "0", "start": "0", "verbose": "5000"}
+        #args = {"file": "", "filetype": "", "adlfile": "cutlang-adl-name", "events": "0", "start": "0", "help": "", "deps": "", "verbose": "5000"}
         for arg in _args:
             argName=arg.split("=")[0]
             argVal=arg.split("=")[1]
@@ -28,10 +29,10 @@ class CutLangMagics(Magic):
                 argName="events"
             elif argName=="start":
                 argName="start"
-            elif argName=="help":
-                argName="help"
-            elif argName=="deps":
-                argName="deps"
+            #elif argName=="help":
+            #    argName="help"
+            #elif argName=="deps":
+            #    argName="deps"
             elif argName=="verbose":
                 argName="verbose"
             args[argName.replace("-", "")]=argVal
@@ -76,15 +77,15 @@ class CutLangMagics(Magic):
                     _filetype=""
                     events=args["events"].split(";")
                     start=args["start"].split(";")
-                    help=args["help"].split(";")
+                    #help=args["help"].split(";")
                     verbose=args["verbose"].split(";")
-                    deps=args["deps"].split(";")
+                    #deps=args["deps"].split(";")
                     _filetype=filetypes[i] if len(filetypes) == len(files) else filetypes[0]
                     extraArgs=extraArgs+" -e "+str(events[i]) if len(events) == len(files) else extraArgs+" -e "+str(events[0])
                     extraArgs=extraArgs+" -s "+str(start[i]) if len(start) == len(files) else extraArgs+" -s "+str(start[0])
-                    if len(help) == len(files) and len(help[0]) >= 1: extraArgs=extraArgs+" -h "
+                    #if len(help) == len(files) and len(help[0]) >= 1: extraArgs=extraArgs+" -h "
                     extraArgs=extraArgs+" -v "+str(verbose[i]) if len(verbose) == len(files) else extraArgs+" -v "+str(verbose[0])
-                    extraArgs=extraArgs+" -d "+str(deps[i]) if len(deps) == len(files) and len(deps[0]) >= 1 else extraArgs+" -d "+str(deps[0])
+                    #extraArgs=extraArgs+" -d "+str(deps[i]) if len(deps) == len(files) and len(deps[0]) >= 1 else extraArgs+" -d "+str(deps[0])
                     runCLA(file, _filetype, adlName, extraArgs)
             else:
                 extraArgs=""
@@ -93,15 +94,15 @@ class CutLangMagics(Magic):
                 _filetype=""
                 events=args["events"]
                 start=args["start"]
-                help=args["help"]
+                #help=args["help"]
                 verbose=args["verbose"]
-                deps=args["deps"]
+                #deps=args["deps"]
                 if filetypes: _filetype=filetypes
                 if events: extraArgs=extraArgs+" -e "+str(events)
                 if start: extraArgs=extraArgs+" -s "+str(start)
-                if help: extraArgs=extraArgs+" -h "
+                #if help: extraArgs=extraArgs+" -h "
                 if verbose: extraArgs=extraArgs+" -v "+str(verbose)
-                if deps: extraArgs=extraArgs+" -d "+str(deps)
+                #if deps: extraArgs=extraArgs+" -d "+str(deps)
                 adlName = adlfiles[0] + "-" + files[0].split(".")[0]
                 runCLA(files[0], _filetype, adlName, extraArgs)
         self.evaluate = False
