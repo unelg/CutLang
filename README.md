@@ -31,7 +31,7 @@ This is the repository for CutLang V3
 - [FAQ](#faq)
   - [Where to find an example ntuple](#faq-where-to-find-an-example-ntuple)
 - [Contributing](#contributing)
-  - [Setting up the development environment ?](#contributing-setting-up-the-development-environment)
+  - [Setting up the development environment](#contributing-setting-up-the-development-environment)
     - [From source](#contributing-setting-up-the-development-environment-from-source)
     - [With conda](#contributing-setting-up-the-development-environment-with-conda)
     - [With docker](#contributing-setting-up-the-development-environment-with-docker)
