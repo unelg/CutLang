@@ -40,7 +40,7 @@ This is the repository for CutLang V3
     - [Docker](#contributing-build-and-deploy-environment-docker)
 
 
-# <a name="using-cutlang"></a> Using Cutlang
+# <a name="using-cutlang"></a> Using CutLang
 Cutlang is available on **Linux, macOS, and windows (partially)**.
 
 ## <a name="using-cutlang-from-source"></a> From source
