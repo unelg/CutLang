@@ -64,6 +64,7 @@ Setup the package using
   # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
   # to keep it active all the time
 ```
+Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
 ### <a name="using-cutlang-from-source-update"></a> Update
 Update the package using
