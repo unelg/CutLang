@@ -183,6 +183,15 @@ countformat : COUNTSFORMAT ID { DEBUG($2<<" is a new format type\n"); current_cn
                         ahist.cH_SystErr=$8;
                (*cntHistos)[current_cntHistDef].push_back(ahist);
               }
+            | PROCESS ID ',' description ',' ERRTYPE { 
+               DEBUG($2<<" has name "<< $4 <<" err1:"<< $6<<" err2: 0 \n"); 
+               cntHisto ahist;
+                        ahist.cH_name=$2;
+                        ahist.cH_title=$4;
+                        ahist.cH_StatErr=$6;
+                        ahist.cH_SystErr=0;
+               (*cntHistos)[current_cntHistDef].push_back(ahist);
+              }
             ;
 NUMBER : INT { $$ = (float)$1; } 
        | NB  { $$ = $1; }
