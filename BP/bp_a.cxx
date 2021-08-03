@@ -142,7 +142,7 @@ int BPdbxA:: readAnalysisParams() {
        }
 
 //---------other cmds
-       if (  (firstword=="cmd")  || (firstword=="sort")   || (firstword=="reject")
+       if (  (firstword=="cmd")  || (firstword=="sort")   || (firstword=="reject") || (firstword=="cut")
           || (firstword=="save") || (firstword=="weight") || (firstword=="select")
           ) {
            if (algorithmnow) {
@@ -441,6 +441,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
+//cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -488,6 +489,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
          }
          else d=iter->second->evaluate(ao); // execute the selection cut
          
+        //std::cout<<"\t**********************Result : " << d << std::endl;
         DEBUG("\t***Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
         if (d==0) {
