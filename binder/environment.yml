@@ -1,6 +1,6 @@
 channels:
   - conda-forge
-  - shenburak
+  - cutlang
   - defaults
 dependencies:
-  - cutlang
+  - cutlang ==0.3.3
