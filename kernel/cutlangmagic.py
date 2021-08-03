@@ -7,7 +7,14 @@ class CutLangMagics(Magics):
     @magic_arguments()
     @argument('file', action="store", help='Root file path')
     @argument('filetype', action="store", help='Root file type')
-    @argument('name', action="store", help='HistoOut file name')
+    
+    @argument('adl', 'adlfile', action="store", help='HistoOut file name')
+    @argument('events', action="store", help='Number of events')
+    @argument('start', action="store", help='Starting event')
+    #@argument('help', action="store", help='Help')
+    #@argument('deps', action="store", help='DEPS')
+    @argument('verbose', action="store", help='Verbose frequency')
+    
     def cutlang(self, line, cell):
         args = parse_argstring(self.cutlang, line)
         print(args, "cutlang kernel args")
