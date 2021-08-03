@@ -5,40 +5,120 @@ This is the repository for CutLang V3
 
 **Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
 
+# Contents
+- [Using CutLang](#using-cutlang)
+  - [From source](#using-cutlang-from-source)
+    - [Setup](#using-cutlang-from-source-setup)
+    - [Update](#using-cutlang-from-source-update)
+    - [Remove](#using-cutlang-from-source-remove)
+  - [With conda](#using-cutlang-with-conda)
+    - [Setup](#using-cutlang-with-conda-setup)
+    - [Update](#using-cutlang-with-conda-update)
+    - [Remove](#using-cutlang-with-conda-remove)
+  - [With docker](#using-cutlang-with-docker)
+    - [Setup](#using-cutlang-with-docker-setup)
+    - [Update](#using-cutlang-with-docker-update)
+    - [Remove](#using-cutlang-with-docker-remove)
+  - [With JupyterLab](#using-cutlang-with-jupyterlab)
+    - [Setup](#using-cutlang-with-jupyterlab-setup)
+    - [Starting](#using-cutlang-with-jupyterlab-starting)
+- [Running CutLang](#running-cutlang)
+- [Tutorial](#tutorial)
+  - [Setup](#tutorial-setup)
+  - [Starting](#tutorial-starting)
+  - [How should I follow the tutorial ?](#tutorial-how-should-i-follow-the-tutorial)
+- [JupyterLab CutLang magic](#jupyterlab-cutlang-magic)
+- [FAQ](#faq)
+  - [Where to find an example ntuple ?](#faq-where-to-find-an-example-ntuple)
+- [Contributing](#contributing)
+  - [Setting up the development environment](#contributing-setting-up-the-development-environment)
+    - [From source](#contributing-setting-up-the-development-environment-from-source)
+    - [With conda](#contributing-setting-up-the-development-environment-with-conda)
+    - [With docker](#contributing-setting-up-the-development-environment-with-docker)
+  - [Build and deploy environment](#contributing-build-and-deploy-environment)
+    - [Conda](#contributing-build-and-deploy-environment-conda)
+    - [Docker](#contributing-build-and-deploy-environment-docker)
 
-## Installation
 
-### Using conda + [install.sh](https://raw.githubusercontent.com/unelg/CutLang/master/install.sh) -> (beta - may not work)
+# <a name="using-cutlang"></a> Using CutLang
+Cutlang is available on **Linux, macOS, and windows (partially)**.
 
-Create and install CutLang using
+## <a name="using-cutlang-from-source"></a> From source
+Available on **Linux, macOS, and windows**
+
+### <a name="using-cutlang-from-source-setup"></a> Setup
+*Requirements*
+- ROOT6 (root.cern.ch)
+- command line compilation utilities (make, gcc, g++...)
+- flex
+- bison # without installing flex and bison, the make command gets interrupted by a fatal error.*
+
+Setup the package using
 ```bash
- # Please fill <my-environment> with environment name you want
- bash -c "$(curl https://raw.githubusercontent.com/unelg/CutLang/master/scripts/install.sh | bash -s install <my-environment>)"
+  git clone https://github.com/unelg/CutLang.git
+  cd CutLang/CLA
+  make
+  cd ..
+  source setup.sh
+  # if you want, you can run
+  # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
+  # to keep it active all the time
+```
+Now, you can run CutLang (please see [Running](#running-cutlang) part)
+
+### <a name="using-cutlang-from-source-update"></a> Update
+Update the package using
+```bash
+  cd CutLang
+  git pull
+  CLA_recompile # this will run the following in order
+  # cd $CUTLANG_PATH/CLA
+  # make clean
+  # make
 ```
 
-Activate the conda environment using (from new terminal)
+### <a name="using-cutlang-from-source-remove"></a> Remove
+Remove the package using
 ```bash
- conda activate <my-environment>
+  rm -rf /path/to/CutLang
 ```
-Now, you can use CutLang (please see [Running](#running) part)
 
-### Using conda
-[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=2)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=2)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=2)](https://anaconda.org/cutlang/cutlang)
+## <a name="using-cutlang-with-conda"></a> With conda
+Available on **Linux, macOS**
+[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=a)](https://anaconda.org/cutlang/cutlang)
 
-- Create and activate the environment using
+### <a name="using-cutlang-with-conda-setup"></a> Setup
+*Requirements*
+- [Anaconda](https://www.anaconda.com/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+
+Create and activate the environment using
 ```bash
  conda create -c conda-forge -c cutlang --name <my-environment> cutlang # download CutLang and create environment
  conda activate <my-environment> # activate environment
 ```
-*Now, you can use CutLang (please see [Running](#running) part)*
+Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
-- **Update** the environment using
+### <a name="using-cutlang-with-conda-update"></a> Update
+Update the environment using
 ```bash
  conda create -c conda-forge -c cutlang --name <my-environment> cutlang # remove the existing environment and install the latest version
  # or just
  conda update -c conda-forge -c cutlang cutlang # run in environment with cutlang installed
 ```
-### Using docker
+
+### <a name="using-cutlang-with-conda-remove"></a> Remove
+Remove the environment using
+```bash
+  conda deactivate <my-environment>
+  conda env remove --name <my-environment>
+```
+
+## <a name="using-cutlang-with-docker"></a> With Docker
+Available on **Linux, macOS, and windows**
+
+### <a name="using-cutlang-with-docker-setup"></a> Setup
+*Requirements*
+- [Docker](https://www.docker.com/products/docker-desktop)
 
 Download the image and run the container using
 ```bash
@@ -54,80 +134,91 @@ Exec the container using
 ```bash
  docker exec -it CutLang bash
 ```
-**Update** the docker image using
+Now, you can run CutLang (please see [Running](#running-cutlang) part)
+
+### <a name="using-cutlang-with-docker-update"></a> Update
+Update the docker image using
 ```bash
  docker pull cutlang/cutlang:latest # install the latest image
  # and
  docker stop CutLang && docker container rm CutLang
  docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang cutlang/cutlang
 ```
-### From source
 
-Requirements
-* ROOT6 (root.cern.ch) # 6.24 version is preferred
-* command line compilation utilities (make, gcc, g++...) 
-* flex
-* bison # without installing flex and bison, the make command gets interrupted by a fatal error.
-
-Install the package using
+### <a name="using-cutlang-with-docker-remove"></a> Remove
+Remove the docker container and image using
 ```bash
- git clone https://github.com/unelg/CutLang.git
- cd CutLang/CLA
- make
- cd ..
- source setup.sh
- # if you want, you can run
- # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
- # to keep it active all the time
+  docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
+  docker images -a | grep "CutLang" | awk '{print $3}' | xargs docker rmi
 ```
 
-## <a name="running"></a> Running
+## <a name="using-cutlang-with-jupyterlab"></a> With JupyterLab
+Available on **Linux, macOS, windows**
+
+*In order to run CutLang in JupyterLab, you must first complete the setup from source or with conda or docker.*
+### <a name="using-cutlang-with-jupyterlab-setup"></a> Setup
+- **You should have completed the CutLang setup and be able to run the CLA command without any problems.**
+
+### <a name="using-cutlang-with-jupyterlab-starting"></a> Starting
+*Starts JupyterLab with "ROOT c++ with CutLang" kernel in your current directory*
+```bash
+  CLA_JupyterLab
+  # Jupyter lab will be started, you can use by using the link 127.0.0.1:8888/... in the logs
+```
+
+# <a name="running-cutlang"></a> Running CutLang
 
 CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scripts
 
 ```bash
  CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
 ```
-* Input event formats can be: DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format) 
-* Number of events is optional.
+- Input event formats can be: *DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format)* 
+- Number of events is optional.
 
-The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region.  The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
-## Tutorial
-**Launch with binder:**
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
-or
-Self host:
+The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
+
+# <a name="tutorial"></a> Tutorial
+**Launch with binder:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
+
+*or* Self host
+
+## <a name="tutorial-setup"></a> Setup (Self host)
+
 * **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
-* To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
-```bash
-  ./scripts/setup_kernel.sh  
-```
-* To start the tutorial (you can run it anywhere)
+## <a name="tutorial-starting"></a> Starting (Self host)
+Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 ```bash
   CLA_tutorial
   # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
   # Then you can browse example1 and other ipynb files in binder folder
 ```
-## JupyterLab
-*Starts JupyterLab with "ROOT c++ with CutLang" kernel*
-* **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
-* To setup the kernel if you have compiled CutLang from source (you can skip this step if you have downloaded CutLang with conda or docker)
 
+## <a name="tutorial-how-should-i-follow-the-tutorial"></a> How should I follow the tutorial ?
+[WIP]
+
+# <a name="jupyterlab-cutlang-magic"></a> JupyterLab CutLang Magic
+*CutLang can be used on Jupyter notebooks with ROOT*
+- You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
+- You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
 ```bash
-  ./scripts/setup_kernel.sh  
+%%cutlang file=<root-file-name> filetype=<root-file-type> ...
 ```
-* To start the JupyterLab
-```bash
-  CLA_JupyterLab
-  # Jupyter lab will be started, you can use by using the link 127.0.0.1:8888/... in the logs
-```
-## Contributing
 
-### Setting up the development environment
+# <a name="faq"></a> FAQ
 
-#### Using conda
+## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example ntuple ?
+[WIP]
 
+# <a name="contributing"></a> Contributing
+
+## <a name="contributing-setting-up-the-development-environment"></a> Setting up the development environment
+
+### <a name="contributing-setting-up-the-development-environment-from-source"></a> From source
+You can refer to [using CutLang from source](#using-cutlang-from-source)
+
+### <a name="contributing-setting-up-the-development-environment-with-conda"></a> With conda
 Create and activate the environment using
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -146,8 +237,7 @@ Create and activate the environment using
  # make
 ```
 
-#### Using docker
-
+### <a name="contributing-setting-up-the-development-environment-with-docker"></a> With docker
 Compile CutLang, and build and run the container using
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -166,9 +256,9 @@ Exec the container using (in the another terminal window)
  # make
 ```
 
-### Build and deploy environment
-#### Conda
+## <a name="contributing-build-and-deploy-environment"></a> Build and deploy environment
 
+### <a name="contributing-build-and-deploy-environment-conda"></a> Conda
 Requirements
 - [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
 
@@ -183,8 +273,8 @@ See https://anaconda.org
  # and then it can be used with:
  # conda create -c conda-forge -c <your-username> --name <your-environment> cutlang
 ```
-#### Docker
 
+### <a name="contributing-build-and-deploy-environment-docker"></a> Docker
 See https://hub.docker.com
 
 ```bash
