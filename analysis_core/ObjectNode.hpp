@@ -25,7 +25,7 @@ class ObjectNode : public Node{
         string name;
            int type;
 
-        ObjectNode(string id,Node* previous, void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
+        ObjectNode(string id, Node* previous, void (* func) (AnalysisObjects* ao,vector<Node*>* criteria,
                    std::vector<myParticle *>* particles, std::string name, std::string basename ), vector<Node*> criteria,  std::string s );
         
         virtual void Reset() override;

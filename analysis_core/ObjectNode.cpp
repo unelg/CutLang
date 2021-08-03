@@ -40,11 +40,14 @@ ObjectNode::ObjectNode(std::string id,
 
     left=previous;
     right=NULL;
-    DEBUG("Object node with "<<symbol<<"\n");
+    DEBUG("Object node with symbol:"<<symbol<<" name:"<<name<<"\n");
 
     ObjectNode* anode=(ObjectNode*)previous; 
     if (anode != NULL){
-    while (anode->left != NULL) { anode=(ObjectNode*)anode->left; }
+      while (anode->left != NULL) { 
+         anode=(ObjectNode*)anode->left; 
+         DEBUG("anode moved left, new type:"<<anode->type<<"\n");
+      } // push all the way to left
       if (anode->name == "MUO" ) type=muon_t;
       if (anode->name == "ELE" ) type=electron_t;
       if (anode->name == "JET" ) type=jet_t;
@@ -52,8 +55,12 @@ ObjectNode::ObjectNode(std::string id,
       if (anode->name == "FJET") type=fjet_t;
       if (anode->name == "Truth") type=truth_t;
       if (anode->name == "TAU" ) type=tau_t;
-      if (anode->name == "Combo" ) type=combo_t;
-      DEBUG(" I found:" << anode->name<<" t:"<<type<<"\n");
+      if (anode->name == "Combo" ) { 
+          type=combo_t;
+          if (symbol == "ELE") {type=electron_t;}
+          if (symbol == "MUO") {type=muon_t;}
+      }
+      DEBUG("previous found:" << anode->name<<" this type is:"<<type<<"\n");
     } else { // if null
       if (id == "MUO" ) type=muon_t;
       if (id == "ELE" ) type=electron_t;
@@ -63,7 +70,7 @@ ObjectNode::ObjectNode(std::string id,
       if (id == "Truth") type=truth_t;
       if (id == "TAU" ) type=tau_t;
       if (id == "Combo" ) type=combo_t;
-      DEBUG(" I have:"<<id<<" t:"<<type<<"\n");
+      DEBUG("previous Null object  has:"<<id<<" t:"<<type<<"\n");
     }
 }
 
@@ -94,27 +101,52 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
-    DEBUG(" working for:"<<name << "  type:"<<type<<"\n");
+    DEBUG(" working for:"<<name << "  my type:"<<type<<"\n");
     //this->Reset(); ///////NGU
     std::string basename="xxx";
     bool keepworking=true;
 
-    DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size() <<"\n"); 
-    DEBUG("# iparticles:"<< particles.size()<<"\n");
+    DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size()<<" Co:"<<ao->combos.size() <<"\n"); 
+    map <string, std::vector<dbxElectron>  >::iterator itE;
+    for (itE=ao->eles.begin();itE!=ao->eles.end();itE++){
+     DEBUG("avaiables e- are "<<itE->first<<" size:"<<itE->second.size()<<"\n");
+    }
+    map <string, std::vector<dbxMuon>  >::iterator itM;
+    for (itM=ao->muos.begin();itM!=ao->muos.end();itM++){
+     DEBUG("avaiables mu are "<<itM->first<<" size:"<<itM->second.size()<<"\n");
+    }
+    DEBUG("# iparticles:"<< particles.size()<< " symbol:"<<symbol<<"\n");
     if (particles.size() >0) {
              DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
     }
     if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
-    while(left!=NULL && keepworking) {
+    int ccount=0;
+    while(left!=NULL && keepworking && ccount<10) {
       ObjectNode* anode=(ObjectNode*)left;
       basename=anode->name;
-      DEBUG("previous:"<< basename<< "  type:"<<type<<"\n"); // Combo, 20
+ //     type=anode->type; //not needed NGU 
+
+      DEBUG("basename:"<< basename<< " name:"<<name<<" symbol:"<<symbol<<"  type:"<<type<<"\n");
+      if (basename=="Combo" && type!=combo_t) basename=symbol;
+      if (type==muon_t){  
+         if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; } // if it is here
+      if (type == combo_t){
+         if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; } // if it is here
+
+
+//    if (ao->eles.find(basename)  !=ao->eles.end()   && type!=electron_t  ) { type=electron_t; }
+//    if (ao->muos.find(basename)  !=ao->muos.end()   && type!=muon_t )      { type=muon_t; }
+//    if (ao->combos.find(basename)!=ao->combos.end() && type!=combo_t )     { type=combo_t; }
+    DEBUG("new  type:"<<type<< " new basename:"<<basename<<"\n");
+
 // is it in the map list?
        switch (type) {
         case muon_t:  if (ao->muos.find(basename)==ao->muos.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Muos evaluated.\n");
-                      } else keepworking=false;
+                      } else { keepworking=false; 
+                               DEBUG(basename<<" found, stop working\n");
+                             }
                       break;
 
 	case truth_t: if (ao->truth.find(basename) == ao->truth.end() ){
@@ -126,7 +158,8 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        case electron_t:       if (ao->eles.find(basename)==ao->eles.end()  ){
                			anode->evaluate(ao);
                                 DEBUG(" Eles evaluated.\n");
-                      } else keepworking=false;
+                      } else { keepworking=false; 
+                              } 
                       break;
        case tau_t:       if (ao->taus.find(basename)==ao->taus.end()  ){
                			anode->evaluate(ao);
@@ -150,17 +183,32 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                	      } else keepworking=false;
                       break;
        case combo_t:       if (ao->combos.find(basename)==ao->combos.end()  ){
+                                DEBUG(" *****base COMBOs WILL BE evaluated.\n");
                			anode->evaluate(ao);
                                 DEBUG(" *****COMBOs evaluated.\n");
-               	      } else keepworking=false;
+                                type=combo_t;
+               	      } else { 
+                               DEBUG("no such COMBO found. newbasename:"<<basename<<"\n"); 
+                               keepworking=false;
+                             } 
                       break;
 
-        default:  break;
+        default: DEBUG("Break, no eval.\n"); break;
        }
-       anode=(ObjectNode*)anode->left;
-       DEBUG("~~~~~~~~~~~~~~MOVED LEFT\n");
-      }
-    DEBUG("#particles:"<< particles.size()<<"\n");
+       if (anode->left) {
+        anode=(ObjectNode*)anode->left;
+        DEBUG("~~~~~~~~~~~~~~MOVED LEFT\n");
+       }
+       ccount++;
+      } // end of while
+      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\t");
+ //   if(criteria[0]->getStr().CompareTo(" qo") == 0){
+ //     DEBUG("Enforcing type 20\n");
+ //     type=combo_t;
+ //   }
+    
+    DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<"\n");
+    if (ccount>=10) exit (1);
     map <string, std::vector<dbxJet>  >::iterator itj;
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
      if (itj->first == name) return 1;
@@ -193,6 +241,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     for (itc=ao->combos.begin();itc!=ao->combos.end();itc++){
      if (itc->first == name) return 1;
     }
+    
     DEBUG("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");  
     DEBUG("Before new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<<ao->constits.size() <<"\n"); 
 //---------------
@@ -200,6 +249,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 //---------------
     DEBUG(" After new set #types: J, FJ, E, M, T, P, Combo, Consti:"<< ao->jets.size()<<","<<ao->ljets.size()<<","<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<","<<ao->gams.size()<<","<<ao->combos.size()<<","<< ao->constits.size() <<"\n"); 
     DEBUG("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");  
+    
 
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
       DEBUG("\t #Jet typename:"<<itj->first<<"    size:"<<itj->second.size() <<"\n");
@@ -374,7 +424,7 @@ object goodjets take Jet
 }
 
 void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-    DEBUG("Creating new ELEtype named:"<<name<<" #Etypes:"<<ao->eles.size()<< " Duplicating:"<<basename<<"\n");
+    DEBUG("Creating new ELEtype named:"<<name<<" #Etypes:"<<ao->eles.size()<< " Duplicating:"<<basename<<" #cri:"<<criteria->size()<<"\n");
     ao->eles.insert( std::pair<string, vector<dbxElectron> >(name, (ao->eles)[basename]) );
     for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
         particles->clear();
@@ -468,7 +518,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
  
         DEBUG("Psize:"<<particles->size() <<"\t"<<" ipart_max:"<<ipart_max<<"\n");
         if ( particles->size()==0) {
-           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           DEBUG("mu CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool kill_all=false;
            TString mycutstr=(*cutIterator)->getStr();
            if ( mycutstr.Contains("kill") ) kill_all=true;
@@ -504,6 +554,8 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
+               DEBUG("here @"<<ipart<<"\t");
+               DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) { DEBUG("Killing muon:"<<ipart);
                    (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
@@ -866,7 +918,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                     case electron_t: 
                             if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }
                             if (particles->at(jj)->index == 6213) {
@@ -892,7 +944,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                     case jet_t: 
                             if ( (ao->jets).find(collectionName) == ao->jets.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }
                             if (particles->at(jj)->index == 6213) {
@@ -921,7 +973,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                     case fjet_t: 
                             if ( (ao->ljets).find(collectionName) == ao->ljets.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }
                             if (particles->at(jj)->index == 6213) {
@@ -945,7 +997,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                     case tau_t:
                            if ( (ao->taus).find(collectionName) == ao->taus.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }   
                             if (particles->at(jj)->index == 6213) {
@@ -969,7 +1021,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                  case combo_t: 
                            if ( (ao->combos).find(collectionName) == ao->combos.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }   
                             if (particles->at(jj)->index == 6213) {
@@ -1222,7 +1274,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                     case electron_t: 
                             if ( (ao->eles).find(collectionName) == ao->eles.end() ) {
                                cout << "ERROR: "<<collectionName<<" is not previously used in Selection.\n"
-                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.";
+                                    << " Try adding:  select Size("<<collectionName<<") >= 0  to solve the problem.\n";
                                exit (1);
                             }
                             ipart_max=(ao->eles)[collectionName].size();

@@ -50,6 +50,7 @@ std::string current_cntHistDef;
 std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
 std::map< int, vector<myParticle *> > BPdbxA::particleBank;
+std::map< std::string, vector<Node*> > criteriaBank;
 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
@@ -236,7 +237,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                   string nameo=name+"internalObj";
                                   Node* previous=itC->second; //--------- pdgID should be the same
                                   Node* c1= new SFuncNode(getIndex, newListC[0]->type, partMname, itC->second);
-//--------------------------------------------------------   fun            id          str      Node*
+//--------------------------------------------------------   func           id          str      Node*
                                   Node* n1= new UnaryAONode(abs,c1,"kill");
                                   vector<Node*> newCriList; // criterion list, will only have 1 selection                             
                                   newCriList.push_back(n1);
@@ -813,6 +814,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                             DEBUG("NumOf with ID:"<<$3<<" is an object node.\n");
                                             int type=((ObjectNode*)it->second)->type;
                                             $$=new SFuncNode(count, type, it->first, it->second);
+//-------------check if ID needs any size()>=0 commands
                                        }
                            }
     | NUMOF '(' particules ')' {     vector<myParticle*> newList;
@@ -2151,6 +2153,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 }
                                                 Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
                                                 ObjectCuts->insert(make_pair($2,obj));
+                                                criteriaBank.insert(make_pair($2,newList));
                                         }
                                     }
       | OBJ ID ':' ID criteria {
@@ -2179,6 +2182,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 }
                                                 Node* obj=new ObjectNode($2,previous,NULL,newList,$2);
                                                 ObjectCuts->insert(make_pair($2,obj));
+                                                criteriaBank.insert(make_pair($2,newList));
                                         }
                                     }
        | OBJ ID ':' COMB '(' particules ')' hamhum criteria {
@@ -2194,6 +2198,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                       Node* previous=new ObjectNode("Combo",NULL,createNewParti,newNList,"Partition" );
                       Node*      obj=new ObjectNode($2,previous,NULL,newNList,$2 );
                       ObjectCuts->insert(make_pair($2,obj));
+                      criteriaBank.insert(make_pair($2,newNList));
                       vector<myParticle*> junkvector;   
                       AliasList.swap(junkvector);
         }
@@ -2230,7 +2235,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      ObjectCuts->insert(make_pair($2,obj));
                               }
         | OBJ ID ':' UNION '(' ID ',' ID ')' {
-                                     DEBUG(" "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n");
+                                     DEBUG(" UUUUUUUUUnion "<<$2<<" is a new Set with "<< $6 <<" and "<< $8 << "\n");
                                      myParticle* a = new myParticle;
                                      myParticle* b = new myParticle;
                                      a->index = 6213;
@@ -2248,8 +2253,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      } 
                                      if(it != ObjectCuts->end() ){
                                       DEBUG("Union with object type\n");
-                                      ObjectNode* child1=(ObjectNode*)it->second;
-                                      a->type =child1->type; a->collection = $6;
+                                      ObjectNode* child1=(ObjectNode*)it->second; // e.g. goodEle definition
+                                      a->type =child1->type; a->collection = $6; // e.g. goodEle type & collection name
                                       newList.push_back(a);
                                      }
                                      if(ik != ListParts->end() ){
@@ -2270,11 +2275,11 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                YYERROR;
                                       }
                                       if(iu != ObjectCuts->end() ){
-                                        ObjectNode* child2=(ObjectNode*)iu->second;
-                                        b->type =child2->type; b->collection = $8;
+                                        ObjectNode* child2=(ObjectNode*)iu->second; // e.g. goodMuo type & collection name
+                                        b->type =child2->type; b->collection = $8; // e.g. goodMuo type & collection name
                                         newList.push_back(b);
                                       }
-                                     if(iy != ListParts->end() ){
+                                      if(iy != ListParts->end() ){
                                        DEBUG("Union with 2nd particle\n");
                                        for (int np=0; np<iy->second.size(); np++) {
                                         DEBUG("t:" <<iy->second.at(np)->type  << " i:"<<iy->second.at(np)->index<< " c:"<<iy->second.at(np)->collection<<"\n");
@@ -2284,15 +2289,31 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      DEBUG("newList size:"<<newList.size()<<"\n");
                                      Node* nnode= new FuncNode(Qof,newList,"qo");  //ik->second
                                      vector<Node*> newNList; // cut list
-                                     newNList.push_back(nnode);
-                                     if (iy != ListParts->end() ){
+                                     newNList.push_back(nnode); // particles from first obj
+                                     if (iy != ListParts->end() ){ //if I have second particle, it has its own particle list
                                       Node* n2node= new FuncNode(Qof,iy->second,"qo");
-                                      newNList.push_back(n2node);
+                                      newNList.push_back(n2node); // particles from second obj
                                      }
+                                     map<string,vector<Node*> >::iterator ikc;
+                                     map<string,vector<Node*> >::iterator iuc;
 
-                                     Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
-                                     Node*      obj=new ObjectNode($2,  previous,NULL    ,     newNList,  $2 );
-                                     ObjectCuts->insert(make_pair($2,obj));
+                                     if(iu != ObjectCuts->end() ){//if I have objects, 
+                                       cout << $6 << " and "<< $8 << " seen first time, Adding size>0 cut in Union.\n";
+                                       ikc = criteriaBank.find($6);
+                                       iuc = criteriaBank.find($8);
+                                       cout << "done.\n";
+                                       Node* p0   =new ObjectNode("Combo",NULL ,createNewEle  ,ikc->second ,  "LCombo" );
+                                       Node* p1   =new ObjectNode($6     ,p0   ,createNewEle  ,ikc->second ,  "ELE" );
+                                       Node* p2   =new ObjectNode($8     ,p1   ,createNewMuo  ,iuc->second ,  "MUO" );
+                                       Node* obj  =new ObjectNode($2     ,p2   ,createNewCombo,newNList,  $2 );
+                                       ObjectCuts->insert(make_pair($2,obj));
+                                     } else { // if I have particles
+                                       Node* p0  =new ObjectNode("Combo",NULL ,createNewCombo,newNList,  "LCombo" );
+//                                     Node* obj =new ObjectNode($2     ,p0   ,createNewCombo,newNList,  $2 );
+                                       Node* obj =new ObjectNode($2     ,p0   ,NULL          ,newNList,  $2 );
+
+                                       ObjectCuts->insert(make_pair($2,obj));
+                                     }
                                   }
         | OBJ ID ':' UNION '(' LEPTON ',' LEPTON ',' LEPTON ')' {
                                      DEBUG(" "<<$2<<" is a new **main Set with "<< $6 <<" and "<< $8 << " and " << $10<<"\n");
@@ -2335,23 +2356,25 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
                                      Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
                                      ObjectCuts->insert(make_pair($2,obj));
-
                               }
          | OBJ ID TAKE ELE criteria {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj ELE" );
-                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        Node* previous=new ObjectNode("ELE",NULL    ,createNewEle,newList,"obj ELE" );
+                                        Node*      obj=new ObjectNode($2   ,previous,NULL        ,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                      }
          | OBJ ID ':' ELE criteria {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
-                                        Node* previous=new ObjectNode("ELE",NULL,createNewEle,newList,"obj ELE" );
-                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        Node* previous=new ObjectNode("ELE",NULL    ,createNewEle,newList,"obj ELE" );
+                                        Node*      obj=new ObjectNode($2   ,previous,NULL        ,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
+                                        DEBUG(" Criter:"<<newList[0]->getStr()<<"\n");
                                      }
 	 | OBJ ID TAKE GEN criteria {
                                         DEBUG(" "<<$2<<" is a new GenSet\n");
@@ -2360,6 +2383,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                      }
 	 | OBJ ID ':' GEN criteria {
                                         DEBUG(" "<<$2<<" is a new GenSet\n");
@@ -2368,6 +2392,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
 				   }
                                      
          | OBJ ID TAKE MUO criteria {
@@ -2377,6 +2402,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj MUO" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                      }
          | OBJ ID ':' MUO criteria {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
@@ -2385,6 +2411,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("MUO",NULL,createNewMuo,newList,"obj MUO" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
+                                        DEBUG(" Criter:"<<newList[0]->getStr()<<"\n");
                                      }
          | OBJ ID TAKE TAU criteria {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
@@ -2393,6 +2421,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj TAU" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                      }
          | OBJ ID ':' TAU criteria {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
@@ -2401,6 +2430,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("TAU",NULL,createNewTau,newList,"obj TAU" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                      }
          | OBJ ID TAKE PHO criteria {   DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
@@ -2408,6 +2438,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                     }
          | OBJ ID ':' PHO criteria {    DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
@@ -2415,6 +2446,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                     }
          | OBJ ID TAKE JET criteria {   DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
@@ -2422,6 +2454,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                     }
          | OBJ BJET ':' JET criteria {
                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
@@ -2433,6 +2466,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                       }
            | OBJ ID TAKE FJET criteria {
                                         DEBUG(" "<<$2<<" is a new FatJetSet\n");
@@ -2441,6 +2475,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                       }
            | OBJ ID ':' FJET criteria {
                                         DEBUG(" "<<$2<<" is a new FatJetSet\n");
@@ -2449,6 +2484,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         Node* previous=new ObjectNode("FJET",NULL,createNewFJet,newList,"obj FatJet" ); //
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
                                       }
 /*
 	  | OBJ ID TAKE GEN criteria {
