@@ -230,6 +230,7 @@ double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, doub
 double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLorentzVector l2,  TLorentzVector m1,
                                                             double (*func)(TLorentzVector la, TLorentzVector lb, TLorentzVector amet ) );
 
+std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1);
 double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet);

@@ -862,6 +862,17 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        $$=new SFuncNode(userfuncA, sumobj, type, "SUMOBJ" , it->second);
                                }
                        }
+    | SUM '(' '-' ID  ')'   {  map<string,Node*>::iterator it = ObjectCuts->find($4);
+                               if(it == ObjectCuts->end()) {
+                                        std::string message = "Object not defined: ";
+                                        message += $4;
+                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                        YYERROR;
+                               } else {
+                                       int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
+                                       $$=new SFuncNode(userfuncA, negsumobj, type, "NEGSUMOBJ" , it->second);
+                               }
+                       }
 // TODO: add {} version
     | FHEMISPHERE '(' ID ',' INT ',' INT ')' { map<string,Node*>::iterator it = ObjectCuts->find($3);
                                if(it == ObjectCuts->end()) {
