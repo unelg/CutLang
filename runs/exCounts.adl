@@ -9,7 +9,6 @@ countsformat bgests
   process zinv, "Z --> vv background", stat, syst
   process qcd, "QCD background", stat, syst
 
-
 region   presel
   select      ALL              # to count all events
   select      Size (ELE) >= 2  # events with 2 or more electrons 

@@ -53,14 +53,14 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                unikID+=ai;             
 
                switch (atype) { 
-		  case 10:  aPart->setTlv(  aPart->lv()+ao->truth[ac].at(ai).lv() );   break;
-                  case 12:  aPart->setTlv(  aPart->lv()+ao->muos[ac].at(ai).lv() );   break;
-                  case  1:  aPart->setTlv(  aPart->lv()+ao->eles[ac].at(ai).lv() );   break;
-                  case 11:  aPart->setTlv(  aPart->lv()+ao->taus[ac].at(ai).lv() );   break;
-                  case  2:  aPart->setTlv(  aPart->lv()+ao->jets[ac].at(ai).lv() );   break;
-                  case 20:  aPart->setTlv(  aPart->lv()+ao->combos[ac].at(ai).lv() ); break;
-                   case 9:  aPart->setTlv(  aPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
-                   case 8:  aPart->setTlv(  aPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+		  case 10:  aPart->setTlv( aPart->lv()+ao->truth[ac].at(ai).lv()  );   break;
+                  case 12:  aPart->setTlv( aPart->lv()+ao->muos[ac].at(ai).lv()   );   break;
+                  case  1:  aPart->setTlv( aPart->lv()+ao->eles[ac].at(ai).lv()   );   break;
+                  case 11:  aPart->setTlv( aPart->lv()+ao->taus[ac].at(ai).lv()   );   break;
+                  case  2:  aPart->setTlv( aPart->lv()+ao->jets[ac].at(ai).lv()   );   break;
+                  case 20:  aPart->setTlv( aPart->lv()+ao->combos[ac].at(ai).lv() );   break;
+                   case 9:  aPart->setTlv( aPart->lv()+ao->ljets[ac].at(ai).lv()  );   break;
+                   case 8:  aPart->setTlv( aPart->lv()+ao->gams[ac].at(ai).lv()   );   break;
                    case 7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                             aPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
@@ -180,7 +180,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
 }
 
 void SFuncNode::Reset() {
-      DEBUG (" Resetting cache \n");
+      DEBUG (" SF Resetting cache \n");
       BUFFERED_VALUES.clear();
     }
 
@@ -215,7 +215,7 @@ double count(AnalysisObjects* ao, string s, float id) {
     DEBUG("\n");
     map <string,  indicesA  >::iterator itp;
     for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){
-      DEBUG("#C typename:"<<itp->first<<"    size:"<<itp->second.tableA.size() <<"\n");
+      DEBUG("#ComboA typename:"<<itp->first<<"    size:"<<itp->second.tableA.size() <<"\n");
     }
 
     ValueNode abc=ValueNode();

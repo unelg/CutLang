@@ -63,8 +63,9 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
       DEBUG(" -|:"<<maxDepth<<" N:"<<N<< " #ForbiddenIndexSize:"<<forbidit_size
                   << " Type:"<<type<<" Collection:"<<s<<" ac:"<<ac<<"\n");
 
-      if ((type==20) && (ao->combosA[s].tableA.size() > 0)){
-       DEBUG("-------------combo-------------------\n");
+      if ((type==combo_t) && ( ao->combosA.find(s) != ao->combosA.end() ) )
+       if ( ao->combosA[s].tableA.size() > 0){
+       DEBUG("-------------comboA-------------------\n");
         for (int k1=0; k1<ao->combosA.at(s).tableA.size(); k1++) {
          if (ao->combosA.at(s).tableA[k1].size()==maxDepth) {
          for (int k2=0; k2<ao->combosA.at(s).tableA[k1].size(); k2++) {
@@ -226,15 +227,15 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[0])->collection;
                     int Max;
                     switch(type){//assuming all particles have the same type // FIXME
-                        case muon_t: Max=ao->muos[ac].size();break;
-                        case electron_t: Max=ao->eles[ac].size();break;
-                        case jet_t: Max=ao->jets[ac].size();break;
-                        case fjet_t : Max=ao->ljets[ac].size();break;
+                        case muon_t: Max=ao->muos.at(ac).size();break;
+                        case electron_t: Max=ao->eles.at(ac).size();break;
+                        case jet_t: Max=ao->jets.at(ac).size();break;
+                        case fjet_t : Max=ao->ljets.at(ac).size();break;
                         case bjet_t: Max=left->tagJets(ao,1,ac).size();break;
                         case lightjet_t: Max=left->tagJets(ao,0,ac).size();break;
-		        case photon_t: Max=ao->gams[ac].size();break;
-			case tau_t: Max=ao->taus[ac].size();break;
-			case combo_t: Max=ao->combos[ac].size();break;
+		        case photon_t: Max=ao->gams.at(ac).size();break;
+			case tau_t: Max=ao->taus.at(ac).size();break;
+			case combo_t: Max=ao->combos.at(ac).size();break;
                       default :
                               std::cout<<"optimizing for Unkown type... ERROR!\n";
                               exit(-11);
@@ -279,14 +280,15 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
     }
 
     void SearchNode::Reset() {
-            DEBUG("Clearing ForbiddenIndices on all names\t");
+            DEBUG("Clearing ForbiddenIndices on all names:\n");
             for (std::map<string, unordered_set<int> >::iterator it=FORBIDDEN_INDEX_LIST.begin(); it!=FORBIDDEN_INDEX_LIST.end(); ++it){
              DEBUG( it->first << " clearing \n"); 
              it->second.clear();
             }
             bestIndices.clear();
             DEBUG("done.\n");
-            left->Reset();//assuming right doesnt need a Reset because it's a value Node
+            left->Reset();
+            right->Reset();
     }
 
     void SearchNode::getParticles(std::vector<myParticle *>* particles) {
