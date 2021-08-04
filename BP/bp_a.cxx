@@ -477,7 +477,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != NodeCuts.end())
     {   
         double d;
-        DEBUG("**********Selecting: "<<iter->first<<" | ");
+        DEBUG("**********Selecting: "<<iter->first<<" | "<<iter->second->getStr()<<"\t");
         if ( iter->first < controlword ) {
 // controlword 5 means 1 1 1 1 0, first 4 cuts passed.
          DEBUG ("preset");
@@ -489,7 +489,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
          }
          else d=iter->second->evaluate(ao); // execute the selection cut
          
-        //std::cout<<"\t**********************Result : " << d << std::endl;
+//        std::cout<<"\t**********************Result : " << d << std::endl;
         DEBUG("\t***Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
         if (d==0) {

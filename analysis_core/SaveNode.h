@@ -32,7 +32,9 @@ public:
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
             ttsave->Branch("dbxAsave", ntsave);
-    }
+            ttsave->SetAutoFlush();
+            ttsave->SetAutoSave(30000);
+    }       
     virtual void saveFile() override {
             std::cout << "Closing file\n";
 	    ftsave->Write();
