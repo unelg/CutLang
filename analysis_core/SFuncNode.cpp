@@ -346,6 +346,16 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
    return (retvalue);
 }
 
+std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1) {
+ TLorentzVector h1;
+ for (int i=0; i<myjets.size(); i++) {
+  h1+=myjets[i];
+ }
+ 
+ std::vector<TLorentzVector> retval;
+ retval.push_back(-h1);
+ return (retval);
+}
 std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1) {
  TLorentzVector h1;
  for (int i=0; i<myjets.size(); i++) {
