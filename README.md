@@ -104,6 +104,9 @@ Update the environment using
  conda create -c conda-forge -c cutlang --name <my-environment> cutlang # remove the existing environment and install the latest version
  # or just
  conda update -c conda-forge -c cutlang cutlang # run in environment with cutlang installed
+
+ # or force update (temporary, do not use unless necessary)
+ CLA_conda_update
 ```
 
 ### <a name="using-cutlang-with-conda-remove"></a> Remove
