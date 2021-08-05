@@ -85,7 +85,7 @@ Remove the package using
 
 ## <a name="using-cutlang-with-conda"></a> With conda
 Available on **Linux, macOS**
-[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=b)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=b)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=b)](https://anaconda.org/cutlang/cutlang)
+[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
 *Requirements*
@@ -152,7 +152,7 @@ Update the docker image using
 Remove the docker container and image using
 ```bash
   docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
-  docker images -a | grep "CutLang" | awk '{print $3}' | xargs docker rmi
+  docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
 
 ## <a name="using-cutlang-with-jupyterlab"></a> With JupyterLab
