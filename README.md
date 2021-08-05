@@ -199,7 +199,7 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 ```
 
 ## <a name="tutorial-how-should-i-follow-the-tutorial"></a> How should I follow the tutorial ?
-[WIP]
+At startup you can enter binder folder and open example1.ipynb
 
 # <a name="jupyterlab-cutlang-magic"></a> JupyterLab CutLang Magic
 *CutLang can be used on Jupyter notebooks with ROOT*
@@ -212,7 +212,10 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 # <a name="faq"></a> FAQ
 
 ## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example ntuple ?
-[WIP]
+Ntuple files are kept in CLA directory
+
+## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example adl ?
+Example adl files are kept in runs directory
 
 # <a name="contributing"></a> Contributing
 
