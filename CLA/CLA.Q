@@ -3,6 +3,7 @@
 #include "atlasopen.h"
 #include "atlasopenR2.h"
 #include "cmsod.h"
+#include "cmsod2.h"
 #include "delphes.h"
 #include "lvl0.h"
 #include "VLLMin.h"
@@ -49,6 +50,7 @@ int main(int argc, char*argv[])
  bool use_atlasodR2=false;
  bool use_atlmin=false;
  bool use_cmsod=false;
+ bool use_cmsodR2=false;
  bool use_cmsnano=false;
  bool use_vllmin=false;
  bool use_vllbg3 =false;
@@ -57,7 +59,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
- cout << "CLA v02.9.00\t";
+ cout << "CLA v02.9.90\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
@@ -93,7 +95,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | ATLASODR2 | CMSOD | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -109,6 +111,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "ATLASODR2") { use_atlasodR2 =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
+ else if (inptype == "CMSODR2") { use_cmsodR2 =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
  else if (inptype == "VLLSIGNAL")	{ use_vllsignal =true;}
@@ -212,6 +215,9 @@ if (ival==0) {
   }else if (use_fcc){
    cout << "~Now using FCC files.~~~~~~ beta!\n";
    chain = new TChain("events");
+  }else if (use_cmsodR2){
+   cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
+   chain = new TChain("Events");
   }else if (use_cmsod){
    cout << "~Now using CMS Open Data files.~~~~~~ beta!\n";
    chain = new TChain("events");
@@ -262,6 +268,9 @@ if (ival==0) {
                 CMSnanoAODa->Loop(aselect, username);
    } else if (use_cmsod){
     cmsod *cmsoda=new cmsod("XXX",chain);
+           cmsoda->Loop(aselect, username);
+   } else if (use_cmsodR2){
+    cmsod2 *cmsoda=new cmsod2("XXX",chain);
            cmsoda->Loop(aselect, username);
    } else if (use_atlasod){
     atlasopen *atlasoda=new atlasopen("XXX",chain);

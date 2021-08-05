@@ -1,5 +1,5 @@
-#define cmsod_cxx
-#include "cmsod.h"
+#define cmsod2_cxx
+#include "cmsod2.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -15,14 +15,13 @@
 #include "AnalysisController.h"
 
 //#define __DEBUG__
-extern void _fsig_handler (int) ;
 extern bool fctrlc;
 
-void cmsod::Loop(analy_struct aselect, char *extname)
+void cmsod2::Loop(analy_struct aselect, char *extname)
 {
 
 // Signal HANDLER
-   signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
+//   signal (SIGINT, _f2sig_handler); // signal handler has issues with CINT
 
    if (fChain == 0) {
           cout <<"Error opening the data file"<<endl; return;
@@ -58,7 +57,6 @@ void cmsod::Loop(analy_struct aselect, char *extname)
 #ifdef __DEBUG__
 std::cout << "Read Event"<<std::endl;
 #endif
-       int RunNumber=137;
 
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
@@ -69,7 +67,7 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxTruth>   truth;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
-
+ 
        map<string, vector<dbxMuon>     > muos_map;
        map<string, vector<dbxElectron> > eles_map;
        map<string, vector<dbxTau>      > taus_map;
@@ -93,72 +91,74 @@ std::cout << "Read Event"<<std::endl;
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
 #endif
-
-        for (unsigned int i=0; i<NMuon; i++) {
-                alv.SetPxPyPzE( Muon_Px[i], Muon_Py[i], Muon_Pz[i], Muon_E[i] ); // all in GeV
-                adbxm= new dbxMuon(alv);
-                adbxm->setCharge(Muon_Charge[i] );
-                adbxm->setEtCone(Muon_Iso[i]  );
-                adbxm->setParticleIndx(i);
-                muons.push_back(*adbxm);
-                delete adbxm;
-        }
+      for (unsigned int i=0; i<nMuon; i++) {
+              alv.SetPtEtaPhiM( Muon_pt[i], Muon_eta[i], Muon_phi[i], Muon_mass[i] ); // all in GeV
+              adbxm= new dbxMuon(alv);
+              adbxm->setCharge(Muon_charge[i] );
+              adbxm->setEtCone(Muon_pfRelIso03_all[i]  );
+              adbxm->setPtCone(Muon_pfRelIso04_all[i]  );
+              adbxm->setParticleIndx(i);
+              muons.push_back(*adbxm);
+              delete adbxm;
+      }
 
 #ifdef __DEBUG__
-std::cout << "Muons OK:"<< Muon_<<std::endl;
+std::cout << "Muons OK:"<< nMuon<<std::endl;
 #endif
 //ELECTRONS
 
-        for (unsigned int i=0; i<NElectron; i++) {
-                alv.SetPxPyPzE( Electron_Px[i], Electron_Py[i], Electron_Pz[i], Electron_E[i] ); // all in GeV
-                adbxe= new dbxElectron(alv);
-                adbxe->setCharge(Electron_Charge[i] );
-                adbxe->setEtCone(Electron_Iso[i]  );
-                adbxe->setParticleIndx(i);
-                electrons.push_back(*adbxe);
-                delete adbxe;
-        }
+      for (unsigned int i=0; i<nElectron; i++) {
+              alv.SetPtEtaPhiM( Electron_pt[i], Electron_eta[i], Electron_phi[i], Electron_mass[i] ); // all in GeV
+              adbxe= new dbxElectron(alv);
+              adbxe->setCharge(Electron_charge[i] );
+              adbxe->setEtCone(Electron_pfRelIso03_all[i]  );
+              adbxe->setParticleIndx(i);
+              electrons.push_back(*adbxe);
+              delete adbxe;
+      }
 
 #ifdef __DEBUG__
-std::cout << "Electrons OK:"<< Electron_ <<std::endl;
+std::cout << "Electrons OK:"<< nElectron <<std::endl;
 #endif
+/*
 //PHOTONS
-        for (unsigned int i=0; i<NPhoton; i++) {
-                alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
-                adbxp= new dbxPhoton(alv);
-                adbxp->setCharge(0);
-                adbxp->setParticleIndx(i);
-                adbxp->setEtCone(Photon_Iso[i]  );
-                photons.push_back(*adbxp);
-                delete adbxp;
-        }
+      for (unsigned int i=0; i<0; i++) {
+              alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
+              adbxp= new dbxPhoton(alv);
+              adbxp->setCharge(0);
+              adbxp->setParticleIndx(i);
+              adbxp->setEtCone(Photon_Iso[i]  );
+              photons.push_back(*adbxp);
+              delete adbxp;
+      }
 #ifdef __DEBUG__
 std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #endif
 //JETS
-        for (unsigned int i=0; i<NJet; i++) {
-                alv.SetPxPyPzE( Jet_Px[i], Jet_Py[i], Jet_Pz[i], Jet_E[i] ); // all in GeV
-                adbxj= new dbxJet(alv);
-                adbxj->setCharge(-99);
-                adbxj->setParticleIndx(i);
-                adbxj->setFlavor(Jet_btag[i] );
-                adbxj->set_isbtagged_77( (Jet_btag[i]>= blow_th ) ); // cms is >=
-                jets.push_back(*adbxj);
-                delete adbxj;
-        }
+      for (unsigned int i=0; i<0; i++) {
+              alv.SetPxPyPzE( Jet_Px[i], Jet_Py[i], Jet_Pz[i], Jet_E[i] ); // all in GeV
+              adbxj= new dbxJet(alv);
+              adbxj->setCharge(-99);
+              adbxj->setParticleIndx(i);
+              adbxj->setFlavor(Jet_btag[i] );
+              adbxj->set_isbtagged_77( (Jet_btag[i]>= blow_th ) ); // cms is >=
+              jets.push_back(*adbxj);
+              delete adbxj;
+      }
 #ifdef __DEBUG__
 std::cout << "Jets:"<<Jet_<<std::endl;
 #endif
+*/
 //MET
-        met.Set(MET_px, MET_py);
+      met.SetMagPhi( MET_pt,  MET_phi);
 #ifdef __DEBUG__
 std::cout << "MET OK"<<std::endl;
 #endif
 
 
 //------------ auxiliary information -------
-        anevt.run_no=RunNumber;
-        anevt.lumiblk_no=1;
+        anevt.run_no=run;
+        anevt.lumiblk_no=luminosityBlock;
         anevt.top_hfor_type=0;
         anevt.event_no=j;
         anevt.TRG_e= 1;
@@ -167,7 +167,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.vxp_maxtrk_no= 9;
         anevt.badjet=0;
         anevt.user_evt_weight=1;
-        anevt.mcevt_weight=EventWeight;
+        anevt.mcevt_weight=1;
         anevt.pileup_weight=1.0;
         anevt.z_vtx_weight = 1.0;
         anevt.weight_jvt=1.0;
@@ -176,7 +176,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.vxpType=0;
         anevt.lar_Error=0;
         anevt.core_Flags=0;
-	anevt.maxEvents=nentries;
+        anevt.maxEvents=nentries;
 
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
@@ -197,7 +197,7 @@ std::cout << "Filling finished"<<std::endl;
 
         aCtrl.RunTasks(a0);
 
-  }// event loop ends.
+   }// event loop ends.
 
   aCtrl.Finalize();
 
