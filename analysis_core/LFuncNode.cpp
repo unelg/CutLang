@@ -83,7 +83,7 @@ void LFuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *objec
 
    
 double LFuncNode::evaluate(AnalysisObjects* ao)  {
-        DEBUG("In L function Node evaluate: "<< inputParticles.size() << ","<< inputParticles2.size()<<"\n");
+        DEBUG("In L function Node evaluate. ip1 size: "<< inputParticles.size() << ", ip2 size:"<< inputParticles2.size()<<"\n");
 
         if(userObjectA)  userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
         if(userObjectB)  userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
@@ -138,10 +138,16 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         inputParticles0.clear();
         inputParticles1.clear();
         } else {
-        partConstruct(ao, &inputParticles2,&myPart2);
+          DEBUG("Constructing second particle\n");
+          partConstruct(ao, &inputParticles2,&myPart2);
+          DEBUG("Finished constructing second particle\n");
         }
   
+        DEBUG("Constructing First particle\n");
         partConstruct(ao, &inputParticles,&myPart);
+        DEBUG("Finished constructing First particle\n");
+        DEBUG("AF P0_"<<0<<" Type:"<<inputParticles[0]->type<< " index:"<<inputParticles[0]->index<<"\n");
+        DEBUG("AF P1_"<<0<<" Type:"<<inputParticles2[0]->type<< " index:"<<inputParticles2[0]->index<<"\n");
         return (*f2)(&myPart,&myPart2);
 }
 
@@ -150,8 +156,9 @@ LFuncNode::~LFuncNode() {}
 
 
 double dR(dbxParticle* apart,dbxParticle* apart2){
+    DEBUG("In deltaR\n");
     double deltaR=apart->lv().DeltaR(apart2->lv() );
-    DEBUG(" dR:"<<deltaR<<"\t");
+    DEBUG(" dR:"<<deltaR<<"\n");
     return deltaR;
 }
 
