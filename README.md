@@ -85,7 +85,7 @@ Remove the package using
 
 ## <a name="using-cutlang-with-conda"></a> With conda
 Available on **Linux, macOS**
-[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=a)](https://anaconda.org/cutlang/cutlang)
+[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=b)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=b)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=b)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
 *Requirements*
@@ -214,8 +214,8 @@ At startup you can enter binder folder and open example1.ipynb
 ## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example ntuple ?
 Ntuple files are kept in CLA directory
 
-## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example adl ?
-Example adl files are kept in runs directory
+## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example adl files ?
+Example adl files are kept in runs directory, you can also check out the repository at https://github.com/ADL4HEP/ADLLHCanalyses
 
 # <a name="contributing"></a> Contributing
 
