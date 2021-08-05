@@ -59,6 +59,7 @@ ObjectNode::ObjectNode(std::string id,
           type=combo_t;
           if (symbol == "ELE") {type=electron_t;}
           if (symbol == "MUO") {type=muon_t;}
+          if (symbol == "TAU") {type=tau_t;}
       }
       DEBUG("previous found:" << anode->name<<" this type is:"<<type<<"\n");
     } else { // if null
@@ -124,19 +125,14 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     while(left!=NULL && keepworking && ccount<10) {
       ObjectNode* anode=(ObjectNode*)left;
       basename=anode->name;
- //     type=anode->type; //not needed NGU 
 
       DEBUG("basename:"<< basename<< " name:"<<name<<" symbol:"<<symbol<<"  type:"<<type<<"\n");
       if (basename=="Combo" && type!=combo_t) basename=symbol;
+//-----------------------------NGU TODO FIXME
       if (type==muon_t){  
          if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; } // if it is here
       if (type == combo_t){
          if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; } // if it is here
-
-
-//    if (ao->eles.find(basename)  !=ao->eles.end()   && type!=electron_t  ) { type=electron_t; }
-//    if (ao->muos.find(basename)  !=ao->muos.end()   && type!=muon_t )      { type=muon_t; }
-//    if (ao->combos.find(basename)!=ao->combos.end() && type!=combo_t )     { type=combo_t; }
     DEBUG("new  type:"<<type<< " new basename:"<<basename<<"\n");
 
 // is it in the map list?
@@ -868,26 +864,126 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 }
 //------------------------
 void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-   DEBUG("Creating new COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+   DEBUG("Creating new COMBO type named:"<<name<< " basename:"<< basename<<". Previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+   bool applyCuts=false;
+   int ipart_max=0;
 
+   if (ao->combos.find(basename)!=ao->combos.end() && basename!="Combo") { 
+          applyCuts=true; // the base already is there.
+          DEBUG("not a union, will duplicate "<< basename <<" and apply cuts\n");
+          ao->combos.insert( std::pair<string, vector<dbxParticle> >(name, (ao->combos)[basename]) );
+          ipart_max = (ao->combos)[name].size();
+   }
    vector<dbxParticle>  combination;
    dbxParticle *adbxp;
    TLorentzVector  alv;
    std::string collectionName;
-   int ipart_max=0;
 
    DEBUG("initially we have "<<particles->size()<<" particles\n");
    for (int jj=0; jj<particles->size(); jj++){
        DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
    }
+   
 
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
-        particles->clear();
-        (*cutIterator)->getParticles(particles);
-
-     dbxParticle bdbxp; // to sum particles
+     particles->clear();
+     (*cutIterator)->getParticles(particles);
      DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<<particles->size() <<"\n");
-      for (int jj=0; jj<particles->size(); jj++){
+     if (applyCuts){
+        bool simpleloop=true;
+        
+        if ( particles->size()==0) {
+           DEBUG("combo CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           bool kill_all=false;
+           TString mycutstr=(*cutIterator)->getStr();
+           if ( mycutstr.Contains("kill") ) kill_all=true;
+
+           int retval=(*cutIterator)->evaluate(ao);
+           DEBUG("RetVal:"<<retval<<"\n");
+           if (kill_all) {
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               if (retval != ipart) { DEBUG("Killing combo:"<<ipart);
+                   (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+               }
+            }
+           }
+           DEBUG("C---------------------------------\n");
+           continue;
+        } // end of 0 particles
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        std::set<int>::iterator ptit;
+        ptit=ptypeset.begin(); ptit++;
+        t2=*ptit;
+
+        if(simpleloop){
+            DEBUG("ONE particle  Combo Loop \n");
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+               for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+               }
+               DEBUG("here @"<<ipart<<"\t");
+               DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
+               bool ppassed=(*cutIterator)->evaluate(ao);
+               if (!ppassed) { DEBUG("Killing Combo:"<<ipart);
+                   (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+               }
+            }
+        }
+        else { // end of simpleloop
+            DEBUG("TWO particle Combo Loop\n");
+            ValueNode abc=ValueNode();
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;  // 6213
+                int ipart2_max;
+                string base_collection2=particles->at(1)->collection;
+                switch(particles->at(1)->type){
+                    case 12: ipart2_max=(ao->muos)[base_collection2].size(); break;
+                    case 10: ipart2_max=(ao->truth)[base_collection2].size(); break;
+                    case 1: ipart2_max=(ao->eles)[base_collection2].size(); break;
+                    case 2: ipart2_max=(ao->jets)[base_collection2].size(); break;
+//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+//                      break;
+//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
+//                      break;
+                    case 8: ipart2_max=(ao->gams)[base_collection2].size(); break;
+                    case 9: ipart2_max=(ao->ljets)[base_collection2].size(); break;
+                   case 11: ipart2_max=(ao->taus)[base_collection2].size(); break;
+                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+
+                    default:
+                        std::cerr << "WRONG PARTICLE TYPE! "<<particles->at(1)->type << std::endl;
+                        break;
+                }
+                DEBUG("ipart1 t:"<<t1<< " i:"<<ipart<< " ipart2 t:"<<particles->at(1)->type<<"\n");
+                for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                    particles->at(1)->index=kpart;
+
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
+                    bool ppassed=(*cutIterator)->evaluate(ao);
+                    if (!ppassed) {
+                        (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+                        break;
+                    }
+                } // second particle set
+            }// first particle set
+        }// end of two particles
+     }// endof apply cuts
+     else {
+     dbxParticle bdbxp; // to sum particles
+
+     for (int jj=0; jj<particles->size(); jj++){
        DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
        collectionName=particles->at(jj)->collection;
        switch(particles->at(jj)->type){
@@ -1048,10 +1144,11 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 }
         DEBUG("Adding # particles:"<<ipart_max<<"\n");
 
-      } //end of particle loop
-      if ( particles->at(0)->index != 6213 ) combination.push_back(bdbxp);
+     } //end of particle loop
+     if ( particles->at(0)->index != 6213 ) combination.push_back(bdbxp);
+     } // end of main else
    }// end of  cut iterator loop
-   ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
+   if (!applyCuts) ao->combos.insert( pair <string,vector<dbxParticle> > (name,     combination) );
 
    DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
    DEBUG(" added particle#:"<<(ao->combos)[name].size()<< " \n");
