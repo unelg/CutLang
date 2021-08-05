@@ -1,0 +1,17 @@
+rm -rf $CONDA_PREFIX/bin/cutlang_conda_update
+
+git clone https://github.com/unelg/CutLang $CONDA_PREFIX/bin/cutlang_conda_update
+
+rm -rf $CONDA_PREFIX/bin/cutlang_conda_update/.github
+rm -rf $CONDA_PREFIX/bin/cutlang_conda_update/.git
+
+cd $CONDA_PREFIX/bin/cutlang_conda_update/CLA
+make
+
+for CHANGE in "activate" "deactivate"
+do
+    cp "${CONDA_PREFIX}/bin/cutlang_conda_update/scripts/conda/conda_${CHANGE}.sh" "${CUTLANG_PATH}/etc/conda/${CHANGE}.d/cutlang_${CHANGE}.sh"
+    cp "${CONDA_PREFIX}/bin/cutlang_conda_update/scripts/conda/root_unset_for_conda.sh" "${CUTLANG_PATH}/etc/conda/activate.d/__root_unset_for_conda.sh"
+done
+
+cp -r $CONDA_PREFIX/bin/cutlang_conda_update/* $CUTLANG_PATH

@@ -85,7 +85,7 @@ Remove the package using
 
 ## <a name="using-cutlang-with-conda"></a> With conda
 Available on **Linux, macOS**
-[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=a)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=a)](https://anaconda.org/cutlang/cutlang)
+[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
 *Requirements*
@@ -104,6 +104,9 @@ Update the environment using
  conda create -c conda-forge -c cutlang --name <my-environment> cutlang # remove the existing environment and install the latest version
  # or just
  conda update -c conda-forge -c cutlang cutlang # run in environment with cutlang installed
+
+ # or force update (temporary, do not use unless necessary)
+ CLA_conda_update
 ```
 
 ### <a name="using-cutlang-with-conda-remove"></a> Remove
@@ -149,7 +152,7 @@ Update the docker image using
 Remove the docker container and image using
 ```bash
   docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
-  docker images -a | grep "CutLang" | awk '{print $3}' | xargs docker rmi
+  docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
 
 ## <a name="using-cutlang-with-jupyterlab"></a> With JupyterLab
@@ -196,7 +199,7 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 ```
 
 ## <a name="tutorial-how-should-i-follow-the-tutorial"></a> How should I follow the tutorial ?
-[WIP]
+At startup you can enter binder folder and open example1.ipynb
 
 # <a name="jupyterlab-cutlang-magic"></a> JupyterLab CutLang Magic
 *CutLang can be used on Jupyter notebooks with ROOT*
@@ -209,7 +212,10 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 # <a name="faq"></a> FAQ
 
 ## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example ntuple ?
-[WIP]
+Ntuple files are kept in CLA directory
+
+## <a name="faq-where-to-find-an-example-ntuple"></a> Where to find an example adl files ?
+Example adl files are kept in runs directory, you can also check out the repository at https://github.com/ADL4HEP/ADLLHCanalyses
 
 # <a name="contributing"></a> Contributing
 
