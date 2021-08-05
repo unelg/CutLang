@@ -65,7 +65,7 @@ ifneq (0, ${JUPY})
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o atlasopenR2.o cmsod.o  AtlMin.o VLLMin.o CMSnanoAOD.o VLLBG3.o VLLMinSignal.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o atlasopenR2.o cmsod.o cmsod2.o AtlMin.o VLLMin.o CMSnanoAOD.o VLLBG3.o VLLMinSignal.o
 OBJS_2        = b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
