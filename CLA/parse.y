@@ -357,11 +357,11 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         if ( TmpParticle.size()>0) { // was wrong rule match
-                                          cout << " still recovering...\t";
+                                       //   cout << " still recovering...\t";
                                           vector<myParticle*> newList;
                                           TmpParticle.swap(newList);
                                           ListParts->insert(make_pair(name,newList));
-                                          cout << "Done .\n";
+                                       //   cout << "Done .\n";
                                         } else {
                                           NodeVars->insert(make_pair(name,$4));
                                         }
@@ -377,11 +377,11 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                                 YYERROR;//stops parsing if variable already defined
                                         }
                                         if ( TmpParticle.size()>0) { // was wrong rule match
-                                          cout << " still recovering...\t";
+                                        //  cout << " still recovering...\t";
                                           vector<myParticle*> newList;
                                           TmpParticle.swap(newList);
                                           ListParts->insert(make_pair(name,newList));
-                                          cout << "Done .\n";
+                                         // cout << "Done .\n";
                                         } else {
                                           NodeVars->insert(make_pair(name,$4));
                                         }
@@ -1007,7 +1007,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
                   $$=it->second;
-                } else { cout<<"\t"<<$1<<"\t";
+                } else { // cout<<"\t"<<$1<<"\t";
                    map<string, Node *>::iterator ito;
 //                 for (ito=ObjectCuts->begin(); ito!=ObjectCuts->end(); ito++){
 //                  cout <<"Map has Object:"<<ito->first << "-vs-"<< string($1)<<"-\n"; 
@@ -1020,7 +1020,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is NOT a known object nor variable, not even a particle!");
                        YYERROR;
                      } else {
-                       cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
+                     //  cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
                        vector<myParticle*> newList= itp->second;
                        DEBUG("A particule, name : "<< $1 << "    type : " << newList[0]->type << "      index: " << newList[0]->index);
                        TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
