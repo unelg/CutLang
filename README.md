@@ -152,7 +152,7 @@ Update the docker image using
 Remove the docker container and image using
 ```bash
   docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
-  docker images -a | grep "CutLang" | awk '{print $3}' | xargs docker rmi
+  docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
 
 ## <a name="using-cutlang-with-jupyterlab"></a> With JupyterLab
