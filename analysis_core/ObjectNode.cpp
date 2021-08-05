@@ -880,19 +880,23 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    std::string collectionName;
 
    DEBUG("initially we have "<<particles->size()<<" particles\n");
-   for (int jj=0; jj<particles->size(); jj++){
-       DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
-   }
    
 
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
      particles->clear();
      (*cutIterator)->getParticles(particles);
-     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<<particles->size() <<"\n");
+     int OPS=particles->size();
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<< OPS <<"\n");
+     for (int jj=0; jj<OPS; jj++){
+        DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+     }
      if (applyCuts){
+        for (int jj=0; jj<OPS; jj++){
+          DEBUG("T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
+        }
         bool simpleloop=true;
         
-        if ( particles->size()==0) {
+        if ( OPS==0) {
            DEBUG("combo CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool kill_all=false;
            TString mycutstr=(*cutIterator)->getStr();
@@ -913,7 +917,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         std::set<int> ptypeset;
         int t1=particles->at(0)->type;
         int t2;
-        for ( int kp=0; kp<particles->size(); kp++ ) {
+        for ( int kp=0; kp<OPS; kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
@@ -925,7 +929,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         if(simpleloop){
             DEBUG("ONE particle  Combo Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
+               for (int jp=0; jp<OPS; jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
@@ -941,7 +945,9 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
             DEBUG("TWO particle Combo Loop\n");
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;  // 6213
+                particles->at(0)->index=ipart;  // 6213 means scan all particles
+                
+                
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
@@ -966,12 +972,15 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
 
-                    for (int jp=2; jp<particles->size(); jp++){
+                    for (int jp=2; jp<OPS; jp++){
+                     DEBUG(jp<<" t:"<<particles->at(jp)->type<<" i:");
                      if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
-                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                     if (particles->at(jp)->type == particles->at(1)->type) particles->at(jp)->index=kpart;
+                     DEBUG(particles->at(jp)->index<<"\n");
                     }
-
+                    DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
                     bool ppassed=(*cutIterator)->evaluate(ao);
+                    DEBUG("RetVal:"<<ppassed<<"\n");
                     if (!ppassed) {
                         (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
                         break;
