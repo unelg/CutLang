@@ -11,7 +11,7 @@ RUN mkdir -p $(jupyter --data-dir)/kernels/cutlang
 
 RUN apt install -y bison flex make wget
 
-RUN cd /CutLang/CLA && make clean && make
+RUN cd /CutLang/CLA && make clean && make -j 32
 RUN echo "source /CutLang/setup.sh" >> ~/.bashrc
 RUN echo "alias python=python3" >> ~/.bashrc
 
