@@ -301,9 +301,6 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false;}
-        std::set<int>::iterator ptit; 
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;
 /*
 object goodjets take Jet
   select  q(Jet constituents ) != 0                        # remove neutral constituents
@@ -443,9 +440,6 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;
  
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -539,9 +533,6 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit; 
 
         if(simpleloop){
             DEBUG("ONE particle  Muon Loop \n");
@@ -626,9 +617,6 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;
        
         if(simpleloop){
             DEBUG("size=1\n");
@@ -707,9 +695,6 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;
  
         if(simpleloop){
             DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
@@ -806,9 +791,6 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit; 
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;      
 
         if(simpleloop){
             DEBUG("size=1\n");
@@ -922,10 +904,6 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         }
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit;
-
         if(simpleloop){
             DEBUG("ONE particle  Combo Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
@@ -971,11 +949,12 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 DEBUG("ipart1 t:"<<t1<< " i:"<<ipart<< " ipart2 t:"<<particles->at(1)->type<<"\n");
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
+                    t2=particles->at(1)->type;
 
                     for (int jp=2; jp<OPS; jp++){
                      DEBUG(jp<<" t:"<<particles->at(jp)->type<<" i:");
                      if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
-                     if (particles->at(jp)->type == particles->at(1)->type) particles->at(jp)->index=kpart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
                      DEBUG(particles->at(jp)->index<<"\n");
                     }
                     DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
@@ -1201,9 +1180,6 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
-        std::set<int>::iterator ptit;
-        ptit=ptypeset.begin(); ptit++;
-        t2=*ptit; 
 //----------------------------
         if (constiloop) { // basename: previous base object, name: new object
           DEBUG("--GEN daugther loop-- "<< ipart_max<<"\n");
@@ -1539,12 +1515,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
          index_backup.push_back(particles->at(kp)->index ); // to take a backup
       }
       if ( ptypeset.size()>2 ) {cerr <<" 3 different particle type selection is not allowed in this version!\n"; exit(1);}
-      std::set<int>::iterator ptit;
-      std::set<int>::iterator pIit;
-      ptit=ptypeset.begin(); ptit++;
-      t2=*ptit;
-      pIit=pindexset.begin(); pIit++;
-      tidx2=*pIit;
 
       if(simpleloop){
            DEBUG("simpleloop, idx0:"<<tidx1<<"\n");
