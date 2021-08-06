@@ -3,6 +3,11 @@ PATH=:$PATH:
 PATH=${PATH//:$directory_to_remove:/:}
 PATH=${PATH#:}; PATH=${PATH%:}
 
+directory_to_remove=$CONDA_PREFIX/bin/cutlang/scripts
+PATH=:$PATH:
+PATH=${PATH//:$directory_to_remove:/:}
+PATH=${PATH#:}; PATH=${PATH%:}
+
 #rm -rf $CUTLANG_JUPYTER_DATA_DIR/kernels/cutlang
 
 #rm $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py 2>>/dev/null
