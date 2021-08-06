@@ -26,6 +26,7 @@ This is the repository for CutLang V3
 - [Tutorial](#tutorial)
   - [Setup](#tutorial-setup)
   - [Starting](#tutorial-starting)
+  - [Update](#tutorial-update)
   - [How should I follow the tutorial ?](#tutorial-how-should-i-follow-the-tutorial)
 - [JupyterLab CutLang magic](#jupyterlab-cutlang-magic)
 - [FAQ](#faq)
@@ -198,7 +199,7 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
   # Then you can browse example1 and other ipynb files in binder folder
 ```
 
-## <a name="tutorial-starting"></a> Update (Self host)
+## <a name="tutorial-update"></a> Update (Self host)
 ```bash
   CLA_tutorial_update
   # force update (temporary, do not use unless necessary)
