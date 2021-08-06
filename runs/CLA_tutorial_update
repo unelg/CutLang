@@ -1,0 +1,8 @@
+rm -rf $CONDA_PREFIX/bin/cutlang_tutorial_update
+
+git clone https://github.com/unelg/CutLang $CONDA_PREFIX/bin/cutlang_tutorial_update
+
+rm -rf $CONDA_PREFIX/bin/cutlang_tutorial_update/.github
+rm -rf $CONDA_PREFIX/bin/cutlang_tutorial_update/.git
+
+cp -r $CONDA_PREFIX/bin/cutlang_tutorial_update/binder/* $CUTLANG_PATH/binder
