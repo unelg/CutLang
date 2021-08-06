@@ -198,6 +198,12 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
   # Then you can browse example1 and other ipynb files in binder folder
 ```
 
+## <a name="tutorial-starting"></a> Update (Self host)
+```bash
+  CLA_tutorial_update
+  # force update (temporary, do not use unless necessary)
+```
+
 ## <a name="tutorial-how-should-i-follow-the-tutorial"></a> How should I follow the tutorial ?
 At startup you can enter binder folder and open example1.ipynb
 
