@@ -13,3 +13,11 @@ name: 'Publish Conda package to Anaconda.org'
 runs:
   using: 'docker'
   image: 'package_update'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: publish-to-conda
+      with:
+        AnacondaToken: ${{ secrets.ANACONDA_TOKEN }}
