@@ -25,3 +25,5 @@ cp $CUTLANG_PATH/kernel/shellmagic.py $ROOTSYS/lib/python3.9/site-packages/JupyR
 cp $CUTLANG_PATH/kernel/shellmagic.py $ROOTSYS/lib/python3.8/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 cp $CUTLANG_PATH/kernel/shellmagic.py $ROOTSYS/lib/python3.7/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
 cp $CUTLANG_PATH/kernel/shellmagic.py $ROOTSYS/lib/python3.6/site-packages/JupyROOT/magics/shellmagic.py 2>>/dev/null
+
+# setup_kernel
