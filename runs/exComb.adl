@@ -1,3 +1,4 @@
+# ADL example for combinations for partitioning
 object jets : JET
    select  {JET}Pt > 10  
    select  {JET}Eta < 4
