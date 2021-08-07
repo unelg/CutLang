@@ -6,7 +6,7 @@ rm -rf $CONDA_PREFIX/bin/cutlang_conda_update/.github
 rm -rf $CONDA_PREFIX/bin/cutlang_conda_update/.git
 
 cd $CONDA_PREFIX/bin/cutlang_conda_update/CLA
-make -j 32
+make -j 
 
 for CHANGE in "activate" "deactivate"
 do
