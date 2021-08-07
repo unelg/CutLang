@@ -1,3 +1,5 @@
+# ADL example for loops and reducers
+
 object goodjet : JET
      select      pT(JET)  > 20
      select abs(eta(JET)) < 2.5

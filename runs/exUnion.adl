@@ -1,4 +1,4 @@
-#CLA ADL example2
+#CLA ADL exampleUnions
 
 object goodEle : ELE
   select  Pt(ELE)        >   10

@@ -54,15 +54,15 @@ region   test
   select  ALL             # to count all events
   select  Size(ELE) >= 1  # events generic electrons 
   select  Size(myElectron) >= 1 #events with detected electrons
-#  select  {ELE_0}Eta > 0
-#  weight  randWeight   1.123
-#   weight  ef1Weight myWeight  ( {ELE_0}pT )              # weight 1d
-#   weight  ef2Weight SUSEff( {ELE_0}pT, {ELE_0}Eta )  # weight 2d
+  select  {ELE_0}Eta > 0
+  weight  randWeight   1.123
+  weight  ef1Weight myWeight( {ELE_0}pT )            # weight 1d
+  weight  ef2Weight SUSEff( {ELE_0}pT, {ELE_0}Eta )  # weight 2d
 
-#  histo   h1ept, "E0 pt (GeV)", 100, 0, 2000, {ELE_0}pT
+  histo   h1ept, "E0 pt (GeV)", 100, 0, 2000, {ELE_0}pT
 
-#   select  applyHM( myWeight( {ELE}pT ) == 1) # 0 to reject, 1 to accept.
-#  select  Size (ELE) >= 2  # events with 2 or more electrons 
+  select  applyHM( myWeight( {ELE}pT ) == 1) # 0 to reject, 1 to accept.
+  select  Size (ELE) >= 2  # events with 2 or more electrons 
 
 #  weight  peffWeight effFunc   ########not yet implemented   
 #  reject  Size (ELE) > 4  # events with 5 or more electrons 
