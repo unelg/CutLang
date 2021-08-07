@@ -14,4 +14,7 @@ do
     cp "${CONDA_PREFIX}/bin/cutlang_conda_update/scripts/conda/root_unset_for_conda.sh" "${CONDA_PREFIX}/etc/conda/activate.d/__root_unset_for_conda.sh"
 done
 
+mkdir $CONDA_PREFIX/bin/cutlang_conda_bak
+cp -r $CUTLANG_PATH/* $CONDA_PREFIX/bin/cutlang_conda_bak
+
 cp -r $CONDA_PREFIX/bin/cutlang_conda_update/* $CUTLANG_PATH
