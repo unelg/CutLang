@@ -54,7 +54,7 @@ jobs:
         git pull
 
         git add ./meta.yaml
-        git commit -m "automated update for scripts/conda meta.yaml" 
+        git commit -m "automated update for scripts/conda meta.yaml" || echo "ignore commit failure, proceed (simple warning)"
         git push origin $1
 
     - name: Create a GitHub release

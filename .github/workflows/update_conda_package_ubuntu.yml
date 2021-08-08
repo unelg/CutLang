@@ -76,7 +76,7 @@ jobs:
         git pull
 
         git add ./environment.yml
-        git commit -m "automated update for binder environment.yml" 
+        git commit -m "automated update for binder environment.yml" || echo "ignore commit failure, proceed (simple warning)"
         git push origin $1
 
 
