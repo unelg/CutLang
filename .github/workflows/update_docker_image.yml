@@ -75,3 +75,10 @@ jobs:
         with:
           push: true
           tags: cutlang/cutlang:latest,cutlang/cutlang:${{ steps.update_meta.outputs.VERSION_CUTLANG }}
+
+      - name: SMTP
+        if: ${{ !steps.update_meta.outputs.DOCKER_IMAGE_NOT_EXIST }}
+        uses: peter-evans/sendgrid-action@v1
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SCRIPT_FILEPATH: ./.github/workflows/update_docker_image_mail_success.js     
