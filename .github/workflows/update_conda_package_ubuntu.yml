@@ -68,6 +68,8 @@ jobs:
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
       working-directory: ./binder
       run: |
+        rm -rf ../scripts/conda/meta.yaml
+
         git config user.email "tobuba2@gmail.com"
         git config user.name "bot"
 
