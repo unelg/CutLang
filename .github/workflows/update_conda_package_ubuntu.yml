@@ -67,9 +67,9 @@ jobs:
         git push origin $1
 
 
-      - name: SMTP
-        if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
-        uses: peter-evans/sendgrid-action@v1
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          SCRIPT_FILEPATH: ./.github/workflows/update_conda_package_ubuntu_mail_success.js     
+    - name: SMTP
+      if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
+      uses: peter-evans/sendgrid-action@v1
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        SCRIPT_FILEPATH: ./.github/workflows/update_conda_package_ubuntu_mail_success.js     
