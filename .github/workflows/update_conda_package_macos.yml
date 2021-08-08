@@ -13,6 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '12.x'
 
     - uses: s-weigand/setup-conda@v1
     - name: Update meta
@@ -45,6 +48,8 @@ jobs:
       run: |
         ls -la
         chmod +x update_conda_package_macos.sh
+        chmod +x update_conda_package_macos_mail_success.js
+        chmod +x update_conda_package_macos_mail_error.js
 
 
     - uses: s-weigand/setup-conda@v1
@@ -60,9 +65,9 @@ jobs:
         ANACONDA_TOKEN: "${{ secrets.ANACONDA_TOKEN }}"
         PACKAGE_USERNAME: "${{ secrets.PACKAGE_USERNAME }}"
 
-    - name: SMTP
-      if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
-      uses: peter-evans/sendgrid-action@v1
-      env:
-        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        SCRIPT_FILEPATH: ./.github/workflows/update_conda_package_macos_mail_success.js     
+    #- name: SMTP
+    #  if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
+    #  uses: peter-evans/sendgrid-action@v1
+    #  env:
+    #    SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+    #    SCRIPT_FILEPATH: ./.github/workflows/update_conda_package_macos_mail_success.js     
