@@ -1,6 +1,0 @@
-FROM continuumio/miniconda3:4.7.10
-
-RUN conda install -y anaconda-client conda-build
-
-COPY package_update.sh /package_update.sh
-ENTRYPOINT ["/package_update.sh"]

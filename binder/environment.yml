@@ -3,4 +3,4 @@ channels:
   - cutlang
   - defaults
 dependencies:
-  - cutlang ==0.3.5
+- cutlang ==2.9.21
