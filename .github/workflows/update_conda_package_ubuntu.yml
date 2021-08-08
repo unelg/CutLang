@@ -1,0 +1,67 @@
+name: Update conda package ubuntu
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build-conda-ubuntu:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: s-weigand/setup-conda@v1
+    - name: Update meta
+      id: update_meta
+      working-directory: ./scripts/conda
+      run: |
+        export version_cutlang=`cat ../../VERSION`
+        echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
+
+        echo "::group::VERSION"
+        echo "Inside group $version_cutlang"
+        echo "::endgroup::"
+        
+        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
+        echo "::set-output name=CHECK_VERSION_CUTLANG::$check_version_cutlang"
+        
+        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
+        echo "::set-output name=UNELG_REPO::$unelgRepo"
+
+    - name: chmod
+      working-directory: .github/workflows
+      run: |
+        ls -la
+        chmod +x update_conda_package_ubuntu.sh
+      
+    - uses: s-weigand/setup-conda@v1
+    - name: Build and upload conda ubuntu
+      if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
+      working-directory: ./.github/workflows
+      run: |
+        conda info
+        conda install -y anaconda-client conda-build
+        ./update_conda_package_ubuntu.sh
+      env:
+        SUBDIR: "scripts/conda"
+        ANACONDA_TOKEN: "${{ secrets.ANACONDA_TOKEN }}"
+        PACKAGE_USERNAME: "${{ secrets.PACKAGE_USERNAME }}"
+
+
+    - name: automated update for binder environment.yml
+      if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
+      working-directory: ./binder
+      run: |
+        sed -i "/cutlang ==/c - cutlang ==${{ steps.update_meta.outputs.VERSION_CUTLANG }}" environment.yml
+
+        git config user.email "tobuba2@gmail.com"
+        git config user.name "bot"
+
+        git pull
+
+        git add ./environment.yml
+        git commit -m "automated update for binder environment.yml" 
+        git push origin $1
