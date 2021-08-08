@@ -53,7 +53,7 @@ jobs:
 
         git pull
 
-        git add --all
+        git add ./meta.yaml
         git commit -m "automated update for scripts/conda meta.yaml" 
         git push origin $1
 
