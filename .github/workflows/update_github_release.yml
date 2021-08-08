@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'package_test'
 
 jobs:
   github-release:
