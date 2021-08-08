@@ -281,6 +281,7 @@ See https://anaconda.org
  git clone https://github.com/unelg/CutLang.git
  cd CutLang
  cd scripts/conda
+ # remember to change package version in meta.yml
  conda-build -c conda-forge .
  # You will see the "anaconda upload /file/path/to/upload" command at the end of the logs after the compile process is finished, you can upload the package to the relevant conda channel by using this.
  # and then it can be used with:
