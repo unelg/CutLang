@@ -10,7 +10,7 @@ rm -rf $PREFIX/bin/cutlang/.github
 rm -rf $PREFIX/bin/cutlang/.git
 
 cd $PREFIX/bin/cutlang/CLA
-make -j
+make
 
 echo "build.sh done"
 
