@@ -1,0 +1,64 @@
+name: Update github release
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  github-release:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update meta
+      id: update_meta
+      working-directory: ./scripts/conda
+      run: |
+        export version_cutlang=`cat ../../VERSION`
+        echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
+
+        echo "::group::VERSION"
+        echo "Inside group $version_cutlang"
+        echo "::endgroup::"
+        
+        sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
+        meta=`cat ../../scripts/conda/meta.yaml`
+        echo "::group::META"
+        echo "Inside group $meta"
+        echo "::endgroup::"
+        
+        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
+        echo "::set-output name=UNELG_REPO::$unelgRepo"
+
+    - uses: mukunku/tag-exists-action@v1.0.0
+      id: checkTag
+      with: 
+        tag: v${{steps.update_meta.outputs.VERSION_CUTLANG}}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: automated update for scripts/conda meta.yaml
+      if: ${{ steps.checkTag.outputs.exists == 'false' }}
+      working-directory: ./scripts/conda
+      run: |
+        git config user.email "tobuba2@gmail.com"
+        git config user.name "bot"
+
+        git pull
+
+        git add ./meta.yaml
+        git commit -m "automated update for scripts/conda meta.yaml" 
+        git push origin $1
+
+    - name: Create a GitHub release
+      if: ${{ steps.checkTag.outputs.exists == 'false' }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name:  v${{ steps.update_meta.outputs.VERSION_CUTLANG }}
+        release_name: Release v${{ steps.update_meta.outputs.VERSION_CUTLANG }}
+        
