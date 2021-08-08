@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'package_test'
 
 jobs:
   build-conda-macos:
@@ -58,3 +59,10 @@ jobs:
         SUBDIR: "scripts/conda"
         ANACONDA_TOKEN: "${{ secrets.ANACONDA_TOKEN }}"
         PACKAGE_USERNAME: "${{ secrets.PACKAGE_USERNAME }}"
+
+    - name: SMTP
+      if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
+      uses: peter-evans/sendgrid-action@v1
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        SCRIPT_FILEPATH: ./.github/workflows/update_conda_package_macos_mail_success.js     
