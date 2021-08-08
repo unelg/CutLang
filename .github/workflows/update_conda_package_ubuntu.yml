@@ -75,7 +75,7 @@ jobs:
 
         git pull
 
-        git add --all
+        git add ./environment.yml
         git commit -m "automated update for binder environment.yml" 
         git push origin $1
 

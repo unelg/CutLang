@@ -1,1 +1,0 @@
-{"build": "0", "build_number": 0, "depends": ["jupyterlab 3.0.16", "metakernel 0.27.5", "root 6.24.2", "wget 1.20.1"], "license": "LGPL-2.1-only", "name": "cutlang", "subdir": "linux-64", "timestamp": 1628430179247, "version": "2.11.1", "size": 46114733, "md5": "3170745c4424b2ae4dab1abd64df52b7", "sha256": "105a344b642cc51b8c6bba06c7a5b1d324140aa54325ea08daf1b0fc26452f71"}
