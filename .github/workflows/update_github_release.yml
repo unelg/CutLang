@@ -13,6 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '12.x'
 
     - name: Update meta
       id: update_meta
@@ -50,7 +53,7 @@ jobs:
 
         git pull
 
-        git add ./meta.yaml
+        git add --all
         git commit -m "automated update for scripts/conda meta.yaml" 
         git push origin $1
 

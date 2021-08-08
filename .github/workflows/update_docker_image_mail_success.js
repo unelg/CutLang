@@ -1,17 +1,17 @@
 #! /usr/bin/env node
 
-const sgMail = require('@sendgrid/mail');
+var sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const fs = require('fs'),
+var fs = require('fs')
 
-const version = data = fs.readFileSync('./VERSION');
+var _version = fs.readFileSync('./VERSION');
 
-const msg = {
+var msg = {
     to: ['tobuba2@gmail.com'],
     from: 'tobuba2@gmail.com',
-    subject: 'CutLang Image Report - Docker, Success v' + version,
-    text: 'Built successfully and uploaded new image package. New image package '+version+' is available',
+    subject: 'CutLang Image Report - Docker, Success v' + _version,
+    text: 'Built successfully and uploaded new image package. New image package '+_version+' is available',
 };
 
 sgMail

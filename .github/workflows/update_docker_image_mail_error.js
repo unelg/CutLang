@@ -1,17 +1,17 @@
 #! /usr/bin/env node
 
-const sgMail = require('@sendgrid/mail');
+var sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const fs = require('fs'),
+var fs = require('fs')
 
-const version = data = fs.readFileSync('./VERSION');
+var _version = fs.readFileSync('./VERSION');
 
-const msg = {
+var msg = {
     to: ['tobuba2@gmail.com'],
     from: 'tobuba2@gmail.com',
-    subject: 'CutLang Package Report - Docker, Error v' + version,
-    text: 'When uploading new conda package, errors found. New conda package '+version+' IS NOT AVAILABLE',
+    subject: 'CutLang Package Report - Docker, Error v' + _version,
+    text: 'When uploading new conda package, errors found. New conda package '+_version+' IS NOT AVAILABLE',
 };
 
 sgMail
