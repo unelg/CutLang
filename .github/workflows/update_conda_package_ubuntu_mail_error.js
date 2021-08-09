@@ -8,8 +8,8 @@ var fs = require('fs')
 var _version = fs.readFileSync('./VERSION');
 
 var msg = {
-    to: ['tobuba2@gmail.com'],
-    from: 'tobuba2@gmail.com',
+    to: ['gokhan.unel@gmail.com','ssekmen@gmail.com','tobuba2@gmail.com'],
+    from: 'gokhan.unel@cern.ch',
     subject: 'CutLang Package Report - Conda, Ubuntu, Error v'+ _version,
     text: 'When uploading new conda package, errors found. New conda package '+_version+' IS NOT AVAILABLE',
 };

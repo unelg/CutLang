@@ -11,8 +11,8 @@ const fs = require('fs'),
 const error_message = fs.readFileSync('./.github/workflows/artifacts/temp.txt', 'utf8')
 
 const msg = {
-    to: ['Gokhan.Unel@gmail.com','ssekmen@gmail.com','arponpaul1995@gmail.com','jinens8@gmail.com','tobuba2@gmail.com'],
-    from: 'jinens8@gmail.com',
+    to: ['gokhan.unel@gmail.com','ssekmen@gmail.com','tobuba2@gmail.com'],
+    from: 'gokhan.unel@cern.ch',
     subject: 'CutLang Build Report',
     text: 'Built successfully but run errors reported. Output file as attached.\nErrors:\n'+error_message+'\nError context in attached document.',
     attachments: [
