@@ -39,6 +39,7 @@ This is the repository for CutLang V3
   - [Build and deploy environment](#contributing-build-and-deploy-environment)
     - [Conda](#contributing-build-and-deploy-environment-conda)
     - [Docker](#contributing-build-and-deploy-environment-docker)
+  - [Note](#contributing-note)
 
 
 # <a name="using-cutlang"></a> Using CutLang
@@ -301,3 +302,6 @@ See https://hub.docker.com
  # example:
  # docker push cutlang/cutlang:latest
 ```
+
+## <a name="contributing-note"></a> Note
+Please, if version is updated, wait until all tests have been checked in the respective commit and the packages have been released. (Related mail will be sent)
