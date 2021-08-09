@@ -153,6 +153,7 @@ Update the docker image using
 ### <a name="using-cutlang-with-docker-remove"></a> Remove
 Remove the docker container and image using
 ```bash
+  docker stop CutLang
   docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
   docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
