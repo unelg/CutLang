@@ -8,8 +8,8 @@ var fs = require('fs')
 var _version = fs.readFileSync('./VERSION');
 
 var msg = {
-    to: ['tobuba2@gmail.com'],
-    from: 'tobuba2@gmail.com',
+    to: ['gokhan.unel@cern.ch','ssekmen@gmail.com','arponpaul1995@gmail.com','jinens8@gmail.com','tobuba2@gmail.com'],
+    from: 'gokhan.unel@cern.ch',
     subject: 'CutLang Package Report - Conda, Ubuntu, Success v'+ _version,
     text: 'Built successfully and uploaded new conda package. New conda package '+_version+' is available',
 };
