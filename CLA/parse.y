@@ -13,7 +13,7 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else 
@@ -985,6 +985,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
    | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
    | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MIN '(' e ',' e ')' {DEBUG("\t MIN-2 function\n"); $$=new BinaryNode(mnof,$3,$5,"min"); }
+   | MAX '(' e ',' e ')' {DEBUG("\t MAX-2 function\n"); $$=new BinaryNode(mxof,$3,$5,"max"); }
    | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
    | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
