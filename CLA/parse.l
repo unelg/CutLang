@@ -67,6 +67,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NUMET" return NUMET;
 "METLV" return METLV;
 "LEP" return LEP;
+[hH][lL][tT] return HLT;
 "BJET" return BJET;
 
 [uU][nN][iI][oO][nN] return UNION;

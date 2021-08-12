@@ -13,7 +13,7 @@
 #include <vector>
 #include <iterator>
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else 
@@ -95,7 +95,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD
-%token ASCEND DESCEND ALIAS PM HLT_ISO_MU
+%token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token SIEIE  // CMSnano photon attribs
 %token <real> PNB
 %token <real> NB 
@@ -962,7 +962,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        }
                          }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
-       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
+//       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
+       | HLT ID {$$=new SFuncNode(hlt_trg,1, $2); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
         ;
 //-------------------------------------------------------------------------

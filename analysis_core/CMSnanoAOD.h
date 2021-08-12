@@ -41,11 +41,11 @@ public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
+
    // Declaration of leaf types
    UInt_t          run;
    UInt_t          luminosityBlock;
    ULong64_t       event;
-   Bool_t          HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
    Float_t         CaloMET_phi;
    Float_t         CaloMET_pt;
    Float_t         CaloMET_sumEt;
@@ -496,6 +496,7 @@ public :
    Bool_t          HLT_Ele32_WPTight_Gsf_L1DoubleEG;
    Bool_t          HLT_HT450_Beamspot;
    Bool_t          HLT_HT300_Beamspot;
+   Bool_t          HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
    Bool_t          HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
    Bool_t          HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
    Bool_t          HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
