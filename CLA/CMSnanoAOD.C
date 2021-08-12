@@ -272,7 +272,7 @@ std::cout << "Filling finished"<<std::endl;
         while ((pos = s.find(delimiter)) != std::string::npos) {
                 token = s.substr(0, pos);
                 //std::cout << token << std::endl;
-                a0.evt.hlt_map[token]=1; // filling map
+                a0.evt.hlt_map["HLT_"+token]=1; // filling map
                 s.erase(0, pos + delimiter.length());
         }
 
