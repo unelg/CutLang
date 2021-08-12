@@ -1,1 +1,1 @@
-$CUTLANG_PATH/runs/CLA.sh
+$CUTLANG_PATH/runs/CLA.sh "$@"
