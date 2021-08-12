@@ -82,6 +82,8 @@ for (int i = 2; i < argc; i++) {
              aselect.maxEvents = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-ST") { // start point
              aselect.startpt = atoi(argv[i + 1]);  i++;
+         } else if (std::string(argv[i]) == "-HLT") { // HLT list
+             aselect.hlt = std::string(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-inp") { // use LHCO format input
              inptype = argv[i + 1];  i++;
          } else {

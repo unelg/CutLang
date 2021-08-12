@@ -263,6 +263,20 @@ std::cout << "Filling finished"<<std::endl;
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
 
+        // Extract the first token
+        
+        std::string s = aselect.hlt;
+        std::string delimiter = ",";
+        size_t pos = 0;
+        std::string token;
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+                token = s.substr(0, pos);
+                //std::cout << token << std::endl;
+                a0.evt.hlt_map[token]=1; // filling map
+                s.erase(0, pos + delimiter.length());
+        }
+
+
         aCtrl.RunTasks(a0);
 
    }// endof events
