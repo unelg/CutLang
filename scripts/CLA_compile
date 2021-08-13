@@ -1,0 +1,2 @@
+cd $CUTLANG_PATH/CLA
+make -j 

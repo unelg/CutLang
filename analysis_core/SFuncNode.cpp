@@ -255,8 +255,6 @@ double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
 }
 double hlt_trg(AnalysisObjects* ao, string s, float id){
      bool retval=1;
-     s.replace(s.find("\""), 1, "");
-     s.replace(s.find("\""), 1, "");
      DEBUG("HLT_TRG "<< s <<":" << retval <<"\n");
      if (ao->evt.hlt_map.find(s)!=ao->evt.hlt_map.end()) retval=ao->evt.hlt_map[s];
      return ( (double)retval );

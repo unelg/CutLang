@@ -2732,8 +2732,12 @@ command : CMD condition { //find a way to print commands
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-        | CMD HLT description { cout<<"HLT TRG:"<<$3<<"\n";
-                       Node* a=new SFuncNode(hlt_trg,1, $3); 
+        | CMD HLT description {
+                       string s=$3;
+                       s.replace(s.find("\""), 1, "");
+                       s.replace(s.find("\""), 1, "");
+                       cout<<"HLT TRG:"<<s<<"\n";
+                       Node* a=new SFuncNode(hlt_trg,1, s); 
                        NodeCuts->insert(make_pair(++cutcount,a));
                      }
         | CMD LEPSF { Node* a=new SFuncNode(lepsf,1,"LEPSF");
