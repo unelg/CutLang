@@ -3,6 +3,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TTreeReader.h>
 #include <signal.h>
 
 #include "dbx_electron.h"
@@ -247,6 +248,33 @@ std::cout << "MET OK"<<std::endl;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 
+   //   myreader.next();  
+        TTreeReader myreader("Events",fChain->GetDirectory() );
+        vector<TTreeReaderValue<Bool_t> > myHLTs;
+        vector<string> myHLT_names;
+
+        // Extract the first token book variables
+        std::string s = aselect.hlt;
+        std::string delimiter = ",";
+        size_t pos = 0;
+        std::string token;
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+                token = s.substr(0, pos);
+                std::string vartoken="HLT_"+token;
+                TTreeReaderValue<Bool_t> myHLT(myreader,vartoken.c_str() );
+                myHLTs.push_back(myHLT);
+                myHLT_names.push_back(vartoken);
+                s.erase(0, pos + delimiter.length());
+        }
+        myreader.SetEntry(j);
+
+        // Extract the values
+        for (int hv=0; hv<myHLTs.size(); hv++){
+                Bool_t trgvalue=*(myHLTs[hv]);
+                std::cout << myHLT_names[hv]<<":" << trgvalue << std::endl;
+                anevt.hlt_map[myHLT_names[hv]]=trgvalue; // filling map
+        }
+
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
 #endif
@@ -262,20 +290,6 @@ std::cout << "Filling finished"<<std::endl;
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
-
-        // Extract the first token
-        
-        std::string s = aselect.hlt;
-        std::string delimiter = ",";
-        size_t pos = 0;
-        std::string token;
-        while ((pos = s.find(delimiter)) != std::string::npos) {
-                token = s.substr(0, pos);
-                //std::cout << token << std::endl;
-                a0.evt.hlt_map["HLT_"+token]=1; // filling map
-                s.erase(0, pos + delimiter.length());
-        }
-
 
         aCtrl.RunTasks(a0);
 

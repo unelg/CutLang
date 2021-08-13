@@ -13,7 +13,7 @@
 #include <vector>
 #include <iterator>
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else 
@@ -963,7 +963,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                          }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
 //       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
-       | HLT ID {$$=new SFuncNode(hlt_trg,1, $2); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
         ;
 //-------------------------------------------------------------------------
@@ -2733,6 +2732,10 @@ command : CMD condition { //find a way to print commands
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
+        | CMD HLT description { cout<<"HLT TRG:"<<$3<<"\n";
+                       Node* a=new SFuncNode(hlt_trg,1, $3); 
+                       NodeCuts->insert(make_pair(++cutcount,a));
+                     }
         | CMD LEPSF { Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
                     }
