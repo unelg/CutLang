@@ -134,7 +134,7 @@ for i, arg in enumerate(sys.argv[3::2]):
 # for select HLT command
 hltInFile=os.popen(''' grep -E "select HLT" '''+arguments["inifile"]+''' | sed 's/select HLT//g' ''').read()
 hltList=""
-for i in hltInFile.replace("||", " ").split():
+for i in hltInFile.replace("||", " ").replace("'", " ").replace('"'," ").split():
     hltList+=i+","
 HLTLIST=hltList
 

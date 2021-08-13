@@ -78,7 +78,7 @@ case $key in
     # for select HLT command
     hltInFile=$(grep -E "select HLT" ${INIFILE} | sed 's/select HLT//g')
     hltList=""
-    for i in $(echo $hltInFile | tr "||" " ")
+    for i in $(echo $hltInFile | tr "||" " " | tr "\"" " " | tr "'" " ")
     do
       hltList+=$i,
     done
