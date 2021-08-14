@@ -58,13 +58,14 @@ Available on **Linux, macOS, and windows**
 Setup the package using
 ```bash
   git clone https://github.com/unelg/CutLang.git
-  cd CutLang/CLA
-  make
-  cd ..
+  cd CutLang
   source setup.sh
   # if you want, you can run
   # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
   # to keep it active all the time
+  CLA_compile # this will run the following in order
+  # cd $CUTLANG_PATH/CLA
+  # make -j
 ```
 Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
@@ -76,7 +77,7 @@ Update the package using
   CLA_recompile # this will run the following in order
   # cd $CUTLANG_PATH/CLA
   # make clean
-  # make
+  # make -j
 ```
 
 ### <a name="using-cutlang-from-source-remove"></a> Remove
@@ -249,7 +250,7 @@ Create and activate the environment using
  CLA_recompile # this will run the following in order
  # cd $CUTLANG_PATH/CLA
  # make clean
- # make
+ # make -j
 ```
 
 ### <a name="contributing-setting-up-the-development-environment-with-docker"></a> With docker
@@ -268,7 +269,7 @@ Exec the container using (in the another terminal window)
  CLA_recompile # this will run the following in order
  # cd $CUTLANG_PATH/CLA
  # make clean
- # make
+ # make -j
 ```
 
 ## <a name="contributing-build-and-deploy-environment"></a> Build and deploy environment
