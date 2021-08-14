@@ -260,10 +260,10 @@ std::cout << "MET OK"<<std::endl;
         std::string token;
         while ((pos = s.find(delimiter)) != std::string::npos) {
                 token = s.substr(0, pos);
-                std::string vartoken="HLT_"+token;
-                TTreeReaderValue<Bool_t> myHLT(myreader,vartoken.c_str() );
+ //               DEBUG(token <<"\n");
+                TTreeReaderValue<Bool_t> myHLT(myreader,token.c_str() );
                 myHLTs.push_back(myHLT);
-                myHLT_names.push_back(vartoken);
+                myHLT_names.push_back(token);
                 s.erase(0, pos + delimiter.length());
         }
         myreader.SetEntry(j);
@@ -271,7 +271,7 @@ std::cout << "MET OK"<<std::endl;
         // Extract the values
         for (int hv=0; hv<myHLTs.size(); hv++){
                 Bool_t trgvalue=*(myHLTs[hv]);
-                std::cout << myHLT_names[hv]<<":" << trgvalue << std::endl;
+//                DEBUG(myHLT_names[hv]<<":" << trgvalue << std::endl);
                 anevt.hlt_map[myHLT_names[hv]]=trgvalue; // filling map
         }
 

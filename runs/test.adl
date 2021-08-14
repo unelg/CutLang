@@ -7,7 +7,7 @@ def   chi2Higgs : ( {higgs}m - 125) ^ 2 / 18 ^ 2
 
 algo testo
     cmd ALL
-    select HLT "Mu50" 
+    select HLT "HLT_Mu50" 
     select HLT "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1"
     cmd Size(MUO) >= 1
 #    cmd Size(higgsU) == 2
