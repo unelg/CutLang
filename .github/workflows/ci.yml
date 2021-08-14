@@ -30,7 +30,7 @@ jobs:
                    
     - name: Build CutLang
       working-directory: CLA
-      run: make -j
+      run: make
     
     - name: Run Tests
       working-directory: .github/workflows
