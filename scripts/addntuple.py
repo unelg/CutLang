@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import fileinput
 from optparse import OptionParser
