@@ -10,7 +10,6 @@ jobs:
   build-conda-ubuntu:
     
     runs-on: ubuntu-latest
-    container: rootproject/root:6.24.00-conda
 
     steps:
     - uses: actions/checkout@v2
@@ -18,7 +17,7 @@ jobs:
       with:
         node-version: '12.x'
     
-    #- uses: s-weigand/setup-conda@v1
+    - uses: s-weigand/setup-conda@v1
     - name: Update meta
       id: update_meta
       working-directory: ./scripts/conda
@@ -52,7 +51,7 @@ jobs:
         chmod +x update_conda_package_ubuntu_mail_success.js
         chmod +x update_conda_package_ubuntu_mail_error.js
       
-    #- uses: s-weigand/setup-conda@v1
+    - uses: s-weigand/setup-conda@v1
     - name: Build and upload conda ubuntu
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
       working-directory: ./.github/workflows
