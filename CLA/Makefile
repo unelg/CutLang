@@ -78,7 +78,7 @@ endif
 .PHONY: clean cleanall auxiliaries softlinks
 
 CLA.exe : checks auxiliaries $(OBJS_1) $(OBJS_2) softlinks
-	sed "s/XXXXYYYYZZZZ/$(TODAYDATE)/g"  CLA.Q > CLA.C ; $(CXX) $(CXXFLAGS) -Wl,-V $(INCLUDES) -c CLA.C
+	sed "s/XXXXYYYYZZZZ/$(TODAYDATE)/g"  CLA.Q > CLA.C ; $(CXX) $(CXXFLAGS) $(INCLUDES) -c CLA.C
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) CLA.o $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS)  $(LIBS)
 
 checks:

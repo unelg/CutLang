@@ -1,5 +1,5 @@
 set -ex
-set -o pipefail
+#set -o pipefail
 
 conda info
 conda env list
