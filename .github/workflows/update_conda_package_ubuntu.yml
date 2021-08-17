@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '12.x'
     
-    - uses: s-weigand/setup-conda@v1
+    #- uses: s-weigand/setup-conda@v1
     - name: Update meta
       id: update_meta
       working-directory: ./scripts/conda
