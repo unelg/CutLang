@@ -203,7 +203,7 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
 }
 
 void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
-        DEBUG("function particleAt giver, size: "<< inputParticles.size()<<" idx:"<<index<<"\n");
+        DEBUG("FunctionNode particleAt giver, size: "<< inputParticles.size()<<" idx:"<<index<<"\n");
         particles->push_back(inputParticles[index]);
 }
 

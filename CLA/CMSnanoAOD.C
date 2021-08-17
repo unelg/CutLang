@@ -3,6 +3,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TTreeReader.h>
 #include <signal.h>
 
 #include "dbx_electron.h"
@@ -246,6 +247,33 @@ std::cout << "MET OK"<<std::endl;
         anevt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20=HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
+
+   //   myreader.next();  
+        TTreeReader myreader("Events",fChain->GetDirectory() );
+        vector<TTreeReaderValue<Bool_t> > myHLTs;
+        vector<string> myHLT_names;
+
+        // Extract the first token book variables
+        std::string s = aselect.hlt;
+        std::string delimiter = ",";
+        size_t pos = 0;
+        std::string token;
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+                token = s.substr(0, pos);
+ //               DEBUG(token <<"\n");
+                TTreeReaderValue<Bool_t> myHLT(myreader,token.c_str() );
+                myHLTs.push_back(myHLT);
+                myHLT_names.push_back(token);
+                s.erase(0, pos + delimiter.length());
+        }
+        myreader.SetEntry(j);
+
+        // Extract the values
+        for (int hv=0; hv<myHLTs.size(); hv++){
+                Bool_t trgvalue=*(myHLTs[hv]);
+//                DEBUG(myHLT_names[hv]<<":" << trgvalue << std::endl);
+                anevt.hlt_map[myHLT_names[hv]]=trgvalue; // filling map
+        }
 
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;

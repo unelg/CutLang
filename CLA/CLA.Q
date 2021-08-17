@@ -59,7 +59,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
- cout << "CLA v02.9.90\t";
+cout << "CLA v2.11.16\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
@@ -82,6 +82,8 @@ for (int i = 2; i < argc; i++) {
              aselect.maxEvents = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-ST") { // start point
              aselect.startpt = atoi(argv[i + 1]);  i++;
+         } else if (std::string(argv[i]) == "-HLT") { // HLT list
+             aselect.hlt = std::string(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-inp") { // use LHCO format input
              inptype = argv[i + 1];  i++;
          } else {

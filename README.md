@@ -1,5 +1,5 @@
 # CutLang
-This is the repository for CutLang V3
+This is the repository for CutLang V3.
 
 *A Particle Physics Analysis Description Language and Runtime Interpreter*
 
@@ -58,13 +58,14 @@ Available on **Linux, macOS, and windows**
 Setup the package using
 ```bash
   git clone https://github.com/unelg/CutLang.git
-  cd CutLang/CLA
-  make
-  cd ..
+  cd CutLang
   source setup.sh
   # if you want, you can run
   # echo "source /path/to/CutLang/setup.sh" >> ~/.bashrc
   # to keep it active all the time
+  CLA_compile # this will run the following in order
+  # cd $CUTLANG_PATH/CLA
+  # make -j
 ```
 Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
@@ -76,7 +77,7 @@ Update the package using
   CLA_recompile # this will run the following in order
   # cd $CUTLANG_PATH/CLA
   # make clean
-  # make
+  # make -j
 ```
 
 ### <a name="using-cutlang-from-source-remove"></a> Remove
@@ -153,6 +154,7 @@ Update the docker image using
 ### <a name="using-cutlang-with-docker-remove"></a> Remove
 Remove the docker container and image using
 ```bash
+  docker stop CutLang
   docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
   docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
@@ -248,7 +250,7 @@ Create and activate the environment using
  CLA_recompile # this will run the following in order
  # cd $CUTLANG_PATH/CLA
  # make clean
- # make
+ # make -j
 ```
 
 ### <a name="contributing-setting-up-the-development-environment-with-docker"></a> With docker
@@ -267,7 +269,7 @@ Exec the container using (in the another terminal window)
  CLA_recompile # this will run the following in order
  # cd $CUTLANG_PATH/CLA
  # make clean
- # make
+ # make -j
 ```
 
 ## <a name="contributing-build-and-deploy-environment"></a> Build and deploy environment

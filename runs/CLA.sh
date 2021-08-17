@@ -21,6 +21,7 @@ INIFILE=$RUNS_PATH/CLA.ini
 VERBOSE=5000
 STRT=0
 DEPS=" "
+HLTLIST=" "
 datafile=$1
 datatype=$2
 
@@ -73,6 +74,15 @@ case $key in
      done
      sed "/${histListName}/d" ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
     done
+
+    # for select HLT command
+    hltInFile=$(grep -E "select HLT" ${INIFILE} | sed 's/select HLT//g')
+    hltList=""
+    for i in $(echo $hltInFile | tr "||" " " | tr "\"" " " | tr "'" " ")
+    do
+      hltList+=$i,
+    done
+    HLTLIST=$hltList
     
     if [ $Nalgo -gt 1 ]; then
      echo Analysis with Multiple Regions
@@ -140,8 +150,8 @@ if [ `echo $LD_LIBRARY_PATH | grep $WORK_PATH/CLA > /dev/null ; echo $?` -ne 0 ]
 fi
 
 rm $PWD/histoOut-BP_*.root 2>/dev/null 
-echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
-$WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${DEPS}
+echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -HLT ${HLTLIST} ${DEPS}
+$WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -HLT ${HLTLIST} ${DEPS}
 if [ $? -eq 0 ]; then
   echo "CutLang finished successfully, now adding histograms"
   rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`

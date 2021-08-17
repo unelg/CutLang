@@ -5,6 +5,7 @@ import sys
 import glob
 import platform
 import concurrent.futures
+import os
 
 
 # noinspection PyShadowingBuiltins,PyShadowingNames
@@ -16,6 +17,10 @@ def help():
     print('ROOT file type can be:')
     os.system('grep "inptype ==" ../CLA/CLA.C | cut -f3 -d\'=\' | cut -f1 -d\')\'')
 
+
+SCRIPT=os.path.dirname(os.path.abspath(__file__))+"/CLA.py"         # /home/.../CutLang/runs/CLA.sh
+RUNS_PATH=os.path.dirname(SCRIPT)                                   # /home/.../CutLang/runs
+WORK_PATH=os.path.dirname(RUNS_PATH)                                # /home/.../CutLang
 
 # noinspection PyShadowingNames,SpellCheckingInspection
 def removePattern(pattern):
@@ -58,12 +63,14 @@ def singleAnalysis(arguments, histoId=None):
         os.system("cp " + arguments['inifile'] + " BP_1-card.ini")
 
     removePattern('histoOut-BP_*.root')
-    print(base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT')
-    res = os.system('export PATH=$PATH:$ROOTSYS/bin ;\
-               export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system:../CLA/ ;\
-               ' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
+    #print(base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT')
+    print(base_dir+ "scripts/CLApy_helper.sh " '"' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
         algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V ' + str(arguments['verbose']) + ' -ST ' + str(
-        arguments['start']))
+        arguments['start'])+ ' -HLT ' + str(HLTLIST) + '"')
+
+    res = os.system(base_dir+ "scripts/CLApy_helper.sh " '"' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
+        algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V ' + str(arguments['verbose']) + ' -ST ' + str(
+        arguments['start'])+ ' -HLT ' + str(HLTLIST) + '"')
 
     if res == 0:
         print('CutLang finished successfully, now adding histograms')
@@ -78,7 +85,7 @@ def singleAnalysis(arguments, histoId=None):
         for i in glob.glob('histoOut-BP_*.root'):
             hadd_query += " " + i
         res = os.system(hadd_query)
-        if res == 120:
+        if res == 0:
             print("hadd finished successfully, now removing auxiliary files")
             removePattern('histoOut-BP_*.root')
             removePattern(['_head.ini', '_algos.ini', '_inifile'])
@@ -117,8 +124,19 @@ for i, arg in enumerate(sys.argv[3::2]):
         print("command line arguments:")
         help()
         sys.exit(1)
-    elif arg in placeholders[i]:
-        arguments[placeholders[i][1][2:]] = sys.argv[i * 2 + 4]
+    else:
+        for a in placeholders:
+            if arg in a:
+                arguments[a[1][2:]] = sys.argv[i * 2 + 4]
+
+
+
+# for select HLT command
+hltInFile=os.popen(''' grep -E "select HLT" '''+arguments["inifile"]+''' | sed 's/select HLT//g' ''').read()
+hltList=""
+for i in hltInFile.replace("||", " ").replace("'", " ").replace('"'," ").split():
+    hltList+=i+","
+HLTLIST=hltList
 
 arguments['parallel'] = int(arguments['parallel']) // 1
 if not os.path.exists(arguments['datafile']):
@@ -126,7 +144,8 @@ if not os.path.exists(arguments['datafile']):
 
 algorithm_count = getStringCount(arguments['inifile'], ['region', 'algo'])
 n_cpu = os.cpu_count()
-base_dir = os.path.dirname(os.path.abspath(__file__))[:-4]
+#base_dir = os.path.dirname(os.path.abspath(__file__))[:-4]
+base_dir = WORK_PATH + "/"
 
 if arguments['parallel'] > n_cpu or arguments['parallel'] == 0:
     arguments['parallel'] = n_cpu - 1

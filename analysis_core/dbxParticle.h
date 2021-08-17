@@ -3,6 +3,7 @@
 
 #include "TLorentzVector.h"
 #include <iostream>
+#include <map>
 #include <vector>
 #define CHMAX 256
 
@@ -21,6 +22,7 @@ struct analy_struct {   // Declare analysis types
 	bool dosystematics;
 	bool doQCD;
 	bool doHF;
+	std::string hlt;
         std::string dependencies;
 };
 
@@ -111,6 +113,7 @@ typedef struct evt_data
                 weight_bTagSF_77_eigenvars_B_down=right.weight_bTagSF_77_eigenvars_B_down;
                 weight_bTagSF_77_eigenvars_C_down=right.weight_bTagSF_77_eigenvars_C_down;
                 weight_bTagSF_77_eigenvars_Light_down=right.weight_bTagSF_77_eigenvars_Light_down;
+                hlt_map=right.hlt_map;
 #endif
 	}
 	unsigned int run_no;
@@ -129,6 +132,7 @@ typedef struct evt_data
 	TVector2 met_loose;
 	unsigned int maxEvents;
 	bool HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
+        std::map< std::string, Bool_t > hlt_map;
 	unsigned int core_Flags;
 	float z_vtx_weight;
         double user_evt_weight;

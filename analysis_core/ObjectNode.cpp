@@ -118,7 +118,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     }
     DEBUG("# iparticles:"<< particles.size()<< " symbol:"<<symbol<<"\n");
     if (particles.size() >0) {
-             DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
+             DEBUG("0type:"<< particles[0]->type<<"\t 0index:"<<particles[0]->index <<"  0col.name:"<<particles[0]->collection<<"\n" );
     }
     if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
     int ccount=0;
@@ -130,10 +130,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       if (basename=="Combo" && type!=combo_t) basename=symbol;
 //-----------------------------NGU TODO FIXME
       if (type==muon_t){  
-         if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; } // if it is here
+         if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; 
+      } // if it is here we already have basename electrons
       if (type == combo_t){
-         if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; } // if it is here
-    DEBUG("new  type:"<<type<< " new basename:"<<basename<<"\n");
+         if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; 
+      } // we already have basename muons
+    DEBUG("new basename:"<<basename<<"\n");
 
 // is it in the map list?
        switch (type) {
@@ -179,12 +181,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                	      } else keepworking=false;
                       break;
        case combo_t:       if (ao->combos.find(basename)==ao->combos.end()  ){
-                                DEBUG(" *****base COMBOs WILL BE evaluated.\n");
+                                DEBUG(" *****basename COMBOs not fount, it WILL BE evaluated.\n");
                			anode->evaluate(ao);
-                                DEBUG(" *****COMBOs evaluated.\n");
+                                DEBUG(" *****evaluation done.\n");
                                 type=combo_t;
                	      } else { 
-                               DEBUG("no such COMBO found. newbasename:"<<basename<<"\n"); 
+                               DEBUG("COMBO found with basename:"<<basename<<"\n"); 
                                keepworking=false;
                              } 
                       break;
@@ -197,13 +199,13 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        }
        ccount++;
       } // end of while
-      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\t");
+      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\n");
  //   if(criteria[0]->getStr().CompareTo(" qo") == 0){
  //     DEBUG("Enforcing type 20\n");
  //     type=combo_t;
  //   }
     
-    DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<"\n");
+    DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<" name:"<<name<<"\n");
     if (ccount>=10) exit (1);
     map <string, std::vector<dbxJet>  >::iterator itj;
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
@@ -396,6 +398,7 @@ object goodjets take Jet
                             std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n"; 
                             _Exit(-1);
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
                     particles->at(1)->collection=base_collection2;      
@@ -477,6 +480,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         std::cerr << "WRONG PARTICLE TYPE! Try ELE:"<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     particles->at(1)->collection=base_collection2;
@@ -489,11 +493,11 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
                         break;
                     }
-                }
-            }
-        }
+                } //end of 2nd particles loop 
+            } // end of 1st particles loop
+        } // end of 2 or more particles
     }
-}
+} // end of create new ele
 
 void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     DEBUG("Creating new MUOtype named:"<<name<<" #MUOtypes:"<<ao->muos.size()<< " Duplicating:"<<basename<<"\t");
@@ -574,6 +578,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         std::cerr << "WRONG PARTICLE TYPE! Try MUO:"<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
 
@@ -653,6 +658,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
@@ -734,6 +740,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                         std::cerr << "WRONG PARTICLE TYPE! Try FJET:"<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
@@ -825,6 +832,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         std::cerr << "WRONG PARTICLE TYPE! Try Tau:"<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
@@ -863,13 +871,17 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
    DEBUG("initially we have "<<particles->size()<<" particles\n");
    
-
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<"\t");
      particles->clear();
-     (*cutIterator)->getParticles(particles);
+     if ((*cutIterator)->getStr().CompareTo(" qo") == 0){
+       (*cutIterator)->getParticles(particles);
+     } else {
+       (*cutIterator)->getParticlesAt(particles,0);
+     }
      int OPS=particles->size();
-     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<< OPS <<"\n");
      for (int jj=0; jj<OPS; jj++){
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<< OPS <<"\n");
         DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
      }
      if (applyCuts){
@@ -925,7 +937,6 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213 means scan all particles
                 
-                
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 switch(particles->at(1)->type){
@@ -946,10 +957,10 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                         std::cerr << "WRONG PARTICLE TYPE! "<<particles->at(1)->type << std::endl;
                         break;
                 }
+                t2=particles->at(1)->type;
                 DEBUG("ipart1 t:"<<t1<< " i:"<<ipart<< " ipart2 t:"<<particles->at(1)->type<<"\n");
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
-                    t2=particles->at(1)->type;
 
                     for (int jp=2; jp<OPS; jp++){
                      DEBUG(jp<<" t:"<<particles->at(jp)->type<<" i:");
@@ -957,7 +968,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                      if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
                      DEBUG(particles->at(jp)->index<<"\n");
                     }
-                    DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
+                    DEBUG("cut: "<<(*cutIterator)->getStr()<<"\n");
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     DEBUG("RetVal:"<<ppassed<<"\n");
                     if (!ppassed) {
@@ -1334,10 +1345,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
    auto cutIterator=criteria->begin();
    particles->clear();
-   (*cutIterator)->getParticles(particles);
-    requested_size=particles->size();
-    DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
-    DEBUG("iPsize:"<<particles->size() <<"\n");
+   (*cutIterator)->getParticlesAt(particles,0);
+   requested_size=particles->size();
+   DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
+   DEBUG("iPsize:"<<particles->size() <<"\n");
 
 // at this point I have the particles I will use to construct the combined object. like j1 and j2
 // now we find how many of those particles we have in each event
@@ -1493,7 +1504,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     cutIterator++; // now moving on to the real, first cut defining the new set.
     while ( cutIterator!=criteria->end() ){ // do the real cuts now.
       particles->clear();
-      (*cutIterator)->getParticles(particles); // reset particles for each cut
+      (*cutIterator)->getParticlesAt(particles,0);
       bool simpleloop=true;
       DEBUG("***** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
       if ( particles->size()==0) {

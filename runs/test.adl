@@ -1,0 +1,15 @@
+def higgsR = ELE[1] ELE[2]
+def higgsB = ELE[0]
+object higgsU : Union( higgsR , higgsB )
+define higgs = higgsU[-1]
+
+def   chi2Higgs : ( {higgs}m - 125) ^ 2 / 18 ^ 2
+
+algo testo
+    cmd ALL
+    select HLT "HLT_Mu50" 
+    select HLT "HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1"
+    cmd Size(MUO) >= 1
+#    cmd Size(higgsU) == 2
+#    cmd chi2Higgs ~= 0   #select the best higgs
+#    histo hHigPtb, "Higgs Pt", 100, 0, 150, Pt(higgs)

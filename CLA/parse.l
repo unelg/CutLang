@@ -67,6 +67,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NUMET" return NUMET;
 "METLV" return METLV;
 "LEP" return LEP;
+[hH][lL][tT] return HLT;
 "BJET" return BJET;
 
 [uU][nN][iI][oO][nN] return UNION;
@@ -174,6 +175,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
-[a-zA-Z]+{integer}?[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
+[a-zA-Z]+{integer}?+[a-zA-Z]+{integer}* yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
 %%

@@ -95,7 +95,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD
-%token ASCEND DESCEND ALIAS PM HLT_ISO_MU
+%token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token SIEIE  // CMSnano photon attribs
 %token <real> PNB
 %token <real> NB 
@@ -962,7 +962,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        }
                          }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
-       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
+//       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
         ;
 //-------------------------------------------------------------------------
@@ -985,6 +985,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
    | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
    | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MIN '(' e ',' e ')' {DEBUG("\t MIN-2 function\n"); $$=new BinaryNode(mnof,$3,$5,"min"); }
+   | MAX '(' e ',' e ')' {DEBUG("\t MAX-2 function\n"); $$=new BinaryNode(mxof,$3,$5,"max"); }
    | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
    | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
@@ -2272,7 +2274,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 YYERROR;
                                      } 
                                      if(it != ObjectCuts->end() ){
-                                      DEBUG("Union with object type\n");
+                                      DEBUG("Union with object type part1\n");
                                       ObjectNode* child1=(ObjectNode*)it->second; // e.g. goodEle definition
                                       a->type =child1->type; a->collection = $6; // e.g. goodEle type & collection name
                                       newList.push_back(a);
@@ -2295,6 +2297,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                YYERROR;
                                       }
                                       if(iu != ObjectCuts->end() ){
+                                        DEBUG("Union with object type part2\n");
                                         ObjectNode* child2=(ObjectNode*)iu->second; // e.g. goodMuo type & collection name
                                         b->type =child2->type; b->collection = $8; // e.g. goodMuo type & collection name
                                         newList.push_back(b);
@@ -2317,21 +2320,21 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      map<string,vector<Node*> >::iterator ikc;
                                      map<string,vector<Node*> >::iterator iuc;
 
-                                     if(iu != ObjectCuts->end() ){//if I have objects, 
-                                       cout << $6 << " and "<< $8 << " seen first time, Adding size>0 cut in Union.\n";
+                                     if(iu != ObjectCuts->end() ){//if I dont have objects, 
+                                       DEBUG($6 << " and "<< $8 << " seen first time, Adding their defining cuts in Union.\n");
                                        ikc = criteriaBank.find($6);
                                        iuc = criteriaBank.find($8);
-                                       cout << "done.\n";
                                        Node* p0   =new ObjectNode("Combo",NULL ,createNewEle  ,ikc->second ,  "LCombo" );
                                        Node* p1   =new ObjectNode($6     ,p0   ,createNewEle  ,ikc->second ,  "ELE" );
                                        Node* p2   =new ObjectNode($8     ,p1   ,createNewMuo  ,iuc->second ,  "MUO" );
                                        Node* obj  =new ObjectNode($2     ,p2   ,createNewCombo,newNList,  $2 );
                                        ObjectCuts->insert(make_pair($2,obj));
-                                     } else { // if I have particles
+                                     } else { // if I already have these objects 
+                                       DEBUG($6 << " and "<< $8 << " NOT seen first time, Adding in Union.\n");
+                                       DEBUG("newNList size:"<<newNList.size()<<"\n");
                                        Node* p0  =new ObjectNode("Combo",NULL ,createNewCombo,newNList,  "LCombo" );
 //                                     Node* obj =new ObjectNode($2     ,p0   ,createNewCombo,newNList,  $2 );
                                        Node* obj =new ObjectNode($2     ,p0   ,NULL          ,newNList,  $2 );
-
                                        ObjectCuts->insert(make_pair($2,obj));
                                      }
                                   }
@@ -2730,6 +2733,14 @@ command : CMD condition { //find a way to print commands
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
+        | CMD HLT description {
+                       string s=$3;
+                       s.replace(s.find("\""), 1, "");
+                       s.replace(s.find("\""), 1, "");
+                       cout<<"HLT TRG:"<<s<<"\n";
+                       Node* a=new SFuncNode(hlt_trg,1, s); 
+                       NodeCuts->insert(make_pair(++cutcount,a));
+                     }
         | CMD LEPSF { Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
                     }

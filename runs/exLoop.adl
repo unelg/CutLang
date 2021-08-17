@@ -1,8 +1,10 @@
 # ADL example for loops and reducers
 
 object goodjet : JET
-     select      pT(JET)  > 20
-     select abs(eta(JET)) < 2.5
+   select      pT(JET)  > 20
+   select abs(eta(JET)) < 2.5
+#  select  dR(JET, ELE ) > 0.1
+   select  dR(JET, ELE ) > min( 0.9 , 0.1+9.6/Pt(ELE) ) 
 #    select Sum( pT(JET)) >= 20 #### This doesnt make sense. 
 # in a new object, The loop is over individual jets, not over all event variables
 
@@ -19,6 +21,8 @@ region   signal
  region   deneme
    select ALL
    select Size(ELE) > 0
+   select Size(JET) > 0
+   select dR(JET[0], ELE[0]) > min(0.9 , 0.1+9.6/Pt(ELE[0]) ) 
    select Size(goodjet) > 2
    select min ( dR(goodjet[0: ], ELE[0] )) > 0.9
    select min ( dR(goodjet[0:2], ELE[0] )) > 1.3
