@@ -23,7 +23,7 @@ jobs:
       id: update_meta
       working-directory: ./scripts/conda
       run: |
-        export version_cutlang=`cat ../../VERSION`
+        export version_cutlang="cat ../../VERSION"
         echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
 
         echo "::group::VERSION"
