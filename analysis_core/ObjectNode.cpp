@@ -118,7 +118,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     }
     DEBUG("# iparticles:"<< particles.size()<< " symbol:"<<symbol<<"\n");
     if (particles.size() >0) {
-             DEBUG("type:"<< particles[0]->type<<"\t index:"<<particles[0]->index <<"name:"<<particles[0]->collection<<"\n" );
+             DEBUG("0type:"<< particles[0]->type<<"\t 0index:"<<particles[0]->index <<"  0col.name:"<<particles[0]->collection<<"\n" );
     }
     if (type == 0) {cerr <<"type 0 unknown\n"; exit(1);}
     int ccount=0;
@@ -130,10 +130,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       if (basename=="Combo" && type!=combo_t) basename=symbol;
 //-----------------------------NGU TODO FIXME
       if (type==muon_t){  
-         if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; } // if it is here
+         if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; 
+      } // if it is here we already have basename electrons
       if (type == combo_t){
-         if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; } // if it is here
-    DEBUG("new  type:"<<type<< " new basename:"<<basename<<"\n");
+         if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; 
+      } // we already have basename muons
+    DEBUG("new basename:"<<basename<<"\n");
 
 // is it in the map list?
        switch (type) {
@@ -179,12 +181,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                	      } else keepworking=false;
                       break;
        case combo_t:       if (ao->combos.find(basename)==ao->combos.end()  ){
-                                DEBUG(" *****base COMBOs WILL BE evaluated.\n");
+                                DEBUG(" *****basename COMBOs not fount, it WILL BE evaluated.\n");
                			anode->evaluate(ao);
-                                DEBUG(" *****COMBOs evaluated.\n");
+                                DEBUG(" *****evaluation done.\n");
                                 type=combo_t;
                	      } else { 
-                               DEBUG("no such COMBO found. newbasename:"<<basename<<"\n"); 
+                               DEBUG("COMBO found with basename:"<<basename<<"\n"); 
                                keepworking=false;
                              } 
                       break;
@@ -197,13 +199,13 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        }
        ccount++;
       } // end of while
-      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\t");
+      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\n");
  //   if(criteria[0]->getStr().CompareTo(" qo") == 0){
  //     DEBUG("Enforcing type 20\n");
  //     type=combo_t;
  //   }
     
-    DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<"\n");
+    DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<" name:"<<name<<"\n");
     if (ccount>=10) exit (1);
     map <string, std::vector<dbxJet>  >::iterator itj;
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
@@ -870,11 +872,16 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    DEBUG("initially we have "<<particles->size()<<" particles\n");
    
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<"\t");
      particles->clear();
-     (*cutIterator)->getParticlesAt(particles,0);
+     if ((*cutIterator)->getStr().CompareTo(" qo") == 0){
+       (*cutIterator)->getParticles(particles);
+     } else {
+       (*cutIterator)->getParticlesAt(particles,0);
+     }
      int OPS=particles->size();
-     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<< OPS <<"\n");
      for (int jj=0; jj<OPS; jj++){
+     DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<" its Particle size:"<< OPS <<"\n");
         DEBUG("*** T:"<<particles->at(jj)->type<< " i:"<<particles->at(jj)->index<<" C:"<< particles->at(jj)->collection<<"\n");
      }
      if (applyCuts){
