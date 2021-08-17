@@ -25,7 +25,7 @@ LEXEV      = $(shell which lex)
 CXX           = $(shell root-config --cxx) -g -O2  -D__GRID__  -D__STANDALONE__  
 #-D_CLV_
 #-D__DEBUG__
-CXXFLAGS      =$(INCLUDES) -Wall -fPIC -Wl -V
+CXXFLAGS      =$(INCLUDES) -Wall -fPIC
 LD            = $(shell root-config --ld) -stdlib=libstdc++
 #LDFLAGS       = -g
 SOFLAGS       = -shared
