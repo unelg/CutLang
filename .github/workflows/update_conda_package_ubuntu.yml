@@ -24,7 +24,7 @@ jobs:
       working-directory: ./scripts/conda
       run: |
         version_cutlang=$(cat ../../VERSION)
-        export version_cutlang
+        export version_cutlang=$version_cutlang
         echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
 
         echo "::group::VERSION"
