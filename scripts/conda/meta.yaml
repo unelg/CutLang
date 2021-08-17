@@ -21,7 +21,6 @@ requirements:
     - bison ==3.4
     - make ==4.2.1
     - wget ==1.20.1
-    - {{ compiler('cxx') }}
   run:
     - root ==6.24.0
     - jupyterlab ==3.0.16
