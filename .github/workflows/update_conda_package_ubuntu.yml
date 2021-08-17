@@ -10,7 +10,7 @@ jobs:
   build-conda-ubuntu:
     
     runs-on: ubuntu-latest
-    container: rootproject/root:6.24.00-conda
+    container: rootproject/root:6.24.00-ubuntu20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -18,26 +18,30 @@ jobs:
       with:
         node-version: '12.x'
     
-    #- uses: s-weigand/setup-conda@v1
+    - uses: s-weigand/setup-conda@v1
     - name: Update meta
       id: update_meta
       working-directory: ./scripts/conda
       run: |
-        chmod +x update_conda_package_ubuntu_update_meta.sh
-        source update_conda_package_ubuntu_update_meta.sh
-        
+        export version_cutlang=$(cat ../../VERSION)
         echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
 
         echo "::group::VERSION"
         echo "Inside group $version_cutlang"
         echo "::endgroup::"
         
+        sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
+        sed -i "/cout << \"CLA v/c cout << \"CLA v$version_cutlang\\\t\";" ../../CLA/CLA.Q
+        meta=`cat ../../scripts/conda/meta.yaml`
         echo "::group::META"
         echo "Inside group $meta"
         echo "::endgroup::"
+        sed -i "/cutlang ==/c  - cutlang ==$version_cutlang" ../../binder/environment.yml
         
+        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
         echo "::set-output name=CHECK_VERSION_CUTLANG::$check_version_cutlang"
         
+        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
         echo "::set-output name=UNELG_REPO::$unelgRepo"
 
     - name: chmod
@@ -48,7 +52,7 @@ jobs:
         chmod +x update_conda_package_ubuntu_mail_success.js
         chmod +x update_conda_package_ubuntu_mail_error.js
       
-    #- uses: s-weigand/setup-conda@v1
+    - uses: s-weigand/setup-conda@v1
     - name: Build and upload conda ubuntu
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
       working-directory: ./.github/workflows
