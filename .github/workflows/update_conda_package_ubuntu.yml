@@ -23,27 +23,23 @@ jobs:
       id: update_meta
       working-directory: ./scripts/conda
       run: |
-        version_cutlang=$(cat ../../VERSION)
-        export version_cutlang=$version_cutlang
-        echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
+        echo "::set-output name=VERSION_CUTLANG::$(cat ../../VERSION)"
 
         echo "::group::VERSION"
-        echo "Inside group $version_cutlang"
+        echo "Inside group $(cat ../../VERSION)"
         echo "::endgroup::"
         
-        sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
-        sed -i "/cout << \"CLA v/c cout << \"CLA v$version_cutlang\\\t\";" ../../CLA/CLA.Q
+        sed -i "/version = /c{% set version = '$(cat ../../VERSION)' %}" meta.yaml
+        sed -i "/cout << \"CLA v/c cout << \"CLA v$(cat ../../VERSION)\\\t\";" ../../CLA/CLA.Q
         meta=`cat ../../scripts/conda/meta.yaml`
         echo "::group::META"
         echo "Inside group $meta"
         echo "::endgroup::"
-        sed -i "/cutlang ==/c  - cutlang ==$version_cutlang" ../../binder/environment.yml
+        sed -i "/cutlang ==/c  - cutlang ==$(cat ../../VERSION)" ../../binder/environment.yml
         
-        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
-        echo "::set-output name=CHECK_VERSION_CUTLANG::$check_version_cutlang"
+        echo "::set-output name=CHECK_VERSION_CUTLANG::$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $(cat ../../VERSION))"
         
-        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
-        echo "::set-output name=UNELG_REPO::$unelgRepo"
+        echo "::set-output name=UNELG_REPO::$(git remote -v | grep -e 'origin.*unelg')"
 
     - name: chmod
       working-directory: .github/workflows
