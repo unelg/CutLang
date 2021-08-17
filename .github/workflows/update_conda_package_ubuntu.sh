@@ -7,9 +7,6 @@ conda list
 
 anaconda -h
 
-sudo apt update
-sudo apt install -y build-essential
-
 go_to_build_dir() {
     if [ ! -z $SUBDIR ]; then
         cd ../../$SUBDIR
