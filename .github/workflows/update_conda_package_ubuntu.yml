@@ -23,7 +23,7 @@ jobs:
       id: update_meta
       working-directory: ./scripts/conda
       run: |
-        export version_cutlang=`cat ../../VERSION`
+        version_cutlang=`cat ../../VERSION`
         echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
 
         echo "::group::VERSION"
@@ -38,10 +38,10 @@ jobs:
         echo "::endgroup::"
         sed -i "/cutlang ==/c  - cutlang ==$version_cutlang" ../../binder/environment.yml
         
-        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
+        check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
         echo "::set-output name=CHECK_VERSION_CUTLANG::$check_version_cutlang"
         
-        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
+        unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
         echo "::set-output name=UNELG_REPO::$unelgRepo"
 
     - name: chmod
