@@ -2373,7 +2373,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      newList.push_back(a);
                                      newList.push_back(b);
                                      newList.push_back(c);
-                                     Node* nnode= new FuncNode(Qof,newList,"q");
+                                     Node* nnode= new FuncNode(Qof,newList,"qo");
                                      vector<Node*> newNList; // cut list
                                      newNList.push_back(nnode);
                                      Node* previous=new ObjectNode("Combo",NULL,createNewCombo,newNList,"Lepto combi" );
