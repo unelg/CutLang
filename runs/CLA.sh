@@ -215,7 +215,7 @@ elif [ ${PRLL} -ne 1 ]; then
     TotalEvents="$(root -l -q ''$WORK_PATH'/analysis_core/getentries.cxx("'${datafile}'" ,"'${chn}'")')"
     EVENTS="$(echo $TotalEvents | awk '{print $NF}')"
     intrvl=$(( (EVENTS-STRT)/PRLL)) # workload division
-    # echo Total number of events: $EVENTS
+    echo Total number of events: $EVENTS
   else
     intrvl=$(( EVENTS/PRLL)) # workload division
   fi
@@ -252,14 +252,14 @@ elif [ ${PRLL} -ne 1 ]; then
       allHistos+=$WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-tempor.root
       allHistos+=" "
     done
-    echo "hadd $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
-    hadd $PWD/histoOut-${rbase}.root $allHistos # merging all root files
+    echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
+    hadd -f $PWD/histoOut-${rbase}.root $allHistos # merging all root files
     wait
     # prints efficiencies of combined files
     if [ $? -eq 0 ]; then
       root -l -q \
       ''${WORK_PATH}'/analysis_core/FinalEff.C("'${PWD}'/histoOut-'${rbase}'.root", '$sh', '$se')'
-      rm -r $WORK_PATH/temp*  # removes temp folders
+      #rm -r $WORK_PATH/temp*  # removes temp folders
 
       echo "hadd (merging all root files) finished successfully, now removing auxiliary files"
       rm -f $PWD/histoOut-BP_*.root
