@@ -181,7 +181,7 @@ CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scr
  CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents]
  # Also, you can start simultaneous processes, which can increase the analysis speed tremendously.
  CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents] -j 0
- # When you enter 0 in the j flag, it will start the process as much as the number of processor cores, if you want, you can set the number of processes by changing the value to 0.
+ # When you enter 0 in the j flag, it will start the process as much as the number of processor cores, if you want, you can set the number of processes by changing the value from 0.
  # for example:
  # CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents] -j 8
  # above command starts 8 simultaneous processes
