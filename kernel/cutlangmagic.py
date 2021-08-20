@@ -11,9 +11,8 @@ class CutLangMagics(Magics):
     @argument('adl', 'adlfile', action="store", help='HistoOut file name')
     @argument('events', action="store", help='Number of events')
     @argument('start', action="store", help='Starting event')
-    #@argument('help', action="store", help='Help')
-    #@argument('deps', action="store", help='DEPS')
     @argument('verbose', action="store", help='Verbose frequency')
+    @argument('parallel', action="store", help='Number of cores')
     
     def cutlang(self, line, cell):
         args = parse_argstring(self.cutlang, line)
