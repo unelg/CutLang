@@ -259,7 +259,7 @@ elif [ ${PRLL} -ne 1 ]; then
     if [ $? -eq 0 ]; then
       root -l -q \
       ''${WORK_PATH}'/analysis_core/FinalEff.C("'${PWD}'/histoOut-'${rbase}'.root", '$sh', '$se')'
-      #rm -r $WORK_PATH/temp*  # removes temp folders
+      rm -r $WORK_PATH/temp*  # removes temp folders
 
       echo "hadd (merging all root files) finished successfully, now removing auxiliary files"
       rm -f $PWD/histoOut-BP_*.root
