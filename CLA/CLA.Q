@@ -226,8 +226,11 @@ if (ival==0) {
   }else if (use_cmsnano){
    cout << "~Now using CMS NanoAOD files.~~~~~~ beta!\n";
    chain = new TChain("Events");
-  }else if (use_atlasod|use_atlasodR2){
+  }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
+   chain = new TChain("mini");
+  }else if (use_atlasodR2){
+   cout << "~Now using ATLAS Open Data R2 files.~~~~~~ beta!\n";
    chain = new TChain("mini");
   }else if (use_atlmin){
    cout << "~Now using ATLAS Mini NTUPLE files.~~~~~~ alpha!\n";
