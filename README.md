@@ -3,7 +3,7 @@ This is the repository for CutLang V3.
 
 *A Particle Physics Analysis Description Language and Runtime Interpreter*
 
-**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
+**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder)
 
 # Contents
 - [Using CutLang](#using-cutlang)
@@ -192,7 +192,7 @@ CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scr
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 # <a name="tutorial"></a> Tutorial
-**Launch with binder:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/HEAD)
+**Launch with binder:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder)
 
 *or* Self host
 
