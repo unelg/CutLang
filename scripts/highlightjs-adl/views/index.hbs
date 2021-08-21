@@ -1,0 +1,48 @@
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+<pre>
+    <code class="language-adl">
+        
+
+#CLA ADL example7
+
+define   WH1  : JET[-1] JET[-1] # - index means I do not know yet which jets to take
+define   WH2  : JET[-3] JET[-3] # -3 here is different than -1, so these are two OTHER jets.
+# --------------> -3 & -3 repeated indices in the same hadronic W
+# --------------> this means the order is NOT important
+# --------------> Jet1 + Jet2 = Jet2 + Jet1
+
+###      chi2 for W finder
+#define   Wchi2 : (( m(WH1 ) - 80.4)/2.1)^2 + (( m(WH2) - 80.4)/2.1)^2 
+define   Wchi2 : (( {WH1}m - 80.4)/2.1)^2 + (( {WH2}m - 80.4)/2.1)^2 
+
+## top quarks without b tagging 
+define   Top1 : WH1 JET[-2] # take another jet
+#----> 12 3 toplamakla, 13 2 toplamak ayni degil. cunku ilkinde bj candidate 3 ikincisinde 2 numarali jetler.
+define   Top2 : WH2 JET[-4]
+define   mTop1 : m(Top1)
+define   mTop2 : m(Top2)
+###      chi2 for top finder
+#define   topchi2 : ((mTop1 - mTop2)/4.2)^2                  
+define   totchi : ((mTop1 - mTop2)/4.2)^2  + Wchi2
+#define   PTj1 : pT(WH1)
+#define   totchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 + Hstep(300.0 - PTj1)*(300.0/PTj1 - 1.0 )
+
+algo besttop
+  select   ALL                   # to count all events
+  select   Size(JET) >= 6        # at least 6 jets
+  histo    hdrjj  , "dT between jjs", 100, 0.0, 6.2, dR(JET_1, JET_0) 
+#  select   MET < 100             # no large MET
+ select   totchi  ~= 0  # find the tops and ws
+ histo    hchi , "Histo of chi2", 50, 0, 500, totchi
+ select   totchi < 10.5 # small than a certain value of chi2
+ histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
+ histo    hmWH2 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH2)
+ histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, mTop1
+ histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, mTop2
+ histo    hdrtt  , "dT between tops", 100, 0.0, 6.2, dR(Top1, Top2) 
+
+
+
+    </code>
+</pre>
