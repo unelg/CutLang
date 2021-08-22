@@ -6,12 +6,12 @@ cp $CUTLANG_PATH/scripts/jupyter/cutlang-logo-200x200.png $(jupyter --data-dir)/
 #cp $1/etc/notebook/kernels/root/kernel.json $(jupyter --data-dir)/kernels/root/kernel.json
 #cp $1/etc/notebook/kernels/root/logo-64x64.png $(jupyter --data-dir)/kernels/root/logo-64x64.png
 
-jupyterLabAppDir=$(jupyter lab path | grep Application | awk -v RS='[: ]' 1 | grep jupyter/lab)
+export jupyterLabAppDir=$(jupyter lab path | grep Application | awk -v RS='[: ]' 1 | grep jupyter/lab)
 mkdir -p "$jupyterLabAppDir/settings"
 cp "$CUTLANG_PATH/scripts/jupyter/settings/overrides.json" "$jupyterLabAppDir/settings/overrides.json"
 
-pythonNotebookSitePackagesPath=$(dirname $(python -c "import notebook as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep notebook))
-pythonJupyROOTSitePackagesPath=$(dirname $(python -c "import JupyROOT as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep JupyROOT))
+export pythonNotebookSitePackagesPath=$(dirname $(python -c "import notebook as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep notebook))
+export pythonJupyROOTSitePackagesPath=$(dirname $(python -c "import JupyROOT as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep JupyROOT))
 
 isProd=$2
 __debug(){
