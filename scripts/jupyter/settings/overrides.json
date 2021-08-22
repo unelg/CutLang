@@ -1,0 +1,8 @@
+{
+    "@jupyterlab/notebook-extension:tracker": {
+        "codeCellConfig": {
+            "lineNumbers": true
+        }
+    }
+}
+  

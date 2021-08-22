@@ -169,8 +169,8 @@ Available on **Linux, macOS, windows**
 ### <a name="using-cutlang-with-jupyterlab-starting"></a> Starting
 *Starts JupyterLab with "ROOT c++ with CutLang" kernel in your current directory*
 ```bash
-  CLA_JupyterLab
-  # Jupyter lab will be started, you can use by using the link 127.0.0.1:8888/... in the logs
+  CLA_Jupyter
+  # Jupyter will be started, you can use by using the link 127.0.0.1:8888/... in the logs
 ```
 
 # <a name="running-cutlang"></a> Running CutLang

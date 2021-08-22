@@ -185,7 +185,7 @@ if [ ${PRLL} -ne 1 ]; then
   if [[ -n $(grep -i "SkipEffs" ${INIFILE}) ]]; then 
     sed -i '/SkipEffs/Id' $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
   fi
-  ex -sc '1i|SkipEffs = 1' -cx $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
+  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl | tee $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
 else
   if [ $Nalgo -gt 1 ]; then
   echo Analysis with Multiple Regions
