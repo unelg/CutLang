@@ -17,5 +17,5 @@ echo "build.sh done"
 for CHANGE in "activate" "deactivate"
 do
     mkdir -p "${PREFIX}/etc/conda/${CHANGE}.d"
-    cp "${PREFIX}/bin/cutlang/scripts/conda/conda_${CHANGE}.sh" "${PREFIX}/etc/conda/${CHANGE}.d/__0${PKG_NAME}_${CHANGE}.sh"
+    cp "${PREFIX}/bin/cutlang/scripts/conda/conda_${CHANGE}.sh" "${PREFIX}/etc/conda/${CHANGE}.d/zzzz${PKG_NAME}_${CHANGE}.sh"
 done

@@ -2,11 +2,7 @@ rm -rf $(jupyter --data-dir)/kernels/cutlang
 
 #rm -rf $(jupyter --data-dir)/kernels/root
 
-jupyterLabAppDir=$(jupyter lab path | grep Application | awk -v RS='[: ]' 1 | grep jupyter/lab)
 rm -rf "$jupyterLabAppDir/settings"
-
-pythonNotebookSitePackagesPath=$(dirname $(python -c "import notebook as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep notebook))
-pythonJupyROOTSitePackagesPath=$(dirname $(python -c "import JupyROOT as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep JupyROOT))
 
 isProd=$2
 __debug(){

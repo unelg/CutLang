@@ -98,9 +98,6 @@ cpXADL x-adl.js $1
 
 # setup_kernel
 
-unset jupyterLabAppDir
-unset pythonNotebookSitePackagesPath
-unset pythonJupyROOTSitePackagesPath
 unset __debug
 unset filecontrolJupyROOT
 unset cpJupyROOT
