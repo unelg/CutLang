@@ -14,6 +14,10 @@ RUN cd /CutLang/CLA && make clean && make
 RUN echo "alias python=python3" >> ~/.bashrc
 RUN echo "source /CutLang/setup.sh" >> ~/.bashrc
 
+RUN echo "For examples see \$CUTLANG_PATH/runs/" >> ~/.bashrc
+RUN echo "and for LHC analysis implementations, see" >> ~/.bashrc
+RUN echo "https://github.com/ADL4HEP/ADLLHCanalyses" >> ~/.bashrc
+
 WORKDIR /src
 
 CMD [ "tail", "-f", "/dev/null" ]
