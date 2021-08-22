@@ -30,6 +30,7 @@ jobs:
         
         sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
         sed -i "/cout << \"CLA v/c cout << \"CLA v$version_cutlang\\\t\";" ../../CLA/CLA.Q
+        sed -i "/\"display_name\": \"ROOT C++ with CutLang/c    \"display_name\": \"ROOT C++ with CutLang v$version_cutlang\"," ../../scripts/jupyter/kernel/cutlangkernel.json
         meta=`cat ../../scripts/conda/meta.yaml`
         echo "::group::META"
         echo "Inside group $meta"
@@ -55,8 +56,9 @@ jobs:
         git pull
 
         git add ./meta.yaml
-        git add ../../CLA/CLA.Q || echo "ignore commit failure, proceed (simple warning)"
-        git commit -m "automated update for CLA.Q scripts/conda meta.yaml" || echo "ignore commit failure, proceed (simple warning)"
+        git add ../../CLA/CLA.Q || echo "../../CLA/CLA.Q ignore commit failure, proceed (simple warning)"
+        git add ../../scripts/jupyter/kernel/cutlangkernel.json || echo "../../scripts/jupyter/kernel/cutlangkernel.json ignore commit failure, proceed (simple warning)"
+        git commit -m "automated update for CLA.Q scripts/conda meta.yaml" || echo "automated update for CLA.Q scripts/conda meta.yaml ignore commit failure, proceed (simple warning)"
         git push origin $1
 
     - name: Create a GitHub release
