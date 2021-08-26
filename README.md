@@ -3,7 +3,11 @@ This is the repository for CutLang V3.
 
 *A Particle Physics Analysis Description Language and Runtime Interpreter*
 
-**Launch tutorial:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder)
+**Launch tutorial:**
+
+With *jupyter lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb)
+
+With *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
 # Contents
 - [Using CutLang](#using-cutlang)
@@ -19,16 +23,15 @@ This is the repository for CutLang V3.
     - [Setup](#using-cutlang-with-docker-setup)
     - [Update](#using-cutlang-with-docker-update)
     - [Remove](#using-cutlang-with-docker-remove)
-  - [With JupyterLab](#using-cutlang-with-jupyterlab)
-    - [Setup](#using-cutlang-with-jupyterlab-setup)
-    - [Starting](#using-cutlang-with-jupyterlab-starting)
+  - [With Jupyter](#using-cutlang-with-jupyter)
+    - [Setup](#using-cutlang-with-jupyter-setup)
+    - [Starting](#using-cutlang-with-jupyter-starting)
 - [Running CutLang](#running-cutlang)
 - [Tutorial](#tutorial)
   - [Setup](#tutorial-setup)
   - [Starting](#tutorial-starting)
   - [Update](#tutorial-update)
-  - [How should I follow the tutorial ?](#tutorial-how-should-i-follow-the-tutorial)
-- [JupyterLab CutLang magic](#jupyterlab-cutlang-magic)
+- [Jupyter CutLang magic](#jupyter-cutlang-magic)
 - [FAQ](#faq)
   - [Where to find an example ntuple ?](#faq-where-to-find-an-example-ntuple)
 - [Contributing](#contributing)
@@ -159,17 +162,19 @@ Remove the docker container and image using
   docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
 ```
 
-## <a name="using-cutlang-with-jupyterlab"></a> With JupyterLab
+## <a name="using-cutlang-with-jupyter"></a> With Jupyter
 Available on **Linux, macOS, windows**
 
-*In order to run CutLang in JupyterLab, you must first complete the setup from source or with conda or docker.*
-### <a name="using-cutlang-with-jupyterlab-setup"></a> Setup
+*In order to run CutLang in Jupyter, you must first complete the setup from source or with conda or docker.*
+### <a name="using-cutlang-with-jupyter-setup"></a> Setup
 - **You should have completed the CutLang setup and be able to run the CLA command without any problems.**
 
-### <a name="using-cutlang-with-jupyterlab-starting"></a> Starting
-*Starts JupyterLab with "ROOT c++ with CutLang" kernel in your current directory*
+### <a name="using-cutlang-with-jupyter-starting"></a> Starting
+*Starts Jupyter with "ROOT c++ with CutLang" kernel in your current directory*
 ```bash
-  CLA_Jupyter
+  CLA_Jupyter lab
+  # or
+  CLA_Jupyter notebook
   # Jupyter will be started, you can use by using the link 127.0.0.1:8888/... in the logs
 ```
 
@@ -192,7 +197,11 @@ CutLang is run anywhere using the `CLA` (shell script) or using the `CLA.py` scr
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 # <a name="tutorial"></a> Tutorial
-**Launch with binder:** [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder)
+**Launch with binder:**
+
+With *jupyter lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb)
+
+With *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
 *or* Self host
 
@@ -201,11 +210,13 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 * **You should have completed the CutLang installation and be able to run the CLA command without any problems.**
 
 ## <a name="tutorial-starting"></a> Starting (Self host)
-Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
+Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 ```bash
-  CLA_tutorial
-  # Jupyter lab will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
-  # Then you can browse example1 and other ipynb files in binder folder
+  CLA_tutorial lab
+  # or
+  CLA_tutorial notebook
+  # Jupyter will be started, you can use the tutorial by using the link 127.0.0.1:8888/... in the logs
+  # Then you can browse index and other ipynb files in binder folder
 ```
 
 ## <a name="tutorial-update"></a> Update (Self host)
@@ -214,10 +225,7 @@ Starts JupyterLab with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
   # force update (temporary, do not use unless necessary)
 ```
 
-## <a name="tutorial-how-should-i-follow-the-tutorial"></a> How should I follow the tutorial ?
-At startup you can enter binder folder and open example1.ipynb
-
-# <a name="jupyterlab-cutlang-magic"></a> JupyterLab CutLang Magic
+# <a name="jupyter-cutlang-magic"></a> Jupyter CutLang Magic
 *CutLang can be used on Jupyter notebooks with ROOT*
 - You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
 - You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
