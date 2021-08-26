@@ -1,4 +1,4 @@
-#CLA ADL example2
+#CLA ADL counting example
 
 countsformat results
   process est, "Total estimated BG", stat, syst 

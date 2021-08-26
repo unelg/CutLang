@@ -41,11 +41,11 @@ def runCLA(display, HTML, code, args, files, adlfiles):
     if len(files) > 1:
         for i, file in enumerate(files):
             fileName=""
-            if len(file.split(",")) > 1:
-                for _file in file.split(","):
-                    fileName = _file.split(".")[0]
+            if len(str(file).split(",")) > 1:
+                for _file in str(file).split(","):
+                    fileName = str(_file).split(".")[0]
             else:
-                fileName = file.split(".")[0]
+                fileName = str(file).split(".")[0]
             adlName = adlfiles[0] + "-" + fileName
             if len(adlfiles) == len(files):
                 #adlName = adlfiles[i] + "-" + fileName
@@ -55,33 +55,37 @@ def runCLA(display, HTML, code, args, files, adlfiles):
             
             extraArgs=""
 
-            filetypes=args["filetype"].split(";")
+            filetypes=str(args["filetype"]).split(";")
             _filetype=""
-            events=args["events"].split(";")
-            start=args["start"].split(";")
-            verbose=args["verbose"].split(";")
-            parallel=args["parallel"].split(";")
+            events=args["events"]
+            start=args["start"]
+            verbose=args["verbose"]
+            parallel=args["parallel"]
             _filetype=filetypes[i] if len(filetypes) == len(files) else filetypes[0]
 
             if events != False:
+                events=args["events"].split(";")
                 if len(events) == len(files):
                     extraArgs=extraArgs+" -e "+str(events[i])
                 else:
                     extraArgs+" -e "+str(events[0])
 
             if start != False:
+                start=args["start"].split(";")
                 if len(start) == len(files):
                     extraArgs=extraArgs+" -s "+str(start[i])
                 else:
                     extraArgs+" -s "+str(start[0])
 
             if verbose != False:
+                verbose=args["verbose"].split(";")
                 if len(verbose) == len(files):
                     extraArgs=extraArgs+" -v "+str(verbose[i])
                 else:
                     extraArgs+" -v "+str(verbose[0])
 
             if parallel != False:
+                parallel=args["parallel"].split(";")
                 if len(parallel) == len(files):
                     extraArgs=extraArgs+" -j "+str(parallel[i])
                 else:
