@@ -59,7 +59,7 @@ case $key in
     Nalgo=`cat pippo | wc -l`
     rm pippo
     
-    # for HistoList command
+    # for histoList command
     if grep -q "histoList" "$INIFILE"; then
      cp ${INIFILE} ${INIFILE}.tmp
      INIFILE=${INIFILE}.tmp
@@ -68,15 +68,38 @@ case $key in
     while grep -q "histoList" "$INIFILE"; do #while there is a histoList command in the .ini file, loop continues
      a=($(awk '/histoList/{ print NR; }' "$INIFILE")) #get the line numbers where histoList command written
      b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
-     histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE})
+     histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE}) #get the name given by the user
      echo "************", $histListName
+     count=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$INIFILE" | wc -l) #how many times user prefers to fill same set of histos
+
+     if [ $count -gt 1 ]; then
+       countMinor=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$INIFILE" | wc -l) #get the same count again, but now it will be always modified
+        c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
+        d=${c[0]}
+        let d++
+        whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
+        while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
+          counttmp=0
+          for k in ${whereToInsert}; do
+            echo $k
+            awk -v d="$d" -v e="${k}" 'NR==d{store=$0}1;NR==e{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+            let f=k+1
+            awk -v e="$f" -v counttmp=${counttmp} -F" " -vOFS=" " 'NR==e{$2=$2counttmp}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+            let counttmp+=1
+            echo $counttmp
+          done
+          awk -v d="$d" 'NR==d{next}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+        done
+        grep -v -w ${histListName} ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+     fi
+     
      c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
      let c++
      whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
      while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
       awk -v c="$c" -v d="${whereToInsert}" 'NR==c{store=$0;next}1;NR==d{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
      done
-     sed "/${histListName}/d" ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
+     grep -v -w ${histListName} ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
     done
 
     # for select HLT command
@@ -285,9 +308,9 @@ else
     fi
     hadd $PWD/histoOut-${rbase}.root $PWD/histoOut-BP_*.root
     #if histoList command is given, the ${INIFILE}.tmp is produced, and now it gets deleted.
-    if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
-      rm -f ${INIFILE}
-    fi
+    #if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
+      #rm -f ${INIFILE}
+    #fi
     if [ $? -eq 0 ]; then
     echo "hadd finished successfully, now removing auxiliary files"
     rm -f $PWD/histoOut-BP_*.root
