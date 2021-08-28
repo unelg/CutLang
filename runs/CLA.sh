@@ -308,9 +308,9 @@ else
     fi
     hadd $PWD/histoOut-${rbase}.root $PWD/histoOut-BP_*.root
     #if histoList command is given, the ${INIFILE}.tmp is produced, and now it gets deleted.
-    #if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
-      #rm -f ${INIFILE}
-    #fi
+    if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
+      rm -f ${INIFILE}
+    fi
     if [ $? -eq 0 ]; then
     echo "hadd finished successfully, now removing auxiliary files"
     rm -f $PWD/histoOut-BP_*.root
