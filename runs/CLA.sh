@@ -54,14 +54,14 @@ case $key in
       exit 1
     fi
 
-    cat ${INIFILE} | grep -v '#' | grep "region " > pippo
-    cat ${INIFILE} | grep -v '#' | grep "algo " >> pippo
+    cat ${INIFILE} | grep -v '^#' | grep "region " > pippo
+    cat ${INIFILE} | grep -v '^#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
     rm pippo
     
     # for histoList command
     if grep -q "histoList" "$INIFILE"; then
-     cp ${INIFILE} ${INIFILE}.tmp
+     cat ${INIFILE} | grep -v '^#' > ${INIFILE}.tmp
      INIFILE=${INIFILE}.tmp
     fi
     
@@ -81,12 +81,12 @@ case $key in
         while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
           counttmp=0
           for k in ${whereToInsert}; do
-            echo $k
+#            echo $k
             awk -v d="$d" -v e="${k}" 'NR==d{store=$0}1;NR==e{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
             let f=k+1
             awk -v e="$f" -v counttmp=${counttmp} -F" " -vOFS=" " 'NR==e{$2=$2counttmp}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
             let counttmp+=1
-            echo $counttmp
+#            echo $counttmp
           done
           awk -v d="$d" 'NR==d{next}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
         done
@@ -110,7 +110,7 @@ case $key in
       hltList+=$i,
     done
     HLTLIST=$hltList
-    
+
     shift # past argument
     shift # past value
     ;;

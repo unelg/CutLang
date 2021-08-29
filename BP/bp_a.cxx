@@ -162,8 +162,6 @@ int BPdbxA:: readAnalysisParams() {
        }
 //---------histos
        if (firstword=="histo") {
-           CutList2file+=tempLine;
-           CutList2file+="\n";
            size_t apos=toplam.find_first_of('"');
            size_t bpos=toplam.find_last_of('"');
            tempS1 = toplam.substr(apos+1, bpos-apos-1); // without the quotation marks

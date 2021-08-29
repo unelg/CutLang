@@ -7,9 +7,11 @@ object jets
   select pT(jet) > 30
   select abs(eta(jet)) < 2.4
 
-histoList jetHistos
+histoList jetHistosF
   histo hjet1pt , "jet 1 pT (GeV)", 40, 0, 1000, pT(jets[0])
   histo hjet2pt , "jet 2 pT (GeV)", 40, 0, 1000, pT(jets[1])
+
+histoList jetHistosS
   histo hjet3pt , "jet 3 pT (GeV)", 40, 0, 1000, pT(jets[2])
   histo hjet4pt , "jet 4 pT (GeV)", 40, 0, 1000, pT(jets[3])
 
@@ -18,5 +20,8 @@ region presel
   select ALL
   select size(jets) >= 4
   histo hmetjet1pt, "MET vs. jet 1 pT", 20, 300, 1300, 20, 0, 1000, MET, pT(jets[0])
+  select MET > 200
+  jetHistosF 
   select MET > 300
-  jetHistos 
+  jetHistosF 
+  jetHistosS 
