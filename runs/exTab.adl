@@ -56,8 +56,8 @@ region   test
   select  Size(myElectron) >= 1 #events with detected electrons
   select  {ELE_0}Eta > 0
   weight  randWeight   1.123
-  weight  ef1Weight myWeight( {ELE_0}pT )            # weight 1d
-  weight  ef2Weight SUSEff( {ELE_0}pT, {ELE_0}Eta )  # weight 2d
+  weight  ef1Weight   myWeight( {ELE_0}pT )             # weight 1d
+  weight  ef2Weight my2dWeight( {ELE_0}pT, {ELE_0}Eta ) # weight 2d
 
   histo   h1ept, "E0 pt (GeV)", 100, 0, 2000, {ELE_0}pT
 

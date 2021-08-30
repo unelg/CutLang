@@ -25,20 +25,21 @@ object goodeles : ELE
 region testA
  	select ALL                        # to count all events
 # count number size are all the same.
+ 	select Size(JET) > 2             # we need at least 2 jets to reconstruct Zhads
  	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
- 	select Count(hZs)  >= 2            # we need at least 2 Zhad candidates.
-# 4Jetli bir olayim var. 12, 21, 13, 31, 23, 32, 14, 41, 24, 42, 34, 43
-#                        ^^------------------------------------- ^^  ^^
-        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
-        select chi2  ~= 0            # we kill here overlapping candidates. 
-        histo  hchi2, "chi2 ", 50, 0, 500, chi2
-        histo  bm1hZ, "mass Hrec GeV", 50, 50, 150, zham
-        histo  bm2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
-        histo  bm12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
-        select chi2  <= 100            # we kill bad candidates. 
-        histo  am1hZ, "mass Hrec GeV", 50, 50, 150, zham
-        histo  am2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
-        histo  am12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
+#	select Count(hZs)  >= 2            # we need at least 2 Zhad candidates.
+## 4Jetli bir olayim var. 12, 21, 13, 31, 23, 32, 14, 41, 24, 42, 34, 43
+##                        ^^------------------------------------- ^^  ^^
+#        select { zz }m ~= 91.2            # we kill here overlapping candidates. 
+#        select chi2  ~= 0            # we kill here overlapping candidates. 
+#        histo  hchi2, "chi2 ", 50, 0, 500, chi2
+#        histo  bm1hZ, "mass Hrec GeV", 50, 50, 150, zham
+#        histo  bm2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
+#        histo  bm12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
+#        select chi2  <= 100            # we kill bad candidates. 
+#        histo  am1hZ, "mass Hrec GeV", 50, 50, 150, zham
+#        histo  am2hZ, "mass Hrec GeV", 50, 50, 150, zhbm
+#        histo  am12hZ,"mass 1 vs 2 GeV", 50, 50, 150, 50, 50, 150, zham, zhbm
 
 #region testB
 #	select ALL                        # to count all events
