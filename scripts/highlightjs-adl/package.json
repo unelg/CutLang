@@ -27,7 +27,7 @@
     "debug": "~4.3.2",
     "express": "~4.16.1",
     "hbs": "~4.0.4",
-    "http-errors": "~1.6.3",
+    "http-errors": "~1.8.0",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
