@@ -61,9 +61,17 @@ jobs:
       run: |
         ./filter.sh
         git pull
-        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt;
-        cd ../workflows; mkdir ../previous2; cp -r ../previous/* ../previous2;
+        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt;
+        echo ended tee
+        rm raw_output.txt errors.txt efficacy_charts.txt differences.txt;
+        echo ended rm
+        cd ../workflows;
+        mkdir ../previous2;
+        echo ended mkdir previous2
+        cp -r ../previous/* ../previous2;
+        echo ended cp -r
         cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/;
+        echo ended cp raw_output
         mkdir artifacts; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
         if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
           touch flag
