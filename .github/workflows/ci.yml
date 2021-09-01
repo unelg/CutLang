@@ -60,6 +60,7 @@ jobs:
       working-directory: .github/workflows
       run: |
         ./filter.sh
+        git pull
         cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt;
         cd ../workflows; mkdir ../previous2; cp -r ../previous/* ../previous2;
         cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/;
