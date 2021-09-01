@@ -68,30 +68,6 @@ jobs:
         fi
         ./mail_body.sh
 
-    - name: Update Artifacts
-      if: ${{ github.event_name == 'push' }}
-      working-directory: .github/workflows
-      run: |
-        git --version
-        git status
-
-        target_date=`date "+%Y-%m-%d" -d "6 day ago"`
-        cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
-        tar_date_int=$(date -d $target_date +%s)
-        cur_date_int=$(date -d $cur_date +%s)
-
-        if [ $tar_date_int -le $cur_date_int ]; then
-          exit 0
-        fi
-
-        git config user.email "jinens8@gmail.com"
-        git config user.name "bot"
-
-        echo git add
-        git add ../previous
-        git commit -m "automated update" 
-        git push origin ${GITHUB_REF##*/}
-
     - name: Check for Bad Run Flag
       id: check_files
       uses: andstor/file-existence-action@v1
