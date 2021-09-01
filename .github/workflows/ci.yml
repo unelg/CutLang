@@ -1,10 +1,6 @@
 name: Tests
 
-on:
-  push:
-    branches:
-      - 'master'
-      - 'package_test'
+on: [push, pull_request]
 
 jobs:
   build:
@@ -20,6 +16,7 @@ jobs:
     - name: chmod
       working-directory: .github/workflows
       run: |
+        echo $(ls ../../.git)
         git status
         ls -la
         chmod +x ./sendgrid.js
