@@ -49,8 +49,7 @@ jobs:
     - name: Build CutLang
       working-directory: CLA
       run: |
-        root --version
-        source ../root/bin/thisroot.sh; make
+        source ../root/bin/thisroot.sh; root --version; make
     
     - name: Run Tests
       working-directory: .github/workflows
