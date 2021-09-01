@@ -16,6 +16,7 @@ jobs:
     - name: chmod
       working-directory: .github/workflows
       run: |
+        git status
         ls -la
         chmod +x ./sendgrid.js
         chmod +x deploy.sh
@@ -24,6 +25,7 @@ jobs:
       
     - name: CutLang Dependencies
       run: |
+        git status
         apt update
         apt install -y flex bison wget
                    
