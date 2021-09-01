@@ -78,7 +78,7 @@ jobs:
         if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
           touch flag
         fi
-        ./mail_body.sh
+        source ../../root/bin/thisroot.sh; ./mail_body.sh
 
     - name: Update Artifacts
       if: ${{ github.event_name == 'push' }}
@@ -89,11 +89,12 @@ jobs:
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ../previous2/raw_output.txt`
-        tar_date_int=$(date -d $target_date +%s)
-        cur_date_int=$(date -d $cur_date +%s)
 
         echo target_date: $target_date
         echo cur_date: $cur_date
+        
+        tar_date_int=$(date -d $target_date +%s)
+        cur_date_int=$(date -d $cur_date +%s)
 
         if [ $tar_date_int -le $cur_date_int ]; then
           exit 0
