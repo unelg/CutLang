@@ -4,5 +4,3 @@ notebook_env=$CONDA_DIR/envs/notebook
 CUTLANG_PATH=$notebook_env/bin/cutlang
 
 touch $CUTLANG_PATH/mybinder_true
-
-git clone --depth 1 --branch 6.2.0 https://github.com/root-project/jsroot $CUTLANG_PATH/scripts/JsRoot620/jsroot
