@@ -12,4 +12,6 @@ fi
 rm -rf $CUTLANG_PATH/scripts/nbmain
 g++ -o $CUTLANG_PATH/scripts/nbmain $CUTLANG_PATH/scripts/nbmain.cxx $(root-config --libs --cflags)
 
+git clone --depth 1 --branch 6.2.0 https://github.com/root-project/jsroot $CUTLANG_PATH/scripts/JsRoot620/jsroot
+
 $CUTLANG_PATH/scripts/nbmain $jpytrnb $extras --config="$CUTLANG_PATH/scripts/CLA_tutorial_jupyter_notebook_config.py"

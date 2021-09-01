@@ -28,6 +28,8 @@ if 'ROOTSYS' in os.environ:
     os.environ['JUPYTER_CONFIG_DIR']      = '%s' % _rootnbpath + ':' + os.getenv('JUPYTER_CONFIG_DIR', '')
     c.NotebookApp.extra_static_paths.append(os.path.join(os.environ['ROOTSYS'], 'js/'))
     c.ServerApp.extra_static_paths.append(os.path.join(os.environ['ROOTSYS'], 'js/'))
+    c.NotebookApp.extra_static_paths.append(os.path.join(os.environ['CUTLANG_PATH'], 'scripts/JsRoot620/'))
+    c.ServerApp.extra_static_paths.append(os.path.join(os.environ['CUTLANG_PATH'], 'scripts/JsRoot620/'))
 
     print("All config", c)
 else:

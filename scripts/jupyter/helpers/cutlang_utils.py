@@ -1,6 +1,7 @@
 import os
 from IPython import get_ipython
 from IPython.core.extensions import ExtensionManager
+from shutil import copyfile
 
 def argMergerCLA(_args):
     args={"file": False, "filetype": False, "adlfile": "cutlang-adl-name", "events": False, "start": False, "verbose": False, "parallel": False}
@@ -37,6 +38,15 @@ def run(display, HTML, code, _file, _filetype, _adlName, _extraArgs):
     else:
         os.system('CLA ' + _file + ' ' + _filetype + ' -i ' + tmpAdlName + _extraArgs)
     os.remove(tmpAdlName)
+
+    histoOutRoot=tmpAdlName.replace("/tmp/", "histoOut-").replace(".adl", ".root")
+    copyfile(histoOutRoot, os.environ["CUTLANG_PATH"] + "/scripts/JsRoot620/jsroot/" + histoOutRoot)
+    display(HTML('''
+    <iframe width="700" height="400"
+        src="http://127.0.0.1:8888/static/jsroot/index.htm?file=./{histoOutRoot}">
+    </iframe>
+    '''.format(histoOutRoot=histoOutRoot)))
+
 def runCLA(display, HTML, code, args, files, adlfiles):
     if len(files) > 1:
         for i, file in enumerate(files):
