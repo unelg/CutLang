@@ -89,8 +89,11 @@ jobs:
 
         git --version
         git add ../previous
+        git --version
+        git status
         git commit -m "automated update" 
         git --version
+        git status
         git push origin ${GITHUB_REF##*/}
         git --version
 
