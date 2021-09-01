@@ -6,6 +6,7 @@ jobs:
   build:
     
     runs-on: ubuntu-latest
+    container: rootproject/root:6.24.00-conda
 
     steps:
     - uses: actions/checkout@v2
