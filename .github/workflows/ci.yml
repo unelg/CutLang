@@ -48,19 +48,6 @@ jobs:
         fi
         ./mail_body.sh
 
-    - name: Check for Bad Run Flag
-      id: check_files
-      uses: andstor/file-existence-action@v1
-      with:
-        files: "./.github/workflows/flag"
-
-    - name: SMTP
-      uses: peter-evans/sendgrid-action@v1
-      if: steps.check_files.outputs.files_exists == 'true'
-      env:
-        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
-
     - name: Update Artifacts
       working-directory: .
       run: |
@@ -69,6 +56,9 @@ jobs:
         && add-apt-repository -y ppa:git-core/ppa \
         && apt-get update \
         && apt-get install -y git
+
+        git --version
+        git status
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ./.github/previous/raw_output.txt`
@@ -85,6 +75,19 @@ jobs:
         git add ./.github/previous
         git commit -m "automated update" 
         git push origin ${GITHUB_REF##*/}
+
+    - name: Check for Bad Run Flag
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "./.github/workflows/flag"
+
+    - name: SMTP
+      uses: peter-evans/sendgrid-action@v1
+      if: steps.check_files.outputs.files_exists == 'true'
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0
