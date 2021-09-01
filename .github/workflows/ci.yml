@@ -90,6 +90,7 @@ jobs:
         echo git add
         git add ../previous
         git commit -m "automated update" 
+        echo end commit
         git push origin ${GITHUB_REF##*/}
 
     - name: Check for Bad Run Flag
