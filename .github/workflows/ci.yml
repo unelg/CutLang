@@ -63,7 +63,6 @@ jobs:
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
         
     - name: Update Artifacts
-      if: steps.cache.outputs.cache-hit == 'true'
       run: cd ./.github/workflows ; ./commit.sh ${GITHUB_REF##*/}
       
     - name: Upload Output File
