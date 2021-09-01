@@ -89,6 +89,7 @@ jobs:
 
         echo target_date: $target_date
         echo cur_date: $cur_date
+        git log -10 --pretty="format:%cs" ../previous/raw_output.txt
         
         tar_date_int=$(date -d $target_date +%s)
         cur_date_int=$(date -d $cur_date +%s)
