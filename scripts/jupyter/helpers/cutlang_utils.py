@@ -43,7 +43,7 @@ def run(display, HTML, code, _file, _filetype, _adlName, _extraArgs):
     copyfile(histoOutRoot, os.environ["CUTLANG_PATH"] + "/scripts/JsRoot620/jsroot/" + histoOutRoot)
     display(HTML('''
     <iframe width="700" height="400"
-        src="http://127.0.0.1:8888/static/jsroot/index.htm?file=./{histoOutRoot}">
+        src="/static/jsroot/index.htm?file=./{histoOutRoot}">
     </iframe>
     '''.format(histoOutRoot=histoOutRoot)))
 
