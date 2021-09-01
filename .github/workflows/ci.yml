@@ -30,6 +30,7 @@ jobs:
     - name: Build CutLang
       working-directory: CLA
       run: |
+        git status
         echo test
         #make
     
