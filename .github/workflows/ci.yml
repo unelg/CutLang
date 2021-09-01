@@ -6,7 +6,6 @@ jobs:
   build:
     
     runs-on: ubuntu-latest
-    container: rootproject/root:6.24.00-conda
 
     steps:
     - uses: actions/checkout@v2
@@ -21,9 +20,46 @@ jobs:
         chmod +x deploy.sh
         chmod +x filter.sh
         chmod +x mail_body.sh 
+
+    - name: init-cache-dir
+      working-directory: .
+      run: mkdir build
+      
+    - name: Cache ROOT Build
+      id: cache
+      uses: actions/cache@v1.1.2
+      with:
+        path: ./build/
+        key: ${{ runner.os }}-build-6180401351b8ada42c7b51b8504195dc30bdfbe5a42424fa4fef7156a57079e49b930
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+          
+    - name: ROOT Dependencies
+      run: |
+        apt update ; 
+        apt install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
+        libxft-dev libxext-dev ;
+        apt install gfortran libssl-dev libpcre3-dev \
+        xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
+        libmysqlclient-dev libfftw3-dev libcfitsio-dev \
+        graphviz-dev libavahi-compat-libdnssd-dev \
+        libldap2-dev python-dev libxml2-dev libkrb5-dev \
+        libgsl0-dev libqt4-dev ;
+        apt install flex bison wget ;
+                   
+    - name: Build ROOT
+      if: steps.cache.outputs.cache-hit != 'true'
+      working-directory: .
+      run: |
+        git clone https://github.com/root-project/root.git
+        cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
+        mv ./build ./b2 ; mkdir build ; cd build ; cmake ../root/ ; cmake --build . -- -j4
+    
       
     - name: CutLang Dependencies
       run: |
+        apt update
         apt install -y flex bison wget make
                    
     - name: Build CutLang
@@ -49,6 +85,10 @@ jobs:
         fi
         ./mail_body.sh
 
+    - name: Update Artifacts
+      if: steps.cache.outputs.cache-hit == 'true'
+      working-directory: .github/workflows
+      run: |
         git --version
         git status
 
