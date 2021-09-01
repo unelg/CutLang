@@ -16,8 +16,6 @@ jobs:
     - name: chmod
       working-directory: .github/workflows
       run: |
-        echo $(ls -a ../..)
-        git status
         ls -la
         chmod +x ./sendgrid.js
         chmod +x deploy.sh
@@ -26,44 +24,33 @@ jobs:
       
     - name: CutLang Dependencies
       run: |
-        git status
         apt update
         apt install -y flex bison wget
                    
     - name: Build CutLang
       working-directory: CLA
       run: |
-        git status
-        echo test
-        #make
+        make
     
     - name: Run Tests
       working-directory: .github/workflows
       run: |
-        #./deploy.sh 2>&1 | tee ./raw_output.txt
+        ./deploy.sh 2>&1 | tee ./raw_output.txt
       
     - name: Filter Output
       working-directory: .github/workflows
       run: |
-        #./filter.sh
-        #cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
-        #cd ../workflows; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
-        #mkdir artifacts; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
-        #if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
-        #  touch flag
-        #fi
-        #./mail_body.sh
-
-        apt-get install -y software-properties-common \
-        && apt-get update \
-        && add-apt-repository -y ppa:git-core/ppa \
-        && apt-get update \
-        && apt-get install -y git
+        ./filter.sh
+        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
+        cd ../workflows; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
+        mkdir artifacts; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
+        if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
+          touch flag
+        fi
+        ./mail_body.sh
 
         git --version
-        echo test
         git status
-        echo test2
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
