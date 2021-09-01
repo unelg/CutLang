@@ -16,7 +16,7 @@ jobs:
     - name: chmod
       working-directory: .github/workflows
       run: |
-        echo $(ls ../../.git)
+        echo $(ls -a ../..)
         git status
         ls -la
         chmod +x ./sendgrid.js
