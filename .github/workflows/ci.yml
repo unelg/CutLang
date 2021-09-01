@@ -87,11 +87,12 @@ jobs:
         git config user.email "jinens8@gmail.com"
         git config user.name "bot"
 
-        echo git add
+        git --version
         git add ../previous
         git commit -m "automated update" 
-        echo end commit
+        git --version
         git push origin ${GITHUB_REF##*/}
+        git --version
 
     - name: Check for Bad Run Flag
       id: check_files
