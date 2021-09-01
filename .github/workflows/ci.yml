@@ -54,7 +54,7 @@ jobs:
     - name: Run Tests
       working-directory: .github/workflows
       run: |
-        source ../root/bin/thisroot.sh; ./deploy.sh 2>&1 | tee ./raw_output.txt
+        source ../../root/bin/thisroot.sh; ./deploy.sh 2>&1 | tee ./raw_output.txt
       
     - name: Filter Output
       working-directory: .github/workflows
