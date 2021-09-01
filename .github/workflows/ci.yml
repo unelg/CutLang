@@ -38,29 +38,28 @@ jobs:
     - name: ROOT Dependencies
       run: |
         sudo apt update ; 
-        sudo apt install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
-        libxft-dev libxext-dev ;
-        sudo apt install gfortran libssl-dev libpcre3-dev \
+        sudo apt-get install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
+        libxft-dev libxext-dev python libssl-dev ;
+        sudo apt-get install gfortran libpcre3-dev \
         xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
         libmysqlclient-dev libfftw3-dev libcfitsio-dev \
         graphviz-dev libavahi-compat-libdnssd-dev \
         libldap2-dev python-dev libxml2-dev libkrb5-dev \
-        libgsl0-dev libqt4-dev ;
-        sudo apt install flex bison wget ;
+        libgsl0-dev ;
                    
     - name: Build ROOT
       if: steps.cache.outputs.cache-hit != 'true'
       working-directory: .
       run: |
         git clone https://github.com/root-project/root.git
-        cd root ; git checkout -b v6-18-04 v6-18-04 ; cd ../
+        cd root ; git checkout -b v6-24-00 v6-24-00 ; cd ../
         mv ./build ./b2 ; mkdir build ; cd build ; cmake ../root/ ; sudo cmake --build . -- -j4
     
       
     - name: CutLang Dependencies
       run: |
         apt update
-        apt install -y flex bison wget make
+        apt install -y flex bison wget
                    
     - name: Build CutLang
       working-directory: CLA
