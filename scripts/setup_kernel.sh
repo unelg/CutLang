@@ -13,7 +13,7 @@ cp "$CUTLANG_PATH/scripts/jupyter/settings/overrides.json" "$jupyterLabAppDir/se
 export pythonNotebookSitePackagesPath=$(dirname $(python -c "import notebook as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep notebook))
 export pythonJupyROOTSitePackagesPath=$(dirname $(python -c "import JupyROOT as _; print(_.__path__)" | awk -v RS="[:']" 1 | grep JupyROOT))
 
-git clone --depth 1 --branch 6.2.0 https://github.com/root-project/jsroot $CUTLANG_PATH/scripts/JsRoot620/jsroot
+git clone --depth 1 --branch 6.2.0 https://github.com/root-project/jsroot $CUTLANG_PATH/scripts/JsRoot620/jsroot > /dev/null 2>&1
 
 isProd=$2
 __debug(){
