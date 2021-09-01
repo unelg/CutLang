@@ -80,6 +80,9 @@ jobs:
         tar_date_int=$(date -d $target_date +%s)
         cur_date_int=$(date -d $cur_date +%s)
 
+        echo target_date: $target_date
+        echo cur_date: $cur_date
+
         if [ $tar_date_int -le $cur_date_int ]; then
           exit 0
         fi
