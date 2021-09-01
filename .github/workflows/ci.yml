@@ -69,6 +69,7 @@ jobs:
         ./mail_body.sh
 
     - name: Update Artifacts
+      if: ${{ github.event_name == 'push' }}
       working-directory: .github/workflows
       run: |
         git --version
@@ -86,6 +87,7 @@ jobs:
         git config user.email "jinens8@gmail.com"
         git config user.name "bot"
 
+        echo git add
         git add ../previous
         git commit -m "automated update" 
         git push origin ${GITHUB_REF##*/}
