@@ -1,8 +1,7 @@
 #!/bin/bash
 
-cd $HOME/work/CutLang/CutLang/.github/workflows/artifacts
+cd ./artifacts
 
-. $HOME/work/CutLang/CutLang/build/bin/thisroot.sh
 root --version 2>&1 | tee ./temp2.txt
 echo "" | tee -a temp2.txt
 cat raw_output.txt | grep -e error -e WARNING -e syntax -e CLA.sh | tee ./temp.txt

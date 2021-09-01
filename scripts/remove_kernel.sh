@@ -4,6 +4,8 @@ rm -rf $(jupyter --data-dir)/kernels/cutlang
 
 rm -rf "$jupyterLabAppDir/settings"
 
+#rm -rf $CUTLANG_PATH/scripts/JsRoot620
+
 isProd=$2
 __debug(){
     if [ $isProd == "1" ]; then
