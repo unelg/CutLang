@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt install git
+apt install -y git
 
 target_date=`date "+%Y-%m-%d" -d "6 day ago"`
 cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
