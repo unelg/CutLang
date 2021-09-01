@@ -19,6 +19,7 @@ jobs:
         chmod +x ./sendgrid.js
         chmod +x deploy.sh
         chmod +x filter.sh
+        chmod +x filter_errors.sh
         chmod +x mail_body.sh 
           
     - name: ROOT Dependencies
@@ -60,6 +61,7 @@ jobs:
       working-directory: .github/workflows
       run: |
         ./filter.sh
+        ./filter_errors.sh
         git pull
         cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt;
         echo ended tee
