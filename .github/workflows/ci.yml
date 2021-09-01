@@ -24,8 +24,7 @@ jobs:
       
     - name: CutLang Dependencies
       run: |
-        apt update
-        apt install -y flex bison wget make
+        conda install -y flex bison wget make
                    
     - name: Build CutLang
       working-directory: CLA
