@@ -48,7 +48,7 @@ jobs:
           touch flag
         fi
         ./mail_body.sh
-    
+        
     - name: Check for Bad Run Flag
       id: check_files
       uses: andstor/file-existence-action@v1
@@ -61,10 +61,11 @@ jobs:
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
-        
+
     - name: Update Artifacts
       working-directory: .github/workflows
-      run: ./commit.sh ${GITHUB_REF##*/}
+      run: |
+        ./commit.sh
       
     - name: Upload Output File
       uses: actions/upload-artifact@v1.0.0

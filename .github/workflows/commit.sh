@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt install git
+
 target_date=`date "+%Y-%m-%d" -d "6 day ago"`
 cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
 tar_date_int=$(date -d $target_date +%s)
@@ -14,4 +16,4 @@ git config user.name "bot"
 
 git add ../previous/
 git commit -m "automated update" 
-git push origin $1
+git push origin ${GITHUB_REF##*/}
