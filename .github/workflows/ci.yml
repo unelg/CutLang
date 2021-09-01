@@ -6,15 +6,13 @@ jobs:
   build:
     
     runs-on: ubuntu-latest
-    container: rootproject/root:6.24.00-ubuntu20.04
 
     steps:
+    - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
         node-version: '12.x'
-    - uses: actions/checkout@v2
     - name: chmod
-    - uses: actions/checkout@v2
       working-directory: .github/workflows
       run: |
         echo $(ls -a ../..)
