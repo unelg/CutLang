@@ -64,7 +64,11 @@ jobs:
     - name: Update Artifacts
       working-directory: .
       run: |
-        apt install -y git
+        apt-get install -y software-properties-common \
+        && sudo apt-get update \
+        && sudo add-apt-repository -y ppa:git-core/ppa \
+        && sudo apt-get update \
+        && sudo apt-get install -y git
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ./.github/previous/raw_output.txt`
