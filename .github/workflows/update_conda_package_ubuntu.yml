@@ -23,6 +23,8 @@ jobs:
       id: update_meta
       working-directory: ./scripts/conda
       run: |
+        echo $(ls -a ../..)
+        git status
         echo "::set-output name=VERSION_CUTLANG::$(cat ../../VERSION)"
 
         echo "::group::VERSION"
