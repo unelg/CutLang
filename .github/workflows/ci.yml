@@ -65,6 +65,8 @@ jobs:
     - name: Update Artifacts
       working-directory: .github/workflows
       run: |
+        apt install -y git
+
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
         tar_date_int=$(date -d $target_date +%s)
