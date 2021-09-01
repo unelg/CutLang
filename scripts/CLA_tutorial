@@ -1,1 +1,15 @@
-jupyter-lab --ip=0.0.0.0 --allow-root --notebook-dir="$CUTLANG_PATH"
+jpytrnb=""
+extras=""
+if [ "$1" == "lab" ]; then
+    jpytrnb="lab"
+elif [ "$1" == "notebook" ]; then
+    jpytrnb="notebook"
+else
+    echo "Please enter value as 'CLA_tutorial lab' or 'CLA_tutorial notebook'"
+    exit
+fi
+
+rm -rf $CUTLANG_PATH/scripts/nbmain
+g++ -o $CUTLANG_PATH/scripts/nbmain $CUTLANG_PATH/scripts/nbmain.cxx $(root-config --libs --cflags)
+
+$CUTLANG_PATH/scripts/nbmain $jpytrnb $extras --config="$CUTLANG_PATH/scripts/CLA_tutorial_jupyter_notebook_config.py"

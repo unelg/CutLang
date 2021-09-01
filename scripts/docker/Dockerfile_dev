@@ -4,19 +4,11 @@ RUN apt update
 
 RUN apt install python3-pip -y
 RUN pip install jupyterlab metakernel
-RUN mkdir -p $(jupyter --data-dir)/kernels/cutlang
 
 RUN apt install -y bison flex make wget
+
 RUN echo "alias python=python3" >> ~/.bashrc
 RUN echo "source /src/setup.sh" >> ~/.bashrc
-
-RUN echo "cp /src/kernel/kernel.json $(jupyter --data-dir)/kernels/cutlang/kernel.json" >> ~/.bashrc
-
-RUN echo "cp /src/kernel/magics/cutlangmagic.py $ROOTSYS/lib/JupyROOT/kernel/magics/cutlangmagic.py" >> ~/.bashrc
-RUN echo "cp /src/kernel/magics/shellmagic.py $ROOTSYS/lib/JupyROOT/kernel/magics/shellmagic.py" >> ~/.bashrc
-
-RUN echo "cp /src/kernel/cutlangmagic.py $ROOTSYS/lib/JupyROOT/magics/cutlangmagic.py" >> ~/.bashrc
-RUN echo "cp /src/kernel/shellmagic.py $ROOTSYS/lib/JupyROOT/magics/shellmagic.py" >> ~/.bashrc
 
 WORKDIR /src
 

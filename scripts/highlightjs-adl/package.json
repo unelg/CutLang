@@ -1,0 +1,37 @@
+{
+  "name": "highlightjs-adl",
+  "version": "0.0.1",
+  "description": "highlight.js syntax definition for adl",
+  "main": "public/javascripts/adl.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unelg/CutLang/tree/master/scripts/highlightjs-adl"
+  },
+  "keywords": [
+    "adl",
+    "ADL",
+    "cutlang",
+    "CutLang",
+    "highlight.js",
+    "highlightjs",
+    "syntax"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "start": "DEBUG=highlightjs-adl:* node ./bin/www",
+    "build": "webpack",
+    "clean": "rm -rf dist && rm -rf public/javascripts/adl.min.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~4.3.2",
+    "express": "~4.17.1",
+    "hbs": "~4.1.2",
+    "http-errors": "~1.8.0",
+    "morgan": "~1.10.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
+  }
+}

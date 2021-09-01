@@ -1,4 +1,4 @@
-#CLA ADL exampleConstituents
+#CLA ADL jet constituents example
 
 object goodJet using JET
   select q(JET constituents ) == 0  

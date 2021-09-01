@@ -5,7 +5,7 @@ import sys
 import glob
 import platform
 import concurrent.futures
-import os
+import random
 
 
 # noinspection PyShadowingBuiltins,PyShadowingNames
@@ -22,18 +22,22 @@ SCRIPT=os.path.dirname(os.path.abspath(__file__))+"/CLA.py"         # /home/.../
 RUNS_PATH=os.path.dirname(SCRIPT)                                   # /home/.../CutLang/runs
 WORK_PATH=os.path.dirname(RUNS_PATH)                                # /home/.../CutLang
 
+SHELL_ID = str(random.randint(0,10000))
+
 # noinspection PyShadowingNames,SpellCheckingInspection
 def removePattern(pattern):
     if type(pattern) is str:
-        for i in glob.glob(pattern):
+        _pattern=arguments["chdir"]+"/"+pattern
+        for i in glob.glob(_pattern):
             try:
                 os.remove(i)
             except FileNotFoundError:
                 pass
     elif type(pattern) is list:
         for i in pattern:
+            _pattern=arguments["chdir"]+"/"+i
             try:
-                os.remove(i)
+                os.remove(_pattern)
             except FileNotFoundError:
                 pass
 
@@ -60,29 +64,29 @@ def singleAnalysis(arguments, histoId=None):
         os.system(base_dir + "scripts/separate_algos.sh " + arguments['inifile'])
     else:
         print("Single Analysis")
-        os.system("cp " + arguments['inifile'] + " BP_1-card.ini")
+        os.system("cp " + arguments['inifile'] + " "+arguments["chdir"]+"/BP_1-card.ini")
 
     removePattern('histoOut-BP_*.root')
     #print(base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT')
-    print(base_dir+ "scripts/CLApy_helper.sh " '"' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
+    print(base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
         algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V ' + str(arguments['verbose']) + ' -ST ' + str(
-        arguments['start'])+ ' -HLT ' + str(HLTLIST) + '"')
+        arguments['start'])+ ' -HLT ' + str(HLTLIST))
 
-    res = os.system(base_dir+ "scripts/CLApy_helper.sh " '"' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
+    res = os.system('cd ' + arguments["chdir"] + ";" + base_dir + "scripts/CLApy_helper.sh " '"' + base_dir + 'CLA/CLA.exe ' + arguments['datafile'] + ' -inp ' + arguments['datatype'] + ' -BP ' + str(
         algorithm_count) + ' -EVT ' + str(arguments['events']) + ' -V ' + str(arguments['verbose']) + ' -ST ' + str(
         arguments['start'])+ ' -HLT ' + str(HLTLIST) + '"')
 
     if res == 0:
         print('CutLang finished successfully, now adding histograms')
         try:
-            os.remove('histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root')
+            os.remove(arguments["chdir"]+'/histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root')
         except FileNotFoundError:
             pass
         if histoId is not None:
-            hadd_query = 'hadd -f histoOut-' + arguments['inifile'].split('/')[-1][:-4] + str(histoId) + '.root'
+            hadd_query = 'hadd -f '+arguments["chdir"]+'/histoOut-' + arguments['inifile'].split('/')[-1][:-4] + str(histoId) + '.root'
         else:
-            hadd_query = 'hadd -f histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root'
-        for i in glob.glob('histoOut-BP_*.root'):
+            hadd_query = 'hadd -f '+arguments["chdir"]+'/histoOut-' + arguments['inifile'].split('/')[-1][:-4] + '.root'
+        for i in glob.glob(arguments["chdir"]+'/histoOut-BP_*.root'):
             hadd_query += " " + i
         res = os.system(hadd_query)
         if res == 0:
@@ -116,7 +120,8 @@ arguments = {'inifile': "CLA.ini",
              'parallel': 1,
              'verbose': 5000,
              'events': 0,
-             'start': 0}
+             'start': 0,
+             'chdir': "."}
 POSITIONAL = ()
 
 for i, arg in enumerate(sys.argv[3::2]):
@@ -155,29 +160,39 @@ if arguments['parallel'] > 1:
     skip_histos = getStringCount(arguments['inifile'], 'SkipHistos')
     skip_effs = getStringCount(arguments['inifile'], 'SkipEffs')
     print("Using", arguments['parallel'], "cores")
+    intrvl=False
     if int(arguments['events']) == 0:
-        arguments['events'] = int(os.popen('../scripts/event_count.sh ' + arguments['datafile']).read().split()[-1])
+        hltInFile=os.popen(''' grep -E "select HLT" '''+arguments["inifile"]+''' | sed 's/select HLT//g' ''').read()
+
+        dt=os.popen(''' grep "'''+arguments["datatype"]+'''" '''+base_dir+'''CLA/CLA.C | cut -d '{' -f 2 | head -c -9 | cut -c 2- | grep true; ''').read().split(" ")[0]
+        chn=os.popen(''' grep -A2 "if ('''+dt+''')" '''+base_dir+'''CLA/CLA.C | grep "TChain(" | cut -d '"' -f 2 ''').read().split()[0]
+        TotalEvents=os.popen(''' root -l -q \''''+base_dir+'''analysis_core/getentries.cxx("'''+arguments["datafile"]+'''" ,"'''+chn+'''")' ''').read().split()[-1]
+        EVENTS=os.popen(''' echo '''+TotalEvents+''' | awk '{print $NF}' ''').read().split()[0]
+        print("Total number of events: " + EVENTS)
+        arguments['events'] = EVENTS
+        intrvl=int(arguments['events']) // arguments['parallel']
     print("*" * 100,
           base_dir + 'CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL}',
           sep='\n')
 
-    os.system('rm -r temp')
-    temp_dir = 'temp'
-    os.mkdir(temp_dir)
+    temp_dir = base_dir+'temp_runs_'+SHELL_ID
+    temp_adl_dir = base_dir+'temp_adl_'+SHELL_ID
+    os.mkdir(temp_adl_dir)
+    os.system('cp ' + arguments['inifile'] + " " + temp_adl_dir + "/tempor.adl")
     for i in range(arguments['parallel']):
-        dir_name = 'cut_' + str(i)
-        os.mkdir(os.path.join(temp_dir, dir_name))
-        os.system(
-            'mkdir ' + os.path.join(temp_dir, dir_name) + '/runs; cp ' + base_dir + 'runs/* ' + os.path.join(temp_dir,
-                                                                                                             dir_name) + '/runs/')
-        os.system('cp -r ' + base_dir + 'CLA ' + os.path.join(temp_dir, dir_name))
-        os.system('cp -r ' + base_dir + 'analysis_core ' + os.path.join(temp_dir, dir_name))
-        os.system('cp -r ' + base_dir + 'BP ' + os.path.join(temp_dir, dir_name))
+        dir_name = temp_dir + "_" + str(i)
+        os.mkdir(dir_name)
+        os.system('cp -a ' + base_dir + 'runs/. ' + dir_name)
         # Copied {runs, CLA, analysis_core, BP}
         removePattern('histoOut-BP_*.root')
         print(dir_name, 'copied from runs')
 
-    interval = int(arguments['events']) // arguments['parallel']
+    res=os.popen('grep -i "SkipEffs" '+temp_adl_dir + "/tempor.adl").read().split("=")[0]
+    if not res:
+        os.system(''' sed -i '/SkipEffs/Id' '''+base_dir+'''temp_adl_'''+SHELL_ID+'''/tempor.adl ''')
+    os.system(''' ex -sc '1i|SkipEffs = 1' -cx '''+base_dir+'''temp_adl_'''+SHELL_ID+'''/tempor.adl ''')
+    
+    interval = intrvl if intrvl else int(arguments['events']) // arguments['parallel']
     processes = []
     for i in range(arguments['parallel']):
         cur_arguments = arguments.copy()
@@ -185,7 +200,9 @@ if arguments['parallel'] > 1:
         cur_arguments['events'] = interval
         if i + 1 == arguments['parallel']:
             cur_arguments['events'] += int(arguments['events']) % interval
-        cur_arguments['inifile'] = temp_dir + '/cut_' + str(i) + '/runs/' + arguments['inifile']
+        cur_arguments['inifile'] = temp_adl_dir + "/" + "tempor.adl"
+        cur_arguments['chdir'] = temp_dir + "_" + str(i)
+        cur_arguments['datafile'] = os.path.realpath(arguments['datafile'])
         processes.append(cur_arguments)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=arguments['parallel']) as executor:
@@ -199,17 +216,18 @@ if arguments['parallel'] > 1:
     arguments['inifile'] = arguments['inifile'].split('/')[-1][:-4]
     res = 0
 
-    for i in os.listdir(base_dir + 'runs/temp/'):
-        res = os.system(
-            'hadd -a histoOut-' + arguments['inifile'] + '.root ' + base_dir + 'runs/temp/' + i + '/runs/histoOut-' +
-            arguments['inifile'] + '.root')
+    allHistos=""
+    for i in range(arguments['parallel']):
+        allHistos=allHistos + temp_dir + "_" + str(i) + "/" + "histoOut-tempor.root "
+    res = os.system(
+        'hadd -f histoOut-' + arguments['inifile'] + '.root ' + allHistos)
     print("removing auxiliary files")
     if res == 0:
-        os.system('root -l -q \'' + base_dir + 'analysis_core/FinalEff.C("' + base_dir + 'runs/histoOut-' + arguments[
+        os.system('root -l -q \'' + base_dir + 'analysis_core/FinalEff.C("' + './histoOut-' + arguments[
             'inifile'] + '.root", \'' + str(skip_histos) + '\', \'' + str(skip_effs) + '\')\'')
     removePattern('histoOut-BP_*.root')
     removePattern(['_head.ini', '_algos.ini', '_inifile'])
     removePattern('BP_*-card.ini')
-    os.system('rm -r temp')
+    os.system('rm -r '+base_dir+'temp*')
 else:
     singleAnalysis(arguments)

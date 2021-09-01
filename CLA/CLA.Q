@@ -59,7 +59,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
-cout << "CLA v2.11.16\t";
+cout << "CLA v2.12.5\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
@@ -226,8 +226,11 @@ if (ival==0) {
   }else if (use_cmsnano){
    cout << "~Now using CMS NanoAOD files.~~~~~~ beta!\n";
    chain = new TChain("Events");
-  }else if (use_atlasod|use_atlasodR2){
+  }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
+   chain = new TChain("mini");
+  }else if (use_atlasodR2){
+   cout << "~Now using ATLAS Open Data R2 files.~~~~~~ beta!\n";
    chain = new TChain("mini");
   }else if (use_atlmin){
    cout << "~Now using ATLAS Mini NTUPLE files.~~~~~~ alpha!\n";

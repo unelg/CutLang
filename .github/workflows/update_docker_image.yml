@@ -43,6 +43,7 @@ jobs:
           
           sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
           sed -i "/cout << \"CLA v/c cout << \"CLA v$version_cutlang\\\t\";" ../../CLA/CLA.Q
+          sed -i "/\"display_name\": \"ROOT C++ with CutLang/c    \"display_name\": \"ROOT C++ with CutLang v$version_cutlang\"," ../../scripts/jupyter/kernel/cutlangkernel.json
           meta=`cat ../../scripts/conda/meta.yaml`
           echo "::group::META"
           echo "Inside group $meta"

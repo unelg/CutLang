@@ -31,6 +31,7 @@ jobs:
         
         sed -i "/version = /c{% set version = '$(cat ../../VERSION)' %}" meta.yaml
         sed -i "/cout << \"CLA v/c cout << \"CLA v$(cat ../../VERSION)\\\t\";" ../../CLA/CLA.Q
+        sed -i "/\"display_name\": \"ROOT C++ with CutLang/c    \"display_name\": \"ROOT C++ with CutLang v$(cat ../../VERSION)\"," ../../scripts/jupyter/kernel/cutlangkernel.json
         meta=`cat ../../scripts/conda/meta.yaml`
         echo "::group::META"
         echo "Inside group $meta"
@@ -69,6 +70,7 @@ jobs:
       run: |
         rm -rf ../scripts/conda/meta.yaml
         rm -rf ../CLA/CLA.Q
+        rm -rf ../scripts/jupyter/kernel/cutlangkernel.json
 
         git config user.email "tobuba2@gmail.com"
         git config user.name "bot"

@@ -1,0 +1,12 @@
+{
+    "language": "c++",
+"display_name": "ROOT C++ with CutLang v2.12.5",
+    "argv": [
+     "python",
+     "-m",
+     "JupyROOT.kernel.cutlangkernel",
+     "-f",
+     "{connection_file}"
+    ]
+}
+   
