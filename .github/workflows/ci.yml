@@ -63,12 +63,9 @@ jobs:
         ./filter.sh
         ./filter_errors.sh
         git pull
-        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt;
+        cd ../previous;
+        diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt;
         echo ended tee
-        mkdir ../previous2;
-        echo ended mkdir previous2
-        cp -r ./* ../previous2;
-        echo ended cp -r
         rm raw_output.txt errors.txt efficacy_charts.txt differences.txt;
         echo ended rm
         cd ../workflows;
@@ -88,7 +85,7 @@ jobs:
         git status
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
-        cur_date=`git log -1 --pretty="format:%cs" ../previous2/raw_output.txt`
+        cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
 
         echo target_date: $target_date
         echo cur_date: $cur_date
@@ -99,8 +96,6 @@ jobs:
         if [ $tar_date_int -le $cur_date_int ]; then
           exit 0
         fi
-
-        rm -rf ../previous2
 
         git config user.email "jinens8@gmail.com"
         git config user.name "bot"
