@@ -57,7 +57,9 @@ jobs:
         && apt-get install -y git
 
         git --version
+        echo test
         git status
+        echo test2
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
         cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
