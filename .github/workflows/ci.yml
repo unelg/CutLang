@@ -60,8 +60,9 @@ jobs:
       working-directory: .github/workflows
       run: |
         ./filter.sh
-        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt 
-        cd ../workflows; cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
+        cd ../previous; diff raw_output.txt ../workflows/raw_output.txt | tee ../workflows/differences.txt; rm raw_output.txt errors.txt efficacy_charts.txt differences.txt;
+        cd ../workflows; mkdir ../previous2; cp -r ../previous/* ../previous2
+        cp raw_output.txt errors.txt efficacy_charts.txt differences.txt ../previous/
         mkdir artifacts; mv raw_output.txt errors.txt efficacy_charts.txt differences.txt ./artifacts
         if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
           touch flag
@@ -76,7 +77,7 @@ jobs:
         git status
 
         target_date=`date "+%Y-%m-%d" -d "6 day ago"`
-        cur_date=`git log -1 --pretty="format:%cs" ../previous/raw_output.txt`
+        cur_date=`git log -1 --pretty="format:%cs" ../previous2/raw_output.txt`
         tar_date_int=$(date -d $target_date +%s)
         cur_date_int=$(date -d $cur_date +%s)
 
@@ -86,6 +87,8 @@ jobs:
         if [ $tar_date_int -le $cur_date_int ]; then
           exit 0
         fi
+
+        rm -rf ../previous2
 
         git config user.email "jinens8@gmail.com"
         git config user.name "bot"
