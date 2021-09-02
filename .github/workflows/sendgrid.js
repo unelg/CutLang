@@ -6,9 +6,21 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs = require('fs'),
     filename = 'errors.txt',
     fileType = 'plain/text',
-    data = fs.readFileSync('./.github/workflows/artifacts/' + filename);
+    data = fs.readFileSync('./.github/workflows/artifacts/' + filename),
 
-const error_message = fs.readFileSync('./.github/workflows/artifacts/temp.txt', 'utf8')
+    filename_raw_output = 'raw_output.txt',
+    fileType_raw_output = 'plain/text',
+    data_raw_output = fs.readFileSync('./.github/workflows/artifacts/' + filename_raw_output),
+
+    filename_efficiacy_charts = 'efficiacy_charts.txt',
+    fileType_efficiacy_charts = 'plain/text',
+    data_efficiacy_charts = fs.readFileSync('./.github/workflows/artifacts/' + filename_efficiacy_charts),
+
+    filename_differences = 'differences.txt',
+    fileType_differences = 'plain/text',
+    data_differences = fs.readFileSync('./.github/workflows/artifacts/' + filename_differences);
+
+const error_message = fs.readFileSync('./.github/workflows/artifacts/errors.txt', 'utf8')
 
 const msg = {
     to: ['gokhan.unel@gmail.com','ssekmen@gmail.com','tobuba2@gmail.com'],
@@ -20,6 +32,24 @@ const msg = {
             content: data.toString('base64'),
             filename: filename,
             type: fileType,
+            disposition: 'attachment',
+        },
+        {
+            content: data_raw_output.toString('base64'),
+            filename: filename_raw_output,
+            type: fileType_raw_output,
+            disposition: 'attachment',
+        },
+        {
+            content: data_efficiacy_charts.toString('base64'),
+            filename: filename_efficiacy_charts,
+            type: fileType_efficiacy_charts,
+            disposition: 'attachment',
+        },
+        {
+            content: data_differences.toString('base64'),
+            filename: filename_differences,
+            type: fileType_differences,
             disposition: 'attachment',
         },
     ],

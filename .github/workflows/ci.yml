@@ -22,7 +22,6 @@ jobs:
         chmod +x deploy.sh
         chmod +x filter.sh
         chmod +x filter_errors.sh
-        chmod +x mail_body.sh 
           
     - name: ROOT Dependencies
       run: |
@@ -77,7 +76,6 @@ jobs:
         if [ "`cat ./artifacts/errors.txt`" != "Errors: " ]; then
           touch flag
         fi
-        source ../../root/bin/thisroot.sh; ./mail_body.sh
 
     - name: Update Artifacts
       if: ${{ github.event_name == 'push' }}
