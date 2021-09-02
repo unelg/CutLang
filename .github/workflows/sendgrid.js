@@ -8,7 +8,7 @@ const fs = require('fs'),
     fileType = 'plain/text',
     data = fs.readFileSync('./.github/workflows/artifacts/' + filename);
 
-const error_message = fs.readFileSync('./.github/workflows/artifacts/temp.txt', 'utf8')
+const error_message = fs.readFileSync('./.github/workflows/artifacts/errors.txt', 'utf8')
 
 const msg = {
     to: ['gokhan.unel@gmail.com','ssekmen@gmail.com','tobuba2@gmail.com'],
