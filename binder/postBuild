@@ -11,4 +11,4 @@ jupyterConfigDir=$notebook_env/etc/notebook
 
 mkdir -p $jupyterConfigDir
 
-cat ~/binder/jupyter_notebook_config.py >> $jupyterConfigDir/jupyter_notebook_config.py
+cat $CUTLANG_PATH/binder/jupyter_notebook_config.py >> $jupyterConfigDir/jupyter_notebook_config.py
