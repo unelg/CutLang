@@ -59,7 +59,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
-cout << "CLA v2.12.8\t";
+cout << "CLA v2.12.9\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
