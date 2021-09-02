@@ -12,9 +12,9 @@ const fs = require('fs'),
     fileType_raw_output = 'plain/text',
     data_raw_output = fs.readFileSync('./.github/workflows/artifacts/' + filename_raw_output),
 
-    filename_efficiacy_charts = 'efficiacy_charts.txt',
-    fileType_efficiacy_charts = 'plain/text',
-    data_efficiacy_charts = fs.readFileSync('./.github/workflows/artifacts/' + filename_efficiacy_charts),
+    filename_efficacy_charts = 'efficacy_charts.txt',
+    fileType_efficacy_charts = 'plain/text',
+    data_efficacy_charts = fs.readFileSync('./.github/workflows/artifacts/' + filename_efficacy_charts),
 
     filename_differences = 'differences.txt',
     fileType_differences = 'plain/text',
@@ -41,9 +41,9 @@ const msg = {
             disposition: 'attachment',
         },
         {
-            content: data_efficiacy_charts.toString('base64'),
-            filename: filename_efficiacy_charts,
-            type: fileType_efficiacy_charts,
+            content: data_efficacy_charts.toString('base64'),
+            filename: filename_efficacy_charts,
+            type: fileType_efficacy_charts,
             disposition: 'attachment',
         },
         {
