@@ -41,9 +41,9 @@ const msg = {
             disposition: 'attachment',
         },
         {
-            content: data_efficiacy_charts.toString('base64'),
-            filename: filename_efficiacy_charts,
-            type: fileType_efficiacy_charts,
+            content: data_efficacy_charts.toString('base64'),
+            filename: filename_efficacy_charts,
+            type: fileType_efficacy_charts,
             disposition: 'attachment',
         },
         {
