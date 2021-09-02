@@ -11,4 +11,4 @@ jupyterConfigDir=$(jupyter --config-dir)
 
 mkdir -p $jupyterConfigDir
 
-cp $CUTLANG_PATH/binder/jupyter_notebook_config.py $jupyterConfigDir/jupyter_notebook_config.py
+cp ~/binder/jupyter_notebook_config.py $jupyterConfigDir/jupyter_notebook_config.py
