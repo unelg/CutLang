@@ -10,7 +10,7 @@ if 'ROOTSYS' in os.environ:
     _rootetc = os.environ['ROOTSYS'] + '/etc'
     _rootdata = os.environ['ROOTSYS']
 
-    _rootnbpath = os.environ['HOME'] + "/.rootnb"
+    #_rootnbpath = os.environ['HOME'] + "/.rootnb"
     
     os.environ['PATH']            = '%s:%s/bin' % (_rootbin,_rootbin) + ':' + os.getenv('PATH', '')
     os.environ['LD_LIBRARY_PATH'] = '%s' % _rootlib + ':' + os.getenv('LD_LIBRARY_PATH', '')
@@ -19,8 +19,8 @@ if 'ROOTSYS' in os.environ:
     os.environ['LIB_PATH'] = '%s' % _rootlib + ':' + os.getenv('LIB_PATH', '')
     os.environ['PYTHONPATH']      = '%s' % _rootlib + ':' + os.getenv('PYTHONPATH', '')
     os.environ['CMAKE_PREFIX_PATH']      = '%s' % _rootdata + ':' + os.getenv('CMAKE_PREFIX_PATH', '')
-    os.environ['JUPYTER_PATH']      = '%s' % _rootnbpath + ':' + os.getenv('JUPYTER_PATH', '')
-    os.environ['JUPYTER_CONFIG_DIR']      = '%s' % _rootnbpath + ':' + os.getenv('JUPYTER_CONFIG_DIR', '')
+    #os.environ['JUPYTER_PATH']      = '%s' % _rootnbpath + ':' + os.getenv('JUPYTER_PATH', '')
+    #os.environ['JUPYTER_CONFIG_DIR']      = '%s' % _rootnbpath + ':' + os.getenv('JUPYTER_CONFIG_DIR', '')
     c.NotebookApp.extra_static_paths.append(os.path.join(os.environ['ROOTSYS'], 'js/'))
     c.ServerApp.extra_static_paths.append(os.path.join(os.environ['ROOTSYS'], 'js/'))
     c.NotebookApp.extra_static_paths.append(os.path.join(os.environ['CUTLANG_PATH'], 'scripts/JsRoot620/'))
