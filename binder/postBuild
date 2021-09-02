@@ -9,4 +9,4 @@ touch $CUTLANG_PATH/mybinder_true
 
 jupyterConfigDir=$(jupyter --config-dir)
 
-cp $CUTLANG_PATH/binder/jupyter_notebook_config.py $jupyterConfigDir/jupyter_notebook_config.py
+#cp $CUTLANG_PATH/binder/jupyter_notebook_config.py $jupyterConfigDir/jupyter_notebook_config.py
