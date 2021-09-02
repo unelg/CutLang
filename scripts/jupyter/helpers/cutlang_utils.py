@@ -47,9 +47,9 @@ def run(display, HTML, code, _file, _filetype, _adlName, _extraArgs):
             class="histoOut-iframe-{_adlName}">
         </iframe>
         <script>
-            [].forEach.call(document.getElementsByClassName("histoOut-iframe-{_adlName}"), function (el) {
+            [].forEach.call(document.getElementsByClassName("histoOut-iframe-{_adlName}"), function (el) {{
                 el.src="/user/"+window.location.pathname.split("/")[2]+"/static/jsroot/index.htm?file=./{histoOutRoot}"
-            });
+            }});
         </script>
         '''.format(histoOutRoot=histoOutRoot, _adlName=_adlName)))
     else:
