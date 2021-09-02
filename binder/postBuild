@@ -7,6 +7,8 @@ CUTLANG_PATH=$notebook_env/bin/cutlang
 
 touch $CUTLANG_PATH/mybinder_true
 
-jupyterConfigDir=$(jupyter --config-dir)
+jupyterConfigDir=$notebook_env/etc/notebook
 
-cp $CUTLANG_PATH/binder/jupyter_notebook_config.py $jupyterConfigDir/jupyter_notebook_config.py
+mkdir -p $jupyterConfigDir
+
+cat $CUTLANG_PATH/binder/jupyter_notebook_config.py >> $jupyterConfigDir/jupyter_notebook_config.py
