@@ -41,11 +41,18 @@ def run(display, HTML, code, _file, _filetype, _adlName, _extraArgs):
 
     histoOutRoot=tmpAdlName.replace("/tmp/", "histoOut-").replace(".adl", ".root")
     copyfile(histoOutRoot, os.environ["CUTLANG_PATH"] + "/scripts/JsRoot620/jsroot/" + histoOutRoot)
-    display(HTML('''
-    <iframe width="700" height="400"
-        src="/static/jsroot/index.htm?file=./{histoOutRoot}">
-    </iframe>
-    '''.format(histoOutRoot=histoOutRoot)))
+    if(os.path.isfile(os.environ["CUTLANG_PATH"]+'/mybinder_true')):
+        display(HTML('''
+        <iframe width="700" height="400"
+            src="../../static/jsroot/index.htm?file=./{histoOutRoot}">
+        </iframe>
+        '''.format(histoOutRoot=histoOutRoot)))
+    else:
+        display(HTML('''
+        <iframe width="700" height="400"
+            src="/static/jsroot/index.htm?file=./{histoOutRoot}">
+        </iframe>
+        '''.format(histoOutRoot=histoOutRoot)))
 
 def runCLA(display, HTML, code, args, files, adlfiles):
     if len(files) > 1:
