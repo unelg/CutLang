@@ -2,8 +2,6 @@ import os
 
 c = get_config()
 
-c.ServerApp.allow_root = True
-c.NotebookApp.allow_root = True
 if 'ROOTSYS' in os.environ:
     # Prefer using JSROOT from ROOTSYS if defined
     # Configuration file for jupyter-notebook.
