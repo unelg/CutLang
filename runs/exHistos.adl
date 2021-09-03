@@ -16,7 +16,7 @@ histoList jetHistosS
   histo hjet4pt , "jet 4 pT (GeV)", 40, 0, 1000, pT(jets[3])
 
 # Event selection
-region Rpc2L0b
+region Rpc2b0abu
   select ALL
   select size(jets) >= 4
   histo hmetjet1pt-abc1, "MET vs. jet 1 pT", 20, 300, 1300, 20, 0, 1000, MET, pT(jets[0])

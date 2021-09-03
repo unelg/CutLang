@@ -292,9 +292,11 @@ void delphes::Loop(analy_struct aselect, char *extname)
                 adbxgen->addAttribute( particle->D1 );  //8
                 adbxgen->addAttribute( particle->D2 );  //9
                 truth.push_back(*adbxgen);
+
 /*
                 unsigned int nkids=particle->D2-particle->D1 +1;
-                if (abs( particle->PID ) ==  1000021 && nkids>1 ){
+//                if (abs( particle->PID ) ==  1000021 && nkids>1 )
+                {
                 cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
                      <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\n"; 
                 cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";

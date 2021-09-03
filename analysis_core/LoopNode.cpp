@@ -27,13 +27,13 @@ double LoopNode::getRand(){
 
 double LoopNode::evaluate(AnalysisObjects* ao) {
       // here we need to loop over all functions
-       std::vector <double> result_list;
-       double retval;
-       std::string bcol2;
-       int ipart2_max;
+      std::vector <double> result_list;
+      double retval;
+      std::string bcol2;
+      int ipart2_max;
 
-       DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
-       DEBUG("LeftNodes size:"<<lefs.size()<<"\n");
+      DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
+      DEBUG("LeftNodes size:"<<lefs.size()<<"\n");
       for (int in=0; in<lefs.size(); in++){ // loop over all possible left branches.
        left=lefs[in];
        this->getParticles(&inputParticles);       
@@ -50,7 +50,10 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        int base_type2=inputParticles[0]->type;
        std::vector<myParticle*> spareParticles;
 
-       if (inputParticles[0]->index==16213 || inputParticles[0]->index==6213) // here we loop over all particles in the collection
+       if ( inputParticles[0]->index==16213    // from a number to all particles
+         || inputParticles[0]->index==6213     // from zero to all particles
+         || inputParticles[0]->type==consti_t  // all constituents of a given JET/FJET/bJET...
+         ) // here we loop over all particles in the collection
        {
         bcol2=inputParticles[0]->collection;
         consname=bcol2;
@@ -99,7 +102,8 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        }
       }
 
-      if (inputParticles.size()==1 && inputParticles[0]->index==6213) // here we loop over all particles in the collection
+      if   (inputParticles.size()==1 
+        && (inputParticles[0]->index==6213 || inputParticles[0]->type==consti_t) ) // here we loop over all particles in the collection
       {
        DEBUG("Looping one by one\n");
        FuncNode *pippo;
@@ -142,15 +146,15 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
          DEBUG("end of loop\n");
         }// endof over loop over particles for explicit list
         else {
-        for (int ii=0;ii<spareParticles.size(); ii++){
-           int anindex=spareParticles[ii]->index;
-            ((LFuncNode*)left)->setParticleIndex(0, anindex);
-            retval=left->evaluate(ao);
-            DEBUG("retval:"<<retval<<"\n");
-            result_list.push_back(retval); 
-        }
-        ((LFuncNode*)left)->setParticleIndex(0, 16213);
-        DEBUG("end of loop\n");
+          for (int ii=0;ii<spareParticles.size(); ii++){
+             int anindex=spareParticles[ii]->index;
+              ((LFuncNode*)left)->setParticleIndex(0, anindex);
+              retval=left->evaluate(ao);
+              DEBUG("retval:"<<retval<<"\n");
+              result_list.push_back(retval); 
+          }
+          ((LFuncNode*)left)->setParticleIndex(0, 16213);
+          DEBUG("end of loop\n");
         }// endof over loop over particles for implicit list, 0 to many
 
       } else {

@@ -985,9 +985,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
    | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
    | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
+   | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
    | MIN '(' e ',' e ')' {DEBUG("\t MIN-2 function\n"); $$=new BinaryNode(mnof,$3,$5,"min"); }
    | MAX '(' e ',' e ')' {DEBUG("\t MAX-2 function\n"); $$=new BinaryNode(mxof,$3,$5,"max"); }
-   | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }
    | MIN '(' idlist ')' {  DEBUG("\t MIN function IMPLEMENTED\n");  
                            vector <Node*> newIDlist;
                            TmpIDList.swap(newIDlist);
@@ -1491,7 +1491,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);
                         }
 //-----------------------------------------------CONSTITS
-       | JET  CONSTITS   {      DEBUG("all jet particules \t");
+       | JET  CONSTITS   {      DEBUG("all jet particules constits \t");
                                 tmp="jet_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;

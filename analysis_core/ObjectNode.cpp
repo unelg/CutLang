@@ -284,7 +284,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         bool simpleloop=true;
         bool constiloop=false;
  
-        DEBUG("Nb of particles in this cut:"<<particles->size() <<"\n");
+        DEBUG("Nb of particles is :"<<particles->size() << " Cut is:"<< (*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
            DEBUG("No particle CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -298,11 +298,13 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
          ptypeset.insert( particles->at(kp)->type);
          if (particles->at(kp)->type == consti_t) constiloop=true;
         }
+        DEBUG ("A ConstiLoop:"<<constiloop<<"\n");
 //--------------------- if we have a LoopNode(max, min, sum) no constiloop.
         TString mycutstr=(*cutIterator)->getStr();
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false;}
+        DEBUG ("B ConstiLoop:"<<constiloop<<"\n");
 /*
 object goodjets take Jet
   select  q(Jet constituents ) != 0                        # remove neutral constituents
@@ -362,7 +364,7 @@ object goodjets take Jet
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
-               DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\t");
+               DEBUG("Simple CutIte:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG(ppassed<<"\n");
                if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -414,7 +416,7 @@ object goodjets take Jet
                     }
                 } // end of loop over 2nd particle type
             } // loop over 1st particle type
-        }
+        } // end of not a simple loop (with 2 particles)
     } // end of cutIterator loop
    DEBUG("created\n");
 }
@@ -1258,16 +1260,18 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
            int child1=(ao->truth)[name].at(ipart).Attribute(8);
            int child2=(ao->truth)[name].at(ipart).Attribute(9);
            int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
-           DEBUG("Id:"<< pidx <<" has children:"<<child1<<" to "<<child2<<"\t");
-           vector<dbxParticle> children;
-           string genname="Truth";
-           for (int ichild=child1; ichild<=child2; ichild++){
-             children.push_back( (ao->truth)[genname].at(ichild) );
+           DEBUG("Id:"<< pidx <<" has children:"<<child1<<" to "<<child2<<"\n");
+           if (child1>=0) {
+             vector<dbxParticle> children;
+             string genname="Truth";
+             for (int ichild=child1; ichild<=child2; ichild++){
+               children.push_back( (ao->truth)[genname].at(ichild) );
+             }
+             dname = name;
+             dname+= pidx;
+             (ao->constits).insert( std::pair<string, vector<dbxParticle> >((string)dname, children) );
+             DEBUG(name <<" has " << (ao->constits).find((string)dname)->second.size()<<" dauthers inserted.\n");
            }
-           dname = name;
-           dname+= pidx;
-           (ao->constits).insert( std::pair<string, vector<dbxParticle> >((string)dname, children) );
-           DEBUG(name <<" has " << (ao->constits).find((string)dname)->second.size()<<" dauthers inserted.\n");
          }
 //------------DONE
         }

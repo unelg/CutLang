@@ -9,6 +9,7 @@ object genmuons : GEN
  select Abs( Eta(GEN) ) < 2.4
 
 region test1
+  select ALL
   select Size(genelectrons) == 1
   select vertexY(genelectrons_0) > 0
 
