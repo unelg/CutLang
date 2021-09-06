@@ -136,6 +136,46 @@ for i, arg in enumerate(sys.argv[3::2]):
 
 
 
+# for histoList command
+f = open(arguments["inifile"], 'r')
+Lines = f.readlines()
+newLines = ""
+histoLists = {}
+histoListControl = False
+for linenumber, line in enumerate(Lines):
+    if histoListControl != False and (line.strip() == "" or "histoList" in line): # if histoListControl is defined and does not belong to the relevant histolist
+        histoListControl = False
+    elif histoListControl != False: # if histoListControl is defined, append line and count to 0
+        histoLists[histoListControl].append(line)
+        histoLists[histoListControl+"_count"] = 0
+    if histoListControl == False and "histoList" not in line and line[0] != "#": # if histoListControl is not defined and is not comment line or histoList line
+        newLines += line
+    
+    for histo in histoLists: # histoLists for loop: fills histo definitions using counter
+        if line.strip() == histo and line[0] != "#":
+            newLines = "\n".join(newLines.split("\n")[:-2])+"\n"
+            for linenumber, line in enumerate(histoLists[histo]):
+                lineSplit = list(filter(None, line.split(" ")))
+                if histoLists[histo+"_count"] != 0:
+                    lineSplit[1] = lineSplit[1][:-1]
+                    histoLists[histo][linenumber] = "histo " + lineSplit[1] + str(histoLists[histo+"_count"]) + line.replace("histo", "").replace(lineSplit[1]+str(histoLists[histo+"_count"]-1), "")
+                else:
+                    histoLists[histo][linenumber] = "histo " + lineSplit[1] + str(histoLists[histo+"_count"]) + line.replace("histo", "").replace(lineSplit[1], "")
+            newLines += "\n".join(histoLists[histo])
+            histoLists[histo+"_count"] = int(histoLists[histo+"_count"]) + 1
+
+    if "histoList" in line:
+        histoListName = line.split(" ")[1].strip()
+        histoLists[histoListName] = []
+        histoListControl = histoListName
+
+arguments["inifile"] += ".tmp"
+f = open(arguments["inifile"], "w+")
+f.write(newLines)
+f.close()
+f = open(arguments["inifile"], 'r')
+
+
 # for select HLT command
 hltInFile=os.popen(''' grep -E "select HLT" '''+arguments["inifile"]+''' | sed 's/select HLT//g' ''').read()
 hltList=""
