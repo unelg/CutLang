@@ -75,21 +75,6 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
                                                         DEBUG("TAU:"<<ai<<"  ");
                                                         break;
-                                            case jet_t: DEBUG("jet:"<<ai<<" ");
-                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
-                                                        inputPart->setFlavor( ao->jets[ac].at(ai).Flavor()   );
-                                                        inputPart->setIsTight( ao->jets[ac].at(ai).isbtagged_77()+2* ao->jets[ac].at(ai).isTautagged()   );
-                                                        ka=ao->jets[ac].at(ai).nAttribute();
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
-                                                        break;
-                                           case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
-                                                        inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
-                                                        DEBUG("b-jet:"<<ai<<"  ");
-                                                        break;
-                                       case lightjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 0, ac)[ ai ].lv()); 
-                                                        inputPart->setIsTight( tagJets(ao,0, ac)[ai].isbtagged_77()   );
-                                                        DEBUG("qgjet:"<<ai<<" ");
-                                                        break;
                                       case muonlikeV_t: v_eta=ao->muos[ac].at(ai).lv().Eta();
                                                         ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
                                                         inputPart->setTlv(inputPart->lv()+sgn*ametlv); // met4v is v from MET using same eta approx.
@@ -109,11 +94,28 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         ka=ao->gams[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
                                                         break;
+                                            case jet_t: DEBUG("jet:"<<ai<<" ");
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
+                                                        inputPart->setFlavor( inputPart->Flavor()+ao->jets[ac].at(ai).Flavor()); //is b-tag delphes
+                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
+                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
+                                                        ka=ao->jets[ac].at(ai).nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
+                                                        break;
                                            case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
-                                                        inputPart->setFlavor( ao->ljets[ac].at(ai).Flavor()   );
+                                                        inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
+                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
+                                                         + ao->ljets[ac].at(ai).isbtagged_77() +100* ao->ljets[ac].at(ai).isTautagged() );
                                                         ka=ao->ljets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
+                                                        break;                                          case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
+                                                        inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
+                                                        DEBUG("b-jet:"<<ai<<"  ");
+                                                        break;
+                                       case lightjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 0, ac)[ ai ].lv()); 
+                                                        inputPart->setIsTight( tagJets(ao,0, ac)[ai].isbtagged_77()   );
+                                                        DEBUG("qgjet:"<<ai<<" ");
                                                         break;
                                           case combo_t: DEBUG("combo:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->combos[ac].at(ai).lv()); 
@@ -522,7 +524,6 @@ double sieieof( dbxParticle* apart){
    return v;
 }
 
-
 double decaymodeof( dbxParticle* apart){
    double v=apart->Attribute(7);
    DEBUG(" tau decay mode:"<<v<<"\t");
@@ -536,8 +537,7 @@ double pfreliso03allof( dbxParticle* apart){
 
 //------------------------------
 double nbfof( dbxParticle* apart){
-    double phi=(apart->lv()).Phi();
-    DEBUG(" CORRECT ME NBF:"<<phi<<"\t");
-    cout <<"--This is wrong--\n";
-    return phi;
+    int nbf=(apart->isTight() % 100 ); // modulo 100 to remove possible tau tags
+    DEBUG("NBJ:"<<nbf<<"\n");
+    return nbf;
 }

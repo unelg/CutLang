@@ -125,12 +125,12 @@ vardef {varname}" "?":"" "?.*"\n"
 [dD][pP][hH][iI] return DPHI;
 [dD][eE][tT][aA] return DETA;
 [sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs 
-"nbf" return NBF;
-"fHT" return HT; // attention
+[nN][bB][jJ] return NBF;
+[fF][hH][tT] return HT; // attention
 "METMWT" return METMWT;
 "MWT" return MWT;
 "MET" return MET;
-"ALL" return ALL;
+[aA][lL][lL] return ALL;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;

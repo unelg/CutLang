@@ -9,49 +9,26 @@
 ClassImp(dbxParticle)
 
 dbxParticle:: dbxParticle() : TObject() {
-/*
-  p_et_cone = -999;
-  p_pt_cone = -999;
-  p_flavor = -999;
-  p_istight = -999;
-  p_particleindx = -999;
-  p_scalefactor=1.;
-  p_escalefactor=999.;
-*/
   p_charge=0; // not initialized
   p_pdgID= 0.;
   p_lvector.SetPtEtaPhiM(0, 0, 0, 0);
 }
 dbxParticle:: dbxParticle (TLorentzVector lv){
-  p_et_cone = -999;
-  p_pt_cone = -999;
-  p_flavor = -999;
-  p_istight = -999;
-  p_particleindx = -999;
-  p_charge=-999; // not initialized
+  p_istight = 0;
   p_lvector=lv;
   p_scalefactor=1.;
   p_scalefactorreco=1.;
   p_scalefactorid=1.;
   p_scalefactortrig=1.;
-  p_escalefactor=999.;
-  p_z0 = -999;
 }
 
 dbxParticle:: ~dbxParticle() {}
 
 dbxParticle:: dbxParticle (TLorentzVector lv, int q){
   p_pdgID = 0.;
-  p_et_cone = -999;
-  p_pt_cone = -999;
-  p_flavor = -999;
-  p_istight = -999;
-  p_particleindx = -999;
   p_charge=q; // initalized
   p_lvector=lv;
   p_scalefactor=1.;
-  p_escalefactor=999.;
-  p_z0=-999;
 
 }
 dbxParticle  dbxParticle::operator+ (dbxParticle& p)

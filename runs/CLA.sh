@@ -38,9 +38,6 @@ if [ $# -lt 2 ]; then
 fi
 
 
-
-
-
 POSITIONAL=()
 while [[ $# -gt 2 ]]
 do

@@ -194,9 +194,7 @@ TProof* proof;
       }
 */
 
-int ival=atoi(argv[1]);
-if (ival==0) {
-  /** Chain the files  split by ',' */
+/** Chain the files  split by ',' */
   std::string argStr = argv[1];
   std::vector<std::string> fileList;
   for (size_t i=0,n; i <= argStr.length(); i=n+1) {
@@ -310,10 +308,5 @@ if (ival==0) {
   }
   //chain->Delete();
   return 0;
-
-} else {
-    std::cout <<"ERROR: first argument should be the datafile name " << std::endl;
-    return -2;
-}
 
 }
