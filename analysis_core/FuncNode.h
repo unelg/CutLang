@@ -95,6 +95,10 @@ double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
 double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
+double averageMuof( dbxParticle* apart);
+double truthMatchProbof( dbxParticle* apart);
+double truthIDof( dbxParticle* apart);
+double truthParentIDof( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */

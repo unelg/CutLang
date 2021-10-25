@@ -46,4 +46,5 @@ void createNewPho   (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myP
 void createNewCombo (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 void createNewParti (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 void createNewTruth (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
+void createNewTrack (AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename);
 #endif /* ObjectNode_hpp */

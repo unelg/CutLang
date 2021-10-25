@@ -37,6 +37,18 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
              if (atype==7) ac="MET";
                 DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
+		                           case track_t: DEBUG("track:"<< (*i)->index <<" ");
+		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
+		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
+		                                         inputPart->setPdgID(inputPart->pdgID() + ao->track[ac].at(ai).pdgID()  );
+                                                         ka=ao->track[ac].at(ai).nAttribute();
+                                                         DEBUG("Gen Nattr:"<<ka<<"\n");
+                                                         for (int anat=0; anat<ka; anat++) {
+                   //                                         cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
+                                                            inputPart->addAttribute(ao->track[ac].at(ai).Attribute(anat) );
+                                                         }
+//                                                         cout <<"----------------done----------------------\n";
+		                                         break;
 		                           case truth_t: DEBUG("truth:"<< (*i)->index <<" ");
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
@@ -541,3 +553,17 @@ double nbfof( dbxParticle* apart){
     DEBUG("NBJ:"<<nbf<<"\n");
     return nbf;
 }
+//------------TRK
+double truthIDof( dbxParticle* apart){
+ return apart->Attribute(0);
+}
+double truthParentIDof( dbxParticle* apart){
+ return apart->Attribute(1);
+}
+double averageMuof( dbxParticle* apart){
+ return apart->Attribute(2);
+}
+double truthMatchProbof( dbxParticle* apart){
+ return apart->Attribute(3);
+}
+

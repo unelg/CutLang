@@ -9,6 +9,7 @@
 #include "VLLMin.h"
 #include "CMSnanoAOD.h"
 #include "AtlMin.h"
+#include "AtlasTRT.h"
 #include "VLLBG3.h"
 #include "VLLMinSignal.h"
 #include "dbxParticle.h"
@@ -49,6 +50,7 @@ int main(int argc, char*argv[])
  bool use_atlasod=false;
  bool use_atlasodR2=false;
  bool use_atlmin=false;
+ bool use_atltrt=false;
  bool use_cmsod=false;
  bool use_cmsodR2=false;
  bool use_cmsnano=false;
@@ -97,7 +99,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
+                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -110,6 +112,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "DELPHES") { use_delphes =true;}
  else if (inptype == "ATLASVLL"){ use_vllmin =true;}
  else if (inptype == "ATLMIN")  { use_atlmin =true;}
+ else if (inptype == "ATLTRT")  { use_atltrt =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
  else if (inptype == "ATLASODR2") { use_atlasodR2 =true;}
  else if (inptype == "CMSOD")   { use_cmsod =true;}
@@ -233,6 +236,9 @@ TProof* proof;
   }else if (use_atlmin){
    cout << "~Now using ATLAS Mini NTUPLE files.~~~~~~ alpha!\n";
    chain = new TChain("nominal");
+  }else if (use_atltrt){
+   cout << "~Now using ATLAS TRT NTUPLE files.~~~~~~ alpha!\n";
+   chain = new TChain("track_tree");
   }else if (use_vllmin){
    cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
    chain = new TChain("/physics");
@@ -287,6 +293,9 @@ TProof* proof;
   } else if (use_atlmin){
     AtlMin *atlmina=new AtlMin("XXX",chain);
             atlmina->Loop(aselect, username);
+  } else if (use_atltrt){
+   AtlasTRT *atltrta=new AtlasTRT("XXX",chain);
+             atltrta->Loop(aselect, username);
    } else if (use_fcc){
     fcc *fcca=new fcc("XXX",chain);
          fcca->Loop(aselect, username);

@@ -63,6 +63,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        vector<dbxJet>      jets;
        vector<dbxJet>     ljets;
        vector<dbxTruth>   truth;
+       vector<dbxTrack>    track;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
 
@@ -74,6 +75,7 @@ void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
        map<string, vector<dbxJet>      >  jets_map;
        map<string, vector<dbxJet>      > ljets_map;
        map<string, vector<dbxTruth>    > truth_map;
+       map<string, vector<dbxTrack>    >track_map;
        map<string, vector<dbxParticle> > combo_map;
        map<string, vector<dbxParticle> > constits_map;
        map<string, TVector2            >   met_map;
@@ -285,11 +287,12 @@ std::cout << "Filling finished"<<std::endl;
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
     constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map, combo_map, constits_map, met_map, anevt};
 
         aCtrl.RunTasks(a0);
 

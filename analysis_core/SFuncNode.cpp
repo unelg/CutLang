@@ -58,6 +58,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                   case  1:  aPart->setTlv( aPart->lv()+ao->eles[ac].at(ai).lv()   );   break;
                   case 11:  aPart->setTlv( aPart->lv()+ao->taus[ac].at(ai).lv()   );   break;
                   case  2:  aPart->setTlv( aPart->lv()+ao->jets[ac].at(ai).lv()   );   break;
+                  case 19:  aPart->setTlv( aPart->lv()+ao->track[ac].at(ai).lv() );   break;
                   case 20:  aPart->setTlv( aPart->lv()+ao->combos[ac].at(ai).lv() );   break;
                    case 9:  aPart->setTlv( aPart->lv()+ao->ljets[ac].at(ai).lv()  );   break;
                    case 8:  aPart->setTlv( aPart->lv()+ao->gams[ac].at(ai).lv()   );   break;
@@ -221,6 +222,7 @@ double count(AnalysisObjects* ao, string s, float id) {
     ValueNode abc=ValueNode();
     switch (pid) {
      case truth_t:    return (ao->truth.at(s).size()); break;
+     case track_t:    return (ao->track.at(s).size()); break;
      case muon_t:     return (ao->muos.at(s).size()); break;
      case electron_t: return (ao->eles.at(s).size()); break;
      case tau_t:      return (ao->taus.at(s).size()); break;

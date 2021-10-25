@@ -54,6 +54,7 @@ ObjectNode::ObjectNode(std::string id,
       if (anode->name == "PHO" ) type=photon_t;
       if (anode->name == "FJET") type=fjet_t;
       if (anode->name == "Truth") type=truth_t;
+      if (anode->name == "Track") type=track_t;
       if (anode->name == "TAU" ) type=tau_t;
       if (anode->name == "Combo" ) { 
           type=combo_t;
@@ -69,6 +70,7 @@ ObjectNode::ObjectNode(std::string id,
       if (id == "PHO" ) type=photon_t;
       if (id == "FJET") type=fjet_t;
       if (id == "Truth") type=truth_t;
+      if (id == "Track") type=track_t;
       if (id == "TAU" ) type=tau_t;
       if (id == "Combo" ) type=combo_t;
       DEBUG("previous Null object  has:"<<id<<" t:"<<type<<"\n");
@@ -150,6 +152,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
 	case truth_t: if (ao->truth.find(basename) == ao->truth.end() ){
 				anode->evaluate(ao);
 				DEBUG(" Truth evaluated.\n");
+		      } else keepworking=false;
+		      break;
+
+	case track_t: if (ao->track.find(basename) == ao->track.end() ){
+				anode->evaluate(ao);
+				DEBUG(" Track evaluated.\n");
 		      } else keepworking=false;
 		      break;
 
@@ -1156,7 +1164,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
 }
 
-//------------------------------------------------
+//------------------------------------------------ Truth
 void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     DEBUG("Creating new GEN type named:"<<name<<" #Gtypes:"<<ao->truth.size()<<" #Gparticles:"<< (ao->truth)[basename].size() <<" Duplicating:"<<basename<<"\n"); 
     ao->truth.insert( std::pair<string, vector<dbxTruth> >(name, (ao->truth)[basename]) );
@@ -1319,8 +1327,182 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
             }// first particle set
         }// end of two particles
     }// end of cutIterator
-}
+}//end of create new Truth
  
+
+//------------------------------------------------ Track
+void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
+    DEBUG("Creating new TRACK type named:"<<name<<" #types:"<<ao->track.size()<<" #particles:"<< (ao->track)[basename].size() <<" Duplicating:"<<basename<<"\n"); 
+    ao->track.insert( std::pair<string, vector<dbxTrack> >(name, (ao->track)[basename]) );
+    DEBUG(ao->constits.size()<< " initial constits maps\n");
+    map <string, std::vector<dbxParticle>  >::iterator itpa;
+    for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
+     DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
+    }
+
+    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++) {
+        particles->clear();
+        (*cutIterator)->getParticlesAt(particles,0);
+        int ipart_max = (ao->track)[name].size();
+        bool simpleloop=true;
+        bool constiloop=false;
+
+        DEBUG("Number of particles in this cut:"<<particles->size() <<"\n");
+        DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+        if ( particles->size()==0) {
+           bool ppassed=(*cutIterator)->evaluate(ao);
+           continue;
+        }
+//---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
+        std::set<int> ptypeset;
+        int t1=particles->at(0)->type;
+        int t2;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+         DEBUG(kp<<" th particle ID is:"<<particles->at(kp)->type<<"\n");
+         if (particles->at(kp)->type == consti_t) constiloop=true;
+        }
+//--------------------- if we have a LoopNode(max, min, sum) no constiloop.
+        TString mycutstr=(*cutIterator)->getStr();
+        if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+//----------------------------
+        if (constiloop) { // basename: previous base object, name: new object
+          DEBUG("--TRK daugther loop-- "<< ipart_max<<"\n");
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all particles, jets, in an event.
+//--------------the name is derived from particleID
+             int pidx=(ao->track)[name].at(ipart).ParticleIndx();
+             TString colname=name + pidx;
+             int constiCount = (ao->constits).find((string)colname)->second.size();
+             DEBUG("for "<<name<<" children size:"<<constiCount<<"\n");
+             for (int ic=constiCount-1; ic>=0; ic--){
+//---------------these are the particles to be dealt with, like a loop!
+              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut, e.g. pT(JET_jp) > 10
+                particles->at(jp)->index=ic;
+                particles->at(jp)->collection=(string)colname; // new name
+                particles->at(jp)->type=consti_t;
+              }
+              DEBUG("For child:"<<ic<<" CutIte:"<<(*cutIterator)->getStr()<<"\n"); // this is like qOf, applied on each constituent
+              bool ppassed=(*cutIterator)->evaluate(ao); // check on constituents?
+              DEBUG("Result:"<<ppassed<<"\n");
+              if (!ppassed) { 
+                   DEBUG("child "<< ic <<" failed and will be removed.\n");
+                   (ao->constits).find((string)colname)->second.erase( (ao->constits).find((string)colname)->second.begin()+ic); // erase child
+              }
+             }//end of loop over constituent
+           if ( (ao->constits).find((string)colname)->second.size() < 1) {
+               DEBUG(ipart<<"th gen removed from "<<name<<" since all constituents were removed.\n");
+               (ao->track).find(name)->second.erase( (ao->track).find(name)->second.begin()+ipart); // erase particle without children
+           }
+          }// end of loop over all particles (track) in the event.
+         continue; // will move to the next cut iterator
+        } // done with constis
+        DEBUG(name <<" has " << (ao->track)[name].size()<<" particles left after constiloop.\n");
+        map <string, std::vector<dbxParticle>  >::iterator itpa;
+
+        if(simpleloop){
+          DEBUG("--TRK simple loop-- "<< ipart_max<<"\n");
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){
+             int pidx=(ao->track)[name].at(ipart).ParticleIndx(); // why - something??
+             for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+             }
+             bool ppassed=(*cutIterator)->evaluate(ao);
+             DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
+             if (!ppassed) {
+                 TString dname;
+                 dname = name + pidx;
+                 itpa=(ao->constits).find((string)dname);
+                 DEBUG("will delete:"<<dname<<"\n");
+                 if (itpa!=(ao->constits).end()) (ao->constits).erase(itpa);
+                 (ao->track).find(name)->second.erase( (ao->track).find(name)->second.begin()+ipart);
+             }  
+          }
+          DEBUG(name <<" has " << (ao->track)[name].size()<<" particles left after simpleloop.\n");
+//------------------------------------
+//put the children in a consti_t array
+//------------------------------------
+         DEBUG(ao->constits.size()<< " constits maps\n");
+         for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
+          DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
+         }
+         DEBUG("===============\n");
+         TString dname;
+         for (int ipart=(ao->track)[name].size()-1; ipart>=0; ipart--){
+           int child1=(ao->track)[name].at(ipart).Attribute(8);
+           int child2=(ao->track)[name].at(ipart).Attribute(9);
+           int pidx=(ao->track)[name].at(ipart).ParticleIndx();
+           DEBUG("Id:"<< pidx <<" has children:"<<child1<<" to "<<child2<<"\n");
+           if (child1>=0) {
+             vector<dbxParticle> children;
+             string genname="Track";
+             for (int ichild=child1; ichild<=child2; ichild++){
+               children.push_back( (ao->track)[genname].at(ichild) );
+             }
+             dname = name;
+             dname+= pidx;
+             (ao->constits).insert( std::pair<string, vector<dbxParticle> >((string)dname, children) );
+             DEBUG(name <<" has " << (ao->constits).find((string)dname)->second.size()<<" dauthers inserted.\n");
+           }
+         }
+//------------DONE
+        }
+        else {
+            ValueNode abc=ValueNode();
+            for (int ipart=ipart_max-1; ipart>=0; ipart--){
+                particles->at(0)->index=ipart;  // 6213
+                int ipart2_max;
+                string base_collection2=particles->at(1)->collection;
+                switch(particles->at(1)->type){
+                  case muon_t: ipart2_max=(ao->muos)[base_collection2].size();
+                        break;
+	         case truth_t: ipart2_max=(ao->truth)[base_collection2].size();
+                        break;
+                   case electron_t: ipart2_max=(ao->eles)[base_collection2].size();
+                        break;
+                   case jet_t: ipart2_max=(ao->jets)[base_collection2].size();
+                        break;
+                case photon_t: ipart2_max=(ao->gams)[base_collection2].size();
+                        break;
+                  case fjet_t: ipart2_max=(ao->ljets)[base_collection2].size();
+                        break;
+                   case tau_t: ipart2_max=(ao->taus)[base_collection2].size();
+                        break;
+                 case combo_t: ipart2_max=(ao->combos)[base_collection2].size();
+                        break;
+                      default:
+                        std::cerr << "WRONG PARTICLE TYPE! Try Track:"<<particles->at(1)->type << std::endl;
+                        break;
+                }
+                for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                    particles->at(1)->index=kpart;
+
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
+                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                    }
+
+                    bool ppassed=(*cutIterator)->evaluate(ao);
+                    if (!ppassed) {
+                        (ao->track).find(name)->second.erase( (ao->track).find(name)->second.begin()+ipart);
+                        break;
+                    }
+                } // second particle set
+            }// first particle set
+        }// end of two particles
+    }// end of cutIterator
+}//end of create new Track
+
+
+
+
+
+
+
+
+//--------------------- combinatorics
 void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<int>& table_B_ii, int index_jj, int n, int pas )
 {
 	vector<int> temp(tab_select_jj.size()); 

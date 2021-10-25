@@ -19,6 +19,7 @@
 #include "dbx_tau.h"
 #include "dbx_jet.h"
 #include "dbx_truth.h"
+#include "dbx_track.h"
 #include "analysis_core.h"
 #include "myParticle.h"
 
@@ -37,6 +38,7 @@ struct AnalysisObjects {
     std::map<std::string, std::vector<dbxJet>      > jets;
     std::map<std::string, std::vector<dbxJet>      >ljets;
     std::map<std::string, std::vector<dbxTruth>    >truth;
+    std::map<std::string, std::vector<dbxTrack>    >track;
     std::map<std::string, std::vector<dbxParticle> >combos;
     std::map<std::string, std::vector<dbxParticle> >constits;
     std::map<std::string, TVector2                 > met;
@@ -58,6 +60,7 @@ enum particleType{
  truth_t=10,
  tau_t=11,
  muon_t=12,
+ track_t=19,
  combo_t=20,
  consti_t=21
 };

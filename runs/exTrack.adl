@@ -1,0 +1,18 @@
+
+obj goodTRK : TRK
+  select            Pt(TRK)   >   5
+  select       abs(Eta(TRK))  <   2
+  select truthMatchProb(TRK)  >   0.5
+  select averageMu(TRK)      []   15 40
+  select abs(truthID(TRK) )  ==   11
+  select truthParentID(TRK)  ==   23 
+
+
+#obj verygoodTRK : goodTRK
+#  select size(TRTHits(TRK))  >   0 
+
+
+region TRTeTracks
+       select ALL
+       select Size(TRK    ) > 0
+       select Size(goodTRK) > 0

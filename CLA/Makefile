@@ -31,7 +31,7 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -ldelphesParticles_h -lz 
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz 
 GLIBS         = $(ROOTGLIBS)
 
 #LIBS += -lzstd -lCling -lpng -ltbb -lssl -lcrypto
@@ -65,7 +65,7 @@ ifneq (0, ${JUPY})
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o atlasopenR2.o cmsod.o cmsod2.o AtlMin.o VLLMin.o CMSnanoAOD.o VLLBG3.o VLLMinSignal.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o fcc.o delphes.o atlasopen.o atlasopenR2.o AtlasTRT.o cmsod.o cmsod2.o AtlMin.o VLLMin.o CMSnanoAOD.o VLLBG3.o VLLMinSignal.o
 OBJS_2        = b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
@@ -111,6 +111,7 @@ softlinks: auxiliaries
 	test -r libdbx_photon_h.so     || ( ln -s $(SUBDIRLOC)analysis_core/dbx_photon_h.so    libdbx_photon_h.so   ; ln -s libdbx_photon_h.so dbx_photon_h.so )
 	test -r libdbx_jet_h.so        || ( ln -s $(SUBDIRLOC)analysis_core/dbx_jet_h.so       libdbx_jet_h.so      ; ln -s libdbx_jet_h.so dbx_jet_h.so )
 	test -r libdbx_truth_h.so      || ( ln -s $(SUBDIRLOC)analysis_core/dbx_truth_h.so     libdbx_truth_h.so    ; ln -s libdbx_truth_h.so dbx_truth_h.so )
+	test -r libdbx_track_h.so      || ( ln -s $(SUBDIRLOC)analysis_core/dbx_track_h.so     libdbx_track_h.so    ; ln -s libdbx_track_h.so dbx_track_h.so )
 	test -r libdbxParticle_cpp.so  || ( ln -s $(SUBDIRLOC)analysis_core/dbxParticle_cpp.so libdbxParticle_cpp.so; ln -s libdbxParticle_cpp.so dbxParticle_cpp.so )
 	test -r libDBXNtuple_cpp.so    || ( ln -s $(SUBDIRLOC)analysis_core/DBXNtuple_cpp.so   libDBXNtuple_cpp.so  ; ln -s libDBXNtuple_cpp.so DBXNtuple_cpp.so )
 	test -r libdelphesParticles_h.so  || ( ln -s $(SUBDIRLOC)analysis_core/delphesParticles_h.so   libdelphesParticles_h.so  ; ln -s libdelphesParticles_h.so delphesParticles.so )

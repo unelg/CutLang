@@ -59,6 +59,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [eE][lL][eE]|"Electron" return ELE;//particles
 [mM][uU][oO]|"Muon" return MUO;
 [tT][aA][uU] return TAU;
+[tT][rR][kK] return TRK;
 [pP][hH][oO]|"Photon" return PHO;
 [jJ][eE][tT] return JET;
 [fF][jJ][eE][tT]|"FatJet" return FJET;
@@ -86,6 +87,11 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
+"truthMatchProb" return TRUTHMATCHPROB;
+"averageMu" return AVERAGEMU;
+"truthID" return TRUTHID;
+"truthParentID" return TRUTHPARENTID;
+"TRTHits" return TRTHITS;
 "daughters"|"constituents" return CONSTITS;
 "tau1" return TAU1;
 "tau2" return TAU2;

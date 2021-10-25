@@ -82,6 +82,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC SYSTEMATIC
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
+%token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
 %token TRGE TRGM SKPE SKPH SAVE 
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
@@ -673,6 +674,38 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(decaymodeof,newList,"decayMode");
                                   }
+         | '{' particules '}' TRUTHPARENTID {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthParentIDof,newList,"truthParentID");
+                                  }
+         | TRUTHPARENTID '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthParentIDof,newList,"truthParentID");
+                                  }
+         | '{' particules '}' TRUTHID {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthIDof,newList,"truthID");
+                                  }
+         | TRUTHID '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthIDof,newList,"truthID");
+                                  }
+         | '{' particules '}' TRUTHMATCHPROB {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthMatchProbof,newList,"truthMatchProb");
+                                  }
+         | TRUTHMATCHPROB '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(truthMatchProbof,newList,"truthMatchProb");
+                                  }
+         | '{' particules '}' AVERAGEMU {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(averageMuof,newList,"averageMu");
+                                  }
+         | AVERAGEMU '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(averageMuof,newList,"averageMu");
+                                  }
 
          | '{' particules '}' SOFTID {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -1205,7 +1238,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
 
 	| ELE '_' index {       DEBUG("found an electron particule:"<<(int)$3<<"\t");
                                 myParticle *a= new myParticle;
-                                a->type =1; a->index = (int)$3; a->collection = "ELE";
+                                a->type =electron_t; a->index = (int)$3; a->collection = "ELE";
                                 TmpParticle.push_back(a);
                                 DEBUG("type:"<<a->type<<"\n");                            
                                 tmp="ele_"+to_string((int)$3);                        
@@ -1255,14 +1288,14 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
+                                a->type = muon_t; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
         | MUO '_' index {       
 				tmp="muo_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12; a->index = (int)$3; a->collection = "MUO";
+                                a->type = muon_t; a->index = (int)$3; a->collection = "MUO";
                                 TmpParticle.push_back(a);  
                         }
        | MUO            {      
@@ -1270,7 +1303,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="muo_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 12; a->index = 6213; a->collection = "MUO";
+                                a->type = muon_t; a->index = 6213; a->collection = "MUO";
                                 TmpParticle.push_back(a);
                         }
        | MUO '[' index ':' index ']' {
@@ -1278,7 +1311,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
+                                 a->type = muon_t; a->index = 10000+ii; a->collection = "MUO";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -1292,7 +1325,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 12; a->index = 10000+ii; a->collection = "MUO";
+                                 a->type = muon_t; a->index = 10000+ii; a->collection = "MUO";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -1300,29 +1333,29 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
-        | TAU '[' index ']' {   
+       | TAU '[' index ']' {   
                                 tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11; a->index = (int)$3; a->collection = "TAU";
+                                a->type = tau_t; a->index = (int)$3; a->collection = "TAU";
                                 TmpParticle.push_back(a);  
                         }
-        | TAU '_' index {       
+       | TAU '_' index {       
 				tmp="tau_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11;
+                                a->type = tau_t;
                                 a->index = (int)$3;
                                 a->collection = "TAU";
                                 TmpParticle.push_back(a);  
                         }
 
-        | TAU '[' index ':' index ']' {
+       | TAU '[' index ':' index ']' {
                                 tmp="tau_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
+                                 a->type = tau_t; a->index = 10000+ii; a->collection = "TAU";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -1330,12 +1363,12 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
-        | TAU '_' index ':' index {
+       | TAU '_' index ':' index {
                                 tmp="tau_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
                                  myParticle* a = new myParticle;
-                                 a->type = 11; a->index = 10000+ii; a->collection = "TAU";
+                                 a->type = tau_t; a->index = 10000+ii; a->collection = "TAU";
                                  if ((int)$5 == 6213) {
                                        a->index = 16213;
                                        TmpParticle.push_back(a);
@@ -1349,9 +1382,62 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="tau_6213";
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
-                                a->type = 11; a->index = 6213; a->collection = "TAU";
+                                a->type = tau_t; a->index = 6213; a->collection = "TAU";
                                 TmpParticle.push_back(a);
                         }
+       | TRK '[' index ']' {   
+                                tmp="trk_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = track_t; a->index = (int)$3; a->collection = "Track";
+                                TmpParticle.push_back(a);  
+                        }
+       | TRK '_' index {       
+				tmp="trk_"+to_string((int)$3);                        
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = track_t;
+                                a->index = (int)$3;
+                                a->collection = "Track";
+                                TmpParticle.push_back(a);  
+                        }
+
+        | TRK '[' index ':' index ']' {
+                                tmp="trk_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                 myParticle* a = new myParticle;
+                                 a->type = track_t; a->index = 10000+ii; a->collection = "Track";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
+                                }
+                        } 
+        | TRK '_' index ':' index {
+                                tmp="trk_"+to_string((int)$3);
+                                $$=strdup(tmp.c_str());
+                                for (int ii=(int)$3; ii<=(int)$5; ii++){
+                                 myParticle* a = new myParticle;
+                                 a->type = track_t; a->index = 10000+ii; a->collection = "Track";
+                                 if ((int)$5 == 6213) {
+                                       a->index = 16213;
+                                       TmpParticle.push_back(a);
+                                       break;
+                                 }else TmpParticle.push_back(a);
+                                }
+                        } 
+       | TRK            {      
+                                DEBUG("all trk particules \t");
+                                tmp="trk_6213";
+                                $$=strdup(tmp.c_str());
+                                myParticle* a = new myParticle;
+                                a->type = track_t; a->index = 6213; a->collection = "Track";
+                                TmpParticle.push_back(a);
+                        }
+
+
         | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
@@ -2413,6 +2499,24 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("Truth",NULL,createNewTruth,newList,"obj Truth" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
+				   }
+	 | OBJ ID TAKE TRK criteria {
+                                        DEBUG(" "<<$2<<" is a new Trk Set\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Track",NULL,createNewTrack,newList,"obj Track" );
+                                        Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
+                                        ObjectCuts->insert(make_pair($2,obj));
+                                        criteriaBank.insert(make_pair($2,newList));
+                                     }
+	 | OBJ ID ':' TRK criteria {
+                                        DEBUG(" "<<$2<<" is a new Trk Set\n");
+                                        vector<Node*> newList;
+                                        TmpCriteria.swap(newList);
+                                        Node* previous=new ObjectNode("Track",NULL,createNewTrack,newList,"obj Track" );
                                         Node* obj=new ObjectNode($2,previous,NULL,newList,$2 );
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));

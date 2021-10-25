@@ -7,7 +7,7 @@ object goodEle : ELE
   select   {ELE}AbsEta <   2.4
   select   {ELE}AbsEta ][  1.442 1.556
 
-define goodZreco : goodEle[-1] goodEle[-1]
+define goodZreco : goodEle[-1] goodEle[-1] # repeated indices (-1 & -1) consider i-j and j-i the same, combi, not permu
 
 algo BestZ
   select      ALL                   # to count all events

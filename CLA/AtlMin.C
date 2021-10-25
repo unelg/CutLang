@@ -37,6 +37,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxJet>      jets;
    vector<dbxJet>    ljets;
    vector<dbxTruth>   truth;
+   vector<dbxTrack>    track;
    vector<dbxParticle> combos;
    vector<dbxParticle> constis;
 
@@ -48,6 +49,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    map<string, vector<dbxJet>      > jets_map;
    map<string, vector<dbxJet>     >ljets_map;
    map<string, vector<dbxTruth>    >truth_map;
+   map<string, vector<dbxTrack>    >track_map;
    map<string, vector<dbxParticle> >combo_map;
    map<string, vector<dbxParticle> >constits_map;
    map<string, TVector2            >  met_map;
@@ -210,7 +212,6 @@ std::cout << "MET OK"<<std::endl;
            }// end of loop over ljets
            DEBUG("LJets OK:"<< rcjet_pt->size() <<std::endl);
 
-
         anevt.run_no=runNumber;
         anevt.user_evt_weight=1;
         anevt.event_no=eventNumber;
@@ -227,8 +228,6 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_leptonSF=weight_leptonSF;
   anevt.weight_bTagSF_77=weight_bTagSF_MV2c10_77;
   anevt.weight_jvt=weight_jvt;
-
-/*
   anevt.weight_pileup_UP=weight_pileup_UP;
   anevt.weight_pileup_DOWN=weight_pileup_DOWN;
   anevt.weight_leptonSF_EL_SF_Trigger_UP=weight_leptonSF_EL_SF_Trigger_UP;
@@ -261,11 +260,11 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_leptonSF_MU_SF_TTVA_SYST_DOWN=weight_leptonSF_MU_SF_TTVA_SYST_DOWN;
   anevt.weight_jvt_UP=weight_jvt_UP;
   anevt.weight_jvt_DOWN=weight_jvt_DOWN;
+/*
   anevt.weight_bTagSF_77_extrapolation_up=weight_bTagSF_77_extrapolation_up;
   anevt.weight_bTagSF_77_extrapolation_down=weight_bTagSF_77_extrapolation_down;
   anevt.weight_bTagSF_77_extrapolation_from_charm_up=weight_bTagSF_77_extrapolation_from_charm_up;
   anevt.weight_bTagSF_77_extrapolation_from_charm_down=weight_bTagSF_77_extrapolation_from_charm_down;
-//  anevt.mc_generator_weights=*mc_generator_weights;
   anevt.weight_bTagSF_77_eigenvars_B_up=*weight_bTagSF_77_eigenvars_B_up;
   anevt.weight_bTagSF_77_eigenvars_C_up=*weight_bTagSF_77_eigenvars_C_up;
   anevt.weight_bTagSF_77_eigenvars_Light_up=*weight_bTagSF_77_eigenvars_Light_up;
@@ -273,6 +272,7 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_bTagSF_77_eigenvars_C_down=*weight_bTagSF_77_eigenvars_C_down;
   anevt.weight_bTagSF_77_eigenvars_Light_down=*weight_bTagSF_77_eigenvars_Light_down;
 */
+//  anevt.mc_generator_weights=*mc_generator_weights;
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
 #endif
@@ -284,11 +284,12 @@ std::cout << "Filling finished"<<std::endl;
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
     constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, combo_map, constits_map, met_map, anevt};
+        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
 }
 
 //--------------------------------------------------------LOOP

@@ -20,8 +20,8 @@ define   WH2  = goodjet[-3] goodjet[-3] # -3 here is different than -1, so these
 # --------------> Jet1 + Jet2 = Jet2 + Jet1
 define   Wchi : (({WH1}m - 80.4)/2.1)^2 + (({WH2}m - 80.4)/2.1)^2 # a node variable
 ###      chi2 for W finder
-define   bj1 = goodjet[-2]
-define   bj2 = goodjet[-4]
+define   bj1 = goodjet[-2]  # - index means an unknown variable, x
+define   bj2 = goodjet[-4]  # + index means a constant
 ## top quarks without b tagging 
 define   Top1 = WH1 + bj1 # take another jet with the + sign...
 #----> 12 3 toplamakla, 13 2 toplamak ayni degil. cunku ilkinde bj candidate 3 ikincisinde 2 numarali jetler.
@@ -70,7 +70,7 @@ define   totchi : ((m(Top1) - m(Top2))/4.2)^2  + Wchi
 #   histo    hJetPt0 , "Pt Jet (GeV)", 70, 0, 700, pT(JET_5)
    select   Size(goodjet) >= 6        # at least 6 jets
 #   select   MET < 100             # no large MET
-   select   totchi  ~= 0  # find the tops and ws
+   select   totchi  ~= 0  # find the tops and ws  ~= 0  ~! 0
 #   histo    hchi , "Histo of chi2", 50, 0, 500, totchi
    select   totchi < 10.5 # small than a certain value of chi2
 #   histo    hmWH1 , "Hadronic W reco (GeV)", 50, 50, 150, m(WH1)
