@@ -27,6 +27,7 @@ double HistoNode1D::evaluate(AnalysisObjects* ao) {
                                    switch(inputParticles[0]->type){
                                    case muon_t: ipartMax=(ao->muos).at(bcol2).size(); break;
                                   case truth_t: ipartMax=(ao->truth).at(bcol2).size(); break;
+                                  case track_t: ipartMax=(ao->track).at(bcol2).size(); break;
                                case electron_t: ipartMax=(ao->eles).at(bcol2).size(); break;
                                     case jet_t: ipartMax=(ao->jets).at(bcol2).size(); break;
                                   case pureV_t: ipartMax=1; break;
