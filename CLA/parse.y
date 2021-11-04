@@ -45,6 +45,7 @@ vector<myParticle*> TmpParticle1;//to be used for list of 2 particles
 vector<myParticle*> TmpParticle2;//to be used for list of 3 particles
 vector<Node*> TmpCriteria;
 vector<Node*> TmpIDList;
+vector<Node*> VariableList;
 vector<float> chist_a, chist_stat_p, chist_stat_n, chist_syst_p, chist_syst_n;
 std::string current_cntHistDef;
 std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
@@ -83,7 +84,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
-%token TRGE TRGM SKPE SKPH SAVE 
+%token TRGE TRGM SKPE SKPH SAVE CSV 
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
@@ -194,6 +195,9 @@ countformat : COUNTSFORMAT ID { DEBUG($2<<" is a new format type\n"); current_cn
                (*cntHistos)[current_cntHistDef].push_back(ahist);
               }
             ;
+variablelist : variablelist e { VariableList.push_back($2); cout<<"new variable\n";}
+             |
+             ;
 NUMBER : INT { $$ = (float)$1; } 
        | NB  { $$ = $1; }
        ;
@@ -2834,6 +2838,10 @@ command : CMD condition { //find a way to print commands
         | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
+        | SAVE ID CSV variablelist
+                  { cout<<"CSV\n"; 
+                    NodeCuts->insert(make_pair(++cutcount, new SaveNode($2,1,VariableList))); 
+                  }
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }

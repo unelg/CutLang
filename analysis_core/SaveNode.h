@@ -25,6 +25,14 @@ public:
 		ntsave = new DBXNtuple();
 	       	fname = "lvl0_" + name + ".root";
 	}
+	SaveNode(std::string s, short int sele, vector<Node*> VariableList){
+                symbol="save";
+		name = s;
+		left = NULL;
+		right = NULL;
+		ntsave = new DBXNtuple();
+	       	fname = name + ".cvs"; // based on sele this could also be a txt file
+	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}

@@ -158,6 +158,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][uU][mM] return SUM;
 [aA][dD][dD] return ADD;
 [sS][aA][vV][eE] return SAVE;
+[cC][sS][vV] return CSV;
 [Aa][Ss][Cc][Ee][Nn][Dd] return ASCEND;
 [Dd][Ee][Ss][Cc][Ee][Nn][Dd] return DESCEND;
 [tT][aA][nN] return TAN;
