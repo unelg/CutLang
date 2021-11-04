@@ -205,8 +205,8 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i ex2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
@@ -216,8 +216,8 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
@@ -227,8 +227,8 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing ex3.adl:
@@ -334,8 +334,8 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i ex5.adl -e 1000 -v 500
 					 --> Overall efficiency	 =    1.1 % +-   0.33 %
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/testg
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
@@ -345,8 +345,8 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex5.adl -e 1000 -v 500
 					 --> Overall efficiency	 =    2.6 % +-  0.503 %
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/testg
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
@@ -356,8 +356,8 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex5.adl -e 1000 -v 500
 					 --> Overall efficiency	 =   22.7 % +-   1.32 %
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/testg
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing ex6.adl:
