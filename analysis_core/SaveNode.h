@@ -10,12 +10,18 @@
 #include "TTree.h"
 #include "DBXNtuple.h"
 
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+
 class SaveNode : public Node{
 private:
-	std::string name, fname;
+	std::string name, fname, savetype;
 	DBXNtuple *ntsave;
 	TFile *ftsave;
 	TTree *ttsave;
+      std::ofstream csvsave;
+      vector<Node*> variableList;
 public:
 	SaveNode(std::string s){
                 symbol="save";
@@ -24,6 +30,7 @@ public:
 		right = NULL;
 		ntsave = new DBXNtuple();
 	       	fname = "lvl0_" + name + ".root";
+            savetype = "lvl0";
 	}
 	SaveNode(std::string s, short int sele, vector<Node*> VariableList){
                 symbol="save";
@@ -31,7 +38,10 @@ public:
 		left = NULL;
 		right = NULL;
 		ntsave = new DBXNtuple();
-	       	fname = name + ".cvs"; // based on sele this could also be a txt file
+	       	fname = name + ".csv"; // based on sele this could also be a txt file
+            savetype = "variableList";
+            variableList = VariableList;
+            csvsave.open("export_"+fname);
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
@@ -47,6 +57,10 @@ public:
             std::cout << "Closing file\n";
 	    ftsave->Write();
 	    ftsave->Close();
+            csvsave.close();
+            if(savetype=="variableList"){
+                  std::filesystem::rename("export_"+fname, fname.c_str());
+            }
     }
     virtual double evaluate(AnalysisObjects* ao) override {
       vector<dbxMuon>        muons = ao->muos.begin()->second;
@@ -95,6 +109,14 @@ public:
       ntsave->nCombo=combos.size();
       for ( int i=0; i<(int)combos.size(); i++) {
 	ntsave->nt_combos.push_back(combos.at(i) );
+      }
+
+      if(variableList.size() > 0){
+            for (int i = 0; i < (int)variableList.size(); i++)
+            {
+                  csvsave << variableList[i]->evaluate(ao) << ",";
+            }
+            csvsave << "\n";
       }
         
       ntsave->nt_met=met;
