@@ -13,6 +13,9 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <ios>
+#include <stdio.h>
+#include <cstdio>
 
 class SaveNode : public Node{
 private:
@@ -59,7 +62,10 @@ public:
 	    ftsave->Close();
             csvsave.close();
             if(savetype=="variableList"){
-                  std::filesystem::rename("export_"+fname, fname.c_str());
+                  std::ifstream in("export_"+fname, std::ios::in | std::ios::binary);
+                  std::ofstream out(fname.c_str(), std::ios::out | std::ios::binary);
+                  out << in.rdbuf();
+                  std::remove(std::string("export_"+fname).c_str());
             }
     }
     virtual double evaluate(AnalysisObjects* ao) override {
