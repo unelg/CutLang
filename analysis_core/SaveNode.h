@@ -40,16 +40,19 @@ public:
 		name = s;
 		left = NULL;
 		right = NULL;
-		ntsave = new DBXNtuple();
+		ntsave = NULL;
 	       	fname = name + ".csv"; // based on sele this could also be a txt file
             savetype = "variableList";
             variableList = VariableList;
-            csvsave.open("export_"+fname);
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}
     virtual void createFile() override {
+            if(savetype=="variableList"){
+                 csvsave.open("export_"+fname);
+                 return ;
+            }
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
             ttsave->Branch("dbxAsave", ntsave);
@@ -58,17 +61,27 @@ public:
     }       
     virtual void saveFile() override {
             std::cout << "Closing file\n";
-	    ftsave->Write();
-	    ftsave->Close();
-            csvsave.close();
             if(savetype=="variableList"){
+                  csvsave.close();
                   std::ifstream in("export_"+fname, std::ios::in | std::ios::binary);
                   std::ofstream out(fname.c_str(), std::ios::out | std::ios::binary);
                   out << in.rdbuf();
                   std::remove(std::string("export_"+fname).c_str());
+            } else {
+	    	ftsave->Write();
+	    	ftsave->Close();
             }
     }
     virtual double evaluate(AnalysisObjects* ao) override {
+      if(variableList.size() > 0){
+            for (int i = 0; i < (int)variableList.size(); i++)
+            {
+                  csvsave << variableList[i]->evaluate(ao) << " , ";
+            }
+            csvsave << "\n";
+            return 1;
+      }
+        
       vector<dbxMuon>        muons = ao->muos.begin()->second;
       vector<dbxElectron> electrons= ao->eles.begin()->second;
       vector <dbxPhoton>    photons= ao->gams.begin()->second;
@@ -117,14 +130,6 @@ public:
 	ntsave->nt_combos.push_back(combos.at(i) );
       }
 
-      if(variableList.size() > 0){
-            for (int i = 0; i < (int)variableList.size(); i++)
-            {
-                  csvsave << variableList[i]->evaluate(ao) << ",";
-            }
-            csvsave << "\n";
-      }
-        
       ntsave->nt_met=met;
       ntsave->nt_evt=anevt;
       ntsave->nt_eles.resize    ( electrons.size()         );
