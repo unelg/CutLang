@@ -72,8 +72,8 @@ Testing Le6-hi.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i Le6-hi.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i Le6-hi.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT
