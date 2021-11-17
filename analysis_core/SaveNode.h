@@ -50,7 +50,7 @@ public:
     virtual void Reset() override{}
     virtual void createFile() override {
             if(savetype=="variableList"){
-                 csvsave.open("export_"+fname);
+                 csvsave.open(fname);
                  return ;
             }
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
@@ -60,13 +60,9 @@ public:
             ttsave->SetAutoSave(30000);
     }       
     virtual void saveFile() override {
-            std::cout << "Closing file\n";
+//            std::cout << "Closing file\n";
             if(savetype=="variableList"){
                   csvsave.close();
-                  std::ifstream in("export_"+fname, std::ios::in | std::ios::binary);
-                  std::ofstream out(fname.c_str(), std::ios::out | std::ios::binary);
-                  out << in.rdbuf();
-                  std::remove(std::string("export_"+fname).c_str());
             } else {
 	    	ftsave->Write();
 	    	ftsave->Close();
