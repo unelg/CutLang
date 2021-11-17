@@ -205,6 +205,14 @@ double sumof(std::vector<double> xlist){
  return retval;
 }
 
+double aveof(std::vector<double> xlist){
+ double retval=0;
+ for (unsigned int ii=0; ii<xlist.size(); ii++) retval+=xlist[ii];
+ retval/=xlist.size();
+ DEBUG("Ave:"<<retval<<"\n");
+ return retval;
+}
+
 double minof(std::vector<double> xlist){
  double retval=999999999999.9;
  for (unsigned int ii=0; ii<xlist.size(); ii++) {

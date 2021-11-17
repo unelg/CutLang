@@ -155,6 +155,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "NOT" return NOT;
 "#".*"\n" ;
 [ \t\n] ;
+[aA][vV][eE] return AVE;
 [sS][uU][mM] return SUM;
 [aA][dD][dD] return ADD;
 [sS][aA][vV][eE] return SAVE;

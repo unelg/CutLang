@@ -96,7 +96,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
-%token PERM COMB SORT TAKE UNION SUM ADD
+%token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token SIEIE  // CMSnano photon attribs
 %token <real> PNB
@@ -1020,6 +1020,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | TANH '(' e ')'  { $$=new UnaryAONode(tanh,$3,"tanh"); }
    | EXP '(' e ')'   { $$=new UnaryAONode(exp,$3,"exp"); }
    | LOG '(' e ')'   { $$=new UnaryAONode(log,$3,"log"); }
+   | AVE '(' e ')' {DEBUG("\t AVE function\n"); $$=new LoopNode(aveof,$3,"ave"); }
    | SUM '(' e ')' {DEBUG("\t SUM function\n"); $$=new LoopNode(sumof,$3,"sum"); }
    | MIN '(' e ')' {DEBUG("\t MIN function\n"); $$=new LoopNode(minof,$3,"min"); }
    | MAX '(' e ')' {DEBUG("\t MAX function\n"); $$=new LoopNode(maxof,$3,"max"); }

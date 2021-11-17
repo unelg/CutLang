@@ -66,6 +66,7 @@ public:
     
 };
 
+double aveof(std::vector<double> xlist);
 double sumof(std::vector<double> xlist);
 double minof(std::vector<double> xlist);
 double maxof(std::vector<double> xlist);
