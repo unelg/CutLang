@@ -77,6 +77,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [cC][tT][aA][gG] return ISCTAG;
 [tT][aA][uU][tT][aA][gG] return ISTAUTAG;
 [pP][dD][gG][iI][dD] return PDGID;
+[fF][lL][aA][vV][oO][rR] return FLAVOR;
 [pP][tT][cC][oO][nN][eE] return PTCONE;
 [eE][tT][cC][oO][nN][eE] return ETCONE;
 [sS][tT][aA][tT][uU][sS] return STATUS;

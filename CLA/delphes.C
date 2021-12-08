@@ -229,7 +229,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
       adbxj= new dbxJet(alv);
       adbxj->setCharge(jet->Charge);
       adbxj->setParticleIndx(i);
-      adbxj->setFlavor(jet->BTag);
+      adbxj->setFlavor(jet->Flavor);
       adbxj->set_isbtagged_77(  (bool)jet->BTag ); //  btag
       adbxj->set_isTautagged( (bool)jet->TauTag); // tau tag
 

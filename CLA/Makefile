@@ -39,9 +39,9 @@ GLIBS         = $(ROOTGLIBS)
 BISEXE = 1
 LEXEXE = 1
 
-ifneq ($(YACCV),)
-BISEXE = yacc
-endif
+#ifneq ($(YACCV),)
+#BISEXE = yacc
+#endif
 
 ifneq ($(BISONV),)
 BISEXE = bison

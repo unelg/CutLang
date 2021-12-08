@@ -65,6 +65,7 @@ double    Etaof( dbxParticle* apart);
 double    Rapof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
 double 	pdgIDof( dbxParticle* apart);
+double flavorof( dbxParticle* apart);
 double MsoftDof( dbxParticle* apart);
 double  DeepBof( dbxParticle* apart);
 double   isBTag( dbxParticle* apart);
