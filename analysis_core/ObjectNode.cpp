@@ -1059,6 +1059,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                    adbxp= new dbxParticle(alv);
                                    adbxp->setCharge((ao->jets)[collectionName].at(ipart).q() );
                                    adbxp->setPdgID( (ao->jets)[collectionName].at(ipart).pdgID() );
+                                   adbxp->setFlavor( (ao->jets)[collectionName].at(ipart).Flavor() );
                                    combination.push_back(*adbxp);
                                    delete adbxp;
                                }
@@ -1068,6 +1069,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                                    bdbxp.setTlv(bdbxp.lv()+alv); 
                                    bdbxp.setCharge( bdbxp.q()    +(ao->jets)[collectionName].at(ipart).q() );
                                    bdbxp.setPdgID(  bdbxp.pdgID()+(ao->jets)[collectionName].at(ipart).pdgID() );
+                                   bdbxp.setFlavor(  bdbxp.pdgID()+(ao->jets)[collectionName].at(ipart).Flavor() );
                             }
                             break;
 //                  case 3: ipart_max=abc.tagJets(ao, 1).size(); //b-jets

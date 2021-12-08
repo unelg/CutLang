@@ -108,7 +108,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                             case jet_t: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
-                                                        inputPart->setFlavor( inputPart->Flavor()+ao->jets[ac].at(ai).Flavor()); //is b-tag delphes
+                                                        inputPart->setFlavor( inputPart->Flavor()+ao->jets[ac].at(ai).Flavor());
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
                                                          + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
@@ -317,6 +317,12 @@ double Qof( dbxParticle* apart){
     double charge=apart->q();
     DEBUG(" q:"<<charge<<"\t");
     return charge;
+}
+
+double flavorof( dbxParticle* apart){
+    double flavor=apart->Flavor();
+    DEBUG(" flavor:"<<flavor<<"\t");
+    return flavor;
 }
 
 double pdgIDof( dbxParticle* apart){

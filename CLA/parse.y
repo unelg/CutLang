@@ -87,7 +87,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID  XSLUMICORRSF//simple funcs
+%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
@@ -424,6 +424,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | '{' particules '}' 'q' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
+                                  }
+         | 'FLAVOR' '(' particules ')' {    vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(flavorof,newList,"flavor");
+                                  }
+         | '{' particules '}' 'FLAVOR' {    vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(flavorof,newList,"flavor");
                                   }
         | CONSTITS '(' particules ')' {vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
