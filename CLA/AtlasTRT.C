@@ -94,6 +94,8 @@ void AtlasTRT::Loop(analy_struct aselect, char *extname)
 std::cout << "Begin Filling"<<std::endl;
 #endif
 
+     std::cout << "Evt:"<<eventNumber<<"\n";
+
      alv.SetPtEtaPhiE( trackPt, trackEta, trackPhi, trackE ); // all in GeV
      adbxk= new dbxTrack(alv);
      adbxk->setParticleIndx(0);
