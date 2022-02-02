@@ -48,10 +48,8 @@ all : $(objects)
 	test -L ../CLA/dbx_track_h_ACLiC_dict_rdict.pcm     || ( ln -s ../analysis_core/dbx_track_h_ACLiC_dict_rdict.pcm       ../CLA/ )
 	test -L ../CLA/delphesParticles_h_ACLiC_dict_rdict.pcm|| ( ln -s ../analysis_core/delphesParticles_h_ACLiC_dict_rdict.pcm ../CLA/ )
 
-
 clean:
 	rm -f *.o  *.so  *.d  *.pcm
-
 
 clean:
 	rm -f *.o  *.so  *.d  *.pcm

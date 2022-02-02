@@ -425,11 +425,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(Qof,newList,"q");
                                   }
-         | 'FLAVOR' '(' particules ')' {    vector<myParticle*> newList;
+         | FLAVOR '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(flavorof,newList,"flavor");
                                   }
-         | '{' particules '}' 'FLAVOR' {    vector<myParticle*> newList;
+         | '{' particules '}' FLAVOR {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(flavorof,newList,"flavor");
                                   }
