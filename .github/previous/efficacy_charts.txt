@@ -86,8 +86,8 @@ CLA ./delphes_events_ttbar.root DELPHES -i Le6-hi.adl -e 1000 -v 500
 					 --> Overall efficiency	 =   -nan % +-   -nan %
 With CMSOD
 python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i Le6-hi.adl -e 1000 -v 500
-					 --> Overall efficiency	 =     -0 % +-      0 %
-					 --> Overall efficiency	 =     -0 % +-      0 %
+					 --> Overall efficiency	 =    nan % +-    nan %
+					 --> Overall efficiency	 =    nan % +-    nan %
 hadd Target file: ./histoOut-Le6-hi.adl.root
 hadd Target path: ./histoOut-Le6-hi.adl.root:/
 hadd Target path: ./histoOut-Le6-hi.adl.root:/cuts
