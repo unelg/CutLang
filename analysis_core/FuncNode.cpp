@@ -108,7 +108,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                             case jet_t: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
-                                                        inputPart->setFlavor( inputPart->Flavor()+ao->jets[ac].at(ai).Flavor());
+                                                        inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
                                                          + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
                                                         ka=ao->jets[ac].at(ai).nAttribute();
