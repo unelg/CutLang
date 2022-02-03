@@ -104,7 +104,7 @@ std::cout << "Begin Filling"<<std::endl;
 
         for (unsigned int i=0; i<lep_n; i++) {
             alv.SetPtEtaPhiE( lep_pt[i]*0.001, lep_eta[i], lep_phi[i], lep_E[i]*0.001 ); // all in GeV
-            if (lep_type[i]==13) {
+            if (fabs(lep_type[i])==13) {
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(lep_charge[i] );
 		adbxm->setPdgID(-13*lep_charge[i]);
@@ -115,7 +115,7 @@ std::cout << "Begin Filling"<<std::endl;
                 muons.push_back(*adbxm);
                 delete adbxm;
             }
-            if (lep_type[i]==11) {
+            if ( fabs(lep_type[i])==11) {
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(lep_charge[i] );
 		adbxe->setPdgID(-11*lep_charge[i]);
@@ -126,7 +126,7 @@ std::cout << "Begin Filling"<<std::endl;
                 electrons.push_back(*adbxe);
                 delete adbxe;
             }
-	    if (lep_type[i]==15) {
+	    if ( fabs(lep_type[i])==15) {
                 adbxt= new dbxTau(alv);
                 adbxt->setCharge(lep_charge[i] );
 		adbxt->setPdgID(-15*lep_charge[i]);
