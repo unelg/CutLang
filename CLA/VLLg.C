@@ -82,7 +82,7 @@ std::cout << "Read Event"<<std::endl;
        map<string, TVector2            >  met_map;
 
 //temporary variables
-       TLorentzVector  alv;
+       TLorentzVector  alv, alv0, alv1, alv2, alv3;
        TVector2 met;
        dbxJet      *adbxj;
        dbxElectron *adbxe;
@@ -90,10 +90,154 @@ std::cout << "Read Event"<<std::endl;
        dbxTau      *adbxt;
        dbxPhoton   *adbxp;
 
+    #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
+    #endif
 
 
-} // end of for
+//JETS
+        unsigned int jetsize=3;
+        for (unsigned int i=0; i<jetsize; i++) {
+            if (i==0) alv.SetPtEtaPhiM( jet_pt0*0.001, jet_eta0, 0.0, 0.0 ); // all in GeV
+            if (i==1) alv.SetPtEtaPhiM( jet_pt1*0.001, jet_eta1, 0.0, 0.0 ); // all in GeV
+            if (i==2) alv.SetPtEtaPhiM( jet_pt2*0.001, jet_eta2, 0.0, 0.0 ); // all in GeV
+            adbxj= new dbxJet(alv);
+            adbxj->setCharge(-99);
+            adbxj->setParticleIndx(i);
+            jets.push_back(*adbxj);
+            delete adbxj;
+        }
+    #ifdef __DEBUG__
+        std::cout << "Jets OK:"<< jetsize <<std::endl;
+    #endif
+
+//LEPTONS
+        alv0.SetPtEtaPhiE( lep_Pt_0*0.001, lep_Eta_0, lep_Phi_0, lep_E_0*0.001 ); // all in GeV       
+        alv1.SetPtEtaPhiE( lep_Pt_1*0.001, lep_Eta_1, lep_Phi_1, lep_E_1*0.001 ); // all in GeV       
+        alv2.SetPtEtaPhiE( lep_Pt_2*0.001, lep_Eta_2, lep_Phi_2, lep_E_2*0.001 ); // all in GeV       
+        alv3.SetPtEtaPhiE( lep_Pt_3*0.001, lep_Eta_3, lep_Phi_3, lep_E_3*0.001 ); // all in GeV       
+        if (abs(lep_ID_0)==13) { // muons
+            adbxm= new dbxMuon(alv0);
+            adbxm->setCharge(lep_ID_0 / 13 );
+            adbxm->setPdgID( lep_ID_0 );
+            adbxm->setParticleIndx(0);
+            adbxm->setZ0(lep_Z0SinTheta_0 );
+            muons.push_back(*adbxm);
+            delete adbxm;
+        }
+        if (abs(lep_ID_0)==11) { // electrons
+            adbxe= new dbxElectron(alv0);
+            adbxe->setCharge(lep_ID_0 / 11 );
+            adbxe->setPdgID( lep_ID_0 );
+            adbxe->setParticleIndx(0);
+            adbxe->setZ0(lep_Z0SinTheta_0 );
+            electrons.push_back(*adbxe);
+            delete adbxe;
+        }
+//1
+        if (abs(lep_ID_1)==13) { // muons
+            adbxm= new dbxMuon(alv1);
+            adbxm->setCharge(lep_ID_1 / 13 );
+            adbxm->setPdgID( lep_ID_1 );
+            adbxm->setParticleIndx(1);
+            adbxm->setZ0(lep_Z0SinTheta_1 );
+            muons.push_back(*adbxm);
+            delete adbxm;
+        }
+        if (abs(lep_ID_1)==11) { // electrons
+            adbxe= new dbxElectron(alv1);
+            adbxe->setCharge(lep_ID_1 / 11 );
+            adbxe->setPdgID( lep_ID_1 );
+            adbxe->setParticleIndx(1);
+            adbxe->setZ0(lep_Z0SinTheta_1 );
+            electrons.push_back(*adbxe);
+            delete adbxe;
+        }
+//2
+        if (abs(lep_ID_2)==13) { // muons
+            adbxm= new dbxMuon(alv2);
+            adbxm->setCharge(lep_ID_2 / 13 );
+            adbxm->setPdgID( lep_ID_2 );
+            adbxm->setParticleIndx(2);
+            adbxm->setZ0(lep_Z0SinTheta_2 );
+            muons.push_back(*adbxm);
+            delete adbxm;
+        }
+        if (abs(lep_ID_2)==11) { // electrons
+            adbxe= new dbxElectron(alv2);
+            adbxe->setCharge(lep_ID_2 / 11 );
+            adbxe->setPdgID( lep_ID_2 );
+            adbxe->setParticleIndx(2);
+            adbxe->setZ0(lep_Z0SinTheta_2 );
+            electrons.push_back(*adbxe);
+            delete adbxe;
+        }
+//3
+        if (abs(lep_ID_3)==13) { // muons
+            adbxm= new dbxMuon(alv3);
+            adbxm->setCharge(lep_ID_3 / 13 );
+            adbxm->setPdgID( lep_ID_3 );
+            adbxm->setParticleIndx(3);
+            muons.push_back(*adbxm);
+            delete adbxm;
+        }
+        if (abs(lep_ID_3)==11) { // electrons
+            adbxe= new dbxElectron(alv3);
+            adbxe->setCharge(lep_ID_3 / 11 );
+            adbxe->setPdgID( lep_ID_3 );
+            adbxe->setParticleIndx(3);
+            electrons.push_back(*adbxe);
+            delete adbxe;
+        }
+//MET
+        met.SetMagPhi( met_met*0.001,  met_phi);
+
+//------------ auxiliary information -------
+        anevt.run_no=runNumber;
+        anevt.user_evt_weight=1.0;
+        anevt.lumiblk_no=1;
+        anevt.top_hfor_type=0;
+        anevt.event_no=eventNumber;
+        anevt.TRG_e= 1;
+        anevt.TRG_m= 1;
+        anevt.TRG_j= 0;
+        anevt.vxp_maxtrk_no= 9;
+        anevt.badjet=0;
+        anevt.mcevt_weight=1.0;
+        anevt.pileup_weight=1.0;
+        anevt.z_vtx_weight = 1.0;
+        anevt.weight_bTagSF_77 = 1.0;
+        anevt.weight_leptonSF = 1.0;
+        anevt.vxpType=0;
+        anevt.lar_Error=0;
+        anevt.core_Flags=0;
+        anevt.maxEvents=nentries;
+
+#ifdef __DEBUG__
+std::cout << "Filling finished"<<std::endl;
+#endif
+
+        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
+       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
+       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
+       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
+         met_map.insert( pair <string,TVector2>             ("MET",           met) );
+
+        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map, combo_map, constits_map, met_map, anevt};
+
+        aCtrl.RunTasks(a0);
+
+      
+} // end of for over events
+
+  aCtrl.Finalize();
+
 }
 
 
