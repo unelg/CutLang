@@ -112,10 +112,20 @@ std::cout << "Begin Filling"<<std::endl;
     #endif
 
 //LEPTONS
+
+#ifdef __DEBUG__
+        cout << "1L:"<<(int)onelep_type<<" 2L:"<<(int)dilep_type<<" 3L:"<<(int)trilep_type<<" 4L:"<<(int)quadlep_type<<"\n";
+        cout << "1L:"<<lep_Pt_0<<" 2L:"<<lep_Pt_1<<" 3L:"<<lep_Pt_2<<" 4L:"<<lep_Pt_3<<"\n";
+#endif
+      for (int ii=1; ii<2; ii++){
+        int nlep=0;
+        if( (int)onelep_type >0 ) nlep=1;
+        if( (int)dilep_type >0  ) nlep=2;
+        if( (int)trilep_type >0 ) nlep=3;
+        if( (int)quadlep_type>0 ) nlep=4;
+
+        if (nlep==0) break;
         alv0.SetPtEtaPhiE( lep_Pt_0*0.001, lep_Eta_0, lep_Phi_0, lep_E_0*0.001 ); // all in GeV       
-        alv1.SetPtEtaPhiE( lep_Pt_1*0.001, lep_Eta_1, lep_Phi_1, lep_E_1*0.001 ); // all in GeV       
-        alv2.SetPtEtaPhiE( lep_Pt_2*0.001, lep_Eta_2, lep_Phi_2, lep_E_2*0.001 ); // all in GeV       
-        alv3.SetPtEtaPhiE( lep_Pt_3*0.001, lep_Eta_3, lep_Phi_3, lep_E_3*0.001 ); // all in GeV       
         if (abs(lep_ID_0)==13) { // muons
             adbxm= new dbxMuon(alv0);
             adbxm->setCharge(lep_ID_0 / 13 );
@@ -134,6 +144,8 @@ std::cout << "Begin Filling"<<std::endl;
             electrons.push_back(*adbxe);
             delete adbxe;
         }
+        if (nlep==1) break;
+        alv1.SetPtEtaPhiE( lep_Pt_1*0.001, lep_Eta_1, lep_Phi_1, lep_E_1*0.001 ); // all in GeV       
 //1
         if (abs(lep_ID_1)==13) { // muons
             adbxm= new dbxMuon(alv1);
@@ -153,6 +165,8 @@ std::cout << "Begin Filling"<<std::endl;
             electrons.push_back(*adbxe);
             delete adbxe;
         }
+        if (nlep==2) break;
+        alv2.SetPtEtaPhiE( lep_Pt_2*0.001, lep_Eta_2, lep_Phi_2, lep_E_2*0.001 ); // all in GeV       
 //2
         if (abs(lep_ID_2)==13) { // muons
             adbxm= new dbxMuon(alv2);
@@ -172,6 +186,8 @@ std::cout << "Begin Filling"<<std::endl;
             electrons.push_back(*adbxe);
             delete adbxe;
         }
+        if (nlep==3) break;
+        alv3.SetPtEtaPhiE( lep_Pt_3*0.001, lep_Eta_3, lep_Phi_3, lep_E_3*0.001 ); // all in GeV       
 //3
         if (abs(lep_ID_3)==13) { // muons
             adbxm= new dbxMuon(alv3);
@@ -189,6 +205,8 @@ std::cout << "Begin Filling"<<std::endl;
             electrons.push_back(*adbxe);
             delete adbxe;
         }
+
+       }
 //MET
         met.SetMagPhi( met_met*0.001,  met_phi);
 
