@@ -72,22 +72,22 @@ Testing Le6-hi.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i Le6-hi.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i Le6-hi.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i Le6-hi.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -HLT
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 With CMSOD
 python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i Le6-hi.adl -e 1000 -v 500
-					 --> Overall efficiency	 =    nan % +-    nan %
-					 --> Overall efficiency	 =    nan % +-    nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-Le6-hi.adl.root
 hadd Target path: ./histoOut-Le6-hi.adl.root:/
 hadd Target path: ./histoOut-Le6-hi.adl.root:/cuts
@@ -95,8 +95,8 @@ hadd Target path: ./histoOut-Le6-hi.adl.root:/preselection
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i Le6-hi.adl -e 1000 -v 500
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-Le6-hi.adl.root
 hadd Target path: ./histoOut-Le6-hi.adl.root:/
 hadd Target path: ./histoOut-Le6-hi.adl.root:/cuts
@@ -104,8 +104,8 @@ hadd Target path: ./histoOut-Le6-hi.adl.root:/preselection
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i Le6-hi.adl -e 1000 -v 500
-					 --> Overall efficiency	 =   -nan % +-   -nan %
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
+					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-Le6-hi.adl.root
 hadd Target path: ./histoOut-Le6-hi.adl.root:/
 hadd Target path: ./histoOut-Le6-hi.adl.root:/cuts
