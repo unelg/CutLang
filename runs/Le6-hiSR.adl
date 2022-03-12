@@ -7,17 +7,17 @@ TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd tri
 SkipHistos = 1
 
 object goodELE : ELE
-select AbsEta(ELE_) < 2.47  # max pseudorapidity of electrons
-select AbsEta(ELE_) ][ 1.37 1.52  # exclude pseudorapidity of electrons (support section of ATLAS detector)
-select Pt(ELE_) > 10.0  # min pt of electrons
+select AbsEta(ELE) < 2.47  # max pseudorapidity of electrons
+select AbsEta(ELE) ][ 1.37 1.52  # exclude pseudorapidity of electrons (support section of ATLAS detector)
+select Pt(ELE) > 10.0  # min pt of electrons
 
 object goodMUO : MUO
-select Pt(MUO_) > 10.0  # min pt of muons
-select AbsEta(MUO_) < 2.5  # max pseudorapidity of electrons
+select Pt(MUO) > 10.0  # min pt of muons
+select AbsEta(MUO) < 2.5  # max pseudorapidity of electrons
 
 object goodJET : JET
-select Pt(JET_) > 20.0  # min pt of jets
-select AbsEta(JET_) < 2.5  # max pseudorapidity of electrons
+select Pt(JET) > 10.0  # min pt of jets
+select AbsEta(JET) < 2.5  # max pseudorapidity of electrons
 
 object goodleptons : Union( goodELE, goodMUO )
 
@@ -51,24 +51,25 @@ select      ALL            # to count all events
 select      Size(goodMUO) >= 0
 select      Size(goodELE) >= 0
 select      Size(goodleptons) >= 1
+select      PT(goodleptons[0]) > 15
 select      Size(goodleptons) >= 2
 select      Size(goodleptons) >= 3
-select      Size(goodleptons) == 3
-Sort        {goodleptons_ }Pt descend
-select      pt(goodleptons_0) > 40.0
-select      pt(goodleptons_1) > 40.0
+#select      Size(goodleptons) == 3
+Sort        {goodleptons }Pt descend
+#select      pt(goodleptons_0) > 40.0
+#select      pt(goodleptons_1) > 40.0
 select      Size(goodJET) >= 2
-select      Size(goodELE) == 1 OR Size(goodELE) == 3
+#select      Size(goodELE) == 1 OR Size(goodELE) == 3
 select      Zsameflavor ~= 0.0
 select      pdgidDiff == 0
 select      q(Zreco) == 0
 histo     Zlm0 , "Z reconstruction  (GeV)", 60, 60, 120, m( Zreco )
-select      m(Zreco) [] 85 95
-select      abs(PDGID(goodLEPC)) == 11
+select      m(Zreco) [] 75 105
+#select      abs(PDGID(goodLEPC)) == 11
 #histo     metsig0 , "METsig (GeV)", 50, 0, 10, METsig
 select      m(Wreco) ~= 80
 histo     Wm0 , "W mass reconstruction  (GeV)", 50, 0, 200, m(Wreco)
-select      m(Wreco) [] 50 110
+select      m(Wreco) [] 10 140
 histo     met0 , "MET (GeV)", 50, 0, 500, { METLV_0 }Pt
 histo     ht0 , "Total PT of W jets (GeV)", 80, 0, 800, HT
 histo     meff0 , "MET + Total PT of W jets (GeV)", 70, 0, 700, Meffs
@@ -85,35 +86,35 @@ histo     Weta0 , "W eta", 50, -5, 5, { Wreco }Eta
 histo     Wpt0 , "W pt  (GeV)", 50, 0, 500, { Wreco }Pt
 
 #select    MET > 100.0
-select    METsig > 1.0
-select    abs ( { goodLEPC , Zreco }dR ) < 3.1
-select    HT > 60.0
-select    Meffs > 120.0
+#select    METsig > 1.0
+#select    abs ( { goodLEPC , Zreco }dR ) < 3.1
+#select    HT > 60.0
+#select    Meffs > 120.0
 
 histo     LeZm1 , "LeZ mass reconst (GeV)", 90, 80, 530, m(LeZ)
 histo     LeWm1 , "LeW mass reconst (GeV)", 100, 50, 550, m(LeW)
 
-histo     llmassdiff1, "Mass difference between L's",80,0,400,LLdiff
-histo     lldrdiff1,"Angle between LeW and LeZ",70, 0, 7,{ LeW , LeZ }dR
-histo     lezpt1 , "pt(LeZ) (GeV)", 70, 0, 700, { LeZ }Pt
-histo     lewpt1 , "pt(LeW) (GeV)", 70, 0, 700, { LeW }Pt
-histo     eleadpt1 , "Leading e Pt (GeV)", 40, 0, 400, { goodLEPC }Pt
+#histo     llmassdiff1, "Mass difference between L's",80,0,400,LLdiff
+#histo     lldrdiff1,"Angle between LeW and LeZ",70, 0, 7,{ LeW , LeZ }dR
+#histo     lezpt1 , "pt(LeZ) (GeV)", 70, 0, 700, { LeZ }Pt
+#histo     lewpt1 , "pt(LeW) (GeV)", 70, 0, 700, { LeW }Pt
+#histo     eleadpt1 , "Leading e Pt (GeV)", 40, 0, 400, { goodLEPC }Pt
 
-select    { LeW , LeZ }dR [] 2.6 4.1
-select    pt(LeW) > 40.0
-select    pt(LeZ) > 40.0
+#select    { LeW , LeZ }dR [] 2.6 4.1
+#select    pt(LeW) > 40.0
+#select    pt(LeZ) > 40.0
 #select    LLdiff < 160.0
-histo     llmassdiffratio1, "Mass difference ratio between L's", 100,-1,1,LLdiffratio
-select    LLdiffratio [] -0.3 0.2
-select    pt(goodLEPC) > 40.0
+#histo     llmassdiffratio1, "Mass difference ratio between L's", 100,-1,1,LLdiffratio
+#select    LLdiffratio [] -0.3 0.2
+#select    pt(goodLEPC) > 40.0
 
-histo     llmassdiffratio2, "Mass difference ratio between L's", 100,-1,1,LLdiffratio
-histo     LeZm2 , "LeZ mass reconst (GeV)", 70, 80, 430, m(LeZ)
-histo     LeWm2 , "LeW mass reconst (GeV)", 80, 50, 450, m(LeW)
-histo     LeZeta1 , "LeZ eta ", 50, -5, 5, { LeZ }Eta
-histo     LeWeta1 , "LeW eta", 50, -5, 5, { LeW }Eta
-histo     LeZphi1 , "LeZ phi ", 70, -3.5, 3.5, { LeZ }Phi
-histo     LeWphi1 , "LeW phi", 70, -3.5, 3.5, { LeW }Phi
-histo     Wm1 , "W mass reconstruction  (GeV)", 50, 0, 200, m(Wreco)
-histo     met1 , "MET (GeV)", 50, 0, 500, { METLV_0 }Pt
-Save      abcd
+#histo     llmassdiffratio2, "Mass difference ratio between L's", 100,-1,1,LLdiffratio
+#histo     LeZm2 , "LeZ mass reconst (GeV)", 70, 80, 430, m(LeZ)
+#histo     LeWm2 , "LeW mass reconst (GeV)", 80, 50, 450, m(LeW)
+#histo     LeZeta1 , "LeZ eta ", 50, -5, 5, { LeZ }Eta
+#histo     LeWeta1 , "LeW eta", 50, -5, 5, { LeW }Eta
+#histo     LeZphi1 , "LeZ phi ", 70, -3.5, 3.5, { LeZ }Phi
+#histo     LeWphi1 , "LeW phi", 70, -3.5, 3.5, { LeW }Phi
+#histo     Wm1 , "W mass reconstruction  (GeV)", 50, 0, 200, m(Wreco)
+#histo     met1 , "MET (GeV)", 50, 0, 500, { METLV_0 }Pt
+#Save      abcd

@@ -212,6 +212,9 @@ std::cout << "Begin Filling"<<std::endl;
 
 //------------ auxiliary information -------
         anevt.run_no=runNumber;
+        anevt.correction_weight=1;
+        anevt.luminosity_weight=1.0;
+        anevt.weight_xsec=1;
         anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;

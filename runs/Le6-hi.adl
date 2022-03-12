@@ -2,7 +2,7 @@
 #btag_lowthreshold_CMSOD   = 1.7400
 
 TRGm = 0 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
-TRGe = 2 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 1 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
 #SkipEffs = 1
 SkipHistos = 1
 
@@ -30,7 +30,7 @@ define      totmetwpt : { Wreco }Pt + { METLV_0 }Pt
 ###### EVENT SELECTION
 algo  preselection
 select      ALL            # to count all events
-select      XSLumiCorrSF
+#select      XSLumiCorrSF
 select      Size(goodMUO) >= 2
 select      Size(goodELE) >= 1
 select      Size(goodJET) >= 2

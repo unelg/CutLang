@@ -1,4 +1,3 @@
-
 #ifndef VLLg_h
 #define VLLg_h
 

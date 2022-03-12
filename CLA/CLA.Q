@@ -12,6 +12,7 @@
 #include "AtlasTRT.h"
 #include "VLLBG3.h"
 #include "VLLg.h"
+#include "VLLf.h"
 #include "VLLMinSignal.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
@@ -55,6 +56,7 @@ int main(int argc, char*argv[])
  bool use_cmsod=false;
  bool use_cmsodR2=false;
  bool use_cmsnano=false;
+ bool use_vllf=false;
  bool use_vllg=false;
  bool use_vllmin=false;
  bool use_vllbg3 =false;
@@ -122,6 +124,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
  else if (inptype == "VLLG")	{ use_vllg =true;}
+ else if (inptype == "VLLF")	{ use_vllf =true;}
  else if (inptype == "VLLSIGNAL")	{ use_vllsignal =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
@@ -254,6 +257,9 @@ TProof* proof;
   }else if (use_vllsignal){
    cout << "~Now using ATLAS VLL Signal files.~~~~~~ alpha!\n";
    chain = new TChain("physics");
+  }else if (use_vllf){
+   cout << "~Now using ATLAS VLL Group files.~~~~~~ alpha!\n";
+   chain = new TChain("nominal");
   }else if (use_vllg){
    cout << "~Now using ATLAS VLL Group files.~~~~~~ alpha!\n";
    chain = new TChain("nominal");
@@ -317,6 +323,9 @@ TProof* proof;
    } else if (use_vllg){
     VLLg *VLLga=new VLLg("XXX",chain);
           VLLga->Loop(aselect, username);
+   } else if (use_vllf){
+    VLLf *VLLfa=new VLLf("XXX",chain);
+          VLLfa->Loop(aselect, username);
   }
 
   cout << "finished."<<endl;
