@@ -1,0 +1,20 @@
+#CLA ADL example1
+info analysisExample
+  title "Search for electroweak production of charginos and neutralinos in WH events in proton-proton collisions at sqrt(s) = 13TeV"
+  experiment CMS
+  id "SUS-16-043"
+  publication "JHEP 11 (2017) 029"
+  sqrtS 13.0
+  lumi 35.9
+  arXiv "1706.09933"
+  hepdata " http://adress.org "
+  doi "10.1007/JHEP11(2017)029"
+
+object TightELE : ELE
+   select Tight(ELE) == 1 
+
+region   testZ
+  select      ALL              # to count all events
+  select      Size (ELE) >= 2  # events with 1 or more electrons 
+  select      Size (TightELE) >= 2  # events with 1 or more Tight electrons 
+
