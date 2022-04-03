@@ -86,6 +86,10 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][eE][rR][tT][eE][xX][yY] return VERY;
 [vV][eE][rR][tT][eE][xX][zZ] return VERZ;
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
+[tT][iI][gG][hH][tT] return ISTIGHT;
+[mM][eE][dD][iI][uU][mM] return ISMEDIUM;
+[lL][oO][oO][sS][eE] return ISLOOSE;
+"tightId" return TIGHTID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
 "truthMatchProb" return TRUTHMATCHPROB;
@@ -115,7 +119,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "idIsoTight" return IDISOTIGHT;
 "idAntiEleTight" return IDANTIELETIGHT; 
 "idAntiMuTight" return IDANTIMUTIGHT;
-"tightId" return TIGHTID;
 "puId" return PUID;
 "genPartIdx" return GENPARTIDX;
 "decayMode" return DECAYMODE;

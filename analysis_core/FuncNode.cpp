@@ -73,7 +73,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
-                                                        inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        inputPart->setIsTight(ao->eles[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsMedium(ao->eles[ac].at(ai).isMedium() ); 
+                                                        inputPart->setIsLoose(ao->eles[ac].at(ai).isLoose() ); 
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         DEBUG("e- Nattr:"<<ka<<"\n");
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
@@ -551,6 +553,17 @@ double pfreliso03allof( dbxParticle* apart){
    double v=apart->Attribute(6);
    DEBUG(" muon pfRelIso03_all:"<<v<<"\t");
    return v;
+}
+
+double isTight(dbxParticle* apart){
+    std::cout<<"T:"<<(int)apart->isTight()<<"\n";
+    return 1*(int)apart->isTight();
+}
+double isMedium(dbxParticle* apart){
+    return 1*(int)apart->isMedium();
+}
+double isLoose(dbxParticle* apart){
+    return 1*(int)apart->isLoose();
 }
 
 //------------------------------

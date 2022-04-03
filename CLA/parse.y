@@ -91,6 +91,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
+%token ISTIGHT ISMEDIUM ISLOOSE
 %token TIGHTID PUID GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
@@ -794,6 +795,30 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | ETCONE '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(EtConeof,newList,"etcone");
+                                 }
+         | '{' particules '}' ISTIGHT { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isTight,newList,"isTight");
+                                 }
+         | ISTIGHT '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isTight,newList,"isTight");
+                                 }
+         | '{' particules '}' ISMEDIUM { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isMedium,newList,"isMedium");
+                                 }
+         | ISMEDIUM '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isMedium,newList,"isMedium");
+                                 }
+         | '{' particules '}' ISLOOSE { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isLoose,newList,"isLoose");
+                                 }
+         | ISLOOSE '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isLoose,newList,"isLoose");
                                  }
          | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
