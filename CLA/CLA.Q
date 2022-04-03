@@ -14,6 +14,7 @@
 #include "VLLg.h"
 #include "VLLf.h"
 #include "VLLMinSignal.h"
+#include "DELPHES2.h"
 #include "dbxParticle.h"
 //#include "dbxAna.h"
 #include <TH2.h>
@@ -62,6 +63,7 @@ int main(int argc, char*argv[])
  bool use_vllbg3 =false;
  bool use_vllsignal =false;
 
+ bool use_DELPHES2=false;
  string inptype;
  char *username=NULL;
 
@@ -103,7 +105,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | LHCO | FCC | DELPHES | ATLASVLL | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL | VLLG]\n"
+                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | ATLASVLL | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL | VLLG]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -112,6 +114,7 @@ for (int i = 2; i < argc; i++) {
 
       if (inptype == "LHCO")    { use_lhco =true;}
  else if (inptype == "FCC" )    { use_fcc  =true;}
+ else if (inptype == "DELPHES2")    { use_DELPHES2 =true;}
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
  else if (inptype == "ATLASVLL"){ use_vllmin =true;}
@@ -218,6 +221,10 @@ TProof* proof;
   if (use_lhco){
    cout << "WARNING: using LHCO~~~reduced functionality~~~\n";
    chain = new TChain("LHCO");
+  }else if (use_DELPHES2){
+   cout << "~Now using DELPHES2 files.~\n";
+   chain = new TChain("Delphes"); //DELPHES2 anchor
+   cout << "~chained~\n";
   }else if (use_lvl0){
    cout << "~Now using LVL0 files.~\n";
    chain = new TChain("nt_tree");
@@ -275,12 +282,16 @@ TProof* proof;
   }
   if (chain->GetEntries() > 0 ) {
     cout << "initialized with the chain"<<endl;
-
-    chain->GetEntry(0);
+   // chain->GetEntry(0);
+    cout << "...\n";
 
    if (use_lhco){
     lhco *lhcoa=new lhco("XXX",chain);
           lhcoa->Loop(aselect, username);
+   } else if (use_DELPHES2){
+    DELPHES2 *DELPHES2a=new DELPHES2("XXX",chain);
+          cout << "DELPHES2 obj ok\n";
+              DELPHES2a->Loop(aselect, username);
    } else if (use_lvl0){
     lvl0 *lvl0a=new lvl0("XXX",chain);
           lvl0a->Loop(aselect, username);
