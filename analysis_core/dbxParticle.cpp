@@ -77,8 +77,16 @@ int dbxParticle:: setPtCone (double iso){
  return 0;
 }
 
-int dbxParticle:: setIsTight (int indx){
+int dbxParticle:: setIsTight (bool indx){
  p_istight=indx;
+ return 0;
+}
+int dbxParticle:: setIsMedium (bool indx){
+ p_ismedium=indx;
+ return 0;
+}
+int dbxParticle:: setIsLoose (bool indx){
+ p_isloose=indx;
  return 0;
 }
 

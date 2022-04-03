@@ -220,7 +220,9 @@ public:
 	int setEtCone( double );
 	int setPtCone( double );
 	int setFlavor ( double );
-	int setIsTight ( int );
+	int setIsTight ( bool );
+	int setIsMedium ( bool );
+	int setIsLoose ( bool );
 
 	int setParticleIndx ( int );
 	int setTlv( TLorentzVector );
@@ -252,7 +254,9 @@ public:
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }
 	double Flavor()  { return p_flavor; }
-	int    isTight() { return p_istight; }
+	bool    isTight() { return p_istight; }
+	bool    isMedium(){ return p_ismedium; }
+	bool    isLoose() { return p_isloose; }
 	int    ParticleIndx() { return p_particleindx; }
 	TLorentzVector lv()  const{ return p_lvector; }
 	double ScaleFactor()  { return p_scalefactor; }
@@ -285,7 +289,9 @@ private:
 	double p_escalefactor;
 	double p_scalefactorup;
 	double p_scalefactordown;
-	int p_istight;
+	bool p_istight;
+	bool p_ismedium;
+	bool p_isloose;
 	double p_z0;
 
 	ClassDef(dbxParticle,2);
