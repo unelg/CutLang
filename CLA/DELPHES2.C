@@ -206,6 +206,9 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     // >>> PHOTON >>>
 
     dbxPhoton *adbxp;
+    Tcount=0;
+    Mcount=0;
+    Lcount=0;
     for (unsigned int i=0; i<Photon_size; i++) {
         alv.SetPtEtaPhiE(Photon_PT[i], Photon_Eta[i], Photon_Phi[i], Photon_E[i]); // all in GeV
 
@@ -220,30 +223,83 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 		adbxp->addAttribute(Photon_SumPt[i]);
 		adbxp->addAttribute(Photon_Status[i]);
 //		adbxp->addAttribute(Photon_T[i]);
+    cout << "P N:"<<Photon_T[j]<< " "<<j <<endl;
 		
+    for (unsigned int j=0; j<PhotonTight_size && Tcount<PhotonTight_size; j++) {
+        cout << "P T:"<<PhotonTight_T[j]<< " "<<j <<endl;
+        if (Photon_T[i] == PhotonTight_T[j] ) { 
+           cout << "tight set\n";
+           adbxp->setIsTight (true);
+           Tcount++;
+        }
+    }
+    for (unsigned int j=0; j<PhotonMedium_size && Mcount<PhotonMedium_size; j++) {
+        cout << "P M:"<<PhotonMedium_T[j]<< " "<<j <<endl;
+        if (Photon_T[i] == PhotonMedium_T[j] ) { 
+           cout << "Medium set\n";
+           adbxp->setIsMedium (true);
+           Mcount++;
+        }
+    }
+    for (unsigned int j=0; j<PhotonLoose_size && Lcount<PhotonLoose_size; j++) {
+        cout << "P L:"<<PhotonLoose_T[j]<< " "<<j <<endl;
+        if (Photon_T[i] == PhotonLoose_T[j] ) { 
+           cout << "Loose set\n";
+           adbxp->setIsLoose (true);
+           Lcount++;
+        }
+    }
         adbxp->setParticleIndx(i);
         photons.push_back(*adbxp);
         delete adbxp;
     }
 
+    cout<<"PHOTON OK\n";
     DEBUG("PHOTON OK\n")
 
     // <<< PHOTON <<<
                         
-    /*
-    jet not found!!!
     // >>> JET >>>
 
+    Tcount=0;
+    Mcount=0;
+    Lcount=0;
     dbxJet *adbxj;
-    for (unsigned int i=0; i<nJET_example; i++) {
-        _alv_example.SetPtEtaPhiM(Muon_pt_example[i], Muon_eta_example[i], Muon_phi_example[i],  (105.658/1E3)_example); // all in GeV
-
+    for (unsigned int i=0; i<JetPUPPI_; i++) {
+        alv.SetPtEtaPhiM(JetPUPPI_PT[i], JetPUPPI_Eta[i], JetPUPPI_Phi[i],  JetPUPPI_Mass[i]); // all in GeV
         adbxj = new dbxJet(alv);
-
-        adbxj_example->addAttribute(PARTICLE_dxy_example[i]);
-        adbxj_example->setCharge(PARTICLE_charge_example[i]);
-
+        adbxj->setFlavor(JetPUPPI_Flavor[i]);
+        adbxj->set_isbtagged_77(  (bool)JetPUPPI_BTag[i] ); //  btag
+        adbxj->set_isTautagged( (bool)JetPUPPI_TauTag[i]); // tau tag
         adbxj->setParticleIndx(i);
+        adbxj->setCharge(JetPUPPI_Charge[i]); 
+// constits need to be added 
+    for (unsigned int j=0; j<JetPUPPITight_size && Tcount<JetPUPPITight_size; j++) {
+        cout << "j T:"<<JetPUPPITight_T[j]<< " "<<j <<endl;
+        if (JetPUPPI_T[i] == JetPUPPITight_T[j] ) { 
+           cout << "tight set\n";
+           adbxj->setIsTight (true);
+           Tcount++;
+        }
+    }
+/*
+    for (unsigned int j=0; j<JetPUPPIMedium_size && Mcount<JetPUPPIMedium_size; j++) {
+        cout << "j M:"<<JetPUPPIMedium_T[j]<< " "<<j <<endl;
+        if (JetPUPPI_T[i] == JetPUPPIMedium_T[j] ) { 
+           cout << "Medium set\n";
+           adbxj->setIsMedium (true);
+           Mcount++;
+        }
+    }
+*/
+    for (unsigned int j=0; j<JetPUPPILoose_size && Lcount<JetPUPPILoose_size; j++) {
+        cout << "j L:"<<JetPUPPILoose_T[j]<< " "<<j <<endl;
+        if (JetPUPPI_T[i] == JetPUPPILoose_T[j] ) { 
+           cout << "Loose set\n";
+           adbxj->setIsLoose (true);
+           Lcount++;
+        }
+    }
         jets.push_back(*adbxj);
         delete adbxj;
     }
@@ -251,8 +307,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     DEBUG("JET OK\n")
 
     // <<< JET <<<
-    jet not found!!!
-    */
+    
                     
     /*
     tau not found!!!
@@ -326,38 +381,34 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     truth not found!!!
     */
                     
-    /*
-    Met variables not found!!!
+    
     // >>> MET >>>
-    met.SetMagPhi(MET_pt_example,  MET_phi_example); //mev-->gev
+    met.SetMagPhi(PuppiMissingET_MET[0],  PuppiMissingET_Phi[0]); //gev already
     // <<< MET <<<
-    Met variables not found!!!
-    */
         
 // FILLED CONTENT END
 
-    //------------ auxiliary information -------
-    //anevt.run_no=runNumber;
-    //anevt.user_evt_weight=1.0;
-    //anevt.lumiblk_no=1;
-    //anevt.top_hfor_type=0;
-    //anevt.event_no=eventNumber;
-    //anevt.TRG_e= trigE;
-    //anevt.TRG_m= trigM;
-    //anevt.TRG_j= 0;
-    //anevt.vxp_maxtrk_no= 9;
-    //anevt.badjet=0;
-    //anevt.mcevt_weight=mcWeight;
-    //anevt.pileup_weight=1.0;
-    //anevt.z_vtx_weight = 1.0;
-    //anevt.weight_bTagSF_77 = scaleFactor_BTAG;
-    //anevt.weight_leptonSF = scaleFactor_LepTRIGGER;
-    //anevt.vxpType=0;
-    //anevt.lar_Error=0;
-    //anevt.core_Flags=0;
-    //anevt.maxEvents=nentries;
+//------------ auxiliary information -------
+anevt.run_no=128;
+anevt.user_evt_weight=Event_Weight[0];
+anevt.lumiblk_no=1;
+anevt.top_hfor_type=0;
+anevt.event_no=Event_Number[0];
+anevt.TRG_e= 0;
+anevt.TRG_m= 0;
+anevt.TRG_j= 0;
+anevt.vxp_maxtrk_no= 9;
+anevt.badjet=0;
+anevt.mcevt_weight=Event_CrossSection[0];
+anevt.pileup_weight=1.0;
+anevt.z_vtx_weight = 1.0;
+anevt.weight_bTagSF_77 = 1.0;
+anevt.weight_leptonSF = 1.0;
+anevt.vxpType=0;
+anevt.lar_Error=0;
+anevt.core_Flags=0;
+anevt.maxEvents=nentries;
     
-    anevt.user_evt_weight=1.0;
 
     DEBUG("Filling finished\n")
     

@@ -12,6 +12,9 @@ dbxParticle:: dbxParticle() : TObject() {
   p_charge=0; // not initialized
   p_pdgID= 0.;
   p_lvector.SetPtEtaPhiM(0, 0, 0, 0);
+  p_istight=0;
+  p_ismedium=0;
+  p_isloose=0;
 }
 dbxParticle:: dbxParticle (TLorentzVector lv){
   p_istight = 0;
@@ -20,6 +23,9 @@ dbxParticle:: dbxParticle (TLorentzVector lv){
   p_scalefactorreco=1.;
   p_scalefactorid=1.;
   p_scalefactortrig=1.;
+  p_istight=0;
+  p_ismedium=0;
+  p_isloose=0;
 }
 
 dbxParticle:: ~dbxParticle() {}
@@ -29,6 +35,9 @@ dbxParticle:: dbxParticle (TLorentzVector lv, int q){
   p_charge=q; // initalized
   p_lvector=lv;
   p_scalefactor=1.;
+  p_istight=0;
+  p_ismedium=0;
+  p_isloose=0;
 
 }
 dbxParticle  dbxParticle::operator+ (dbxParticle& p)

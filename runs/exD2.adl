@@ -12,9 +12,61 @@ info analysisExample
 
 object TightELE : ELE
    select Tight(ELE) == 1 
+object MediumELE : ELE
+   select Medium(ELE) == 1 
+object LooseELE : ELE
+   select Loose(ELE) == 1 
+#
+object TightMUO : MUO
+   select Tight(MUO) == 1 
+object MediumMUO : MUO
+   select Medium(MUO) == 1 
+object LooseMUO : MUO
+   select Loose(MUO) == 1 
+#
+object TightPHO : PHO
+   select Tight(PHO) == 1 
+object MediumPHO : PHO
+   select Medium(PHO) == 1 
+object LoosePHO : PHO
+   select Loose(PHO) == 1 
+#
+object TightJET : JET
+   select Tight(JET) == 1 
+object MediumJET : JET
+   select Medium(JET) == 1 
+object LooseJET : JET
+   select Loose(JET) == 1 
 
-region   testZ
+region   testEs
   select      ALL              # to count all events
-  select      Size (ELE) >= 2  # events with 1 or more electrons 
-  select      Size (TightELE) >= 2  # events with 1 or more Tight electrons 
+  select      Size (ELE) >= 2  # events with 2 or more electrons 
+  select      Size (LooseELE) >= 2  # events with 2 or more 
+  select      Size (MediumELE) >= 2  # events with 2 or more 
+  select      Size (TightELE) >= 2  # events with 2 or more 
+
+region   testMs
+  select      ALL              # to count all events
+  select      Size (MUO) >= 2  # events with 2 or more electrons 
+  select      Size (LooseMUO) >= 2  # events with 2 or more 
+  select      Size (MediumMUO) >= 2  # events with 2 or more 
+  select      Size (TightMUO) >= 2  # events with 2 or more 
+
+region   testPs
+  select      ALL              # to count all events
+  select      Size (PHO) >= 2  # events with 2 or more electrons 
+  select      Size (LoosePHO) >= 2  # events with 2 or more 
+  select      Size (MediumPHO) >= 2  # events with 2 or more 
+  select      Size (TightPHO) >= 2  # events with 2 or more 
+
+region   testJs
+  select      ALL              # to count all events
+  select      Size (JET) >= 3  # events with 2 or more electrons 
+  select      Size (LooseJET) >= 3  # events with 2 or more 
+  select      Size (MediumJET) >= 0  # events with 2 or more 
+  select      Size (TightJET) >= 3  # events with 2 or more 
+
+
+
+
 

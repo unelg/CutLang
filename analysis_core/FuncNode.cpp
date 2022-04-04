@@ -65,7 +65,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
-                                                        inputPart->setIsTight(ao->muos[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        inputPart->setIsTight (ao->muos[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsMedium(ao->muos[ac].at(ai).isMedium() ); 
+                                                        inputPart->setIsLoose (ao->muos[ac].at(ai).isLoose() ); 
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
@@ -73,9 +75,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
-                                                        inputPart->setIsTight(ao->eles[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsTight (ao->eles[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->eles[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose(ao->eles[ac].at(ai).isLoose() ); 
+                                                        inputPart->setIsLoose (ao->eles[ac].at(ai).isLoose() ); 
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         DEBUG("e- Nattr:"<<ka<<"\n");
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
@@ -84,7 +86,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                             case tau_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
-                           //                             inputPart->setIsTight(ao->eles[ac].at(ai).isZCand()); // i am overloading the isTight
+                                                        inputPart->setIsTight (ao->taus[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsMedium(ao->taus[ac].at(ai).isMedium() ); 
+                                                        inputPart->setIsLoose (ao->taus[ac].at(ai).isLoose() ); 
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
                                                         DEBUG("TAU:"<<ai<<"  ");
@@ -106,13 +110,20 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                          case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
                                                         ka=ao->gams[ac].at(ai).nAttribute();
+                                                        inputPart->setIsTight (ao->gams[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsMedium(ao->gams[ac].at(ai).isMedium() ); 
+                                                        inputPart->setIsLoose (ao->gams[ac].at(ai).isLoose() ); 
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
                                                         break;
                                             case jet_t: DEBUG("jet:"<<ai<<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
-                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
-                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
+//                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
+//                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
+                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() ); 
+                                                        inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
+                                                        inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
+
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
@@ -556,7 +567,6 @@ double pfreliso03allof( dbxParticle* apart){
 }
 
 double isTight(dbxParticle* apart){
-    std::cout<<"T:"<<(int)apart->isTight()<<"\n";
     return 1*(int)apart->isTight();
 }
 double isMedium(dbxParticle* apart){
