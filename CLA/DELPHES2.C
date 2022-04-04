@@ -272,6 +272,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
         adbxj->set_isbtagged_77(  (bool)JetPUPPI_BTag[i] ); //  btag
         adbxj->set_isTautagged( (bool)JetPUPPI_TauTag[i]); // tau tag
         adbxj->setParticleIndx(i);
+//	adbxj->setClusterE(JetPUPPI_EhadOverEem[i]);
         adbxj->setCharge(JetPUPPI_Charge[i]); 
 // constits need to be added 
     for (unsigned int j=0; j<JetPUPPITight_size && Tcount<JetPUPPITight_size; j++) {
@@ -333,20 +334,30 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     tau not found!!!
     */
                     
-    /*
-    ljet not found!!!
     // >>> LJET >>>
 
     dbxJet *adbxlj;
-    for (unsigned int i=0; i<nLJET_example; i++) {
-        _alv_example.SetPtEtaPhiM(Muon_pt_example[i], Muon_eta_example[i], Muon_phi_example[i],  (105.658/1E3)_example); // all in GeV
-
+    for (unsigned int i=0; i<JetPUPPIAK8_; i++) {
+        alv.SetPtEtaPhiM(JetPUPPIAK8_PT[i], JetPUPPIAK8_Eta[i], JetPUPPIAK8_Phi[i],  JetPUPPIAK8_Mass[i]); // all in GeV
         adbxlj = new dbxJet(alv);
-
-        adbxlj_example->addAttribute(PARTICLE_dxy_example[i]);
-        adbxlj_example->setCharge(PARTICLE_charge_example[i]);
-
         adbxlj->setParticleIndx(i);
+        adbxlj->setCharge(JetPUPPIAK8_Charge[i]);
+        adbxlj->setFlavor(JetPUPPIAK8_Flavor[i]);
+        adbxlj->set_isbtagged_77(  (bool)JetPUPPIAK8_BTag[i] ); //  btag
+        adbxlj->set_isTautagged( (bool)JetPUPPIAK8_TauTag[i]); // tau tag
+//	adbxlj->setClusterE(JetPUPPIAK8_EhadOverEem[i]);
+
+        adbxlj->addAttribute( 0);   // 0
+        adbxlj->addAttribute( 0);  // 1 
+        adbxlj->addAttribute( 0); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        adbxlj->addAttribute( 0); // 3
+        adbxlj->addAttribute( 0);  //4
+        adbxlj->addAttribute( 0);  //5
+        adbxlj->addAttribute( 0);  //6
+        adbxlj->addAttribute( 0);  //7
+        adbxlj->addAttribute( 1);  //8
+        adbxlj->addAttribute( JetPUPPIAK8_NSubJetsPruned[i] );  //9
+
         ljets.push_back(*adbxlj);
         delete adbxlj;
     }
@@ -354,8 +365,6 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     DEBUG("LJET OK\n")
 
     // <<< LJET <<<
-    ljet not found!!!
-    */
                     
     /*
     truth not found!!!
