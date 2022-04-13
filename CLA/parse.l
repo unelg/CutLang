@@ -107,7 +107,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
-[iI][sS][oO][vV][aA][rR] return ISOVAR;
+"isolationVar" return ISOVAR;
 "miniPFRelIsoAll" return RELISO;
 "relIsoall" return RELISOALL;
 "pfRelIso03all" return PFRELISO03ALL;
