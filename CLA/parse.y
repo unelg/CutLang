@@ -91,7 +91,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
-%token ISTIGHT ISMEDIUM ISLOOSE
+%token ISTIGHT ISMEDIUM ISLOOSE ISOVAR
 %token TIGHTID PUID GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
@@ -795,6 +795,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | ETCONE '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(EtConeof,newList,"etcone");
+                                 }
+         | '{' particules '}' ISOVAR { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(IsoVarof,newList,"isovar");
+                                 }
+         | ISOVAR '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(IsoVarof,newList,"isovar");
                                  }
          | '{' particules '}' ISTIGHT { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);

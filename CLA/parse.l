@@ -28,7 +28,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [iI][nN][fF][oO] return ADLINFO;
 "experiment" return PAPEXPERIMENT;
 "id" return PAPID;
-"title" return PAPTITLE;
+[tT][iI][tT][lL][eE] return PAPTITLE;
 "publication" return PAPPUBLICATION;
 "sqrtS" return PAPSQRTS;
 "lumi"  return PAPLUMI;
@@ -107,6 +107,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
+[iI][sS][oO][vV][aA][rR] return ISOVAR;
 "miniPFRelIsoAll" return RELISO;
 "relIsoall" return RELISOALL;
 "pfRelIso03all" return PFRELISO03ALL;

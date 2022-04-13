@@ -215,6 +215,8 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
         adbxp = new dbxPhoton(alv);
         adbxp->setCharge(0);
 	adbxp->setClusterE(Photon_EhadOverEem[i]);
+		adbxp->addAttribute(0);
+		adbxp->addAttribute(0);
 		adbxp->addAttribute(Photon_IsolationVar[i]);
 		adbxp->addAttribute(Photon_IsolationVarRhoCorr[i]);
 		adbxp->addAttribute(Photon_SumPtCharged[i]);

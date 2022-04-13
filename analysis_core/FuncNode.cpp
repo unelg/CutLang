@@ -576,6 +576,10 @@ double isLoose(dbxParticle* apart){
     return 1*(int)apart->isLoose();
 }
 
+double IsoVarof( dbxParticle* apart){
+ return apart->Attribute(3);
+}
+
 //------------------------------
 double nbfof( dbxParticle* apart){
     int nbf=(apart->isTight() % 100 ); // modulo 100 to remove possible tau tags

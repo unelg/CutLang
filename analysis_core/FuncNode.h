@@ -99,6 +99,7 @@ double tauisoof( dbxParticle* apart);
 double softIdof( dbxParticle* apart);
 double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
+double IsoVarof( dbxParticle* apart);
 double averageMuof( dbxParticle* apart);
 double truthMatchProbof( dbxParticle* apart);
 double truthIDof( dbxParticle* apart);
