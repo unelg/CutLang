@@ -126,7 +126,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 "sieie" return SIEIE;
 
-[pP][hT][iI] return PHI;//functions
+[pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;
 [Aa][bB][sS][Ee][tT][aA] return ABSETA;

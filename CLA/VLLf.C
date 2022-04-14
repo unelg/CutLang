@@ -215,7 +215,7 @@ DEBUG("Jets ok\n");
         anevt.run_no=runNumber;
         anevt.correction_weight=1;
         anevt.luminosity_weight=1.0;
-        anevt.weight_xsec=1;
+        anevt.weight_xsec=mc_xSection;
         anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
