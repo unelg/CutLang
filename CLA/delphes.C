@@ -15,6 +15,8 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include <unistd.h>
+
 
 //#define _CLV_
 #ifdef _CLV_
@@ -93,8 +95,8 @@ void delphes::Loop(analy_struct aselect, char *extname)
    cout << "Forced number of entries " << nentries << endl;
    Long64_t startevent = 0;
    if (aselect.startpt>0 ) startevent=aselect.startpt;
-   cout << "starting entry " << startevent << endl;
    Long64_t lastevent = startevent + nentries;
+   cout << "starting entry " << startevent << "  last:"<<lastevent<< endl;
    if (lastevent > nentinfile ) { lastevent=nentinfile;
      cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
@@ -121,7 +123,8 @@ void delphes::Loop(analy_struct aselect, char *extname)
                prev_RunNumber=RunNumber;
        }
 */
- 
+//      usleep(1000000);
+
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
   TBranchMap::iterator itBranchMap;
@@ -295,15 +298,15 @@ void delphes::Loop(analy_struct aselect, char *extname)
                 adbxgen->addAttribute( particle->D2 );  //9
                 truth.push_back(*adbxgen);
 
-/*
-                unsigned int nkids=particle->D2-particle->D1 +1;
-//                if (abs( particle->PID ) ==  1000021 && nkids>1 )
-                {
-                cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
-                     <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\n"; 
-                cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
-                }
-*/
+//
+//               unsigned int nkids=particle->D2-particle->D1 +1;
+////                if (abs( particle->PID ) ==  1000021 && nkids>1 )
+//              {
+//              cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
+//                   <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\n"; 
+//              cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
+//              }
+//
                 delete adbxgen;
         }
     DEBUG("GENs:"<<i<<std::endl);
@@ -351,7 +354,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map,  anevt};
 
-        aCtrl.RunTasks(a0);
+        aCtrl.RunTasks(a0); // leaks
 
   }// event loop ends.
 

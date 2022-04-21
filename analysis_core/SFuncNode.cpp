@@ -93,7 +93,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                    case  1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
                    case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
                    case  2:  bPart->setTlv(  bPart->lv()+ao->jets[ac].at(ai).lv() );   break;
-                   case 20:  aPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
+                   case 20:  bPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
                    case  9:  bPart->setTlv(  bPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
                    case  8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
                    case  7: DEBUG("MET LV\n ");
@@ -159,25 +159,38 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
              std::map< std::string, double >::iterator keyit; 
 
               DEBUG("external user function evaluation. initial Key:"<< extkey<<"\n");
-              if (g1 != NULL) return (*g1)(ao, symbol, type, h1 ); // A
-              if (g2 != NULL) return (*g2)(ao, symbol, type, h2 ); // B
-              if (g3 != NULL) return (*g3)(ao, symbol, type, h3 ); // C
-              if (g4 != NULL) return (*g4)(ao, symbol, type, aPart->lv(), h4); // D
-              if (g5 != NULL) { // E
+              double retval;
+              if (g1 != NULL) {retval=(*g1)(ao, symbol, type, h1 ); // A
+                              }
+           else if (g2 != NULL) {retval=(*g2)(ao, symbol, type, h2 ); // B
+                              }
+           else if (g3 != NULL) {retval=(*g3)(ao, symbol, type, h3 ); // C
+                              }
+           else if (g4 != NULL) {retval=(*g4)(ao, symbol, type, aPart->lv(), h4); // D
+                              }
+           else if (g5 != NULL) { // E
                 if ( BUFFERED_VALUES.find(extkey.Data()) !=BUFFERED_VALUES.end() ){
                    DEBUG("Returning buffered value:"<<(BUFFERED_VALUES[extkey.Data()]) << "\n");
+                   delete aPart;
+                   delete bPart;
+                   delete cPart;
                    return (BUFFERED_VALUES[extkey.Data()]);
                 } else { 
-                 double g5retval=(*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
-                 BUFFERED_VALUES.insert(std::pair<string, double >(extkey.Data(), g5retval));
-                 return g5retval;
+                   retval=(*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
+                   BUFFERED_VALUES.insert(std::pair<string, double >(extkey.Data(), retval));
                 }
               }
+           delete aPart;
+           delete bPart;
+           delete cPart;
+           return retval;
         }
+        delete aPart;
+        delete bPart;
+        delete cPart;
         double arv=(*f)(ao, symbol, value);              
         DEBUG("ARV="<<arv<<"\n");
         return arv;
-//        return (*f)(ao, symbol, value);
 }
 
 void SFuncNode::Reset() {
@@ -293,14 +306,26 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
    DEBUG("evaluating external function on jets: :"<<s<<"\n");
    std::vector<TLorentzVector> retjets= (*func)(myjets, id);
    DEBUG("external function Done. size:"<<retjets.size()<<"\n");
+/*
    for (int ipart=ao->jets.at(s).size()-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
      if (ipart > (retjets.size()-1) ) {
-         (ao->jets).find(s)->second.erase( (ao->jets).find(s)->second.begin()+ipart);
+       //  ao->jets.at(s).erase( ao->jets.at(s).begin()+ipart );
+     ;
      } else {
-          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
+    //      ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
+     ;
      }
    }
-    return (1);
+*/
+//   cout <<s<<"\n";
+//   if (retjets.size() < ao->jets.at(s).size()) 
+//       ao->jets.at(s).erase(ao->jets.at(s).begin(), ao->jets.at(s).begin()+ao->jets.at(s).size()-retjets.size()); 
+   ao->jets.at(s).resize(retjets.size());
+   ao->jets.at(s).shrink_to_fit(); 
+   for (int ipart=0; ipart<retjets.size(); ipart++){
+          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
+   }
+   return (1);
 }
 
 double userfuncB(AnalysisObjects* ao, string s, int id, double (*func)(std::vector<TLorentzVector> jets ) ){
@@ -376,9 +401,11 @@ std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1) {
 
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1) {
 //                                               int p1=100*seed+assoc;
+    std::vector<TLorentzVector> myhemispheres;
     int seed=int(p1/100);
     int assoc=int(p1%10);
     // Convert
+
     std::vector<float> px;
     std::vector<float> py;
     std::vector<float> pz;
@@ -394,7 +421,6 @@ std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int 
     // Get the vector that gives int values for group number assigned to each jet
     std::vector<int> hemisgroup = hemis.getGrouping();
     // Combine jets in each group into one object
-    std::vector<TLorentzVector> myhemispheres;
     TLorentzVector h1, h2;
     for (int i=0; i<myjets.size(); i++) {
       int hg = hemisgroup[i];

@@ -488,6 +488,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
          else d=iter->second->evaluate(ao); // execute the selection cut
          
 //        std::cout<<"\t**********************Result : " << d << std::endl;
+
         DEBUG("\t***Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
         if (d==0) {
@@ -516,10 +517,11 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                particleBank.insert(make_pair(iter->first, theseParticles) ); //cut ID, particles
            }
         }
+
         iter++; //moves on to the next cut
     } // loop over all cutlang cuts
     DEBUG("   EOE\n     ");
-
+    
     iter = BinCuts.begin();
     DEBUG("Binning now ..\n");
     while(iter != BinCuts.end())
