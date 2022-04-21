@@ -101,6 +101,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
      cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 //--------------------------------------------------------------generic variables
+
    GenParticle *particle;
    Jet *jet;
    Photon *photon;
@@ -110,6 +111,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
    Int_t i, j;
    TObject *object;
    TLorentzVector momentum;
+
 //--------------------------------------------------------------event loop
    for (Long64_t je=startevent; je<lastevent; ++je) {
 
@@ -124,6 +126,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        }
 */
 //      usleep(1000000);
+//      cout <<"evt:"<<je<<"\n";
 
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
@@ -159,7 +162,6 @@ void delphes::Loop(analy_struct aselect, char *extname)
        map<string, vector<dbxParticle> >combo_map;
        map<string, vector<dbxParticle> >constits_map;
        map<string, TVector2            >  met_map;
-
 
 //temporary variables
        TLorentzVector  alv, alv_up, alv_down, slv;

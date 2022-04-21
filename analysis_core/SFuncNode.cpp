@@ -306,25 +306,23 @@ double userfuncA(AnalysisObjects* ao, string s, int id, std::vector<TLorentzVect
    DEBUG("evaluating external function on jets: :"<<s<<"\n");
    std::vector<TLorentzVector> retjets= (*func)(myjets, id);
    DEBUG("external function Done. size:"<<retjets.size()<<"\n");
-/*
+
    for (int ipart=ao->jets.at(s).size()-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
      if (ipart > (retjets.size()-1) ) {
-       //  ao->jets.at(s).erase( ao->jets.at(s).begin()+ipart );
-     ;
+         ao->jets.at(s).erase( ao->jets.at(s).begin()+ipart );
      } else {
-    //      ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
-     ;
+          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
      }
    }
-*/
+
 //   cout <<s<<"\n";
 //   if (retjets.size() < ao->jets.at(s).size()) 
 //       ao->jets.at(s).erase(ao->jets.at(s).begin(), ao->jets.at(s).begin()+ao->jets.at(s).size()-retjets.size()); 
-   ao->jets.at(s).resize(retjets.size());
-   ao->jets.at(s).shrink_to_fit(); 
-   for (int ipart=0; ipart<retjets.size(); ipart++){
-          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
-   }
+//   ao->jets.at(s).resize(retjets.size());
+//   ao->jets.at(s).shrink_to_fit(); 
+//   for (int ipart=0; ipart<retjets.size(); ipart++){
+//          ao->jets.at(s).at(ipart).setTlv( retjets[ipart] );
+//   }
    return (1);
 }
 

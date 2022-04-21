@@ -68,6 +68,7 @@ int dbxA::setDir(char *dn) {
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);
   histoOut->cd(dn);
+  delete ndir;
   return retval;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
