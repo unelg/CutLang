@@ -75,6 +75,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
    evt_data anevt;
    int prev_RunNumber=-1;
 
+
    map < string, int > syst_names;
         syst_names["01_jes"]       = 2;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -125,11 +126,11 @@ void delphes::Loop(analy_struct aselect, char *extname)
                prev_RunNumber=RunNumber;
        }
 */
-//      usleep(1000000);
-//      cout <<"evt:"<<je<<"\n";
-
+//        usleep(1000000);
+//        cout <<"evt:"<<je<<"\n";
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
+
   TBranchMap::iterator itBranchMap;
   TBranch *branch;
   for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap) {
