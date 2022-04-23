@@ -9,7 +9,6 @@ CXX           = $(shell root-config --cxx) -g
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all : $(objects)
-#	root  -q -l -b -x makeSos.C
 	root -q -l -b -e '{gROOT->LoadMacro("dbxParticle.cpp+");}' 
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_muon.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_tau.h+");}' &
@@ -21,6 +20,8 @@ all : $(objects)
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_track.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("DBXNtuple.cpp+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("delphesParticles.h+");}' &
+	root -q -l -b -e '{gROOT->LoadMacro("TStringAddFloat.cpp+");}' &
+	root -q -l -b -e '{gROOT->LoadMacro("ReadCardCINT.C+");}' &
 	test -L ../runs/DBXNtuple_cpp_ACLiC_dict_rdict.pcm   || ( ln -s ../analysis_core/DBXNtuple_cpp_ACLiC_dict_rdict.pcm     ../runs/ )
 	test -L ../runs/dbxParticle_cpp_ACLiC_dict_rdict.pcm || ( ln -s ../analysis_core/dbxParticle_cpp_ACLiC_dict_rdict.pcm   ../runs/ )
 	test -L ../runs/dbx_electron_h_ACLiC_dict_rdict.pcm  || ( ln -s ../analysis_core/dbx_electron_h_ACLiC_dict_rdict.pcm    ../runs/ )
