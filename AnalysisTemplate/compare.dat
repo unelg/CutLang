@@ -1,0 +1,559 @@
+PSET0 = 1
+MUON0 = eff
+ELE0 = eff
+
+
+
+ PSET1 = 1
+ MUON1 = EventChiBeforeChiSquareCut
+  ELE1 = EventChiBeforeChiSquareCut
+
+ PSET20 = 1
+ MUON20 = deltaRbetweenHiggsDaughters0  
+  ELE20 = deltaRbetweenHiggsDaughters0
+
+ PSET21 = 1
+ MUON21 = deltaRbetweenHiggsandItsPromptJet0
+  ELE21 = deltaRbetweenHiggsandItsPromptJet0
+
+ PSET22 = 1
+ MUON22 = deltaRbetweenZandItsPromptJet0
+  ELE22 = deltaRbetweenZandItsPromptJet0
+
+#299 is Z+jets reweighting plot, the one before 
+
+ PSET296 = 1
+ MUON296 = jetmultip5      #muons
+  ELE296 = jetmultip5      #electrons
+rebin296 = 1 #normally it was 4
+
+ PSET297 = 1
+ MUON297 = htjets5      #muons
+  ELE297 = htjets5      #electrons
+rebin297 = 1 #normally it was 4
+
+
+ PSET298 = 1
+ MUON298 = jpt_lead5      #muons
+  ELE298 = jpt_lead5      #electrons
+rebin298 = 20 #normally it was 4
+
+PSET290 = 1
+ MUON290 = jpt_lead0      #muons
+  ELE290 = jpt_lead0      #electrons
+rebin290 = 1 #normally it was 4
+
+ PSET299 = 1
+ MUON299 = dijetmass5      #muons
+  ELE299 = dijetmass5      #electrons
+rebin299 = 20 #normally it was 4
+
+ PSET295 = 1
+ MUON295 = DiJetMass8      #muons
+  ELE295 = DiJetMass8      #electrons
+rebin295 = 100 #normally it was 4
+
+ PSET294 = 1
+ MUON294 = LeadingJetPt8      #muons
+  ELE294 = LeadingJetPt8      #electrons
+rebin294 = 100 #normally it was 4
+minmax294 = 0,1800
+
+#after all cuts
+
+ PSET293 = 1
+ MUON293 = HTJets8      #muons
+  ELE293 = HTJets8      #electrons
+rebin293 = 1 #normally it was 4
+
+ PSET292 = 1
+ MUON292 = JetMultiplicity8      #muons
+  ELE292 = JetMultiplicity8      #electrons
+rebin292 = 1 #normally it was 4
+
+ PSET23 = 1
+ MUON23 = DiJetMass0      #muons
+  ELE23 = DiJetMass0      #electrons
+rebin23 = 4 #normally it was 4
+
+ PSET511 = 1
+ MUON511 = DeAMass_1b_up      #muons
+  ELE511 = DeAMass_1b_up      #electrons
+rebin511 = 2
+#minmax511 = 0,2000
+
+
+ PSET510 = 1
+ MUON510 = DeAMass_1b_down      #muons
+  ELE510 = DeAMass_1b_down      #electrons
+rebin510 = 2
+#minmax510 = 0,2000
+
+
+ PSET521 = 1
+ MUON521 = DeAMass_geq2b_up      #muons
+  ELE521 = DeAMass_geq2b_up      #electrons
+rebin521 = 2
+#minmax521 = 0,2000
+
+
+ PSET520 = 1
+ MUON520 = DeAMass_geq2b_down      #muons
+  ELE520 = DeAMass_geq2b_down      #electrons
+rebin520 = 2
+#minmax111 = 0,2000
+
+ PSET111 = 1
+ MUON111 = ZPTcon1      #muons
+  ELE111 = ZPTcon1      #electrons
+rebin111 = 2
+#minmax111 = 0,2000
+
+
+ PSET112 = 1
+ MUON112 = ZPTcon2      #muons
+  ELE112 = ZPTcon2      #electrons
+rebin112 = 4      
+#minmax112 = 0,2000    
+
+
+ PSET113 = 1
+ MUON113 = ZPTcon4      #muons
+  ELE113 = ZPTcon4      #electrons
+rebin113 = 4      
+#minmax113 = 0,2000    
+
+
+ PSET114 = 1
+ MUON114 = ZPTcon5      #muons
+  ELE114 = ZPTcon5      #electrons
+rebin114 = 4      
+#minmax114 = 0,2000    
+
+ PSET116 = 1
+ MUON116 = ZPTB      #muons
+  ELE116 = ZPTB      #electrons
+rebin116 = 4
+minmax116 = 0,1200
+
+
+ PSET115 = 1
+ MUON115 = ZPT      #muons
+  ELE115 = ZPT      #electrons
+rebin115 = 4
+#rebin115 = 8 #ttbar      
+#minmax115 = 0,2000    
+
+ PSET117 = 1
+ MUON117 = ZBosPTafterChi      #muons
+  ELE117 = ZBosPTafterChi      #electrons
+rebin117 = 4
+#rebin117 = 8 #ttbar      
+#minmax117 = 0,2000
+
+ PSET121 = 1
+ MUON121 = ZPHIcon1      #muons
+  ELE121 = ZPHIcon1      #electrons
+rebin121 = 1     
+#minmax121 = 0,2000                         
+
+
+ PSET122 = 1
+ MUON122 = ZPHIcon2      #muons
+  ELE122 = ZPHIcon2      #electrons
+rebin122 = 1
+#minmax122 = 0,2000   
+
+
+ PSET123 = 1
+ MUON123 = ZPHIcon4      #muons
+  ELE123 = ZPHIcon4      #electrons
+rebin123 = 1
+#minmax123 = 0,2000   
+
+
+ PSET124 = 1
+ MUON124 = ZPHIcon5      #muons
+  ELE124 = ZPHIcon5      #electrons
+rebin124 = 1
+#minmax124 = 0,2000   
+
+ PSET126 = 1
+ MUON126 = ZPHIB      #muons
+  ELE126 = ZPHIB      #electrons
+rebin126 = 2
+#minmax126 = 0,2000
+
+ PSET125 = 1
+ MUON125 = ZPHI      #muons
+  ELE125 = ZPHI      #electrons
+rebin125 = 2
+#minmax125 = 0,2000   
+
+ PSET127 = 1
+ MUON127 = ZBosPHIafterChi      #muons
+  ELE127 = ZBosPHIafterChi      #electrons
+rebin127 = 2
+#minmax125 = 0,2000
+
+PSET131 = 1
+ MUON131 = ZETAcon1      #muons
+  ELE131 = ZETAcon1      #electrons
+rebin131 = 1
+#minmax131 = 0,2000
+
+
+ PSET132 = 1
+ MUON132 = ZETAcon2      #muons
+  ELE132 = ZETAcon2      #electrons
+rebin132 = 1
+#minmax132 = 0,2000
+
+
+ PSET133 = 1
+ MUON133 = ZETAcon4      #muons
+  ELE133 = ZETAcon4      #electrons
+rebin133 = 1
+#minmax133 = 0,2000
+
+
+ PSET134 = 1
+ MUON134 = ZETAcon5      #muons
+  ELE134 = ZETAcon5      #electrons
+rebin134 = 1
+#minmax134 = 0,2000
+
+ PSET136 = 1
+ MUON136 = ZETAB      #muons
+  ELE136 = ZETAB      #electrons
+rebin136 = 1
+#minmax136 = 0,2000
+
+ PSET135 = 1
+ MUON135 = ZETA      #muons
+  ELE135 = ZETA      #electrons
+rebin135 = 2
+#minmax135 = 0,2000
+
+ PSET137 = 1
+ MUON137 = ZBosETAafterChi      #muons
+  ELE137 = ZBosETAafterChi      #electrons
+rebin137 = 2
+#minmax137 = 0,2000
+
+ PSET146 = 1
+ MUON146 = ZMassB      #muons
+  ELE146 = ZMassB      #electrons
+rebin146 = 1
+minmax146 = 80,100
+
+ PSET145 = 1
+ MUON145 = ZMass      #muons
+  ELE145 = ZMass      #electrons
+rebin145 = 2
+minmax145 = 80,100
+
+ PSET147 = 1
+ MUON147 = ZBosMassafterChi      #muons
+ ELE147  = ZBosMassafterChi      #muons
+rebin147 = 2
+minmax147 = 80,100
+
+ PSET216 = 1
+ MUON216 = HiggsPTB      #muons
+  ELE216 = HiggsPTB      #electrons
+rebin216 = 2
+minmax216 = 0,800
+
+ PSET215 = 1
+ MUON215 = HiggsPT      #muons
+  ELE215 = HiggsPT      #electrons
+rebin215 = 4
+minmax215 = 0,800
+
+ PSET217 = 1
+ MUON217 = HiggsPTafterChi      #muons
+  ELE217 = HiggsPTafterChi      #electrons
+rebin217 = 4
+minmax217 = 0,800
+
+ PSET226 = 1
+ MUON226 = HiggsPHIB      #muons
+  ELE226 = HiggsPHIB      #electrons
+rebin226 = 1
+minmax226 = -3.2,3.2
+
+ PSET225 = 1
+ MUON225 = HiggsPHI      #muons
+  ELE225 = HiggsPHI      #electrons
+rebin225 = 2
+minmax225 = -3.2,3.2
+
+ PSET227 = 1
+ MUON227 = HiggsPHIafterChi      #muons
+  ELE227 = HiggsPHIafterChi      #electrons
+rebin227 = 2
+minmax227 = -3.2,3.2
+
+ PSET236 = 1
+ MUON236 = HiggsETAB      #muons
+  ELE236 = HiggsETAB      #electrons
+rebin236 = 1
+minmax236 = -2.5,2.5
+
+ PSET235 = 1
+ MUON235 = HiggsETA      #muons
+  ELE235 = HiggsETA      #electrons
+rebin235 = 2
+minmax235 = -2.5,2.5
+
+ PSET237 = 1
+ MUON237 = HiggsETAafterChi      #muons
+  ELE237 = HiggsETAafterChi      #electrons
+rebin237 = 2
+minmax237 = -2.5,2.5
+
+
+ PSET246 = 1
+ MUON246 = HiggsMassB      #muons
+  ELE246 = HiggsMassB      #electrons
+rebin246 = 1
+minmax246 = 60,180
+
+ PSET245 = 1
+ MUON245 = HiggsMass      #muons
+  ELE245 = HiggsMass      #electrons
+rebin245 = 2
+#rebin245 = 4 #ttbar
+minmax245 = 60,180
+
+ PSET247 = 1
+ MUON247 = HiggsMassafterChi      #muons
+  ELE247 = HiggsMassafterChi      #electrons
+rebin247 = 2
+#rebin247 = 4 #ttbar
+minmax247 = 60,180
+
+ PSET345 = 1
+ MUON345 = DeZMass      #muons
+  ELE345 = DeZMass      #electrons
+rebin345 = 4
+#rebin345 = 16 #ttbar
+#minmax345 = 79,171
+
+ PSET445 = 1
+ MUON445 = DeHMass      #muons
+  ELE445 = DeHMass      #electrons
+rebin445 = 4
+#rebin445 = 16 #ttbar
+#minmax445 = 79,171
+
+ PSET545 = 1
+ MUON545 = DeAMass      #muons
+  ELE545 = DeAMass      #electrons
+rebin545 = 2
+#rebin545 = 16 #ttbar
+#minmax545 = 79,171
+
+PSET546 = 1
+ MUON546 = DeAMassB      #muons
+  ELE546 = DeAMassB      #electrons
+rebin546 = 2
+#rebin546 = 16 #ttbar
+#minmax546 = 79,171
+
+ PSET645 = 1
+ MUON645 = HTut0      #muons
+  ELE645 = HTut0      #electrons
+rebin645 = 4
+#rebin645 = 8 #ttbar
+
+#eleectron or muon distribution after chisquare cut
+ PSET716 = 1
+ MUON716 = mpt3      #muons
+  ELE716 = ept3      #electrons
+rebin716 = 2
+
+ PSET726 = 1
+ MUON726 = mphi3      #muons
+  ELE726 = ephi3      #electrons
+rebin726 = 1
+
+ PSET736 = 1
+ MUON736 = meta3      #muons
+  ELE736 = eeta3      #electrons
+rebin736 = 2
+
+#electron or muon distribution at level 3
+ PSET712 = 1
+ MUON712 = mpt7      #muons
+  ELE712 = ept7      #electrons
+rebin712 = 2
+
+ PSET722 = 1
+ MUON722 = mphi7      #muons
+  ELE722 = ephi7      #electrons
+rebin722 = 1
+
+ PSET732 = 1
+ MUON732 = meta7      #muons
+  ELE732 = eeta7      #electrons
+rebin732 = 2
+
+#electron or muon distribution at level 5
+ PSET713 = 1
+ MUON713 = mpt4      #muons
+  ELE713 = ept4      #electrons
+rebin713 = 2
+
+ PSET723 = 1
+ MUON723 = mphi4      #muons
+  ELE723 = ephi4      #electrons
+rebin723 = 1
+
+ PSET733 = 1
+ MUON733 = meta4      #muons
+  ELE733 = eeta4      #electrons
+rebin733 = 2
+
+#electron or muon distribution at level 6
+ PSET717 = 1
+ MUON717 = mpt4      #muons
+  ELE717 = ept4      #electrons
+rebin717 = 2
+
+ PSET727 = 1
+ MUON727 = mphi4      #muons
+  ELE727 = ephi4      #electrons
+rebin727 = 1
+
+ PSET737 = 1
+ MUON737 = meta4      #muons
+  ELE737 = eeta4      #electrons
+rebin737 = 2
+
+#jet distribution after chisquare cut
+ PSET916 = 1
+ MUON916 = jpt3      #muons
+  ELE916 = jpt3      #electrons
+rebin916 = 2
+
+ PSET926 = 1
+ MUON926 = jphi3      #muons
+  ELE926 = jphi3      #electrons
+rebin926 = 2
+
+ PSET936 = 1
+ MUON936 = jeta3      #muons
+  ELE936 = jeta3      #electrons
+rebin936 = 2
+
+#jet distribution at level 3
+ PSET912 = 1
+ MUON912 = jpt7      #muons
+  ELE912 = jpt7      #electrons
+rebin912 = 2
+
+ PSET922 = 1
+ MUON922 = jphi7      #muons
+  ELE922 = jphi7      #electrons
+rebin922 = 2
+
+ PSET932 = 1
+ MUON932 = jeta7      #muons
+  ELE932 = jeta7      #electrons
+rebin932 = 2
+
+#jet distribution at level 5
+ PSET913 = 1
+ MUON913 = jpt4      #muons
+  ELE913 = jpt4      #electrons
+rebin913 = 2
+
+ PSET923 = 1
+ MUON923 = jphi4      #muons
+  ELE923 = jphi4      #electrons
+rebin923 = 2
+
+ PSET933 = 1
+ MUON933 = jeta4      #muons
+  ELE933 = jeta4      #electrons
+rebin933 = 2
+
+
+#leading jet pt and subleading jet pt after all cuts
+ PSET1115 = 1
+ MUON1115 = jpt_lead      #muons
+  ELE1115 = jpt_lead      #electrons
+rebin1115 = 4
+
+ PSET1215 = 1
+ MUON1215 = jpt_sublead      #muons
+  ELE1215 = jpt_sublead      #electrons
+rebin1215 = 4
+
+#leading jet pt and subleading jet pt at preselection level
+ PSET1112 = 1
+ MUON1112 = jpt_lead2      #muons
+  ELE1112 = jpt_lead2      #electrons
+rebin1112 = 4
+
+ PSET1212 = 1
+ MUON1212 = jpt_sublead2      #muons
+  ELE1212 = jpt_sublead2      #electrons
+rebin1212 = 4
+
+#leading jet pt and subleading jet pt at level 5
+ PSET1113 = 1
+ MUON1113 = jpt_lead4      #muons
+  ELE1113 = jpt_lead4      #electrons
+rebin1113 = 4
+
+ PSET1213 = 1
+ MUON1213 = jpt_sublead4      #muons
+  ELE1213 = jpt_sublead4      #electrons
+rebin1213 = 4
+
+
+#dijet mass and HT at preselection level
+ PSET1342 = 1
+ MUON1342 = dijetmass2      #muons
+  ELE1342 = dijetmass2      #electrons
+rebin1342 = 4
+
+ PSET1442 = 1
+ MUON1442 = htjets2      #muons
+  ELE1442 = htjets2      #electrons
+rebin1442 = 4
+
+#dijet mass and HT at preselection level
+ PSET1343 = 1
+ MUON1343 = dijetmass4      #muons
+  ELE1343 = dijetmass4      #electrons
+rebin1343 = 4
+
+ PSET1443 = 1
+ MUON1443 = htjets4      #muons
+  ELE1443 = htjets4      #electrons
+rebin1443 = 4
+
+ PSET955 = 1
+ MUON955 = hjmultip      #muons
+  ELE955 = hjmultip      #electrons
+rebin955 = 1
+
+ PSET1025 = 1
+ MUON1025 = hphiv      #muons
+  ELE1025 = hphiv      #electrons
+rebin1025 = 1
+
+ PSET1026 = 1
+ MUON1026 = hmetphi3      #muons
+  ELE1026 = hmetphi3      #electrons
+rebin1026 = 1
+
+ PSET1016 = 1
+ MUON1016 = hmet3      #muons
+  ELE1016 = hmet3      #electrons
+rebin1016 = 2
+

@@ -1,0 +1,532 @@
+SAMPLESIZE = 103  # max sample 181+3
+TYPESIZE = 46  # 0 data, 1 smbg, 2 zjets, 3 diboson, 4 ttbar, 5 singletop, 6  ttbarV, 7 signal, 8 qcd, 9 signal+smbg, 10 qcduncert
+
+############################################
+# SN = Signal Name 
+# SF = Signal F
+# SFB-SFD Signal File for b and d type
+NSIGNAL = 5 #
+sampleId-0-SN = 300 #
+sampleId-0-SF = 180391 #
+sampleId-1-SN = 400 #
+sampleId-1-SF = 180392 #
+sampleId-2-SN = 500 #
+sampleId-2-SF = 180393 #
+sampleId-3-SN = 600 #
+sampleId-3-SF = 180394 #
+sampleId-4-SN = 700 #
+sampleId-4-SF = 180395 #
+sampleId-5-SN = 800 #
+sampleId-5-SF = 180396 #
+
+#########################################################
+
+
+
+###############################################
+###############################################
+typeId-2-N = Z+jets
+typeId-2-Rmin = 2
+typeId-2-Rmax = 23
+typeId-2-RminS = 2
+typeId-2-RmaxS = 23  #this is not a mistake
+typeId-2-Drawable = 1
+typeId-2-Style = b1
+
+#Zjets Samples
+sampleId-2-Fm = 364100_r9364
+sampleId-3-Fm = 364101_r9364
+sampleId-4-Fm = 364102_r9364
+sampleId-5-Fm = 364103_r9364
+sampleId-6-Fm = 364104_r9364
+sampleId-7-Fm = 364105_r9364
+sampleId-8-Fm = 364106_r9364
+sampleId-9-Fm = 364107_r9364
+sampleId-10-Fm = 364108_r9364
+sampleId-11-Fm = 364109_r9364
+sampleId-12-Fm = 364110_r9364
+sampleId-13-Fm = 364111_r9364
+sampleId-14-Fm = 364112_r9364
+sampleId-15-Fm = 364113_r9364
+
+#sampleId-2-Fe = 364114_r9364
+#sampleId-2-Fe = 364115_r9364
+#sampleId-3-Fe = 364116_r9364
+sampleId-2-Fe = 364117_r9364
+#sampleId-5-Fe = 364118_r9364
+sampleId-3-Fe = 364119_r9364
+sampleId-4-Fe = 364120_r9364
+sampleId-5-Fe = 364121_r9364
+sampleId-6-Fe = 364122_r9364
+sampleId-7-Fe = 364123_r9364
+sampleId-8-Fe = 364124_r9364
+sampleId-9-Fe = 364125_r9364
+sampleId-10-Fe = 364126_r9364
+sampleId-11-Fe = 364127_r9364
+
+
+sampleId-16-F = 364134_r9364
+sampleId-17-F = 364135_r9364
+sampleId-18-F = 364136_r9364
+sampleId-19-F = 364137_r9364
+sampleId-20-F = 364138_r9364
+sampleId-21-F = 364139_r9364
+sampleId-22-F = 364140_r9364
+sampleId-23-F = 364141_r9364
+
+
+
+
+###############################################
+###############################################
+
+typeId-3-N = dibosons
+typeId-3-Rmin = 24
+typeId-3-Rmax = 40
+typeId-3-Drawable = 1
+typeId-3-Style = b1
+
+sampleId-24-F = 345705_r9364 #
+sampleId-25-Fm = 363356_r9364 #
+sampleId-25-Fe = 363356_r9364 #
+sampleId-26-Fm = 363358_r9364 #
+sampleId-26-Fe = 363358_r9364 #
+sampleId-27-F = 363359_r9364 #
+sampleId-28-F = 363360_r9364 #
+sampleId-29-F = 363489_r9364 #
+
+sampleId-30-F = 364250_r9364 #
+sampleId-31-F = 364253_r9364 #
+sampleId-32-F = 364254_r9364 #
+sampleId-33-F = 364255_r9364 #
+sampleId-34-F = 364283_r9364 #
+sampleId-35-F = 364284_r9364 #
+
+sampleId-36-F = 364285_r9364 #
+sampleId-37-F = 364286_r9364 #
+sampleId-38-F = 364287_r9364 #
+sampleId-39-F = 364288_r9364 #
+sampleId-40-F = 364289_r9364 #
+
+
+
+
+###############################################
+###############################################
+
+typeId-4-N = ttbar
+typeId-4-Rmin = 41
+typeId-4-Rmax = 41
+typeId-4-Drawable = 1
+typeId-4-Style = b1
+
+sampleId-41-F = 410470_r9364 
+
+
+
+
+
+###############################################
+###############################################
+
+typeId-5-N = singletop
+typeId-5-Rmin = 42
+typeId-5-Rmax = 44
+typeId-5-Drawable = 1
+typeId-5-Style = b1
+
+sampleId-42-F = 410646_r9364
+sampleId-43-F = 410647_r9364
+sampleId-44-F = 410659_r9364
+
+###############################################
+###############################################
+
+typeId-6-N = ttbarV
+typeId-6-Rmin = 45
+typeId-6-Rmax = 52
+typeId-6-Drawable = 1
+typeId-6-Style = b1
+
+sampleId-45-F = 410080_r9364
+sampleId-46-F = 410081_r9364
+sampleId-47-F = 410155_r9364
+sampleId-48-F = 410156_r9364
+sampleId-49-F = 410157_r9364
+sampleId-50-F = 410218_r9364
+sampleId-51-F = 410219_r9364
+sampleId-52-F = 410220_r9364
+
+
+###############################################
+###############################################
+typeId-7-N = signal600
+typeId-7-Rmin = 53
+typeId-7-Rmax = 55
+typeId-7-Drawable = 0
+typeId-7-Style = b1
+
+sampleId-53-F = si13_600_HjZj #
+sampleId-54-F = si13_600_WjZj #
+sampleId-55-F = si13_600_ZjZj #
+
+###############################################
+###############################################
+typeId-8-N = signal700
+typeId-8-Rmin = 56
+typeId-8-Rmax = 58
+typeId-8-Drawable = 0
+typeId-8-Style = b1
+
+sampleId-56-F = si13_700_HjZj #
+sampleId-57-F = si13_700_WjZj #
+sampleId-58-F = si13_700_ZjZj #
+
+###############################################
+###############################################
+typeId-9-N = signal800
+typeId-9-Rmin = 59
+typeId-9-Rmax = 61
+typeId-9-Drawable = 0
+typeId-9-Style = b1
+
+sampleId-59-F = si13_800_HjZj #
+sampleId-60-F = si13_800_WjZj #
+sampleId-61-F = si13_800_ZjZj #
+
+###############################################
+###############################################
+typeId-10-N = signal900
+typeId-10-Rmin = 62
+typeId-10-Rmax = 64
+typeId-10-Drawable = 0
+typeId-10-Style = b1
+
+sampleId-62-F = si13_900_HjZj #
+sampleId-63-F = si13_900_WjZj #
+sampleId-64-F = si13_900_ZjZj #
+
+###############################################
+###############################################
+typeId-11-N = signal1000
+typeId-11-Rmin = 65
+typeId-11-Rmax = 67
+typeId-11-Drawable = 0
+typeId-11-Style = b1
+
+sampleId-65-F = si13_1000_HjZj #
+sampleId-66-F = si13_1000_WjZj #
+sampleId-67-F = si13_1000_ZjZj #
+
+###############################################
+###############################################
+typeId-12-N = signal1100
+typeId-12-Rmin = 68
+typeId-12-Rmax = 70
+typeId-12-Drawable = 0
+typeId-12-Style = b1
+
+sampleId-68-F = si13_1100_HjZj #
+sampleId-69-F = si13_1100_WjZj #
+sampleId-70-F = si13_1100_ZjZj #
+
+###############################################
+###############################################
+typeId-13-N = signal1200
+typeId-13-Rmin = 71
+typeId-13-Rmax = 73
+typeId-13-Drawable = 0
+typeId-13-Style = b1
+
+sampleId-71-F = si13_1200_HjZj #
+sampleId-72-F = si13_1200_WjZj #
+sampleId-73-F = si13_1200_ZjZj #
+
+###############################################
+###############################################
+typeId-14-N = signal1400
+typeId-14-Rmin = 74
+typeId-14-Rmax = 76
+typeId-14-Drawable = 0
+typeId-14-Style = b1
+
+sampleId-74-F = si13_1400_HjZj #
+sampleId-75-F = si13_1400_WjZj #
+sampleId-76-F = si13_1400_ZjZj #
+
+##single signals start here##
+###############################################
+###############################################
+typeId-15-N = signal600HjZj
+typeId-15-Rmin = 77
+typeId-15-Rmax = 77
+typeId-15-Drawable = 0
+typeId-15-Style = e1
+
+sampleId-77-F = si13_600_HjZj #
+###############################################
+###############################################
+typeId-16-N = signal600WjZj
+typeId-16-Rmin = 78
+typeId-16-Rmax = 78
+typeId-16-Drawable = 0
+typeId-16-Style = e1
+
+sampleId-78-F = si13_600_WjZj #
+###############################################
+###############################################
+typeId-17-N = signal600ZjZj
+typeId-17-Rmin = 79
+typeId-17-Rmax = 79
+typeId-17-Drawable = 0
+typeId-17-Style = e1
+
+sampleId-79-F = si13_600_ZjZj #
+###############################################
+###############################################
+
+typeId-18-N = signal700HjZj
+typeId-18-Rmin = 80
+typeId-18-Rmax = 80
+typeId-18-Drawable = 0
+typeId-18-Style = b1
+
+sampleId-80-F = si13_700_HjZj #
+###############################################
+###############################################
+typeId-19-N = signal700WjZj
+typeId-19-Rmin = 81
+typeId-19-Rmax = 81
+typeId-19-Drawable = 0
+typeId-19-Style = b1
+
+sampleId-81-F = si13_700_WjZj #
+###############################################
+###############################################
+typeId-20-N = signal700ZjZj
+typeId-20-Rmin = 82
+typeId-20-Rmax = 82
+typeId-20-Drawable = 0
+typeId-20-Style = b1
+
+sampleId-82-F = si13_700_ZjZj #
+###############################################
+################################
+typeId-21-N = signal800HjZj
+typeId-21-Rmin = 83
+typeId-21-Rmax = 83
+typeId-21-Drawable = 0
+typeId-21-Style = b1
+
+sampleId-83-F = si13_800_HjZj #
+###############################################
+###############################################
+typeId-22-N = signal800WjZj
+typeId-22-Rmin = 84
+typeId-22-Rmax = 84
+typeId-22-Drawable = 0
+typeId-22-Style = b1
+
+sampleId-84-F = si13_800_WjZj #
+###############################################
+###############################################
+typeId-23-N = signal800ZjZj
+typeId-23-Rmin = 85
+typeId-23-Rmax = 85
+typeId-23-Drawable = 0
+typeId-23-Style = b1
+
+sampleId-85-F = si13_800_ZjZj #
+###############################################
+###############################################
+
+typeId-24-N = signal900HjZj
+typeId-24-Rmin = 86
+typeId-24-Rmax = 86
+typeId-24-Drawable = 0
+typeId-24-Style = b1
+
+sampleId-86-F = si13_900_HjZj #
+###############################################
+###############################################
+typeId-25-N = signal900WjZj
+typeId-25-Rmin = 87
+typeId-25-Rmax = 87
+typeId-25-Drawable = 0
+typeId-25-Style = b1
+
+sampleId-87-F = si13_900_WjZj #
+###############################################
+###############################################
+typeId-26-N = signal900ZjZj
+typeId-26-Rmin = 88
+typeId-26-Rmax = 88
+typeId-26-Drawable = 0
+typeId-26-Style = b1
+
+sampleId-88-F = si13_900_ZjZj #
+###############################################
+###############################################
+
+typeId-27-N = signal1000HjZj
+typeId-27-Rmin = 89
+typeId-27-Rmax = 89
+typeId-27-Drawable = 0
+typeId-27-Style = b1
+
+sampleId-89-F = si13_1000_HjZj #
+###############################################
+###############################################
+typeId-28-N = signal1000WjZj
+typeId-28-Rmin = 90
+typeId-28-Rmax = 90
+typeId-28-Drawable = 0
+typeId-28-Style = b1
+
+sampleId-90-F = si13_1000_WjZj #
+###############################################
+###############################################
+typeId-29-N = signal1000ZjZj
+typeId-29-Rmin = 91
+typeId-29-Rmax = 91
+typeId-29-Drawable = 0
+typeId-29-Style = b1
+
+sampleId-91-F = si13_1000_ZjZj #
+###############################################
+###############################################
+
+typeId-30-N = signal1100HjZj
+typeId-30-Rmin = 92
+typeId-30-Rmax = 92
+typeId-30-Drawable = 0
+typeId-30-Style = b1
+
+sampleId-92-F = si13_1100_HjZj #
+###############################################
+###############################################
+typeId-31-N = signal1100WjZj
+typeId-31-Rmin = 93
+typeId-31-Rmax = 93
+typeId-31-Drawable = 0
+typeId-31-Style = b1
+
+sampleId-93-F = si13_1100_WjZj #
+###############################################
+###############################################
+typeId-32-N = signal1100ZjZj
+typeId-32-Rmin = 94
+typeId-32-Rmax = 94
+typeId-32-Drawable = 0
+typeId-32-Style = b1
+
+sampleId-94-F = si13_1100_ZjZj #
+###############################################
+###############################################
+
+typeId-33-N = signal1200HjZj
+typeId-33-Rmin = 95
+typeId-33-Rmax = 95
+typeId-33-Drawable = 0
+typeId-33-Style = b1
+
+sampleId-95-F = si13_1200_HjZj #
+###############################################
+###############################################
+typeId-34-N = signal1200WjZj
+typeId-34-Rmin = 96
+typeId-34-Rmax = 96
+typeId-34-Drawable = 0
+typeId-34-Style = b1
+
+sampleId-96-F = si13_1200_WjZj #
+###############################################
+###############################################
+typeId-35-N = signal1200ZjZj
+typeId-35-Rmin = 97
+typeId-35-Rmax = 97
+typeId-35-Drawable = 0
+typeId-35-Style = b1
+
+sampleId-97-F = si13_1200_ZjZj #
+###############################################
+###############################################
+
+typeId-36-N = signal1400HjZj
+typeId-36-Rmin = 98
+typeId-36-Rmax = 98
+typeId-36-Drawable = 0
+typeId-36-Style = b1
+
+sampleId-98-F = si13_1400_HjZj #
+###############################################
+###############################################
+typeId-37-N = signal1400WjZj
+typeId-37-Rmin = 99
+typeId-37-Rmax = 99
+typeId-37-Drawable = 0
+typeId-37-Style = b1
+
+sampleId-99-F = si13_1400_WjZj #
+###############################################
+###############################################
+typeId-38-N = signal1400ZjZj
+typeId-38-Rmin = 100
+typeId-38-Rmax = 100
+typeId-38-Drawable = 0
+typeId-38-Style = b1
+
+sampleId-100-F = si13_1400_ZjZj #
+###############################################
+###############################################
+	
+
+#data + the 4musketeers
+########################
+typeId-40-N = QCD    # samples #1 is the QCD. this is fixed.
+typeId-40-Drawable = 0
+typeId-40-Style = b1
+
+typeId-42-N = Uncert
+typeId-42-Drawable = 1
+typeId-42-Style = e4
+
+typeId-0-N = data  # sample 0 is the data. this is fixed.
+typeId-0-Drawable = 1
+typeId-0-Style = e1
+
+typeId-1-N = SMbg
+typeId-1-Rmin = 2
+typeId-1-Rmax = 52  ## do not add QCD
+typeId-1-Drawable = 0
+typeId-1-Style = b1
+
+typeId-39-N = signal
+typeId-39-Rmin = -2
+typeId-39-Rmax = -2
+typeId-39-Drawable = 0
+typeId-39-Style = e1
+
+typeId-41-N = signal1000HWZjZj+SMbg
+typeId-41-Typesa = 1
+typeId-41-Typesb = 11
+typeId-41-Drawable = 0
+typeId-41-Style = e1
+
+typeId-43-N = signal600HjZj+SMbg
+typeId-43-Typesa = 1
+typeId-43-Typesb = 15
+typeId-43-Drawable = 0
+typeId-43-Style = e1
+
+typeId-44-N = signal600WjZj+SMbg
+typeId-44-Typesa = 1
+typeId-44-Typesb = 16
+typeId-44-Drawable = 0
+typeId-44-Style = e1
+
+typeId-45-N = signal600ZjZj+SMbg
+typeId-45-Typesa = 1
+typeId-45-Typesb = 17
+typeId-45-Drawable = 0
+typeId-45-Style = e1

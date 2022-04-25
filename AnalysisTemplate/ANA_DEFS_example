@@ -1,0 +1,26 @@
+MCD_e = 8
+DATAF_e = 8/dataall_ee   #8/si13_1000 #  don't write .root
+MCD_m = 9 # 
+DATAF_m = 9/data_all_mm # don't write .root 
+CHANNEL = 0 # 0:muons  1:electrons
+SUMCHANNELS = 0 # 0:do not add   1: add electrons and muons
+MODEL = E62_3 # a string matching the directory in the root file. e.g.: FF_1
+INTLUMI = 139000 #pb-1
+#INTLUMI_r9364 = 36207.54 #pb-1 
+#INTLUMI_r10201 = 44307.4 #pb-1
+#INTLUMI_r10724 = 58450.1 #pb-1
+#INTLUMI = 36200 #pb
+LOG_GRAPHS = 1 #0: linear y axis, 1:log y axis
+ECM = 13 # so far 7 or 8 or 13
+LIMITTER = 0 # 0:TLimit, 1:RSLimit, 2:fastPCL, 3:mclimit
+STAT = 1  # 0:CLs  1:CLsb
+SYSTERR = 0 # 0: dont consider systematical errors, 1: consider systematical errors
+OBSERVEDLIMIT = 0 # 0: dont do, 1: do measured=observed limit calculation
+INJECTION = 0 # 0: no injection, any other positive real number: injection xs multiplicative factor
+
+LUMI_TAG = OflLumi-8TeV-003 # Tag which defines the specific version of the luminosity measurement
+LIVE_TAG = L1_EM30 # This trigger is only used to compute the L1 live fraction. For more details see https://atlas-lumicalc.cern.ch/
+
+
+DIRECTORY =  E62_3
+STATERR = 1
