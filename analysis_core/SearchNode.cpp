@@ -103,7 +103,7 @@ void SearchNode::runNestedLoopBarb( int start, int N, int level, int maxDepth, v
            DEBUG("1:"<<ip[1]<<"\n");
             if (Forbidden_Indices.find( ip[1] )!=Forbidden_Indices.end() ) { DEBUG("FORBIDDEN\n"); continue; }        
             if (particles.size()>1 && (ip[1]==ip[0])) { DEBUG("Repeated \n"); continue; }
-            if ( (oi[0] == oi[1] ) && (ip[0]>ip[1]) ) { DEBUG("Same OI, repated\n"); continue; }
+            if ( (oi[0] == oi[1] ) && (ip[0]>ip[1]) ) { DEBUG("Same OI, repeated\n"); continue; }
 
               for (ip[2]=ip2_min; ip[2]<ip_N[2]; ip[2]++) {
                 DEBUG("2:"<< ip[2]<<"\n");
@@ -221,7 +221,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         }
 
         int MaxDepth=indices.size();//number of nested loops needed
-        DEBUG("SearchN Depth:"<<MaxDepth<<"\n");
+        DEBUG("SearchN Depth:"<<MaxDepth<<" particles will be searched.\n");
         if(MaxDepth>0){
                     int type=particles.at(indices[0])->type;
                     string ac=particles.at(indices[0])->collection;

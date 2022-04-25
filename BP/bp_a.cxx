@@ -451,8 +451,12 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
   if (controlword == 0){
     DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
     while(iter != NodeCuts.end())
-    {   
-        iter->second->Reset();
+    {    Node * acut = iter->second;
+         while (acut != NULL) {
+           DEBUG("Reset:"<<acut->getStr()<<"\n");
+           acut->Reset();
+           acut=acut->left;
+         }
         iter++;
     }
     particleBank.clear();
