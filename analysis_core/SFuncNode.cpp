@@ -449,6 +449,9 @@ double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet){
   return (retval);
 }
 
+double none(AnalysisObjects* ao, string s, float id){
+    return 0;
+}
 double all(AnalysisObjects* ao, string s, float id){
     return 1;
 }

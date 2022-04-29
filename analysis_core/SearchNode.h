@@ -19,7 +19,7 @@ private:
     vector<int> bestIndices;
     std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed
     void performInnerOperation(vector<int> *v,vector<int> *indices, double *current_difference,AnalysisObjects* ao);
-    void runNestedLoopBarb( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type, string ac);
+    void runNestedLoopBarb( int start, vector<int> N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, vector<int> type, vector<string> ac);
     void runNestedLoopRec ( int start, int N, int level, int maxDepth, vector<int> *v,vector<int> *indices,double *curr_diff,AnalysisObjects* ao, int type, string ac);
 
 

@@ -89,6 +89,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][iI][gG][hH][tT] return ISTIGHT;
 [mM][eE][dD][iI][uU][mM] return ISMEDIUM;
 [lL][oO][oO][sS][eE] return ISLOOSE;
+"isZCandidate" return ZCANDID;
 "tightId" return TIGHTID;
 "btagDeepB" return DEEPB;
 "msoftdrop" return MSOFTD;
@@ -142,6 +143,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "MWT" return MWT;
 "MET" return MET;
 [aA][lL][lL] return ALL;
+[nN][oO][nN][eE] return NONE;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;

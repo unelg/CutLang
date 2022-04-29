@@ -70,6 +70,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsLoose (ao->muos[ac].at(ai).isLoose() ); 
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
+                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
                                                         break;
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
@@ -81,6 +82,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         ka=ao->eles[ac].at(ai).nAttribute();
                                                         DEBUG("e- Nattr:"<<ka<<"\n");
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
+                                                        inputPart->addAttribute(ao->eles[ac].at(ai).isZCand() );
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
                                             case tau_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
@@ -574,6 +576,10 @@ double isMedium(dbxParticle* apart){
 }
 double isLoose(dbxParticle* apart){
     return 1*(int)apart->isLoose();
+}
+
+double isZcandid(dbxParticle* apart){
+    return apart->Attribute( apart->nAttribute() -1);
 }
 
 double IsoVarof( dbxParticle* apart){

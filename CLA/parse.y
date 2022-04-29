@@ -87,7 +87,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token LVLO ATLASOD CMSOD DELPHES FCC LHCO
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
-%token NUMOF HT METMWT MWT MET ALL LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
+%token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
 %token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
@@ -99,6 +99,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
+%token ZCANDID //
 %token SIEIE  // CMSnano photon attribs
 %token <real> PNB
 %token <real> NB 
@@ -828,6 +829,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isLoose,newList,"isLoose");
                                  }
+         | '{' particules '}' ZCANDID { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isZcandid,newList,"isZcandid");
+                                 }
+         | ZCANDID '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(isZcandid,newList,"isZcandid");
+                                 }
          | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
@@ -1042,6 +1051,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | MET {  $$=new SFuncNode(met,1, "MET"); }
 //       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
+       | NONE {  $$=new SFuncNode(none,1, "none"); }
         ;
 //-------------------------------------------------------------------------
  e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }
@@ -2884,6 +2894,9 @@ command : CMD condition { //find a way to print commands
                   { cout<<"CSV\n"; 
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode($2,1,VariableList))); 
                   }
+        | CMD NONE { Node* a = new SFuncNode(none,1, "none");
+                    NodeCuts->insert(make_pair(++cutcount,a));
+		  }
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
@@ -3179,6 +3192,7 @@ action : condition { $$=$1; }
                                                 $$=new HistoNode2D($1,$3,$5,$7,$9,$11,$13, $15, $17, $19);
 				}
        | ALL { $$=new SFuncNode(all,1,"all"); }
+       | NONE { $$=new SFuncNode(none,1,"none"); }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

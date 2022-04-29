@@ -213,6 +213,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
     virtual ~SFuncNode() {}
 };
 
+double none(AnalysisObjects* ao, string s, float id);
 double all(AnalysisObjects* ao, string s, float id);
 double uweight(AnalysisObjects* ao, string s, float value);
 double lepsf(AnalysisObjects* ao, string s, float value);

@@ -85,6 +85,7 @@ double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
 double  sieieof( dbxParticle* apart);
 double relisoof( dbxParticle* apart);
+double isZcandid ( dbxParticle* apart);
 double relisoallof( dbxParticle* apart);
 double pfreliso03allof( dbxParticle* apart);
 double iddecaymodeof( dbxParticle* apart);
