@@ -1,0 +1,110 @@
+TRGm = 2 #     muon Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+TRGe = 0 # electron Trigger Type: 0=dont trigger, 1=1st trigger (data) 2=2nd trigger (MC)
+
+define   mH = 126.0
+define   wH = 12.50
+define   mV = 85.0
+define   wV = 7.90
+define   wDZ = 28.5
+define   wDH = 42.6
+define   wDV = 36.4
+define   ww = wDH*wDH + wDZ*wDZ
+define   vv = wDV*wDV + wDZ*wDZ
+define   cth = 6
+
+object goodMUOs using MUO
+  select Pt(MUO) > 30.0
+  select abs(Eta(MUO)) < 2.5
+  select isZCandidate(MUO) == 1
+
+###### DEFINITIONS
+define   ZReco :  goodMUOs[1] goodMUOs[0]
+define     mLL : { ZReco }m
+define    ptLL : { ZReco }Pt
+define     qLL : { ZReco }q
+
+#############################################
+object goodJETs using JET
+  select E(JET) >= 0
+  select Pt(JET) > 25
+  select abs(Eta(JET)) <= 2.5
+
+object voodJETs using goodJETs
+  select ALL
+
+object koodJETs using goodJETs
+  select m( goodJETs ) [] 100 160
+  select ALL
+
+def     HiggsResolved :  goodJETs[-1] goodJETs[-1]
+def chi2HiggsResolved : ({HiggsResolved}m - mH) ^2 / wH ^2 + ({HiggsResolved goodJETs_-3}m - { ZReco goodJETs_-4 }m) ^2 /ww
+
+def  VResolved : voodJETs[-2] voodJETs[-2]
+def chi2VResolved : ({VResolved}m - mV) ^2 / wV^2 + ({VResolved voodJETs_-5}m  - { ZReco voodJETs_-6 }m )^2 /vv
+
+################################       fat jets for higgs
+object subfatjet using FatJet
+   select m( FatJet ) [] 100 160
+# select Size(FatJet constituents) >= 2
+
+object Anysubfatjet using FatJet
+   select ALL
+
+object foodJETs using goodJETs
+  select ALL
+
+def   HiggsBoostedFJ :  Anysubfatjet[-1]
+def chi2HiggsBoostedFJ : ({HiggsBoostedFJ}m - mH) ^2 / wH ^2 + ({HiggsBoostedFJ foodJETs[-8]}m - { ZReco foodJETs[-7] }m )^2 /ww
+
+################################### fat jets for V
+object AnyVsubfatjet using FatJet
+  select all
+
+object Vsubfatjet using FatJet
+  select m( FatJet ) [] 50 100
+# select Size(FatJet constituents) >= 2
+
+object moodJETs using goodJETs
+  select ALL
+
+def   VBoosted :  AnyVsubfatjet[-2]
+def chi2VBoosted : ({VBoosted}m - mV) ^2 / wV ^2 + ({VBoosted moodJETs[-10]}m - { ZReco moodJETs[-9] }m )^2 /vv
+
+algo preselection
+  cmd  ALL
+  cmd  Size(goodMUOs) >= 1
+  cmd  Size(goodMUOs) >= 2
+  cmd  Size(goodMUOs) == 2
+  cmd  qLL == 0
+  cmd  LEPsf
+  cmd  ptLL >= 200
+
+  cmd  Size(goodJETs) >= 2
+  cmd  Size(foodJETs) >= 2
+  cmd  Size(voodJETs) >= 2
+  cmd  Size(moodJETs) >= 2
+
+  cmd  Sum(Pt(goodJETs)) >= 300
+  cmd  Size(FJET) >= 1
+  cmd  mLL []  87 95
+  cmd { goodJETs_0 }Pt >= 100
+  cmd { goodJETs_1 }Pt >= 65
+  cmd { voodJETs_0 }Pt >= 100
+  cmd { voodJETs_1 }Pt >= 65
+
+#----------------------------- chi2 minimizations.
+  cmd Size(goodJETs) >= 4 AND Size(voodJETs) >= 4 ? chi2HiggsResolved ~=0 AND chi2VResolved ~=0 : ALL
+  cmd Size(Anysubfatjet)>= 1 AND Size(AnyVsubfatjet)>= 1 ? chi2HiggsBoostedFJ ~= 0 AND chi2VBoosted~=0 : ALL
+
+
+#cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HiggsBoostedFJ > chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth : NONE
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HiggsBoostedFJ < chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth AND size(koodJETs) < 1 : NONE
+#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HiggsBoostedFJ > chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth AND (({HiggsResolved}m - mH) ^2 < ({HiggsBoostedFJ}m - mH) ^2) :NONE
+
+
+
+
+
+
+
+
