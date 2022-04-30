@@ -24,6 +24,7 @@ private:
 	TTree *ttsave;
       std::ofstream csvsave;
       vector<Node*> variableList;
+         short int selector;
 public:
 	SaveNode(std::string s){
                 symbol="save";
@@ -37,6 +38,7 @@ public:
 	SaveNode(std::string s, short int sele, vector<Node*> VariableList){
                 symbol="save";
 		name = s;
+                selector=sele;
 		left = NULL;
 		right = NULL;
 		ntsave = NULL;
@@ -69,11 +71,19 @@ public:
     }
     virtual double evaluate(AnalysisObjects* ao) override {
       if(variableList.size() > 0){
+           if (selector) {
             for (int i = 0; i < (int)variableList.size(); i++)
             {
                   csvsave << variableList[i]->evaluate(ao) << " , ";
             }
             csvsave << "\n";
+           } else {
+            for (int i = 0; i < (int)variableList.size(); i++)
+            {
+                  std::cout<< variableList[i]->evaluate(ao) << " , ";
+            }
+            std::cout << "\n";
+           }
             return 1;
       }
         

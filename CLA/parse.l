@@ -44,6 +44,7 @@ vardef {varname}" "?":"" "?.*"\n"
 
 "systematic" return SYSTEMATIC;
 
+[pP][rR][iI][nN][tT] return PRINT;
 [oO][nN]|[tT][rR][uU][eE] return TRUE; 
 [oO][fF][fF]|[fF][aA][lL][sS][eE] return FALSE; 
 [Nn][Vv][Aa][Rr][Ss] return NVARS;

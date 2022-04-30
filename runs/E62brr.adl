@@ -78,6 +78,7 @@ algo preselection
   cmd  qLL == 0
   cmd  LEPsf
   cmd  ptLL >= 200
+#  print qLL ptLL mLL
 
   cmd  Size(goodJETs) >= 2
   cmd  Size(foodJETs) >= 2

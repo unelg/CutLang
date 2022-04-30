@@ -95,8 +95,8 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token TIGHTID PUID GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
-%token MINIMIZE MAXIMIZE  APPLYHM
-%token VERT VERX VERY VERZ VERTR STATUS CONSTITS
+%token MINIMIZE MAXIMIZE  APPLYHM PRINT
+%token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token ZCANDID //
@@ -2891,8 +2891,12 @@ command : CMD condition { //find a way to print commands
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
         | SAVE ID CSV variablelist
-                  { cout<<"CSV\n"; 
+                  { DEBUG("save in CSV format\n"); 
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode($2,1,VariableList))); 
+                  }
+        | PRINT variablelist
+                  { DEBUG("print in CSV format\n"); 
+                    NodeCuts->insert(make_pair(++cutcount, new SaveNode("Print",0,VariableList))); 
                   }
         | CMD NONE { Node* a = new SFuncNode(none,1, "none");
                     NodeCuts->insert(make_pair(++cutcount,a));
