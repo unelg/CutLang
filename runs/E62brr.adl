@@ -98,10 +98,15 @@ algo preselection
 
 
 #cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HiggsBoostedFJ > chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth : NONE
- cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HiggsBoostedFJ < chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth AND size(koodJETs) < 1 : NONE
+#cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HiggsBoostedFJ < chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth AND size(koodJETs) < 1 : NONE
 #cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HiggsBoostedFJ > chi2HiggsResolved) AND chi2HiggsResolved<cth AND chi2VResolved>cth AND (({HiggsResolved}m - mH) ^2 < ({HiggsBoostedFJ}m - mH) ^2) :NONE
 
-
+cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ?(chi2HiggsResolved<cth AND chi2VResolved>cth) AND                                                             \
+                                               ((chi2HiggsBoostedFJ >chi2HiggsResolved) || ((chi2HiggsBoostedFJ < chi2HiggsResolved) AND size(koodJETs) <1)) \
+                                              : Size(goodJETs) >= 4 AND Size(subfatjet)>0 ?   (chi2HiggsBoostedFJ > chi2HiggsResolved) AND                   \
+                                                                                           chi2HiggsResolved<cth AND chi2VResolved>cth AND                   \
+                                                                                           (({HiggsResolved}m - mH) ^2 < ({HiggsBoostedFJ}m - mH) ^2)        \
+                                                                                            : NONE
 
 
 

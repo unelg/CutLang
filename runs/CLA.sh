@@ -19,7 +19,7 @@ echo $RUNS_PATH
 echo $WORK_PATH
 
 EVENTS=0
-INIFILE=$RUNS_PATH/CLA.ini
+ADLFILE=$RUNS_PATH/CLA.ini
 VERBOSE=5000
 STRT=0
 PRLL=1
@@ -45,12 +45,14 @@ key="$3"
 
 case $key in
     -i|--inifile)
-    INIFILE="$4"
-    if [ ! -f "$INIFILE" ]; then
-      echo "$INIFILE does NOT exist!"
+    ADLFILE="$4"
+    if [ ! -f "$ADLFILE" ]; then
+      echo "$ADLFILE does NOT exist!"
       exit 1
     fi
-
+# convert the \ signs back to same line
+    sed -e ':x /\\$/ { N; s/\\\n//g ; bx }' ${ADLFILE} > _${ADLFILE}
+    INIFILE=_${ADLFILE}
     cat ${INIFILE} | grep -v '^#' | grep "region " > pippo
     cat ${INIFILE} | grep -v '^#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
