@@ -364,7 +364,7 @@ void poet::Init(TChain *tree)
    fChain->SetBranchAddress("muon_pz", &muon_pz, &b_muon_pz);
    fChain->SetBranchAddress("muon_ch", &muon_ch, &b_muon_ch);
 //   fChain->SetBranchAddress("muon_isSoft", &muon_isSoft, &b_muon_isSoft);
-//   fChain->SetBranchAddress("muon_isTight", &muon_isTight, &b_muon_isTight);
+   fChain->SetBranchAddress("muon_isTight", &muon_isTight, &b_muon_isTight);
 //   fChain->SetBranchAddress("muon_dxy", &muon_dxy, &b_muon_dxy);
 //   fChain->SetBranchAddress("muon_dz", &muon_dz, &b_muon_dz);
 //   fChain->SetBranchAddress("muon_dxyError", &muon_dxyError, &b_muon_dxyError);
@@ -380,6 +380,10 @@ void poet::Init(TChain *tree)
    fChain->SetBranchAddress("electron_py", &electron_py, &b_electron_py);
    fChain->SetBranchAddress("electron_pz", &electron_pz, &b_electron_pz);
    fChain->SetBranchAddress("electron_ch", &electron_ch, &b_electron_ch);
+   fChain->SetBranchAddress("electron_isLoose", &electron_isLoose, &b_electron_isLoose);
+   fChain->SetBranchAddress("electron_isMedium", &electron_isMedium, &b_electron_isMedium);
+   fChain->SetBranchAddress("electron_isTight", &electron_isTight, &b_electron_isTight);
+
 
    fChain->SetBranchAddress("photon_e",  &photon_e,  &b_photon_e);
    fChain->SetBranchAddress("photon_px", &photon_px, &b_photon_px);

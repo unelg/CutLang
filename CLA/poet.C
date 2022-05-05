@@ -79,6 +79,8 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
         alv.SetPxPyPzE(muon_px->at(i), muon_py->at(i), muon_pz->at(i),  muon_e->at(i)); // all in GeV
         adbxm = new dbxMuon(alv);
 	adbxm->setCharge(muon_ch->at(i));
+        adbxm->setPdgID(muon_ch->at(i)*(-13) );
+        adbxm->setIsTight(muon_isTight->at(i));
 /*
 	adbxm->setd0(Muon_D0[i]);
         adbxm->setPdgID(-13*Muon_Charge[i] );
@@ -107,6 +109,10 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
         adbxe = new dbxElectron(alv);
         adbxe->setCharge(electron_ch->at(i));
         adbxe->setParticleIndx(i);
+        adbxe->setPdgID( electron_ch->at(i)*(-11) );
+        adbxe->setIsTight(electron_isTight->at(i));
+        adbxe->setIsMedium(electron_isMedium->at(i));
+        adbxe->setIsLoose(electron_isLoose->at(i));
         electrons.push_back(*adbxe);
         delete adbxe;
     }
