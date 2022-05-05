@@ -43,6 +43,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "process" return PROCESS;
 
 "systematic" return SYSTEMATIC;
+"eventno" return EVENTNO;
 
 [pP][rR][iI][nN][tT] return PRINT;
 [oO][nN]|[tT][rR][uU][eE] return TRUE; 

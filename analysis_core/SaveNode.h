@@ -51,8 +51,8 @@ public:
     virtual void Reset() override{}
     virtual void createFile() override {
             if(savetype=="variableList"){
-                 csvsave.open(fname);
-                 return ;
+                if (selector) csvsave.open(fname);
+                return ;
             }
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
 	    ttsave = new TTree ("nt_tree", "saving data on the grid");
@@ -63,7 +63,7 @@ public:
     virtual void saveFile() override {
 //            std::cout << "Closing file\n";
             if(savetype=="variableList"){
-                  csvsave.close();
+               if (selector) csvsave.close();
             } else {
 	    	ftsave->Write();
 	    	ftsave->Close();

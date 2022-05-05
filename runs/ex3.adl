@@ -1,15 +1,21 @@
 #CLA ADL example3
 
-define Zreco : MUO[0] MUO[1]
+define Zmreco = MUO[0] MUO[1]
+define Zereco = ELE[0] ELE[1]
 
 region   test
   select      ALL              # to count all events
   histo       hamet, "MET (GeV) ", 100, 0.0, 2000.0, MET
   select      Size (MUO) >= 2  # events with 2 or more electrons 
-  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {Zreco}m
-  select      {Zreco}q == 0   # Z is neutral
-  histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, m(Zreco)
+  histo       h1mReco, "Z candidate mass (GeV)", 100, 0, 200, {Zmreco}m
+  select      {Zmreco}q == 0   # Z is neutral
+  histo       h2mReco, "Z candidate mass (GeV)", 100, 0, 200, m(Zmreco)
  
 region mest
-  test
-  select size(JET) > 2
+  select      ALL              # to count all events
+  select      Size (ELE) >= 2  # events with 2 or more electrons 
+  select      {Zereco}q == 0   # Z is neutral
+  histo       h1eReco, "Z candidate mass (GeV)", 100, 0, 200, m(Zereco)
+  select      {Zereco}m [] 70 120   # Z is neutral
+  histo       h2eReco, "Z candidate mass (GeV)", 100, 0, 200, m(Zereco)
+ 

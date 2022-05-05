@@ -99,7 +99,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
-%token ZCANDID //
+%token ZCANDID EVENTNO//
 %token SIEIE  // CMSnano photon attribs
 %token <real> PNB
 %token <real> NB 
@@ -197,7 +197,7 @@ countformat : COUNTSFORMAT ID { DEBUG($2<<" is a new format type\n"); current_cn
                (*cntHistos)[current_cntHistDef].push_back(ahist);
               }
             ;
-variablelist : variablelist e { VariableList.push_back($2); cout<<"new variable\n";}
+variablelist : variablelist e { VariableList.push_back($2); DEBUG("new variable\n");}
              |
              ;
 NUMBER : INT { $$ = (float)$1; } 
@@ -1090,6 +1090,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    |'(' e ')' {   $$=$2; }
    | NB {  tmp=to_string($1); $$=new ValueNode($1);} 
    | INT {  $$=new ValueNode($1);} 
+   | EVENTNO {  $$=new ValueNode("EventNo");} 
    | function {$$=$1; pnum=0;}
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well
@@ -2264,7 +2265,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                            } else {
                               int type=((ObjectNode*)it->second)->type;
                               Node* ac=new SFuncNode(count, type, it->first, it->second);
-                              Node* v0= new ValueNode(0);
+                              Node* v0= new ValueNode( (double)0);
                               Node* n1= new BinaryNode(ge,ac,v0,">=");
                               NodeCuts->insert(make_pair(++cutcount,n1));
                               DataFormats->push_back(cutcount);
@@ -2893,10 +2894,13 @@ command : CMD condition { //find a way to print commands
         | SAVE ID CSV variablelist
                   { DEBUG("save in CSV format\n"); 
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode($2,1,VariableList))); 
+                    VariableList.clear();
                   }
         | PRINT variablelist
-                  { DEBUG("print in CSV format\n"); 
-                    NodeCuts->insert(make_pair(++cutcount, new SaveNode("Print",0,VariableList))); 
+                  { DEBUG("print in CSV format\n");
+                    string pippo="Print"; pippo+= to_string(cutcount);
+                    NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList))); 
+                    VariableList.clear();
                   }
         | CMD NONE { Node* a = new SFuncNode(none,1, "none");
                     NodeCuts->insert(make_pair(++cutcount,a));

@@ -16,6 +16,7 @@
 #include "VLLMinSignal.h"
 #include "DELPHES2.h"
 #include "dbxParticle.h"
+#include "poet.h"
 //#include "dbxAna.h"
 #include <TH2.h>
 #include <TError.h>
@@ -49,6 +50,7 @@ int main(int argc, char*argv[])
  bool  use_fcc=false;
  bool use_lhco=false;
  bool use_lvl0=false;
+ bool use_wank=false;
  bool use_delphes=false;
  bool use_atlasod=false;
  bool use_atlasodR2=false;
@@ -62,8 +64,8 @@ int main(int argc, char*argv[])
  bool use_vllmin=false;
  bool use_vllbg3 =false;
  bool use_vllsignal =false;
-
  bool use_DELPHES2=false;
+
  string inptype;
  char *username=NULL;
 
@@ -105,7 +107,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | ATLASVLL | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL | VLLG]\n"
+                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | ATLASVLL | POET | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL | VLLG]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -114,7 +116,8 @@ for (int i = 2; i < argc; i++) {
 
       if (inptype == "LHCO")    { use_lhco =true;}
  else if (inptype == "FCC" )    { use_fcc  =true;}
- else if (inptype == "DELPHES2")    { use_DELPHES2 =true;}
+ else if (inptype == "POET" )   { use_wank =true;}
+ else if (inptype == "DELPHES2"){ use_DELPHES2 =true;}
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
  else if (inptype == "ATLASVLL"){ use_vllmin =true;}
@@ -134,78 +137,6 @@ for (int i = 2; i < argc; i++) {
    exit(-3);
  }
 
-/*
-TProof* proof;
-#define PROPT TProof::EUploadPackageOpt::kRemoveOld
-
-      if (use_proof) {
-
-
-        cout << "Making the cards package"<<endl;
-        gSystem->Exec("mkdir cards; mkdir cards/PROOF-INF");
-        gSystem->Exec("cp *-*.txt cards");
-        gSystem->Exec("echo \"Int_t SETUP(){return 0;}\" > cards/PROOF-INF/SETUP.C");
-        gSystem->Exec("tar czhf cards.par cards");
-        gSystem->Exec("rm -rf cards");
-        cout << "cards prepared.\n";
-
-        cout << "Making the libs package"<<endl;
-        gSystem->Exec("mkdir libs");
-        gSystem->Exec("mkdir libs/PROOF-INF");
-        gSystem->Exec("cp ../CLA/*.so* libs");
-        gSystem->Exec("cp ../analysis_core/* libs");
-        gSystem->Exec("cat ../analysis_core/SETUP.C | grep -v BAT | grep -v KLFitter > libs/PROOF-INF/SETUP.C");
-        gSystem->Exec("tar czhf libs.par libs");
-        gSystem->Exec("rm -rf libs");
-        cout << "libs prepared\n";
-
-        proof = TProof::Open("");
-        proof->ClearCache();
-
-        proof->UploadPackage("cards", PROPT );
-        proof->EnablePackage("cards",1);
-        proof->UploadPackage("libs", PROPT );
-        proof->EnablePackage("libs",1);
-        proof->ShowPackages();
-        proof->Exec(".! uname -a");
-        cout << "___________________________________________"<<endl;
-
-       proof->Load("../CLA/dbxAna.C");
-
-       dbxAna anAna;
-       vector<string> tnames;
-       tnames.push_back("nominal");
-       TString          runname_tmp="107705";
-       TString  runfile=runname_tmp;
-                runfile+=".txt";
-
-       vector<string>::iterator aniter;
-       for (aniter = tnames.begin(); aniter < tnames.end(); aniter++){
-          cout << "will work on Tree:"<<aniter->data()<< " From following files:"<<endl;
-          TDSet *aset = new TDSet ("TTree",aniter->data() );
-          string item_name;
-          ifstream nameFileout;
-                   nameFileout.open(runfile);
-            while (nameFileout >> item_name) {
-                     std::cout << item_name<<"\n";
-             aset->Add(item_name.data());
-            }
-
-        cout << "----------------------------------------"<<endl;
-//        proof->Process(aset, &anAna, " ", 0);
-
-//      proof->Process(aset, "dbxAna", " -BP 1 -S 0 -AtlMin 1 ", 0); // the real execution
-        aset->Process("dbxAna.C"," -BP 1 -S 0 -AtlMin 1 ",0); // the real execution
-      }
-
-
-
-       proof->Close();
-       std::cout << "proof run finished\n";
-       exit (0);
-      }
-*/
-
 /** Chain the files  split by ',' */
   std::string argStr = argv[1];
   std::vector<std::string> fileList;
@@ -215,9 +146,15 @@ TProof* proof;
      std::string tmp = argStr.substr(i,n-i);
      fileList.push_back(tmp);
   }
-  TApplication* theApp = new TApplication("App", &argc, argv);
+//  TApplication* theApp = new TApplication("App", &argc, argv);
 
   TChain *chain;
+  TChain *cmuos;
+  TChain *celes;
+  TChain *ctaus;
+  TChain *cjets;
+  TChain *cphotons;
+
   if (use_lhco){
    cout << "WARNING: using LHCO~~~reduced functionality~~~\n";
    chain = new TChain("LHCO");
@@ -231,6 +168,17 @@ TProof* proof;
   }else if (use_fcc){
    cout << "~Now using FCC files.~~~~~~ beta!\n";
    chain = new TChain("events");
+  }else if (use_wank){
+   cout << "~Now using POET files.~~~~~~ not even alpha!\n";
+     chain = new TChain("mymuons/Events");
+     celes = new TChain("myelectrons/Events");
+     chain->AddFriend(celes);
+     ctaus = new TChain("mytaus/Events");
+     chain->AddFriend(ctaus);
+     cjets = new TChain("myjets/Events");
+     chain->AddFriend(cjets);
+  cphotons = new TChain("myphotons/Events");
+     chain->AddFriend(cphotons);
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
    chain = new TChain("Events");
@@ -279,11 +227,15 @@ TProof* proof;
     gErrorIgnoreLevel = 5000;
     aret=chain->Add(fileList[iFile].c_str(), 0);
     cout << "RetVal:"<<aret<<endl;
+    if (use_wank){
+     aret=celes->Add(fileList[iFile].c_str(), 0);
+     aret=ctaus->Add(fileList[iFile].c_str(), 0);
+     aret=cjets->Add(fileList[iFile].c_str(), 0);
+     aret=cphotons->Add(fileList[iFile].c_str(), 0);
+    }
   }
   if (chain->GetEntries() > 0 ) {
-    cout << "initialized with the chain"<<endl;
-   // chain->GetEntry(0);
-    cout << "...\n";
+    cout << "initialized with the chain..."<< chain->GetEntries()<<endl; 
 
    if (use_lhco){
     lhco *lhcoa=new lhco("XXX",chain);
@@ -291,7 +243,10 @@ TProof* proof;
    } else if (use_DELPHES2){
     DELPHES2 *DELPHES2a=new DELPHES2("XXX",chain);
           cout << "DELPHES2 obj ok\n";
-              DELPHES2a->Loop(aselect, username);
+             DELPHES2a->Loop(aselect, username);
+  } else if (use_wank){
+    poet *poeta=new poet("XXX",chain);
+          poeta->Loop(aselect, username);
    } else if (use_lvl0){
     lvl0 *lvl0a=new lvl0("XXX",chain);
           lvl0a->Loop(aselect, username);

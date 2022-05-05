@@ -13,9 +13,11 @@
 class ValueNode :public Node{
 private:
     double value;
+    bool pval;
 public:
     ValueNode(double v=0){
                 value=v;
+                pval=true;
                 left=NULL;
                 right=NULL;
                 char buf[64];
@@ -23,12 +25,20 @@ public:
                 symbol=std::string(buf);
                // symbol=std::to_string(v);
             }
+    ValueNode(std::string evtvar){
+                value=0;
+                left=NULL;
+                right=NULL;
+                pval=false;
+                symbol=evtvar;
+            }
     
     virtual void getParticles(std::vector<myParticle *>* particles) override{}
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
     virtual void Reset() override{}
     virtual double evaluate(AnalysisObjects* ao) override {
-        return value;
+        if (pval) return value;
+        return ao->evt.event_no; // TO BE improved
     }
     
     virtual ~ValueNode() {}

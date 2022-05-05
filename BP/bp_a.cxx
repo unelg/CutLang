@@ -143,12 +143,12 @@ int BPdbxA:: readAnalysisParams() {
 
 //---------other cmds
        if (  (firstword=="cmd")  || (firstword=="sort")   || (firstword=="reject") || (firstword=="cut")
-          || (firstword=="save") || (firstword=="weight") || (firstword=="select")
+          || (firstword=="save") || (firstword=="weight") || (firstword=="select") || (firstword=="print")
           ) {
            if (algorithmnow) {
               CutList2file+=tempLine;
               CutList2file+="\n";
-              if (firstword=="save"){
+              if (firstword=="save" || firstword=="print"){
                tempS2 = "[Save] ";
                tempS2 += toplam;
                effCL.push_back(tempS2);

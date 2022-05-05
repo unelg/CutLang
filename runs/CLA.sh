@@ -50,9 +50,9 @@ case $key in
       echo "$ADLFILE does NOT exist!"
       exit 1
     fi
+    INIFILE=_lastrun.adl
 # convert the \ signs back to same line
-    sed -e ':x /\\$/ { N; s/\\\n//g ; bx }' ${ADLFILE} > _${ADLFILE}
-    INIFILE=_${ADLFILE}
+    sed -e ':x /\\$/ { N; s/\\\n//g ; bx }' ${ADLFILE} > ${INIFILE}
     cat ${INIFILE} | grep -v '^#' | grep "region " > pippo
     cat ${INIFILE} | grep -v '^#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
@@ -301,7 +301,7 @@ else
   $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -HLT ${HLTLIST} ${DEPS}
   if [ $? -eq 0 ]; then
     echo "CutLang finished successfully, now adding histograms"
-    rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+    rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
       rm -f  $PWD/histoOut-${rbase}.root
     fi
