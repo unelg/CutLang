@@ -162,9 +162,9 @@ int BPdbxA:: readAnalysisParams() {
        }
 //---------histos
        if (firstword=="histo") {
-           size_t apos=toplam.find_first_of('"');
-           size_t bpos=toplam.find_last_of('"');
-           tempS1 = toplam.substr(apos+1, bpos-apos-1); // without the quotation marks
+           size_t apos=toplam.find_first_not_of(' ');
+           size_t bpos=toplam.find_first_of(',');
+           tempS1 = toplam.substr(apos, bpos-apos-1); // without the quotation marks
            tempS2 = "[Histo] ";
            tempS2 += tempS1;
 //           cout <<tempS2<<"\n";

@@ -188,7 +188,7 @@ if [ ${PRLL} -ne 1 ]; then
       echo Unknown system, use CutLang with only 1 cpu
       ;;
   esac
-  # echo Number of available cpus : $numcpu
+  echo Number of available cpus : $numcpu
 fi
 
 
@@ -207,7 +207,8 @@ if [ ${PRLL} -ne 1 ]; then
   if [[ -n $(grep -i "SkipEffs" ${INIFILE}) ]]; then 
     sed -i '/SkipEffs/Id' $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
   fi
-  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl | tee $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
+#  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl | tee $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
+  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl > _tempor.adl; mv _tempor.adl $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
 else
   if [ $Nalgo -gt 1 ]; then
   echo Analysis with Multiple Regions
@@ -232,8 +233,10 @@ elif [ ${PRLL} -ne 1 ]; then
     echo Using $((numcpu - 1 )) cores
   fi
   if [ $EVENTS -eq 0 ]; then # gets entries to divide events into intervals
-    dt=$(grep "\"$datatype\"" $WORK_PATH/CLA/CLA.C | cut -d '{' -f 2 | head -c -9 | cut -c 2-)
-    chn=$(grep -A2 "if ($dt)" $WORK_PATH/CLA/CLA.C | grep "TChain(" | cut -d '"' -f 2)
+#    dt=$(grep "\"$datatype\"" $WORK_PATH/CLA/CLA.C | cut -d '{' -f 2 | head -c -9 | cut -c 2-)
+    dt=$(grep "\"$datatype\"" $WORK_PATH/CLA/CLA.C | cut -d '{' -f2 |cut -f1 -d'=' )
+    chn=`grep -A2  $dt  $WORK_PATH/CLA/CLA.C | grep TChain | cut -d '"' -f 2`
+    echo $datatype data: $dt tree: ${chn}
     TotalEvents="$(root -l -q ''$WORK_PATH'/analysis_core/getentries.cxx("'${datafile}'" ,"'${chn}'")')"
     EVENTS="$(echo $TotalEvents | awk '{print $NF}')"
     intrvl=$(( (EVENTS-STRT)/PRLL)) # workload division
@@ -254,10 +257,10 @@ elif [ ${PRLL} -ne 1 ]; then
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
       echo CLA $_dataf $datatype -i ${INIFILE} -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE > ../temp_adl_$SHELL_ID/out.txt
     else
       echo CLA $_dataf $datatype -i ${INIFILE} -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE > ../temp_adl_$SHELL_ID/out.txt
     fi
   }
   if [ $? -eq 0 ]; then # multithreading
@@ -274,7 +277,8 @@ elif [ ${PRLL} -ne 1 ]; then
       allHistos+=$WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-tempor.root
       allHistos+=" "
     done
-    echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
+#   echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
+    echo "------- merging all root files"
     hadd -f $PWD/histoOut-${rbase}.root $allHistos # merging all root files
     wait
     # prints efficiencies of combined files
