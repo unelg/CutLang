@@ -1061,6 +1061,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | e '^' e { $$=new BinaryNode(pow,$1,$3,"^"); } 	
    |'-' e %prec Unary { $$=new UnaryAONode(unaryMinu,$2,"-"); }
    | HSTEP '(' e ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
+   | HSTEP '(' condition ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
    | SQRT '(' e ')'  { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
    | ABS '(' e ')'   { $$=new UnaryAONode(abs,$3,"fabs"); }
    | COS '(' e ')'   { $$=new UnaryAONode(cos,$3,"cos"); }
