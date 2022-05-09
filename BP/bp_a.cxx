@@ -242,15 +242,15 @@ int BPdbxA:: readAnalysisParams() {
 
        std::map<int, Node*>::iterator iter = NodeCuts.begin();
        while(iter != NodeCuts.end()) {
-//               cout << "**-- BP sees:"<<iter->second->getStr().Data()<<".\n";
+                DEBUG("**-- BP sees:"<<iter->second->getStr().Data()<<".\n");
                 if (iter->second->getStr().CompareTo(" save") == 0 ) {
 		      save.push_back(iter->first);
-//                    cout <<"Saving at "<<iter->first<<"\n";
+                      DEBUG("Saving at "<<iter->first<<"\n");
 		      iter->second->createFile();
 		}
                 if (iter->second->getStr().Contains("~=") ) {
 	            optimize.insert(iter->first);
-//                    cout <<"Optimize at "<<iter->first<<"\n";
+                    DEBUG("Optimize at "<<iter->first<<"\n");
 		}
                 iter++;
        }

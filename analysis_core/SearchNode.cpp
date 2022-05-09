@@ -72,7 +72,7 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
        }
       }
       for (int kk=0; kk<Ns.size(); kk++){
-       string s=particles.at(kk)->collection;
+       string s=particles.at(kk)->collection; // this is wrong...
        DEBUG(kk<<" |:"<<maxDepth<<" N:"<<Ns[kk]<< " #ForbiddenIndexSize:"<<forbidit_size
                   << " Type:"<<types[kk]<<" Collection:"<<s<<" ac:"<<acs[kk]<<"\n");
       }

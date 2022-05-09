@@ -85,7 +85,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
 %token TRGE TRGM SKPE SKPH SAVE CSV 
-%token LVLO ATLASOD CMSOD DELPHES FCC LHCO
+%token IDX
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
@@ -454,6 +454,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | '{' particules '}' PDGID {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(pdgIDof,newList,"pdgID");
+                                  }
+         | '{' particules '}' IDX {    vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(IDXof,newList,"IDX");
+                                  }
+         | IDX '(' particules ')' {    vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(IDXof,newList,"IDX");
                                   }
          | '{' particules '}' 'P' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
@@ -3133,6 +3141,12 @@ ifstatement : condition '?' action ':' action %prec '?' {
                         } 
             ;
 action : condition { $$=$1; }
+        | PRINT variablelist
+                  { DEBUG("print in CSV format\n");
+                    string pippo="Print"; pippo+= to_string(cutcount);
+                    $$= new SaveNode(pippo,0,VariableList) ;
+                    VariableList.clear();
+                  }
          | ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($11);

@@ -40,7 +40,8 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                           case track_t: DEBUG("track:"<< (*i)->index <<" ");
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
-		                                         inputPart->setPdgID(inputPart->pdgID() + ao->track[ac].at(ai).pdgID()  );
+		                                         inputPart->setPdgID(ao->track[ac].at(ai).pdgID()  );
+		                                         inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->track[ac].at(ai).ParticleIndx()  );
                                                          ka=ao->track[ac].at(ai).nAttribute();
                                                          DEBUG("Gen Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
@@ -53,6 +54,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
+		                                         inputPart->setParticleIndx(ao->truth[ac].at(ai).ParticleIndx()  );
                                                          ka=ao->truth[ac].at(ai).nAttribute();
                                                          DEBUG("Gen Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
@@ -64,7 +66,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                            case muon_t: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
-							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
+//							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
+							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
+							inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->muos[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight (ao->muos[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->muos[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->muos[ac].at(ai).isLoose() ); 
@@ -76,6 +80,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
+							inputPart->setParticleIndx(ao->eles[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight (ao->eles[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->eles[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->eles[ac].at(ai).isLoose() ); 
@@ -88,6 +93,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                             case tau_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
+							inputPart->setParticleIndx(ao->taus[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight (ao->taus[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->taus[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->taus[ac].at(ai).isLoose() ); 
@@ -111,6 +117,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                          case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
+							inputPart->setParticleIndx(ao->gams[ac].at(ai).ParticleIndx()  );
                                                         ka=ao->gams[ac].at(ai).nAttribute();
                                                         inputPart->setIsTight (ao->gams[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->gams[ac].at(ai).isMedium() ); 
@@ -125,11 +132,13 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsTight (ao->jets[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
+							inputPart->setParticleIndx(ao->jets[ac].at(ai).ParticleIndx()  );
 
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         break;
                                            case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
+							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
@@ -142,6 +151,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
                                        case lightjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 0, ac)[ ai ].lv()); 
                                                         inputPart->setIsTight( tagJets(ao,0, ac)[ai].isbtagged_77()   );
+//							inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         DEBUG("qgjet:"<<ai<<" ");
                                                         break;
                                           case combo_t: DEBUG("combo:"<< (*i)->index <<" ");
@@ -346,6 +356,11 @@ double pdgIDof( dbxParticle* apart){
    return pdgID;
 }
 
+double IDXof( dbxParticle* apart){
+   double IDX = apart->ParticleIndx();
+   DEBUG(" IDXof:"<<IDX<<"\t");
+   return IDX;
+}
 
 double Mof( dbxParticle* apart){
     double mass=(apart->lv()).M();

@@ -105,6 +105,7 @@ double averageMuof( dbxParticle* apart);
 double truthMatchProbof( dbxParticle* apart);
 double truthIDof( dbxParticle* apart);
 double truthParentIDof( dbxParticle* apart);
+double IDXof( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */

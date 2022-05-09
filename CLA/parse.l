@@ -72,6 +72,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "LEP" return LEP;
 [hH][lL][tT] return HLT;
 "BJET" return BJET;
+[iI][nN][dD][eE][xX] return IDX;
 
 [uU][nN][iI][oO][nN] return UNION;
 [aA][lL][iI][aA][sS] return ALIAS;
