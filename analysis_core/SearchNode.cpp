@@ -15,17 +15,14 @@ void SearchNode::performInnerOperation(vector<int> *v,vector<int> *indices, doub
             DEBUG(v->at(i)<<" ");
             particles.at(indices->at(i))->index=v->at(i);
         }
+        double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+        double diff=right->evaluate(ao)-tmpval;
 
-//-------~1min in 25k events
-            double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
-            double diff=right->evaluate(ao)-tmpval;
-
-                    
-                if ( (*f)(diff,*current_difference) ) {
-                    DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
-                    *current_difference = fabs(diff);
-                    bestIndices=*v;
-                } else { DEBUG("\n");}
+        if ( (*f)(diff,*current_difference) ) {
+             DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
+             *current_difference = fabs(diff);
+             bestIndices=*v;
+        } else { DEBUG("\n");}
       }
 
 void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int maxDepth, vector<int> *v,
@@ -220,20 +217,20 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         DEBUG("\nSearchN ---------------"<<getStr()<<"\n"); 
         particles.clear();
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
-
+        
         std::map<string,unordered_set<int> >::iterator forbidit;
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
              DEBUG("SearchN Part:"<<i<<" idx:"<<particles.at(i)->index<< " addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<< " type:"<<particles.at(i)->type<<"\n");
              if(particles.at(i)->index<0) indices.push_back(i);
              else {
-                  forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  );
-                  if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
-                       DEBUG("was NOT blacklisted, now adding. \n");
-                       unordered_set<int> pippo;
-                                          pippo.insert(particles.at(i)->index);
-                       FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, pippo));
-                  } else forbidit->second.insert(particles.at(i)->index);
+                forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  ); 
+                if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
+                     DEBUG( particles.at(i)->collection << " was NOT blacklisted, now adding with:"<<  particles.at(i)->index <<"\n");
+                     unordered_set<int> pippo;
+                                        pippo.insert(particles.at(i)->index);
+                     FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, pippo));
+                } else { forbidit->second.insert(particles.at(i)->index);  DEBUG( particles.at(i)->collection << " found, adding"<< particles.at(i)->index<<"\n"); }
              }
         }
 
@@ -274,26 +271,25 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     runNestedLoopBarb( 0, candids, 0, MaxDepth, &v,&indices, &current_difference,ao, types, collections);
                    // runNestedLoopRec( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao, type, ac);
 
-                    DEBUG("After find, Best index vector size:"<<bestIndices.size()<<" MaxDepth"<<MaxDepth<<"\n");
-                    if (bestIndices.size() < 1) {  std::cout<< "best index could not be found\n"; return 0; }
-                    int maxFound = bestIndices.size();
+                   DEBUG("After find, Best index vector size:"<<bestIndices.size()<<" MaxDepth"<<MaxDepth<<"\n");
+                   if (bestIndices.size() < 1) {  std::cout<< "best index could not be found\n"; return 0; }
+                   int maxFound = bestIndices.size();
 //                    if (MaxDepth < bestIndices.size()) maxFound = MaxDepth;
-                    for(int i=0;i<maxFound;i++){
-                        particles.at(indices[i])->index=bestIndices[i]; //directly changing the concerned particle -i-->bestIndices[i]
+                   for(int i=0;i<maxFound;i++){
+                        particles.at(indices[i])->index=bestIndices.at(i); //directly changing the concerned particle -i-->bestIndices[i]
                         //-------------------add found indices to FORBIDDEN 
                         string ac=collections[i];
                         forbidit=FORBIDDEN_INDEX_LIST.find( ac );
                         DEBUG("forbidding:"<<bestIndices[i]<<" for "<<ac<<"\n");
                         if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
-                         DEBUG(ac<<" was NOT there, now adding. \n");
+                         DEBUG(ac<<" was NOT there, now adding with "<< bestIndices[i] <<"\n");
                          unordered_set<int> pippo;
                                             pippo.insert(bestIndices[i]);
                          FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, pippo) );
                         } else {
                          forbidit->second.insert(bestIndices[i]);
                         }
-                        DEBUG("BEST"<<particles.at(indices[i])->index<<" : "<<bestIndices[i]<<"@"<<indices[i] <<" type:"<<particles.at(indices[i])->type<<"  addr:"<<particles.at(indices[i]) <<" \n");
-                    }
+                   }
         } else{
                 DEBUG("SearchN No negative index found... Returning evaluation as is.\n");
                 double  leftval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
@@ -304,6 +300,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                 else { std::cout<<"no negatif index, left is not right?!\n"; return 0;} // NGU TODO we should improve.
         }
         DEBUG("\n");
+        particles.resize(6);
         return 1;
     }
 
@@ -333,6 +330,10 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 //-------set particles
    void SearchNode::setParticles(std::vector<myParticle *>* bankParticles) {
      particles.clear();
+     for(int i=0;i<bankParticles->size();i++){
+         DEBUG("Received Part:"<<i<<"  idx:"<<bankParticles->at(i)->index<< "  addr:"<<bankParticles->at(i)<<" name:"<< bankParticles->at(i)->collection<<"\n");
+     }
+
      left->getParticles(&particles);//should fill with particles pointers no more cast needed
      int frombank=0;
      for(int i=0;i<particles.size();i++){
@@ -340,10 +341,11 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
          if(particles.at(i)->index<0) {
                  particles.at(i)->index=bankParticles->at(frombank)->index;
                  frombank++;
-                 DEBUG("Filled.\n");
+                 DEBUG(i<<" Filled from Bank as "<< particles.at(i)->index <<".\n");
          }
      }
    }
+
 
 //---------------------------------------------------------------------general functions
 double maxim( double difference, double current_difference){

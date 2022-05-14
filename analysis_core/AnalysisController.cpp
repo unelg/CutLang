@@ -118,20 +118,21 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 //2:     1,pass  0,fail
 //5:     1,pass  1,pass  1,pass  1,pass  0,fail
 //10005: 1,pass  1,pass  1,pass  1,pass  1,pass
-
+//  k is the analysis index
 //-------------at this point we should know if anAnalysis depends on Another.
-                DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
-                int lastpass=0;
-               if(do_deps) {
-                if ( depAnalyses.find(k) != depAnalyses.end() ){ // if this is analysis 1, we are dependent, get info from 0.
+               DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
+               int lastpass=0;
+               if(do_deps) { // take care to analyses depending on each other
+                if ( depAnalyses.find(k) != depAnalyses.end() ){ // if result is True, this analysis is dependent, get info from 0.
                    if (mainAresults < 10000) controlword=mainAresults; // means last cut fails.
                    else {
                       lastpass=1;
                       controlword=(mainAresults-10000);
                    }
+                   a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                 }
                } else {
-                  a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
+                   a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                }
 //----------------------------------------------
 	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis

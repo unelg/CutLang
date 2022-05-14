@@ -23,7 +23,8 @@ ADLFILE=$RUNS_PATH/CLA.ini
 VERBOSE=5000
 STRT=0
 PRLL=1
-DEPS=" "
+DEPS="w"
+DEPP=" "
 HLTLIST=" "
 datafile=$1
 datatype=$2
@@ -108,7 +109,9 @@ case $key in
     do
       hltList+=$i,
     done
-    HLTLIST=$hltList
+    if [ ${#hltlist} -gt 1 ]; then 
+     HLTLIST=" -HLT " $hltList
+    fi
 
     shift # past argument
     shift # past value
@@ -130,10 +133,10 @@ case $key in
     exit 1
     ;;
     -d|--deps)
-    if [ -f "algdeps.cmd" ]; then
-     DEPS=`cat algdeps.cmd`
-     rm -f algdeps.cmd
-    fi
+# speedup
+    echo "******************" $DEPS "***"
+    DEPS="XXX"
+    DEPP=" -d "
     shift # past argument
     ;;
     -v|--verbose)
@@ -213,10 +216,20 @@ else
   if [ $Nalgo -gt 1 ]; then
   echo Analysis with Multiple Regions
   $WORK_PATH/scripts/separate_algos.sh ${INIFILE}
+   if [ $DEPS == "XXX" ]; then
+    
+    if [ -f "algdeps.cmd" ]; then
+     DEPS=`cat algdeps.cmd`
+     cat algdeps.cmd
+     echo "******************" $DEPS "***"
+     rm -f algdeps.cmd
+    fi
+   fi
+
   else
-  echo Single Analysis
-  cp ${INIFILE} $PWD/BP_1-card.ini
-  Nalgo=1
+   echo Single Analysis
+   cp ${INIFILE} $PWD/BP_1-card.ini
+   Nalgo=1
   fi
 fi
 
@@ -245,7 +258,7 @@ elif [ ${PRLL} -ne 1 ]; then
     intrvl=$(( EVENTS/PRLL)) # workload division
   fi
   echo "**********************************************************************************************"
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL} -HLT ${HLTLIST} ${DEPS}
+  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL} ${HLTLIST} ${DEPS}
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
       cp -a $WORK_PATH/runs/. $WORK_PATH/temp_runs_${SHELL_ID}_${i}
       rm -f $WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-BP_*.root
@@ -256,11 +269,11 @@ elif [ ${PRLL} -ne 1 ]; then
     _dataf=$(realpath $datafile)
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
-      echo CLA $_dataf $datatype -i ${INIFILE} -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE > ../temp_adl_$SHELL_ID/out.txt
+      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
     else
-      echo CLA $_dataf $datatype -i ${INIFILE} -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE > ../temp_adl_$SHELL_ID/out.txt
+      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
     fi
   }
   if [ $? -eq 0 ]; then # multithreading
@@ -285,7 +298,7 @@ elif [ ${PRLL} -ne 1 ]; then
     if [ $? -eq 0 ]; then
       root -l -q \
       ''${WORK_PATH}'/analysis_core/FinalEff.C("'${PWD}'/histoOut-'${rbase}'.root", '$sh', '$se')'
-      rm -r $WORK_PATH/temp*  # removes temp folders
+     rm -r $WORK_PATH/temp*  # removes temp folders
 
       echo "hadd (merging all root files) finished successfully, now removing auxiliary files"
       rm -f $PWD/histoOut-BP_*.root
@@ -301,8 +314,8 @@ elif [ ${PRLL} -ne 1 ]; then
 else
 
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -HLT ${HLTLIST} ${DEPS}
-  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -HLT ${HLTLIST} ${DEPS}
+  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST}  ${DEPS}
+  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST}  ${DEPS}
   if [ $? -eq 0 ]; then
     echo "CutLang finished successfully, now adding histograms"
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`

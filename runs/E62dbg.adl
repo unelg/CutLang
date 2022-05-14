@@ -54,11 +54,11 @@ define  VResolved : vjA vjB
 define      vjV : voodJETs[-5]
 define      vjZ : voodJETs[-6]
 define     DVRo : VResolved vjV
-define     DZVo : ZReco vjZ
+define     DZVo : vjZ ZReco 
 define     wDVRo = 0.032*m(DVRo) + 17.2
 define     wDZVo = 0.043*m(DZVo) + 2.7
 define     vvRo = wDVRo*wDVRo + wDZVo*wDZVo
-define  chi2Vr : ({VResolved}m - mV) ^2 /wV^2 +999*HSTEP(1-dR(VResolved, vjV)) +999*HSTEP(1-dR(ZReco, vjZ)) +999*(1-HSTEP((pT(vjV)>65 && pT(vjZ)>100) || (pT(vjZ)>65 && pT(vjV)>100)))
+define  chi2Vr : ({VResolved}m - mV) ^2 /wV^2 +999*HSTEP(1-dR(VResolved, vjV)) +999*HSTEP(1-dR(ZReco, vjZ)) +999*(1-HSTEP((pT(vjZ)>65 && pT(vjV)>100) || (pT(vjV)>65 && pT(vjZ)>100)))
 define  chi2VResolved : chi2Vr + ({DVRo}m - {DZVo}m)^2 /vvRo 
 
 ################################       fat jets for higgs
@@ -130,23 +130,32 @@ algo preselection
   cmd { voodJETs_1 }Pt >= 65
 
 #----------------------------- chi2 minimizations.
-  cmd Size(goodJETs) >= 4 AND Size(voodJETs) >= 4 ? chi2HResolved ~=0 AND chi2VResolved ~=0 : ALL
-  cmd Size(Anysubfatjet)>= 1 AND Size(AnyVsubfatjet)>= 1 ? chi2HBoosted ~= 0 AND chi2VBoosted~=0 : ALL
+#  select Size(goodJETs) >= 4 AND Size(voodJETs) >= 4
+#  cmd chi2VResolved ~= 0
+
+  cmd Size(goodJETs) >= 4 AND Size(voodJETs) >= 4 ? chi2HResolved ~=0 : ALL
+  cmd Size(goodJETs) >= 4 AND Size(voodJETs) >= 4 ? chi2VResolved ~=0 : ALL
+  cmd Size(Anysubfatjet)>= 1 AND Size(AnyVsubfatjet)>= 1 ? chi2HBoosted ~= 0 : ALL
+  cmd Size(Anysubfatjet)>= 1 AND Size(AnyVsubfatjet)>= 1 ? chi2VBoosted~=0 : ALL
 
 
 
 ##d1 resolved  FTFT  done
-  algo FTFT-resolved
-  preselection
-  cmd eventno ==1354 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
-  cmd eventno ==1354 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr eventno  index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
-  cmd eventno ==1354 ? print  Size(goodJETs) Size(subfatjet)  Size(goodJETs)  Size(Vsubfatjet) : all
+ algo FTFT-resolved
+ preselection
+# cmd eventno ==1354 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
+# cmd eventno ==1354 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr eventno  index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
+# cmd eventno ==1354 ? print  Size(goodJETs) Size(subfatjet)  Size(goodJETs)  Size(Vsubfatjet) : all
+#  cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1
+#  print chi2Hr chi2Hb chi2HResolved chi2HBoosted
+
+# cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? chi2HResolved<cth : NONE #1st option BRR
   cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
   cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved>cth : NONE #1st option BRR
- # print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjV}index {wjZ}index # {gjZ}index {gjH}index
- # cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjZ}index {wjV}index {vjZ}index {vjV}index : all
- # cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  {wjV}pT {wjZ}pT index(VBoosted) index(wjV) index(wjZ) : all
- # print index(goodMUOs[1]) index(goodMUOs[0]) index(MUO[1]) index(MUO[0])
+## print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjV}index {wjZ}index # {gjZ}index {gjH}index
+## cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjZ}index {wjV}index {vjZ}index {vjV}index : all
+## cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  {wjV}pT {wjZ}pT index(VBoosted) index(wjV) index(wjZ) : all
+## print index(goodMUOs[1]) index(goodMUOs[0]) index(MUO[1]) index(MUO[0])
 
  #d2 resolved  FTFF  done
  algo FTFF-resolved
@@ -259,7 +268,7 @@ algo preselection
  cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
  cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted > cth AND size(loodJETs) > 0 : NONE #3rd option BRR [boosted version]
  
- #histo hmet, "MET ", 50, 0, 1000, MET
- #print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
- 
- 
+##histo hmet, "MET ", 50, 0, 1000, MET
+##print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
+#
+#

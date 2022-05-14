@@ -254,7 +254,7 @@ int BPdbxA:: readAnalysisParams() {
 		}
                 iter++;
        }
-#ifdef _CLV_
+#ifdef _CLV__
 // check if the user injects cuts or not.
      for (int jt=0; jt<TRGValues.size(); jt++){
       cout <<"Cut @:"<<jt<<" value:"<<TRGValues.at(jt)<<"\n";
@@ -428,12 +428,14 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 
   DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
   double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
+  DEBUG("--w:"<<evt_weight<<"\n");
   if (controlword == 0){
     if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
     ao->evt.user_evt_weight*=evt_weight;
   }else { // this is a dependent region, with pre-selection that failed at some point
 // no need to calculate something that we know will fail.
-   if (!lastCutPass) return 0;
+   if (!lastCutPass) {  //std::cout << "failed event:"<< anevt.event_no<<"\n";
+    return 0;}
   } 
 
 // --------- INITIAL  # events  ====> C0
@@ -452,8 +454,8 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
     while(iter != NodeCuts.end())
     {    Node * acut = iter->second;
+         vector<myParticle *> theseParticles;
          while (acut != NULL) {
-           DEBUG("Reset:"<<acut->getStr()<<"\n");
            acut->Reset();
            acut=acut->left;
          }
@@ -462,36 +464,114 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     particleBank.clear();
     DEBUG("Done resetting cuts.\n");
     iter = NodeCuts.begin();
-   } else {
+   } else { //  dependent region retrieve the optimization results
      for (int in:optimize){
-      DEBUG("Get Optimals from:"<< in<<"\t");
-      DEBUG("names:"<<  NodeCuts[ in ]->getStr()<<"\n");
-      for (int ip=0; ip<particleBank[in].size(); ip++){
-          DEBUG("Bank-> Coll:"<<particleBank[in].at(ip)->collection<<" type:"<< particleBank[in].at(ip)->type
-                             <<" index:"<<particleBank[in].at(ip)->index<<"\n");
-      }
-      ((SearchNode *)NodeCuts[in])->setParticles(&particleBank[in]);
-     }
-     for (int aa=0; aa<controlword; aa++) iter++;
-  }
+     
+         DEBUG("Rest & Get Optimals from cut id:"<< in<<"\t");
+         Node *acut = NodeCuts[in];
+            while (acut != NULL) {
+              acut->Reset();
+              acut=acut->left;
+            }
+    }
 
+//--------------- debug only, no action
+///      DEBUG("names:"<<  NodeCuts[in]->getStr()<<"\n");
+      DEBUG("The particle bank has: \n");
+      std::map< int, vector<myParticle *> >::iterator banker = particleBank.begin();
+      while(banker != particleBank.end()){
+       DEBUG("id:"<<banker->first<<"\t");
+       DEBUG("size:"<<banker->second.size()<<"\n");
+       Node *Snode=NodeCuts[banker->first];
+       vector<myParticle *> myParticles;
+       int rcount=0; 
+       do {     
+              Snode->getParticles(&myParticles);
+              if (myParticles.size() == 0 ) {
+                rcount++;
+                Snode=Snode->left;
+                DEBUG("Moved left\n");
+              } else {
+                for (int ip=0; ip<(banker->second).size(); ip++){
+                    DEBUG(" pid "<<ip<<"\t");
+                    DEBUG("Bank-> Coll:"<<(banker->second).at(ip)->collection<<"\t");
+                    DEBUG("\ttype:"<< (banker->second).at(ip)->type <<"\tindex:"<<(banker->second).at(ip)->index<<"\n");
+                }
+                ((SearchNode *)Snode)->setParticles(&(banker->second) );
+                 DEBUG("------ written\n");
+                 Snode->getParticles(&myParticles);
+                for (int ip=0; ip<(myParticles).size(); ip++){
+                    DEBUG(" pid "<<ip<<"\t");
+                    DEBUG("Read back:"<<(myParticles).at(ip)->collection<<"\t");
+                    DEBUG("\ttype:"<< (myParticles).at(ip)->type <<"\tindex:"<<(myParticles).at(ip)->index<<"\n");
+                }
+
+                DEBUG("cut "<<banker->first<<" received "<< (banker->second).size() << " particles from BANK\n");
+                for (int lcount=0; lcount<=rcount; lcount++) {Snode=Snode->right; DEBUG("Moved right\n"); }
+              }
+       
+          } while (myParticles.size() == 0 && Snode!=NULL);
+       
+        banker++;
+      }
+// std::map< int, vector<myParticle *> > BPdbxA::particleBank;
+//----------------end of debug only, no action
+/*
+      Node *Snode=NodeCuts[in];
+      vector<myParticle *> myParticles;
+      int rcount=0;
+      do {
+             Snode->getParticles(&myParticles);
+             if (myParticles.size() == 0 ) {
+               rcount++;
+               Snode=Snode->left;
+               DEBUG("Moved left\n");
+             } else {
+               ((SearchNode *)Snode)->setParticles(&particleBank[in]);
+               DEBUG("cut "<<in<<" received "<< particleBank[in].size() << " particles from BANK\n");
+               for (int lcount=0; lcount<=rcount; lcount++) {Snode=Snode->right; DEBUG("Moved right\n"); }
+             }
+
+         } while (myParticles.size() == 0 && Snode!=NULL);
+*/
+ //    } // end of optimized cut list
+
+
+     for (int aa=0; aa<controlword; aa++) iter++; // skip cuts
+  }
 //----------------------execute
     while(iter != NodeCuts.end())
     {   
         double d;
+        vector<int> originalParticleIndices;
         DEBUG("**********Selecting: "<<iter->first<<" | "<<iter->second->getStr()<<"\t");
         if ( iter->first < controlword ) {
 // controlword 5 means 1 1 1 1 0, first 4 cuts passed.
-         DEBUG ("preset");
+         DEBUG ("preset one");
          d=1;
 // if only 5cuts were there, and all 5 passed, we get a  10000+4
          } else if (iter->first == controlword ){
-         DEBUG ("preset");
-         d=lastCutPass;
+          DEBUG ("preset");
+          d=lastCutPass;
+         } else {
+          DEBUG("EXEcuting...\n");
+
+           if (optimize.find(iter->first) != optimize.end()){
+             Node *searcher=iter->second;
+             vector<myParticle *> theseParticles;
+             do {
+               searcher->getParticles(&theseParticles);
+               DEBUG("Before Eval"<<iter->first<<" "<<theseParticles.size()<<"\n");
+               for (int ip=0; ip<theseParticles.size(); ip++){
+                 DEBUG("initially:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<"\n");
+                 originalParticleIndices.push_back(theseParticles[ip]->index);  
+               } 
+               if (theseParticles.size() == 0) { searcher=searcher->left; }
+             } while (theseParticles.size() == 0 && searcher!=NULL);
+           }
+
+          d=iter->second->evaluate(ao); // execute the selection cut
          }
-         else d=iter->second->evaluate(ao); // execute the selection cut
-         
-//        std::cout<<"\t**********************Result : " << d << std::endl;
 
         DEBUG("\t***Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
@@ -511,14 +591,21 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         eff->Fill(iter->first+1, evt_weight); // filling starts from 1 which is already filled.
         if ((controlword == 0) && (optimize.size()>0)) {
            if (optimize.find(iter->first) != optimize.end()){
-             DEBUG("This optimized results are to be saved.\n");
+             DEBUG("These optimized results are to be saved.\n");
              vector<myParticle *> theseParticles;
-             iter->second->getParticles(&theseParticles);
-             DEBUG("#particles:"<< theseParticles.size()<<".\n");
+             vector<myParticle *> bParticles;
+             Node *searcher=iter->second; //////////////////////////////////////////////////////////////////////////////NGU
+             do { 
+              searcher->getParticles(&theseParticles);
+              DEBUG(" #particles:"<< theseParticles.size()<<" "<<searcher->getStr()<<".\n");
+             if (theseParticles.size()==0) searcher=searcher->left;
+             } while (theseParticles.size()==0 && searcher!=NULL);
+
              for (int ip=0; ip<theseParticles.size(); ip++){
-               DEBUG("Bank] Coll:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<"\n");
+               DEBUG("to Bank] Coll:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<" "<<originalParticleIndices[ip] <<"\n");
+               if (originalParticleIndices[ip]<0) bParticles.push_back(theseParticles[ip]);
              }
-               particleBank.insert(make_pair(iter->first, theseParticles) ); //cut ID, particles
+               particleBank.insert(make_pair(iter->first, bParticles) ); //cut ID, particles
            }
         }
 

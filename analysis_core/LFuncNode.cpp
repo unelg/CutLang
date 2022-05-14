@@ -51,18 +51,20 @@ void LFuncNode::getParticles(std::vector<myParticle *>* particles) {
 //        cout<<"MODIFY TO CHECK FOR EXISTING INDICES in ListFuncNode------\n";
         int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
+            DEBUG("LFN inpP i:"<<i<<" Collection:"<<inputParticles[i]->collection <<" idx:"<<inputParticles[i]->index <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
-                if (inputParticles[i]->index==particles->at(j)->index)
+                if (inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection)
                 { found=true;break; }
             }
             if(!found){ particles->push_back(inputParticles[i]); }
 
         }   
         for (int i=0; i<inputParticles2.size(); i++){
+            DEBUG("LFN inpP2 i:"<<i<<" Collection:"<<inputParticles2[i]->collection <<" idx:"<<inputParticles2[i]->index <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
-                if (inputParticles2[i]->index==particles->at(j)->index)
+                if (inputParticles2[i]->index==particles->at(j)->index && inputParticles2[i]->collection==particles->at(j)->collection)
                 {   found=true;break; }
             }
             if(!found){ particles->push_back(inputParticles2[i]); }
@@ -91,9 +93,10 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
 
         for (int jj=0; jj< inputParticles.size(); jj++){
-         DEBUG("P0_"<<jj<<" Type:"<<inputParticles[jj]->type<< " index:"<<inputParticles[jj]->index<<"\n");
+         DEBUG("P0_"<<jj<<" Type:"<<inputParticles[jj]->type<<" collection:"<< inputParticles[jj]->collection << " index:"<<inputParticles[jj]->index<<"\n");
         }
         DEBUG("P1_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
+
         if ( inputParticles2[0]->index == 6213) {
            string base_collection2=inputParticles2[0]->collection;
               int base_type2=inputParticles2[0]->type;

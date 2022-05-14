@@ -10,7 +10,8 @@ region   testZ
 region testdep
  testZ
  select      Size (JET) >= 1
+ select      Size (JET) == 2
 
 region mapkap
- testdep
- select      Size (MUO) == 2
+ testZ
+ select      Size (JET) == 2

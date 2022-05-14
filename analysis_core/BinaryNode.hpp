@@ -12,6 +12,16 @@
 #include <stdio.h>
 #include <math.h>
 #include "Node.h"
+
+#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
+
 //takes care of Arithmetical Operators, Logical Operators, and Comparison Operators
 class BinaryNode : public Node{
 private:
@@ -39,6 +49,20 @@ public:
         right->Reset();
     }
     virtual double evaluate(AnalysisObjects* ao) override{
+//        std::vector<myParticle *> myParticles;
+//        left->getParticles(&myParticles);
+//        for (int ip=0; ip<myParticles.size(); ip++){
+//                  DEBUG("LEFT pid "<<ip<<"\t");
+//                  DEBUG(" Coll:"<<myParticles.at(ip)->collection<<"\t");
+//                  DEBUG("\ttype:"<< myParticles.at(ip)->type <<"\tindex:"<<myParticles.at(ip)->index<<"\n");
+//              }
+//        right->getParticles(&myParticles);
+//        for (int ip=0; ip<myParticles.size(); ip++){
+//                  DEBUG("RIGHT pid "<<ip<<"\t");
+//                  DEBUG(" Coll:"<<myParticles.at(ip)->collection<<"\t");
+//                  DEBUG("\ttype:"<< myParticles.at(ip)->type <<"\tindex:"<<myParticles.at(ip)->index<<"\n");
+//              }
+
             return (*f)(left->evaluate(ao),right->evaluate(ao));
     }
     virtual ~BinaryNode() {

@@ -76,8 +76,8 @@ protected:
     std::string symbol;
     void getStr(TString *ss);
     void display(std::string indent);
-public:
 
+public:
     Node* right;
     Node* left;
     virtual void Reset()=0;

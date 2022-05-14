@@ -223,12 +223,13 @@ void FuncNode::Reset() {
 }
 
 void FuncNode::getParticles(std::vector<myParticle *>* particles) {
+
         int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
             DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
-                if (inputParticles[i]->index==particles->at(j)->index)
+                if (inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection)  // AHA BU !!!!!!!!!!!!!!
                 {
                     found=true;break;
                 }
@@ -239,6 +240,7 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
             }
 
             }    
+
 }
 
 void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
@@ -274,11 +276,10 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
                       << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
-
-   if (inputParticles[0]->index == 6213) {
-     string base_collection2=inputParticles[0]->collection;
-     int base_type2=inputParticles[0]->type;
-     int ipart2_max=-1;
+     if (inputParticles[0]->index == 6213) {
+      string base_collection2=inputParticles[0]->collection;
+      int base_type2=inputParticles[0]->type;
+      int ipart2_max=-1;
      try {
                 switch(abs(inputParticles[0]->type) ){ 
                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
