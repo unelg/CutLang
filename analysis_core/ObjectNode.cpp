@@ -1533,7 +1533,8 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
    auto cutIterator=criteria->begin();
    particles->clear();
-   (*cutIterator)->getParticlesAt(particles,0);
+//   (*cutIterator)->getParticlesAt(particles,0);
+   (*cutIterator)->getParticles(particles);
    requested_size=particles->size();
    DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
    DEBUG("iPsize:"<<particles->size() <<"\n");
@@ -1599,7 +1600,8 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 #ifdef _CLV_
     combinations_part.affiche();
 #endif
-    combi_out = combinations_part.output();// exemple: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    combi_out = combinations_part.output();// example: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
+    DEBUG("HERE\n");
     } else { // works for two particles for now
      for (int ipa1=0;  ipa1<available_parts[0]; ipa1++) {
       for (int ipa2=0;  ipa2<available_parts[1]; ipa2++) {
@@ -1618,11 +1620,12 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     for(size_t k=0; k<combi_out.size(); ++k) {
       temp_index = combi_out[k]; // ex temp_index = {0,1} 
       for(size_t i = 0; i<temp_index.size(); ++i){
-	DEBUG ("Now p index is:"<< temp_index[i]<< " type:"<< particles->at(i)->type<< " \n"); 
+	DEBUG ("Now p index is:"<< temp_index[i]<< " i:"<<i<<"\n");
+        DEBUG (" type:"<< particles->at(i)->type<< " \n"); 
         collectionName=particles->at(i)->collection;
 	switch(particles->at(i)->type){
 	  case muon_t: 
-            DEBUG ("getting a muon "<< collectionName <<" \n");
+            DEBUG ("getting a muon "<< collectionName <<" idx:"<< temp_index[i]<< " \n");
 	    alv+=(ao->muos)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->muos)[collectionName].at(temp_index[i]).q();
 	    apdgid+=(ao->muos)[collectionName].at(temp_index[i]).pdgID();
