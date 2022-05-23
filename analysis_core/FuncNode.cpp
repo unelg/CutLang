@@ -238,7 +238,6 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
             if(!found){
                 particles->push_back(inputParticles[i]);
             }
-
             }    
 
 }

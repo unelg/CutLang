@@ -27,7 +27,7 @@ region testA
 # count number size are all the same.
  	select Size(JET) > 2             # we need at least 2 jets to reconstruct Zhads
  	select Size(jets) > 2             # we need at least 2 jets to reconstruct Zhads
-#	select Count(hZs)  >= 2            # we need at least 2 Zhad candidates.
+	select Count(hZs)  >= 2            # we need at least 2 Zhad candidates.
 ## 4Jetli bir olayim var. 12, 21, 13, 31, 23, 32, 14, 41, 24, 42, 34, 43
 ##                        ^^------------------------------------- ^^  ^^
 #        select { zz }m ~= 91.2            # we kill here overlapping candidates. 

@@ -73,10 +73,10 @@ Comb::~Comb()
 
 void Comb::affiche()
 {
+    cout << output_.size()<< "  "<<nJetReco<<"\n";
     for(size_t i = 0; i<output_.size(); ++i)
     {
-        for(size_t j = 0; j<nJetReco; ++j)
-            cout << output_[i][j] << " " ;
+        for(size_t j = 0; j<nJetReco; ++j) cout << output_[i][j] << " " ;
         cout << endl;
     }
 }

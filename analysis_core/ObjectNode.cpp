@@ -1601,7 +1601,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     combinations_part.affiche();
 #endif
     combi_out = combinations_part.output();// example: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
-    DEBUG("HERE\n");
     } else { // works for two particles for now
      for (int ipa1=0;  ipa1<available_parts[0]; ipa1++) {
       for (int ipa2=0;  ipa2<available_parts[1]; ipa2++) {

@@ -2360,14 +2360,15 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         }
                                     }
        | OBJ ID ':' COMB '(' particules ')' hamhum criteria {
+                      DEBUG("COMBI PARTITION: "<<CombiParticle.size()<<"\n");
                       vector<myParticle*> newPList;   
-                      CombiParticle.swap(newPList);
-                      DEBUG("PARTITION: "<<CombiParticle.size()<<"\n");
+                      CombiParticle.swap(newPList); // RESET combiParticles
                       vector<Node*> newNList;         //empty
-                      TmpCriteria.swap(newNList);
+                      TmpCriteria.swap(newNList);  // reset tmpCriteria
                       vector<Node*>::iterator it=newNList.begin();
-                      Node* nnode= new FuncNode(Qof,newPList,"q"); // this is the combinatorics function
-                      it= newNList.insert(it, nnode );
+                      Node* nnode= new FuncNode(Qof,newPList,"qd"); // this is the combinatorics function
+                      DEBUG("#p:"<<newPList.size()<<"\n");
+                      it= newNList.insert(it, nnode);
 
                       Node* previous=new ObjectNode("Combo",NULL,createNewParti,newNList,"Partition" );
                       Node*      obj=new ObjectNode($2,previous,NULL,newNList,$2 );
