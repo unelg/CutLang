@@ -136,6 +136,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                }
 //----------------------------------------------
 	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
+                dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
                if(do_deps) {
                    if (k==mainAnalysis) {

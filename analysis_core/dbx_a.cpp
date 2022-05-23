@@ -27,12 +27,12 @@ dbxA:: dbxA(char *aname) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: addRunLumiInfo(int rn, int lbn) {  // to keep track of the lumi
+int dbxA:: addRunLumiInfo(int rn, int lbn, int evtno, bool rslt) {  // to keep track of the lumi
  if ((p_runno!=rn) || (p_lumino!= lbn)) {
   p_runno=rn;
   p_lumino=lbn;
-  rntuple->Fill(p_runno, p_lumino);
  }
+  rntuple->Fill(p_runno, p_lumino, evtno, rslt);
  return 0;
 }
 
@@ -75,7 +75,7 @@ int dbxA::setDir(char *dn) {
 int dbxA::defHistos( unsigned int effsize) {
   int retval=0;
   eff= new TH1D("cutflow","cutflow event counts ",effsize,0.5,effsize+0.5);
-  rntuple = new TNtuple("rntuple","run info","rn:lb");
+  rntuple = new TNtuple("rntuple","run info","rn:lb:evt:rslt");
   return retval;
 
 //  if (binsize>0) hbincounts= new TH1F("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
