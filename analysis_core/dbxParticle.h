@@ -21,7 +21,7 @@ struct analy_struct {   // Declare analysis types
 	int verbfreq;
 	bool dosystematics;
 	bool doQCD;
-	bool doHF;
+	bool doRS;
 	std::string hlt;
         std::string dependencies;
 };

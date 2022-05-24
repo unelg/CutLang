@@ -21,6 +21,7 @@ echo $WORK_PATH
 EVENTS=0
 ADLFILE=$RUNS_PATH/CLA.ini
 VERBOSE=5000
+EXARGS=" "
 STRT=0
 PRLL=1
 DEPS="w"
@@ -137,6 +138,12 @@ case $key in
     echo "******************" $DEPS "***"
     DEPS="XXX"
     DEPP=" -d "
+    shift # past argument
+    ;;
+    --rs)
+# Run Summary
+    echo "******************" Run Summary "***"
+    EXARG="${EXARG} -RS "
     shift # past argument
     ;;
     -v|--verbose)
@@ -314,8 +321,8 @@ elif [ ${PRLL} -ne 1 ]; then
 else
 
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST}  ${DEPS}
-  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST}  ${DEPS}
+  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST} ${EXARG} ${DEPS} 
+  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST} ${EXARG} ${DEPS} 
   if [ $? -eq 0 ]; then
     echo "CutLang finished successfully, now adding histograms"
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`

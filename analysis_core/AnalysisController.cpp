@@ -23,6 +23,9 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
 	cout << " #systematic included:"<<syst_names.size() <<endl;
 
         do_deps=false;
+        do_RS = iselect->doRS ;
+ //       cout << " H:"<< do_RS<<"\n";        
+
 	string prereqs=aselect.dependencies;
 	if (prereqs.length()>2 ){
           do_deps=true;
@@ -136,7 +139,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                }
 //----------------------------------------------
 	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
-                dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
+      if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
                if(do_deps) {
                    if (k==mainAnalysis) {

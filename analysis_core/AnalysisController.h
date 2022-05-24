@@ -39,6 +39,7 @@ class AnalysisController {
                              int  mainAnalysis;
          std::unordered_set<int>  depAnalyses;
                             bool  do_deps;
+                            bool  do_RS;
 };
 
 #endif

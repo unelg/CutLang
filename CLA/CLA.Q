@@ -42,7 +42,7 @@ int main(int argc, char*argv[])
  aselect.BPcount=1;
  aselect.dosystematics=false;
  aselect.doQCD=false;
- aselect.doHF=false;
+ aselect.doRS=false;
  aselect.maxEvents=0; // now the default is 0
  aselect.startpt=0;
  aselect.verbfreq=1000;
@@ -80,6 +80,9 @@ for (int i = 2; i < argc; i++) {
              aselect.BPcount = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-S") { // systematics
              aselect.dosystematics = atoi(argv[i + 1]);  i++;
+         } else if (std::string(argv[i]) == "-RS") { // Run Summary 
+             aselect.doRS = true;  
+//           cout <<"RS will be added\n";
          } else if (std::string(argv[i]) == "-Q") { // do QCD
              aselect.doQCD = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-P") { // use prereqs
