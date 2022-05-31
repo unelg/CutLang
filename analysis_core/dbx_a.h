@@ -44,7 +44,7 @@ public:
    virtual int printEfficiencies() { return 0;}
    virtual int setDir(char *); // to have multiple directories
    virtual int ChangeDir(char *); // to be able to cd later on
-   virtual int addRunLumiInfo(int rn, int lbn, int evntno, bool rslt); // to have list of run and lumi block numbers
+   virtual void addRunLumiInfo(int rn, int lbn, int evntno, bool rslt); // to have list of run and lumi block numbers
    static const string perName[NPERIOD];
 
    void   setDataCardPrefix(string dcp) { dataCardPrefix = dcp; }

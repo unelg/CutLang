@@ -79,7 +79,14 @@ void AnalysisController::Initialize(char *extname) {
 		dbxAnalyses[k]->readAnalysisParams();
                 std::cout << " => " << k << " "<< dbxAnalyses[k]->getName() <<endl;
 		dbxAnalyses[k]->bookAdditionalHistos();
+         if (do_RS ) {
+           todos.push_back( dbxAnalyses[k] );
+         }
         }
+
+
+
+
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,8 +145,16 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                    a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                }
 //----------------------------------------------
-	        evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
-      if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
+	       evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
+
+
+               for (dbxA *i:todos ) {
+                i->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1 );
+               }
+               
+
+
+//   if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
                if(do_deps) {
                    if (k==mainAnalysis) {

@@ -34,6 +34,7 @@ class AnalysisController {
      std::map <std::string, int>  syst_names;
                              int  extra_analysis_count;
               std::vector<dbxA*>  dbxAnalyses;
+              std::vector<dbxA*>  todos;
           std::map <string, int>  snull;
               std::map <std::string, AnalysisObjects> anull;
                              int  mainAnalysis;

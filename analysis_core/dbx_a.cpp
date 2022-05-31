@@ -27,13 +27,13 @@ dbxA:: dbxA(char *aname) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int dbxA:: addRunLumiInfo(int rn, int lbn, int evtno, bool rslt) {  // to keep track of the lumi
+void dbxA:: addRunLumiInfo(int rn, int lbn, int evtno, bool rslt) {  // to keep track of the lumi
  if ((p_runno!=rn) || (p_lumino!= lbn)) {
   p_runno=rn;
   p_lumino=lbn;
  }
   rntuple->Fill(p_runno, p_lumino, evtno, rslt);
- return 0;
+ return ;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
