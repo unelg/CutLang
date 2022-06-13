@@ -107,7 +107,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     }
     pffx+="/";
     qcdfilename+=datafilename;
-    qcdfilename+="_unc.root" ;
+    qcdfilename+="_unc.root" ; // QCD
     
     if (datafilename.find("data") != std::string::npos ) {
         datafilename+=".root"    ;
@@ -131,6 +131,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     for(int loop=2; loop<nsamples-2;loop++)
     {
         string sampleRunNo=sampleName(modeldir,loop,"F");
+        cout << "Loop:"<<loop << " str:"<<sampleRunNo <<"\n";
         std::string delimiter = "_";
         std::string token1 = sampleRunNo.substr(1, sampleRunNo.find(delimiter));
         std::string token2 = sampleRunNo.substr(2, sampleRunNo.find(delimiter));

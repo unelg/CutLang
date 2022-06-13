@@ -28,7 +28,7 @@ R__LOAD_LIBRARY(../analysis_core/TStringAddFloat_cpp)
 //111,113,115,121,123,125,131,133,135,145,245,215,235,225,345,445,545,645,716,736,726,916,936,926,1115,1215,955,1025,1026,1016
 //20,21,22,23//299,295,298,294,296,292,1115, reweighting histos
 //115,117,125,127,135,137,145,147,215,217,225,227,235,237,245,247,545,546
-void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,295,298,294,296,292", int disc=-1, int ratio=1, bool saveHist=true, bool printEffs=false, bool saveEffs=false)
+void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,295", int disc=0, int ratio=1, bool saveHist=true, bool printEffs=false, bool saveEffs=false)
 {
 //gROOT->Reset();
 //gStyle->SetPalette(1);
@@ -38,7 +38,7 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 		gROOT->SetStyle("ATLAS"); gROOT->ForceStyle();
 //	}
 #ifndef __HistoAutoRange__
-	gROOT->LoadMacro("../analysis_core/HistoAutoRange.C");
+	gROOT->LoadMacro("../AnalysisTemplate/HistoAutoRange.C");
 #endif
 	bool verbose=true;
 	const int measured_limit=(int) ReadCard("ANA_DEFS","OBSERVEDLIMIT",1,0); // 0: dont do, 1: do measured=observed limit calculation
@@ -56,9 +56,12 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 // if default, read default lumi from ANA_DEFS file
 	if (lumi==-1) {
 		lumi=ReadCard("ANA_DEFS","INTLUMI",0,0);
-        lumi_r9364=ReadCard("ANA_DEFS","INTLUMI_r9364",0,0); //under construction
-        lumi_r10201=ReadCard("ANA_DEFS","INTLUMI_r10201",0,0); //under construction
-        lumi_r10724=ReadCard("ANA_DEFS","INTLUMI_r10724",0,0); //under construction
+                lumi_r9364=0;
+                lumi_r10201=0;
+                lumi_r10724=0;
+//      lumi_r9364=ReadCard("ANA_DEFS","INTLUMI_r9364",0,0); //under construction
+//      lumi_r10201=ReadCard("ANA_DEFS","INTLUMI_r10201",0,0); //under construction
+//      lumi_r10724=ReadCard("ANA_DEFS","INTLUMI_r10724",0,0); //under construction
 	}
 
 	string modeldir= ReadCardString("ANA_DEFS","MODEL","FF_1",0);
@@ -81,7 +84,7 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 // ======================================
 // read the files and prepare the samples
 // ======================================================================
-    cout << "preparing samples begin" << endl;
+    cout << "preparation of samples begins:" << endl;
 	prepareSamples(qm, lumi, lumi_r9364, lumi_r10201, lumi_r10724, skf, samples, nsamples, sampletypes, ntypes);
 	cout <<"data, signal and background samples ready ntypes:"<< ntypes<<endl;
 
