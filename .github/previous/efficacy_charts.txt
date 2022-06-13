@@ -90,25 +90,25 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i E62dbg.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-E62dbg.adl.root
 hadd Target path: ./histoOut-E62dbg.adl.root:/
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 19 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i E62dbg.adl -e 1000 -v 500
@@ -133,25 +133,25 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i E62dbg.adl -e 1000 -v 5
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-E62dbg.adl.root
 hadd Target path: ./histoOut-E62dbg.adl.root:/
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 19 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i E62dbg.adl -e 1000 -v 500
@@ -176,25 +176,25 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i E62dbg.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-E62dbg.adl.root
 hadd Target path: ./histoOut-E62dbg.adl.root:/
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
-hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTF-boosted
 hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/preselection
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTTF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFTT-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/TFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFFF-boosted
+hadd Target path: ./histoOut-E62dbg.adl.root:/FFTT-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/FTFF-resolved
+hadd Target path: ./histoOut-E62dbg.adl.root:/TTFF-boosted
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 19 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing HTauTau.adl:
 With CMSOD
@@ -402,8 +402,8 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i ex2.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex2.adl -e 1000 -v 500
@@ -413,8 +413,8 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex2.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex2.adl -e 1000 -v 500
@@ -424,8 +424,8 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex2.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex2.adl.root
 hadd Target path: ./histoOut-ex2.adl.root:/
 hadd Target path: ./histoOut-ex2.adl.root:/testdep
-hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 hadd Target path: ./histoOut-ex2.adl.root:/testZ
+hadd Target path: ./histoOut-ex2.adl.root:/mapkap
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing ex3.adl:
 With CMSOD
@@ -531,8 +531,8 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i ex5.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
 hadd Target path: ./histoOut-ex5.adl.root:/testg
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex5.adl -e 1000 -v 500
@@ -542,8 +542,8 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i ex5.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
 hadd Target path: ./histoOut-ex5.adl.root:/testg
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex5.adl -e 1000 -v 500
@@ -553,8 +553,8 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i ex5.adl -e 1000 -v 500
 hadd Target file: ./histoOut-ex5.adl.root
 hadd Target path: ./histoOut-ex5.adl.root:/
 hadd Target path: ./histoOut-ex5.adl.root:/testg
-hadd Target path: ./histoOut-ex5.adl.root:/testA
 hadd Target path: ./histoOut-ex5.adl.root:/preselection
+hadd Target path: ./histoOut-ex5.adl.root:/testA
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing ex6.adl:
 With CMSOD
@@ -833,10 +833,10 @@ python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exD2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-exD2.adl.root
 hadd Target path: ./histoOut-exD2.adl.root:/
-hadd Target path: ./histoOut-exD2.adl.root:/testJs
 hadd Target path: ./histoOut-exD2.adl.root:/testMs
-hadd Target path: ./histoOut-exD2.adl.root:/testPs
 hadd Target path: ./histoOut-exD2.adl.root:/testEs
+hadd Target path: ./histoOut-exD2.adl.root:/testJs
+hadd Target path: ./histoOut-exD2.adl.root:/testPs
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 4 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exD2.adl -e 1000 -v 500
@@ -846,10 +846,10 @@ python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exD2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-exD2.adl.root
 hadd Target path: ./histoOut-exD2.adl.root:/
-hadd Target path: ./histoOut-exD2.adl.root:/testJs
 hadd Target path: ./histoOut-exD2.adl.root:/testMs
-hadd Target path: ./histoOut-exD2.adl.root:/testPs
 hadd Target path: ./histoOut-exD2.adl.root:/testEs
+hadd Target path: ./histoOut-exD2.adl.root:/testJs
+hadd Target path: ./histoOut-exD2.adl.root:/testPs
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 4 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exD2.adl -e 1000 -v 500
@@ -859,10 +859,10 @@ python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exD2.adl -e 1000 -v 500
 					 --> Overall efficiency	 =      0 % +-      0 %
 hadd Target file: ./histoOut-exD2.adl.root
 hadd Target path: ./histoOut-exD2.adl.root:/
-hadd Target path: ./histoOut-exD2.adl.root:/testJs
 hadd Target path: ./histoOut-exD2.adl.root:/testMs
-hadd Target path: ./histoOut-exD2.adl.root:/testPs
 hadd Target path: ./histoOut-exD2.adl.root:/testEs
+hadd Target path: ./histoOut-exD2.adl.root:/testJs
+hadd Target path: ./histoOut-exD2.adl.root:/testPs
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 4 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing exExtern.adl:
 With CMSOD
