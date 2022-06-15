@@ -173,6 +173,13 @@ if [ -n ${datafile+x} ] && [ ! -f "$datafile" ]; then
   tput sgr0
 fi
 
+if [ $ADLFILE == "$RUNS_PATH/CLA.ini" ]; then
+  Nalgo=1
+  INIFILE=$ADLFILE
+  echo "ATTENTION ! XXXXXXXXX running with default ADL file CLA.ini XXXXXXXX"
+fi
+
+
 
 # for ialgo in `seq $Nalgo`; do
 #  ../scripts/ini2txt.sh  BP_$ialgo
