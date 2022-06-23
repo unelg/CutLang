@@ -1060,6 +1060,12 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 //       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
+       | description '(' particules ')' {      cout << "\n*******new variable"<< $1 << " a new description!******\n"; 
+                                        vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        std::string varname=$1;
+                                        $$=new FuncNode(specialf,newList, varname);
+                                        }
         ;
 //-------------------------------------------------------------------------
  e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }

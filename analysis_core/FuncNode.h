@@ -19,6 +19,7 @@ class FuncNode : public Node{
 private:
         double (*f)(dbxParticle* apart);
         float v_eta;
+        bool special_function;
         TLorentzVector ametlv;
         Node* userObjectA;
         Node* userObjectB;
@@ -52,6 +53,7 @@ public:
 };
 
 
+double      specialf( dbxParticle* apart);
 double      Qof( dbxParticle* apart);
 double      Mof( dbxParticle* apart);
 double      Eof( dbxParticle* apart);

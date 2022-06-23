@@ -1,4 +1,5 @@
 #include "FuncNode.h"
+#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -6,6 +7,8 @@
 #else
 #define DEBUG(a)
 #endif
+
+extern TTreeReader *reader;
 
 void FuncNode::ResetParticles(){
       for(int i=0;i<originalParticles.size();i++){
@@ -17,7 +20,11 @@ void FuncNode::ResetParticles(){
         *(inputParticles[i])=originalParticles[i];
       }
 }
-    
+ 
+
+map <string, double > attribute_map;
+
+   
 void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
         DEBUG("\n");
@@ -205,8 +212,13 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
         userObjectD=objectNoded;
        DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
 
+        if (s.find('"') != std::string::npos) {
+         cout << "found ************ s:"<< s<<"\n"; //this is special function
+         special_function=true;
+        } else special_function=false;
+
       for (int i=0; i<input.size(); i++){
-//       cout <<" Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
+//     cout <<" Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";
        DEBUG(" orig i:"<<input[i]->index);
        apart.index=input[i]->index;
        apart.type=input[i]->type;
@@ -275,6 +287,8 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
                       << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
+
+
      if (inputParticles[0]->index == 6213) {
       string base_collection2=inputParticles[0]->collection;
       int base_type2=inputParticles[0]->type;
@@ -328,6 +342,13 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         DEBUG("FuncNode Sum:"<<total<<"\n");
         return total;
      } else {
+// -------------------consolidate with the upper part
+    if (special_function) {
+     cout << "******************here\n";
+
+    } 
+
+
 //------------simply execute
         partConstruct(ao, &inputParticles, &myPart);
      }
@@ -599,6 +620,9 @@ double isZcandid(dbxParticle* apart){
 
 double IsoVarof( dbxParticle* apart){
  return apart->Attribute(3);
+}
+double specialf( dbxParticle* apart){
+ return 3.1416;
 }
 
 //------------------------------

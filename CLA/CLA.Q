@@ -158,19 +158,23 @@ for (int i = 2; i < argc; i++) {
   TChain *cjets;
   TChain *cphotons;
 
+  std:string leafname;
+  TTreeReader *reader;
+
+
   if (use_lhco){
    cout << "WARNING: using LHCO~~~reduced functionality~~~\n";
-   chain = new TChain("LHCO");
+   leafname="LHCO";
   }else if (use_DELPHES2){
    cout << "~Now using DELPHES2 files.~\n";
-   chain = new TChain("Delphes"); //DELPHES2 anchor
+   leafname="Delphes"; //DELPHES2 anchor
    cout << "~chained~\n";
   }else if (use_lvl0){
    cout << "~Now using LVL0 files.~\n";
-   chain = new TChain("nt_tree");
+   leafname="nt_tree";
   }else if (use_fcc){
    cout << "~Now using FCC files.~~~~~~ beta!\n";
-   chain = new TChain("events");
+   leafname="events";
   }else if (use_wank){
    cout << "~Now using POET files.~~~~~~ not even alpha!\n";
      chain = new TChain("mymuons/Events");
@@ -184,46 +188,52 @@ for (int i = 2; i < argc; i++) {
      chain->AddFriend(cphotons);
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
-   chain = new TChain("Events");
+   leafname="Events";
   }else if (use_cmsod){
    cout << "~Now using CMS Open Data files.~~~~~~ beta!\n";
-   chain = new TChain("events");
+   leafname="events";
   }else if (use_cmsnano){
    cout << "~Now using CMS NanoAOD files.~~~~~~ beta!\n";
-   chain = new TChain("Events");
+   leafname="Events";
   }else if (use_atlasod){
    cout << "~Now using ATLAS Open Data files.~~~~~~ beta!\n";
-   chain = new TChain("mini");
+   leafname="mini";
   }else if (use_atlasodR2){
    cout << "~Now using ATLAS Open Data R2 files.~~~~~~ beta!\n";
-   chain = new TChain("mini");
+   leafname="mini";
   }else if (use_atlmin){
    cout << "~Now using ATLAS Mini NTUPLE files.~~~~~~ alpha!\n";
-   chain = new TChain("nominal");
+   leafname="nominal";
   }else if (use_atltrt){
    cout << "~Now using ATLAS TRT NTUPLE files.~~~~~~ alpha!\n";
-   chain = new TChain("track_tree");
+   leafname="track_tree";
   }else if (use_vllmin){
    cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
-   chain = new TChain("/physics");
+   leafname="/physics";
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
-   chain = new TChain("Delphes");
+   leafname = "Delphes";
   }else if (use_vllbg3){
    cout << "~Now using ATLAS v3 background files.~~~~~~ alpha!\n";
-   chain = new TChain("NOSYS/physics");
+   leafname = "NOSYS/physics";
   }else if (use_vllsignal){
    cout << "~Now using ATLAS VLL Signal files.~~~~~~ alpha!\n";
-   chain = new TChain("physics");
+   leafname = "physics";
   }else if (use_vllf){
-   cout << "~Now using ATLAS VLL Group files.~~~~~~ alpha!\n";
-   chain = new TChain("nominal");
+   cout << "~Now using ATLAS VLL Group f files.~~~~~~ alpha!\n";
+   leafname = "nominal";
   }else if (use_vllg){
-   cout << "~Now using ATLAS VLL Group files.~~~~~~ alpha!\n";
-   chain = new TChain("nominal");
+   cout << "~Now using ATLAS VLL Group g files.~~~~~~ alpha!\n";
+   leafname = "nominal";
   }else{
-   chain = new TChain("physics");
+   leafname = "physics";
   }
+
+   chain = new TChain(leafname.c_str() );
+   TFile * _afile = TFile::Open(fileList[0].c_str());
+   reader =  new TTreeReader(leafname.c_str(), _afile);
+
+
   int aret;
   for (unsigned int iFile=0; iFile<fileList.size(); ++iFile){
     std::cout << "open " << fileList[iFile].c_str() << std::endl;
