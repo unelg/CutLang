@@ -12,6 +12,71 @@
 #include "myParticle.h"
 #include "Node.h"
 #include "ObjectNode.hpp"
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
+
+class myTTreader {
+
+public:
+        virtual double readvalue(int nix){ return 0; }
+};
+
+class myTTreaderF : public myTTreader{
+
+private:
+     double avalue;
+
+public:
+       TTreeReaderArray<Float_t>  *my_reader;
+       myTTreaderF(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderArray<Float_t>(*ttreader, s.c_str() );
+       }
+      double readvalue(int nix) {
+        avalue=my_reader->At(nix) ; //->At(nix)
+        return avalue;
+      }
+};
+
+class myTTreaderD : public myTTreader{
+private:
+     double avalue;
+public:
+      TTreeReaderArray<Double_t> *my_reader;
+      myTTreaderD( TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderArray<Double_t>(*ttreader, s.c_str() );
+      }
+      double readvalue(int nix) {
+        avalue=my_reader->At(nix) ; //->At(nix)
+        return avalue;
+      }
+};
+
+class myTTreaderB : public myTTreader{
+private:
+     double avalue;
+public:
+      TTreeReaderArray<Bool_t> *my_reader;
+      myTTreaderB( TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderArray<Bool_t>(*ttreader, s.c_str() );
+      }
+      double readvalue(int nix) {
+        avalue=my_reader->At(nix) ; //->At(nix)
+        return avalue;
+      }
+};
+class myTTreaderI : public myTTreader{
+private:
+     double avalue;
+public:
+      TTreeReaderArray<Int_t> *my_reader;
+      myTTreaderI( TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderArray<Int_t>(*ttreader, s.c_str() );
+      }
+      double readvalue(int nix) {
+        avalue=my_reader->At(nix) ; //->At(nix)
+        return avalue;
+      }
+};
 
 using namespace std;
 //takes care of functions with arguments
@@ -25,6 +90,12 @@ private:
         Node* userObjectB;
         Node* userObjectC;
         Node* userObjectD;
+
+        myTTreader *ttrdr;
+        myTTreaderF *ttrdrF;
+        myTTreaderD *ttrdrD;
+        myTTreaderB *ttrdrB;
+        myTTreaderI *ttrdrI;
 
         friend class HistoNode1D;
         friend class HistoNode2D;

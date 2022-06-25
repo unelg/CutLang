@@ -1,5 +1,4 @@
 #include "FuncNode.h"
-#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -8,7 +7,7 @@
 #define DEBUG(a)
 #endif
 
-extern TTreeReader *reader;
+extern TTreeReader *ttreader;
 
 void FuncNode::ResetParticles(){
       for(int i=0;i<originalParticles.size();i++){
@@ -21,9 +20,7 @@ void FuncNode::ResetParticles(){
       }
 }
  
-
-map <string, double > attribute_map;
-
+//map <string, double > attribute_map;
    
 void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
@@ -31,7 +28,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
          DEBUG("CONSTRUCT type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
          if (((*i)->collection).size() < 1 && abs((*i)->type)!=7 ) cerr << "Object name SHOULD NOT be empty. type:"<<(*i)->type
-                                                                   << " size:"<< ((*i)->collection).size()<< " idx:"<<(*i)->index <<"\n"; 
+                            << " size:"<< ((*i)->collection).size()<< " idx:"<<(*i)->index <<"\n"; 
         }
         int ka;
         DEBUG("inputPart q:"<<inputPart->q()<<" pdgID:"<<inputPart->pdgID()<<"\n");
@@ -52,10 +49,10 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                          ka=ao->track[ac].at(ai).nAttribute();
                                                          DEBUG("Gen Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
-                   //                                         cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
+                   //                                       cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
                                                             inputPart->addAttribute(ao->track[ac].at(ai).Attribute(anat) );
                                                          }
-//                                                         cout <<"----------------done----------------------\n";
+//                                                          cout <<"----------------done----------------------\n";
 		                                         break;
 		                           case truth_t: DEBUG("truth:"<< (*i)->index <<" ");
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
@@ -68,13 +65,18 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                    //                                         cout << "GenAttr:"<<anat<< " :"<<ao->truth[ac].at(ai).Attribute(anat)<<"\n";
                                                             inputPart->addAttribute(ao->truth[ac].at(ai).Attribute(anat) );
                                                          }
-//                                                         cout <<"----------------done----------------------\n";
-		                                         break;
+                                                        if (special_function) {
+                                             			int nix=ao->truth[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
+		                                        break;
                                            case muon_t: //ao->muons_map-->find...
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
-//							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
-							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
+  							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
+//							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
 							inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->muos[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight (ao->muos[ac].at(ai).isTight() ); 
                                                         inputPart->setIsMedium(ao->muos[ac].at(ai).isMedium() ); 
@@ -82,6 +84,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
                                                         inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
+                                                        if (special_function) {
+                                             			int nix=ao->muos[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
                                                         break;
                                        case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
@@ -95,6 +103,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         DEBUG("e- Nattr:"<<ka<<"\n");
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
                                                         inputPart->addAttribute(ao->eles[ac].at(ai).isZCand() );
+                                                        if (special_function) {
+                                             			int nix=ao->eles[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
                                             case tau_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
@@ -106,6 +120,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsLoose (ao->taus[ac].at(ai).isLoose() ); 
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
+                                                        if (special_function) {
+                                             			int nix=ao->taus[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         DEBUG("TAU:"<<ai<<"  ");
                                                         break;
                                       case muonlikeV_t: v_eta=ao->muos[ac].at(ai).lv().Eta();
@@ -140,9 +160,14 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
 							inputPart->setParticleIndx(ao->jets[ac].at(ai).ParticleIndx()  );
-
                                                         ka=ao->jets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
+                                                        if (special_function) {
+                                             			int nix=ao->jets[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         break;
                                            case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
 							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
@@ -154,6 +179,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
                                                         break;                                          case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
                                                         inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
+                                                        if (special_function) {
+                                             			int nix=ao->ljets[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         DEBUG("b-jet:"<<ai<<"  ");
                                                         break;
                                        case lightjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 0, ac)[ ai ].lv()); 
@@ -213,8 +244,30 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
        DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
 
         if (s.find('"') != std::string::npos) {
-         cout << "found ************ s:"<< s<<"\n"; //this is special function
+         s.erase(std::remove( s.begin(), s.end(), '\"' ),s.end());
+         cout << "** sf:"<< s<<"\t"; //this is special function
          special_function=true;
+         TTree *at = ttreader->GetTree();
+         TBranch *ab= at->GetBranch(s.c_str() );
+         std::string bc_name=ab->GetClassName();
+         cout << " type:"<<bc_name<<"\n";
+         if (  bc_name.find("vector<float>") != std::string::npos ) {
+             ttrdrF = new myTTreaderF( ttreader, s);
+             ttrdr=ttrdrF;
+         } else if (bc_name.find("vector<double>") != std::string::npos ) {
+             ttrdrD = new myTTreaderD( ttreader, s);
+             ttrdr=ttrdrD;
+         } else if (bc_name.find("vector<int>") != std::string::npos ) {
+             ttrdrI= new myTTreaderI ( ttreader, s);
+             ttrdr=ttrdrI;
+         } else if (bc_name.find("vector<bool>") != std::string::npos ) {
+             ttrdrB= new myTTreaderB ( ttreader, s);
+             ttrdr=ttrdrB;
+         } else {
+            cerr << s << " of type "<< bc_name << " can not be handled by this version of CL !!!!!!!\n";
+            special_function=false;
+         }
+
         } else special_function=false;
 
       for (int i=0; i<input.size(); i++){
@@ -342,15 +395,10 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
         DEBUG("FuncNode Sum:"<<total<<"\n");
         return total;
      } else {
-// -------------------consolidate with the upper part
-    if (special_function) {
-     cout << "******************here\n";
-
-    } 
-
-
+//
+      
 //------------simply execute
-        partConstruct(ao, &inputParticles, &myPart);
+      partConstruct(ao, &inputParticles, &myPart);
      }
      DEBUG("Particle constructed \t");
      return (*f)(&myPart );
@@ -621,8 +669,10 @@ double isZcandid(dbxParticle* apart){
 double IsoVarof( dbxParticle* apart){
  return apart->Attribute(3);
 }
+
 double specialf( dbxParticle* apart){
- return 3.1416;
+// cout << "we got:"<< apart->Attribute(apart->nAttribute() -1)<<"\n";
+ return apart->Attribute(apart->nAttribute() -1);
 }
 
 //------------------------------

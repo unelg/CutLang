@@ -1,0 +1,21 @@
+#CLA ADL example for using variables with names
+
+object goodMUO using MUO
+	select ALL
+	select pT(MUO) > 11
+	select "mu_phi"( MUO ) >= 00 
+
+
+region   testNameM
+  select      ALL                    # to count all events
+  select      Size (MUO) >  1        # events with 2 or more muons
+  select      Size (goodMUO) >  1    # events with 2 or more goodmuons
+# print phi( MUO[0] ) phi( MUO[1] )
+  select      "mu_phi"( MUO[1] ) >= 00 
+  select      "mu_phi"( goodMUO[0] ) >= 00 
+
+region testNameJ
+   select Size(JET) > 1
+   select "jet_MV2cl100"(JET [0] ) > 0
+
+

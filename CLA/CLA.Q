@@ -32,6 +32,7 @@
 using namespace std;
 
 int root_analysisd3pd(string sample, analy_struct aselect);
+TTreeReader *ttreader;
 
 int main(int argc, char*argv[])
 {
@@ -159,7 +160,6 @@ for (int i = 2; i < argc; i++) {
   TChain *cphotons;
 
   std:string leafname;
-  TTreeReader *reader;
 
 
   if (use_lhco){
@@ -231,7 +231,7 @@ for (int i = 2; i < argc; i++) {
 
    chain = new TChain(leafname.c_str() );
    TFile * _afile = TFile::Open(fileList[0].c_str());
-   reader =  new TTreeReader(leafname.c_str(), _afile);
+   ttreader =  new TTreeReader(leafname.c_str(), _afile);
 
 
   int aret;

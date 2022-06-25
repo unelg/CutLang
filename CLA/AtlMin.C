@@ -13,6 +13,7 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -24,11 +25,13 @@
 //extern void _fsig_handler (int) ;
 //extern bool fctrlc;
 
+extern TTreeReader *ttreader;
 
 void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
 
    fChain->GetEntry(j);
+   ttreader->Next();
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;
