@@ -28,6 +28,7 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern TTreeReader *ttreader;
 
 
 TClonesArray* delphes::UseBranch(const char *branchName, TTree *fChain){
