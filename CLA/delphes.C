@@ -16,7 +16,7 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 #include <unistd.h>
-
+#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -131,6 +131,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 //        cout <<"evt:"<<je<<"\n";
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
+  ttreader->Next();
 
   TBranchMap::iterator itBranchMap;
   TBranch *branch;

@@ -13,12 +13,14 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
 
 //#define __DEBUG__
 
 // header and lines to handle ctrl+C gracefully
 bool fctrlc(false);
 void _fsig_handler (int) { fctrlc=true; printf("Sig. TERMINATE received!\n"); }
+extern TTreeReader *ttreader;
 
 void fcc::Loop(analy_struct aselect, char *extname)
 {
@@ -58,6 +60,7 @@ void fcc::Loop(analy_struct aselect, char *extname)
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
+       ttreader->Next();
 #ifdef __DEBUG__
 std::cout << "Read Event"<<std::endl;
 #endif

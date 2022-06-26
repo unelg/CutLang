@@ -13,10 +13,14 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
+
+extern TTreeReader *ttreader;
 
 void VLLMinSignal::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
     fChain->GetEntry(j);
+    ttreader->Next();
     vector<dbxMuon>     muons;
     vector<dbxElectron> electrons;
     vector<dbxPhoton>   photons;

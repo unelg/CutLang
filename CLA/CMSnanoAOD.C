@@ -14,6 +14,7 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
 
 // header and lines to handle ctrl+C gracefully
 extern void _fsig_handler (int) ;

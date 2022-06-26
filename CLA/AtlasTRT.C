@@ -14,10 +14,12 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
 
 // header and lines to handle ctrl+C gracefully
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern TTreeReader *ttreader;
 
 void AtlasTRT::Loop(analy_struct aselect, char *extname)
 {
@@ -54,6 +56,7 @@ void AtlasTRT::Loop(analy_struct aselect, char *extname)
        if (0 > LoadTree (j)) break;
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
+       ttreader->Next();
 
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;

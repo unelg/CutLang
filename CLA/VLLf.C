@@ -14,10 +14,13 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 #include <iostream>
+#include "TTreeReader.h"
 using namespace std;
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern TTreeReader *ttreader;
+
 
 //#define _CLV_
 #ifdef _CLV_
@@ -64,6 +67,7 @@ void VLLf::Loop(  analy_struct aselect, char *extname )
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
+       ttreader->Next();
 
 DEBUG("Read Event\n");
 
