@@ -147,14 +147,15 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 //----------------------------------------------
 	       evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
 
-
+/*
                for (dbxA *i:todos ) {
                 i->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1 );
+                cout << "filling RS:"<<i->getName()<<" has:"<< (evret<10000? 0 : 1) << " for event:"<<a0.evt.event_no<<"\n" ;
                }
-               
+*/               
 
-
-//   if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
+//     cout << "filling RS:"<<dbxAnalyses[k]->getName()<<" has:"<< (evret<10000? 0 : 1) << " for event:"<<a0.evt.event_no<<"\n" ;
+     if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
                if(do_deps) {
                    if (k==mainAnalysis) {

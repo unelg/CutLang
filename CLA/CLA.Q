@@ -83,7 +83,7 @@ for (int i = 2; i < argc; i++) {
              aselect.dosystematics = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-RS") { // Run Summary 
              aselect.doRS = true;  
-//           cout <<"RS will be added\n";
+//             cout <<"RS will be added\n";
          } else if (std::string(argv[i]) == "-Q") { // do QCD
              aselect.doQCD = atoi(argv[i + 1]);  i++;
          } else if (std::string(argv[i]) == "-P") { // use prereqs
