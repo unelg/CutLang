@@ -1057,7 +1057,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        }
                          }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
-//       | HLT_ISO_MU {$$=new SFuncNode(hlt_iso_mu,1, "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
        | description '(' particules ')' {      cout << "\n*******new variable"<< $1 << " a new description!******\n"; 
@@ -3036,6 +3035,23 @@ command : CMD condition { //find a way to print commands
                        chist_stat_p.clear(); chist_stat_n.clear(); chist_syst_p.clear(); chist_syst_n.clear();
                      }
 
+        | HISTO ID ',' description ',' bins ',' ID {
+                                        map<string, Node *>::iterator it ;
+                                        it = NodeVars->find($8);
+                        
+                                        if(it == NodeVars->end()) {
+                                                DEBUG($8<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
+                                                YYERROR;//stops parsing if variable not found
+                                        }
+                                        else {
+                                                Node* child=it->second;
+                                                vector<float> newbins;
+                                                tmpBoxlist.swap(newbins);
+                                                Node* h=new HistoNode1D($2,$4,newbins,child);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+                                        }
+				}
         | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($12);
@@ -3051,11 +3067,18 @@ command : CMD condition { //find a way to print commands
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 				}
+        | HISTO ID ',' description ','  bins ',' function {
+                                                vector<float> newbins;
+                                                tmpBoxlist.swap(newbins);
+                                                Node* h=new HistoNode1D($2,$4,newbins,$8);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
         | HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
                                                 DEBUG("INT NB NB 1D func histo defined.\n");
                                                 Node* h=new HistoNode1D($2,$4,$6,$8,$10,$12);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 2D HISTOS
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
 					map<string, Node *>::iterator it2 ;
@@ -3123,6 +3146,20 @@ command : CMD condition { //find a way to print commands
                                                 Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
 				}
+	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' bins ',' function ',' function {
+                                                vector<float> newbins;
+                                                tmpBoxlist.swap(newbins);
+                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10, newbins, $14, $16);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
+	| HISTO ID ',' description ',' bins ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
+                                                vector<float> newbins;
+                                                tmpBoxlist.swap(newbins);
+                                                Node* h=new HistoNode2D($2,$4,newbins, $8,$10, $12, $14, $16);
+                                                NodeCuts->insert(make_pair(++cutcount,h));
+				}
+
+
 	| SORT e ASCEND { Node* sort = new SortNode($2,"ascend"); NodeCuts->insert(make_pair(++cutcount,sort));}
 	| SORT e DESCEND {Node* sort = new SortNode($2,"descend");NodeCuts->insert(make_pair(++cutcount,sort));}
 	;

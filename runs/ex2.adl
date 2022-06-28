@@ -14,4 +14,4 @@ region testdep
 
 region mapkap
  testZ
- select      Size (JET) == 2
+ select      Size (JET) == 3
