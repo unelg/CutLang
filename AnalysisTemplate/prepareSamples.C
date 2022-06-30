@@ -76,7 +76,10 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     
     // the quark mass selection, with the fit ranges
     TString sigtype=secm;
+            sigtype+=qm;
+/*
     switch (qm) {
+        case 200 : sigtype+=qm; break;
         case 600 : sigtype+=qm; break;
         case 700 :sigtype+=qm; break;
         case 800 :sigtype+=qm; break;
@@ -89,7 +92,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
         case 1800 : sigtype+=qm; break;
         default  : cout << "qm must be a positive integer ="<< qm<<" \n"; exit (-1);
     }
-    
+*/    
     string file="sample-" + modeldir;
     file += ".txt";
     
@@ -146,11 +149,14 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
             samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
             cout <<"Sample:"<< loop << " SRno:"<< sampleRunNo << " "<< lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo) ) ) <<" ok\n";
         } else {
-            samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
+//            samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
+            samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(xs(sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
 #ifdef __VERBOSE
             cout << "loop number is: " << loop << endl;
             cout << "sample runno is: " << sampleRunNo << endl;
             cout << "lumi is: " << lumi << endl;
+            cout << "xs is: " << xs( sampleRunNo) << endl;
+            cout << "sumofweighted events is: " << sumOfWeights(pffx, sampleRunNo) << endl;
             cout << "xs is: " << nxs(pffx, sampleRunNo) << endl;
             cout << "sumofweighted events is: " << sumOfWeights(pffx, sampleRunNo) << endl;
             cout <<  lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo) ) ) << endl;

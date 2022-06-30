@@ -76,7 +76,7 @@ double ReadCard(const char *filename, const char *varname,
   }
 
   if ( verbose>=0 && !foundInFile )
-    cout << "Warning! ReadCard using the default value for " << varname << " as:"<< value<< endl;
+    cout << "Warning! "<<filename<<" ReadCard using the default value for " << varname << " as:"<< value<< endl;
   cardfile.close();
   return value;
 }

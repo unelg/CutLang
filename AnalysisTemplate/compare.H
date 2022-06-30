@@ -115,7 +115,7 @@ public:
             issmoothable = false;
         }
 
-        TH1F *eff = (TH1F*)(m_dir->Get("eff"));
+        TH1F *eff = (TH1F*)(m_dir->Get("cutflow"));
         if ( eff != 0 ) {
             m_real=true;
             // if (  eff->GetBinContent(0) != 0 )  // generator-level cut eff.
@@ -144,11 +144,11 @@ public:
         if ( xsec == -1  ) return 1;
         else if ( xsec <0  ) return fabs(xsec);
 
-        if ( m_dir->Get("eff") == 0 ) {
+        if ( m_dir->Get("cutflow") == 0 ) {
             cout << "***** Could not get the eff histogram for " << GetName()
             << " - returning 0 as scale factor! *****" << endl;
             return 0; }
-        //return xsec / ((TH1F*)(m_dir->Get("eff")))->GetBinContent(2);
+        //return xsec / ((TH1F*)(m_dir->Get(cutflow")))->GetBinContent(2);
         return xsec;
     }
 };
@@ -182,7 +182,7 @@ bool CheckTypeConsistency(SampleType *type, Sample **samples) {
     int firstSample = 0;
     for (; firstSample<ncomp; ++firstSample)
         if ( samples[components[firstSample]] != 0  &&
-            samples[components[firstSample]]->Get("eff") != 0 ) break;
+            samples[components[firstSample]]->Get("cutflow") != 0 ) break;
 
     if ( firstSample == ncomp ) {
         cout << "SampleType " << type->GetName() << " contains all empty samples\n";
@@ -191,13 +191,13 @@ bool CheckTypeConsistency(SampleType *type, Sample **samples) {
     // only one sample is present: it is self-consistent. :-)
     if ( firstSample == ncomp-1 ) return true;
 
-    TH1F *heff = (TH1F*)(samples[components[firstSample]]->Get("eff"));
+    TH1F *heff = (TH1F*)(samples[components[firstSample]]->Get("cutflow"));
     int ncuts = heff->GetNbinsX();
 
     // Check that all samples have the same number of cuts applied
     for (int is=firstSample+1; is<ncomp; ++is) {
         if ( samples[components[is]] == 0 ) continue;
-        TH1F *heff2 = (TH1F*)(samples[components[is]]->Get("eff"));
+        TH1F *heff2 = (TH1F*)(samples[components[is]]->Get("cutflow"));
         if ( heff2 == 0 ) continue;
         if ( ncuts != heff2->GetNbinsX() )  return false;
         /*
@@ -225,7 +225,7 @@ void PrintTypeEfficiency(SampleType *type, Sample **samples, bool printEvts=fals
     << "\" composed of " << ncomp << " sample(s).\n";
 
     for (int is=0; is<ncomp; ++is)
-        if ( samples[components[is]]->Get("eff") == 0 ) {
+        if ( samples[components[is]]->Get("cutflow") == 0 ) {
             cout << "Missing sample " << samples[components[0]]->GetName() << endl;
             return; }
 
@@ -235,7 +235,7 @@ void PrintTypeEfficiency(SampleType *type, Sample **samples, bool printEvts=fals
         return; }
 
     double before, after, totxsec, befer2, after2;  // befer2 = before error squared, after2 = after error squared
-    int ncuts = ((TH1F*)(samples[components[0]]->Get("eff")))->GetNbinsX();
+    int ncuts = ((TH1F*)(samples[components[0]]->Get("cutflow")))->GetNbinsX();
     int defprecision = cout.precision(); // record current precision
     char csvtype[64];
     sprintf (csvtype,"eff_%s.csv", type->GetName().Data());
@@ -247,7 +247,7 @@ void PrintTypeEfficiency(SampleType *type, Sample **samples, bool printEvts=fals
         before = after = totxsec = befer2 = after2 = 0;
 
         for (int is=0; is<components.size(); ++is) {
-        effh = (TH1F*)(samples[components[is]]->Get("eff"));
+        effh = (TH1F*)(samples[components[is]]->Get("cutflow"));
         totxsec += samples[components[is]]->xsec;
         before +=  effh->GetBinContent(ic-1)  * samples[components[is]]->xsec ;
         befer2 +=  pow(effh->GetBinContent(ic-1)==0?effh->GetBinError(ic-2):effh->GetBinError(ic-1)  * samples[components[is]]->xsec, 2) ;
@@ -351,7 +351,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
                  SampleType **type, const int ntypes,
                  TH1 *outhistos[__MAXNSMPLS__][__MAXNVARS__],
                  const PlotHistos ph, const int nvars,
-                 TString plotfilename = "compare.eps",
+                 TString plotfilename = "compare.pdf",
                  TString defdrawopt = "histe",
                  int histU=-1, int histD=-1, int idx=99
                  )
@@ -423,7 +423,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
             if ( samples[j] == 0 ) continue;
             TObject *histobj = samples[j]->Get(ph.vars[i]);
             if ( histobj == 0 ) continue;
-            TH1F *eff = (TH1F*)(samples[j]->Get("eff"));
+            TH1F *eff = (TH1F*)(samples[j]->Get("cutflow"));
             double scalefactor = samples[j]->GetScaleFactor();
 
             if ( histobj->InheritsFrom("TH3F") ) continue;
@@ -623,6 +623,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
         //  { HistoAutoLogScale(); HistoAutoRange(); }
 
         if ((histU>-1) && (histD>-1)){ // from Erdo
+ //            cout << "Up:"<<histU<<"  Down:"<<histD<<"\n";
             // I plotted all my curves with different colors and such now I can do the ratio
             compCanv->cd(nplotted);
             TPad *pad2= new TPad("pad2","pad2",0,0.0  , 1,0.25);
@@ -634,7 +635,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
             // U / D---> Data / MC
             TH1F *histRatio=((TH1F*)(typesum[histU][i])->Clone());
             TH1F *reversedHistRatio=((TH1F*)(typesum[histD][i])->Clone());
-            histRatio->Divide((TH1F*)(typesum[histD][i]));
+            histRatio->Divide((TH1F*)(typesum[histD][i])); //--------------------up divided by down
             reversedHistRatio->Divide((TH1F*)(typesum[histU][i]));
             histRatio->GetYaxis()->SetRangeUser(0.5,1.5);
             if (ph.minmax[2*i] != ph.minmax[2*i+1]){
@@ -669,8 +670,9 @@ TCanvas* compare(Sample **samples, const int nsamples,
                 if (histRatio->GetBinContent(nbin) != 0 && reversedHistRatio->GetBinContent(nbin) != 0){
                     difference = (histRatio->GetBinContent(nbin)-1)*(histRatio->GetBinContent(nbin)-1)/histRatio->GetBinError(nbin)/histRatio->GetBinError(nbin);
                     sumOfDifference = sumOfDifference + difference;
-                    /*cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;*/
-
+/*
+                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
+*/
                }
             }
             
