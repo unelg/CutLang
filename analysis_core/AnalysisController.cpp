@@ -55,10 +55,28 @@ void AnalysisController::Initialize(char *extname) {
  *  The BP analysis
  */
 	for (int i=0; i<aselect.BPcount; i++) {
-		char tmp[32];
-		sprintf (tmp,"BP_%i",i+1);
+                analyindex++;
+		char tmp[128], tmp2[128];
+		sprintf (tmp,"BP_%i",analyindex);
 		dbxAnalyses.push_back( new BPdbxA(tmp) ); // BP analysis with name
-	}
+
+          if (aselect.dosystematics) { // another loop here for systematics
+            for (map<string,int>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
+                                std::string s = it->first;
+                                std::string delimiter = "_";
+                                unsigned int nsyst = (*it).second ;
+                                for ( unsigned int isys=0; isys < nsyst; isys++ ) {
+                                        k++;
+                                        sprintf (tmp2,"BP_%i_%s_%s",analyindex,(*it).first.c_str(), isys==0 ? "Up" : "Down" );    // same id and _jesp is essential
+                                        cout <<k<<"th syst (" << (*it).first.c_str() << ") analysis initialized  with card: "<<tmp<<" , ";
+                                        dbxAnalyses.push_back( new BPdbxA(tmp2) ); // FF analysis with new name
+                                        dbxAnalyses.back()->setDataCardPrefix(tmp);  // but with old datacard
+                                        cout << endl;
+                                } // end of up/down etc syst
+            }
+          }// end of systematics if
+	} // end of BP count
+
 	DEBUG("End of BP initialization\n");
 
 /*
@@ -83,9 +101,6 @@ void AnalysisController::Initialize(char *extname) {
            todos.push_back( dbxAnalyses[k] );
          }
         }
-
-
-
 
 }
 
@@ -112,14 +127,12 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
          ana.erase(0, pos + delimiter.length());
          token_cnt++;
          if (token=="Dump") { aDumper=true; break;}
-/*
-         if (token_cnt>1) { // systematics or QCD or WHF
-           if ((ana.find("WHF") == std::string::npos) && (ana.find("qcd") == std::string::npos ) ){
+         if (token_cnt>1) {
+          if ((ana.find("WHF") == std::string::npos) && (ana.find("qcd") == std::string::npos ) ){
             sysnam=ana;
             break;
            }
          }
-*/
         }
        
         if (sysnam.size()< 1){ // not a systematics run condition
@@ -157,7 +170,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 //     cout << "filling RS:"<<dbxAnalyses[k]->getName()<<" has:"<< (evret<10000? 0 : 1) << " for event:"<<a0.evt.event_no<<"\n" ;
      if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
-               if(do_deps) {
+             if(do_deps) {
                    if (k==mainAnalysis) {
                     mainAresults=evret; // save the results from main;
                     DEBUG("Main at "<<k<<" has evret:"<<evret<<"\n");
@@ -180,8 +193,8 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
              if (il==analysis_objs_map.end()) {cout<<"Systematics name mismatch. "<<sysnam<<" not found, MAJOR error\n"; exit (888);};
                 DEBUG( k<<" "<<dbxAnalyses[k]->getName()<<" also known as "<< il->first<<" to be executed with systematics"<<endl );
 		AnalysisObjects these_objs=il->second;
-		evret=dbxAnalyses[k]->makeAnalysis(&these_objs); // generic
-                DEBUG("retval=:"<<evret<<endl);
+		evret=dbxAnalyses[k]->makeAnalysis(&these_objs, 0, 0); // no cache
+                DEBUG("retval:"<<evret<<endl);
         }
    }
 

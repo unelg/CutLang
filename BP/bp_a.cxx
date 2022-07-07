@@ -25,7 +25,7 @@
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
                                        vector<int>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
-                                       map<string, vector<cntHisto> >*cntHistos);
+                                       map<string, vector<cntHisto> >*cntHistos, map<int, vector<string> > *systmap);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -51,9 +51,11 @@ int BPdbxA::plotVariables(int sel) {
 //--------------------------
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
+   systematicsRun=false;
 
 //  dbxA::ChangeDir(cname);
-  TString CardName=cname;
+// getDataCardPrefix
+  TString CardName=dbxA::getDataCardPrefix();
           CardName+="-card.ini";
 
   ifstream cardfile(CardName);
@@ -106,7 +108,7 @@ int BPdbxA:: readAnalysisParams() {
        if ((firstword == "algo") || (firstword=="region"))  {
            cout <<"\t REGION/ALGO:"<< resultstr[1] <<"\n";
            algorithmnow=true;
-           sprintf (algoname,"%s",resultstr[1].c_str());
+           algoname=resultstr[1];
            continue;
        }
 //---------defs
@@ -182,18 +184,6 @@ int BPdbxA:: readAnalysisParams() {
 
     } // end of first look over ADL file
 
-//-----create the relevant output directory
-    if (!algorithmnow) {
-       int r=dbxA::setDir(cname);  // make the relevant root directory
-       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-       dbxA::ChangeDir(cname);
-    } else {
-       int r=dbxA::setDir(algoname);  // make the relevant root directory
-       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-       dbxA::ChangeDir(algoname);
-    }
-
-
 
 // ---------------------------read CutLang style cuts using lex/yacc
        NameInitializations={" "," "};
@@ -203,7 +193,7 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        bincount=0;
        cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap);
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
@@ -217,9 +207,33 @@ int BPdbxA:: readAnalysisParams() {
        skip_effs    = (bool) TRGValues[2];
        skip_histos  = (bool) TRGValues[3];
        systematics_bci = TRGValues[4];
-       cout << "Systematics:"<<systematics_bci<<"\n";
 // ------------------------------------4 is reserved for systematics use.
 
+//-----create the relevant output directory
+    if (!algorithmnow) {
+       int r=dbxA::setDir(cname);  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir(cname);
+    } else {
+       TString icn=dbxA::getDataCardPrefix();
+          int clength = icn.Length();
+          std::string csysnam=cname;
+          TString asysnam=csysnam.substr(clength,  -1);
+       if (asysnam.Length() > 0 ) {
+           algoname+=asysnam;
+           systematicsRun=true;
+           cout << asysnam.Length()<< " sysname is: "<< asysnam << " a:"<<algoname<< ". This is a run with systematics\n";
+       }
+       int r=dbxA::setDir((char *)algoname.Data());  // make the relevant root directory
+       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
+       dbxA::ChangeDir((char *)algoname.Data());
+       for (map<int,vector<string > >::iterator isyst = systmap.begin(); isyst != systmap.end(); isyst++){
+         cout << isyst->first << "\t" << isyst->second[0]<< "\t"<<isyst->second[1]<<"\n";
+       }
+    }
+
+
+//------------------------------------------------------------ACTIONS------------------------
 //---------save in the dir.
     unsigned int effsize=NodeCuts.size()+1; // all is always there 
  
@@ -323,6 +337,9 @@ int BPdbxA:: readAnalysisParams() {
          DEBUG("+++++ Binning: "<<iter->first<<" |"<< iter->second->getStr()<<"\n");
          iter++;
        }
+
+
+
 //---------------------- count histos
 for (map<string,vector<cntHisto> >::iterator ichi = cntHistos.begin(); ichi != cntHistos.end(); ichi++){
  // cout << ichi->first << " \n ------- \n ";
@@ -397,7 +414,6 @@ int BPdbxA:: initGRL() {
 
 int BPdbxA::bookAdditionalHistos() {
         int retval=0;
-//        dbxA::ChangeDir(cname);
 
 #ifdef __SEZEN__
 	// Sezen's handmade histograms

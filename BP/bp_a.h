@@ -45,7 +45,8 @@ class BPdbxA : public dbxA {
    private:
       bool grl_cut;
       char cname[CHMAX];
-      char algoname[CHMAX];
+      TString algoname;
+      std::string mysystematics;
       std::vector<TString> effCL;
       std::vector< string> binCL;
 
@@ -53,6 +54,7 @@ class BPdbxA : public dbxA {
       unsigned int systematics_bci;
       bool skip_histos;
       bool skip_effs;
+      bool systematicsRun;
       vector<int> save;
       unordered_set<int> optimize;
       static map<int, vector<myParticle *> > particleBank;
@@ -64,6 +66,7 @@ class BPdbxA : public dbxA {
         map<string,vector<myParticle*> > ListParts;//for particle definition
         map<string,pair<vector<float>,bool> > ListTables;//for table definition
         map<string, vector<cntHisto> > cntHistos;
+        map<int, vector<string> > systmap;
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
         map<string,Node*> ObjectCuts;//cuts for user defined objects

@@ -14,6 +14,9 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 #include "TTreeReader.h"
+#include <iostream>
+#include <sstream>      // std::istringstream
+#include <string>
 
 //#define _CLV_
 #ifdef _CLV_
@@ -307,10 +310,64 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
           cout <<"Error opening the data file"<<endl; return;
    }
    int verboseFreq(aselect.verbfreq);
-
+   bool  doSystematics(aselect.dosystematics);
    map < string, int > syst_names;
-        syst_names["01_jes"]       = 2;
 
+   if (doSystematics) {
+       string tempLine;
+       cout << "Reading available systematics from ini file...\n";
+       TString CardName="BP_1-card.ini";
+       ifstream cardfile(CardName);
+       if ( ! cardfile.good()) {
+         cerr << "The cardfile " << CardName << " file has problems... " << endl;
+       }
+       while ( ! cardfile.eof() ) {
+          getline( cardfile, tempLine );
+          if ( tempLine[0] == '#' ) continue; // skip comment lines starting with #
+          if (tempLine.find_first_of("#") != std::string::npos ){ // skip anything after #
+            tempLine.erase(tempLine.find_first_of("#"));
+          }
+          if (tempLine.size() < 3) continue; // remove the junk
+
+          std::istringstream iss(tempLine);
+          std::vector<std::string> resultstr((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
+          if (resultstr.size() < 1) continue;
+          string firstword=resultstr[0];
+          for(auto& c : firstword) { c = tolower(c); } // convert to lowercase
+
+//---------do we have a systematic or NOT ?
+         if (firstword == "systematic" ) {
+              string ison=resultstr[1];
+              for(auto& c : ison) { c = tolower(c); } // convert to lowercase
+              if (ison == "on") {
+                    cout <<"Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
+              }
+             continue;
+          }
+          
+       }// end of while
+   }// end of do systematics
+
+
+
+//--------------
+        syst_names["jvt"]       = 2;
+        syst_names["pileup"]    = 2;
+   map < string,   AnalysisObjects > analysis_objs_map;
+/*
+  map < string, int > syst_names;
+   syst_names["01_pileup"]                  = 2;
+   syst_names["02_elTRG"]                   = 2;
+   syst_names["15_muTTVASys"]               = 2;
+*/
+
+/*
+    AnalysisController ( analy_struct *,  std::map <std::string, int> syst_names ) ;
+    AnalysisController ( analy_struct *as ) { AnalysisController(as, snull); }
+    void Initialize ( char*);
+    void RunTasks (AnalysisObjects,  std::map <std::string, AnalysisObjects>);
+    void RunTasks (AnalysisObjects aos) {RunTasks (aos, anull); }
+*/
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
@@ -335,7 +392,12 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
-       aCtrl.RunTasks(a0);
+       analysis_objs_map["jvt_Up"]  = a0;
+       analysis_objs_map["jvt_Down"]  = a0;
+       analysis_objs_map["pileup_Up"]  = a0;
+       analysis_objs_map["pileup_Down"]  = a0;
+
+       aCtrl.RunTasks(a0, analysis_objs_map);
 
   }// event loop ends.
   aCtrl.Finalize();

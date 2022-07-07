@@ -43,6 +43,11 @@ vardef {varname}" "?":"" "?.*"\n"
 "process" return PROCESS;
 
 "systematic" return SYSTEMATIC;
+"weight_mc"    return SYST_W_MC;
+"weight_pileup"    return SYST_W_PILEUP;
+"weight_jvt"    return SYST_W_JVT;
+"weight_leptonSF" return SYST_W_LEP;
+"weight_BTagSF"   return SYST_W_BTAG;
 "eventno" return EVENTNO;
 
 [pP][rR][iI][nN][tT] return PRINT;

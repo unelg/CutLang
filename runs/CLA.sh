@@ -21,6 +21,7 @@ echo $WORK_PATH
 EVENTS=0
 ADLFILE=$RUNS_PATH/CLA.ini
 VERBOSE=5000
+SYST=0
 EXARGS=" "
 STRT=0
 PRLL=1
@@ -140,9 +141,14 @@ case $key in
     DEPP=" -d "
     shift # past argument
     ;;
+    --syst)
+    echo "******************" Systematics Run "******************"
+    SYST=1
+    shift # past argument
+    ;;
     --rs)
 # Run Summary
-    echo "******************" Run Summary "***"
+    echo "~~~~~~~~~~~~~" Run Summary "~~~~~~~~~~~~"
     EXARG="${EXARG} -RS "
     shift # past argument
     ;;
@@ -272,7 +278,7 @@ elif [ ${PRLL} -ne 1 ]; then
     intrvl=$(( EVENTS/PRLL)) # workload division
   fi
   echo "**********************************************************************************************"
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -PLL ${PRLL} ${HLTLIST} ${DEPS}
+  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} -PLL ${PRLL} ${HLTLIST} ${DEPS}
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
       cp -a $WORK_PATH/runs/. $WORK_PATH/temp_runs_${SHELL_ID}_${i}
       rm -f $WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-BP_*.root
@@ -328,8 +334,8 @@ elif [ ${PRLL} -ne 1 ]; then
 else
 
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST} ${EXARG} ${DEPS} 
-  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT ${HLTLIST} ${EXARG} ${DEPS} 
+  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
+  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
   if [ $? -eq 0 ]; then
     echo "CutLang finished successfully, now adding histograms"
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
