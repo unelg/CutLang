@@ -68,6 +68,12 @@ jobs:
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
       working-directory: ./binder
       run: |
+        ls -la
+        ls -la ..
+        ls -la ../scripts
+        ls -la ../CLA
+        ls -la ../scripts/conda
+        ls -la ../scripts/jupyter
         rm -rf ../scripts/conda/meta.yaml
         rm -rf ../CLA/CLA.Q
         rm -rf ../scripts/jupyter/kernel/cutlangkernel.json
