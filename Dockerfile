@@ -6,7 +6,7 @@ COPY . .
 RUN apt update
 
 RUN apt install python3-pip -y
-RUN pip install jupyterlab metakernel
+RUN pip install jupyterlab notebook metakernel
 
 RUN apt install -y bison flex make wget git
 
