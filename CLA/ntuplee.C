@@ -72,7 +72,7 @@ void ntuplee::Loop(analy_struct aselect)
 
        int verboseFreq(aselect.verbfreq);
        evt_data anevt;
-       map<string, int> syst_names;
+       map<string, string> syst_names;
 
        AnalysisController aCtrl(&aselect, syst_names);
        aCtrl.Initialize();

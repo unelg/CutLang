@@ -10,12 +10,12 @@
 #define DEBUG(a)
 #endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string, int> systematics) 
+AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string, string> systematics) 
 {
 	extra_analysis_count=1;
 	// ----- how many do we run in parallel ----
 	if (iselect->dosystematics) {
-		for( map<string,int>::iterator it=systematics.begin(); it!=systematics.end(); ++it) {
+		for( map<string,string>::iterator it=systematics.begin(); it!=systematics.end(); ++it) {
 			syst_names.insert(*it);
 		}
 	}
@@ -56,23 +56,21 @@ void AnalysisController::Initialize(char *extname) {
  */
 	for (int i=0; i<aselect.BPcount; i++) {
                 analyindex++;
-		char tmp[128], tmp2[128];
+		char tmp[128];
 		sprintf (tmp,"BP_%i",analyindex);
 		dbxAnalyses.push_back( new BPdbxA(tmp) ); // BP analysis with name
 
           if (aselect.dosystematics) { // another loop here for systematics
-            for (map<string,int>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
-                                std::string s = it->first;
-                                std::string delimiter = "_";
-                                unsigned int nsyst = (*it).second ;
-                                for ( unsigned int isys=0; isys < nsyst; isys++ ) {
-                                        k++;
-                                        sprintf (tmp2,"BP_%i_%s_%s",analyindex,(*it).first.c_str(), isys==0 ? "Up" : "Down" );    // same id and _jesp is essential
-                                        cout <<k<<"th syst (" << (*it).first.c_str() << ") analysis initialized  with card: "<<tmp<<" , ";
-                                        dbxAnalyses.push_back( new BPdbxA(tmp2) ); // FF analysis with new name
-                                        dbxAnalyses.back()->setDataCardPrefix(tmp);  // but with old datacard
-                                        cout << endl;
-                                } // end of up/down etc syst
+            for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
+                                std::string s = tmp;
+                                            s+= "_";
+                                            s+= it->first;
+                                std::string targetVar = it->second ;
+                                k++;
+                                cout <<k<<"th syst (" << s << ") analysis initialized  with card: "<<tmp<<" , ";
+                                dbxAnalyses.push_back( new BPdbxA( (char*)s.c_str() ) ); // analysis with new name
+                                dbxAnalyses.back()->setDataCardPrefix(tmp);  // but with old datacard
+                                cout << endl;
             }
           }// end of systematics if
 	} // end of BP count

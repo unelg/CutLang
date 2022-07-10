@@ -45,8 +45,7 @@ void VLLf::Loop(  analy_struct aselect, char *extname )
    float blow_th=1.7400;
    int prev_RunNumber=-1;
 
-   map < string, int > syst_names;
-        syst_names["01_jes"]       = 2;
+   map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;

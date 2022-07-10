@@ -330,8 +330,7 @@ void VLLBG3::Loop(analy_struct aselect, char *extname)
     }
   int verboseFreq(aselect.verbfreq);
     
-  map < string, int > syst_names;
-  syst_names["01_jes"]       = 2;
+  map < string, string > syst_names;
     
   AnalysisController aCtrl(&aselect, syst_names);
   aCtrl.Initialize(extname);

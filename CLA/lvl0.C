@@ -35,30 +35,7 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    int extra_analysis_count=1;
    int prev_RunNumber=-1;
 
-   map < string, int > syst_names;
-   syst_names["01_pileup"]                  = 2;
-   syst_names["02_elTRG"]                   = 2;
-   syst_names["03_elRECO"]                  = 2;
-   syst_names["04_elID"]                    = 2;
-   syst_names["05_elISOL"]                  = 2;
-   syst_names["06_muTRGStat"]               = 2;
-   syst_names["07_muTRGSys"]                = 2;
-   syst_names["08_muIDStat"]                = 2;
-   syst_names["09_muIDSys"]                 = 2;
-   syst_names["10_muIDStatLowPT"]           = 2;
-   syst_names["11_muIDSysLowPT"]            = 2;
-   syst_names["12_muISOLStat"]              = 2;
-   syst_names["13_muISOLSys"]               = 2;
-   syst_names["14_muTTVAStat"]              = 2;
-   syst_names["15_muTTVASys"]               = 2;
-   syst_names["16_btagSF77extraP"]          = 2;
-   syst_names["17_btagSF77extraPfromC"]     = 2;
-   syst_names["18_btagSF77eigenvarsB"]      = 2;
-   syst_names["19_btagSF77eigenvarsC"]      = 2;
-   syst_names["20_btagSF77eigenvarsLight"]  = 2;
-   syst_names["21_jvt"]                     = 2;
-
-
+   map < string, string > syst_names;
 
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);

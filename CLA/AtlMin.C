@@ -13,7 +13,6 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
-#include "TTreeReader.h"
 #include <iostream>
 #include <sstream>      // std::istringstream
 #include <string>
@@ -35,6 +34,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
    fChain->GetEntry(j);
    ttreader->Next();
+
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;
@@ -311,7 +311,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    }
    int verboseFreq(aselect.verbfreq);
    bool  doSystematics(aselect.dosystematics);
-   map < string, int > syst_names;
+   map < string, string > syst_names;
 
    if (doSystematics) {
        string tempLine;
@@ -340,7 +340,13 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
               string ison=resultstr[1];
               for(auto& c : ison) { c = tolower(c); } // convert to lowercase
               if (ison == "on") {
-                    cout <<"Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
+                    resultstr[2].erase(remove( resultstr[2].begin(), resultstr[2].end(), '\"' ),resultstr[2].end());
+                    resultstr[3].erase(remove( resultstr[3].begin(), resultstr[3].end(), '\"' ),resultstr[3].end());
+                    cout <<"--> Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
+                  syst_names[ resultstr[2] ]       = resultstr[4] ; // up
+                  syst_names[ resultstr[3] ]       = resultstr[4] ; // down 
+                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[2].c_str() ) );
+                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[3].c_str() ) );
               }
              continue;
           }
@@ -350,24 +356,9 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 
 
 
-//--------------
-        syst_names["jvt"]       = 2;
-        syst_names["pileup"]    = 2;
+//--------------start stop etc
    map < string,   AnalysisObjects > analysis_objs_map;
-/*
-  map < string, int > syst_names;
-   syst_names["01_pileup"]                  = 2;
-   syst_names["02_elTRG"]                   = 2;
-   syst_names["15_muTTVASys"]               = 2;
-*/
 
-/*
-    AnalysisController ( analy_struct *,  std::map <std::string, int> syst_names ) ;
-    AnalysisController ( analy_struct *as ) { AnalysisController(as, snull); }
-    void Initialize ( char*);
-    void RunTasks (AnalysisObjects,  std::map <std::string, AnalysisObjects>);
-    void RunTasks (AnalysisObjects aos) {RunTasks (aos, anull); }
-*/
    AnalysisController aCtrl(&aselect, syst_names);
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
@@ -383,8 +374,9 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
+// ******************************************************************
    Long64_t nbytes = 0, nb = 0;
-   for (Long64_t j=startevent; j<lastevent; ++j) {
+   for (Long64_t j=startevent; j<lastevent; ++j) { // event loop here
 
      //  if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if (0 > LoadTree (j)) break;
@@ -392,11 +384,33 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
-       analysis_objs_map["jvt_Up"]  = a0;
-       analysis_objs_map["jvt_Down"]  = a0;
-       analysis_objs_map["pileup_Up"]  = a0;
-       analysis_objs_map["pileup_Down"]  = a0;
+       evt_data oldevt=a0.evt;
 
+       int kj=0;
+       for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
+         double wvalue = freaders[kj][0];
+         if (kj>0) a0.evt=oldevt;
+
+         if (it->second ==  "weight_jvt" ) {
+                a0.evt.weight_jvt=wvalue;
+//  		cout <<  "jvt\n";
+         } else if (it->second == "weight_pileup" ) {
+                a0.evt.weight_pileup=wvalue;
+//  		cout <<  "pileup\n";
+         } else if (it->second == "weight_leptonSF" ) {
+//  		cout <<  "SF\n";
+                a0.evt.weight_leptonSF=wvalue;
+         } else if (it->second == "weight_BTagSF" ) {
+//           	cout <<  "w BTAG:" << wvalue <<"\n";
+                a0.evt.weight_bTagSF_77=wvalue;
+         } else {
+		cout << "problem with: "<<it->second<< ", no such systematics.\n";
+         }
+
+         analysis_objs_map[it->first] = a0;
+         kj++;
+       }
+       a0.evt=oldevt;
        aCtrl.RunTasks(a0, analysis_objs_map);
 
   }// event loop ends.

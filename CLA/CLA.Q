@@ -159,7 +159,7 @@ for (int i = 2; i < argc; i++) {
   TChain *cjets;
   TChain *cphotons;
 
-  std:string leafname;
+  std::string leafname;
 
 
   if (use_lhco){

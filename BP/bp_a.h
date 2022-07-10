@@ -46,6 +46,7 @@ class BPdbxA : public dbxA {
       bool grl_cut;
       char cname[CHMAX];
       TString algoname;
+      TString asysnam;
       std::string mysystematics;
       std::vector<TString> effCL;
       std::vector< string> binCL;

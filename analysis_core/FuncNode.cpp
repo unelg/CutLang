@@ -267,6 +267,7 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
             cerr << s << " of type "<< bc_name << " can not be handled by this version of CL !!!!!!!\n";
             special_function=false;
          }
+//double avalue=ttrdr->readvalue(index);
 
         } else special_function=false;
 

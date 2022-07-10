@@ -8,12 +8,13 @@
 #include <iterator>
 #include <vector>
 #include "SearchNode.h"
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
 
 #include "bp_a.h"
 #include "analysis_core.h"
 #include "dbx_a.h"
 
-//#define __SEZEN__
 //#define _CLV_
 
 #ifdef _CLV_
@@ -32,6 +33,7 @@ extern int cutcount;
 extern int bincount;
 extern int yylineno;
 extern char * yytext;
+extern TTreeReader *ttreader;
 
 
 bool is_number(const std::string& s)
@@ -218,18 +220,19 @@ int BPdbxA:: readAnalysisParams() {
        TString icn=dbxA::getDataCardPrefix();
           int clength = icn.Length();
           std::string csysnam=cname;
-          TString asysnam=csysnam.substr(clength,  -1);
+          asysnam=csysnam.substr(clength,  -1);
        if (asysnam.Length() > 0 ) {
            algoname+=asysnam;
+           asysnam=csysnam.substr(clength+1,  -1);
            systematicsRun=true;
-           cout << asysnam.Length()<< " sysname is: "<< asysnam << " a:"<<algoname<< ". This is a run with systematics\n";
+           cout <<"This is a run with sysname: "<< asysnam << " algo:"<<algoname<< ".\n";
        }
        int r=dbxA::setDir((char *)algoname.Data());  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir((char *)algoname.Data());
-       for (map<int,vector<string > >::iterator isyst = systmap.begin(); isyst != systmap.end(); isyst++){
-         cout << isyst->first << "\t" << isyst->second[0]<< "\t"<<isyst->second[1]<<"\n";
-       }
+//     for (map<int,vector<string > >::iterator isyst = systmap.begin(); isyst != systmap.end(); isyst++){
+//       cout << isyst->first << "\t" << isyst->second[0]<< "\t"<<isyst->second[1]<<"\n";
+//     }
     }
 
 
@@ -412,24 +415,9 @@ int BPdbxA:: initGRL() {
   return retval;
 }
 
+//------------------------
 int BPdbxA::bookAdditionalHistos() {
-        int retval=0;
-
-#ifdef __SEZEN__
-	// Sezen's handmade histograms
-	mWHh1 = new TH1D("mWHh1", "Hadronic W best combi (GeV)", 50, 50, 150);
-	mWHh2 = new TH1D("mHWh2", "Hadronic W best combi (GeV)", 50, 50, 150);
-	mTopHh1 = new TH1D("mTopHh1", "Hadronic top combi (GeV)", 70, 0, 700);
-	mTopHh2 = new TH1D("mTopHh2", "Hadronic top combi (GeV)", 70, 0, 700);
-	WHbRh1 = new TH1D("WHbRh1", "Angular distance between W1 and bjet", 70, 0, 7);
-	WHbRh2 = new TH1D("WHbRh2", "Angular distance between W2 and bjet", 70, 0, 7);
-	xWHbRh1 = new TH1D("xWHbRh1", "Hadronic top combi (GeV) after angular cut", 70, 0, 700);
-	xWHbRh2 = new TH1D("xWHbRh2", "Hadronic top combi (GeV) after angular cut", 70, 0, 700);
-#endif
-
-// ---------------------------DBX style defs from the main file
-
-  return retval;
+  return 0;
 }
 //------------------------
 int BPdbxA::Finalize(){       
@@ -446,9 +434,26 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
   double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
   DEBUG("--w:"<<evt_weight<<"\n");
   if (controlword == 0){
+
+//   if (systematicsRun) {
+//     cout << "running with systematic:"<< asysnam <<"\n";
+     //TTree *at = ttreader->GetTree();
+     //TBranch *ab= at->GetBranch(asysnam.Data() );
+///  TFile *_file0 = TFile::Open("/Users/ngu/project/CutLang/runs/brr.root");
+///  TTreeReader areader("nominal", _file0);
+///  TTreeReaderValue<Float_t> wrw(areader, "weight_jvt_DOWN");
+///  areader.Next();
+/*
+     TTreeReaderArray<Float_t> f_reader(*ttreader, asysnam.Data() );
+     if (f_reader.GetSize()>0)  {
+      cout << "weight:"<< f_reader[0] <<"\n";
+     }
+*/
+//   }
+
     if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
     ao->evt.user_evt_weight*=evt_weight;
-  }else { // this is a dependent region, with pre-selection that failed at some point
+  } else { // this is a dependent region, with pre-selection that failed at some point
 // no need to calculate something that we know will fail.
    if (!lastCutPass) {  //std::cout << "failed event:"<< anevt.event_no<<"\n";
     return 0;}
@@ -550,7 +555,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 
          } while (myParticles.size() == 0 && Snode!=NULL);
 */
- //    } // end of optimized cut list
 
 
      for (int aa=0; aa<controlword; aa++) iter++; // skip cuts

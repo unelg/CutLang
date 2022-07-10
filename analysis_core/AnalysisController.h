@@ -18,7 +18,7 @@
 
 class AnalysisController {
  public : 
-    AnalysisController ( analy_struct *,  std::map <std::string, int> syst_names ) ;
+    AnalysisController ( analy_struct *,  std::map <std::string, string> syst_names ) ;
     AnalysisController ( analy_struct *as ) { AnalysisController(as, snull); }
    ~AnalysisController ( ) {};
     void Initialize ( char*);
@@ -31,11 +31,11 @@ class AnalysisController {
  private:
                     analy_struct  aselect;
                   vector<double>  m_quad_unc;
-     std::map <std::string, int>  syst_names;
+   std::map <std::string,string>  syst_names;
                              int  extra_analysis_count;
               std::vector<dbxA*>  dbxAnalyses;
               std::vector<dbxA*>  todos;
-          std::map <string, int>  snull;
+       std::map <string, string>  snull;
               std::map <std::string, AnalysisObjects> anull;
                              int  mainAnalysis;
          std::unordered_set<int>  depAnalyses;

@@ -2868,7 +2868,7 @@ command : CMD condition { //find a way to print commands
                        Node* a=new SFuncNode(hlt_trg,1, s); 
                        NodeCuts->insert(make_pair(++cutcount,a));
                      }
-        | CMD LEPSF {  cout << "are you a joke?\n";
+        | CMD LEPSF {  
                       Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
                     }

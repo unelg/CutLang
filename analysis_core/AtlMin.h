@@ -24,6 +24,8 @@
 #include <iomanip>
 #include <fstream>
 #include "vector"
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
 
 using namespace std;
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -33,6 +35,9 @@ class AtlMin {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+
+//ttree reader
+   vector< TTreeReaderArray<Float_t> > freaders;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
