@@ -306,12 +306,16 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 // Signal HANDLER
 //  signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
 
+
+
+
    if (fChain == 0) {
           cout <<"Error opening the data file"<<endl; return;
    }
    int verboseFreq(aselect.verbfreq);
    bool  doSystematics(aselect.dosystematics);
-   map < string, string > syst_names;
+   map < string, syst_struct > systematics; // contains all
+   map < string, string > syst_names; // contains all
 
    if (doSystematics) {
        string tempLine;
@@ -321,13 +325,14 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        if ( ! cardfile.good()) {
          cerr << "The cardfile " << CardName << " file has problems... " << endl;
        }
+       int systindex=0;
        while ( ! cardfile.eof() ) {
           getline( cardfile, tempLine );
           if ( tempLine[0] == '#' ) continue; // skip comment lines starting with #
           if (tempLine.find_first_of("#") != std::string::npos ){ // skip anything after #
             tempLine.erase(tempLine.find_first_of("#"));
           }
-          if (tempLine.size() < 3) continue; // remove the junk
+          if (tempLine.size() < 3) continue; // skip the junk
 
           std::istringstream iss(tempLine);
           std::vector<std::string> resultstr((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
@@ -340,13 +345,44 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
               string ison=resultstr[1];
               for(auto& c : ison) { c = tolower(c); } // convert to lowercase
               if (ison == "on") {
-                    resultstr[2].erase(remove( resultstr[2].begin(), resultstr[2].end(), '\"' ),resultstr[2].end());
-                    resultstr[3].erase(remove( resultstr[3].begin(), resultstr[3].end(), '\"' ),resultstr[3].end());
-                    cout <<"--> Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
-                  syst_names[ resultstr[2] ]       = resultstr[4] ; // up
-                  syst_names[ resultstr[3] ]       = resultstr[4] ; // down 
-                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[2].c_str() ) );
-                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[3].c_str() ) );
+                 resultstr[2].erase(remove( resultstr[2].begin(), resultstr[2].end(), '\"' ),resultstr[2].end());
+                 resultstr[3].erase(remove( resultstr[3].begin(), resultstr[3].end(), '\"' ),resultstr[3].end());
+                 cout <<"--> Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
+		 for (int ri=2; ri<4; ri++){
+                  size_t findex = resultstr[ri].find_first_of("[");
+                  syst_struct asyst;
+                  if (findex == std::string::npos ){ // without any []
+                      asyst.index=systindex;
+                      asyst.vartype=resultstr[4];
+                      asyst.varname=resultstr[ri];
+                      asyst.varid=0;
+                      asyst.systname=resultstr[ri];// I am double counting
+                      systematics[ resultstr[ri] ] = asyst;  // add a simple variable
+                      syst_names[ resultstr[ri] ] = resultstr[4];  // add a simple variable
+                  } else { // here we have [] lets find the numbers
+                      size_t lindex = resultstr[ri].find_first_of("]");
+                      string numsection=resultstr[ri].substr(findex+1, lindex-findex-1);
+                      string delimiters=",";
+                      resultstr[ri].erase(findex);
+                      stringstream jss(numsection);
+                      string intermediate;
+                      while(getline(jss, intermediate, ',')) {
+                            cout <<" select subset @" << intermediate << " of "<< resultstr[ri] <<"\n";
+                            string asysname=resultstr[ri]+"["+intermediate+"]";
+                            cout <<"==========>"<< asysname <<"\n";
+                            asyst.vartype=resultstr[4];
+                            asyst.varname=resultstr[ri];
+                            asyst.systname=asysname;
+                            asyst.varid=stoi(intermediate);
+                            asyst.index=systindex;
+                            systematics[asysname] = asyst ; // with []
+                            syst_names[asysname] = resultstr[4] ; // with []
+                      }
+                  }
+                  systindex++;
+                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[ri].c_str() ) ); //push only the generic name
+                  cout <<ri<<" finished\n";
+                 }//2 3 counting
               }
              continue;
           }
@@ -355,8 +391,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    }// end of do systematics
 
 
-
-//--------------start stop etc
+//--------------start stop event ids etc
    map < string,   AnalysisObjects > analysis_objs_map;
 
    AnalysisController aCtrl(&aselect, syst_names);
@@ -385,31 +420,34 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
        evt_data oldevt=a0.evt;
-
-       int kj=0;
+       int subsyst;
+       double wvalue;
+       cout <<" ************************************* starting the systematics festival \n";
        for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
-         double wvalue = freaders[kj][0];
-         if (kj>0) a0.evt=oldevt;
-
-         if (it->second ==  "weight_jvt" ) {
-                a0.evt.weight_jvt=wvalue;
-//  		cout <<  "jvt\n";
-         } else if (it->second == "weight_pileup" ) {
-                a0.evt.weight_pileup=wvalue;
-//  		cout <<  "pileup\n";
-         } else if (it->second == "weight_leptonSF" ) {
-//  		cout <<  "SF\n";
-                a0.evt.weight_leptonSF=wvalue;
-         } else if (it->second == "weight_BTagSF" ) {
-//           	cout <<  "w BTAG:" << wvalue <<"\n";
-                a0.evt.weight_bTagSF_77=wvalue;
-         } else {
-		cout << "problem with: "<<it->second<< ", no such systematics.\n";
-         }
-
-         analysis_objs_map[it->first] = a0;
-         kj++;
+         cout << it->first << " type:"<< it->second<<"\n";
        }
+       for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
+         int jsyst=it->second.index;
+         int jid=it->second.varid;
+         wvalue = freaders.at(jsyst)[jid]; //may not be zero?
+         cout <<"Wv:"<<wvalue<<"\n";
+         if (jsyst>0) a0.evt=oldevt;
+         if (it->second.vartype ==  "weight_jvt" ) {
+                a0.evt.weight_jvt=wvalue; // cout <<  "jvt\n";
+         } else if (it->second.vartype == "weight_pileup" ) {
+                a0.evt.weight_pileup=wvalue; // cout <<  "pileup\n";
+         } else if (it->second.vartype == "weight_leptonSF" ) {
+                a0.evt.weight_leptonSF=wvalue; //  cout <<  "SF\n";
+         } else if (it->second.vartype == "weight_BTagSF" ) {
+                a0.evt.weight_bTagSF_77=wvalue; //  cout <<  "w BTAG:" << wvalue <<"\n";
+         } else {
+	        cout << "problem with: "<<it->second.vartype<< ", no such systematics type.\n";
+         }
+         cout <<"-------------~~~~~~~~before map:"<<it->first<<"\n";
+         analysis_objs_map[it->first] = a0;
+         cout <<"-------------~~~~~~~~after map\n";
+         cout << "next\n";
+       } // end of loop over syst subsyst name
        a0.evt=oldevt;
        aCtrl.RunTasks(a0, analysis_objs_map);
 

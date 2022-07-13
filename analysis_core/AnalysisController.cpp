@@ -17,6 +17,7 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
 	if (iselect->dosystematics) {
 		for( map<string,string>::iterator it=systematics.begin(); it!=systematics.end(); ++it) {
 			syst_names.insert(*it);
+	          	cout << "systematic included:"<<it->first <<endl;
 		}
 	}
 	aselect=*iselect;

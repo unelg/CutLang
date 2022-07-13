@@ -21,11 +21,12 @@ info analysisExample
 
 ## keyword on/off  name_UP      			   	name_DOWN             				type
 
-systematic Off	 "weight_jvt_UP"      				"weight_jvt_DOWN"      				weight_jvt
-systematic Off 	 "weight_pileup_UP" 				"weight_pileup_DOWN"   				weight_pileup
-systematic Off 	 "weight_leptonSF_EL_SF_Trigger_UP" 		"weight_leptonSF_EL_SF_Trigger_DOWN" 		weight_leptonSF
-systematic Off   "weight_bTagSF_MV2c10_77_eigenvars_Light_up" 	"weight_bTagSF_MV2c10_77_eigenvars_Light_down"  weight_BTagSF
-systematic ON    "weight_bTagSF_MV2c10_77_eigenvars_B_up" 	"weight_bTagSF_MV2c10_77_eigenvars_B_down"  	weight_BTagSF
+systematic ON 	"weight_jvt_UP"      				"weight_jvt_DOWN"      				weight_jvt
+systematic Off 	"weight_pileup_UP" 				"weight_pileup_DOWN"   				weight_pileup
+systematic Off 	"weight_leptonSF_EL_SF_Trigger_UP" 		"weight_leptonSF_EL_SF_Trigger_DOWN" 		weight_leptonSF
+systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_Light_up" 	"weight_bTagSF_MV2c10_77_eigenvars_Light_down"  weight_BTagSF
+systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_B_up" 	"weight_bTagSF_MV2c10_77_eigenvars_B_down"  	weight_BTagSF
+systematic ON   "weight_bTagSF_MV2c10_77_eigenvars_B_up[0,1,3]" "weight_bTagSF_MV2c10_77_eigenvars_B_down[1]"   weight_BTagSF
 
 
 

@@ -350,10 +350,10 @@ else
     if [ $? -eq 0 ]; then
     echo "hadd finished successfully, now removing auxiliary files"
     rm -f $PWD/histoOut-BP_*.root
-    rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
-    rm -f $PWD/BP_*-card.ini 
-    rm -f $PWD/out1 
-    rm -f $PWD/algdeps.cmd
+#   rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
+#   rm -f $PWD/BP_*-card.ini 
+#   rm -f $PWD/out1 
+#   rm -f $PWD/algdeps.cmd
     fi
   fi
 

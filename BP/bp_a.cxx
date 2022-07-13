@@ -69,7 +69,6 @@ int BPdbxA:: readAnalysisParams() {
 // ---------------------------DBX style defs, objects and cuts
     string tempLine;
     string tempS1, tempS2;
-    string hashdelimiter = "#";
     size_t found, foundp, foundr, foundw, founds, foundsave;
     TString DefList2file="\n";
     TString CutList2file="\n";

@@ -26,6 +26,15 @@ struct analy_struct {   // Declare analysis types
         std::string dependencies;
 };
 
+struct syst_struct {   // Declare analysis types
+        int index;
+        std::string vartype;
+        std::string varname;
+        std::string systname;
+        int varid;
+//        vector<int> idlist;
+};
+
 typedef struct evt_data
 {
 	evt_data()
