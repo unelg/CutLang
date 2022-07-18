@@ -2,6 +2,7 @@
 #define DBX_PARTICLE_H
 
 #include "TLorentzVector.h"
+#include "TTree.h"
 #include <iostream>
 #include <map>
 #include <vector>
@@ -32,7 +33,7 @@ struct syst_struct {   // Declare analysis types
         std::string varname;
         std::string systname;
         int varid;
-//        vector<int> idlist;
+        TTree * chain;
 };
 
 typedef struct evt_data

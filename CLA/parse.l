@@ -43,6 +43,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "process" return PROCESS;
 
 "systematic" return SYSTEMATIC;
+"ttree" return SYST_TTREE;
 "weight_mc"    return SYST_W_MC;
 "weight_pileup"    return SYST_W_PILEUP;
 "weight_jvt"    return SYST_W_JVT;

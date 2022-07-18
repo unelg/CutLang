@@ -24,8 +24,8 @@
 #define DEBUG(a)
 #endif
 
-//extern void _fsig_handler (int) ;
-//extern bool fctrlc;
+extern void _fsig_handler (int) ;
+extern bool fctrlc;
 
 extern TTreeReader *ttreader;
 
@@ -34,7 +34,6 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 
    fChain->GetEntry(j);
    ttreader->Next();
-
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;
@@ -98,6 +97,7 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
 //MUONS
         for (unsigned int i=0; i<mu_pt->size(); i++) {
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
+//                if (i==1) cout <<"********* mu pt:"<<mu_pt->at(i)*0.001<<"\n";
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(mu_charge->at(i) );
 		adbxm->setPdgID(-13*mu_charge->at(i) );
@@ -304,10 +304,10 @@ std::cout << "Filling finished"<<std::endl;
 void AtlMin::Loop( analy_struct aselect, char *extname)
 {
 // Signal HANDLER
-//  signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
-
-
-
+  signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
+   TTree *achain; 
+   TFile *afile= ((TChain *)fChain)->GetFile();
+          achain = (TTree*)afile->Get("nominal");
 
    if (fChain == 0) {
           cout <<"Error opening the data file"<<endl; return;
@@ -345,9 +345,10 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
               string ison=resultstr[1];
               for(auto& c : ison) { c = tolower(c); } // convert to lowercase
               if (ison == "on") {
-                 resultstr[2].erase(remove( resultstr[2].begin(), resultstr[2].end(), '\"' ),resultstr[2].end());
-                 resultstr[3].erase(remove( resultstr[3].begin(), resultstr[3].end(), '\"' ),resultstr[3].end());
-                 cout <<"--> Syst: "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n";
+                resultstr[2].erase(remove( resultstr[2].begin(), resultstr[2].end(), '\"' ),resultstr[2].end());
+                resultstr[3].erase(remove( resultstr[3].begin(), resultstr[3].end(), '\"' ),resultstr[3].end());
+                DEBUG("--> Syst  "<< resultstr[2] << " &&  " << resultstr[3]<<" "<<resultstr[4] <<"\n");
+                if ( resultstr[4] != "ttree" ) { // maybe sshould contain weight
 		 for (int ri=2; ri<4; ri++){
                   size_t findex = resultstr[ri].find_first_of("[");
                   syst_struct asyst;
@@ -383,11 +384,40 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                   freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[ri].c_str() ) ); //push only the generic name
                   cout <<ri<<" finished\n";
                  }//2 3 counting
-              }
+               } else { // tree
+                    syst_names[resultstr[2]] = resultstr[4] ; // with []
+                    syst_names[resultstr[3]] = resultstr[4] ; // with []
+                    syst_struct asyst;
+                    asyst.vartype=resultstr[4];
+                    asyst.varname=resultstr[2];
+                    asyst.systname=resultstr[2];
+                    asyst.chain = (TTree*)afile->Get(resultstr[2].c_str() );
+                    asyst.varid=-1;
+                    asyst.index=systindex;
+                    syst_names[resultstr[2]] = resultstr[4] ; // with []
+                    systematics[resultstr[2]] = asyst ; // with []
+                    systindex++;
+                    syst_struct bsyst;
+                    bsyst.vartype=resultstr[4];
+                    bsyst.varname=resultstr[3];
+                    bsyst.systname=resultstr[3];
+                    bsyst.chain = (TTree*)afile->Get(resultstr[3].c_str() );
+                    bsyst.varid=-1;
+                    bsyst.index=systindex;
+                    syst_names[resultstr[3]] = resultstr[4] ; // with []
+                    systematics[resultstr[3]] = bsyst ; // with []
+                    systindex++;
+//                    cout << "A:"<<asyst.chain<<" B:"<<bsyst.chain<<"\n";
+
+
+                    // TFile * _afile = TFile::Open(fileList[0].c_str());
+                    // ttreader =  new TTreeReader(leafname.c_str(), _afile);
+               }
+              }// end of systematics on
              continue;
           }
           
-       }// end of while
+       }// end of while reading the file
    }// end of do systematics
 
 
@@ -398,6 +428,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
 
+   Init(achain,0);
    Long64_t nentries = fChain->GetEntriesFast();
    if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
    cout << "number of entries " << nentries << endl;
@@ -422,32 +453,47 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        evt_data oldevt=a0.evt;
        int subsyst;
        double wvalue;
-       cout <<" ************************************* starting the systematics festival \n";
-       for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
-         cout << it->first << " type:"<< it->second<<"\n";
-       }
+
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
+
          int jsyst=it->second.index;
          int jid=it->second.varid;
-         wvalue = freaders.at(jsyst)[jid]; //may not be zero?
-         cout <<"Wv:"<<wvalue<<"\n";
-         if (jsyst>0) a0.evt=oldevt;
+         if (jid >=0){
+           wvalue = freaders.at(jsyst)[jid]; //may not be zero?
+//           cout <<"Wv:"<<wvalue<<"\n";
+           if (jsyst>0) a0.evt=oldevt;
+         }
          if (it->second.vartype ==  "weight_jvt" ) {
                 a0.evt.weight_jvt=wvalue; // cout <<  "jvt\n";
+         	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "weight_pileup" ) {
                 a0.evt.weight_pileup=wvalue; // cout <<  "pileup\n";
+         	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "weight_leptonSF" ) {
                 a0.evt.weight_leptonSF=wvalue; //  cout <<  "SF\n";
+         	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "weight_BTagSF" ) {
                 a0.evt.weight_bTagSF_77=wvalue; //  cout <<  "w BTAG:" << wvalue <<"\n";
+         	analysis_objs_map[it->first] = a0;
+         } else if (it->second.vartype == "ttree" ) {
+		AnalysisObjects au;
+            	Init(it->second.chain,0); 
+//              fChain = it->second.chain;
+        	GetPhysicsObjects(j, &au);
+        	analysis_objs_map[it->first] = au;
+  	      it++;
+		AnalysisObjects ad;
+              	Init(it->second.chain,0); 
+//              fChain = it->second.chain;
+        	GetPhysicsObjects(j, &ad);
+        	analysis_objs_map[it->first] = ad;
+
+        	Init(achain,0); // back to nominal
          } else {
 	        cout << "problem with: "<<it->second.vartype<< ", no such systematics type.\n";
          }
-         cout <<"-------------~~~~~~~~before map:"<<it->first<<"\n";
-         analysis_objs_map[it->first] = a0;
-         cout <<"-------------~~~~~~~~after map\n";
-         cout << "next\n";
        } // end of loop over syst subsyst name
+
        a0.evt=oldevt;
        aCtrl.RunTasks(a0, analysis_objs_map);
 
