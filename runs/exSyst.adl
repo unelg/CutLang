@@ -28,7 +28,7 @@ systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_Light_up" 	"weight_bTagSF_MV2
 systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_B_up" 	"weight_bTagSF_MV2c10_77_eigenvars_B_down"  	weight_BTagSF
 systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_B_up[0,1,3]" "weight_bTagSF_MV2c10_77_eigenvars_B_down[1]"   weight_BTagSF
 systematic ON  	"MUON_ID__1up"      				"MUON_ID__1down"      				ttree
-systematic Off	"MUON_MS__1up"      				"MUON_MS__1down"      				ttree
+systematic ON 	"MUON_MS__1up"      				"MUON_MS__1down"      				ttree
 
 
 
@@ -36,7 +36,7 @@ systematic Off	"MUON_MS__1up"      				"MUON_MS__1down"      				ttree
 region   preselection
   select  ALL
   select  Size (MUO) >= 2 
-# print   pT(MUO[1])
+#  print   pT(MUO[1])
      cmd  LEPsf
   select  pT(MUO[1]) > 150
   select  Size (JET) >= 2 

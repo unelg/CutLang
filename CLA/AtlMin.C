@@ -46,7 +46,6 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxParticle> combos;
    vector<dbxParticle> constis;
 
-
    map<string, vector<dbxMuon>     > muos_map;
    map<string, vector<dbxElectron> > eles_map;
    map<string, vector<dbxTau>      > taus_map;
@@ -268,22 +267,7 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_leptonSF_MU_SF_TTVA_SYST_DOWN=weight_leptonSF_MU_SF_TTVA_SYST_DOWN;
   anevt.weight_jvt_UP=weight_jvt_UP;
   anevt.weight_jvt_DOWN=weight_jvt_DOWN;
-/*
-  anevt.weight_bTagSF_77_extrapolation_up=weight_bTagSF_77_extrapolation_up;
-  anevt.weight_bTagSF_77_extrapolation_down=weight_bTagSF_77_extrapolation_down;
-  anevt.weight_bTagSF_77_extrapolation_from_charm_up=weight_bTagSF_77_extrapolation_from_charm_up;
-  anevt.weight_bTagSF_77_extrapolation_from_charm_down=weight_bTagSF_77_extrapolation_from_charm_down;
-  anevt.weight_bTagSF_77_eigenvars_B_up=*weight_bTagSF_77_eigenvars_B_up;
-  anevt.weight_bTagSF_77_eigenvars_C_up=*weight_bTagSF_77_eigenvars_C_up;
-  anevt.weight_bTagSF_77_eigenvars_Light_up=*weight_bTagSF_77_eigenvars_Light_up;
-  anevt.weight_bTagSF_77_eigenvars_B_down=*weight_bTagSF_77_eigenvars_B_down;
-  anevt.weight_bTagSF_77_eigenvars_C_down=*weight_bTagSF_77_eigenvars_C_down;
-  anevt.weight_bTagSF_77_eigenvars_Light_down=*weight_bTagSF_77_eigenvars_Light_down;
-*/
-//  anevt.mc_generator_weights=*mc_generator_weights;
-#ifdef __DEBUG__
-std::cout << "Filling finished"<<std::endl;
-#endif
+  DEBUG("Filling finished."<<std::endl);
 
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
@@ -296,8 +280,10 @@ std::cout << "Filling finished"<<std::endl;
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
     constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
+  DEBUG("MAP finished."<<std::endl);
 
         *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
+  DEBUG("retuning"<<std::endl);
 }
 
 //--------------------------------------------------------LOOP
@@ -305,9 +291,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 {
 // Signal HANDLER
   signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
-   TTree *achain; 
    TFile *afile= ((TChain *)fChain)->GetFile();
-          achain = (TTree*)afile->Get("nominal");
 
    if (fChain == 0) {
           cout <<"Error opening the data file"<<endl; return;
@@ -316,6 +300,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    bool  doSystematics(aselect.dosystematics);
    map < string, syst_struct > systematics; // contains all
    map < string, string > syst_names; // contains all
+   map < string, AtlMin *> syst_objects;
 
    if (doSystematics) {
        string tempLine;
@@ -370,7 +355,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                       while(getline(jss, intermediate, ',')) {
                             cout <<" select subset @" << intermediate << " of "<< resultstr[ri] <<"\n";
                             string asysname=resultstr[ri]+"["+intermediate+"]";
-                            cout <<"==========>"<< asysname <<"\n";
+                            //cout <<"==========>"<< asysname <<"\n";
                             asyst.vartype=resultstr[4];
                             asyst.varname=resultstr[ri];
                             asyst.systname=asysname;
@@ -391,24 +376,22 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                     asyst.vartype=resultstr[4];
                     asyst.varname=resultstr[2];
                     asyst.systname=resultstr[2];
-                    asyst.chain = (TTree*)afile->Get(resultstr[2].c_str() );
                     asyst.varid=-1;
                     asyst.index=systindex;
                     syst_names[resultstr[2]] = resultstr[4] ; // with []
                     systematics[resultstr[2]] = asyst ; // with []
+                    syst_objects[resultstr[2]] = new AtlMin("XXX",(TChain *)afile->Get(resultstr[2].c_str()) );
                     systindex++;
                     syst_struct bsyst;
                     bsyst.vartype=resultstr[4];
                     bsyst.varname=resultstr[3];
                     bsyst.systname=resultstr[3];
-                    bsyst.chain = (TTree*)afile->Get(resultstr[3].c_str() );
                     bsyst.varid=-1;
                     bsyst.index=systindex;
                     syst_names[resultstr[3]] = resultstr[4] ; // with []
+                    syst_objects[resultstr[3]]=new AtlMin("XXX",(TChain *)afile->Get(resultstr[3].c_str()) );
                     systematics[resultstr[3]] = bsyst ; // with []
                     systindex++;
-//                    cout << "A:"<<asyst.chain<<" B:"<<bsyst.chain<<"\n";
-
 
                     // TFile * _afile = TFile::Open(fileList[0].c_str());
                     // ttreader =  new TTreeReader(leafname.c_str(), _afile);
@@ -428,7 +411,6 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    aCtrl.Initialize(extname);
    cout << "End of analysis initialization"<<endl;
 
-   Init(achain,0);
    Long64_t nentries = fChain->GetEntriesFast();
    if (aselect.maxEvents>0 ) nentries=aselect.maxEvents;
    cout << "number of entries " << nentries << endl;
@@ -477,18 +459,18 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
          	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "ttree" ) {
 		AnalysisObjects au;
-            	Init(it->second.chain,0); 
-//              fChain = it->second.chain;
-        	GetPhysicsObjects(j, &au);
+//            	Init(it->second.chain,0); 
+//                 atlmin_sau->GetPhysicsObjects(j, &au);
+//        	GetPhysicsObjects(j, &au);
+             	syst_objects[it->first]->GetPhysicsObjects(j, &au);
         	analysis_objs_map[it->first] = au;
   	      it++;
 		AnalysisObjects ad;
-              	Init(it->second.chain,0); 
-//              fChain = it->second.chain;
-        	GetPhysicsObjects(j, &ad);
+//              	Init(it->second.chain,0); 
+// 	       		GetPhysicsObjects(j, &ad);
+                syst_objects[it->first]->GetPhysicsObjects(j, &ad);
         	analysis_objs_map[it->first] = ad;
 
-        	Init(achain,0); // back to nominal
          } else {
 	        cout << "problem with: "<<it->second.vartype<< ", no such systematics type.\n";
          }

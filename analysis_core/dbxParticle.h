@@ -33,7 +33,6 @@ struct syst_struct {   // Declare analysis types
         std::string varname;
         std::string systname;
         int varid;
-        TTree * chain;
 };
 
 typedef struct evt_data
