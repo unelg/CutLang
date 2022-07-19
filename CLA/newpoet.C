@@ -144,6 +144,8 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxj->addAttribute( fatjet_tau1[i]     ); // attri 1
         adbxj->addAttribute( fatjet_tau2[i]     ); // attri 2
         adbxj->addAttribute( fatjet_tau3[i]     ); // attri 3
+        adbxj->addAttribute( fatjet_subjet1_btag[i]     ); // attri 4
+        adbxj->addAttribute( fatjet_subjet2_btag[i]     ); // attri 5
         ljets.push_back(*adbxj);
         delete adbxj;
     }

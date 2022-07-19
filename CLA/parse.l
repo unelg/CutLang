@@ -135,6 +135,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "decayMode" return DECAYMODE;
 "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 "sieie" return SIEIE;
+"subjet1_btag" return  SUBJET1_BTAG;
+"subjet2_btag" return  SUBJET2_BTAG;
 
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;

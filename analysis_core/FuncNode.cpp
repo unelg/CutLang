@@ -642,6 +642,18 @@ double sieieof( dbxParticle* apart){
    return v;
 }
 
+double sub1btagof( dbxParticle* apart){
+   double v=apart->Attribute(4);
+   DEBUG(" fatjet sub1btagof:"<<v<<"\t");
+   return v;
+}
+
+double sub2btagof( dbxParticle* apart){
+   double v=apart->Attribute(5);
+   DEBUG(" fatjet sub2btagof:"<<v<<"\t");
+   return v;
+}
+
 double decaymodeof( dbxParticle* apart){
    double v=apart->Attribute(7);
    DEBUG(" tau decay mode:"<<v<<"\t");

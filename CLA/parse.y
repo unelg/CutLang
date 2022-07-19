@@ -104,7 +104,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token ZCANDID EVENTNO//
-%token SIEIE  // CMSnano photon attribs
+%token SIEIE  SUBJET1_BTAG SUBJET2_BTAG // CMSnano & POET attribs
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -609,6 +609,22 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | VERT '(' particules ')' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(vtof,newList,"vt");
+                                  }
+         | '{' particules '}' SUBJET1_BTAG {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sub1btagof,newList,"SUBJET1_BTAG");
+                                  }
+         | SUBJET1_BTAG '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sub1btagof,newList,"SUBJET1_BTAG");
+                                  }
+         | '{' particules '}' SUBJET2_BTAG {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sub2btagof,newList,"SUBJET2_BTAG");
+                                  }
+         | SUBJET2_BTAG '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sub2btagof,newList,"SUBJET2_BTAG");
                                   }
          | '{' particules '}' SIEIE {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
