@@ -1,5 +1,5 @@
-#define poet_cxx
-#include "poet.h"
+#define newpoet_cxx
+#include "newpoet.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -27,17 +27,17 @@
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
 // <<< "include" anchor <<<
-   
-void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
+
+void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
 {
 
     // >>> GetPhysicsObjects >>>
 
     int retval=fChain->GetEntry(j);
     DEBUG( "Read:"<<retval<<"bytes\n");
-    vector<dbxMuon>     muons; 
-    vector<dbxElectron> electrons; 
-    vector<dbxPhoton>   photons; 
+    vector<dbxMuon>     muons;
+    vector<dbxElectron> electrons;
+    vector<dbxPhoton>   photons;
     vector<dbxJet>      jets;
     vector<dbxTau>      taus;
     vector<dbxJet>     ljets;
@@ -57,14 +57,12 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
     map<string, vector<dbxParticle> >combo_map;
     map<string, vector<dbxParticle> >constits_map;
     map<string, TVector2            >  met_map;
-    
+
     evt_data anevt;
-    
+
     //temporary variables
     TVector2 met;
-
-
-    DEBUG("Begin filling\n");
+  DEBUG("Begin filling\n");
 
 
     //temporary variables
@@ -75,28 +73,12 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
     int Lcount=0;
 
     dbxMuon *adbxm;
-    for (unsigned int i=0; i<muon_px->size(); i++) {
-        alv.SetPxPyPzE(muon_px->at(i), muon_py->at(i), muon_pz->at(i),  muon_e->at(i)); // all in GeV
+    for (unsigned int i=0; i<numbermuon; i++) {
+        alv.SetPxPyPzE(muon_px[i], muon_py[i], muon_pz[i],  muon_e[i]); // all in GeV
         adbxm = new dbxMuon(alv);
-	adbxm->setCharge(muon_ch->at(i));
-        adbxm->setPdgID(muon_ch->at(i)*(-13) );
-        adbxm->setIsTight(muon_isTight->at(i));
-/*
-	adbxm->setd0(Muon_D0[i]);
-        adbxm->setPdgID(-13*Muon_Charge[i] );
-        adbxm->setEtCone(Muon_IsolationVarRhoCorr[i]);
-        adbxm->setPtCone(Muon_IsolationVar[i]       );
-
-	adbxm->addAttribute(Muon_DZ[i]);
-	adbxm->addAttribute(Muon_D0[i]);
-        adbxm->addAttribute(Muon_IsolationVar[i]     );
-	adbxm->addAttribute(Muon_SumPtCharged[i]);
-	adbxm->addAttribute(Muon_SumPtNeutral[i]);
-	adbxm->addAttribute(Muon_SumPtChargedPU[i]);
-	adbxm->addAttribute(Muon_SumPt[i]);
-	adbxm->addAttribute(Muon_ErrorD0[i]);
-	adbxm->addAttribute(Muon_ErrorDZ[i]);
-*/
+        adbxm->setCharge(muon_ch[i]);
+        adbxm->setPdgID(muon_ch[i]*(-13) );
+        adbxm->setIsTight(muon_isTight[i]);
         adbxm->setParticleIndx(i);
         muons.push_back(*adbxm);
         delete adbxm;
@@ -104,25 +86,25 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
     DEBUG("MUON OK\n");
 
    dbxElectron *adbxe;
-    for (unsigned int i=0; i<electron_px->size(); i++) {
-        alv.SetPxPyPzE(electron_px->at(i), electron_py->at(i), electron_pz->at(i),  electron_e->at(i)); // all in GeV
+    for (unsigned int i=0; i<numberelectron; i++) {
+        alv.SetPxPyPzE(electron_px[i], electron_py[i], electron_pz[i],  electron_e[i]); // all in GeV
         adbxe = new dbxElectron(alv);
-        adbxe->setCharge(electron_ch->at(i));
+        adbxe->setCharge(electron_ch[i]);
         adbxe->setParticleIndx(i);
-        adbxe->setPdgID( electron_ch->at(i)*(-11) );
-        adbxe->setIsTight(electron_isTight->at(i));
-        adbxe->setIsMedium(electron_isMedium->at(i));
-        adbxe->setIsLoose(electron_isLoose->at(i));
+        adbxe->setPdgID( electron_ch[i]*(-11) );
+        adbxe->setIsTight(electron_isTight[i]);
+        adbxe->setIsMedium(electron_isMedium[i]);
+        adbxe->setIsLoose(electron_isLoose[i]);
         electrons.push_back(*adbxe);
         delete adbxe;
     }
     DEBUG("ELECTRON OK\n");
 
    dbxTau *adbxt;
-    for (unsigned int i=0; i<tau_px->size(); i++) {
-        alv.SetPxPyPzE(tau_px->at(i), tau_py->at(i), tau_pz->at(i),  tau_e->at(i)); // all in GeV
+    for (unsigned int i=0; i<numbertau; i++) {
+        alv.SetPxPyPzE(tau_px[i], tau_py[i], tau_pz[i],  tau_e[i]); // all in GeV
         adbxt = new dbxTau(alv);
-        adbxt->setCharge(tau_ch->at(i));
+        adbxt->setCharge(tau_ch[i]);
         adbxt->setParticleIndx(i);
         taus.push_back(*adbxt);
         delete adbxt;
@@ -130,8 +112,8 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
     DEBUG("TAU OK\n");
 
    dbxPhoton *adbxp;
-    for (unsigned int i=0; i<photon_px->size(); i++) {
-        alv.SetPxPyPzE(photon_px->at(i), photon_py->at(i), photon_pz->at(i),  photon_e->at(i)); // all in GeV
+    for (unsigned int i=0; i<numberphoton; i++) {
+        alv.SetPxPyPzE(photon_px[i], photon_py[i], photon_pz[i],  photon_e[i]); // all in GeV
         adbxp = new dbxPhoton(alv);
         adbxp->setCharge(0);
         adbxp->setParticleIndx(i);
@@ -141,18 +123,15 @@ void poet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries
     DEBUG("Photon OK\n");
 
    dbxJet *adbxj;
-    for (unsigned int i=0; i<jet_px->size(); i++) {
-        alv.SetPxPyPzE(jet_px->at(i), jet_py->at(i), jet_pz->at(i),  jet_e->at(i)); // all in GeV
+    for (unsigned int i=0; i<numberjet; i++) {
+        alv.SetPtEtaPhiM(jet_pt[i], jet_eta[i], jet_phi[i],  jet_mass[i]); // all in GeV
         adbxj = new dbxJet(alv);
-        adbxj->setCharge(jet_ch->at(i));
+        adbxj->setCharge(jet_ch[i]);
         adbxj->setParticleIndx(i);
         jets.push_back(*adbxj);
         delete adbxj;
     }
-    DEBUG("TAU OK\n");
-                        
-        
-// FILLED CONTENT END
+    DEBUG("JET OK\n");
 
 //------------ auxiliary information -------
 anevt.run_no=128;
@@ -174,10 +153,10 @@ anevt.vxpType=0;
 anevt.lar_Error=0;
 anevt.core_Flags=0;
 anevt.maxEvents=nentries;
-    
+
 
     DEBUG("Filling finished\n");
-    
+
     muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
     eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
     taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
@@ -191,12 +170,14 @@ anevt.maxEvents=nentries;
     met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
    *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
-    
+
     // <<< GetPhysicsObjects <<<
+
+
 
 }
 
-void poet::Loop(analy_struct aselect, char *extname)
+void newpoet::Loop(analy_struct aselect, char *extname)
 {
     // Signal HANDLER
     signal (SIGINT, _fsig_handler); // signal handler has issues with CINT
@@ -211,7 +192,7 @@ void poet::Loop(analy_struct aselect, char *extname)
     aCtrl.Initialize(extname);
     cout << "End of analysis initialization"<<endl;
     // <<< "if (fChain == 0) return" anchor <<<
-    
+
 
 
     // >>> "Long64_t nentries" anchor >>>
@@ -233,7 +214,6 @@ void poet::Loop(analy_struct aselect, char *extname)
         cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
     }
     cout << "last entry " << lastevent << endl;
-
    Long64_t nbytes = 0, nb = 0;
 
     for (Long64_t j=startevent; j<lastevent; ++j) {
@@ -249,4 +229,4 @@ void poet::Loop(analy_struct aselect, char *extname)
 
     aCtrl.Finalize();
 }
-    
+

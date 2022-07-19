@@ -16,7 +16,7 @@
 #include "VLLMinSignal.h"
 #include "DELPHES2.h"
 #include "dbxParticle.h"
-#include "poet.h"
+#include "newpoet.h"
 //#include "dbxAna.h"
 #include <TH2.h>
 #include <TError.h>
@@ -51,7 +51,7 @@ int main(int argc, char*argv[])
  bool  use_fcc=false;
  bool use_lhco=false;
  bool use_lvl0=false;
- bool use_wank=false;
+ bool use_poet=false;
  bool use_delphes=false;
  bool use_atlasod=false;
  bool use_atlasodR2=false;
@@ -120,7 +120,7 @@ for (int i = 2; i < argc; i++) {
 
       if (inptype == "LHCO")    { use_lhco =true;}
  else if (inptype == "FCC" )    { use_fcc  =true;}
- else if (inptype == "POET" )   { use_wank =true;}
+ else if (inptype == "POET" )   { use_poet =true;}
  else if (inptype == "DELPHES2"){ use_DELPHES2 =true;}
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
@@ -175,8 +175,9 @@ for (int i = 2; i < argc; i++) {
   }else if (use_fcc){
    cout << "~Now using FCC files.~~~~~~ beta!\n";
    leafname="events";
-  }else if (use_wank){
-   cout << "~Now using POET files.~~~~~~ not even alpha!\n";
+  }else if (use_poet){
+   cout << "~Now using new POET files.~~~~~~ alpha!\n";
+/*
      chain = new TChain("mymuons/Events");
      celes = new TChain("myelectrons/Events");
      chain->AddFriend(celes);
@@ -186,6 +187,8 @@ for (int i = 2; i < argc; i++) {
      chain->AddFriend(cjets);
   cphotons = new TChain("myphotons/Events");
      chain->AddFriend(cphotons);
+*/
+   leafname="Events";
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
    leafname="Events";
@@ -240,12 +243,12 @@ for (int i = 2; i < argc; i++) {
     gErrorIgnoreLevel = 5000;
     aret=chain->Add(fileList[iFile].c_str(), 0);
     cout << "RetVal:"<<aret<<endl;
-    if (use_wank){
-     aret=celes->Add(fileList[iFile].c_str(), 0);
-     aret=ctaus->Add(fileList[iFile].c_str(), 0);
-     aret=cjets->Add(fileList[iFile].c_str(), 0);
-     aret=cphotons->Add(fileList[iFile].c_str(), 0);
-    }
+//  if (use_wank){
+//   aret=celes->Add(fileList[iFile].c_str(), 0);
+//   aret=ctaus->Add(fileList[iFile].c_str(), 0);
+//   aret=cjets->Add(fileList[iFile].c_str(), 0);
+//   aret=cphotons->Add(fileList[iFile].c_str(), 0);
+//  }
   }
   if (chain->GetEntries() > 0 ) {
     cout << "initialized with the chain..."<< chain->GetEntries()<<endl; 
@@ -257,8 +260,8 @@ for (int i = 2; i < argc; i++) {
     DELPHES2 *DELPHES2a=new DELPHES2("XXX",chain);
           cout << "DELPHES2 obj ok\n";
              DELPHES2a->Loop(aselect, username);
-  } else if (use_wank){
-    poet *poeta=new poet("XXX",chain);
+  } else if (use_poet){
+    newpoet *poeta=new newpoet("XXX",chain);
           poeta->Loop(aselect, username);
    } else if (use_lvl0){
     lvl0 *lvl0a=new lvl0("XXX",chain);
