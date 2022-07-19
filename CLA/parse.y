@@ -23,9 +23,6 @@
 //#define ERRBUG(a) std::cout<<a
 #define ERRBUG(a) std::cerr<<a
 
-using namespace std::vector;
-using namespace std::string;
-
 extern int yylex();
 extern int yylineno;
 void yyerror(list<string> *parts, map<string,Node*>* NodeVars, map<string,vector<myParticle*> >* ListParts,
