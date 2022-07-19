@@ -188,7 +188,7 @@ for (int i = 2; i < argc; i++) {
   cphotons = new TChain("myphotons/Events");
      chain->AddFriend(cphotons);
 */
-   leafname="Events";
+   leafname="events";
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
    leafname="Events";
