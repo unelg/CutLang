@@ -451,6 +451,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 //   }
 
     if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+//    cout <<" evntno:"<< anevt.event_no<<"--w:"<< anevt.weight_pileup <<"\n";
     ao->evt.user_evt_weight*=evt_weight;
   } else { // this is a dependent region, with pre-selection that failed at some point
 // no need to calculate something that we know will fail.

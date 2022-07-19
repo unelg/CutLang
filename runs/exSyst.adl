@@ -19,16 +19,31 @@ info analysisExample
 # weight_BTagSF 
 
 
-## keyword on/off  name_UP      			   	name_DOWN             				type
+## keyword on/off  name_UP      				   	name_DOWN     	        				type
 
-systematic ON 	"weight_jvt_UP"      				"weight_jvt_DOWN"      				weight_jvt
-systematic ON  	"weight_pileup_UP" 				"weight_pileup_DOWN"   				weight_pileup
-systematic ON  	"weight_leptonSF_EL_SF_Trigger_UP" 		"weight_leptonSF_EL_SF_Trigger_DOWN" 		weight_leptonSF
-systematic ON   "weight_bTagSF_MV2c10_77_eigenvars_Light_up" 	"weight_bTagSF_MV2c10_77_eigenvars_Light_down"  weight_BTagSF
-systematic ON   "weight_bTagSF_MV2c10_77_eigenvars_B_up" 	"weight_bTagSF_MV2c10_77_eigenvars_B_down"  	weight_BTagSF
-systematic ON   "weight_bTagSF_MV2c10_77_eigenvars_B_up[0,1,3]" "weight_bTagSF_MV2c10_77_eigenvars_B_down[1]"   weight_BTagSF
-systematic ON  	"MUON_ID__1up"      				"MUON_ID__1down"      				ttree
-systematic ON 	"MUON_MS__1up"      				"MUON_MS__1down"      				ttree
+systematic ON  	"weight_pileup_UP" 					"weight_pileup_DOWN"   					weight_pileup
+systematic Off	"weight_jvt_UP"      					"weight_jvt_DOWN"      					weight_jvt
+systematic Off 	"weight_leptonSF_EL_SF_Trigger_UP" 			"weight_leptonSF_EL_SF_Trigger_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_EL_SF_Reco_UP" 			"weight_leptonSF_EL_SF_Reco_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_EL_SF_ID_UP" 				"weight_leptonSF_EL_SF_ID_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_EL_SF_Isol_UP" 			"weight_leptonSF_EL_SF_Isol_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_Trigger_STAT_UP" 		"weight_leptonSF_MU_SF_Trigger_STAT_DOWN" 		weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_Trigger_SYST_UP" 		"weight_leptonSF_MU_SF_Trigger_SYST_DOWN" 		weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_ID_STAT_UP" 			"weight_leptonSF_MU_SF_ID_STAT_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_ID_SYST_UP" 			"weight_leptonSF_MU_SF_ID_SYST_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_ID_STAT_LOWPT_UP" 	 	"weight_leptonSF_MU_SF_ID_STAT_LOWPT_DOWN" 		weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_ID_SYST_LOWPT_UP" 	 	"weight_leptonSF_MU_SF_ID_SYST_LOWPT_DOWN" 		weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_Isol_STAT_UP" 			"weight_leptonSF_MU_SF_Isol_STAT_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_Isol_SYST_UP" 			"weight_leptonSF_MU_SF_Isol_SYST_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_TTVA_STAT_UP" 			"weight_leptonSF_MU_SF_TTVA_STAT_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_TTVA_SYST_UP" 			"weight_leptonSF_MU_SF_TTVA_SYST_DOWN" 			weight_leptonSF
+systematic Off 	"weight_leptonSF_MU_SF_TTVA_SYST_UP" 			"weight_leptonSF_MU_SF_TTVA_SYST_DOWN" 			weight_leptonSF
+systematic Off  "weight_bTagSF_MV2c10_77_extrapolation_up" 		"weight_bTagSF_MV2c10_77_extrapolation_down"  		weight_BTagSF ## only 0th
+systematic Off  "weight_bTagSF_MV2c10_77_extrapolation_from_charm_up" 	"weight_bTagSF_MV2c10_77_extrapolation_from_charm_down" weight_BTagSF ## only 0th
+systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_Light_up" 		"weight_bTagSF_MV2c10_77_eigenvars_Light_down"  	weight_BTagSF
+systematic Off  "weight_bTagSF_MV2c10_77_eigenvars_B_up[0,1,2]" 	"weight_bTagSF_MV2c10_77_eigenvars_B_down[0,1,2]"   	weight_BTagSF
+systematic Off 	"MUON_ID__1up"      					"MUON_ID__1down"      					ttree
+systematic Off	"MUON_MS__1up"      					"MUON_MS__1down"      					ttree
 
 
 
