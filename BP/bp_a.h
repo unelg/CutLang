@@ -56,23 +56,23 @@ class BPdbxA : public dbxA {
       bool skip_histos;
       bool skip_effs;
       bool systematicsRun;
-      vector<int> save;
+      std::vector<int> save;
       unordered_set<int> optimize;
-      static map<int, vector<myParticle *> > particleBank;
+      static map<int, std::vector<myParticle *> > particleBank;
 
  
 //relevant variables
-        list<string> parts; //for def of particles as given by user
-        map<string,Node*> NodeVars;//for variable defintion
-        map<string,vector<myParticle*> > ListParts;//for particle definition
-        map<string,pair<vector<float>,bool> > ListTables;//for table definition
-        map<string, vector<cntHisto> > cntHistos;
-        map<int, vector<string> > systmap;
+        list<std::string> parts; //for def of particles as given by user
+        map<std::string,Node*> NodeVars;//for variable defintion
+        map<std::string,std::vector<myParticle*> > ListParts;//for particle definition
+        map<std::string,pair<std::vector<float>,bool> > ListTables;//for table definition
+        map<std::string, std::vector<cntHisto> > cntHistos;
+        map<int, std::vector<std::string> > systmap;
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
-        map<string,Node*> ObjectCuts;//cuts for user defined objects
+        map<std::string,Node*> ObjectCuts;//cuts for user defined objects
         std::vector<std::string> NameInitializations;
-        vector<int> TRGValues;
-        vector<double> bincounts;
+        std::vector<int> TRGValues;
+        std::vector<double> bincounts;
 };
 #endif
