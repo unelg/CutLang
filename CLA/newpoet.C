@@ -133,6 +133,20 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     }
     DEBUG("JET OK\n");
 
+    for (unsigned int i=0; i<numberfatjet; i++) {
+        alv.SetPtEtaPhiM(fatjet_pt[i], fatjet_eta[i], fatjet_phi[i],  fatjet_mass[i]); // all in GeV
+        adbxj = new dbxJet(alv);
+        adbxj->setCharge(fatjet_ch[i]);
+        adbxj->setParticleIndx(i);
+        adbxj->addAttribute( fatjet_softdropmass[i]); // attri 0
+        adbxj->addAttribute( fatjet_tau1[i]     ); // attri 1
+        adbxj->addAttribute( fatjet_tau2[i]     ); // attri 2
+        adbxj->addAttribute( fatjet_tau3[i]     ); // attri 3
+        ljets.push_back(*adbxj);
+        delete adbxj;
+    }
+    DEBUG("FATJET OK\n");
+
 //------------ auxiliary information -------
 anevt.run_no=128;
 anevt.user_evt_weight=1.0;
