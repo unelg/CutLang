@@ -16,6 +16,7 @@
 #include "DBXNtuple.h"
 #include "analysis_core.h"
 #include "AnalysisController.h"
+#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -26,6 +27,7 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern TTreeReader *ttreader;
 // <<< "include" anchor <<<
 
 void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
@@ -234,6 +236,7 @@ void newpoet::Loop(analy_struct aselect, char *extname)
 
         if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
         if (0 > LoadTree (j)) break;
+             ttreader->Next();
         if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
         AnalysisObjects a0;
