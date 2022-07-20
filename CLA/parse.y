@@ -104,7 +104,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token ZCANDID EVENTNO//
-%token SIEIE  SUBJET1_BTAG SUBJET2_BTAG // CMSnano & POET attribs
+%token SIEIE  SUBJET1_BTAG SUBJET2_BTAG MVATIGHT MVALOOSE // CMSnano & POET attribs
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -625,6 +625,22 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | SUBJET2_BTAG '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(sub2btagof,newList,"SUBJET2_BTAG");
+                                  }
+         | '{' particules '}' MVALOOSE {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(mvalooseof,newList,"MVALOOSE");
+                                  }
+         | MVALOOSE '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(mvalooseof,newList,"MVALOOSE");
+                                  }
+         | '{' particules '}' MVATIGHT {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(mvatightof,newList,"MVATIGHT");
+                                  }
+         | MVATIGHT '(' particules ')' {  vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(mvatightof,newList,"MVATIGHT");
                                   }
          | '{' particules '}' SIEIE {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);

@@ -665,6 +665,13 @@ double pfreliso03allof( dbxParticle* apart){
    return v;
 }
 
+double mvatightof(dbxParticle* apart){
+    return 1*(int)apart->Attribute(0);
+}
+double mvalooseof(dbxParticle* apart){
+    return 1*(int)apart->Attribute(1);
+}
+
 double isTight(dbxParticle* apart){
     return 1*(int)apart->isTight();
 }

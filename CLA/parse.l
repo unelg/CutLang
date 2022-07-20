@@ -137,6 +137,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "sieie" return SIEIE;
 "subjet1_btag" return  SUBJET1_BTAG;
 "subjet2_btag" return  SUBJET2_BTAG;
+"mvaTight" return MVATIGHT;  
+"mvaLoose" return MVALOOSE;   
 
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;

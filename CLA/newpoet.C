@@ -80,7 +80,9 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxm = new dbxMuon(alv);
         adbxm->setCharge(muon_ch[i]);
         adbxm->setPdgID(muon_ch[i]*(-13) );
-        adbxm->setIsTight(muon_isTight[i]);
+        adbxm->setIsTight (muon_isTight[i] );
+        adbxm->setIsMedium(muon_isMedium[i]);
+        adbxm->setIsLoose (muon_isLoose[i] );
         adbxm->setParticleIndx(i);
         muons.push_back(*adbxm);
         delete adbxm;
@@ -97,6 +99,8 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxe->setIsTight(electron_isTight[i]);
         adbxe->setIsMedium(electron_isMedium[i]);
         adbxe->setIsLoose(electron_isLoose[i]);
+        adbxe->addAttribute( electron_ismvaTight[i] ); // attri 0
+        adbxe->addAttribute( electron_ismvaLoose[i] ); // attri 1
         electrons.push_back(*adbxe);
         delete adbxe;
     }
