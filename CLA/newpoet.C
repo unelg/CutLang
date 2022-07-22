@@ -86,7 +86,8 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxm->setParticleIndx(i);
         adbxm->addAttribute( muon_isHighPt[i] ); // attri 0
         adbxm->addAttribute( muon_TkIso03[i] ); // attri 1
-        adbxm->addAttribute( muon_pfreliso04all[i] ); // attri 2
+        adbxm->addAttribute( muon_pfreliso04all[i] ); // attri 2 - dummy
+        adbxm->addAttribute( muon_pfreliso04all[i] ); // attri 3
         muons.push_back(*adbxm);
         delete adbxm;
     }
@@ -104,7 +105,8 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxe->setIsLoose(electron_isLoose[i]);
         adbxe->addAttribute( electron_ismvaTight[i] ); // attri 0
         adbxe->addAttribute( electron_ismvaLoose[i] ); // attri 1
-        adbxe->addAttribute( electron_iso[i] );
+        adbxe->addAttribute( electron_iso[i] ); // attri 2
+        adbxe->addAttribute( electron_iso[i] ); // attri 3
         electrons.push_back(*adbxe);
         delete adbxe;
     }
