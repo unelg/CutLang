@@ -540,6 +540,20 @@ double dzof( dbxParticle* apart){
     DEBUG(" dz:"<<dz<<"\t");
     return dz;
 }
+double edzof( dbxParticle* apart){
+    double dz=999;
+    int ka=apart->nAttribute();
+    if (ka>0) dz=apart->Attribute(4) ;
+    DEBUG(" edz:"<<dz<<"\t");
+    return dz;
+}
+double edxyof( dbxParticle* apart){
+    double dxy=999;
+    int ka=apart->nAttribute();
+    if (ka>1) dxy=apart->Attribute(3) ;
+    DEBUG(" edxy:"<<dxy<<"\t");
+    return dxy;
+}
 double dxyof( dbxParticle* apart){
     double dxy=999;
     int ka=apart->nAttribute();

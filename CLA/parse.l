@@ -122,7 +122,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "relIsoall" return RELISOALL;
 "pfRelIso03all" return PFRELISO03ALL;
 "dxy"|[dD]"0" return DXY;
+"edxy"|[eE][dD]"0" return EDXY;
 "dz" return DZ;
+"edz" return EDZ;
 "dMVAnewDM2017v2" return TAUISO;
 "softId" return SOFTID;
 "applyHM" return APPLYHM;

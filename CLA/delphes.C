@@ -206,9 +206,11 @@ void delphes::Loop(analy_struct aselect, char *extname)
       	      adbxe->setPdgID(-11*electron->Charge );
               adbxe->setParticleIndx(i);
               adbxe->setClusterE(electron->EhadOverEem );
-              adbxe->addAttribute( electron->DZ);
-              adbxe->addAttribute( electron->D0     );
-              adbxe->addAttribute( electron->IsolationVar     );
+              adbxe->addAttribute( electron->DZ);         // 0
+              adbxe->addAttribute( electron->D0     );   // 1
+              adbxe->addAttribute( electron->IsolationVar );
+              adbxe->addAttribute( electron->ErrorD0); //3
+              adbxe->addAttribute( electron->ErrorDZ);  //4
               electrons.push_back(*adbxe);
               delete adbxe;
       }

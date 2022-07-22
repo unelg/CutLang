@@ -93,7 +93,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY DZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
+%token RELISO TAUISO DXY EDXY DZ EDZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
 %token ISTIGHT ISMEDIUM ISLOOSE ISOVAR
 %token TIGHTID PUID GENPARTIDX DECAYMODE
@@ -561,6 +561,22 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | DXY '(' particules ')' {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dxyof,newList,"dxy");
+                                  }
+         | '{' particules '}' EDXY {     vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(edxyof,newList,"edxy");
+                                  }
+         | EDXY '(' particules ')' {     vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(edxyof,newList,"edxy");
+                                  }
+         | '{' particules '}' EDZ {      vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(edzof,newList,"edz");
+                                  }
+         | EDZ '(' particules ')' {      vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(edzof,newList,"edz");
                                   }
          | '{' particules '}' DZ {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -1102,7 +1118,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | MET {  $$=new SFuncNode(met,1, "MET"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
-       | description '(' particules ')' {      cout << "\n*******new variable"<< $1 << " a new description!******\n"; 
+       | description '(' particules ')' {      cout << "\n*******new variable "<< $1 << " is a new description!******\n"; 
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         std::string varname=$1;
