@@ -65,6 +65,8 @@ public :
    Int_t           nelectron_sip3d;
    Double_t        electron_sip3d[NNN];   //[nelectron_sip3d]
    Int_t           numberfatjet;
+   Int_t           nfatjet_e;
+   Float_t         fatjet_e[NNN];   //[nfatjet_e]
    Int_t           nfatjet_pt;
    Float_t         fatjet_pt[NNN];   //[nfatjet_pt]
    Int_t           nfatjet_eta;
@@ -75,26 +77,26 @@ public :
    Float_t         fatjet_ch[NNN];   //[nfatjet_ch]
    Int_t           nfatjet_mass;
    Float_t         fatjet_mass[NNN];   //[nfatjet_mass]
-   Int_t           ncorr_fatjet_pt;
-   Float_t         corr_fatjet_pt[NNN];   //[ncorr_fatjet_pt]
-   Int_t           ncorr_fatjet_ptUp;
-   Float_t         corr_fatjet_ptUp[NNN];   //[ncorr_fatjet_ptUp]
-   Int_t           ncorr_fatjet_ptDown;
-   Float_t         corr_fatjet_ptDown[NNN];   //[ncorr_fatjet_ptDown]
-   Int_t           ncorr_fatjet_ptSmearUp;
-   Float_t         corr_fatjet_ptSmearUp[NNN];   //[ncorr_fatjet_ptSmearUp]
-   Int_t           ncorr_fatjet_ptSmearDown;
-   Float_t         corr_fatjet_ptSmearDown[NNN];   //[ncorr_fatjet_ptSmearDown]
-   Int_t           ncorr_fatjet_mass;
-   Float_t         corr_fatjet_mass[NNN];   //[ncorr_fatjet_mass]
-   Int_t           ncorr_fatjet_e;
-   Float_t         corr_fatjet_e[NNN];   //[ncorr_fatjet_e]
-   Int_t           ncorr_fatjet_px;
-   Float_t         corr_fatjet_px[NNN];   //[ncorr_fatjet_px]
-   Int_t           ncorr_fatjet_py;
-   Float_t         corr_fatjet_py[NNN];   //[ncorr_fatjet_py]
-   Int_t           ncorr_fatjet_pz;
-   Float_t         corr_fatjet_pz[NNN];   //[ncorr_fatjet_pz]
+   Int_t           nfatjet_corrpt;
+   Float_t         fatjet_corrpt[NNN];   //[nfatjet_corrpt]
+   Int_t           nfatjet_corrptUp;
+   Float_t         fatjet_corrptUp[NNN];   //[nfatjet_corrptUp]
+   Int_t           nfatjet_corrptDown;
+   Float_t         fatjet_corrptDown[NNN];   //[nfatjet_corrptDown]
+   Int_t           nfatjet_corrptSmearUp;
+   Float_t         fatjet_corrptSmearUp[NNN];   //[nfatjet_corrptSmearUp]
+   Int_t           nfatjet_corrptSmearDown;
+   Float_t         fatjet_corrptSmearDown[NNN];   //[nfatjet_corrptSmearDown]
+   Int_t           nfatjet_corrmass;
+   Float_t         fatjet_corrmass[NNN];   //[nfatjet_corrmass]
+   Int_t           nfatjet_corre;
+   Float_t         fatjet_corre[NNN];   //[nfatjet_corre]
+   Int_t           nfatjet_corrpx;
+   Float_t         fatjet_corrpx[NNN];   //[nfatjet_corrpx]
+   Int_t           nfatjet_corrpy;
+   Float_t         fatjet_corrpy[NNN];   //[nfatjet_corrpy]
+   Int_t           nfatjet_corrpz;
+   Float_t         fatjet_corrpz[NNN];   //[nfatjet_corrpz]
    Int_t           nfatjet_prunedmass;
    Float_t         fatjet_prunedmass[NNN];   //[nfatjet_prunedmass]
    Int_t           nfatjet_softdropmass;
@@ -105,15 +107,17 @@ public :
    Float_t         fatjet_tau2[NNN];   //[nfatjet_tau2]
    Int_t           nfatjet_tau3;
    Float_t         fatjet_tau3[NNN];   //[nfatjet_tau3]
-   Int_t           nfatjet_subjet1_btag;
-   Float_t         fatjet_subjet1_btag[NNN];   //[nfatjet_subjet1_btag]
-   Int_t           nfatjet_subjet2_btag;
-   Float_t         fatjet_subjet2_btag[NNN];   //[nfatjet_subjet2_btag]
-   Int_t           nfatjet_subjet1_hflav;
-   Float_t         fatjet_subjet1_hflav[NNN];   //[nfatjet_subjet1_hflav]
-   Int_t           nfatjet_subjet2_hflav;
-   Float_t         fatjet_subjet2_hflav[NNN];   //[nfatjet_subjet2_hflav]
+   Int_t           nfatjet_subjet1btag;
+   Float_t         fatjet_subjet1btag[NNN];   //[nfatjet_subjet1btag]
+   Int_t           nfatjet_subjet2btag;
+   Float_t         fatjet_subjet2btag[NNN];   //[nfatjet_subjet2btag]
+   Int_t           nfatjet_subjet1hflav;
+   Float_t         fatjet_subjet1hflav[NNN];   //[nfatjet_subjet1hflav]
+   Int_t           nfatjet_subjet2hflav;
+   Float_t         fatjet_subjet2hflav[NNN];   //[nfatjet_subjet2hflav]
    Int_t           numberjet;
+   Int_t           njet_e;
+   Float_t         jet_e[NNN];   //[njet_e]
    Int_t           njet_pt;
    Float_t         jet_pt[NNN];   //[njet_pt]
    Int_t           njet_eta;
@@ -128,26 +132,26 @@ public :
    Double_t        jet_btag[NNN];   //[njet_btag]
    Int_t           njet_hflav;
    Int_t           jet_hflav[NNN];   //[njet_hflav]
-   Int_t           ncorr_jet_pt;
-   Float_t         corr_jet_pt[NNN];   //[ncorr_jet_pt]
-   Int_t           ncorr_jet_ptUp;
-   Float_t         corr_jet_ptUp[NNN];   //[ncorr_jet_ptUp]
-   Int_t           ncorr_jet_ptDown;
-   Float_t         corr_jet_ptDown[NNN];   //[ncorr_jet_ptDown]
-   Int_t           ncorr_jet_ptSmearUp;
-   Float_t         corr_jet_ptSmearUp[NNN];   //[ncorr_jet_ptSmearUp]
-   Int_t           ncorr_jet_ptSmearDown;
-   Float_t         corr_jet_ptSmearDown[NNN];   //[ncorr_jet_ptSmearDown]
-   Int_t           ncorr_jet_mass;
-   Float_t         corr_jet_mass[NNN];   //[ncorr_jet_mass]
-   Int_t           ncorr_jet_e;
-   Float_t         corr_jet_e[NNN];   //[ncorr_jet_e]
-   Int_t           ncorr_jet_px;
-   Float_t         corr_jet_px[NNN];   //[ncorr_jet_px]
-   Int_t           ncorr_jet_py;
-   Float_t         corr_jet_py[NNN];   //[ncorr_jet_py]
-   Int_t           ncorr_jet_pz;
-   Float_t         corr_jet_pz[NNN];   //[ncorr_jet_pz]
+   Int_t           njet_corrpt;
+   Float_t         jet_corrpt[NNN];   //[njet_corrpt]
+   Int_t           njet_corrptUp;
+   Float_t         jet_corrptUp[NNN];   //[njet_corrptUp]
+   Int_t           njet_corrptDown;
+   Float_t         jet_corrptDown[NNN];   //[njet_corrptDown]
+   Int_t           njet_corrptSmearUp;
+   Float_t         jet_corrptSmearUp[NNN];   //[njet_corrptSmearUp]
+   Int_t           njet_corrptSmearDown;
+   Float_t         jet_corrptSmearDown[NNN];   //[njet_corrptSmearDown]
+   Int_t           njet_corrmass;
+   Float_t         jet_corrmass[NNN];   //[njet_corrmass]
+   Int_t           njet_corre;
+   Float_t         jet_corre[NNN];   //[njet_corre]
+   Int_t           njet_corrpx;
+   Float_t         jet_corrpx[NNN];   //[njet_corrpx]
+   Int_t           njet_corrpy;
+   Float_t         jet_corrpy[NNN];   //[njet_corrpy]
+   Int_t           njet_corrpz;
+   Float_t         jet_corrpz[NNN];   //[njet_corrpz]
    Float_t         btag_Weight;
    Float_t         btag_WeightUp;
    Float_t         btag_WeightDn;
@@ -338,6 +342,8 @@ public :
    TBranch        *b_nelectron_sip3d;   //!
    TBranch        *b_electron_sip3d;   //!
    TBranch        *b_numberfatjet;   //!
+   TBranch        *b_nfatjet_e;   //!
+   TBranch        *b_fatjet_e;   //!
    TBranch        *b_nfatjet_pt;   //!
    TBranch        *b_fatjet_pt;   //!
    TBranch        *b_nfatjet_eta;   //!
@@ -348,26 +354,26 @@ public :
    TBranch        *b_fatjet_ch;   //!
    TBranch        *b_nfatjet_mass;   //!
    TBranch        *b_fatjet_mass;   //!
-   TBranch        *b_ncorr_fatjet_pt;   //!
-   TBranch        *b_corr_fatjet_pt;   //!
-   TBranch        *b_ncorr_fatjet_ptUp;   //!
-   TBranch        *b_corr_fatjet_ptUp;   //!
-   TBranch        *b_ncorr_fatjet_ptDown;   //!
-   TBranch        *b_corr_fatjet_ptDown;   //!
-   TBranch        *b_ncorr_fatjet_ptSmearUp;   //!
-   TBranch        *b_corr_fatjet_ptSmearUp;   //!
-   TBranch        *b_ncorr_fatjet_ptSmearDown;   //!
-   TBranch        *b_corr_fatjet_ptSmearDown;   //!
-   TBranch        *b_ncorr_fatjet_mass;   //!
-   TBranch        *b_corr_fatjet_mass;   //!
-   TBranch        *b_ncorr_fatjet_e;   //!
-   TBranch        *b_corr_fatjet_e;   //!
-   TBranch        *b_ncorr_fatjet_px;   //!
-   TBranch        *b_corr_fatjet_px;   //!
-   TBranch        *b_ncorr_fatjet_py;   //!
-   TBranch        *b_corr_fatjet_py;   //!
-   TBranch        *b_ncorr_fatjet_pz;   //!
-   TBranch        *b_corr_fatjet_pz;   //!
+   TBranch        *b_nfatjet_corrpt;   //!
+   TBranch        *b_fatjet_corrpt;   //!
+   TBranch        *b_nfatjet_corrptUp;   //!
+   TBranch        *b_fatjet_corrptUp;   //!
+   TBranch        *b_nfatjet_corrptDown;   //!
+   TBranch        *b_fatjet_corrptDown;   //!
+   TBranch        *b_nfatjet_corrptSmearUp;   //!
+   TBranch        *b_fatjet_corrptSmearUp;   //!
+   TBranch        *b_nfatjet_corrptSmearDown;   //!
+   TBranch        *b_fatjet_corrptSmearDown;   //!
+   TBranch        *b_nfatjet_corrmass;   //!
+   TBranch        *b_fatjet_corrmass;   //!
+   TBranch        *b_nfatjet_corre;   //!
+   TBranch        *b_fatjet_corre;   //!
+   TBranch        *b_nfatjet_corrpx;   //!
+   TBranch        *b_fatjet_corrpx;   //!
+   TBranch        *b_nfatjet_corrpy;   //!
+   TBranch        *b_fatjet_corrpy;   //!
+   TBranch        *b_nfatjet_corrpz;   //!
+   TBranch        *b_fatjet_corrpz;   //!
    TBranch        *b_nfatjet_prunedmass;   //!
    TBranch        *b_fatjet_prunedmass;   //!
    TBranch        *b_nfatjet_softdropmass;   //!
@@ -378,15 +384,17 @@ public :
    TBranch        *b_fatjet_tau2;   //!
    TBranch        *b_nfatjet_tau3;   //!
    TBranch        *b_fatjet_tau3;   //!
-   TBranch        *b_nfatjet_subjet1_btag;   //!
-   TBranch        *b_fatjet_subjet1_btag;   //!
-   TBranch        *b_nfatjet_subjet2_btag;   //!
-   TBranch        *b_fatjet_subjet2_btag;   //!
-   TBranch        *b_nfatjet_subjet1_hflav;   //!
-   TBranch        *b_fatjet_subjet1_hflav;   //!
-   TBranch        *b_nfatjet_subjet2_hflav;   //!
-   TBranch        *b_fatjet_subjet2_hflav;   //!
+   TBranch        *b_nfatjet_subjet1btag;   //!
+   TBranch        *b_fatjet_subjet1btag;   //!
+   TBranch        *b_nfatjet_subjet2btag;   //!
+   TBranch        *b_fatjet_subjet2btag;   //!
+   TBranch        *b_nfatjet_subjet1hflav;   //!
+   TBranch        *b_fatjet_subjet1hflav;   //!
+   TBranch        *b_nfatjet_subjet2hflav;   //!
+   TBranch        *b_fatjet_subjet2hflav;   //!
    TBranch        *b_numberjet;   //!
+   TBranch        *b_njet_e;   //!
+   TBranch        *b_jet_e;   //!
    TBranch        *b_njet_pt;   //!
    TBranch        *b_jet_pt;   //!
    TBranch        *b_njet_eta;   //!
@@ -401,26 +409,26 @@ public :
    TBranch        *b_jet_btag;   //!
    TBranch        *b_njet_hflav;   //!
    TBranch        *b_jet_hflav;   //!
-   TBranch        *b_ncorr_jet_pt;   //!
-   TBranch        *b_corr_jet_pt;   //!
-   TBranch        *b_ncorr_jet_ptUp;   //!
-   TBranch        *b_corr_jet_ptUp;   //!
-   TBranch        *b_ncorr_jet_ptDown;   //!
-   TBranch        *b_corr_jet_ptDown;   //!
-   TBranch        *b_ncorr_jet_ptSmearUp;   //!
-   TBranch        *b_corr_jet_ptSmearUp;   //!
-   TBranch        *b_ncorr_jet_ptSmearDown;   //!
-   TBranch        *b_corr_jet_ptSmearDown;   //!
-   TBranch        *b_ncorr_jet_mass;   //!
-   TBranch        *b_corr_jet_mass;   //!
-   TBranch        *b_ncorr_jet_e;   //!
-   TBranch        *b_corr_jet_e;   //!
-   TBranch        *b_ncorr_jet_px;   //!
-   TBranch        *b_corr_jet_px;   //!
-   TBranch        *b_ncorr_jet_py;   //!
-   TBranch        *b_corr_jet_py;   //!
-   TBranch        *b_ncorr_jet_pz;   //!
-   TBranch        *b_corr_jet_pz;   //!
+   TBranch        *b_njet_corrpt;   //!
+   TBranch        *b_jet_corrpt;   //!
+   TBranch        *b_njet_corrptUp;   //!
+   TBranch        *b_jet_corrptUp;   //!
+   TBranch        *b_njet_corrptDown;   //!
+   TBranch        *b_jet_corrptDown;   //!
+   TBranch        *b_njet_corrptSmearUp;   //!
+   TBranch        *b_jet_corrptSmearUp;   //!
+   TBranch        *b_njet_corrptSmearDown;   //!
+   TBranch        *b_jet_corrptSmearDown;   //!
+   TBranch        *b_njet_corrmass;   //!
+   TBranch        *b_jet_corrmass;   //!
+   TBranch        *b_njet_corre;   //!
+   TBranch        *b_jet_corre;   //!
+   TBranch        *b_njet_corrpx;   //!
+   TBranch        *b_jet_corrpx;   //!
+   TBranch        *b_njet_corrpy;   //!
+   TBranch        *b_jet_corrpy;   //!
+   TBranch        *b_njet_corrpz;   //!
+   TBranch        *b_jet_corrpz;   //!
    TBranch        *b_btag_Weight;   //!
    TBranch        *b_btag_WeightUp;   //!
    TBranch        *b_btag_WeightDn;   //!
@@ -613,6 +621,7 @@ Long64_t newpoet::LoadTree(Long64_t entry)
    if (centry < 0) return centry;
    if (fChain->GetTreeNumber() != fCurrent) {
       fCurrent = fChain->GetTreeNumber();
+      //Notify();
    }
    return centry;
 }
@@ -677,6 +686,8 @@ void newpoet::Init(TChain *tree)
    fChain->SetBranchAddress("nelectron_sip3d", &nelectron_sip3d, &b_nelectron_sip3d);
    fChain->SetBranchAddress("electron_sip3d", electron_sip3d, &b_electron_sip3d);
    fChain->SetBranchAddress("numberfatjet", &numberfatjet, &b_numberfatjet);
+   fChain->SetBranchAddress("nfatjet_e", &nfatjet_e, &b_nfatjet_e);
+   fChain->SetBranchAddress("fatjet_e", fatjet_e, &b_fatjet_e);
    fChain->SetBranchAddress("nfatjet_pt", &nfatjet_pt, &b_nfatjet_pt);
    fChain->SetBranchAddress("fatjet_pt", fatjet_pt, &b_fatjet_pt);
    fChain->SetBranchAddress("nfatjet_eta", &nfatjet_eta, &b_nfatjet_eta);
@@ -687,26 +698,26 @@ void newpoet::Init(TChain *tree)
    fChain->SetBranchAddress("fatjet_ch", fatjet_ch, &b_fatjet_ch);
    fChain->SetBranchAddress("nfatjet_mass", &nfatjet_mass, &b_nfatjet_mass);
    fChain->SetBranchAddress("fatjet_mass", fatjet_mass, &b_fatjet_mass);
-   fChain->SetBranchAddress("ncorr_fatjet_pt", &ncorr_fatjet_pt, &b_ncorr_fatjet_pt);
-   fChain->SetBranchAddress("corr_fatjet_pt", corr_fatjet_pt, &b_corr_fatjet_pt);
-   fChain->SetBranchAddress("ncorr_fatjet_ptUp", &ncorr_fatjet_ptUp, &b_ncorr_fatjet_ptUp);
-   fChain->SetBranchAddress("corr_fatjet_ptUp", corr_fatjet_ptUp, &b_corr_fatjet_ptUp);
-   fChain->SetBranchAddress("ncorr_fatjet_ptDown", &ncorr_fatjet_ptDown, &b_ncorr_fatjet_ptDown);
-   fChain->SetBranchAddress("corr_fatjet_ptDown", corr_fatjet_ptDown, &b_corr_fatjet_ptDown);
-   fChain->SetBranchAddress("ncorr_fatjet_ptSmearUp", &ncorr_fatjet_ptSmearUp, &b_ncorr_fatjet_ptSmearUp);
-   fChain->SetBranchAddress("corr_fatjet_ptSmearUp", corr_fatjet_ptSmearUp, &b_corr_fatjet_ptSmearUp);
-   fChain->SetBranchAddress("ncorr_fatjet_ptSmearDown", &ncorr_fatjet_ptSmearDown, &b_ncorr_fatjet_ptSmearDown);
-   fChain->SetBranchAddress("corr_fatjet_ptSmearDown", corr_fatjet_ptSmearDown, &b_corr_fatjet_ptSmearDown);
-   fChain->SetBranchAddress("ncorr_fatjet_mass", &ncorr_fatjet_mass, &b_ncorr_fatjet_mass);
-   fChain->SetBranchAddress("corr_fatjet_mass", corr_fatjet_mass, &b_corr_fatjet_mass);
-   fChain->SetBranchAddress("ncorr_fatjet_e", &ncorr_fatjet_e, &b_ncorr_fatjet_e);
-   fChain->SetBranchAddress("corr_fatjet_e", corr_fatjet_e, &b_corr_fatjet_e);
-   fChain->SetBranchAddress("ncorr_fatjet_px", &ncorr_fatjet_px, &b_ncorr_fatjet_px);
-   fChain->SetBranchAddress("corr_fatjet_px", corr_fatjet_px, &b_corr_fatjet_px);
-   fChain->SetBranchAddress("ncorr_fatjet_py", &ncorr_fatjet_py, &b_ncorr_fatjet_py);
-   fChain->SetBranchAddress("corr_fatjet_py", corr_fatjet_py, &b_corr_fatjet_py);
-   fChain->SetBranchAddress("ncorr_fatjet_pz", &ncorr_fatjet_pz, &b_ncorr_fatjet_pz);
-   fChain->SetBranchAddress("corr_fatjet_pz", corr_fatjet_pz, &b_corr_fatjet_pz);
+   fChain->SetBranchAddress("nfatjet_corrpt", &nfatjet_corrpt, &b_nfatjet_corrpt);
+   fChain->SetBranchAddress("fatjet_corrpt", fatjet_corrpt, &b_fatjet_corrpt);
+   fChain->SetBranchAddress("nfatjet_corrptUp", &nfatjet_corrptUp, &b_nfatjet_corrptUp);
+   fChain->SetBranchAddress("fatjet_corrptUp", fatjet_corrptUp, &b_fatjet_corrptUp);
+   fChain->SetBranchAddress("nfatjet_corrptDown", &nfatjet_corrptDown, &b_nfatjet_corrptDown);
+   fChain->SetBranchAddress("fatjet_corrptDown", fatjet_corrptDown, &b_fatjet_corrptDown);
+   fChain->SetBranchAddress("nfatjet_corrptSmearUp", &nfatjet_corrptSmearUp, &b_nfatjet_corrptSmearUp);
+   fChain->SetBranchAddress("fatjet_corrptSmearUp", fatjet_corrptSmearUp, &b_fatjet_corrptSmearUp);
+   fChain->SetBranchAddress("nfatjet_corrptSmearDown", &nfatjet_corrptSmearDown, &b_nfatjet_corrptSmearDown);
+   fChain->SetBranchAddress("fatjet_corrptSmearDown", fatjet_corrptSmearDown, &b_fatjet_corrptSmearDown);
+   fChain->SetBranchAddress("nfatjet_corrmass", &nfatjet_corrmass, &b_nfatjet_corrmass);
+   fChain->SetBranchAddress("fatjet_corrmass", fatjet_corrmass, &b_fatjet_corrmass);
+   fChain->SetBranchAddress("nfatjet_corre", &nfatjet_corre, &b_nfatjet_corre);
+   fChain->SetBranchAddress("fatjet_corre", fatjet_corre, &b_fatjet_corre);
+   fChain->SetBranchAddress("nfatjet_corrpx", &nfatjet_corrpx, &b_nfatjet_corrpx);
+   fChain->SetBranchAddress("fatjet_corrpx", fatjet_corrpx, &b_fatjet_corrpx);
+   fChain->SetBranchAddress("nfatjet_corrpy", &nfatjet_corrpy, &b_nfatjet_corrpy);
+   fChain->SetBranchAddress("fatjet_corrpy", fatjet_corrpy, &b_fatjet_corrpy);
+   fChain->SetBranchAddress("nfatjet_corrpz", &nfatjet_corrpz, &b_nfatjet_corrpz);
+   fChain->SetBranchAddress("fatjet_corrpz", fatjet_corrpz, &b_fatjet_corrpz);
    fChain->SetBranchAddress("nfatjet_prunedmass", &nfatjet_prunedmass, &b_nfatjet_prunedmass);
    fChain->SetBranchAddress("fatjet_prunedmass", fatjet_prunedmass, &b_fatjet_prunedmass);
    fChain->SetBranchAddress("nfatjet_softdropmass", &nfatjet_softdropmass, &b_nfatjet_softdropmass);
@@ -717,15 +728,17 @@ void newpoet::Init(TChain *tree)
    fChain->SetBranchAddress("fatjet_tau2", fatjet_tau2, &b_fatjet_tau2);
    fChain->SetBranchAddress("nfatjet_tau3", &nfatjet_tau3, &b_nfatjet_tau3);
    fChain->SetBranchAddress("fatjet_tau3", fatjet_tau3, &b_fatjet_tau3);
-   fChain->SetBranchAddress("nfatjet_subjet1_btag", &nfatjet_subjet1_btag, &b_nfatjet_subjet1_btag);
-   fChain->SetBranchAddress("fatjet_subjet1_btag", fatjet_subjet1_btag, &b_fatjet_subjet1_btag);
-   fChain->SetBranchAddress("nfatjet_subjet2_btag", &nfatjet_subjet2_btag, &b_nfatjet_subjet2_btag);
-   fChain->SetBranchAddress("fatjet_subjet2_btag", fatjet_subjet2_btag, &b_fatjet_subjet2_btag);
-   fChain->SetBranchAddress("nfatjet_subjet1_hflav", &nfatjet_subjet1_hflav, &b_nfatjet_subjet1_hflav);
-   fChain->SetBranchAddress("fatjet_subjet1_hflav", fatjet_subjet1_hflav, &b_fatjet_subjet1_hflav);
-   fChain->SetBranchAddress("nfatjet_subjet2_hflav", &nfatjet_subjet2_hflav, &b_nfatjet_subjet2_hflav);
-   fChain->SetBranchAddress("fatjet_subjet2_hflav", fatjet_subjet2_hflav, &b_fatjet_subjet2_hflav);
+   fChain->SetBranchAddress("nfatjet_subjet1btag", &nfatjet_subjet1btag, &b_nfatjet_subjet1btag);
+   fChain->SetBranchAddress("fatjet_subjet1btag", fatjet_subjet1btag, &b_fatjet_subjet1btag);
+   fChain->SetBranchAddress("nfatjet_subjet2btag", &nfatjet_subjet2btag, &b_nfatjet_subjet2btag);
+   fChain->SetBranchAddress("fatjet_subjet2btag", fatjet_subjet2btag, &b_fatjet_subjet2btag);
+   fChain->SetBranchAddress("nfatjet_subjet1hflav", &nfatjet_subjet1hflav, &b_nfatjet_subjet1hflav);
+   fChain->SetBranchAddress("fatjet_subjet1hflav", fatjet_subjet1hflav, &b_fatjet_subjet1hflav);
+   fChain->SetBranchAddress("nfatjet_subjet2hflav", &nfatjet_subjet2hflav, &b_nfatjet_subjet2hflav);
+   fChain->SetBranchAddress("fatjet_subjet2hflav", fatjet_subjet2hflav, &b_fatjet_subjet2hflav);
    fChain->SetBranchAddress("numberjet", &numberjet, &b_numberjet);
+   fChain->SetBranchAddress("njet_e", &njet_e, &b_njet_e);
+   fChain->SetBranchAddress("jet_e", jet_e, &b_jet_e);
    fChain->SetBranchAddress("njet_pt", &njet_pt, &b_njet_pt);
    fChain->SetBranchAddress("jet_pt", jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("njet_eta", &njet_eta, &b_njet_eta);
@@ -740,26 +753,26 @@ void newpoet::Init(TChain *tree)
    fChain->SetBranchAddress("jet_btag", jet_btag, &b_jet_btag);
    fChain->SetBranchAddress("njet_hflav", &njet_hflav, &b_njet_hflav);
    fChain->SetBranchAddress("jet_hflav", jet_hflav, &b_jet_hflav);
-   fChain->SetBranchAddress("ncorr_jet_pt", &ncorr_jet_pt, &b_ncorr_jet_pt);
-   fChain->SetBranchAddress("corr_jet_pt", corr_jet_pt, &b_corr_jet_pt);
-   fChain->SetBranchAddress("ncorr_jet_ptUp", &ncorr_jet_ptUp, &b_ncorr_jet_ptUp);
-   fChain->SetBranchAddress("corr_jet_ptUp", corr_jet_ptUp, &b_corr_jet_ptUp);
-   fChain->SetBranchAddress("ncorr_jet_ptDown", &ncorr_jet_ptDown, &b_ncorr_jet_ptDown);
-   fChain->SetBranchAddress("corr_jet_ptDown", corr_jet_ptDown, &b_corr_jet_ptDown);
-   fChain->SetBranchAddress("ncorr_jet_ptSmearUp", &ncorr_jet_ptSmearUp, &b_ncorr_jet_ptSmearUp);
-   fChain->SetBranchAddress("corr_jet_ptSmearUp", corr_jet_ptSmearUp, &b_corr_jet_ptSmearUp);
-   fChain->SetBranchAddress("ncorr_jet_ptSmearDown", &ncorr_jet_ptSmearDown, &b_ncorr_jet_ptSmearDown);
-   fChain->SetBranchAddress("corr_jet_ptSmearDown", corr_jet_ptSmearDown, &b_corr_jet_ptSmearDown);
-   fChain->SetBranchAddress("ncorr_jet_mass", &ncorr_jet_mass, &b_ncorr_jet_mass);
-   fChain->SetBranchAddress("corr_jet_mass", corr_jet_mass, &b_corr_jet_mass);
-   fChain->SetBranchAddress("ncorr_jet_e", &ncorr_jet_e, &b_ncorr_jet_e);
-   fChain->SetBranchAddress("corr_jet_e", corr_jet_e, &b_corr_jet_e);
-   fChain->SetBranchAddress("ncorr_jet_px", &ncorr_jet_px, &b_ncorr_jet_px);
-   fChain->SetBranchAddress("corr_jet_px", corr_jet_px, &b_corr_jet_px);
-   fChain->SetBranchAddress("ncorr_jet_py", &ncorr_jet_py, &b_ncorr_jet_py);
-   fChain->SetBranchAddress("corr_jet_py", corr_jet_py, &b_corr_jet_py);
-   fChain->SetBranchAddress("ncorr_jet_pz", &ncorr_jet_pz, &b_ncorr_jet_pz);
-   fChain->SetBranchAddress("corr_jet_pz", corr_jet_pz, &b_corr_jet_pz);
+   fChain->SetBranchAddress("njet_corrpt", &njet_corrpt, &b_njet_corrpt);
+   fChain->SetBranchAddress("jet_corrpt", jet_corrpt, &b_jet_corrpt);
+   fChain->SetBranchAddress("njet_corrptUp", &njet_corrptUp, &b_njet_corrptUp);
+   fChain->SetBranchAddress("jet_corrptUp", jet_corrptUp, &b_jet_corrptUp);
+   fChain->SetBranchAddress("njet_corrptDown", &njet_corrptDown, &b_njet_corrptDown);
+   fChain->SetBranchAddress("jet_corrptDown", jet_corrptDown, &b_jet_corrptDown);
+   fChain->SetBranchAddress("njet_corrptSmearUp", &njet_corrptSmearUp, &b_njet_corrptSmearUp);
+   fChain->SetBranchAddress("jet_corrptSmearUp", jet_corrptSmearUp, &b_jet_corrptSmearUp);
+   fChain->SetBranchAddress("njet_corrptSmearDown", &njet_corrptSmearDown, &b_njet_corrptSmearDown);
+   fChain->SetBranchAddress("jet_corrptSmearDown", jet_corrptSmearDown, &b_jet_corrptSmearDown);
+   fChain->SetBranchAddress("njet_corrmass", &njet_corrmass, &b_njet_corrmass);
+   fChain->SetBranchAddress("jet_corrmass", jet_corrmass, &b_jet_corrmass);
+   fChain->SetBranchAddress("njet_corre", &njet_corre, &b_njet_corre);
+   fChain->SetBranchAddress("jet_corre", jet_corre, &b_jet_corre);
+   fChain->SetBranchAddress("njet_corrpx", &njet_corrpx, &b_njet_corrpx);
+   fChain->SetBranchAddress("jet_corrpx", jet_corrpx, &b_jet_corrpx);
+   fChain->SetBranchAddress("njet_corrpy", &njet_corrpy, &b_njet_corrpy);
+   fChain->SetBranchAddress("jet_corrpy", jet_corrpy, &b_jet_corrpy);
+   fChain->SetBranchAddress("njet_corrpz", &njet_corrpz, &b_njet_corrpz);
+   fChain->SetBranchAddress("jet_corrpz", jet_corrpz, &b_jet_corrpz);
    fChain->SetBranchAddress("btag_Weight", &btag_Weight, &b_btag_Weight);
    fChain->SetBranchAddress("btag_WeightUp", &btag_WeightUp, &b_btag_WeightUp);
    fChain->SetBranchAddress("btag_WeightDn", &btag_WeightDn, &b_btag_WeightDn);
@@ -905,4 +918,4 @@ void newpoet::Init(TChain *tree)
    fChain->SetBranchAddress("ntau_idantimutight", &ntau_idantimutight, &b_ntau_idantimutight);
    fChain->SetBranchAddress("tau_idantimutight", tau_idantimutight, &b_tau_idantimutight);
 }
-#endif
+#endif // #ifdef newpoet_cxx

@@ -135,8 +135,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "decayMode" return DECAYMODE;
 "HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 "sieie" return SIEIE;
-"subjet1_btag" return  SUBJET1_BTAG;
-"subjet2_btag" return  SUBJET2_BTAG;
+"subjet1btag" return  SUBJET1_BTAG;
+"subjet2btag" return  SUBJET2_BTAG;
 "mvaTight" return MVATIGHT;  
 "mvaLoose" return MVALOOSE;   
 
