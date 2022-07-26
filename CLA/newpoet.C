@@ -65,7 +65,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     //temporary variables
     TVector2 met;
   DEBUG("Begin filling\n");
-            met.SetMagPhi( met_e,  met_phi);
+            met.SetMagPhi( met_pt,  met_phi);
 
     //temporary variables
     TLorentzVector  alv;
