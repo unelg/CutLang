@@ -20,9 +20,10 @@ void PrintEfficiencies(TH1D* effh, bool skip_histos) {
     eff = effh->GetBinContent(s) / effh->GetBinContent(s-1);
     err = sqrt(eff*(1-eff)/effh->GetBinContent(s-1));
     TString cutname=effh->GetXaxis()->GetBinLabel(s);
+    cutname.Remove(66);
     if ( cutname.Sizeof() <1) break;
     if (skip_histos) { if ( cutname.BeginsWith("[Histo]") ) continue; }
-    cout << setw(66) << effh->GetXaxis()->GetBinLabel(s)
+    cout << setw(66) << cutname
 	 << " : "  << setw(6) << setprecision(4) << eff
 	 << " +- " << setw(9) << setprecision(3) << err 
          << setw(6) <<" evt: "<<setw(8)<< setprecision(10)<<effh->GetBinContent(s) <<endl; 
