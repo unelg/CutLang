@@ -65,7 +65,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     //temporary variables
     TVector2 met;
   DEBUG("Begin filling\n");
-
+            met.SetMagPhi( met_e,  met_phi);
 
     //temporary variables
     TLorentzVector  alv;
@@ -140,6 +140,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxj = new dbxJet(alv);
         adbxj->setCharge(jet_ch[i]);
         adbxj->setParticleIndx(i);
+        adbxj->setFlavor(jet_btag[i]); // btag distro
         jets.push_back(*adbxj);
         delete adbxj;
     }
