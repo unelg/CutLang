@@ -14,7 +14,7 @@ using namespace std;
 //takes care of Minimizing/Maximizing
 class SearchNode : public Node{
 private:
-    static std::map< std::string, unordered_set<int> > FORBIDDEN_INDEX_LIST;
+    static std::map< std::string, pair < int, unordered_set<int> > > FORBIDDEN_INDEX_LIST;
     double (*f)(double, double);
     vector<int> bestIndices;
     std::vector<myParticle *> particles;//pointers to particles in all nodes that have to be changed

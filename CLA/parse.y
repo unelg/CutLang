@@ -49,7 +49,7 @@ vector<Node*> TmpIDList;
 vector<Node*> VariableList;
 vector<float> chist_a, chist_stat_p, chist_stat_n, chist_syst_p, chist_syst_n;
 std::string current_cntHistDef;
-std::map< std::string, unordered_set<int>  >SearchNode::FORBIDDEN_INDEX_LIST; 
+std::map< std::string, std::pair<int, unordered_set<int> > >SearchNode::FORBIDDEN_INDEX_LIST; 
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
 std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 std::map< std::string, vector<Node*> > criteriaBank;

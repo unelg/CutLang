@@ -36,11 +36,13 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
           ip_N[kk]=Ns[kk];
           oi[kk]=Ns[kk];
          tip[kk]=types[kk];
+         DEBUG(kk<< " t:"<<types[kk]<<"\n");
       }
       for (int kk=Ns.size(); kk<unk_MAX; kk++){
           ip_N[kk]=ip_N[kk-1];
           oi[kk]=oi[kk-1];
           tip[kk]=tip[kk-1];
+         DEBUG(kk<< " t2:"<<tip[kk-1]<<"\n");
       }
 
       int ip[unk_MAX]; 
@@ -52,19 +54,21 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
 
       for(int i=0;i<particles.size();i++){
                     oi[i]=particles.at(i)->index;
-                    DEBUG(" oi:"<<oi[i]<<" ");
+                    if (oi[i]>=0) tip[i]=particles.at(i)->type; // if known particle
+                    DEBUG(" oi:"<<oi[i]<<"  type:"<<tip[i]<<" ");
       }
       int forbidit_size;
-      std::map<string,unordered_set<int> >::iterator forbidit;
+      std::map<string, pair <int, unordered_set<int> > >::iterator forbidit;
 //-----TODO: put a check mechanism
       for (int kk=0; kk<Ns.size(); kk++){
        string ac=acs[kk];
        if ( FORBIDDEN_INDEX_LIST.find(ac) !=FORBIDDEN_INDEX_LIST.end() ){
-        DEBUG("FORBIDDEN_INDEX_LIST is NOT Empty.\n");
+        DEBUG("FORBIDDEN_INDEX_LIST is NOT Empty for:"<< ac<<".\n");
         forbidit=FORBIDDEN_INDEX_LIST.find(ac);
-        forbidit_size=forbidit->second.size();
+        forbidit_size=forbidit->second.second.size(); // check the type!!!!!!!!!!!!
+        tip[kk]=forbidit->second.first;
        } else {
-        DEBUG("FORBIDDEN_INDEX_LIST is Empty.\n");
+        DEBUG("FORBIDDEN_INDEX_LIST is Empty for:"<<ac<<".\n");
         forbidit_size=0;
        }
       }
@@ -105,13 +109,13 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
       // loops start ~~~~~~~~~~~
       DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
       unordered_set<int> Forbidden_Indices;
-      if (forbidit_size > 0) Forbidden_Indices=forbidit->second;
+      if (forbidit_size > 0) Forbidden_Indices=forbidit->second.second;
           DEBUG("Before LOOP\n");
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {
-           DEBUG("0:"<<ip[0]<<"\n");
+           DEBUG("0 i:"<<ip[0]<<" t:"<< tip[0]<<"\n");
            if ( Forbidden_Indices.find( ip[0] )!=Forbidden_Indices.end() ) continue;        
            for (ip[1]=ip1_min; ip[1]<ip_N[1]; ip[1]++) {
-           DEBUG("1:"<<ip[1]<<"\n");
+           DEBUG("1 i:"<<ip[1]<<" t:"<< tip[1] <<"\n");
             if (Forbidden_Indices.find( ip[1] )!=Forbidden_Indices.end() ) { DEBUG("FORBIDDEN\n"); continue; }        
             if (particles.size()>1 && (ip[1]==ip[0]) && (tip[0]==tip[1])) { DEBUG("Repeated \n"); continue; }
             if ( (oi[0] == oi[1] ) && (ip[0]>ip[1]) ) { DEBUG("Same OI, repeated\n"); continue; }
@@ -218,7 +222,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         particles.clear();
         left->getParticles(&particles);//should fill with particles pointers no more cast needed
         
-        std::map<string,unordered_set<int> >::iterator forbidit;
+        std::map<string, std::pair<int, unordered_set<int> > >::iterator forbidit;
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
              DEBUG("SearchN Part:"<<i<<" idx:"<<particles.at(i)->index<< " addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<< " type:"<<particles.at(i)->type<<"\n");
@@ -226,11 +230,16 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
              else {
                 forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  ); 
                 if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
-                     DEBUG( particles.at(i)->collection << " was NOT blacklisted, now adding with:"<<  particles.at(i)->index <<"\n");
+                     DEBUG( particles.at(i)->collection << " was NOT blacklisted, now adding with:"<<  particles.at(i)->index 
+							<< " and type:" << particles.at(i)->type <<"\n");
                      unordered_set<int> pippo;
                                         pippo.insert(particles.at(i)->index);
-                     FORBIDDEN_INDEX_LIST.insert(std::pair<string, unordered_set<int> >(particles.at(i)->collection, pippo));
-                } else { forbidit->second.insert(particles.at(i)->index);  DEBUG( particles.at(i)->collection << " found, adding"<< particles.at(i)->index<<"\n"); }
+                     pair<int, unordered_set<int> > tpippo(particles.at(i)->type, pippo);
+                     FORBIDDEN_INDEX_LIST.insert(std::pair<string, pair<int, unordered_set<int> > >(particles.at(i)->collection, tpippo));
+                } else { 
+                        DEBUG( particles.at(i)->collection << " found, adding"<< particles.at(i)->index<<"\n"); 
+			forbidit->second.second.insert(particles.at(i)->index);  
+                }
              }
         }
 
@@ -245,6 +254,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[i])->collection;
                     collections.push_back(ac);
                           types.push_back(type);
+                    DEBUG("will search for:"<<type<<"\n");
                     int Max;
                     switch(type){//assuming all par
                         case muon_t: Max=ao->muos.at(ac).size();break;
@@ -282,12 +292,13 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         forbidit=FORBIDDEN_INDEX_LIST.find( ac );
                         DEBUG("forbidding:"<<bestIndices[i]<<" for "<<ac<<"\n");
                         if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
-                         DEBUG(ac<<" was NOT there, now adding with "<< bestIndices[i] <<"\n");
+                         DEBUG(ac<<" was NOT there, now adding with "<< bestIndices[i] << " t:"<<types[i]<<"\n");
                          unordered_set<int> pippo;
                                             pippo.insert(bestIndices[i]);
-                         FORBIDDEN_INDEX_LIST.insert( std::pair<string, unordered_set<int> >(ac, pippo) );
+                         std::pair<int, unordered_set<int> > tpippo (20, pippo); // NGU better type!!!!!!
+                         FORBIDDEN_INDEX_LIST.insert(std::pair<string, std::pair<int, unordered_set<int> > >(ac, tpippo) );
                         } else {
-                         forbidit->second.insert(bestIndices[i]);
+                         forbidit->second.second.insert(bestIndices[i]);
                         }
                    }
         } else{
@@ -306,9 +317,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 
     void SearchNode::Reset() {
             DEBUG("Clearing ForbiddenIndices on all names:\n");
-            for (std::map<string, unordered_set<int> >::iterator it=FORBIDDEN_INDEX_LIST.begin(); it!=FORBIDDEN_INDEX_LIST.end(); ++it){
+            for (std::map<string, std::pair<int, unordered_set<int> > >::iterator it=FORBIDDEN_INDEX_LIST.begin(); it!=FORBIDDEN_INDEX_LIST.end(); ++it){
              DEBUG( it->first << " clearing \n"); 
-             it->second.clear();
+             it->second.second.clear();
             }
             bestIndices.clear();
             DEBUG("done.\n");
