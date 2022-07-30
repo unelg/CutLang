@@ -64,6 +64,7 @@ int dbxA::ChangeDir(char *dn) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA::setDir(char *dn) {
+//  std::cout<<"~~~~~~~~~~~~~~~~~~~~~="<<dn<<"\n";
   int retval=0;
   TDirectory *ndir= new TDirectory();
   ndir = histoOut->mkdir(dn);

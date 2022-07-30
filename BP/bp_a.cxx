@@ -186,29 +186,6 @@ int BPdbxA:: readAnalysisParams() {
     } // end of first look over ADL file
 
 
-// ---------------------------read CutLang style cuts using lex/yacc
-       NameInitializations={" "," "};
-       TRGValues={1,0,0,0,0};
-       yyin=fopen(CardName,"r");
-       if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
-       cutcount=0;
-       bincount=0;
-       cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap);
-       cout <<"\t Parsing finished.==\n";
-       if (retval){
-         cout << "\nyyParse returns SYNTAX error in the input file.\n";
-         cout << "Offending text is: "<< yytext<<"\n";
-         exit (99); 
-       }
-       cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
-       cout << BinCuts.size() << " Bins\n";
-       TRGe    = TRGValues[0];
-       TRGm    = TRGValues[1];
-       skip_effs    = (bool) TRGValues[2];
-       skip_histos  = (bool) TRGValues[3];
-       systematics_bci = TRGValues[4];
-// ------------------------------------4 is reserved for systematics use.
 
 //-----create the relevant output directory
     if (!algorithmnow) {
@@ -234,6 +211,29 @@ int BPdbxA:: readAnalysisParams() {
 //     }
     }
 
+// ---------------------------read CutLang style cuts using lex/yacc
+       NameInitializations={" "," "};
+       TRGValues={1,0,0,0,0};
+       yyin=fopen(CardName,"r");
+       if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
+       cutcount=0;
+       bincount=0;
+       cout <<"==Parsing started:\t";
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap);
+       cout <<"\t Parsing finished.==\n";
+       if (retval){
+         cout << "\nyyParse returns SYNTAX error in the input file.\n";
+         cout << "Offending text is: "<< yytext<<"\n";
+         exit (99); 
+       }
+       cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
+       cout << BinCuts.size() << " Bins\n";
+       TRGe    = TRGValues[0];
+       TRGm    = TRGValues[1];
+       skip_effs    = (bool) TRGValues[2];
+       skip_histos  = (bool) TRGValues[3];
+       systematics_bci = TRGValues[4];
+// ------------------------------------4 is reserved for systematics use.
 
 //------------------------------------------------------------ACTIONS------------------------
 //---------save in the dir.
