@@ -37,7 +37,7 @@ class AnalysisController {
               std::vector<dbxA*>  todos;
        std::map <string, string>  snull;
               std::map <std::string, AnalysisObjects> anull;
-                             int  mainAnalysis;
+         std::unordered_set<int>  mainAnalyses;
          std::unordered_set<int>  depAnalyses;
                             bool  do_deps;
                             bool  do_RS;

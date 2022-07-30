@@ -30,6 +30,7 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
 	string prereqs=aselect.dependencies;
 	if (prereqs.length()>2 ){
           do_deps=true;
+/*
 	  size_t kol=prereqs.find_first_of(':',0);
 	  if (kol == std::string::npos){ cerr<<"Wrong dependency list format. Use: m:i,j,k \n"; exit (14);}
 	  mainAnalysis= atoi(prereqs.substr(0,kol).c_str());
@@ -41,8 +42,50 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
 	     std::string tmp = depStr.substr(i,n-i);
 	     cout <<"Dep region id:"<<atoi(tmp.c_str() )<<"\n";
              depAnalyses.insert(atoi(tmp.c_str()) );
-	  }
-	} 
+          }
+*/
+          vector<size_t> mainpos;
+          size_t kol = prereqs.find('@', 0);
+          size_t focol=10, focom, deplen;
+	  if (kol == std::string::npos){ cerr<<"Wrong dependency list format. Use: @m:i,j,k \n"; exit (14);}
+          while(kol != std::string::npos && focol != std::string::npos) {
+                focol=prereqs.find_first_of(':',0);
+                size_t leni=focol-kol;
+	//  	cout<<kol<<","<<focol<<" Indep region STR="<<prereqs.substr(1,leni) <<" val="<<atoi(prereqs.substr(1,leni).c_str() ) <<"\n";
+          	int mainAnalysis= atoi(prereqs.substr(1,leni).c_str()); // start at 1 to skip@, and find a number
+                mainAnalyses.insert(mainAnalysis);
+                kol = prereqs.find(':', 0);
+                focol=prereqs.find_first_of('@',kol+1);
+                focom=prereqs.find_first_of(',',kol+1);
+        //        cout << "fo@="<<focol<<" fo,="<<focom<<"\n";
+                if (focol<focom) {
+                 cout << "No dependency.\n";
+                 deplen=0;
+                } else
+                {
+
+                deplen=focol-kol-2;
+       //         cout <<" DepLen="<<deplen<<"\t";
+	  	std::string depStr = prereqs.substr(kol+1, deplen); // NGU..
+        //        cout <<"DepSTR="<<depStr<<"\n";
+
+	  	for (size_t i=0,n; i <= depStr.length(); i=n+1) {
+	   		n = depStr.find_first_of(',',i);
+	   		if (n == std::string::npos) n = depStr.length();
+	     		std::string tmp = depStr.substr(i,n-i);
+        //                cout  << "Dep str="<<tmp<<"\n";
+                        int depregid=atoi(tmp.c_str() );
+                        if (depregid==mainAnalysis) { deplen++; break;}
+	 //    		cout <<"Dep region id="<<depregid<<"\n";
+             		depAnalyses.insert(depregid);
+                        
+		} // end of deps
+                } // end of focol<focom
+                prereqs.erase (prereqs.begin(), prereqs.begin()+focol);
+        //        cout <<"----------------------------------="<<prereqs<<"\n";
+          	kol = prereqs.find_first_of('@', 0);
+                }
+	} // end of prereqs.
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,8 +212,8 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 //     cout << "filling RS:"<<dbxAnalyses[k]->getName()<<" has:"<< (evret<10000? 0 : 1) << " for event:"<<a0.evt.event_no<<"\n" ;
      if(do_RS) dbxAnalyses[k]->addRunLumiInfo(a0.evt.run_no, a0.evt.lumiblk_no ,a0.evt.event_no, evret<10000? 0 : 1);
 //----------------------------------------------
-             if(do_deps) {
-                   if (k==mainAnalysis) {
+             if(do_deps) { 
+                   if (mainAnalyses.find(k) != mainAnalyses.end() ) {   //was k==mainAnalysis
                     mainAresults=evret; // save the results from main;
                     DEBUG("Main at "<<k<<" has evret:"<<evret<<"\n");
                    }

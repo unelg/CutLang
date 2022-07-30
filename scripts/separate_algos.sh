@@ -67,7 +67,7 @@ for an_algo in $algo_list ; do
  
 # echo  $mainalgo ":" $depalgo
  if [[ $mainalgo -gt -1 ]] && [[ $depalgo -eq -1 ]]; then
-   echo -n ${mainalgo}":">> $PWD/out1
+   echo -n "@"${mainalgo}":">> $PWD/out1
  fi
  if [[ $mainalgo -eq -1 ]] && [[ $depalgo -gt -1 ]]; then
    echo -n  $depalgo",">> $PWD/out1

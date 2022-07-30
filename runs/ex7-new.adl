@@ -1,7 +1,7 @@
 #CLA ADL example7
 
 object bbjet : JET
-    select bTag(JET) == 1
+#    select bTag(JET) == 1
     select   pT(JET) > 30
 
 object ljet : JET
@@ -49,17 +49,19 @@ define   totchi : ((m(Top1) - m(Top2))/4.2)^2  + Wchi
 
 #define    btop1 : Wlj1 bb1 
 #define    btop2 : Wlj2 bb2 
-#define   totbchi : (( {btop1}m - { btop2}m )/4.2)^2 + Wchi
+#define   totbchi : (( {btop1}m - { btop2}m )/4.2)^2 + Wlchi
 
 #algo bestbb
 # select   ALL 
 # select   Size(ljet) >= 4
 # select   Size(bbjet) >= 2
 # select   Wlchi  ~= 0
-# select   (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
-## select   Wchi + (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
-## histo    hmWlj1 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj1)
-## histo    hmWlj2 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj2)
+## select   (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
+## select   Wlchi + (( {btop1}m - { btop2}m )/4.2)^2 ~= 0
+# select totbchi ~=0
+# select totbchi <12
+# histo    hmWlj1 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj1)
+# histo    hmWlj2 , "Hadronic W reco (GeV)", 50, 50, 150, m(Wlj2)
 # histo    hmTop1 , "Hadronic top reco (GeV)", 70, 0, 700, m(btop1)
 # histo    hmTop2 , "Hadronic top reco (GeV)", 70, 0, 700, m(btop2)
  
@@ -85,4 +87,11 @@ define   totchi : ((m(Top1) - m(Top2))/4.2)^2  + Wchi
 #  histo    hmASTop1 , "Hadronic top reco after cut(GeV)", 70, 0, 700, mTop1
 #  histo    hmAsTop2 , "Hadronic top reco after cut(GeV)", 70, 0, 700, mTop2
 
-  
+region bestoA
+	besttop
+  	select  m(Top1) [] 150 200 
+
+region bestoB
+	besttop
+  	select  m(Top2) [] 150 200 
+
