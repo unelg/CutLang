@@ -13,7 +13,7 @@ dbxA:: dbxA(char *aname) {
   HFtype=-1;
   sprintf (cname, "%s",aname); // more checks here
 
-  cout << "This is "<<cname<<endl;
+//  cout << "This is "<<cname<<endl;
 
   char tmp[128];
   sprintf (tmp, "histoOut-%s.root",cname);

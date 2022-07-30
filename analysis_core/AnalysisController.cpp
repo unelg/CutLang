@@ -59,14 +59,14 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
                 focom=prereqs.find_first_of(',',kol+1);
         //        cout << "fo@="<<focol<<" fo,="<<focom<<"\n";
                 if (focol<focom) {
-                 cout << "No dependency.\n";
+         //        cout << "No dependency.\n";
                  deplen=0;
                 } else
                 {
 
                 deplen=focol-kol-2;
        //         cout <<" DepLen="<<deplen<<"\t";
-	  	std::string depStr = prereqs.substr(kol+1, deplen); // NGU..
+	  	std::string depStr = prereqs.substr(kol+1, deplen); 
         //        cout <<"DepSTR="<<depStr<<"\n";
 
 	  	for (size_t i=0,n; i <= depStr.length(); i=n+1) {
@@ -76,7 +76,7 @@ AnalysisController::AnalysisController( analy_struct *iselect,  std::map <string
         //                cout  << "Dep str="<<tmp<<"\n";
                         int depregid=atoi(tmp.c_str() );
                         if (depregid==mainAnalysis) { deplen++; break;}
-	 //    		cout <<"Dep region id="<<depregid<<"\n";
+	//     		cout <<"Dep region id="<<depregid<<"\n";
              		depAnalyses.insert(depregid);
                         
 		} // end of deps
@@ -189,14 +189,18 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                int lastpass=0;
                if(do_deps) { // take care to analyses depending on each other
                 if ( depAnalyses.find(k) != depAnalyses.end() ){ // if result is True, this analysis is dependent, get info from 0.
+                   DEBUG("this is a dependent analysis.\n");
                    if (mainAresults < 10000) controlword=mainAresults; // means last cut fails.
                    else {
                       lastpass=1;
                       controlword=(mainAresults-10000);
                    }
                    a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
+                } else { // if I am below I have an independent analysis aftr a dep one.
+                   a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
+                   controlword=0;
                 }
-               } else {
+               } else {// below is all independent
                    a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                }
 //----------------------------------------------
