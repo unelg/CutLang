@@ -27,13 +27,9 @@
   // There is a ROOT directory (TDirectory) called presel.
   // Let's go inside
   f.cd("presel");
-  // ... and// There is a ROOT directory (TDirectory) called presel.
-  // Let's go inside
-  f.cd("presel");
   // ... and check what is there
   f.ls();
-    
-  /* 
+  /*
      There are lots of histograms in the presel directory.  
      Some of them are 1-dimensional (TH1D), which have only one variable.
      Here, the histograms hjet1pt, hjet2pt, hjet3pt, hjet4pt are plotting the transverse moementa of the 1st, 2nd, 3rd and 4th jet in the events.
@@ -41,7 +37,7 @@
      Those histograms can be accessed with their names.  In C++, they are pointer.
      There is also a 2-dimensional histogram hmetjet1pt.  We will get to that one shortly. 
   */
-  
+
   // We start with setting the style of the histograms.
   // Let's increase the line width of the histograms.
   hjet1pt->SetLineWidth(2);
