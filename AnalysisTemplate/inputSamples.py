@@ -170,21 +170,25 @@ outf.write('\n## BACKGROUNDS ##\n')
 subsoutf.write('\n## BACKGROUNDS ##\n')
 subswoutf.write('\n## BACKGROUNDS ##\n')
 
+R = []
+incount = 1
 if len(bgs) == 0:
     outf.write('\n# No background given!\n')
 else:
+    # incount += 1
     for i in range(len(bgs)):
         if len(bgs[i][1]) == 0:
             outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
             outf.write('typeId-'+str(bg[i])+'-Drawable = '+str(bgs[i][2])+'\n')
             outf.write('typeId-'+str(bg[i])+'-Style = '+bgs[i][3]+'\n\n')
         else:
-            R = []
-            for j in range(len(bgs[i][1])):
-                R.append(str(bg[i])+str(j+1))
+            # for j in range(len(bgs[i][1])):
+            #     R.append(str(j+1))
+            #     incount += 1
+            incount += len(bgs[i][1])
             outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
-            outf.write('typeId-'+str(bg[i])+'-Rmin = '+R[0]+'\n')
-            outf.write('typeId-'+str(bg[i])+'-Rmax = '+R[-1]+'\n')        
+            outf.write('typeId-'+str(bg[i])+'-Rmin = '+str(incount-len(bgs[i][1]))+'\n')
+            outf.write('typeId-'+str(bg[i])+'-Rmax = '+str(incount-1)+'\n')        
             outf.write('typeId-'+str(bg[i])+'-Drawable = '+str(bgs[i][2])+'\n')
             outf.write('typeId-'+str(bg[i])+'-Style = '+bgs[i][3]+'\n\n')
 
@@ -208,18 +212,21 @@ subswoutf.write('\n## SIGNALS ##\n')
 if len(signals) == 0:
     outf.write('\n# No signals given!\n')
 else:
+    # incount += 1
     for i in range(len(signals)):
+
         if len(signals[i][1]) == 0:
             outf.write('\ntypeId-'+str(signal[i])+'-N = '+signals[i][0]+'\n')
             outf.write('typeId-'+str(signal[i])+'-Drawable = '+str(signals[i][2])+'\n')
             outf.write('typeId-'+str(signal[i])+'-Style = '+signals[i][3]+'\n\n')
         else:
-            R = []
-            for j in range(len(signals[i][1])):
-                R.append(str(signal[i])+str(j+1))
+            # for j in range(len(signals[i][1])):
+                # R.append(str(j+1))
+                # incount += 1
+            incount += len(signals[i][1])
             outf.write('\ntypeId-'+str(signal[i])+'-N = '+signals[i][0]+'\n')
-            outf.write('typeId-'+str(signal[i])+'-Rmin = '+R[0]+'\n')
-            outf.write('typeId-'+str(signal[i])+'-Rmax = '+R[-1]+'\n')        
+            outf.write('typeId-'+str(signal[i])+'-Rmin = '+str(incount-len(signals[i][1]))+'\n')
+            outf.write('typeId-'+str(signal[i])+'-Rmax = '+str(incount-1)+'\n')        
             outf.write('typeId-'+str(signal[i])+'-Drawable = '+str(signals[i][2])+'\n')
             outf.write('typeId-'+str(signal[i])+'-Style = '+signals[i][3]+'\n\n')
 
