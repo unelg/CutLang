@@ -1,0 +1,70 @@
+stages:
+  - build
+  - test
+  - tag
+
+
+build_image:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "Building image - $IMAGE_DESTINATION_TAG"
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile ${CI_PROJECT_DIR}/Dockerfile --destination ${IMAGE_DESTINATION_TAG}
+    - echo "Image pushed successfully to ${IMAGE_DESTINATION_TAG}"
+  variables:
+    IMAGE_DESTINATION_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+
+test_image:
+  stage: test
+  image:
+    name: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+    entrypoint: [""]
+  script:
+    - root --version
+    - python --version --version
+    - command -v python
+    - command -v pip
+    - g++ --version
+    - cmake --version
+    - make --version
+    - command -v kinit
+    - command -v klist
+    - command -v xrootd
+    - xrootd -h
+    - command -v xrdcp
+    - xrdcp --version
+    - python tests/rf308_normintegration2d.py
+    - echo "Ensure robust to resourcing of $(find /usr/local/ -name 'thisroot.sh')"
+    - python -c 'import numpy as np; print(np)'
+    - . $(find /usr/local/ -name "thisroot.sh")
+    - python -c 'import numpy as np; print(np)'
+    - python -c 'import pyxrootd; print(pyxrootd)'
+    - python -c 'import XRootD; print(XRootD)'
+    - python -c 'from XRootD import client; print(client.FileSystem("root://someserver:1094"))'
+    - command -v curl
+    - ls -l /bin/sh
+
+tag_image:
+  stage: tag
+  image: alpine
+  only:
+    refs:
+      - master
+  script:
+    - apk add --no-cache skopeo
+    - skopeo login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - skopeo login --username "$DOCKER_HUB_USER" --password "$DOCKER_HUB_PASSWORD" "$DOCKER_REGISTRY"
+    - skopeo copy "docker://${IMAGE_ORIGIN_TAG}" "docker://${IMAGE_DESTINATION_TAG}"
+    - skopeo copy "docker://${IMAGE_ORIGIN_TAG}" "docker://${IMAGE_DESTINATION_PYTHON}"
+    - skopeo copy "docker://${IMAGE_ORIGIN_TAG}" "docker://${IMAGE_DESTINATION_LATEST}"
+    - skopeo copy "docker://${IMAGE_ORIGIN_TAG}" "docker://${DOCKER_REGISTRY}/${DOCKER_GROUP}/${CI_PROJECT_NAME}"
+  variables:
+    IMAGE_ORIGIN_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+    IMAGE_DESTINATION_TAG: ${CI_REGISTRY_IMAGE}:root6.26.04
+    IMAGE_DESTINATION_PYTHON: ${CI_REGISTRY_IMAGE}:root6.26.04-python3.10
+    IMAGE_DESTINATION_LATEST: ${CI_REGISTRY_IMAGE}:latest
+    DOCKER_GROUP: cmscloud
+    DOCKER_REGISTRY: docker.io

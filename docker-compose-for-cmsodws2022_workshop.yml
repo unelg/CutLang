@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  src:
+    container_name: cutlang-root-vnc
+    image: cutlang/cutlang-root-vnc
+    build:
+      context: .
+      dockerfile: ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/Dockerfile
+    volumes:
+      - ./:/src
+    ports:
+      - "5901:5901"
+      - "6080:6080"
+      - "8888:8888"
