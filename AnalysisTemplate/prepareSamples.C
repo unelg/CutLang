@@ -7,17 +7,14 @@ R__LOAD_LIBRARY(../analysis_core/TStringAddFloat_cpp);
 
 
 float nxs(TString ps,       TString sample) { return ReadCard( TString(ps+ TString::Format("%s","xsectionsEdited.txt")).Data(),sample); }
-float nxsCorree(TString ps, TString sample) { return ReadCard( TString(ps+ TString::Format("%s","xsectionCorrections.txt")).Data(),sample); }
 float sumOfWeights(TString ps, TString sample) { return ReadCard( TString(ps+ TString::Format("%s","sumOfWeights.txt")).Data(),sample); }
-//float sumOfWeights_r9364(TString ps, TString sample) { return ReadCard( TString(ps+ TString::Format("%s","sumOfWeights_nominal.txt")).Data(),sample); }
-
-
 
 float xs(string sample) { float xsl=ReadCard("xsections.txt",sample.c_str(),0,0);
-    cout <<"Reading:"<<sample<<"\n";
+    //cout <<"Reading:"<<sample<<"\n";
     if (xsl==0) cout << "Warning! Xsection is ZERO (0)\n";
     return xsl;
 }
+//##############################################################3
 string sampleName(string modeldir, int i, string info="N") {
     string file="sample-" + modeldir;
     file += ".txt";
@@ -38,6 +35,7 @@ string sampleName(string modeldir, int i, string info="N") {
     }
     return astr;
 }
+
 string typeName(string modeldir, int i, string info="N") {
     string file="sample-" + modeldir;
     file += ".txt";
@@ -62,41 +60,8 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     }
     string modeldir= ReadCardString("ANA_DEFS","MODEL","FF_1",0);
     string MCmodeldir= ReadCardString("ANA_DEFS","DIRECTORY",modeldir.c_str(),0);
-    
-    // ECM only 7,8 or 14 is defined
-    int cme=(int)ReadCard("ANA_DEFS","ECM",7,0);
-    string ecm= "xxx"; string secm="xxx";
-    switch (cme) {
-        case 7 : ecm= "bg7";   secm="si7_";  break ;
-        case 8 : ecm= "bg8";   secm="si8_";  break ;
-        case 13 : ecm= "bg13"; secm="si13_"; break ;
-        case 14 : ecm= "bg14"; secm="si14_"; break ;
-        default : cout << "UNKNOWN Center of Mass Energy "<<endl; exit (-1);
-    }
-    
-    // the quark mass selection, with the fit ranges
-    TString sigtype=secm;
-            sigtype+=qm;
-/*
-    switch (qm) {
-        case 200 : sigtype+=qm; break;
-        case 600 : sigtype+=qm; break;
-        case 700 :sigtype+=qm; break;
-        case 800 :sigtype+=qm; break;
-        case 900 :sigtype+=qm; break;
-        case 1000 : sigtype+=qm; break;
-        case 1100 : sigtype+=qm; break;
-        case 1200 : sigtype+=qm; break;
-        case 1400 : sigtype+=qm; break;
-        case 1600 : sigtype+=qm; break;
-        case 1800 : sigtype+=qm; break;
-        default  : cout << "qm must be a positive integer ="<< qm<<" \n"; exit (-1);
-    }
-*/    
-    string file="sample-" + modeldir;
-    file += ".txt";
-    
-    string sffx = ".root";     // file suffix for all files
+
+    string sffx = ".root";   // file suffix for all files
     string pffx ;
     
     string datafilename;
@@ -111,10 +76,10 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     pffx+="/";
     qcdfilename+=datafilename;
     qcdfilename+="_unc.root" ; // QCD
-    
-    if (datafilename.find("data") != std::string::npos ) {
+
+    if (datafilename.find("data") != std::string::npos || 1 ) { // NGU##########
         datafilename+=".root"    ;
-        samples[0] = new Sample( datafilename.c_str(),    modeldir,  kBlack, -1, 0 ); //data -1: no SF and 0: no smooth
+        samples[0] = new Sample( datafilename.c_str(),    MCmodeldir,  kBlack, -1, 0 ); //data -1: no SF and 0: no smooth
     } else {
         std::string subdelimiter = "/";
         size_t apos=datafilename.find(subdelimiter);
@@ -125,7 +90,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
         datafilename+=".root"    ;
         samples[0] = new Sample( datafilename.c_str(),    modeldir,  kBlack, injcoef, 0 ); //data
     }
-    samples[1] = new Sample( qcdfilename.c_str(),     modeldir,  kBlack, -1 );//QCD and uncertainty
+    samples[1] = new Sample( datafilename.c_str(),     MCmodeldir,  kBlack, -1 );//QCD and uncertainty NGUUUUUUU
     cout<<"Lumi: "<<lumi<< " nsamples: "<<nsamples<<endl;
     
     //example
@@ -134,7 +99,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     for(int loop=2; loop<nsamples-2;loop++)
     {
         string sampleRunNo=sampleName(modeldir,loop,"F");
-        cout << "Loop:"<<loop << " str:"<<sampleRunNo <<"\n";
+ /////       cout << "Loop:"<<loop << "  "<< pffx<<sampleRunNo<<"\n";
         std::string delimiter = "_";
         std::string token1 = sampleRunNo.substr(1, sampleRunNo.find(delimiter));
         std::string token2 = sampleRunNo.substr(2, sampleRunNo.find(delimiter));
@@ -149,7 +114,6 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
             samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
             cout <<"Sample:"<< loop << " SRno:"<< sampleRunNo << " "<< lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo) ) ) <<" ok\n";
         } else {
-//            samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(nxs(pffx, sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
             samples[ loop] = new Sample( pffx+sampleRunNo+sffx, MCmodeldir, kBlack, lumi*(xs(sampleRunNo) / (sumOfWeights(pffx, sampleRunNo)) ) ); //renorm
 #ifdef __VERBOSE
             cout << "loop number is: " << loop << endl;
@@ -165,10 +129,12 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
         }
     }
     cout <<"loop ends...\n";
-    
-    
-    samples[nsamples-2] = new Sample( pffx+sigtype.Data() +sffx,  MCmodeldir, kRed , skf*lumi*xs(sigtype.Data())/ (sumOfWeights(pffx, sigtype.Data())) ); //signal MC
-    cout << "Signal MC is from :" << pffx+sigtype.Data() +sffx<<endl;
+
+// qm contains the index
+    TString sigtype=sampleName(modeldir,qm,"TTS");
+
+    samples[nsamples-2] = new Sample( pffx+sigtype.Data()+sffx, MCmodeldir, kRed, skf*lumi*xs(sigtype.Data())/(sumOfWeights(pffx, sigtype.Data())) ); //signal MC
+    cout << nsamples-2<<" Signal MC is from :" << pffx+sigtype.Data() +sffx<<endl;
     samples[nsamples-1] = new Sample( pffx+ sigtype.Data()+sffx, MCmodeldir, kRed , skf*lumi*xs(sigtype.Data())/ (sumOfWeights(pffx, sigtype.Data())) ); //the SAME signal MC to inject in injection tests
     
     // ALL SAMPLES ARE NOW READ.
@@ -180,7 +146,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     {
         string atype=typeName(modeldir,typeL,"N");
 #ifdef __VERBOSE__
-        cout << "atype is " << atype << endl;
+        cout << typeL << " atype is " << atype << endl;
 #endif
         type[typeL] = new SampleType(atype);
         type[typeL]->SetDrawable( typeValue(modeldir,typeL,"Drawable")  ); // draw or not
@@ -188,13 +154,13 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
         
         int Rmin = 0, Rmax=0;
         int Typesa=0, Typesb=0;
-        if ((typeL > 0) && (atype != "QCD") && (atype!="Uncert"))  { // data and QCD are not user modifiable
+        if ((typeL > 0) && (atype != "aQCD") && (atype!="Uncert"))  { // data and QCD are not user modifiable
             Rmin = typeValue(modeldir,typeL,"Rmin");
             Rmax = typeValue(modeldir,typeL,"Rmax");
             if (Rmin == 0 && Rmax == 0) { Typesa = typeValue(modeldir,typeL,"Typesa"); cout << Typesa << endl;
                 Typesb = typeValue(modeldir,typeL,"Typesb");
             }
-        } else if (atype == "QCD" || atype == "Uncert") {Rmin=1; Rmax=1;}
+        } else if (atype == "aQCD" || atype == "Uncert") {Rmin=1; Rmax=1;}
         
         if ( Rmin < 0 ) Rmin = Rmin + nsamples;
         if ( Rmax < 0 ) Rmax = Rmax + nsamples;

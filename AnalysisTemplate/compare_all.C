@@ -7,6 +7,7 @@
 #include "../AnalysisTemplate/prepareSamples.C"
 #include "../AnalysisTemplate/CalculateLimits.C"
 #include "../AnalysisTemplate/pricontents.C"
+#include "../AnalysisTemplate/HistoAutoRange.C"
 
 R__LOAD_LIBRARY(../analysis_core/TStringAddFloat_cpp)
 
@@ -28,18 +29,18 @@ R__LOAD_LIBRARY(../analysis_core/TStringAddFloat_cpp)
 //111,113,115,121,123,125,131,133,135,145,245,215,235,225,345,445,545,645,716,736,726,916,936,926,1115,1215,955,1025,1026,1016
 //20,21,22,23//299,295,298,294,296,292,1115, reweighting histos
 //115,117,125,127,135,137,145,147,215,217,225,227,235,237,245,247,545,546
-void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,295", int disc=0, int ratio=1, bool saveHist=true, bool printEffs=false, bool saveEffs=false)
+void compare_all( int qm=1200, float lumi=-1, float skf=1, string psetstr="8", int disc=0, int ratio=1, bool saveHist=false, bool printEffs=false, bool saveEffs=false)
 {
-//gROOT->Reset();
-//gStyle->SetPalette(1);
+gROOT->Reset();
+gStyle->SetPalette(1);
 
 //	if ( gROOT->GetListOfGlobals()->FindObject("atlasStyle") == 0 ) {
 		gROOT->ProcessLine(".x ../analysis_core/rootlogon.C");
 		gROOT->SetStyle("ATLAS"); gROOT->ForceStyle();
 //	}
-#ifndef __HistoAutoRange__
-	gROOT->LoadMacro("../AnalysisTemplate/HistoAutoRange.C");
-#endif
+//#ifndef __HistoAutoRange__
+//	gROOT->LoadMacro("../AnalysisTemplate/HistoAutoRange.C");
+//#endif
 	bool verbose=true;
 	const int measured_limit=(int) ReadCard("ANA_DEFS","OBSERVEDLIMIT",1,0); // 0: dont do, 1: do measured=observed limit calculation
 	string btag_txt="uB"; //0B:b-tag veto  1B: 1-btag    uB: untagged
@@ -74,6 +75,8 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 	const int ntypes = ReadCard(sampleFile.c_str(),"TYPESIZE",14,0);
 	SampleType *sampletypes[ntypes];
         cout << "We will have "<< ntypes << " different types made from "<<nsamples<<" samples.\n";
+
+
 
 	int CLs_CLsb=(int)ReadCard("ANA_DEFS","STAT",0,0);
 	int leptonindex=(int)ReadCard("ANA_DEFS","CHANNEL",0,0);
@@ -157,14 +160,14 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 /*  THE BELOW IS AN EXAMPLE ON HOW TO MANUALLY IMPOSE DIFFERENT HISTOGRAM RANGES.
 */
 	float ymax0,ymax1;
-	float yscale=1.9;
+	float yscale=2.0;
 	if (log_graphs) yscale=3;
 	if (nvars>1) for (unsigned i=0; i<ntypes; ++i) {
 		for (unsigned jk=0; jk<nvars; jk++) {
 			if (histos[i][jk]!=0 ) {
 				histos[i][0]->SetYTitle("");
 				ymax0 = histos[i][jk]->GetBinContent(histos[i][jk]->GetMaximumBin());
-					histos[i][jk]->GetYaxis()->SetRangeUser(1.,ymax0*yscale);
+					histos[i][jk]->GetYaxis()->SetRangeUser(1, ymax0*yscale);
 			}
 		}
 	}
@@ -229,12 +232,12 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 		        TsLumi += TString::Format("%2.1f",lumi/1E3);
 		        TsLumi +=" fb^{-1}";
 		float location= 0.77;
-		lLumi.DrawLatex( location,0.44,TsLumi);
+		lLumi.DrawLatex( location,0.70,TsLumi);
 		if ( ecm == 8 ) {
-			lLumi.DrawLatex( location,0.36,"#sqrt{s}=8 TeV");
+			lLumi.DrawLatex( location,0.66,"#sqrt{s}=8 TeV");
 		}
 		if ( ecm == 13 ) {
-			lLumi.DrawLatex( location,0.36,"#sqrt{s}=13 TeV");
+			lLumi.DrawLatex( location,0.66,"#sqrt{s}=13 TeV");
 		}
 //		lLumi.SetTextSize(0.1);
 
@@ -256,7 +259,8 @@ void compare_all( int qm=1000, float lumi=-1, float skf=1, string psetstr="299,2
 
 	c1[kplot]->Update(); // force y-scale settings
 	cout  <<"~~~~~~~~ 3 should we calculate a chi2 or KS test for data-mc comparison?"<<endl;
-//	HistoAutoRange();
+	//HistoAutoRange();
+	//HistoAutoLogScale();
 
 // Save the canvas
         TString fn="comp-";

@@ -52,8 +52,8 @@
 #define __MAXNSMPLS__ 99  // Also the max number of types allowed
 
 #define __MAXNGOOD__ 10
-int goodcolors[__MAXNGOOD__]={kBlack,kCyan,kRed,kBlue,kYellow,kGreen,kMagenta-8, kBlue-6,1,42};
-int goodstyles[__MAXNGOOD__]={1,1,1,1,1,1,1,1,2,1};
+int goodcolors[__MAXNGOOD__]={kBlack,kCyan,kRed,kBlue,kMagenta+2,kGreen+4,kMagenta-8, kBlue-6,25,42};
+int goodstyles[__MAXNGOOD__]={1     ,1,     1,     1,      1,     4,      1,        1,      2  ,1};
 
 
 class SampleType {
@@ -357,8 +357,8 @@ TCanvas* compare(Sample **samples, const int nsamples,
                  )
 {
     gROOT->cd();
-    //gStyle->SetPalette(1);
-    set_rainbow_style();
+    gStyle->SetPalette(1);
+   // set_rainbow_style();
 
     if (nvars==0) return 0;
 
@@ -467,6 +467,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
             hist[j][i]->SetMarkerColor(samples[j]->histcol);
             hist[j][i]->SetMarkerStyle(20+j%11); // using markers 20-30
             hist[j][i]->SetMarkerSize(0.3); // using markers 20-30
+            if (j==0) hist[j][i]->SetMarkerSize(1.2);
             if ( is2d ) {
                 hist[j][i]->SetFillColor(samples[j]->histcol);
                 hist[j][i]->SetFillStyle(samples[j]->histcol+3000); }
@@ -477,12 +478,13 @@ TCanvas* compare(Sample **samples, const int nsamples,
                 hist[j][i]->SetXTitle(hist[j][i]->GetTitle());
             leg->AddEntry(hist[j][i], samples[j]->GetTitle(), is2d?"lf":isHO?"l":"lp");
             if (ph.minmax != 0) { // if min and max bounds are given
-                //        cout << "Xaxis limits for:"<< ph.vars[i] <<" as: " << ph.minmax[2*i]<< " _ "<< ph.minmax[2*i+1]<<"\n";
+   //                     cout << "Xaxis limits for:"<< ph.vars[i] <<" as: " << ph.minmax[2*i]<< " _ "<< ph.minmax[2*i+1]<<"\n";
                 if (ph.minmax[2*i] != ph.minmax[2*i+1])
                     hist[j][i]->SetAxisRange(ph.minmax[2*i], ph.minmax[2*i+1], "X");
             }
-            if ( nsamplesplotted==0 ) {             hist[j][i]->Draw(drawopt);
-                // cout <<"hereeeeee\n";
+            if ( nsamplesplotted==0 ) {             
+                   hist[j][i]->Draw(drawopt);
+     //            cout <<"Main plot\n";
             }
             else hist[j][i]->Draw(drawopt+"same");
             nsamplesplotted++;
@@ -519,7 +521,8 @@ TCanvas* compare(Sample **samples, const int nsamples,
         for ( int it=0; it<ntypes; ++it ) // over the types.
             if ( type[it]->IsDrawable() ){
                 if ( typesum[it][i] != 0 ) {
-                    //        cout << "This is type ID:"<<it<<" and name:"<<type[it]->GetName()<< " leg:"<<type[it]->GetLeg()<<endl;
+                    //	cout<< type[it]->GetForcedStyle() << " for:"<<it<<" "<<type[it]->GetName() <<endl;
+                    //  cout << "This is type ID:"<<it<<" and name:"<<type[it]->GetName()<< " leg:"<<type[it]->GetLeg()<<endl;
                     string fstyle=type[it]->GetForcedStyle();
                     string myl=type[it]->GetLeg() ;
                     if ( fstyle != "" ) {leg->AddEntry(typesum[it][i], ( myl== "xxx")?type[it]->GetName().Data():myl.c_str(), (fstyle=="e1")?"le":(fstyle=="b1")?"l":"f");
@@ -536,16 +539,16 @@ TCanvas* compare(Sample **samples, const int nsamples,
                         typesum[it][i]->SetLineColor(goodcolors[ndrawn]);
                         typesum[it][i]->SetMarkerColor(goodcolors[ndrawn]);
                         // NGU to fill histograms or not
-                        if ((goodcolors[ndrawn]!=1) && (fstyle != "b1")) typesum[it][i]->SetFillColor(goodcolors[ndrawn]);
+                        if ((goodcolors[ndrawn]!=1) && (fstyle == "f1")) typesum[it][i]->SetFillColor(goodcolors[ndrawn]);
                         typesum[it][i]->SetLineStyle(goodstyles[ndrawn]);
                     }
 #ifdef __stacksums__
                     TString ahisname=typesum[it][i]->GetName();
-                    bool sibg= ahisname.Contains("signal",TString::kIgnoreCase) || ahisname.Contains("SMbg",TString::kIgnoreCase) || ahisname.Contains("Uncert",TString::kIgnoreCase);
+                    bool sibg= ahisname.Contains("TT",TString::kIgnoreCase) || ahisname.Contains("SMbg",TString::kIgnoreCase) || ahisname.Contains("Uncert",TString::kIgnoreCase);
                     //        cout<< (double)typesum[it][i]->GetEntries() << " for:"<<it<<" "<<type[it]->GetName() <<endl;
                     if ( it > 0 && (!sibg) )  {
                         stack_vals[it]=(double)typesum[it][i]->GetMaximum();
-                        typesum[it][i]->SetFillColor(goodcolors[ndrawn]); //force filling for stacks
+                    //    typesum[it][i]->SetFillColor(goodcolors[ndrawn]); //force filling for stacks DONT!!!!! NGU
                     }
 #endif
                     if ( is2d  ) {
@@ -559,14 +562,15 @@ TCanvas* compare(Sample **samples, const int nsamples,
                     if ( !is2d && (fstyle != "")) {
                         drawopt=fstyle;
                         if (fstyle == "b1")  {
-                            typesum[it][i]->SetMarkerSize(0.1);
+                            typesum[it][i]->SetMarkerSize(0.4);
+                            typesum[it][i]->SetLineWidth(5);
                             drawopt="hist";
                         }
                         if (fstyle == "e2" || fstyle == "e3" || fstyle == "e4"  ) {
-                            typesum[it][i]->SetFillStyle(3004);
-                            typesum[it][i]->SetFillColor(kBlue+2);
+                            typesum[it][i]->SetFillStyle(3444);
+                            typesum[it][i]->SetFillColor(kBlue-10);
                             typesum[it][i]->SetLineColor(kWhite);
-                            typesum[it][i]->SetLineWidth(4);
+                            typesum[it][i]->SetLineWidth(3);
                             typesum[it][i]->SetMarkerSize(0.01);
                             if (ahisname.Contains("Uncert",TString::kIgnoreCase)) { uncert_plot=true; uncert_typId=it;}
                         }
@@ -588,18 +592,21 @@ TCanvas* compare(Sample **samples, const int nsamples,
             if (stack_vals[stack_idx[it]] >1)
                 stack->Add(typesum[  stack_idx[it] ][i]);
         }
-        stack->SetMinimum(0.9);
-        stack->SetMaximum(4*stack->GetMaximum() );
+        stack->SetMinimum(0.1);
+        stack->SetMaximum(3*stack->GetMaximum() );
         if (ph.minmax != 0) {
             stack->Draw("BAR"); // dummy one
-            if (ph.minmax[2*i] != ph.minmax[2*i+1])
+            if (ph.minmax[2*i] != ph.minmax[2*i+1]) {
                 stack->GetXaxis()->SetRangeUser(ph.minmax[2*i], ph.minmax[2*i+1]);
+ //             cout <<ph.minmax[2*i]<<"......"<<ph.minmax[2*i+1]<<"\n";
+            }
         }
         stack->Draw("BAR"); //realone
         //stack->GetYaxis()->SetTitle(typesum[0][i]->GetYaxis()->GetTitle());
         //stack->GetXaxis()->SetTitle(typesum[0][i]->GetXaxis()->GetTitle());
         for(int it=0; it<ntypes; it++){
             if (  type[it]->IsDrawable() ){
+                if ( type[it]->GetForcedStyle() =="b1" ) typesum[it][i]->Draw("histsame");
                 if ( type[it]->GetForcedStyle() =="e1" ) typesum[it][i]->Draw("e1same");
                 if ( type[it]->GetForcedStyle() =="e2" ) typesum[it][i]->Draw("e2same");
                 if ( type[it]->GetForcedStyle() =="e3" ) typesum[it][i]->Draw("e3same");
@@ -611,7 +618,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
 #ifdef __singlelegend__
         if ( nplotted==ncols )
 #endif
-            leg->SetShadowColor(0);
+        leg->SetShadowColor(0);
         leg->SetFillColor(0);
         leg->SetMargin(0.4);
         leg->SetBorderSize(0);
@@ -623,7 +630,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
         //  { HistoAutoLogScale(); HistoAutoRange(); }
 
         if ((histU>-1) && (histD>-1)){ // from Erdo
- //            cout << "Up:"<<histU<<"  Down:"<<histD<<"\n";
+             cout << "Up:"<<histU<<"  Down:"<<histD<<"\n";
             // I plotted all my curves with different colors and such now I can do the ratio
             compCanv->cd(nplotted);
             TPad *pad2= new TPad("pad2","pad2",0,0.0  , 1,0.25);
@@ -645,13 +652,13 @@ TCanvas* compare(Sample **samples, const int nsamples,
             histRatio->SetMarkerColor(1);
             histRatio->SetFillStyle(3013);
             histRatio->SetFillColor(kGray+1);
-            histRatio->SetLineColor(kMagenta-8);
+            histRatio->SetLineColor(kMagenta+4);
             histRatio->GetXaxis()->SetLabelFont(43); //fontHocamvsd
-            histRatio->GetXaxis()->SetLabelSize(10); //in pixels
+            histRatio->GetXaxis()->SetLabelSize(16); //in pixels
             histRatio->GetXaxis()->SetTitleSize(0.18); //in pixels
             histRatio->GetXaxis()->SetTitleOffset(.7); //in pixels
             histRatio->GetYaxis()->SetLabelFont(43); //font
-            histRatio->GetYaxis()->SetLabelSize(7); //in pixels
+            histRatio->GetYaxis()->SetLabelSize(9); //in pixels
             histRatio->GetYaxis()->SetTitleFont(103); //font
             histRatio->GetYaxis()->SetTitleSize(13); //in pixels
             histRatio->GetYaxis()->SetTitleOffset(2); //in pixels
@@ -670,9 +677,9 @@ TCanvas* compare(Sample **samples, const int nsamples,
                 if (histRatio->GetBinContent(nbin) != 0 && reversedHistRatio->GetBinContent(nbin) != 0){
                     difference = (histRatio->GetBinContent(nbin)-1)*(histRatio->GetBinContent(nbin)-1)/histRatio->GetBinError(nbin)/histRatio->GetBinError(nbin);
                     sumOfDifference = sumOfDifference + difference;
-/*
-                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
-*/
+
+//                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
+
                }
             }
             
@@ -680,7 +687,8 @@ TCanvas* compare(Sample **samples, const int nsamples,
             char totalDifferencePerNDF[40];
 
             sprintf(totalDifferencePerNDF,"#chi^2/ndf = %g / %d",sumOfDifference,lastNonZeroBin-firstNonZeroBin-zeroBins);
-            TPaveText *t1 = new TPaveText(1.0,0.5,0.1,0.1,"nb");
+            //TPaveText *t1 = new TPaveText(1.0,0.5,0.1,0.1,"nb");
+            TPaveText *t1 = new TPaveText(0.82,0.61,0.94,0.85,"nbNDC");
             t1->AddText(totalDifferencePerNDF);
             t1->SetTextColor(kBlue);
             t1->SetTextSize(0.08);
@@ -712,7 +720,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
                 xmax=ph.minmax[2*i+1]; }
             TLine *l0=  new TLine(xmin, 1, xmax, 1);
             l0->SetLineStyle(3);
-            l0->SetLineColor(2);
+            l0->SetLineColor(kRed+1);
             l0->Draw();
 
 
