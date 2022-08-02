@@ -49,6 +49,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "weight_jvt"    return SYST_W_JVT;
 "weight_leptonSF" return SYST_W_LEP;
 "weight_BTagSF"   return SYST_W_BTAG;
+"RunYear" return RUNYEAR;
+"mcChannelNumber" return MCCHANNELNUMBER;
 "eventno" return EVENTNO;
 
 [pP][rR][iI][nN][tT] return PRINT;
