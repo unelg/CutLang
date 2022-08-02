@@ -52,6 +52,8 @@ typedef struct evt_data
 		run_no       =right.run_no;
 		lumiblk_no   =right.lumiblk_no;
 		event_no     =right.event_no;
+		ChannelNo    =right.ChannelNo;
+		RunYear      =right.RunYear;
 		TRG_e        =right.TRG_e;
 		TRG_m        =right.TRG_m;
 		TRG_j        =right.TRG_j;
@@ -80,53 +82,11 @@ typedef struct evt_data
 		 weight_xsec =right.weight_xsec; 
                 weight_jvt   =right.weight_jvt;
        weight_sherpa_22_vjets=right.weight_sherpa_22_vjets;
-             weight_pileup_UP=right.weight_pileup_UP;
-           weight_pileup_DOWN=right.weight_pileup_DOWN;
-                weight_leptonSF_EL_SF_Trigger_UP = right.weight_leptonSF_EL_SF_Trigger_UP;
-                weight_leptonSF_EL_SF_Trigger_DOWN = right.weight_leptonSF_EL_SF_Trigger_DOWN;
-                weight_leptonSF_EL_SF_Reco_UP = right.weight_leptonSF_EL_SF_Reco_UP;
-                weight_leptonSF_EL_SF_Reco_DOWN = right.weight_leptonSF_EL_SF_Reco_DOWN;
-                weight_leptonSF_EL_SF_ID_UP = right.weight_leptonSF_EL_SF_ID_UP;
-                weight_leptonSF_EL_SF_ID_DOWN = right.weight_leptonSF_EL_SF_ID_DOWN;
-                weight_leptonSF_EL_SF_Isol_UP = right.weight_leptonSF_EL_SF_Isol_UP;
-                weight_leptonSF_EL_SF_Isol_DOWN = right.weight_leptonSF_EL_SF_Isol_DOWN;
-                weight_leptonSF_MU_SF_Trigger_STAT_UP = right.weight_leptonSF_MU_SF_Trigger_STAT_UP;
-                weight_leptonSF_MU_SF_Trigger_STAT_DOWN = right.weight_leptonSF_MU_SF_Trigger_STAT_DOWN;
-                weight_leptonSF_MU_SF_Trigger_SYST_UP = right.weight_leptonSF_MU_SF_Trigger_SYST_UP;
-                weight_leptonSF_MU_SF_Trigger_SYST_DOWN = right.weight_leptonSF_MU_SF_Trigger_SYST_DOWN;
-                weight_leptonSF_MU_SF_ID_STAT_UP = right.weight_leptonSF_MU_SF_ID_STAT_UP;
-                weight_leptonSF_MU_SF_ID_STAT_DOWN = right.weight_leptonSF_MU_SF_ID_STAT_DOWN;
-                weight_leptonSF_MU_SF_ID_SYST_UP = right.weight_leptonSF_MU_SF_ID_SYST_UP;
-                weight_leptonSF_MU_SF_ID_SYST_DOWN = right.weight_leptonSF_MU_SF_ID_SYST_DOWN;
-                weight_leptonSF_MU_SF_ID_STAT_LOWPT_UP = right.weight_leptonSF_MU_SF_ID_STAT_LOWPT_UP;
-                weight_leptonSF_MU_SF_ID_STAT_LOWPT_DOWN = right.weight_leptonSF_MU_SF_ID_STAT_LOWPT_DOWN;
-                weight_leptonSF_MU_SF_ID_SYST_LOWPT_UP = right.weight_leptonSF_MU_SF_ID_SYST_LOWPT_UP;
-                weight_leptonSF_MU_SF_ID_SYST_LOWPT_DOWN = right.weight_leptonSF_MU_SF_ID_SYST_LOWPT_DOWN;
-                weight_leptonSF_MU_SF_Isol_STAT_UP = right.weight_leptonSF_MU_SF_Isol_STAT_UP;
-                weight_leptonSF_MU_SF_Isol_STAT_DOWN = right.weight_leptonSF_MU_SF_Isol_STAT_DOWN;
-                weight_leptonSF_MU_SF_Isol_SYST_UP = right.weight_leptonSF_MU_SF_Isol_SYST_UP;
-                weight_leptonSF_MU_SF_Isol_SYST_DOWN = right.weight_leptonSF_MU_SF_Isol_SYST_DOWN;
-                weight_leptonSF_MU_SF_TTVA_STAT_UP = right.weight_leptonSF_MU_SF_TTVA_STAT_UP;
-                weight_leptonSF_MU_SF_TTVA_STAT_DOWN = right.weight_leptonSF_MU_SF_TTVA_STAT_DOWN;
-                weight_leptonSF_MU_SF_TTVA_SYST_UP = right.weight_leptonSF_MU_SF_TTVA_SYST_UP;
-                weight_leptonSF_MU_SF_TTVA_SYST_DOWN = right.weight_leptonSF_MU_SF_TTVA_SYST_DOWN;
-                weight_bTagSF_77_extrapolation_up = right.weight_bTagSF_77_extrapolation_up;
-                weight_bTagSF_77_extrapolation_down = right.weight_bTagSF_77_extrapolation_down;
-                weight_bTagSF_77_extrapolation_from_charm_up = right.weight_bTagSF_77_extrapolation_from_charm_up;
-                weight_bTagSF_77_extrapolation_from_charm_down = right.weight_bTagSF_77_extrapolation_from_charm_down;
-                weight_jvt_UP = right.weight_jvt_UP;
-                weight_jvt_DOWN = right.weight_jvt_DOWN;
-                weight_bTagSF_77_eigenvars_B_up=right.weight_bTagSF_77_eigenvars_B_up;
-                weight_bTagSF_77_eigenvars_C_up=right.weight_bTagSF_77_eigenvars_C_up;
-                weight_bTagSF_77_eigenvars_Light_up=right.weight_bTagSF_77_eigenvars_Light_up;
-                weight_bTagSF_77_eigenvars_B_down=right.weight_bTagSF_77_eigenvars_B_down;
-                weight_bTagSF_77_eigenvars_C_down=right.weight_bTagSF_77_eigenvars_C_down;
-                weight_bTagSF_77_eigenvars_Light_down=right.weight_bTagSF_77_eigenvars_Light_down;
                 hlt_map=right.hlt_map;
 #endif
 	}
-	unsigned int run_no;
-	unsigned int lumiblk_no;
+	unsigned int run_no, RunYear;
+	unsigned int lumiblk_no, ChannelNo;
 	unsigned int event_no;
 	bool TRG_e, TRG_m, TRG_j;
 	bool badjet;
@@ -146,7 +106,6 @@ typedef struct evt_data
 	float z_vtx_weight;
         double user_evt_weight;
 
-//S.I
    Float_t         weight_mc;
    Float_t         weight_pileup;
    Float_t         weight_leptonSF;
@@ -158,49 +117,7 @@ typedef struct evt_data
    Float_t         weight_sherpa_22_vjets;
    Float_t         weight_pileup_UP;
    Float_t         weight_pileup_DOWN;
-   Float_t         weight_leptonSF_EL_SF_Trigger_UP;
-   Float_t         weight_leptonSF_EL_SF_Trigger_DOWN;
-   Float_t         weight_leptonSF_EL_SF_Reco_UP;
-   Float_t         weight_leptonSF_EL_SF_Reco_DOWN;
-   Float_t         weight_leptonSF_EL_SF_ID_UP;
-   Float_t         weight_leptonSF_EL_SF_ID_DOWN;
-   Float_t         weight_leptonSF_EL_SF_Isol_UP;
-   Float_t         weight_leptonSF_EL_SF_Isol_DOWN;
-   Float_t         weight_leptonSF_MU_SF_Trigger_STAT_UP;
-   Float_t         weight_leptonSF_MU_SF_Trigger_STAT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_Trigger_SYST_UP;
-   Float_t         weight_leptonSF_MU_SF_Trigger_SYST_DOWN;
-   Float_t         weight_leptonSF_MU_SF_ID_STAT_UP;
-   Float_t         weight_leptonSF_MU_SF_ID_STAT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_ID_SYST_UP;
-   Float_t         weight_leptonSF_MU_SF_ID_SYST_DOWN;
-   Float_t         weight_leptonSF_MU_SF_ID_STAT_LOWPT_UP;
-   Float_t         weight_leptonSF_MU_SF_ID_STAT_LOWPT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_ID_SYST_LOWPT_UP;
-   Float_t         weight_leptonSF_MU_SF_ID_SYST_LOWPT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_Isol_STAT_UP;
-   Float_t         weight_leptonSF_MU_SF_Isol_STAT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_Isol_SYST_UP;
-   Float_t         weight_leptonSF_MU_SF_Isol_SYST_DOWN;
-   Float_t         weight_leptonSF_MU_SF_TTVA_STAT_UP;
-   Float_t         weight_leptonSF_MU_SF_TTVA_STAT_DOWN;
-   Float_t         weight_leptonSF_MU_SF_TTVA_SYST_UP;
-   Float_t         weight_leptonSF_MU_SF_TTVA_SYST_DOWN;
-   Float_t         weight_bTagSF_77_extrapolation_up;
-   Float_t         weight_bTagSF_77_extrapolation_down;
-   Float_t         weight_bTagSF_77_extrapolation_from_charm_up;
-   Float_t         weight_bTagSF_77_extrapolation_from_charm_down;
-   Float_t         weight_jvt_UP;
-   Float_t         weight_jvt_DOWN;
 
-   std::vector<float> weight_bTagSF_77_eigenvars_B_up;
-   std::vector<float> weight_bTagSF_77_eigenvars_C_up;
-   std::vector<float> weight_bTagSF_77_eigenvars_Light_up;
-   std::vector<float> weight_bTagSF_77_eigenvars_B_down;
-   std::vector<float> weight_bTagSF_77_eigenvars_C_down;
-   std::vector<float> weight_bTagSF_77_eigenvars_Light_down;
-
-//E S.I.
 
 }evt_data;
 
