@@ -52,7 +52,7 @@
 #define __MAXNSMPLS__ 99  // Also the max number of types allowed
 
 #define __MAXNGOOD__ 10
-int goodcolors[__MAXNGOOD__]={kBlack,kCyan,kRed,kBlue,kMagenta+2,kGreen+4,kMagenta-8, kBlue-6,25,42};
+int goodcolors[__MAXNGOOD__]={kBlack,kMagenta+1,kAzure+8,kOrange+10,kCyan+2,kGreen+4,kRed-8, kBlue-6,25,42};
 int goodstyles[__MAXNGOOD__]={1     ,1,     1,     1,      1,     4,      1,        1,      2  ,1};
 
 
@@ -602,6 +602,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
             }
         }
         stack->Draw("BAR"); //realone
+        stack->GetYaxis()->SetTitle("< Events / GeV >" );
         //stack->GetYaxis()->SetTitle(typesum[0][i]->GetYaxis()->GetTitle());
         //stack->GetXaxis()->SetTitle(typesum[0][i]->GetXaxis()->GetTitle());
         for(int it=0; it<ntypes; it++){
