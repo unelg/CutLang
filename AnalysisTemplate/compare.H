@@ -51,9 +51,9 @@
 #define __MAXNVARS__ 20
 #define __MAXNSMPLS__ 99  // Also the max number of types allowed
 
-#define __MAXNGOOD__ 10
-int goodcolors[__MAXNGOOD__]={kBlack,kMagenta+1,kAzure+8,kOrange+10,kCyan+2,kGreen+4,kRed-8, kBlue-6,25,42};
-int goodstyles[__MAXNGOOD__]={1     ,1,     1,     1,      1,     4,      1,        1,      2  ,1};
+#define __MAXNGOOD__ 14
+int goodcolors[__MAXNGOOD__]={kBlack,kMagenta+1,kAzure+8,kOrange+10,kCyan+2,kGreen+4,kRed-3, kBlue-6, kYellow+7,kCyan-2, kOrange-1, kRed+2, kYellow+2, kCyan+8};
+int goodstyles[__MAXNGOOD__]={1     ,1        ,     1,     1,           1,     4,      1,        1,      2  ,1, 1, 1, 1, 1};
 
 
 class SampleType {
@@ -544,7 +544,8 @@ TCanvas* compare(Sample **samples, const int nsamples,
                     }
 #ifdef __stacksums__
                     TString ahisname=typesum[it][i]->GetName();
-                    bool sibg= ahisname.Contains("TT",TString::kIgnoreCase) || ahisname.Contains("SMbg",TString::kIgnoreCase) || ahisname.Contains("Uncert",TString::kIgnoreCase);
+                    bool sibg= ahisname.Contains("TT",TString::kIgnoreCase) || ahisname.Contains("smbg",TString::kIgnoreCase) 
+                            || ahisname.Contains("Uncert",TString::kIgnoreCase) || ahisname.Contains("signal",TString::kIgnoreCase);
                     //        cout<< (double)typesum[it][i]->GetEntries() << " for:"<<it<<" "<<type[it]->GetName() <<endl;
                     if ( it > 0 && (!sibg) )  {
                         stack_vals[it]=(double)typesum[it][i]->GetMaximum();
@@ -659,7 +660,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
             histRatio->GetXaxis()->SetTitleSize(0.18); //in pixels
             histRatio->GetXaxis()->SetTitleOffset(.7); //in pixels
             histRatio->GetYaxis()->SetLabelFont(43); //font
-            histRatio->GetYaxis()->SetLabelSize(9); //in pixels
+            histRatio->GetYaxis()->SetLabelSize(10); //in pixels
             histRatio->GetYaxis()->SetTitleFont(103); //font
             histRatio->GetYaxis()->SetTitleSize(13); //in pixels
             histRatio->GetYaxis()->SetTitleOffset(2); //in pixels
@@ -679,7 +680,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
                     difference = (histRatio->GetBinContent(nbin)-1)*(histRatio->GetBinContent(nbin)-1)/histRatio->GetBinError(nbin)/histRatio->GetBinError(nbin);
                     sumOfDifference = sumOfDifference + difference;
 
-//                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
+                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
 
                }
             }

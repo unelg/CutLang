@@ -166,6 +166,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
 anevt.run_no=128;
 anevt.user_evt_weight=1.0;
 anevt.lumiblk_no=1;
+anevt.RunYear=2018;
 anevt.top_hfor_type=0;
 anevt.event_no=1;
 anevt.TRG_e= 0;

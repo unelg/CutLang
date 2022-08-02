@@ -38,8 +38,9 @@ public:
     virtual void Reset() override{}
     virtual double evaluate(AnalysisObjects* ao) override {
         if (pval) return value;
-        if (symbol=="RunYear") ao->evt.RunYear;
-        if (symbol=="ChannelNo") ao->evt.ChannelNo;
+        if (symbol=="RunYear")   return ao->evt.RunYear;
+        if (symbol=="ChannelNo") return ao->evt.ChannelNo;
+        
         return ao->evt.event_no; // TO BE improved
     }
     

@@ -29,7 +29,7 @@ R__LOAD_LIBRARY(../analysis_core/TStringAddFloat_cpp)
 //111,113,115,121,123,125,131,133,135,145,245,215,235,225,345,445,545,645,716,736,726,916,936,926,1115,1215,955,1025,1026,1016
 //20,21,22,23//299,295,298,294,296,292,1115, reweighting histos
 //115,117,125,127,135,137,145,147,215,217,225,227,235,237,245,247,545,546
-void compare_all( int qm=1200, float lumi=-1, float skf=1, string psetstr="8", int disc=0, int ratio=1, bool saveHist=false, bool printEffs=false, bool saveEffs=false)
+void compare_all( int qm=1200, float lumi=-1, float skf=1, string psetstr="2", int disc=0, int ratio=1, bool saveHist=false, bool printEffs=false, bool saveEffs=false)
 {
 gROOT->Reset();
 gStyle->SetPalette(1);
