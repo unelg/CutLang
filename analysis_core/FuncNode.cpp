@@ -169,16 +169,18 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
       								inputPart->addAttribute(avalue);
                                                         }
                                                         break;
+
                                            case fjet_t: DEBUG("FatJet:"<< ai<<" \n");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
-                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
 							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
-                                                         + ao->ljets[ac].at(ai).isbtagged_77() +100* ao->ljets[ac].at(ai).isTautagged() );
+                                                                 + ao->ljets[ac].at(ai).isbtagged_77() +100* ao->ljets[ac].at(ai).isTautagged() );
                                                         ka=ao->ljets[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
-                                                        break;                                          case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
+                                                        break; 
+                                         
+					   case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
                                                         inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
                                                         if (special_function) {
                                              			int nix=ao->ljets[ac].at(ai).ParticleIndx();
