@@ -1,0 +1,21 @@
+info analysis
+  title "hello world: example for CMSOD22 workshop with high pT jets"
+
+# Define a new "goodjets" object collection from the jet collection in the event.
+# Take all jets in the event, and select the subset agreeing with given criteria.
+object goodjets
+  take JET # take and loop over all jets in the event
+  select pt(JET) > 30 # require each jet in the event to have pt > 30
+  select abs(eta(JET)) < 2.4 # require each jet in the event to have |eta| < 2.4
+
+# Define an event selection region called "preselection"
+# Select events that pass certain criteria
+region preselection
+  select ALL # just count how many events we start with
+  select size(goodjets) > 3 # require events to have > 3 jets
+  select pt(goodjets[0]) > 300 # require the 1st jet pT to be > 300
+  select pt(goodjets[1]) > 200 # require the 2nd jet pT to be > 200
+  select pt(goodjets[2]) > 100 # require the 3rd jet pT to be > 100
+  histo hnjets , "number of goodjets" , 20, 0, 20, size(goodjets)
+  histo hjet1pt , "goodjet 1 pT (GeV)", 50, 0, 1000, pT(goodjets[0])
+  histo hjet2pt , "goodjet 2 pT (GeV)", 50, 0, 1000, pT(goodjets[1])
