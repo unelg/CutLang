@@ -151,7 +151,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsLoose (ao->gams[ac].at(ai).isLoose() ); 
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
                                                         break;
-                                            case jet_t: DEBUG("jet:"<<ai<<" ");
+                                            case jet_t: DEBUG("jet:"<<ai<<" \t");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
 //                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
@@ -169,10 +169,11 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
       								inputPart->addAttribute(avalue);
                                                         }
                                                         break;
-                                           case fjet_t: DEBUG("FatJet:"<< (*i)->index <<" ");
-							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
+                                           case fjet_t: DEBUG("FatJet:"<< ai<<" \n");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
+                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
+							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
                                                          + ao->ljets[ac].at(ai).isbtagged_77() +100* ao->ljets[ac].at(ai).isTautagged() );
                                                         ka=ao->ljets[ac].at(ai).nAttribute();

@@ -10,12 +10,14 @@ def value_error_f(t,val):
         return False
 
 ### Ask the name of the model and a possible already existing output file, open final output file and cross-section file
-modeln = input('Name of the model (writing to files sample-<modelname>.txt and xsections-<modelname>.txt): ')
+modeln = input('Name of the model (writing to files sample-<modelname>.txt, xsections-<modelname>.txt, and weights-<modelname>.txt): ')
 filn = 'sample-'+modeln+'.txt'
 outf = open(filn,'w')
 subsoutfname = 'xsections-'+modeln+'.txt'
-subsoutf = open(subsoutfname,'w')    
-outfname = input('Give an output file name: ')
+subsoutf = open(subsoutfname,'w')
+subswoutfname = 'weights-'+modeln+'.txt'
+subswoutf = open(subswoutfname,'w')    
+outfname = input('Give an output file name to use as defaults: ')
 
 ### If existing output file exists, use it to get default numbers of signals and bgs and subsamples
 if exists(outfname):
@@ -98,9 +100,9 @@ def variables_subsamples():
     dsid = int(dsid)
 
     ### Cross-section (float)
-    cs = input('Cross-section (float): ')
+    cs = input('Cross-section (float, in pb): ')
     while value_error_f(float,cs) == False:
-        cs = input('Cross-section (float): ')
+        cs = input('Cross-section (float, in pb): ')
     cs = float(cs)
 
     ### Weight (float, default 1)
@@ -166,64 +168,79 @@ fixed = fixed + [2+nsig+nbg] + [3+nsig+nbg] + [4+nsig+nbg]
 ### Print bgs to the file
 outf.write('\n## BACKGROUNDS ##\n')
 subsoutf.write('\n## BACKGROUNDS ##\n')
+subswoutf.write('\n## BACKGROUNDS ##\n')
 
+R = []
+incount = 1
 if len(bgs) == 0:
     outf.write('\n# No background given!\n')
 else:
+    # incount += 1
     for i in range(len(bgs)):
         if len(bgs[i][1]) == 0:
             outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
             outf.write('typeId-'+str(bg[i])+'-Drawable = '+str(bgs[i][2])+'\n')
             outf.write('typeId-'+str(bg[i])+'-Style = '+bgs[i][3]+'\n\n')
         else:
-            R = []
-            for j in range(len(bgs[i][1])):
-                R.append(str(bg[i])+str(j+1))
+            # for j in range(len(bgs[i][1])):
+            #     R.append(str(j+1))
+            #     incount += 1
+            incount += len(bgs[i][1])
             outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
-            outf.write('typeId-'+str(bg[i])+'-Rmin = '+R[0]+'\n')
-            outf.write('typeId-'+str(bg[i])+'-Rmax = '+R[-1]+'\n')        
+            outf.write('typeId-'+str(bg[i])+'-Rmin = '+str(incount-len(bgs[i][1]))+'\n')
+            outf.write('typeId-'+str(bg[i])+'-Rmax = '+str(incount-1)+'\n')        
             outf.write('typeId-'+str(bg[i])+'-Drawable = '+str(bgs[i][2])+'\n')
             outf.write('typeId-'+str(bg[i])+'-Style = '+bgs[i][3]+'\n\n')
 
         if len(bgs[i][1]) == 0:
             outf.write('\n# No subsamples input for given BG!\n')
             subsoutf.write('\n# No subsamples input for given BG!\n')
+            subswoutf.write('\n# No subsamples input for given BG!\n')
         else:
             for j in range(len(bgs[i][1])):
                 outf.write('sampleId-'+str(bg[i])+str(j+1)+'-F = '+str(bgs[i][1][j][1])+'\n')
                 subsoutf.write('\nsampleId-'+str(bg[i])+str(j+1)+'-F = '+str(bgs[i][1][j][1])+'\n')
-                subsoutf.write('typeId-'+str(bg[i])+str(j+1)+'-CS = '+str(bgs[i][1][j][2])+'\n')
+                subsoutf.write('sampleId-'+str(bg[i])+str(j+1)+'-CS = '+str(bgs[i][1][j][2])+'\n')
+                subswoutf.write('\nsampleId-'+str(bg[i])+str(j+1)+'-F = '+str(bgs[i][1][j][1])+'\n')
+                subswoutf.write('sampleId-'+str(bg[i])+str(j+1)+'-weight = '+str(bgs[i][1][j][3])+'\n')
 
 
 ### Print sigs to the file
 outf.write('\n## SIGNALS ##\n')
 subsoutf.write('\n## SIGNALS ##\n')
+subswoutf.write('\n## SIGNALS ##\n')
 if len(signals) == 0:
     outf.write('\n# No signals given!\n')
 else:
+    # incount += 1
     for i in range(len(signals)):
+
         if len(signals[i][1]) == 0:
             outf.write('\ntypeId-'+str(signal[i])+'-N = '+signals[i][0]+'\n')
             outf.write('typeId-'+str(signal[i])+'-Drawable = '+str(signals[i][2])+'\n')
             outf.write('typeId-'+str(signal[i])+'-Style = '+signals[i][3]+'\n\n')
         else:
-            R = []
-            for j in range(len(signals[i][1])):
-                R.append(str(signal[i])+str(j+1))
+            # for j in range(len(signals[i][1])):
+                # R.append(str(j+1))
+                # incount += 1
+            incount += len(signals[i][1])
             outf.write('\ntypeId-'+str(signal[i])+'-N = '+signals[i][0]+'\n')
-            outf.write('typeId-'+str(signal[i])+'-Rmin = '+R[0]+'\n')
-            outf.write('typeId-'+str(signal[i])+'-Rmax = '+R[-1]+'\n')        
+            outf.write('typeId-'+str(signal[i])+'-Rmin = '+str(incount-len(signals[i][1]))+'\n')
+            outf.write('typeId-'+str(signal[i])+'-Rmax = '+str(incount-1)+'\n')        
             outf.write('typeId-'+str(signal[i])+'-Drawable = '+str(signals[i][2])+'\n')
             outf.write('typeId-'+str(signal[i])+'-Style = '+signals[i][3]+'\n\n')
 
         if len(signals[i][1]) == 0:
             outf.write('\n# No subsamples input for given signal!\n')
-            subsoutf.write('\n# No subsamples input for given signal!\n')            
+            subsoutf.write('\n# No subsamples input for given signal!\n')
+            subswoutf.write('\n# No subsamples input for given signal!\n')            
         else:
             for j in range(len(signals[i][1])):
                 outf.write('sampleId-'+str(signal[i])+str(j+1)+'-F = '+str(signals[i][1][j][1])+'\n')
                 subsoutf.write('\nsampleId-'+str(signal[i])+str(j+1)+'-F = '+str(signals[i][1][j][1])+'\n')
-                subsoutf.write('typeId-'+str(signal[i])+str(j+1)+'-CS = '+str(signals[i][1][j][2])+'\n')
+                subsoutf.write('sampleId-'+str(signal[i])+str(j+1)+'-CS = '+str(signals[i][1][j][2])+'\n')
+                subswoutf.write('\nsampleId-'+str(signal[i])+str(j+1)+'-F = '+str(signals[i][1][j][1])+'\n')
+                subswoutf.write('sampleId-'+str(signal[i])+str(j+1)+'-weight = '+str(signals[i][1][j][3])+'\n')
 
 
 ### Print fixed to the file
@@ -238,3 +255,4 @@ for i in range(len(fixed)):
 
 outf.close()
 subsoutf.close()
+subswoutf.close()

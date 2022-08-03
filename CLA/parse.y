@@ -103,7 +103,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
-%token ZCANDID EVENTNO//
+%token ZCANDID EVENTNO RUNYEAR MCCHANNELNUMBER //
 %token SIEIE  SUBJET1_BTAG SUBJET2_BTAG MVATIGHT MVALOOSE // CMSnano & POET attribs
 %token <real> PNB
 %token <real> NB 
@@ -1164,6 +1164,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | NB {  tmp=to_string($1); $$=new ValueNode($1);} 
    | INT {  $$=new ValueNode($1);} 
    | EVENTNO {  $$=new ValueNode("EventNo");} 
+   | MCCHANNELNUMBER {  $$=new ValueNode("ChannelNo");} 
+   | RUNYEAR {  $$=new ValueNode("RunYear");} 
    | function {$$=$1; pnum=0;}
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original defintions as well

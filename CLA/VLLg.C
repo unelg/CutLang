@@ -213,6 +213,8 @@ std::cout << "Begin Filling"<<std::endl;
         met.SetMagPhi( met_met*0.001,  met_phi);
 
 //------------ auxiliary information -------
+        anevt.ChannelNo=mcChannelNumber;
+        anevt.RunYear=RunYear;
         anevt.run_no=runNumber;
         anevt.correction_weight=1;
         anevt.luminosity_weight=1.0;
