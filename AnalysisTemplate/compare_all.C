@@ -155,7 +155,7 @@ gStyle->SetPalette(1);
     } else {
     //    c1[kplot] = compare(samples, nsamples, sampletypes, ntypes, histos, ph, nvars, "", "",smbg,-1,kplot);
     }
-      cout << "plotting is done" << endl;
+//      cout << "plotting is done" << endl;
 
 /*  THE BELOW IS AN EXAMPLE ON HOW TO MANUALLY IMPOSE DIFFERENT HISTOGRAM RANGES.
 */
@@ -172,7 +172,7 @@ gStyle->SetPalette(1);
 		}
 	}
 
-	cout  <<"~~~~~~~~ 1 should we add QCD?"<<endl;
+//	cout  <<"~~~~~~~~ 1 should we add QCD?"<<endl;
 
 /*
 	Double_t error ;
@@ -187,13 +187,13 @@ gStyle->SetPalette(1);
 			}
 	}
 */
-
+/*
         if (printEffs || saveEffs ) {
              for (int kType=0; kType<ntypes; kType++)
                 PrintTypeEfficiency( sampletypes[kType], samples, printEffs, saveEffs);  cout << endl;
         }
-
-
+*/
+/*
 // compatibility tests : 0 has data and 1 all bg samples added
 	Double_t *kst;     kst=(Double_t *)malloc(nvars*sizeof(Double_t));
 	Double_t *chi2ndf; chi2ndf=(Double_t *)malloc(nvars*sizeof(Double_t));
@@ -209,7 +209,7 @@ gStyle->SetPalette(1);
 //		  kst[i]=0.0;
 //		  kst[i]=((TH1F*)histos[1][i])->KolmogorovTest(histos[0][i],"O"));
 	}
-
+*/
 
 // loop over all variables, plots and make it nice.
 
@@ -258,13 +258,14 @@ gStyle->SetPalette(1);
 	}
 
 	c1[kplot]->Update(); // force y-scale settings
-	cout  <<"~~~~~~~~ 3 should we calculate a chi2 or KS test for data-mc comparison?"<<endl;
+//	cout  <<"~~~~~~~~ 3 should we calculate a chi2 or KS test for data-mc comparison?"<<endl;
 	//HistoAutoRange();
 	//HistoAutoLogScale();
 
 // Save the canvas
         TString fn="comp-";
-        fn += pset; fn+="-"; fn+=leptonindex; fn+="-"; fn+=qm; fn+="-"; fn+=modeldir; fn+=".pdf";
+        fn += pset; fn+="-"; fn+=Directory; //leptonindex; 
+        fn+="-"; fn+=qm; fn+="-"; fn+=modeldir; fn+=".pdf";
         c1[kplot]->SaveAs(fn);
 
 

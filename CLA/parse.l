@@ -195,6 +195,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [eE][xX][pP] return EXP;
 [lL][oO][gG] return LOG;
 [Hh][Ss][Tt][Ee][Pp] return HSTEP;
+[dD][Ee][lL][Tt][aA] return DELTA;
 [aA][bB][sS] return ABS;
 [sS][qQ][rR][tT] return SQRT;
 [sS][oO][rR][tT] return SORT;

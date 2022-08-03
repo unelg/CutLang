@@ -134,7 +134,7 @@ void prepareSamples(int qm=350, float lumi=0.0, float lumi_r9364=0.0, float lumi
     TString sigtype=sampleName(modeldir,qm,"TTS");
 
     samples[nsamples-2] = new Sample( pffx+sigtype.Data()+sffx, MCmodeldir, kRed, skf*lumi*xs(sigtype.Data())/(sumOfWeights(pffx, sigtype.Data())) ); //signal MC
-    cout << nsamples-2<<" Signal MC is from :" << pffx+sigtype.Data() +sffx<<endl;
+//    cout << nsamples-2<<" Signal MC is from :" << pffx+sigtype.Data() +sffx<<endl;
     samples[nsamples-1] = new Sample( pffx+ sigtype.Data()+sffx, MCmodeldir, kRed , skf*lumi*xs(sigtype.Data())/ (sumOfWeights(pffx, sigtype.Data())) ); //the SAME signal MC to inject in injection tests
     
     // ALL SAMPLES ARE NOW READ.

@@ -49,6 +49,10 @@ double hstep(double x){
 	if(x>0) {return 1;}
 	else return 0;
 }
+double delta(double x){
+	if(x==0) {return 1;}
+	else return 0;
+}
 
 //double COS SIN TAN ALREADY EXIST
 #endif /* UnaryAONode_h */

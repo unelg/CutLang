@@ -632,7 +632,6 @@ TCanvas* compare(Sample **samples, const int nsamples,
         //  { HistoAutoLogScale(); HistoAutoRange(); }
 
         if ((histU>-1) && (histD>-1)){ // from Erdo
-             cout << "Up:"<<histU<<"  Down:"<<histD<<"\n";
             // I plotted all my curves with different colors and such now I can do the ratio
             compCanv->cd(nplotted);
             TPad *pad2= new TPad("pad2","pad2",0,0.0  , 1,0.25);
@@ -680,7 +679,7 @@ TCanvas* compare(Sample **samples, const int nsamples,
                     difference = (histRatio->GetBinContent(nbin)-1)*(histRatio->GetBinContent(nbin)-1)/histRatio->GetBinError(nbin)/histRatio->GetBinError(nbin);
                     sumOfDifference = sumOfDifference + difference;
 
-                    cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
+                  //  cout << "difference: " <<  difference << " nbin: " <<  nbin << " monte carlo: " <<typesum[histD][i]->GetBinContent(nbin) << " data: " << typesum[histU][i]->GetBinContent(nbin) << " sum of difference: " << sumOfDifference << " uncertainty: " <<histRatio->GetBinError(nbin) << " uncertainty calculated by hand: " << (difference*sqrt(TMath::Power(typesum[histU][i]->GetBinError(nbin)/typesum[histU][i]->GetBinContent(nbin),2)+TMath::Power(typesum[histD][i]->GetBinError(nbin)/typesum[histD][i]->GetBinContent(nbin),2))) << "bin content from histRatio " << histRatio->GetBinContent(nbin) <<endl;
 
                }
             }

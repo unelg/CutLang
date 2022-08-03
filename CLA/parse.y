@@ -109,7 +109,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token <real> NB 
 %token <integer> INT
 %token <s> ID HID 
-%token SIN COS TAN ABS SQRT EXP LOG HSTEP SINH COSH TANH
+%token SIN COS TAN ABS SQRT EXP LOG HSTEP DELTA SINH COSH TANH
 %token OR AND 
 %token MIN MAX
 %token TRUE FALSE
@@ -1134,6 +1134,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    |'-' e %prec Unary { $$=new UnaryAONode(unaryMinu,$2,"-"); }
    | HSTEP '(' e ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
    | HSTEP '(' condition ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
+   | DELTA '(' e ')' { $$=new UnaryAONode(delta,$3,"delta"); } //DELTA  function 
+   | DELTA '(' condition ')' { $$=new UnaryAONode(delta,$3,"delta"); } //DELTA function 
    | SQRT '(' e ')'  { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
    | ABS '(' e ')'   { $$=new UnaryAONode(abs,$3,"fabs"); }
    | COS '(' e ')'   { $$=new UnaryAONode(cos,$3,"cos"); }
