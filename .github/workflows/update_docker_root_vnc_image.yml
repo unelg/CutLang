@@ -1,0 +1,97 @@
+name: Update docker image ubuntu
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'package_test'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+      
+      - name: Update meta
+        id: update_meta
+        working-directory: ./scripts/conda
+        run: |
+          export version_cutlang=`cat ../../VERSION`
+          echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
+
+          echo "::group::VERSION"
+          echo "Inside group $version_cutlang"
+          echo "::endgroup::"
+          
+          sed -i "/version = /c{% set version = '$version_cutlang' %}" meta.yaml
+          sed -i "/cout << \"CLA v/c cout << \"CLA v$version_cutlang\\\t\";" ../../CLA/CLA.Q
+          sed -i "/\"display_name\": \"ROOT C++ with CutLang/c    \"display_name\": \"ROOT C++ with CutLang v$version_cutlang\"," ../../scripts/jupyter/kernel/cutlangkernel.json
+          meta=`cat ../../scripts/conda/meta.yaml`
+          echo "::group::META"
+          echo "Inside group $meta"
+          echo "::endgroup::"
+
+          export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
+          echo "::set-output name=UNELG_REPO::$unelgRepo"
+
+          export dockerImageExist=$(wget -q https://registry.hub.docker.com/v1/repositories/${{secrets.PACKAGE_USERNAME}}/cutlang-root-vnc/tags -O - | grep $version_cutlang)
+          echo "::set-output name=DOCKER_IMAGE_EXIST::$dockerImageExist"
+
+      - name: chmod
+        working-directory: .github/workflows
+        run: |
+          ls -la
+          chmod +x update_docker_image_mail_success.js
+          chmod +x update_docker_image_mail_error.js
+      
+      - name: Docker cmsodws2022
+        working-directory: .
+        run: |
+          ./scripts/docker/util.sh cmsodws2022
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build and push
+        if: ${{ !steps.update_meta.outputs.DOCKER_IMAGE_EXIST }}
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: cutlang/cutlang-root-vnc:latest,cutlang/cutlang-root-vnc:${{ steps.update_meta.outputs.VERSION_CUTLANG }}
+
+      - name: SMTP
+        if: ${{ !steps.update_meta.outputs.DOCKER_IMAGE_EXIST }}
+        uses: peter-evans/sendgrid-action@v1
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SCRIPT_FILEPATH: ./.github/workflows/update_docker_image_mail_success.js     

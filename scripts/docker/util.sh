@@ -7,8 +7,11 @@ if [ $1 = "prod" ]; then
 elif [ $1 = "dev" ]; then
     cp $DOCKER_UTIL_DIR/docker-compose_dev.yml $CUTLANG_DIR/docker-compose.yml
     cp $DOCKER_UTIL_DIR/Dockerfile_dev $CUTLANG_DIR/Dockerfile
+elif [ $1 = "cmsodws2022" ]; then
+    cp $CUTLANG_DIR/workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/docker-compose-for-cmsodws2022_workshop.yml $CUTLANG_DIR/docker-compose.yml
+    cp $CUTLANG_DIR/workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/Dockerfile $CUTLANG_DIR/Dockerfile
 else
-  echo "Only prod and dev are valid"
+  echo "Only prod and dev and cmsodws2022 are valid"
 fi
 
 unset CUTLANG_DIR
