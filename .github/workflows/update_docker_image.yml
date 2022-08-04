@@ -1,4 +1,4 @@
-name: Update docker image ubuntu
+name: Update docker cutlang image ubuntu
 
 on:
   push:
