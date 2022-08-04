@@ -177,6 +177,7 @@ for (int i = 2; i < argc; i++) {
    leafname="events";
   }else if (use_poet){
    cout << "~Now using new POET files.~~~~~~ alpha!\n";
+   leafname="events";
 /*
      chain = new TChain("mymuons/Events");
      celes = new TChain("myelectrons/Events");
@@ -188,7 +189,6 @@ for (int i = 2; i < argc; i++) {
   cphotons = new TChain("myphotons/Events");
      chain->AddFriend(cphotons);
 */
-   leafname="events";
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
    leafname="Events";

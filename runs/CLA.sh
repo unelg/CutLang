@@ -268,7 +268,7 @@ elif [ ${PRLL} -ne 1 ]; then
   if [ $EVENTS -eq 0 ]; then # gets entries to divide events into intervals
 #    dt=$(grep "\"$datatype\"" $WORK_PATH/CLA/CLA.C | cut -d '{' -f 2 | head -c -9 | cut -c 2-)
     dt=$(grep "\"$datatype\"" $WORK_PATH/CLA/CLA.C | cut -d '{' -f2 |cut -f1 -d'=' )
-    chn=`grep -A2  $dt  $WORK_PATH/CLA/CLA.C | grep TChain | cut -d '"' -f 2`
+    chn=`grep -A2  $dt  $WORK_PATH/CLA/CLA.C | grep leafname | cut -d '"' -f 2`
     echo $datatype data: $dt tree: ${chn}
     TotalEvents="$(root -l -q ''$WORK_PATH'/analysis_core/getentries.cxx("'${datafile}'" ,"'${chn}'")')"
     EVENTS="$(echo $TotalEvents | awk '{print $NF}')"
