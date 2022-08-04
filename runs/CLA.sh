@@ -286,6 +286,12 @@ elif [ ${PRLL} -ne 1 ]; then
   done
   multitask(){
     lp=$1
+    if [[ $datafile == *"://"* ]]; then
+      _dataf=$datafile
+    else
+      _dataf=$(realpath $datafile)
+    fi
+
     _dataf=$(realpath $datafile)
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
