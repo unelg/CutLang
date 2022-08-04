@@ -78,15 +78,23 @@ jobs:
         rm -rf ../CLA/CLA.Q
         rm -rf ../scripts/jupyter/kernel/cutlangkernel.json
 
+        cat ./environment.yml
+
         git config user.email "tobuba2@gmail.com"
         git config user.name "bot"
 
+        echo 1111
+
         git pull
 
-        git add ./environment.yml
-        git commit -m "automated update for binder environment.yml" || echo "ignore commit failure, proceed (simple warning)"
-        git push origin $1
+        echo 22222
 
+        git add ./environment.yml
+        echo 333333
+        git commit -m "automated update for binder environment.yml" || echo "ignore commit failure, proceed (simple warning)"
+        echo 444444
+        git push origin $1
+        echo 555555
 
     - name: SMTP
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
