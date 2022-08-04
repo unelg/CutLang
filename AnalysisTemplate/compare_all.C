@@ -265,7 +265,7 @@ gStyle->SetPalette(1);
 // Save the canvas
         TString fn="comp-";
         fn += pset; fn+="-"; fn+=Directory; //leptonindex; 
-        fn+="-"; fn+=qm; fn+="-"; fn+=modeldir; fn+=".pdf";
+        fn+="-"; fn+=qm; fn+="-"; fn+=modeldir; fn+=".png";
         c1[kplot]->SaveAs(fn);
 
 
