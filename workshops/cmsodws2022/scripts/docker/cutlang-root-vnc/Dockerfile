@@ -99,6 +99,9 @@ RUN echo "echo https://github.com/ADL4HEP/ADLLHCanalyses" >> /home/cmsusr/.bashr
 
 WORKDIR /src
 
+# CutLang other dependencies
+RUN apt-get install -y vim
+
 RUN mkdir -p /code && \
     chown -R cmsusr:cmsusr /code && \
     chmod 777 /code && \
@@ -118,5 +121,6 @@ ENV GEOMETRY 1920x1080
 RUN mkdir -p ${HOME}/.vnc
 ADD --chown=cmsusr:cmsusr ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/vnc/passwd ${HOME}/.vnc/passwd
 ADD --chown=cmsusr:cmsusr ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/.rootrc ${HOME}/.rootrc
+ADD --chown=cmsusr:cmsusr ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/.nanorc ${HOME}/.nanorc
 
 CMD [ "tail", "-f", "/dev/null" ]

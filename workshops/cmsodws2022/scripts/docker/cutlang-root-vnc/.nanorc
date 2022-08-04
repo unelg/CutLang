@@ -1,0 +1,53 @@
+## Syntax highlighting for Python.
+
+syntax python "\.adl$"
+header "^#!.*python"
+magic "Python script"
+comment "#"
+
+linter pyflakes
+
+# Function definitions.
+color brightyellow "info "
+color brightyellow "object "
+color brightyellow "region "
+# Keywords.
+color cyan " take "
+color cyan "define "
+color cyan " select "
+color cyan " reject "
+color cyan " weight "
+color cyan " histo "
+color cyan " lumi "
+color cyan " bin "
+color cyan " experiment "
+color cyan " sqrtS "
+color cyan " doi "
+color cyan " id "
+color cyan " arXiv "
+color cyan " hepdata "
+color cyan " publication "
+color cyan " title "
+
+# These two are keywords in Python 2, but functions in Python 3,
+# so only color them when they are followed by whitespace, assuming
+# that print(x) is a function invocation and print (x) is a statement.
+color brightcyan "\<(exec|print)([[:blank:]]|$)"
+
+# Special values.
+color magenta "\<(False|None|True)\>"
+
+# Mono-quoted strings.
+color green "'([^'\]|\\.)*'|'''"
+color green ""([^"\]|\\.)*"|""""
+# Comments.
+color brightmagenta "(^|[[:blank:]])#.*"
+# Triple-quoted strings.
+color green    start="'''([^'),]|$)" end="(^|[^(\])'''"
+color green    start=""""([^"),]|$)" end="(^|[^(\])""""
+
+# Reminders.
+color brightwhite,yellow "\<(FIXME|TODO|XXX)\>"
+
+# Trailing whitespace.
+#color ,green "[[:space:]]+$"
