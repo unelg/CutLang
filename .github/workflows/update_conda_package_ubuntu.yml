@@ -80,6 +80,8 @@ jobs:
 
         cat ./environment.yml
 
+        echo 00000
+
         git config user.email "tobuba2@gmail.com"
         git config user.name "bot"
 
