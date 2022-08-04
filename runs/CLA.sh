@@ -292,7 +292,6 @@ elif [ ${PRLL} -ne 1 ]; then
       _dataf=$(realpath $datafile)
     fi
 
-    _dataf=$(realpath $datafile)
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
       echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
