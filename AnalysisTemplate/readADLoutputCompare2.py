@@ -33,7 +33,7 @@ def main(d):
     for subdir, dirs, files in os.walk(d):
         for f in files:
             # print(os.path.join(subdir, file))
-            if '.ADL' in f:
+            if '.adl' in f or '.ADL' in f:
                 r = 1
                 msg = 'ADL file found in '+os.path.join(subdir, f)+', use that? [Y/n]'
                 ok = input(msg)
