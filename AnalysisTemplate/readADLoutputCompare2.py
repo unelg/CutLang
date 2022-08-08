@@ -77,8 +77,11 @@ def main(d):
         muonout = ' MUON'+str(n)+' = '+histos[n-1][0]+'\n'
         eleout = ' ELE'+str(n)+' = '+histos[n-1][0]+'\n'
         rebinout = 'rebin'+str(n)+' = '+str(1)+'\n'
-        minmaxout = 'minmax'+str(n)+' = '+histos[n-1][3]+','+histos[n-1][4]+'\n'
-        lineout = psetout+muonout+eleout+rebinout+minmaxout+'\n'
+        if len(histos[n-1]) > 4:
+            minmaxout = 'minmax'+str(n)+' = '+histos[n-1][3]+','+histos[n-1][4]+'\n'
+            lineout = psetout+muonout+eleout+rebinout+minmaxout+'\n'
+        else:
+            lineout = psetout+muonout+eleout+rebinout+'\n'
         outf.write(lineout)
     outf.close()
 
