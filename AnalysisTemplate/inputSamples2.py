@@ -50,10 +50,12 @@ def variables_subsamples():
         name = input('Name has to have a value: ')
 
     ### DSID (int)
-    dsid = input('DSID (int): ')
-    while value_error_f(int,dsid) == False:
-        dsid = input('DSID (int): ')
-    dsid = int(dsid)
+    dsid = input('DSID (str): ')
+    while not dsid:
+        dsid = input('DSID (str): ')
+    # while value_error_f(int,dsid) == False:
+        # dsid = input('DSID (int): ')
+    # dsid = int(dsid)
 
     ### Cross-section (float)
     cs = input('Cross-section (float, in pb): ')

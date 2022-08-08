@@ -8,7 +8,7 @@ def ask_input(variable):
     return variable,value
 
 def ask_output():
-    msg = 'Input an output ANA_DEFS file: '
+    msg = 'Give an output ANA_DEFS file: '
     outfn = input(msg)
     if not outfn:
         outfn = ask_output()
