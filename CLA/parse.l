@@ -143,6 +143,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "subjet2btag" return  SUBJET2_BTAG;
 "mvaTight" return MVATIGHT;  
 "mvaLoose" return MVALOOSE;   
+"m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
 
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;

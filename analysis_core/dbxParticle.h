@@ -60,6 +60,7 @@ typedef struct evt_data
 		badjet       =right.badjet;
 		top_hfor_type=right.top_hfor_type;
 		mcevt_weight =right.mcevt_weight;
+	 m_HF_Classification =right.m_HF_Classification;
 		user_evt_weight =right.user_evt_weight;
 		isemuoverlap =right.isemuoverlap;
 		vxp_maxtrk_no=right.vxp_maxtrk_no;
@@ -90,7 +91,7 @@ typedef struct evt_data
 	unsigned int event_no;
 	bool TRG_e, TRG_m, TRG_j;
 	bool badjet;
-	int  top_hfor_type;
+	int  top_hfor_type, m_HF_Classification;
 	float mcevt_weight;
 	bool isemuoverlap;
 	unsigned int vxp_maxtrk_no;
@@ -115,8 +116,6 @@ typedef struct evt_data
    Float_t         weight_xsec;
    Float_t         weight_jvt;
    Float_t         weight_sherpa_22_vjets;
-   Float_t         weight_pileup_UP;
-   Float_t         weight_pileup_DOWN;
 
 
 }evt_data;
