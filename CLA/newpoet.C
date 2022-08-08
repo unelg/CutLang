@@ -173,6 +173,7 @@ anevt.TRG_e= 0;
 anevt.TRG_m= 0;
 anevt.TRG_j= 0;
 anevt.vxp_maxtrk_no= 9;
+anevt.m_HF_Classification=numberelectron;
 anevt.badjet=0;
 anevt.mcevt_weight=0;
 anevt.pileup_weight=1.0;

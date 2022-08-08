@@ -40,6 +40,7 @@ public:
         if (pval) return value;
         if (symbol=="RunYear")   return ao->evt.RunYear;
         if (symbol=="ChannelNo") return ao->evt.ChannelNo;
+        if (symbol=="HFCLASSIFICATION") return ao->evt.m_HF_Classification;
         
         return ao->evt.event_no; // TO BE improved
     }
