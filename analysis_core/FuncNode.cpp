@@ -345,6 +345,10 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
                       << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
 
+     if (inputParticles[0]->index < 0) {
+       return 98765432.1;
+     }
+     
 
      if (inputParticles[0]->index == 6213) {
       string base_collection2=inputParticles[0]->collection;

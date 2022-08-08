@@ -17,10 +17,10 @@ real {integer}("."{integer})
 varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%
-"def"|"define" return DEF;//case sensitive in this case
+[dD][eE][fF]|[dD][eE][fF][iI][Nn][eE] return DEF;//case sensitive in this case
 "cmd"|"cut"|"select"|"command" return CMD;
-"reject" return REJEC;
-"obj"|"object" return OBJ;
+[rR][eE][jJ][eE][cC][tT] return REJEC;
+[oO][bB][jJ]|"object" return OBJ;
 "algo"|"region"|"algorithm" return ALGO;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
