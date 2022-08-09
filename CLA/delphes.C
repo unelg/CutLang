@@ -234,7 +234,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
     for(i = 0; i < branchJet->GetEntriesFast(); ++i) { 
       jet = (Jet*) branchJet->At(i);
       alv.SetPtEtaPhiM( jet->PT, jet->Eta, jet->Phi, jet->Mass ); // all in GeV
-//      cout<<"This Jet pt: "<<jet->PT<<", eta: "<<jet->Eta<<", phi: "<<jet->Phi <<" T:"<<jet->T<<endl;
+//      cout<<"This Jet pt: "<<jet->PT<<", eta: "<<jet->Eta<<", phi: "<<jet->Phi <<" Q:"<<jet->Charge<<endl;
       adbxj= new dbxJet(alv);
       adbxj->setCharge(jet->Charge);
       adbxj->setParticleIndx(i);
