@@ -18,10 +18,10 @@ varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%
 [dD][eE][fF]|[dD][eE][fF][iI][Nn][eE] return DEF;//case sensitive in this case
-"cmd"|"cut"|"select"|"command" return CMD;
+[cC][mM][dD]|[cC][uU][tT]|[sS][eE][lL][eE][cC][tT] return CMD;
 [rR][eE][jJ][eE][cC][tT] return REJEC;
-[oO][bB][jJ]|"object" return OBJ;
-"algo"|"region"|"algorithm" return ALGO;
+[oO][bB][jJ]|[oO][bB][jJ][eE][cC][tT] return OBJ;
+[aA][lL][gG][oO]|[rR][eE][gG][iI][oO][nN]|"algorithm" return ALGO;
 "TRGe" return TRGE;
 "TRGm" return TRGM;
 
