@@ -241,7 +241,6 @@ void delphes::Loop(analy_struct aselect, char *extname)
       adbxj->setFlavor(jet->Flavor);
       adbxj->set_isbtagged_77(  (bool)jet->BTag ); //  btag
       adbxj->set_isTautagged( (bool)jet->TauTag); // tau tag
-
 // Loop over all jet's constituents
       for(j = 0; j < jet->Particles.GetEntriesFast(); ++j) {
        object = jet->Particles.At(j);

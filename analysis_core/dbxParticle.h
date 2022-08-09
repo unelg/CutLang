@@ -145,7 +145,7 @@ public:
 	int setEtCone( double );
 	int setPtCone( double );
 	int setFlavor ( double );
-	int setIsTight ( bool );
+	int setIsTight ( int );
 	int setIsMedium ( bool );
 	int setIsLoose ( bool );
 
@@ -179,7 +179,7 @@ public:
 	double EtCone()  { return p_et_cone; }
 	double PtCone()  { return p_pt_cone; }
 	double Flavor()  { return p_flavor; }
-	bool    isTight() { return p_istight; }
+	int    isTight() { return p_istight; }
 	bool    isMedium(){ return p_ismedium; }
 	bool    isLoose() { return p_isloose; }
 	int    ParticleIndx() { return p_particleindx; }
@@ -214,7 +214,7 @@ private:
 	double p_escalefactor;
 	double p_scalefactorup;
 	double p_scalefactordown;
-	bool p_istight;
+	 int p_istight;
 	bool p_ismedium;
 	bool p_isloose;
 	double p_z0;

@@ -157,7 +157,8 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setCharge(inputPart->q()+ao->jets[ac].at(ai).q()  );
 //                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
 //                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
-                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() + 2*ao->jets[ac].at(ai).isTautagged()
+                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() 
+                                                               + 2*ao->jets[ac].at(ai).isTautagged()
                                                             ); 
                                                         inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
@@ -522,7 +523,7 @@ double isBTag( dbxParticle* apart){
 }
 double isTauTag( dbxParticle* apart){
     bool Tval=((apart)->isTight())&2;
-    DEBUG(" BTAG:"<<Tval<<"\t");
+    DEBUG(" TauTAG:"<<Tval<<"\t");
     return Tval;
 }
 
@@ -696,7 +697,7 @@ double mvalooseof(dbxParticle* apart){
 }
 
 double isTight(dbxParticle* apart){
-    return 1*(int)apart->isTight();
+    return 1*(int)(apart->isTight()&1);
 }
 double isMedium(dbxParticle* apart){
     return 1*(int)apart->isMedium();
