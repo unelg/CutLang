@@ -1,5 +1,5 @@
 {% set name = "CutLang" %}
-{% set version = '2.13.09' %}
+{% set version = '2.13.10' %}
 
 package:
   name: "{{ name|lower }}"
