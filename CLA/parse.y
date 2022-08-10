@@ -1312,16 +1312,6 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
 			    }
-
-	 | GEN '[' e ']' {     Node* child=$3;
-                               TmpCriteria.push_back(child);
-			       myParticle* a = new myParticle;
-                               a->type =10; a->index = 6213; a->collection = "Truth";
-                               TmpParticle.push_back(a);
-                               tmp="truth_6213";
-                               $$=strdup(tmp.c_str());
-			  }
-
 	 | GEN '[' index ']' { 
 				myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
@@ -1355,6 +1345,16 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
+//    -------------------------------------------------leads to screwups
+//	 | GEN '[' e ']' {     Node* child=$3;
+//                               TmpCriteria.push_back(child);
+//			       myParticle* a = new myParticle;
+//                               a->type =10; a->index = 6213; a->collection = "Truth";
+//                               TmpParticle.push_back(a);
+//                               tmp="truth_6213";
+//                               $$=strdup(tmp.c_str());
+//			  }
+//    -------------------------------------------------leads to screwups
 
 	 | GEN         {        DEBUG("all truth particles \t");
                                 tmp="truth_6213";

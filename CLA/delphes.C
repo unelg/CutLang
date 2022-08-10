@@ -248,7 +248,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        if(object == 0) continue;
        if(object->IsA() == GenParticle::Class()) {
         particle = (GenParticle*) object;
-//        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", phi: " << particle->Phi << endl;
+//        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
         alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
         adbxgen= new dbxTruth(alv);
         adbxgen->setCharge( particle->Charge );
@@ -281,12 +281,13 @@ void delphes::Loop(analy_struct aselect, char *extname)
     DEBUG("Jets:"<<i<<std::endl);
 
 
-
+//-----------------------------
 //GEN LEVEL particles
         if (branchParticle != NULL)
         for(i = 0; i < branchParticle->GetEntriesFast(); ++i) { 
                 particle = (GenParticle*) branchParticle->At(i);
                 alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); // all in GeV
+//        if (i< 5)cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
                 adbxgen= new dbxTruth(alv);
                 adbxgen->setCharge( particle->Charge );
                 adbxgen->setPdgID(  particle->PID );
