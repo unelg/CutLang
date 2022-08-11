@@ -113,9 +113,6 @@ double LogicalAnd(double left, double right){
 double LogicalOr(double left, double right){
     return (double)(left||right);
 }
-double LogicalNot(double condition, double condition1){
-	return (double)(!(condition));
-}
 double mnof(double left, double right){
     return (double)( (left<right)*left +(left>right)*right );
 }

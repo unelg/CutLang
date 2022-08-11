@@ -54,5 +54,9 @@ double delta(double x){
 	else return 0;
 }
 
+double LogicalNot(double condition){
+        return (double)(!(condition));
+}
+
 //double COS SIN TAN ALREADY EXIST
 #endif /* UnaryAONode_h */

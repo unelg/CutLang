@@ -269,7 +269,8 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     //Save AO somewhere to return in next time
     return 1;
 }
-// ***********************************
+
+// ***********************************JET ALL
 
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
@@ -291,8 +292,9 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         int ipart_max = (ao->jets)[name].size();
         bool simpleloop=true;
         bool constiloop=false;
+        bool anyof=false;
  
-        DEBUG("Nb of particles is :"<<particles->size() << " Cut is:"<< (*cutIterator)->getStr()<<"\n");
+        DEBUG("Nb of particles is :"<<particles->size() << " Current Cut is:"<< (*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
            DEBUG("No particle CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -309,6 +311,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         DEBUG ("A ConstiLoop:"<<constiloop<<"\n");
 //--------------------- if we have a LoopNode(max, min, sum) no constiloop.
         TString mycutstr=(*cutIterator)->getStr();
+        if ( mycutstr.Contains("anyof") ) { anyof=true;  };
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false;}
@@ -367,6 +370,7 @@ object goodjets take Jet
 */
 
         if(simpleloop){
+            cout  << "simple\n";
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
                 particles->at(jp)->index=ipart;
@@ -374,10 +378,11 @@ object goodjets take Jet
                }
                DEBUG("Simple CutIte:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
-               DEBUG(ppassed<<"\n");
+               DEBUG("P/F:"<<ppassed<<"\n");
                if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
-        } else { // if not a simple loop
+        } else { // if not a simple evaluation
+            DEBUG("looping over "<<ipart_max<<" particles\n");
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
@@ -409,6 +414,7 @@ object goodjets take Jet
                             _Exit(-1);
                 }
                 t2=particles->at(1)->type;
+                bool totpass=false;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
                     particles->at(1)->collection=base_collection2;      
@@ -417,17 +423,30 @@ object goodjets take Jet
                      if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
                     }
 
+                    DEBUG("will Evaluate now:"<<(*cutIterator)->getStr() <<"\n");
                     bool ppassed=(*cutIterator)->evaluate(ao);
-                    if (!ppassed) {
+                    totpass |= ppassed;
+                    DEBUG("Local Pass/Fail:"<<ppassed<< " Global P/F: "<< totpass <<"\n");
+                    if (!ppassed & !anyof) {
+                         DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                         break; // we can quit at first mismatch.
                     }
                 } // end of loop over 2nd particle type
+
+//-----------------the particle removed in case of any should happen here.
+                 if (anyof & !totpass) {
+                         DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
+                        (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
+                 }
+
             } // loop over 1st particle type
         } // end of not a simple loop (with 2 particles)
     } // end of cutIterator loop
    DEBUG("created\n");
 }
+
+// ********************************************************** ELECTRON
 
 void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
     DEBUG("Creating new ELEtype named:"<<name<<" #Etypes:"<<ao->eles.size()<< " Duplicating:"<<basename<<" #cri:"<<criteria->size()<<"\n");

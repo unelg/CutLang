@@ -101,7 +101,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
-%token PERM COMB SORT TAKE UNION SUM ADD AVE
+%token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
 %token ZCANDID EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION //
 %token SIEIE  SUBJET1_BTAG SUBJET2_BTAG MVATIGHT MVALOOSE // CMSnano & POET attribs
@@ -1136,6 +1136,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | HSTEP '(' condition ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
    | DELTA '(' e ')' { $$=new UnaryAONode(delta,$3,"delta"); } //DELTA  function 
    | DELTA '(' condition ')' { $$=new UnaryAONode(delta,$3,"delta"); } //DELTA function 
+   | ANYOF '(' e ')'  { $$=new UnaryAONode(abs,$3, "anyof"); }
+   | ALLOF '(' e ')'  { $$=new UnaryAONode(abs,$3, "allof"); }
    | SQRT '(' e ')'  { $$=new UnaryAONode(sqrt,$3,"sqrt"); }
    | ABS '(' e ')'   { $$=new UnaryAONode(abs,$3,"fabs"); }
    | COS '(' e ')'   { $$=new UnaryAONode(cos,$3,"cos"); }
@@ -2854,7 +2856,7 @@ criteria : criteria criterion
 criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
           | HISTO action    { TmpCriteria.push_back($2); }
-          | REJEC condition { Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+          | REJEC condition { Node* a = new UnaryAONode(LogicalNot,$2,"NOT"); 
                               TmpCriteria.push_back(a); }
 	;
 commands : commands command 
@@ -2867,7 +2869,7 @@ command : CMD condition { //find a way to print commands
                         NodeCuts->insert(make_pair(++cutcount,$2));
 	                }
 	|REJEC condition {
-			Node* a = new BinaryNode(LogicalNot,$2,$2,"NOT");
+			Node* a = new UnaryAONode(LogicalNot,$2,"NOT");
 			NodeCuts->insert(make_pair(++cutcount,a));
 			}
         | BINS e bins {
@@ -3182,6 +3184,7 @@ action : condition { $$=$1; }
                     $$= new SaveNode(pippo,0,VariableList) ;
                     VariableList.clear();
                   }
+         
          | ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' ID {
                                         map<string, Node *>::iterator it ;
                                         it = NodeVars->find($11);
@@ -3307,7 +3310,7 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
                        }                            
            | condition AND condition { $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); } 
            | condition OR condition  { $$=new BinaryNode(LogicalOr, $1,$3,"OR"); }
-	   |           NOT condition { $$=new BinaryNode(LogicalNot,$2,$2,"NOT"); }
+	   |           NOT condition { $$=new UnaryAONode(LogicalNot,$2,"NOT"); }
            | '(' condition ')' { $$=$2; } 
            ;
 %%

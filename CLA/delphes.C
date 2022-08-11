@@ -287,7 +287,8 @@ void delphes::Loop(analy_struct aselect, char *extname)
         for(i = 0; i < branchParticle->GetEntriesFast(); ++i) { 
                 particle = (GenParticle*) branchParticle->At(i);
                 alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); // all in GeV
-//        if (i< 5)cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
+ //       if (abs( particle->PID)==15)
+//	cout<< i << "    GenPart pt: " << particle->PT << ", status: " << particle->Status << ", M: " << particle->Mass << endl;
                 adbxgen= new dbxTruth(alv);
                 adbxgen->setCharge( particle->Charge );
                 adbxgen->setPdgID(  particle->PID );
@@ -305,14 +306,22 @@ void delphes::Loop(analy_struct aselect, char *extname)
                 truth.push_back(*adbxgen);
 
 //
-//               unsigned int nkids=particle->D2-particle->D1 +1;
-////                if (abs( particle->PID ) ==  1000021 && nkids>1 )
-//              {
-//              cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
-//                   <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\n"; 
-//              cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
-//              }
-//
+/*
+              unsigned int nkids=particle->D2-particle->D1 +1;
+               // if (abs( particle->PID ) >=  9000000 && nkids>1 && particle->Status > 60 )
+                if (abs( particle->PID ) == 15  )
+             {
+             cout << "Gen:"<<i<<" Status:"<< particle->Status << " pdgID:"<< particle->PID
+                  <<" has "<<nkids<<" kids." << " from:"<<particle->D1<<" to:"<<particle->D2<< "\t"; 
+             cout <<" M:"<<particle->Mass<<"\n";
+
+             for (int ik=particle->D1; ik<=particle->D2; ik++) {
+               GenParticle *apart = (GenParticle*) branchParticle->At(ik);
+               cout << "\t\t"<< ik<<"  Status:"<< apart->Status << " pdgID:"<< apart->PID<<"\n";
+               }
+//             cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
+             }
+*/
                 delete adbxgen;
         }
     DEBUG("GENs:"<<i<<std::endl);

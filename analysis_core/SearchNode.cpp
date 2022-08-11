@@ -265,6 +265,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                         case lightjet_t: Max=left->tagJets(ao,0,ac).size();break;
 		        case photon_t: Max=ao->gams.at(ac).size();break;
 			case tau_t: Max=ao->taus.at(ac).size();break;
+			case truth_t: Max=ao->truth.at(ac).size();break;
 			case combo_t: Max=ao->combos.at(ac).size();break;
                       default :
                               std::cout<<"optimizing for Unkown type... ERROR!\n";

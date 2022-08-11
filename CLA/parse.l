@@ -145,6 +145,10 @@ vardef {varname}" "?":"" "?.*"\n"
 "mvaLoose" return MVALOOSE;   
 "m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
 
+[aA][nN][yY][oO][fF] return ANYOF;
+[aA][lL][lL][oO][fF] return ALLOF;
+
+
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;
