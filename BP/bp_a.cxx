@@ -462,7 +462,6 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
 DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
-//cout<<"------------------------------------------------- Event ID:"<<anevt.event_no<<" \n";
 
 // *************************************
 /// CutLang execution starts-------here*

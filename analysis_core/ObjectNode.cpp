@@ -370,7 +370,6 @@ object goodjets take Jet
 */
 
         if(simpleloop){
-            cout  << "simple\n";
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
                for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
                 particles->at(jp)->index=ipart;

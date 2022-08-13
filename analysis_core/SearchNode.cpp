@@ -27,6 +27,7 @@ void SearchNode::performInnerOperation(vector<int> *v,vector<int> *indices, doub
 
 void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int maxDepth, vector<int> *v,
                                     vector<int> *indices,double *curr_diff,AnalysisObjects* ao, vector<int> types, vector<string> acs) {
+DEBUG("------------------------------------------------new search ----------------------------------------------------------------\n");
       const int unk_MAX=6; // max unknowns
       bool found_at_least_one=false;
       int ip_N[unk_MAX]; 
@@ -54,7 +55,7 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
 
       for(int i=0;i<particles.size();i++){
                     oi[i]=particles.at(i)->index;
-                    if (oi[i]>=0) tip[i]=particles.at(i)->type; // if known particle
+                //    if (oi[i]>=0) tip[i]=particles.at(i)->type; // if known particle
                     DEBUG(" oi:"<<oi[i]<<"  type:"<<tip[i]<<" ");
       }
       int forbidit_size;
@@ -66,12 +67,16 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
         DEBUG("FORBIDDEN_INDEX_LIST is NOT Empty for:"<< ac<<".\n");
         forbidit=FORBIDDEN_INDEX_LIST.find(ac);
         forbidit_size=forbidit->second.second.size(); // check the type!!!!!!!!!!!!
+         DEBUG("type:"<<forbidit->second.first<<"\t");
         tip[kk]=forbidit->second.first;
        } else {
         DEBUG("FORBIDDEN_INDEX_LIST is Empty for:"<<ac<<".\n");
         forbidit_size=0;
        }
       }
+
+
+
       for (int kk=0; kk<Ns.size(); kk++){
        string s=particles.at(kk)->collection;
        DEBUG(kk<<" |:"<<maxDepth<<" N:"<<Ns[kk]<< " #ForbiddenIndexSize:"<<forbidit_size
@@ -110,7 +115,7 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
       DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
       unordered_set<int> Forbidden_Indices;
       if (forbidit_size > 0) Forbidden_Indices=forbidit->second.second;
-          DEBUG("Before LOOP\n");
+          DEBUG("Before LOOP, Particles:"<< particles.size() <<"\n");
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {
            DEBUG("0 i:"<<ip[0]<<" t:"<< tip[0]<<"\n");
            if ( Forbidden_Indices.find( ip[0] )!=Forbidden_Indices.end() ) continue;        
@@ -121,20 +126,20 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
             if ( (oi[0] == oi[1] ) && (ip[0]>ip[1]) ) { DEBUG("Same OI, repeated\n"); continue; }
 
               for (ip[2]=ip2_min; ip[2]<ip_N[2]; ip[2]++) {
-                DEBUG("2:"<< ip[2]<<"\n");
+                DEBUG("2 i:"<<ip[2]<<" t:"<< tip[2] <<"\n");
                 if ( maxDepth>2 ){ 
                    if ( particles.size()>2 && ((ip[2]==ip[0] && tip[2]==tip[0]) || (ip[2]==ip[1] && tip[2]==tip[1]) )) continue; // CHECK TYPES.
                    if ( Forbidden_Indices.find( ip[2] )!=Forbidden_Indices.end() ) continue;        
                 }
                 for (ip[3]=ip3_min; ip[3]<ip_N[3]; ip[3]++) {
-                  DEBUG("3:"<< ip[3]<<"\n" );
+                  DEBUG("3 i:"<<ip[3]<<" t:"<< tip[3] <<"\n");
                   if ( maxDepth>3){ 
                      if ( particles.size()>3 && ((ip[3]==ip[0] && tip[3]==tip[0]) || (ip[3]==ip[1] && tip[3]==tip[1] )|| (ip[3]==ip[2] && tip[3]==tip[2])) ) continue;
                      if ( Forbidden_Indices.find( ip[3] )!=Forbidden_Indices.end() ) continue;        
                      if ( (oi[2]==oi[3]) && (ip[2]>ip[3]) ) continue;
                   }
                   for (ip[4]=ip4_min; ip[4]<ip_N[4]; ip[4]++) {
-                    DEBUG("4:"<<ip[4] <<"\n");
+                    DEBUG("4 i:"<<ip[4]<<" t:"<< tip[4] <<"\n");
                     //if (ip_N[5]>1)
                     if ( maxDepth>4)  {
                      if ( particles.size()>4 && ((ip[4]==ip[0] && tip[4]==tip[0]) || (ip[4]==ip[1] && tip[4]==tip[1]) 
@@ -143,7 +148,7 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
                      if ( ( oi[3] == oi[4]) &&(ip[3]>ip[4]) )  continue;
                     }
                      for (ip[5]=ip5_min; ip[5]<ip_N[5]; ip[5]++) {
-                      DEBUG("5:"<<ip[5] <<"\n");
+                       DEBUG("5 i:"<<ip[5]<<" t:"<< tip[5] <<"\n");
                       //if (ip_N[5]>1)
                       if (maxDepth>5) {
                        if ( particles.size()>5 &&(ip[5]==ip[0] && tip[5]==tip[0] ) || (ip[5]==ip[1] && tip[5]==tip[1] ) 
@@ -155,11 +160,11 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
 
                       if ( (oi[3]== (-100+oi[0]) ) && (ip[0]>ip[3]) ) continue;
           
-                 DEBUG("testing:"<<ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\n");
+                 DEBUG("testing the combi::"<<ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\n");
                  for (int i=0; i<maxDepth; i++) v->push_back(ip[i]);
-                  DEBUG("Keeping: ");
+                  DEBUG("New Set:\n");
                   for(int i=0;i<v->size();i++){
-                      DEBUG(v->at(i)<<" --> "<<indices->at(i)<<"  was:"<<particles.at(indices->at(i))->index <<" " );
+                      DEBUG(v->at(i)<<"\t --> i:"<<indices->at(i)<<"  was:"<<particles.at(indices->at(i))->index <<"\n" );
                       particles.at(indices->at(i))->index=v->at(i);
                   }
                   DEBUG("now left evaluate\n");
@@ -176,13 +181,13 @@ void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int ma
                        bestIndices.clear();
                        for(int i=0;i<v->size();i++){ bestIndices.push_back( v->at(i) ); }
                        found_at_least_one=true;
-                 } else { DEBUG("Goal not reached...\n");}
+                 } else { DEBUG("OLD diff was better...\n");}
 
                  v->clear();
                 }}
              }}}} //all iN loops end
 
-     DEBUG("Search Ended.\n");
+     DEBUG("Search Ended. best chi:"<< *curr_diff<<"\n");
     }
 
    void SearchNode::runNestedLoopRec( int start, int N, int level, int maxDepth, vector<int> *v,
@@ -291,6 +296,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                    int maxFound = bestIndices.size();
 //                    if (MaxDepth < bestIndices.size()) maxFound = MaxDepth;
                    for(int i=0;i<maxFound;i++){
+                        DEBUG("particle at:"<<indices[i]<<" will be replaced by:"<<bestIndices.at(i)<<"\n"); //directly changing the concerned particle -i-->bestIndices[i]
                         particles.at(indices[i])->index=bestIndices.at(i); //directly changing the concerned particle -i-->bestIndices[i]
                         //-------------------add found indices to FORBIDDEN 
                         string ac=collections[i];
@@ -322,10 +328,13 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 
     void SearchNode::Reset() {
             DEBUG("Clearing ForbiddenIndices on all names:\n");
+            FORBIDDEN_INDEX_LIST.clear();
+/*
             for (std::map<string, std::pair<int, unordered_set<int> > >::iterator it=FORBIDDEN_INDEX_LIST.begin(); it!=FORBIDDEN_INDEX_LIST.end(); ++it){
              DEBUG( it->first << " clearing \n"); 
              it->second.second.clear();
             }
+*/
             bestIndices.clear();
             DEBUG("done.\n");
             left->Reset();
