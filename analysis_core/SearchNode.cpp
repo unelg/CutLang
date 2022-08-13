@@ -33,31 +33,43 @@ DEBUG("------------------------------------------------new search --------------
       int ip_N[unk_MAX]; 
       int tip[unk_MAX]; 
       int  oi[unk_MAX]; 
+/*
       for (int kk=0; kk<Ns.size(); kk++){
           ip_N[kk]=Ns[kk];
-          oi[kk]=Ns[kk];
-         tip[kk]=types[kk];
+            oi[kk]=Ns[kk];
+           tip[kk]=types[kk];
          DEBUG(kk<< " t:"<<types[kk]<<"\n");
       }
       for (int kk=Ns.size(); kk<unk_MAX; kk++){
           ip_N[kk]=ip_N[kk-1];
-          oi[kk]=oi[kk-1];
-          tip[kk]=tip[kk-1];
+            oi[kk]=oi[kk-1];
+           tip[kk]=tip[kk-1];
          DEBUG(kk<< " t2:"<<tip[kk-1]<<"\n");
       }
+*/
+      int unkidx=0;  
+      int knowns=0;  
+      for (int kk=0; kk<unk_MAX; kk++){
+           if (kk < particles.size() ) {
+             if (particles.at(kk)->index < 0){  // a particle I will be searching
+                oi[unkidx]=particles.at(kk)->index;
+              ip_N[unkidx]=Ns[unkidx];
+               tip[unkidx]=types[unkidx];
+                  unkidx++;
+             } 
+           }
+        }
+    
+      for (int i=maxDepth; i<unk_MAX; i++)  { ip_N[i]=1; tip[i]=1;} 
+      for (int kk=0; kk<Ns.size(); kk++){
+       DEBUG("oi:"<<oi[kk]<<"  type:"<<tip[kk]<< " maxN:"<< ip_N[kk]<< " order:"<<indices->at(kk)<<"\n" );
+      }
 
-      int ip[unk_MAX]; 
+
+     int ip[unk_MAX]; 
       int ip2_min=0, ip3_min=0, ip4_min=0, ip5_min=0, ip1_min=0;
 
 
-//------------if less than 6, no other loops
-      for (int i=maxDepth; i<6; i++) ip_N[i]=1;
-
-      for(int i=0;i<particles.size();i++){
-                    oi[i]=particles.at(i)->index;
-                //    if (oi[i]>=0) tip[i]=particles.at(i)->type; // if known particle
-                    DEBUG(" oi:"<<oi[i]<<"  type:"<<tip[i]<<" ");
-      }
       int forbidit_size;
       std::map<string, pair <int, unordered_set<int> > >::iterator forbidit;
 //-----TODO: put a check mechanism
@@ -75,13 +87,15 @@ DEBUG("------------------------------------------------new search --------------
        }
       }
 
-
-
+// -----------for more debugging
+/*
       for (int kk=0; kk<Ns.size(); kk++){
        string s=particles.at(kk)->collection;
        DEBUG(kk<<" |:"<<maxDepth<<" N:"<<Ns[kk]<< " #ForbiddenIndexSize:"<<forbidit_size
                   << " Type:"<<types[kk]<<" Collection:"<<s<<" ac:"<<acs[kk]<<"\n");
       }
+*/
+
       string s=particles.at(0)->collection;
       if ((types[0]==combo_t) && ( ao->combosA.find(s) != ao->combosA.end() ) ) // only for 0 NGU FIXME
        if ( ao->combosA[s].tableA.size() > 0){
@@ -110,12 +124,12 @@ DEBUG("------------------------------------------------new search --------------
         }
       return;
       }
-      DEBUG("NON COMBO, regular\n");
+      DEBUG("NON COMBO regular, maxDepth:"<<maxDepth<<"\n");
       // loops start ~~~~~~~~~~~
       DEBUG("MAX ips:"<< ip_N[0]<< " "<<ip_N[1]<<" "<<ip_N[2]<<" "<< ip_N[3]<<" "<<ip_N[4]<<" "<<ip_N[5]<<"\n");
       unordered_set<int> Forbidden_Indices;
       if (forbidit_size > 0) Forbidden_Indices=forbidit->second.second;
-          DEBUG("Before LOOP, Particles:"<< particles.size() <<"\n");
+          DEBUG("Before LOOP, Nb Particles:"<< particles.size() <<"\n");
           for (ip[0]=0; ip[0]<ip_N[0]; ip[0]++) {
            DEBUG("0 i:"<<ip[0]<<" t:"<< tip[0]<<"\n");
            if ( Forbidden_Indices.find( ip[0] )!=Forbidden_Indices.end() ) continue;        
@@ -140,7 +154,6 @@ DEBUG("------------------------------------------------new search --------------
                   }
                   for (ip[4]=ip4_min; ip[4]<ip_N[4]; ip[4]++) {
                     DEBUG("4 i:"<<ip[4]<<" t:"<< tip[4] <<"\n");
-                    //if (ip_N[5]>1)
                     if ( maxDepth>4)  {
                      if ( particles.size()>4 && ((ip[4]==ip[0] && tip[4]==tip[0]) || (ip[4]==ip[1] && tip[4]==tip[1]) 
                                              || ( ip[4]==ip[2] && tip[4]==tip[2]) || (ip[4]==ip[3] && tip[4]==tip[3]) )) continue;
@@ -149,7 +162,6 @@ DEBUG("------------------------------------------------new search --------------
                     }
                      for (ip[5]=ip5_min; ip[5]<ip_N[5]; ip[5]++) {
                        DEBUG("5 i:"<<ip[5]<<" t:"<< tip[5] <<"\n");
-                      //if (ip_N[5]>1)
                       if (maxDepth>5) {
                        if ( particles.size()>5 &&(ip[5]==ip[0] && tip[5]==tip[0] ) || (ip[5]==ip[1] && tip[5]==tip[1] ) 
                                                ||(ip[5]==ip[2] && tip[5]==tip[2] ) || (ip[5]==ip[3] && tip[5]==tip[3] ) 
@@ -259,7 +271,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     string ac=particles.at(indices[i])->collection;
                     collections.push_back(ac);
                           types.push_back(type);
-                    DEBUG("will search for:"<<type<<"\n");
+                    DEBUG("will search for type:"<<type<<"\n");
                     int Max;
                     switch(type){//assuming all par
                         case muon_t: Max=ao->muos.at(ac).size();break;

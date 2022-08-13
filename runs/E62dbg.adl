@@ -145,138 +145,138 @@ algo preselection
    print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
 
  #d1 resolved  FTFT  done
-# algo FTFT-resolved
-# preselection
-#  cmd eventno ==1354 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
-#  cmd eventno ==1354 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr eventno  index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
-#  cmd eventno ==1354 ? print  Size(goodJETs) Size(subfatjet)  Size(goodJETs)  Size(Vsubfatjet) : all
-#   cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1
-#   print chi2Hr chi2Hb chi2HResolved chi2HBoosted
+  algo FTFT-resolved
+  preselection
+   cmd eventno ==1354 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
+   cmd eventno ==1354 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr eventno  index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
+   cmd eventno ==1354 ? print  Size(goodJETs) Size(subfatjet)  Size(goodJETs)  Size(Vsubfatjet) : all
+    cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1
+    print chi2Hr chi2Hb chi2HResolved chi2HBoosted
 
-#  cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? chi2HResolved<cth : NONE #1st option BRR
-#  cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
-#  cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved>cth : NONE #1st option BRR
-## print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjV}index {wjZ}index # {gjZ}index {gjH}index
-## cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjZ}index {wjV}index {vjZ}index {vjV}index : all
-## cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  {wjV}pT {wjZ}pT index(VBoosted) index(wjV) index(wjZ) : all
-## print index(goodMUOs[1]) index(goodMUOs[0]) index(MUO[1]) index(MUO[0])
+   cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? chi2HResolved<cth : NONE #1st option BRR
+   cmd Size(goodJETs) >= 4 AND Size( subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
+   cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved>cth : NONE #1st option BRR
+ # print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjV}index {wjZ}index # {gjZ}index {gjH}index
+ # cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno index(VBoosted) {wjZ}index {wjV}index {vjZ}index {vjV}index : all
+ # cmd eventno == 411 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno  {wjV}pT {wjZ}pT index(VBoosted) index(wjV) index(wjZ) : all
+ # print index(goodMUOs[1]) index(goodMUOs[0]) index(MUO[1]) index(MUO[0])
 
-##d2 resolved  FTFF  done
-# algo FTFF-resolved
-# preselection
-# cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
-# cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VResolved >cth AND size(loodJETs) < 1    : NONE #1st option BRR
-#
+ #d2 resolved  FTFF  done
+  algo FTFF-resolved
+  preselection
+  cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
+  cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VResolved >cth AND size(loodJETs) < 1    : NONE #1st option BRR
+ 
 
-##d3 resolved  FTTT  done
-algo FTTT-resolved
-preselection
+ #d3 resolved  FTTT  done
+ algo FTTT-resolved
+ reselection
    print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr eventno
    print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
 
-##cmd eventno ==26970 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
-##cmd eventno ==26970 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
-#cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
-##cmd eventno ==26970 ? print  PT(wjV) PT(wjZ) PT(vjZ) PT(vjV) : all
-##cmd eventno ==26970 ? print  PT(fjH) PT(fjZ) PT(gjZ) PT(gjH) : all
-##cmd eventno ==26970 ? print chi2Vr  chi2Vb : all
-##cmd eventno ==26970 ? print  Size(goodJETs) Size(subfatjet)  Size(Vsubfatjet) index(gjA) index(gjB) index(vjA) index(vjB) : all
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved>cth AND (chi2Vr < chi2Vb)  : NONE #1st option BRR
-#
-#
-##e1 resolved  FFFF  done
-#algo FFFF-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (    chi2VBoosted < chi2VResolved)     AND    chi2VResolved> cth AND size(loodJETs) < 1 : NONE #2nd option BRR
-#
-##e2 resolved  FFFT  done
-#algo FFFT-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (    chi2VBoosted > chi2VResolved)     AND    chi2VResolved> cth : NONE #2nd option BRR
-#
-##e3 resolved  FFTT  done
-#algo FFTT-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (    chi2VBoosted > chi2VResolved)     AND    chi2VResolved> cth AND (chi2Vr < chi2Vb): NONE #2nd option BRR
-#
-#
-##f1 resolved  TTTT  done
-#algo TTTT-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
-#cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved > cth AND (chi2Vr < chi2Vb) : NONE #3rd option BRR
-#
-##f2 resolved  TTFT  done
-#algo TTFT-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
-#cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved > cth : NONE #3rd option BRR
-#
-##f3 resolved  TTFF  done
-#algo TTFF-resolved
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
-#cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VResolved > cth AND size(loodJETs) < 1 : NONE #3rd option BRR
-#
-##a1 boosted  TFTF  done
-#algo TFTF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth : NONE #1st option BRR [boosted version] 
-#
-##a2 boosted  TFFF  done
-#algo TFFF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth AND size(loodJETs) > 0: NONE #1st option BRR [boosted version] 
-#
-##a3 boosted  TFTT  done
-#algo TFTT-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted>cth AND (chi2Vr > chi2Vb)  : NONE #1st option BRR [boosted version] 
-#
-#
-##b1 boosted  FFFF  done
-#algo FFFF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth AND size(loodJETs) > 0 : NONE #2nd option BRR [boosted version]
-#
-##b2 boosted  FFTF  done
-#algo FFTF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth : NONE #2nd option BRR [boosted version]
-#
-##b3 boosted  FFTT  done
-#algo FFTT-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted>cth AND (chi2Vr > chi2Vb)  : NONE #2nd option BRR [boosted version]
-#
-##c1 boosted  TTTT  done
-#algo TTTT-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted > cth AND (chi2Vr > chi2Vb) : NONE #3rd option BRR [boosted version]
-#
-##c2 boosted  TTTF  done
-#algo TTTF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted > cth : NONE #3rd option BRR [boosted version]
-#
-##c3 boosted  TTFF  done
-#algo TTFF-boosted
-#preselection
-#cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
-#cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted > cth AND size(loodJETs) > 0 : NONE #3rd option BRR [boosted version]
-#
-##histo hmet, "MET ", 50, 0, 1000, MET
-##print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
-#
-#
+ #cmd eventno ==26970 ? print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr index(VBoosted) index(wjV) index(wjZ) index(vjZ) index(vjV) : all
+ #cmd eventno ==26970 ? print chi2HBoosted chi2HResolved {HBoosted}m {HResolved}m chi2Hb chi2Hr index(HBoosted) index(fjH) index(fjZ) index(gjZ) index(gjH) : all
+ cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth : NONE #1st option BRR
+ #cmd eventno ==26970 ? print  PT(wjV) PT(wjZ) PT(vjZ) PT(vjV) : all
+ #cmd eventno ==26970 ? print  PT(fjH) PT(fjZ) PT(gjZ) PT(gjH) : all
+ #cmd eventno ==26970 ? print chi2Vr  chi2Vb : all
+ #cmd eventno ==26970 ? print  Size(goodJETs) Size(subfatjet)  Size(Vsubfatjet) index(gjA) index(gjB) index(vjA) index(vjB) : all
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved>cth AND (chi2Vr < chi2Vb)  : NONE #1st option BRR
+ 
+ 
+ #e1 resolved  FFFF  done
+ algo FFFF-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (    chi2VBoosted < chi2VResolved)     AND    chi2VResolved> cth AND size(loodJETs) < 1 : NONE #2nd option BRR
+ 
+ #e2 resolved  FFFT  done
+ algo FFFT-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (    chi2VBoosted > chi2VResolved)     AND    chi2VResolved> cth : NONE #2nd option BRR
+ 
+ #e3 resolved  FFTT  done
+ algo FFTT-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND  Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HResolved<cth AND size(koodJETs) < 1 : NONE #2nd option BRR
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (    chi2VBoosted > chi2VResolved)     AND    chi2VResolved> cth AND (chi2Vr < chi2Vb): NONE #2nd option BRR
+ 
+ 
+ #f1 resolved  TTTT  done
+ algo TTTT-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
+ cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved > cth AND (chi2Vr < chi2Vb) : NONE #3rd option BRR
+ 
+ #f2 resolved  TTFT  done
+ algo TTFT-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
+ cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted > chi2VResolved) AND chi2VResolved > cth : NONE #3rd option BRR
+ 
+ #f3 resolved  TTFF  done
+ algo TTFF-resolved
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HResolved<cth AND (chi2Hr < chi2Hb) :NONE #3rd option BRR
+ cmd Size(voodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VResolved > cth AND size(loodJETs) < 1 : NONE #3rd option BRR
+ 
+ #a1 boosted  TFTF  done
+ algo TFTF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth : NONE #1st option BRR [boosted version] 
+ 
+ #a2 boosted  TFFF  done
+ algo TFFF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth AND size(loodJETs) > 0: NONE #1st option BRR [boosted version] 
+ 
+ #a3 boosted  TFTT  done
+ algo TFTT-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth : NONE #1st option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted>cth AND (chi2Vr > chi2Vb)  : NONE #1st option BRR [boosted version] 
+ 
+ 
+ #b1 boosted  FFFF  done
+ algo FFFF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth AND size(loodJETs) > 0 : NONE #2nd option BRR [boosted version]
+ 
+ #b2 boosted  FFTF  done
+ algo FFTF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted>cth : NONE #2nd option BRR [boosted version]
+ 
+ #b3 boosted  FFTT  done
+ algo FFTT-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)<1 ? (chi2HBoosted < chi2HResolved) AND chi2HBoosted<cth AND size(koodJETs) > 0 : NONE #2nd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted>cth AND (chi2Vr > chi2Vb)  : NONE #2nd option BRR [boosted version]
+ 
+ #c1 boosted  TTTT  done
+ algo TTTT-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted > chi2VResolved) AND chi2VBoosted > cth AND (chi2Vr > chi2Vb) : NONE #3rd option BRR [boosted version]
+ 
+ #c2 boosted  TTTF  done
+ algo TTTF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)>0 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted > cth : NONE #3rd option BRR [boosted version]
+ 
+ #c3 boosted  TTFF  done
+ algo TTFF-boosted
+ preselection
+ cmd Size(goodJETs) >= 4 AND Size(subfatjet)>0 ? (chi2HBoosted > chi2HResolved) AND chi2HBoosted<cth AND (chi2Hr > chi2Hb) :NONE #3rd option BRR [boosted version]
+ cmd Size(goodJETs) >= 4 AND Size(Vsubfatjet)<1 ? (chi2VBoosted < chi2VResolved) AND chi2VBoosted > cth AND size(loodJETs) > 0 : NONE #3rd option BRR [boosted version]
+ 
+ #histo hmet, "MET ", 50, 0, 1000, MET
+ #print chi2VBoosted chi2VResolved {VBoosted}m {VResolved}m chi2Vb chi2Vr eventno
+ 
+ 
