@@ -300,8 +300,8 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                    // runNestedLoopRec( 0, Max, 0, MaxDepth, &v,&indices, &current_difference,ao, type, ac);
 
                    DEBUG("After find, Best index vector size:"<<bestIndices.size()<<" MaxDepth"<<MaxDepth<<"\n");
-                   if (bestIndices.size() < 1) {  
-                         // std::cout<< "best index could not be found\n"; 
+                   if (bestIndices.size() < 1 ) {  
+                         DEBUG("!!! Best index could not be found.\n"); 
                          double  leftval=left->evaluate(ao);
                          return 1; 
                    }

@@ -98,6 +98,17 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         }
         DEBUG("P1_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
 
+     bool failed=false;
+     for (int kk=0; kk<inputParticles.size(); kk++){
+      if (inputParticles[kk]->index < 0) failed=true;
+     }
+     if (!failed)
+     for (int kk=0; kk<inputParticles2.size(); kk++){
+      if (inputParticles2[kk]->index < 0) failed=true;
+     }
+     if (failed) return 98765432.1;
+
+
         if ( inputParticles2[0]->index == 6213) {
            string base_collection2=inputParticles2[0]->collection;
               int base_type2=inputParticles2[0]->type;
