@@ -6,11 +6,12 @@ import readADLoutputCompare2
 import inputSamples2
 import outputANADEFS2
 
+# Reads model directory. Asks for the dir name, if either the directory <input> or model_<input> is found, it's used.
 def model_dir():
-    msg = 'Input model (directory) name: '
+    msg = 'Input model (directory) name: ' 
     fol = input(msg)
     r = 1
-    if exists(fol):
+    if exists(fol): 
         msg = 'Using directory '+fol+'.'
         print(msg)
     elif exists('model_'+fol):
@@ -18,7 +19,7 @@ def model_dir():
         msg = 'Using directory '+fol+'.'
         print(msg)
     else:
-        msg = 'Directory '+fol+' not found. Initialize new directory? [y]/n: '
+        msg = 'Directory '+fol+' not found. Initialize new directory? [y]/n: ' # If not found, new one is initialized if prompted.
         ok = input(msg)
         if not ok:
             os.mkdir(fol)
@@ -31,6 +32,7 @@ def model_dir():
     return fol
         
 def if_outfile(outfname):
+    # If output file already exists, permission to overwrite is asked.
     if exists(outfname):
             msg = 'Overwrite file '+outfname+'? [Y/n]: '
             ok = input(msg)
@@ -46,11 +48,12 @@ def if_outfile(outfname):
         return outfname
 
 def ask_outfile():
+    # Asks for output filename, default is compare.dat
     defoutput = 'compare.dat'
     msg = 'Give an output file (default '+defoutput+'): '
     outfname = input(msg)
     if outfname:
-        outfname = if_outfile(outfname)
+        outfname = if_outfile(outfname) # Checks if outfile already exists and if user wants to overwrite it.
     else:
         outfname = defoutput
         outfname = if_outfile(outfname)
@@ -59,6 +62,6 @@ def ask_outfile():
 
 d = model_dir()
 print(d)
-readADLoutputCompare2.main(d)
-inputSamples2.main(d)
-outputANADEFS2.main()
+readADLoutputCompare2.main(d) # Reads ADL file in folder, outputs compare.dat
+inputSamples2.main(d) # Asks user to input sample information, checks samples file in the given folder
+outputANADEFS2.main() # Asks user input for ANADEFS file

@@ -3,7 +3,9 @@ import ROOT
 from os import listdir
 from os.path import exists,isfile
 import numpy as np
+import sys
 
+# Directory containing ROOT files that are plotted. Default is ./results/ If dir not found, program exits.
 resdir = input('Give results directory with all root files (default: ./results/): ')
 if resdir:
     resdir = resdir
@@ -11,9 +13,11 @@ else:
     resdir = './results/'
     
 if not exists(resdir):
-    msg = 'Results directory ('+resdir+') not found!'
+    msg = 'Results directory ('+resdir+') not found! Exiting.'
     print(msg)
-
+    sys.exit()
+    
+# Specific hard-coded directories. Need to implement interactivity if that is wanted.
 bgdir = 'backgrounds/'
 sigdir = 'signals/'
 datadir = 'data/'
@@ -29,8 +33,7 @@ for i in range(len(dirs)):
     else:
         datas.append(listdir(ddir))
 
-print(datas)        
-
+# Fills only signal histograms so far, more can be implemented.        
 print('***************** Filling signal histograms ******************')
 
 import uproot
@@ -64,13 +67,9 @@ for pi in range(len(paths)):
     mll.Add(h)
     
     del h
-# print(leg)    
-# mll.Add(leg)
 mll.Draw()
 input("Press any button to continue")
 leg.Draw("SAME")
-# c4.BuildLegend()#leg)
-
 input("Press any button to continue")
 
 ofn = 'results/histo_w_all.root'    
