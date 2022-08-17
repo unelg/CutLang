@@ -1,5 +1,6 @@
 import numpy as np
 from os.path import exists
+import os
 
 def if_outfile(outfname):
     if exists(outfname):
@@ -28,15 +29,44 @@ def ask_outfile():
     return outfname
         
 
-fileinpath = '../../cern2022/VLL-2LOS.adl' #input('Give an ADL file: ') 
-while not exists(fileinpath):
-    print('File not found!')
-    fileinpath = input('Give an ADL file: ') 
+msg = 'Give a model directory with the ADL file :'
+d = input(msg)
+r = 0
+for subdir, dirs, files in os.walk(d):
+    for f in files:
+        # print(os.path.join(subdir, file))                                                                                                 
+        if '.adl' in f or '.ADL' in f:
+            r = 1
+            msg = 'ADL file found in '+os.path.join(subdir, f)+', use that? [Y/n]'
+            ok = input(msg)
+            if not ok:
+                fileinpath = os.path.join(subdir, f)
+            elif ok in ['n','N','0']:
+                fileinpath = input('Give an ADL file: ')
+                while not exists(fileinpath):
+                    print('File not found!')
+                    fileinpath = input('Give an ADL file: ')
+            else:
+                fileinpath = os.path.join(subdir, f)
+if r == 0:
+    msg = 'ADL file not found in folder, give an ADL file: '
+    fileinpath = input(msg)
+    while not exists(fileinpath):
+        print('File not found!')
+        fileinpath = input('Give an ADL file: ')
 infile = open(fileinpath,'r')
 lines=infile.readlines()
 infile.close()
 
-outfname = 'VLL_compare.dat' #ask_outfile()
+# fileinpath = '../../cern2022/VLL-2LOS.adl' #input('Give an ADL file: ') 
+# while not exists(fileinpath):
+    # print('File not found!')
+    # fileinpath = input('Give an ADL file: ') 
+# infile = open(fileinpath,'r')
+# lines=infile.readlines()
+# infile.close()
+
+outfname = ask_outfile()
 print('Writing to file',outfname)
 outf = open(outfname,'w')
 
@@ -57,8 +87,13 @@ for n in numbers:
     muonout = ' MUON'+str(n)+' = '+histos[n-1][0]+'\n'
     eleout = ' ELE'+str(n)+' = '+histos[n-1][0]+'\n'
     rebinout = 'rebin'+str(n)+' = '+str(1)+'\n'
-    minmaxout = 'minmax'+str(n)+' = '+histos[n-1][3]+','+histos[n-1][4]+'\n'
-    lineout = psetout+muonout+eleout+rebinout+minmaxout+'\n'
+    if len(histos[n-1]) > 4:
+        minmaxout = 'minmax'+str(n)+' = '+histos[n-1][3]+','+histos[n-1][4]+'\n'
+        lineout = psetout+muonout+eleout+rebinout+minmaxout+'\n'
+    else:
+        lineout = psetout+muonout+eleout+rebinout+'\n'
+    # minmaxout = 'minmax'+str(n)+' = '+histos[n-1][3]+','+histos[n-1][4]+'\n'
+    # lineout = psetout+muonout+eleout+rebinout+minmaxout+'\n'
     outf.write(lineout)
 outf.close()
 
