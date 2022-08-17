@@ -1,2 +1,129 @@
 Errors: 
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+Line 17963: CLA ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+Line 17964: /home/runner/work/CutLang/CutLang/runs/CLA.sh
+Line 17965: /home/runner/work/CutLang/CutLang/runs
+Line 17966: /home/runner/work/CutLang/CutLang
+Line 17967: Single Analysis
+Line 17968: /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 17969: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 17970: Analysis run count is 1
+Line 17971: ~Now using CMS Open Data files.~~~~~~ beta!
+Line 17972: open ./cms_opendata_ttbar.root
+Line 17973: RetVal:1
+Line 17974: initialized with the chain...36941
+Line 17975:  #systematic included:0
+Line 17976: 	 REGION/ALGO:preselect
+Line 17977: ==Parsing started:	ERROR: syntax error	 at line: 38
+Line 17978: 	 Parsing finished.==
+Line 17979: 
+Line 17980: yyParse returns SYNTAX error in the input file.
+Line 17981: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+Line 17984: CLA ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+Line 17985: /home/runner/work/CutLang/CutLang/runs/CLA.sh
+Line 17986: /home/runner/work/CutLang/CutLang/runs
+Line 17987: /home/runner/work/CutLang/CutLang
+Line 17988: Single Analysis
+Line 17989: /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 17990: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 17991: Analysis run count is 1
+Line 17992: ~Now using ATLAS Open Data files.~~~~~~ beta!
+Line 17993: open ./atla_opendata_had_ttbar.root
+Line 17994: RetVal:1
+Line 17995: initialized with the chain...25170
+Line 17996:  #systematic included:0
+Line 17997: 	 REGION/ALGO:preselect
+Line 17998: ==Parsing started:	ERROR: syntax error	 at line: 38
+Line 17999: 	 Parsing finished.==
+Line 18000: 
+Line 18001: yyParse returns SYNTAX error in the input file.
+Line 18002: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+Line 18005: CLA ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+Line 18006: /home/runner/work/CutLang/CutLang/runs/CLA.sh
+Line 18007: /home/runner/work/CutLang/CutLang/runs
+Line 18008: /home/runner/work/CutLang/CutLang
+Line 18009: Single Analysis
+Line 18010: /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 18011: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 18012: Analysis run count is 1
+Line 18013: ~Now using Delphes files.~~~~~~ beta!
+Line 18014: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 18015: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 18016: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 18017: Warning in <TClass::Init>: no dictionary for class Tower is available
+Line 18018: open ./delphes_events_ttbar.root
+Line 18019: RetVal:1
+Line 18020: initialized with the chain...1000
+Line 18021:  #systematic included:0
+Line 18022: 	 REGION/ALGO:preselect
+Line 18023: ==Parsing started:	ERROR: syntax error	 at line: 38
+Line 18024: 	 Parsing finished.==
+Line 18025: 
+Line 18026: yyParse returns SYNTAX error in the input file.
+Line 18027: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+Line 18031: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+Line 18032: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 18033: Analysis run count is 1
+Line 18034: ~Now using CMS Open Data files.~~~~~~ beta!
+Line 18035: open ./cms_opendata_ttbar.root
+Line 18036: RetVal:1
+Line 18037: initialized with the chain...36941
+Line 18038:  #systematic included:0
+Line 18039: 	 REGION/ALGO:preselect
+Line 18040: ==Parsing started:	ERROR: syntax error	 at line: 34
+Line 18041: 	 Parsing finished.==
+Line 18042: 
+Line 18043: yyParse returns SYNTAX error in the input file.
+Line 18044: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i HTauTau.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+Line 18048: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+Line 18049: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 18050: Analysis run count is 1
+Line 18051: ~Now using ATLAS Open Data files.~~~~~~ beta!
+Line 18052: open ./atla_opendata_had_ttbar.root
+Line 18053: RetVal:1
+Line 18054: initialized with the chain...25170
+Line 18055:  #systematic included:0
+Line 18056: 	 REGION/ALGO:preselect
+Line 18057: ==Parsing started:	ERROR: syntax error	 at line: 34
+Line 18058: 	 Parsing finished.==
+Line 18059: 
+Line 18060: yyParse returns SYNTAX error in the input file.
+Line 18061: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i HTauTau.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+Line 18065: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+Line 18066: CLA v2.13.10	compiled on Wed Aug 17 10:59:35 UTC 2022
+Line 18067: Analysis run count is 1
+Line 18068: ~Now using Delphes files.~~~~~~ beta!
+Line 18069: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 18070: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 18071: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 18072: Warning in <TClass::Init>: no dictionary for class Tower is available
+Line 18073: open ./delphes_events_ttbar.root
+Line 18074: RetVal:1
+Line 18075: initialized with the chain...1000
+Line 18076:  #systematic included:0
+Line 18077: 	 REGION/ALGO:preselect
+Line 18078: ==Parsing started:	ERROR: syntax error	 at line: 34
+Line 18079: 	 Parsing finished.==
+Line 18080: 
+Line 18081: yyParse returns SYNTAX error in the input file.
+Line 18082: Offending text is: genPartIdx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i HTauTau.adl -e 1000 -v 500
+
+Total error: 6
