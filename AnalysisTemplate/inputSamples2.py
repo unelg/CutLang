@@ -3,6 +3,7 @@ from os.path import exists
 import readOutputFile
 import os
 
+# Raises value error if wrong things are input.
 def value_error_f(t,val):
     try:
         t(val)
@@ -73,6 +74,7 @@ def variables_subsamples():
 
     return name,dsid,cs,weight
 
+# Goes through the folder, if samples, xsections and weigths are found, can overwrite to them or ask for output path.
 def file_in_dir_ask_ow(d,in_name):
     r = 0
     for subdir, dirs, files in os.walk(d):
@@ -103,18 +105,16 @@ def file_in_dir_ask_ow(d,in_name):
             return fileinpath
     else:
         return fileinpath
-
-
     
 
-    
+# The main function, goes through the folder and if samples file is found, asks to use it as a template. If not used or found, user can give path or initialize without defaults.
 def inputsamples(modeln):
     r = 0
     for subdir, dirs, files in os.walk(modeln):
         for f in files:
             if 'sample' in f:
                 r = 1
-                msg = 'Samples file found in '+os.path.join(subdir, f)+', use that? [Y/n]'
+                msg = 'Samples file found in '+os.path.join(subdir, f)+', use that? [Y/n]: '
                 ok = input(msg)
                 if not ok:
                     fileinpath = os.path.join(subdir, f)
@@ -127,7 +127,6 @@ def inputsamples(modeln):
             print(msg)
             fileinpath = input('Give a samples file (empty input starts without defaults): ')
     
-    # outfname = input('Give an existing samples file to use as defaults: ')
     ### If existing output file exists, use it to get default numbers of signals and bgs and subsamples
     if exists(fileinpath):
         file_lines = readOutputFile.read_file(fileinpath)
@@ -235,16 +234,12 @@ def inputsamples(modeln):
     if len(bgs) == 0:
         outf.write('\n# No background given!\n')
     else:
-        # incount += 1
         for i in range(len(bgs)):
             if len(bgs[i][1]) == 0:
                 outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
                 outf.write('typeId-'+str(bg[i])+'-Drawable = '+str(bgs[i][2])+'\n')
                 outf.write('typeId-'+str(bg[i])+'-Style = '+bgs[i][3]+'\n\n')
             else:
-                # for j in range(len(bgs[i][1])):
-                #     R.append(str(j+1))
-                #     incount += 1
                 incount += len(bgs[i][1])
                 outf.write('\ntypeId-'+str(bg[i])+'-N = '+bgs[i][0]+'\n')
                 outf.write('typeId-'+str(bg[i])+'-Rmin = '+str(incount-len(bgs[i][1]))+'\n')
@@ -272,7 +267,6 @@ def inputsamples(modeln):
     if len(signals) == 0:
         outf.write('\n# No signals given!\n')
     else:
-        # incount += 1
         for i in range(len(signals)):
 
             if len(signals[i][1]) == 0:
@@ -280,9 +274,6 @@ def inputsamples(modeln):
                 outf.write('typeId-'+str(signal[i])+'-Drawable = '+str(signals[i][2])+'\n')
                 outf.write('typeId-'+str(signal[i])+'-Style = '+signals[i][3]+'\n\n')
             else:
-                # for j in range(len(signals[i][1])):
-                # R.append(str(j+1))
-                # incount += 1
                 incount += len(signals[i][1])
                 outf.write('\ntypeId-'+str(signal[i])+'-N = '+signals[i][0]+'\n')
                 outf.write('typeId-'+str(signal[i])+'-Rmin = '+str(incount-len(signals[i][1]))+'\n')
@@ -318,10 +309,11 @@ def inputsamples(modeln):
     subswoutf.close()
     return None
 
+# To run the script without the wrapper, asks a model directory.
 def main():
-    d = input("Input model directory: ")
+    d = input("Input a model directory (or '.' to use the current folder): ")
     while not d:
-        d = input("Input model directory: ")
+        d = input("Input model directory (or '.' to use the current folder): ")
     if not exists(d):
         print("Directory not found, exiting.")
         sys.exit()

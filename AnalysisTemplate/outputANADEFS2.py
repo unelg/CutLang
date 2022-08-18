@@ -1,5 +1,6 @@
 from os.path import exists
 
+# Ask input for a given variable.
 def ask_input(variable):
     msg = 'Input '+variable+': '
     value = input(msg)
@@ -7,15 +8,17 @@ def ask_input(variable):
     print(msg)
     return variable,value
 
+# Ask for output file.
 def ask_output():
     msg = 'Give an output ANA_DEFS file: '
     outfn = input(msg)
     if not outfn:
         outfn = ask_output()
     else:
-        outfn = check_output(outfn)
+        outfn = check_output(outfn) # Check if output exists already.
     return outfn
-    
+
+# Check if output exists and if so, if user wants to overwrite it.
 def check_output(outfn):
     if exists(outfn):
         msg = 'File '+outfn+' exists, overwrite? [Y/n]: '
@@ -31,7 +34,7 @@ def check_output(outfn):
     else:
         return outfn
 
-
+# Write the definitions to output file.
 def write_ANA_DEFS(out_vars,out_defs):
     outfn = ask_output()
     outf = open(outfn,'w')
@@ -39,17 +42,8 @@ def write_ANA_DEFS(out_vars,out_defs):
         line = out_vars[i]+' = '+str(out_defs[i])+'\n'
         outf.write(line)
     outf.close()
-    
-# msg = 'Input directory: '
-# indirn = input(msg)
 
-# if exists(indirn):
-#     msg = 'Using directory '+indirn
-#     print(msg)
-# else:
-#     msg = 'Directory '+indirn+' not found!'
-#     print(msg)
-
+# Main function, with variables hard coded to list.    
 def anadefs():
     in_vars = ['MCD_e', 'DATAF_e', 'MCD_m', 'DATAF_m', 'CHANNEL', 'SUMCHANNELS', 'MODEL', 'INTLUMI', 'LOG_GRAPHS', 'ECM', 'LIMITTER', 'STAT', 'SYSTERR', 'OBSERVEDLIMIT', 'INJECTION', 'LUMI_TAG', 'LIVE_TAG', 'DIRECTORY', 'STATERR']
 
@@ -64,10 +58,10 @@ def anadefs():
 
 
     write_ANA_DEFS(out_vars,out_values)
+    return None
 
-    # print(out_vars)
-    # print(out_defs)
 
+# To use the script without a wrapper.
 def main():
     anadefs()
 

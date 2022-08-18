@@ -3,6 +3,7 @@ from os.path import exists
 import os
 import sys
 
+# Asks if existing output file is to be overwritten.
 def if_outfile(outfname):
     if exists(outfname):
             msg = 'Overwrite file '+outfname+'? [Y/n]: '
@@ -17,7 +18,8 @@ def if_outfile(outfname):
                     return outfname
     else:
         return outfname
-        
+
+# Asks for output file, default compare.dat    
 def ask_outfile():
     defoutput = 'compare.dat'
     msg = 'Give an output compare.dat file (default '+defoutput+'): '
@@ -28,12 +30,12 @@ def ask_outfile():
         outfname = defoutput
         outfname = if_outfile(outfname)
     return outfname
-        
+
+# Goes through the given folder, looks if ADL files are found. If not, asks user to input the path.
 def rADLoComp(d):
     r = 0
     for subdir, dirs, files in os.walk(d):
         for f in files:
-            # print(os.path.join(subdir, file))
             if '.adl' in f or '.ADL' in f:
                 r = 1
                 msg = 'ADL file found in '+os.path.join(subdir, f)+', use that? [Y/n]'
@@ -57,6 +59,7 @@ def rADLoComp(d):
     lines=infile.readlines()
     infile.close()
 
+    # Asks for output file.
     outfname = ask_outfile() #'VLL_compare.dat' 
     print('Writing to file',outfname)
     outf = open(outfname,'w')
@@ -86,6 +89,7 @@ def rADLoComp(d):
         outf.write(lineout)
     outf.close()
 
+    # Prints the number of histos written to file.
     msg = 'Printed histograms ['
     for n in numbers[:-1]:
         msg += str(n)+', '
@@ -93,13 +97,12 @@ def rADLoComp(d):
     print(msg)
     return None
 
-# if __name__ == "__main__":
-#     main()
 
+# To use the script without the wrapper. Asks for the model folder where the ADL file is.
 def main():
-    d = input("Input model directory: ")
+    d = input("Input (model) directory with the ADL file: ")
     while not d:
-        d = input("Input model directory: ")
+        d = input("Input (model) directory with the ADL file: ")
     if not exists(d):
         print("Directory not found, exiting.")
         sys.exit()
