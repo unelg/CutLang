@@ -1,6 +1,7 @@
 import numpy as np
 from os.path import exists
 import os
+import sys
 
 def if_outfile(outfname):
     if exists(outfname):
@@ -28,7 +29,7 @@ def ask_outfile():
         outfname = if_outfile(outfname)
     return outfname
         
-def main(d):
+def rADLoComp(d):
     r = 0
     for subdir, dirs, files in os.walk(d):
         for f in files:
@@ -90,6 +91,20 @@ def main(d):
         msg += str(n)+', '
         msg += str(numbers[-1])+'] to a file.'
     print(msg)
+    return None
 
 # if __name__ == "__main__":
 #     main()
+
+def main():
+    d = input("Input model directory: ")
+    while not d:
+        d = input("Input model directory: ")
+    if not exists(d):
+        print("Directory not found, exiting.")
+        sys.exit()
+
+    rADLoComp(d)
+    
+if __name__ == "__main__":
+    main()

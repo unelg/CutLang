@@ -108,7 +108,7 @@ def file_in_dir_ask_ow(d,in_name):
     
 
     
-def main(modeln):
+def inputsamples(modeln):
     r = 0
     for subdir, dirs, files in os.walk(modeln):
         for f in files:
@@ -316,3 +316,17 @@ def main(modeln):
     outf.close()
     subsoutf.close()
     subswoutf.close()
+    return None
+
+def main():
+    d = input("Input model directory: ")
+    while not d:
+        d = input("Input model directory: ")
+    if not exists(d):
+        print("Directory not found, exiting.")
+        sys.exit()
+
+    inputsamples(d)
+
+if __name__ == "__main__":
+    main()

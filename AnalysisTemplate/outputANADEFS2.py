@@ -50,7 +50,7 @@ def write_ANA_DEFS(out_vars,out_defs):
 #     msg = 'Directory '+indirn+' not found!'
 #     print(msg)
 
-def main():
+def anadefs():
     in_vars = ['MCD_e', 'DATAF_e', 'MCD_m', 'DATAF_m', 'CHANNEL', 'SUMCHANNELS', 'MODEL', 'INTLUMI', 'LOG_GRAPHS', 'ECM', 'LIMITTER', 'STAT', 'SYSTERR', 'OBSERVEDLIMIT', 'INJECTION', 'LUMI_TAG', 'LIVE_TAG', 'DIRECTORY', 'STATERR']
 
     out_vars = []
@@ -67,3 +67,9 @@ def main():
 
     # print(out_vars)
     # print(out_defs)
+
+def main():
+    anadefs()
+
+if __name__ == "__main__":
+    main()    

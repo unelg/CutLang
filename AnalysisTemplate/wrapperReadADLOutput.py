@@ -61,7 +61,7 @@ def ask_outfile():
 
 
 d = model_dir()
-print(d)
-readADLoutputCompare2.main(d) # Reads ADL file in folder, outputs compare.dat
-inputSamples2.main(d) # Asks user to input sample information, checks samples file in the given folder
-outputANADEFS2.main() # Asks user input for ANADEFS file
+# print(d)
+readADLoutputCompare2.rADLoComp(d) # Reads ADL file in folder, outputs compare.dat
+inputSamples2.inputsamples(d) # Asks user to input sample information, checks samples file in the given folder
+outputANADEFS2.anadefs() # Asks user input for ANADEFS file
