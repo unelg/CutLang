@@ -91,7 +91,11 @@ def file_in_dir_ask_ow(d,in_name):
                     fileinpath = os.path.join(subdir, f)
 
     if r == 0:
-        fileinpath = input('Give '+in_name+' file to write to: ')
+        msg = 'Give '+in_name+' file to write to (default '+d+'/'+in_name+'.dat) : '
+        fileinpath = input(msg)
+        if not fileinpath:
+            fileinpath = in_name
+        fileinpath = d+'/'+fileinpath+'.dat'
         
     if exists(fileinpath):
         msg = 'Overwrite file '+fileinpath+'? [Y/n]: '
@@ -114,7 +118,7 @@ def inputsamples(modeln):
         for f in files:
             if 'sample' in f:
                 r = 1
-                msg = 'Samples file found in '+os.path.join(subdir, f)+', use that? [Y/n]: '
+                msg = 'Samples file found in '+os.path.join(subdir, f)+', use that as defaults? [Y/n]: '
                 ok = input(msg)
                 if not ok:
                     fileinpath = os.path.join(subdir, f)
@@ -144,7 +148,7 @@ def inputsamples(modeln):
 
     ### Ask the name of the model and a possible already existing output file, open final output file and cross-section file
     # modeln = input('Name of the model (writing to files sample-<modelname>.txt, xsections-<modelname>.txt, and sumOfWeights-<modelname>.txt): ')
-    filn = file_in_dir_ask_ow(modeln,'sample')
+    filn = file_in_dir_ask_ow(modeln,'samples')
     # filn = 'sample-'+modeln+'.txt'
     outf = open(filn,'w')
     subsoutfname = file_in_dir_ask_ow(modeln,'xsections')

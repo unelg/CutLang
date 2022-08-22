@@ -20,8 +20,8 @@ def if_outfile(outfname):
         return outfname
 
 # Asks for output file, default compare.dat    
-def ask_outfile():
-    defoutput = 'compare.dat'
+def ask_outfile(d):
+    defoutput = d+'/compare.dat'
     msg = 'Give an output compare.dat file (default '+defoutput+'): '
     outfname = input(msg)
     if outfname:
@@ -60,7 +60,7 @@ def rADLoComp(d):
     infile.close()
 
     # Asks for output file.
-    outfname = ask_outfile() #'VLL_compare.dat' 
+    outfname = ask_outfile(d) #'VLL_compare.dat' 
     print('Writing to file',outfname)
     outf = open(outfname,'w')
 
@@ -90,11 +90,14 @@ def rADLoComp(d):
     outf.close()
 
     # Prints the number of histos written to file.
-    msg = 'Printed histograms ['
-    for n in numbers[:-1]:
-        msg += str(n)+', '
+    if len(numbers)>0:
+        msg = 'Printed histograms ['
+        for n in numbers[:-1]:
+            msg += str(n)+', '
         msg += str(numbers[-1])+'] to a file.'
-    print(msg)
+        print(msg)
+    else:
+        'No histograms found!'
     return None
 
 

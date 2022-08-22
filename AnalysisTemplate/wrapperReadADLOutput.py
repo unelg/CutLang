@@ -8,6 +8,7 @@ import outputANADEFS2
 
 # Reads model directory. Asks for the dir name, if either the directory <input> or model_<input> is found, it's used.
 def model_dir():
+    print('Hi! This is a script that guides you through various steps of creating files for you data-analysis. :) The only thing required is an ADL analysis script.')
     msg = 'Input model (directory) name: ' 
     fol = input(msg)
     r = 1
@@ -64,4 +65,4 @@ d = model_dir()
 # print(d)
 readADLoutputCompare2.rADLoComp(d) # Reads ADL file in folder, outputs compare.dat
 inputSamples2.inputsamples(d) # Asks user to input sample information, checks samples file in the given folder
-outputANADEFS2.anadefs() # Asks user input for ANADEFS file
+outputANADEFS2.anadefs(d) # Asks user input for ANADEFS file
