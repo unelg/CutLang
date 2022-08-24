@@ -1180,7 +1180,7 @@ Testing exSyst.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i exSyst.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =   -nan % +-   -nan %
+					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i exSyst.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -1191,7 +1191,7 @@ CLA ./delphes_events_ttbar.root DELPHES -i exSyst.adl -e 1000 -v 500
 					 --> Overall efficiency	 =   -nan % +-   -nan %
 With CMSOD
 python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exSyst.adl -e 1000 -v 500
-					 --> Overall efficiency	 =     -0 % +-      0 %
+					 --> Overall efficiency	 =   -nan % +-   -nan %
 hadd Target file: ./histoOut-exSyst.adl.root
 hadd Target path: ./histoOut-exSyst.adl.root:/
 hadd Target path: ./histoOut-exSyst.adl.root:/preselection
