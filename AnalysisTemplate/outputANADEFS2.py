@@ -40,13 +40,14 @@ def check_output(outfn):
         return outfn
 
 # Write the definitions to output file.
-def write_ANA_DEFS(d,out_vars,out_defs):
+def write_ANA_DEFS(d,out_vars,out_defs,prompts):
     outfn = ask_output(d)
     if not outfn:
         sys.exit()
     outf = open(outfn,'w')
     for i in range(len(out_vars)):
-        line = out_vars[i]+' = '+str(out_defs[i])+'\n'
+        x = slice(-2)
+        line = out_vars[i]+' = '+str(out_defs[i])+' # '+prompts[i][x]+'\n'
         outf.write(line)
     outf.close()
 
@@ -83,7 +84,7 @@ def anadefs(d):
         out_values.append(od)
 
 
-    write_ANA_DEFS(d,out_vars,out_values)
+    write_ANA_DEFS(d,out_vars,out_values,prompts)
     return None
 
 
