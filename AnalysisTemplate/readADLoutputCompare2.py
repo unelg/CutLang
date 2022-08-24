@@ -66,6 +66,7 @@ def rADLoComp(d):
 
     histos = []
     for line in lines:
+        line = line.lower()
         if 'histo' in line:
             hashornot = line.split('histo')
             if '#' not in hashornot[0]:
@@ -98,6 +99,34 @@ def rADLoComp(d):
         print(msg)
     else:
         'No histograms found!'
+
+
+
+    regions = []
+    for line in lines:
+        line = line.lower()
+        if 'region' in line:
+            hashornot = line.split('region')
+            if '#' not in hashornot[0]:
+                line = line.replace(' ','')
+                line = line.replace('\n','')
+                line = line.replace('region','')
+                line = line.split(',')
+                regions.append(line)
+        elif 'algo' in line:
+            hashornot = line.split('algo')
+            if '#' not in hashornot[0]:
+                line = line.replace(' ','')
+                line = line.replace('\n','')
+                line = line.replace('algo','')
+                line = line.split(',')
+                regions.append(line)
+    regout = open('regions_out.txt','w')
+    for r in regions:
+        for i in r:
+            o = i+'\n'
+            regout.write(o) #print('regions:',regions)
+    regout.close()
     return None
 
 

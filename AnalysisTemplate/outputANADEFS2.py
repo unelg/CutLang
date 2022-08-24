@@ -1,5 +1,6 @@
 from os.path import exists
 import sys
+import os
 
 # Ask input for a given variable.
 def ask_input(d,variable,prompt):
@@ -53,6 +54,16 @@ def write_ANA_DEFS(d,out_vars,out_defs,prompts):
 
 # Main function, with variables hard coded to list.    
 def anadefs(d):
+    regs = []
+    if exists('regions_out.txt'):
+        regout = open('regions_out.txt','r')
+        regions = regout.readlines()
+        for r in regions:
+            regs.append(r.replace('\n',''))
+        os.remove('regions_out.txt')
+    else:
+        regs.append('signal, background, etc.')
+            
     in_vars = ['MCD_e', 'DATAF_e', 'MCD_m', 'DATAF_m', 'CHANNEL', 'SUMCHANNELS', 'MODEL', 'INTLUMI', 'LOG_GRAPHS', 'ECM', 'LIMITTER', 'STAT', 'SYSTERR', 'STATERR', 'OBSERVEDLIMIT', 'INJECTION', 'LUMI_TAG', 'LIVE_TAG', 'DIRECTORY']
 
     prompts = ['Name of the directory containing MC run results for electrons (str): ',
@@ -73,11 +84,12 @@ def anadefs(d):
                'Do injection test? (0: do not do, any positive real number: injection cross-section multiplicative factor): ',
                'Luminosity tag (tag specifying the luminosity measurement version) (str): ',
                'Live tag (this trigger is only used to compute the L1 live fraction) (str): ',
-               'Region to be worked with (signal, control, etc.): ']
+               'Region to be worked with '+str(regs)+': ']
     out_vars = []
     out_values = []
     msg = 'Writing ANA_DEFS file, initialize values...'
     print(msg)
+
     for i in range(len(in_vars)):
         ov,od = ask_input(d,in_vars[i],prompts[i])
         out_vars.append(ov)
