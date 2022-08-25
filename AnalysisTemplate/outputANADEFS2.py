@@ -3,12 +3,18 @@ import sys
 import os
 
 # Ask input for a given variable.
-def ask_input(d,variable,prompt):
+def ask_input(d,variable,prompt,default):
     # msg = 'Input '+variable+': '
+    if default != 'no default':
+        defmsg = 'default: '+default
+    else: defmsg = default
+    inmsg = prompt+' ('+defmsg+'): '
     if variable == 'MODEL':
         value = d
     else:
-        value = input(prompt)
+        value = input(inmsg)
+    if not value and default != 'no default':
+        value = default
     msg = variable+' = '+str(value)
     print(msg)
     return variable,value
@@ -66,32 +72,34 @@ def anadefs(d):
             
     in_vars = ['MCD_e', 'DATAF_e', 'MCD_m', 'DATAF_m', 'CHANNEL', 'SUMCHANNELS', 'MODEL', 'INTLUMI', 'LOG_GRAPHS', 'ECM', 'LIMITTER', 'STAT', 'SYSTERR', 'STATERR', 'OBSERVEDLIMIT', 'INJECTION', 'LUMI_TAG', 'LIVE_TAG', 'DIRECTORY']
 
-    prompts = ['Name of the directory containing MC run results for electrons (str): ',
-               'Name of the datafile (omitting .root extension) containing data run results for electrons (str): ',
-               'Name of the directory containing MC run results for muons (str): ',
-               'Name of the datafile (omitting .root extension) containing data run results for muons (str): ',
-               'Electrons or muons? (0: muons, 1: electrons): ',
-               'Sum electron and muon channels? (0: do not add, 1: add): ',
+    defs = ['no default','no default','no default','no default','no default','0','no default','no default','1','13','0','no default','0','0','1','0','no default','no default','no default']
+    
+    prompts = ['Name of the directory containing MC run results for electrons (str)',
+               'Name of the datafile (omitting .root extension) containing data run results for electrons (str)',
+               'Name of the directory containing MC run results for muons (str)',
+               'Name of the datafile (omitting .root extension) containing data run results for muons (str)',
+               'Electrons or muons? (0: muons, 1: electrons)',
+               'Sum electron and muon channels? (0: do not add, 1: add)',
                '',
-               'Integrated luminosity (float, pb-1): ',
-               'Use linear or log graphs? (0: linear y-axis, 1: log y-axis): ',
-               'Center of mass energy (7, 8, or 13 GeV): ',
-               'Limitter (0: TLimit, 1: RSLLimit, 2: fastPCL, 3: mclimit): ',
-               'Confidence limits using signal or signal + background? (0: sig only, 1: sig+bkg): ',
-               'Consider systematic errors? (0: do not, 1: consider): ',
-               'Consider statistical errors? (0: do not, 1: consider): ',
-               'Observed limit (0: do not do, 1: do measured = observed limit calculation): ',
-               'Do injection test? (0: do not do, any positive real number: injection cross-section multiplicative factor): ',
-               'Luminosity tag (tag specifying the luminosity measurement version) (str): ',
-               'Live tag (this trigger is only used to compute the L1 live fraction) (str): ',
-               'Region to be worked with '+str(regs)+': ']
+               'Integrated luminosity (float, pb-1)',
+               'Use linear or log graphs? (0: linear y-axis, 1: log y-axis)',
+               'Center of mass energy (7, 8, or 13 GeV)',
+               'Limitter (0: TLimit, 1: RSLLimit, 2: fastPCL, 3: mclimit)',
+               'Confidence limits using signal or signal + background? (0: sig only, 1: sig+bkg)',
+               'Consider systematic errors? (0: do not, 1: consider)',
+               'Consider statistical errors? (0: do not, 1: consider)',
+               'Observed limit (0: do not do, 1: do measured = observed limit calculation)',
+               'Do injection test? (0: do not do, any positive real number: injection cross-section multiplicative factor)',
+               'Luminosity tag (tag specifying the luminosity measurement version) (str)',
+               'Live tag (this trigger is only used to compute the L1 live fraction) (str)',
+               'Region to be worked with '+str(regs)]
     out_vars = []
     out_values = []
     msg = 'Writing ANA_DEFS file, initialize values...'
     print(msg)
 
     for i in range(len(in_vars)):
-        ov,od = ask_input(d,in_vars[i],prompts[i])
+        ov,od = ask_input(d,in_vars[i],prompts[i],defs[i])
         out_vars.append(ov)
         out_values.append(od)
 
