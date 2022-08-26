@@ -158,9 +158,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setCharge(inputPart->q()+ao->jets[ac].at(ai).q()  );
 //                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
 //                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
-                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() 
-                                                               + 2*ao->jets[ac].at(ai).isTautagged()
-                                                            ); 
+                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() // previous value 
+                                                                     | (ao->jets[ac].at(ai).isbtagged_77() + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
+                                                            ) ); 
                                                         inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
 							inputPart->setParticleIndx(ao->jets[ac].at(ai).ParticleIndx()  );
@@ -519,12 +519,12 @@ double EtConeof( dbxParticle* apart){
 }
 
 double isBTag( dbxParticle* apart){
-    bool Bval=((apart)->isTight())&1;
+    bool Bval=((apart)->isTight())&1; //
     DEBUG(" BTAG:"<<Bval<<"\t");
     return Bval;
 }
 double isTauTag( dbxParticle* apart){
-    bool Tval=((apart)->isTight())&2;
+    bool Tval=((apart)->isTight())&2; //
     DEBUG(" TauTAG:"<<Tval<<"\t");
     return Tval;
 }
