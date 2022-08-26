@@ -156,8 +156,6 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
                                                         inputPart->setCharge(inputPart->q()+ao->jets[ac].at(ai).q()  );
-//                                                        inputPart->setIsTight( inputPart->isTight() // add to the existing one
-//                                                         + ao->jets[ac].at(ai).isbtagged_77() +100* ao->jets[ac].at(ai).isTautagged() );
                                                         inputPart->setIsTight (ao->jets[ac].at(ai).isTight() // previous value 
                                                                      | (ao->jets[ac].at(ai).isbtagged_77() + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
                                                             ) ); 
