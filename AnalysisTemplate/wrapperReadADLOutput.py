@@ -2,9 +2,9 @@ import numpy as np
 from os.path import exists
 import os
 
-import readADLoutputCompare2
-import inputSamples2
-import outputANADEFS2
+import readADLoutputCompare
+import inputSamples
+import outputANADEFS
 
 # Reads model directory. Asks for the dir name, if either the directory <input> or model_<input> is found, it's used.
 def model_dir():
@@ -63,6 +63,6 @@ def ask_outfile():
 
 d = model_dir()
 # print(d)
-readADLoutputCompare2.rADLoComp(d) # Reads ADL file in folder, outputs compare.dat
-inputSamples2.inputsamples(d) # Asks user to input sample information, checks samples file in the given folder
-outputANADEFS2.anadefs(d) # Asks user input for ANADEFS file
+readADLoutputCompare.rADLoComp(d) # Reads ADL file in folder, outputs compare.dat
+inputSamples.inputsamples(d) # Asks user to input sample information, checks samples file in the given folder
+outputANADEFS.anadefs(d) # Asks user input for ANADEFS file
