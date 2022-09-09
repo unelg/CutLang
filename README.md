@@ -26,6 +26,10 @@ With *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https:
   - [With Jupyter](#using-cutlang-with-jupyter)
     - [Setup](#using-cutlang-with-jupyter-setup)
     - [Starting](#using-cutlang-with-jupyter-starting)
+  - [With spack](#using-cutlang-with-spack)
+    - [Setup](#using-cutlang-with-spack-setup)
+    - [Update](#using-cutlang-with-spack-update)
+    - [Remove](#using-cutlang-with-spack-remove)
 - [Running CutLang](#running-cutlang)
 - [Tutorial](#tutorial)
   - [Setup](#tutorial-setup)
@@ -176,6 +180,30 @@ Available on **Linux, macOS, windows**
   # or
   CLA_Jupyter notebook
   # Jupyter will be started, you can use by using the link 127.0.0.1:8888/... in the logs
+```
+## <a name="using-cutlang-with-spack"></a> With spack
+Available on **Linux, macOS, and many supercomputers**
+
+### <a name="using-cutlang-with-spack-setup"></a> Setup
+*Requirements*
+- [spack](https://github.com/spack/spack)
+
+Setup the package using
+```bash
+  spack install cutlang
+```
+
+### <a name="using-cutlang-with-spack-update"></a> Update
+Update the package using
+```bash
+  cd spack/var/spack/repos/builtin/packages/cutlang
+  git pull
+```
+
+### <a name="using-cutlang-with-spack-remove"></a> Remove
+Remove the package using
+```bash
+  spack uninstall cutlang
 ```
 
 # <a name="running-cutlang"></a> Running CutLang
