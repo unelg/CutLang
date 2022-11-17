@@ -1,0 +1,66 @@
+# ADL/CL example 4: Alternative syntaxes
+# 
+# ADL's priority as a language is to provide a set of instructions to implement 
+# an unambiguously organized description of how an analysis algorithm flows.
+# Yet, a language can be expressed using alternative vocabulary or syntax.
+#   - Vocabulary: words with a particular meaning in the language, e.g. block or keyword names,
+#   - syntax : set of rules defining the combinations of symbols considered as correctly structured expressions of the language. 
+# 
+# ADL/CL deliberately host syntactic alternative to appeal to different tastes.
+# The main case is in the expression of objects:
+#   - Indices can be written with _ or []: obj_i = obj[i]
+#   - Object attributes can be written with attr(obj) or {obj}attr
+#   - Input object collection in a object block can be defined with "take" or ":"
+#   - Lorentz vector addition can be done as LV1 LV2 or LV1 + LV2
+#
+# We assume that, these differences will naturally converge and unify as the user base 
+# and implemented analysis examples expand.
+
+info analysis
+  title "ADL/CL ex4: Alternative syntaxes"
+
+# OBJECT SELECTION
+object goodJets 
+  take Jet 
+  select pT(Jet) > 50 
+  select abs(eta(Jet)) < 2.4 
+
+object goodbJets 
+  take goodJets
+  select BTag(goodJets) == 1
+
+# Use varying object syntax:
+object goodEles : Ele
+  select {Ele}Pt > 20
+  select abs({Ele}Eta) < 2.1
+
+object goodMuos
+  take Muo
+  select pT(Muo) > 20
+  select abs({Muo}Eta) < 2.1
+
+object leptons : Union(goodEles, goodMuos)
+
+# EVENT SELECTION
+# Demonstrate a mixture of varying object syntax:
+# Of course we recommend to adhere to one choice for clarity !
+
+region baseline
+  select ALL
+  select size(goodJets) >= 4
+  select size(goodbJets) >= 1
+  select pT(goodJets[0]) > 200 
+  select pT(goodJets_1) > 100 
+  select {goodJets[2]}Pt > 50 
+  select {goodJets_2}Pt > 50 
+
+region singleelectron
+  baseline
+  select size(goodEles) == 1
+  select m(goodEles[0] goodbJets[0]) > 100
+
+region singlemuon
+  baseline
+  select size(goodMuos) == 1
+  select {goodMuos_0 + goodbJets_0}m > 100
+

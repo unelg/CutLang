@@ -1,0 +1,61 @@
+# ADL/CL example 1: Simple object and event selection 
+# Object and event selection is a fundamental part of each analysis.
+# "object" blocks define objects.
+# "region" blocks define event selections.
+#
+# Selection criteria are applied using comparison, range and logical operators 
+# listed in Table 12 of arXiv:2101.09031 
+# and the ternary operator described in A.5.2 of arXiv:2101.09031.
+
+info analysis
+  title "ADL/CL ex1: Simple object and event selection"
+
+# OBJECT SELECTION
+# Predefined main objects in CL are: ELE, MUO, TAU, JET, PHO, METLV (case insensitive)
+#    (see Table 7 in arXiv:2101.09031)
+# All object collections are by default ordered by decreasing pT
+# Objects can be derived from each other or predefined objects can be directly used.
+# Each selection in an object block is applied to each object in the input collection.
+
+object goodJets # Target jet collection
+  take Jet # Input jet collection
+  select pT(Jet) > 50 # applied to each jet in the collection
+  select abs(eta(Jet)) < 2.4 # applied to each jet in the collection
+
+# Now select b-tagged jets among the goodJet collection
+object goodbJets 
+  take goodJets # Input can be an object collection defined in the ADL file.
+  select BTag(goodJets) == 1
+
+object goodEles
+  take Ele
+  select pT(Ele) > 20
+  select abs(eta(Ele)) < 2.1
+
+object goodMuos
+  take Muo
+  select pT(Muo) > 20
+  select abs(eta(Muo)) < 2.1
+
+# Combine two collections to make a new one:
+object leptons : Union(goodEles, goodMuos)
+
+# EVENT SELECTION
+# Each region corresponds to a phase space of event selection.  
+# Regions can be derived from each other.
+# Individual objects in a collection can be accessed via their indices.
+region baseline
+  select ALL # write out the initial number of events
+  select size(goodJets) >= 3
+  select size(goodbJets) >= 1
+  select pT(goodJets[0]) > 200 # require highest momentum jet pT to be > 200.
+  select size(leptons) == 1
+
+region singleelectron
+  baseline
+  select size(goodEles) == 1
+
+region singlemuon
+  baseline
+  select size(goodMuos) == 1
+

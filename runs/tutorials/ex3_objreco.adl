@@ -1,0 +1,35 @@
+# ADL/CL example 3: Object reconstruction for a Z -> ll final state"
+# ADL/CL can reconstruct new objects by adding existing objects without the need to explicitly perform 4-vector addition.
+# Input particles with indices can be written side by side or with a + sign.
+
+info analysis
+  title "ADL/CL ex3: Object reconstruction for a Z -> ll final state"
+
+# OBJECT RECONSTRUCTION
+
+# The "define" keyword is used for assigning aliases, i.e. shorthand names to quantities.
+define Zeecand = Ele[0] Ele[1]
+# Equivalent ways to write the above expression are
+# define Zeecand : Ele[0] Ele[1]
+# define Zeecand : Ele[0] + Ele[1]
+# define Zeecand = Ele[0] Ele[1]
+
+# EVENT SELECTION
+region Zmmsel
+  select ALL  # to count all events
+  select size(Muo) == 2 
+  select q(Muo[0]) + q(Muo[1]) == 0 # q is charge 
+  histo  hZmmcandM, "Zmm candidate mass (GeV)", 50, 50, 150, m(Muo[0] Muo[1])
+  histo  hZmmcandPT, "Zmm candidate pT (GeV)", 50, 0, 250, pT(Muo[0] Muo[1])
+  histo  hZmmcandMvsPT, "Zmm cand. mass vs. pT (GeV)", 25, 50, 150, 25, 0, 250, m(Muo[0] Muo[1]), pT(Muo[0] Muo[1])
+  select m(Muo[0] Muo[1]) [] 70 110 # Combine 2 muons, find their mass, require it to be between 70 and 110.
+ 
+region Zeesel
+  select ALL  # to count all events
+  select size(Ele) == 2 
+  select q(Zeecand) == 0 # Zeecand is equivalent to Ele[0] Ele[1]
+  histo  hZeecandM, "Zee candidate mass (GeV)", 50, 50, 150, m(Zeecand)
+  histo  hZeecandPT, "Zee candidate mass (GeV)", 50, 0, 250, pT(Zeecand)
+  histo  hZeecandMvsPT, "Zee candidate mass vs. pT (GeV)", 25, 50, 150, 25, 0, 250, m(Zeecand), pT(Zeecand)
+  select m(Zeecand) [] 70 110 
+ 

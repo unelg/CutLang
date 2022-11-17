@@ -1,0 +1,46 @@
+# ADL/CL example 8 : Loops and reducers
+#
+# ADL/CL has no explicit loops.  Looping is done in implicit ways as follows:
+#
+#   - Loop over a whole object collection:
+#     Writing an object collection without any explicit indices implies looping over
+#     all elements of the collection.
+#     (Only exception is writing the input object name in an object block.)
+#
+#   - Partial loop over an object collection:
+#     ADL/CL currently uses the slice notation:
+#     - jet[i:j] : loop from index i to j
+#     - jet[:i]  : loop from beginning to index i
+#     - jet[i:]  : loop from index i to the end
+# 
+# Loops are usually surrounded by "reducer" functions that operate on the looped elements 
+# and reduce the looped collection information to a single value.
+#   sum( pT(jet) ) : scalar sum of all jet pTs (i.e. HT)
+#   min( dR(jet[0:2], METLV[0]) ) : min(dR(jet[0], METLV[0]), dR(jet[1], METLV[0]), dR(jet[2], METLV[0]))
+
+info analysis
+  title "ADL/CL ex8: Object loops and reducers"
+
+# OBJECT DEFINITONS
+object goodjet 
+  take JET
+  select pT(JET) > 30
+  select abs(eta(JET)) < 2.5
+  # Selections like the following are usually used for "object cleaning"
+  # dR wrt. all muons should be > 0.4
+  select dR(JET, MUO) > 0.4
+  # dR wrt. all electrons should be > min( 0.4 , 0.1+9.6/Pt(ELE)
+  select dR(JET, ELE) > min( 0.4 , 0.1+9.6/Pt(ELE) ) 
+
+# EVENT SELECTION
+region signal
+  select Size(JET) >= 5 
+  select Sum( pT(JET) ) >= 200
+  # Loop over all jets, find minimum dR(JET[i],METLV[0]) and require that value be > 0.2
+  select min( dR(METLV[0], JET) ) > 0.3
+  # Loop over first 3 jets, find minimum dR(JET[i],METLV[0]) and require that value be > 0.2
+  select min( dR(JET[:2], METLV[0]) ) > 0.5
+  # Loop over 4th and 5th jets, find minimum dR(JET[i],METLV[0]) and require that value be > 0.2
+  select min( dR( JET[3:4], METLV[0]) ) > 0.4
+
+

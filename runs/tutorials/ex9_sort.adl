@@ -1,0 +1,35 @@
+# ADL/CL example 9: Sorting object collections
+#
+# Object collections in HEP datasets are generally ordered in descending pT by default. 
+# ADL/CL also uses this convention.
+# But it is also possible to sort collections with respect to other attributes 
+# in ascending or descending order, with the "sort" keyword using the following syntax:
+#    sort <attribute>(<object>) ascend / descend
+#
+# The exercise sorts jets in different ways and creates histograms of the leading jet 
+# to demonstrate the difference.
+
+info analysis
+  title "ADL/CL ex9: Sorting object collections"
+
+# EVENT SELECTION
+region baseline
+  select size(jet) >= 4 
+  # Default sort - jet[0] has the highest pT: 
+  histo hj1pt , "jet1 pT (GeV)", 40, 0, 1000, pT(Jet[0])
+  histo hj1m , "jet1 mass (GeV)", 40, 0, 500, pT(Jet[0])
+  # Sort by ascending jet pT. jet[0] should have the smallest pT.
+  sort pt(jet) ascend 
+  histo hj1ptjptascend , "jet1 pT (GeV) after sort jet pt ascend", 40, 0, 1000, pT(Jet[0])
+  histo hj1mjptascend , "jet1 mass (GeV) after sort jet pt ascend", 40, 0, 500, pT(Jet[0])
+  # Sort by descending jet mass. jet[0] should have the biggest mass.
+  sort m(jet) descend
+  histo hj1ptjmdescend , "jet1 pT (GeV) after sort jet mass descend", 40, 0, 1000, pT(Jet[0])
+  histo hj1mjmdescend , "jet1 mass (GeV) after sort jet mass descend", 40, 0, 500, pT(Jet[0])
+  # Sort by asscending jet mass. jet[0] should have the smallest mass.
+  sort m(jet) ascend
+  histo hj1ptjmascend , "jet1 pT (GeV) after sort jet mass ascend", 40, 0, 1000, pT(Jet[0])
+  histo hj1mjmascend , "jet1 mass (GeV) after sort jet mass ascend", 40, 0, 500, pT(Jet[0])
+
+
+

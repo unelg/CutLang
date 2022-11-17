@@ -1,0 +1,100 @@
+# ADL/CL example 10: Tables, weights, efficiencies
+# Event weights can be applied using the "weight" keyword.
+#   (see secs. 4.5 and A.10.2 of arXiv:2101.09031)
+#
+# Efficiencies can be applied on objects using the hit-and-miss method.
+#   (see secs. 4.6 and A.9.9 of arXiv:2101.09031) 
+#
+# Numerical efficiencies and errors can be provided in tabular form using 
+# the "table" keyword.  
+#   (see sec. A.8 of arXiv:2101.09031)
+
+info analysis
+  title "ADL/CL ex10: Tables, weights, efficiencies"
+
+# TABLES
+table eleTrigger1 
+  tabletype efficiency
+  nvars 1
+  errors false
+# value   min    max  
+  0.3    0.0   10.0 
+  0.5   10.0   20.0 
+  0.7   20.0   50.0 
+  0.8   50.0   70.0 
+  0.95  70.0   7000.0 
+
+table eleTrigger2
+  tabletype efficiency
+  nvars 2
+  errors false
+# value    min   max    min   max  
+  0.1    0.0  10.0    -5.5  0.0
+  0.1    0.0  10.0     0.0  5.5
+  0.2   10.0  20.0    -5.5  0.0
+  0.5   10.0  20.0     0.0  5.5
+  0.4   20.0  50.0    -5.5  0.0
+  0.4   20.0  50.0     0.0  5.5
+  0.7   50.0  70.0    -5.5  0.0
+  0.7   50.0  70.0     0.0  5.5
+  0.95  70.0  7000.0  -5.5  0.0
+  0.95  70.0  7000.0   0.0  5.5
+
+table eleMediumID
+  tabletype efficiency
+  nvars 2
+  errors true
+# value   err-  err+      min    max        min    max   
+  0.1   0.01  0.02       0.0   10.0      -5.5    0.0
+  0.1   0.01  0.02       0.0   10.0       0.0    5.5
+  0.2   0.01  0.03      10.0   20.0      -5.5    0.0
+  0.2   0.01  0.03      10.0   20.0       0.0    5.5
+  0.4   0.01  0.04      20.0   50.0      -5.5    0.0
+  0.4   0.01  0.04      20.0   50.0       0.0    5.5
+  0.7   0.01  0.05      50.0   70.0      -5.5    0.0
+  0.7   0.01  0.05      50.0   70.0       0.0    5.5
+  0.95  0.01  0.06      70.0   7000.0    -5.5    0.0
+  0.95  0.01  0.06      70.0   7000.0     0.0    5.5
+
+table btagMedium
+  tabletype efficiency
+  nvars 1
+  errors true
+# value   err-  err+      min    max        min    max   
+  0.1   0.01  0.02      20.0   50.0      -5.5    0.0
+  0.1   0.01  0.02      20.0   50.0       0.0    5.5
+  0.2   0.03  0.03      50.0   70.0      -5.5    0.0
+  0.2   0.03  0.03      50.0   70.0       0.0    5.5
+  0.4   0.04  0.03      70.0   100.0     -5.5    0.0
+  0.4   0.04  0.03      70.0   100.0      0.0    5.5
+  0.7   0.04  0.05     100.0   200.0     -5.5    0.0
+  0.7   0.04  0.05     100.0   200.0      0.0    5.5
+  0.75  0.08  0.07     200.0   7000.0    -5.5    0.0
+  0.75  0.07  0.09     200.0   7000.0     0.0    5.5
+
+# OBJECT SELECTION
+object mediumEle
+  take ELE
+  select pT(ELE) > 10
+  # Apply an object level efficiency by accepting / rejecting via hit-and-miss method:
+  select applyHM( eleMediumID({ELE}pT , {ELE}Eta) == 1) # 0 to reject, 1 to accept.
+
+# ALIAS DEFINITIONS
+define run2lumi = 138
+
+# EVENT SELECTION
+region baseline
+  # Apply some constant event weights
+  select ALL
+  weight xsecWeight  0.0123
+  weight lumiWeight  run2lumi
+  select Size(mediumEle) >= 1 
+  # Apply trigger efficiencies as event weights:
+  # Use a 1d efficiency:
+  weight eleTrig1Weight eleTrigger1( {mediumEle_0}pT ) 
+  # or use a 2d efficiency: 
+  # weight eleTrig2Weight eleTrigger2( {mediumEle_0}pT, {mediumEle_0}Eta ) 
+  # Require leading jet NOT to be b-tagged:
+  select applyHM( btagMedium( {JET_0}pT , {JET_0}Eta ) == 0) # 0 to reject, 1 to accept.
+
+

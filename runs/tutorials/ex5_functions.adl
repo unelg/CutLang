@@ -1,0 +1,64 @@
+# ADL/CL example 5: New quantity calculations and functions
+# 
+# New quantities can be calculated using regular math expressions.
+# Quantities can be assigned by define statements or calculated inline in object or region blocks.
+# 
+# Functions are used for calculating more complex quantities, less trivial to write explicitly.
+# IMPORTANT: Functions are only reserved for calculating quantities, NOT for selections.
+# There are two types of functions in ADL/CL:
+#    - Internal functions: Functions that are a part of the fundamental ADL/CL syntax.
+#      e.g.  math functions (sin(), cos(), ... , basic HEP-related (dphi(), dR()), ...
+#    - External/user functions: Functions specific to various analyses.  
+#      e.g. complex kinematic variables, ML functions, numerical functions, efficiencies, ...
+#      They need to be integrated in CL in order to be recognized and run.
+#      The ones currently available conventionally they start with the letter "f".
+# HEP related functions : Table 9 of arXiv:2101.09031
+# Math functions : Table 11 of arXiv:2101.09031
+
+info analysis
+  title "ADL/CL ex5: New quantity calculations and functions"
+
+# OBJECT DEFINITIONS
+object jets 
+  take Jet
+  select pT(Jet) > 50
+  select abs(eta(Jet)) < 2.4
+
+object leptons : Union(ELE, MUO)
+
+# ALIAS DEFINITIONS for functions
+# Assigning names to quantities via "define" is recommended when that quantity 
+# will be used more than once.
+
+# Calculate a quantity and assign it a name:
+define MTl = sqrt( 2*pT(leptons[0]) * MET*(1-cos(Phi(METLV[0]) - Phi(leptons[0]) )))
+# Calculate hadronic transverse energy HT = sum of all jet pTs:
+# Use the available fHT(jet_collection) external function to calculate a HT quantity: 
+define HT : fHT(jets)
+# Calculate the "stransverse mass" MT2.
+# Use the available fMT2(obj, obj, obj) function to calculate a MT2j0j1 quantity:
+define MT2j0j1 = fMT2(jets[0], jets[1], METLV[0])
+
+# EVENT SELECTION
+region hadronic
+  select size(jets) >= 4 
+  select size(leptons) == 0
+  # Use the calculated HT quantiy:
+  select HT > 300 
+  # Inline use of internal HEP functions dphi and dR:
+  select dphi(jets[0], METLV[0]) > 0.5
+  select dphi(jets[1], METLV[0]) > 0.5
+  select dphi(jets[2], METLV[0]) > 0.5
+  select dR(jets[0], jets[1]) > 1.0
+  # Use the calculated MT2j0j1 quantiy:
+  select MT2j0j1 > 300 
+
+region leptonic
+  select size(jets) >= 3  
+  select size(leptons) == 1
+  # Calculate a quantity inline and impose a selection on it:
+  select fHT(jets) + pT(leptons[0]) > 300
+  # Use the calculated MTl quantiy:
+  select MET > 150
+  select MTl > 250
+

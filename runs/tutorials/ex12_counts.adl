@@ -1,0 +1,109 @@
+# ADL/CL example 12: External counts and errors
+# 
+# It is possible to register external signal, background or data counts (or selection 
+# efficiencies) of a region or bin together with their associated errors. 
+# CL will transfer these values to histograms under relevant region directories in the output  
+# ROOT file, consistent with the histogram formats for the CL run results.
+# Therefore, CL run results and external counts can be directly compared.
+#
+# External counts and errors are useful for 
+#   - Validating cutflows: compare ADL/CL and published results for given MC or data events.
+#   - Setting limits: use data and background estimate values and ADL/CL signal values to 
+#                     calculate limits.
+# 
+# External counts and errors can be registered in 2 steps:
+#   1. Define the format in which the processes, counts and errors will be written in the 
+#      beginning of the ADL file.
+#   2. Enter the counts and errors for each process after the relevant cut or bin
+#      according to the defined format.
+#
+# More information on sec. A.11.2 of arXiv:2101.09031.
+# A real analysis example:
+# Data and BG: https://github.com/ADL4HEP/ADLLHCanalyses/blob/master/CMS-SUS-19-006/CMS-SUS-19-006_CutLang_results.adl
+# Signals: https://github.com/ADL4HEP/ADLLHCanalyses/blob/master/CMS-SUS-19-006/CMS-SUS-19-006_CutLang_signals.adl
+
+info analysis
+  title "ADL/CL ex12: External counts and errors"
+
+# FORMATS FOR EXTERNAL COUNTS AND ERRORS
+# A format to record analysis results, which include total estimated BG with its 
+# statistical and systematic uncertainties, and observed data counts.
+countsformat results
+  process estbg, "Total estimated BG", stat, syst
+  process obsdata, "Observed data"
+
+# A format to record counts and errors for 3 signal benchmarks.
+countsformat signals
+  process bsm1, "BSM model benchmark 1", stat
+  process bsm2, "BSM model benchmark 2", stat
+  process bsm3, "BSM model benchmark 3", stat
+
+# OBJECT DEFINITIONS
+object jets
+  take Jet
+  select pT(Jet) > 50
+  select abs(eta(Jet)) < 2.4
+
+object leptons : Union(ELE, MUO)
+
+# ALIAS DEFINITIONS for functions
+define MTl = sqrt( 2*pT(leptons[0]) * MET*(1-cos(Phi(METLV[0]) - Phi(leptons[0]) )))
+define HT = fHT(jets)
+define MT2j0j1 = fMT2(Jet[0], Jet[1], METLV[0])
+
+# EVENT SELECTION
+# Example region with only the "results" counts and errors for each bin:
+# Numbers are made up, and not from a real analysis!
+# Histograms will appear under the "hadronic" directory of the output ROOT file.
+region hadronic
+  select size(jets) >= 4 
+  select size(leptons) == 0
+  select HT > 300 
+  select dphi(jets[0], METLV[0]) > 0.5
+  select dphi(jets[1], METLV[0]) > 0.5
+  select dphi(jets[2], METLV[0]) > 0.5
+  select dR(jets[0], jets[1]) > 1.0
+  select MT2j0j1 > 300 
+  bin size(jets) [] 4 5 and MT2j0j1 [] 300 500
+  counts results 997 +- 32 +- 40 , 933 
+  bin size(jets) [] 4 5 and MT2j0j1 [] 500 800
+  counts results 293 +- 14 +- 16 , 277
+  bin size(jets) [] 4 5 and MT2j0j1 [] 800 1000
+  counts results 50.7 + 6.7 - 5.0 +- 5.1 , 50 
+  bin size(jets) [] 4 5 and MT2j0j1 > 1000
+  counts results 32.3 + 3.8 - 2.1 +- 4.8 , 31 
+  bin size(jets) >= 6 and MT2j0j1 [] 300 500
+  counts results 132 +- 10 +- 15 , 127 
+  bin size(jets) >= 6 and MT2j0j1 [] 500 800
+  counts results 27.5 + 4.9 + 3.4 - 3.1 - 3.1 , 23 
+  bin size(jets) >= 6 and MT2j0j1 > 800
+  counts results 6.0 + 3.6 - 0.6 +- 1.1 , 5 
+
+# Example region with only the "signals" percent selection efficiencies and errors 
+# for each cut and each bin.
+# Numbers are made up, and not from a real analysis!
+# Histograms will appear under the "leptonic" directory of the output ROOT file.
+region leptonic
+  select ALL
+  counts signals 100.0 +- 0.2 , 100.0 +- 0.5 , 100.0 +- 0.5
+  select size(jets) >= 3  
+  counts signals 98.7 +- 0.4 , 98.3 +- 0.5 , 98.9 +- 0.6
+  select size(leptons) == 1
+  counts signals 74.5 +- 1.2 , 79.6 +- 1.4 , 88.1 +- 1.4
+  select fHT(jets) + pT(leptons[0]) > 300
+  counts signals 58.7 +- 1.4 , 77.9 +- 1.4 , 86.7 +- 1.5
+  select MET > 150
+  counts signals 43.8 +- 1.4 , 75.2 +- 1.5 , 83.6 +- 1.6
+  # Normally we would define a single variable bin in a single line, as follows:
+  # bin MTl 250 350 500 800
+  # But writing counts and errors corresponding to each bin becomes ambiguous.
+  # Therefore we use the multiline approach:
+  bin MTl [] 250 350
+  counts signals 7.0 +- 0.2 , 13.8 +- 0.2 , 29.1 +- 0.5
+  bin MTl [] 350 500
+  counts signals 5.4 +- 0.1 , 9.2 +- 0.2 , 11.2 +- 0.3
+  bin MTl [] 500 800
+  counts signals 3.9 +- 0.1 , 6.3 +- 0.1 , 7.1 +- 0.2
+  bin MTl > 800
+  counts signals 1.8 +- 0.1 , 4.1 +- 0.2 , 5.2 +- 0.1
+

@@ -1,0 +1,72 @@
+# ADL/CL example 7 : Chi2 optimization
+# Goal is to reconstruct fully hadronic ttbar: t -> W b, W -> j j without explicit b-jet tagging.
+#
+# In this context, optimization refers to finding the best combinations of 6 jets assigned to 
+# W bosons and top quarks from which they originate.
+#
+# A chi2-like equation is constructed from the jet propoerties, and optimized.
+# The objects in the chi2 definitions are written with negative indices.
+# Regularly used positive indices are constants, while - indices are variables.
+# The optimization operations loop over the objects and find the best values for - indices.
+#
+# There are two optimization operators:
+#   ~=  : Closest to
+#   ~!  : Furthest from
+
+info analysis
+  title "ADL/CL ex7: Chi2 optimization for hadronic ttbar reconstruction without b tagging"
+
+# OBJECT DEFINITONS
+object goodjet
+  take JET
+  select pT(JET) > 30
+  select abs(eta(JET)) < 2.5
+
+# ALIAS DEFINITIONS
+
+# Define Ws from goodJets:
+# "-" indexes mean that initial indices are not known and 
+# will be assigned as a result of optimization.
+# Repeated indices in the same W mean that they are interchangable, 
+# i.e. the order is not important : jet1 + jet2 = jet2 + jet1
+define W1 = goodjet[-1] + goodjet[-1] 
+define W2 = goodjet[-3] + goodjet[-3] 
+# Define a chi2, which, when minimized, would do the best jet assignment to both Ws:
+define Wchi2 = ((m(W1) - 80.4)/2.1)^2 + ((m(W2) - 80.4)/2.1)^2 
+
+# Goal is to find two jets originating from b quarks, but not from W bosons.
+# Indices different than those in W definitions are used.
+define bcand1 = goodjet[-2] 
+define bcand2 = goodjet[-4] 
+# Define the top quarks:
+define Top1 = W1 + bcand1 # take another jet with the + sign...
+define Top2 = W2 + bcand2
+# Define a chi2, which, when minimized, would do the best jet assignment to Ws and bs:
+define topchi2 = ((m(Top1) - m(Top2))/4.2)^2  
+# Define a final chi2 from W and top:
+# We would like to keep both W and top chi2 low, hence 
+define totchi2 = topchi2 + Wchi2
+
+# HISTOGRAM LISTS
+histoList chi2histos
+  histo hW1m , "W1 mass (GeV)" , 100, 0, 200, m(W1)
+  histo hW2m , "W2 mass (GeV)" , 100, 0, 200, m(W1)
+  histo hW1mW2m , "W2 vs W1 mass (GeV)", 50, 0, 200, 50, 0, 200, m(W1), m(W2)
+  histo hTop1m , "Top1 mass (GeV)" , 100, 0, 400, m(Top1)
+  histo hTop2m , "Top2 mass (GeV)" , 100, 0, 400, m(Top1)
+  histo hTop1mTop2m , "W2 vs W1 mass (GeV)", 50, 0, 400, 50, 0, 400, m(Top1), m(Top2)
+  histo htotchi2 , "total chi2" , 50, 0, 100, totchi2
+
+# EVENT SELECTION AND CHI2 OPTIMIZATION
+
+region besttop
+  # select 6 jets which should come from hadronically decaying tops:
+  select Size(goodjet) >= 6  
+  # find the assignment of jets to tops and Ws, which give the chi2 closest to 0:
+  select totchi2 ~= 0  
+  # some histograms:
+  chi2histos
+  # once optimization is done and chi2 calculated, select events with small chi2:
+  select totchi2 < 20.0
+  # same histograms after cut on chi2
+  chi2histos

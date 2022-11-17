@@ -1,0 +1,77 @@
+# ADL/CL example 2: Histograms and histogram lists
+#
+# "histo" keyword allows to define histograms.
+#   - 1D and 2D histograms can be defined.
+#   - Variable bin histograms can be defined.  
+# Histograms can be defined directly or via histogram lists.
+# They automatically appear in the output ROOT file under the relevant region directory.
+#
+# "histoList" blocks can be used to define a set of histograms that will be 
+# filled multiple times in a single region or in multiple regions 
+# (in order to avoid repetition of long lines).
+#
+# IMPORTANT: Note that histograms are not a part of fundamental analysis algorithm description.
+# "histo" keyword and "histoList" block are auxiliaries used in analysis execution.
+
+info analysis
+  title "ADL/CL ex2: Histograms in a simple semileptonic final state"
+
+# OBJECT SELECTION
+object goodJets
+  take Jet
+  select pT(Jet) > 50
+  select abs(eta(Jet)) < 2.4
+
+object goodbJets
+  take goodJets
+  select BTag(goodJets) == 1
+
+object goodEles
+  take Ele
+  select pT(Ele) > 20
+  select abs(eta(Ele)) < 2.1
+
+object goodMuos
+  take Muo
+  select pT(Muo) > 20
+  select abs(eta(Muo)) < 2.1
+
+object leptons : Union(goodEles, goodMuos)
+
+# HISTOGRAM LISTS
+histoList jetHistos
+  histo hnjets , "number of jets", 20, 0, 20, size(goodJets)
+  histo hjet1pt , "jet1 pT (GeV)", 40, 0, 1000, pT(goodJets[0])
+  histo hjet2pt , "jet2 pT (GeV)", 40, 0, 1000, pT(goodJets[1])
+  histo hjet3pt , "jet3 pT (GeV)", 40, 0, 1000, pT(goodJets[2])
+  histo hjet1eta , "jet1 eta", 40, -3, 3, eta(goodJets[0])
+  histo hjet2eta , "jet2 eta", 40, -3, 3, eta(goodJets[1])
+  histo hjet3eta , "jet3 eta", 40, -3, 3, eta(goodJets[2])
+
+histoList leptonHistos
+  histo hlep1pt , "lepton1 pT (GeV)", 40, 0, 1000, pT(leptons[0])
+  histo hlep1eta , "lepton1 eta", 40, -3, 3, eta(leptons[0])
+  histo hlep1ptMET, "MET vs. lepton1 pT (GeV)", 40, 0, 1000, 40, 0, 1000, pT(leptons[0]), MET
+
+# EVENT SELECTION
+region baseline
+  select ALL
+  select size(goodJets) >= 3
+  select size(goodbJets) >= 1
+  select pT(goodJets[0]) > 200 
+  # Fixed bin 1D:
+  histo hmet, "MET (GeV)", 40, 0, 1000, MET
+  # Fixed bin 2D:
+  histo hj1ptMET, "MET vs. jet1 pT (GeV)", 40, 0, 1000, 40, 0, 1000, pT(goodJets[0]), MET
+  # Variable bin 1D (no , between bin edges!):
+  histo hmetvarbin, "MET (GeV) variable bin", 0.0  10.0  20.0  50.0  100.0  500.0, MET
+  # Use histolists after different levels of selection:
+  select MET > 100
+  jetHistos
+  select MET > 200
+  jetHistos
+
+region singlelepton
+  baseline
+  select Size(leptons) == 1
+  leptonHistos
