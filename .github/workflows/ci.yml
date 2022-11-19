@@ -26,14 +26,18 @@ jobs:
     - name: ROOT Dependencies
       run: |
         sudo apt update ; 
+        sudo apt install -y build-essential;
+        
         sudo apt-get install dpkg-dev libc6 cmake g++ gcc binutils libx11-dev libxpm-dev \
-        libxft-dev libxext-dev python libssl-dev ;
+        libxft-dev libxext-dev python3 libssl-dev ;
+
+        #libglew1.5-dev
         sudo apt-get install gfortran libpcre3-dev \
-        xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
+        xlibmesa-glu-dev libftgl-dev \
         libmysqlclient-dev libfftw3-dev libcfitsio-dev \
         graphviz-dev libavahi-compat-libdnssd-dev \
-        libldap2-dev python-dev libxml2-dev libkrb5-dev \
-        libgsl0-dev ;
+        libldap2-dev python3-dev libxml2-dev libkrb5-dev \
+        libgsl0-dev qtwebengine5-dev;
                    
     - name: Build ROOT
       working-directory: .
