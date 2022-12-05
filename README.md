@@ -131,36 +131,68 @@ Available on **Linux, macOS, and windows**
 
 Download the image and run the container using
 ```bash
- docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang cutlang/cutlang # download image and run container in current directory from downloaded image
- # for windows: docker run -p 8888:8888 -d -v %cd%/:/src --name CutLang cutlang/cutlang
- # if you want to re-run by mounting another directory, you should run:
- # docker stop CutLang && docker container rm CutLang
- # and go back step 2 with different path 'docker run -p 8888:8888 -d -v /path/to/you/want/:/src ...'
- # example:
- # docker run -p 8888:8888 -d -v ~/example_work_dir/:/src --name CutLang cutlang/cutlang
+  docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v $PWD/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest 
 ```
-Exec the container using
+If you would like to re-run by mounting another directory, you should stop the container using
 ```bash
- docker exec -it CutLang bash
+docker stop CutLang-root-vnc && docker container rm CutLang-root-vnc
 ```
-Now, you can run CutLang (please see [Running](#running-cutlang) part)
+and rerun with a different path as 
+```bash
+docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v /path/you/want/:/src ...
+```
+For example: 
+```bash
+docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v ~/example_work_dir/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest
+```
+*For Windows:*
+```bash
+ docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v %cd%/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest
+```
+If you would like to re-run by mounting another directory, you should stop the container using
+```bash
+docker stop CutLang-root-vnc && docker container rm CutLang-root-vnc
+```
+and rerun with a different path as 
+```bash
+docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v /path/you/want/:/src ... 
+```
+For example:
+```bash
+docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v ~/example_work_dir/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest
+```
+Execute the container using
+```bash
+docker exec -it CutLang-root-vnc bash
+```
+If you have installed the container successfully, you will see
+```bash
+For examples see /CutLang/runs/
+and for LHC analysis implementations, see
+https://github.com/ADL4HEP/ADLLHCanalyses
+```
+Now, the container is ready to run CutLang.
 
-### <a name="using-cutlang-with-docker-update"></a> Update
-Update the docker image using
+You can leave the container by typing
 ```bash
- docker pull cutlang/cutlang:latest # install the latest image
- # and
- docker stop CutLang && docker container rm CutLang
- docker run -p 8888:8888 -d -v $PWD/:/src --name CutLang cutlang/cutlang
+exit
+```
+### <a name="using-cutlang-with-docker-update"></a> Update
+In case an update is necessary, you can perform the update as follows:
+```bash
+docker pull cutlang/cutlang-root-vnc:latest
+docker stop CutLang-root-vnc && docker container rm CutLang-root-vnc
+docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v $PWD/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc
 ```
 
 ### <a name="using-cutlang-with-docker-remove"></a> Remove
 Remove the docker container and image using
 ```bash
-  docker stop CutLang
-  docker ps -a | grep "CutLang" | awk '{print $1}' | xargs docker rm
-  docker images -a | grep "cutlang" | awk '{print $3}' | xargs docker rmi
+docker stop CutLang-root-vnc
+docker ps -a | grep "CutLang-root-vnc" | awk '{print $1}' | xargs docker rm
+docker images -a | grep "cutlang-root-vnc" | awk '{print $3}' | xargs docker rmi
 ```
+
 
 ## <a name="using-cutlang-with-jupyter"></a> With Jupyter
 Available on **Linux, macOS, windows**
