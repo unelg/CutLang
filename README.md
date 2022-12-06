@@ -58,15 +58,17 @@ With *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https:
 ## <a name="using-cutlang"></a> Using CutLang
 Cutlang is available on **Linux, macOS, and Windows (partially)**.
 
-### <a name="using-cutlang-from-source"></a> From source
+### <a name="using-cutlang-from-source"></a> :black_small_square: from Source
 Available on **Linux, macOS, and Windows**
 
-- <a name="using-cutlang-from-source-setup"></a> Setup
-*Requirements*
-  - ROOT6 (root.cern.ch)
+ ### <a name="using-cutlang-from-source-setup"></a> Setup
+ 
+  **Requirements**
+  
+  - [ROOT6](root.cern.ch)
   - command line compilation utilities (make, gcc, g++...)
   - flex
-  - bison # without installing flex and bison, the make command gets interrupted by a fatal error.*
+  - bison (without installing flex and bison, the make command gets interrupted by a fatal error).
 
 Setup the package using:
 ```bash
@@ -82,7 +84,7 @@ Setup the package using:
 ```
 Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
-### <a name="using-cutlang-from-source-update"></a> Update
+ ### <a name="using-cutlang-from-source-update"></a> Update
 Update the package using:
 ```bash
   cd CutLang
@@ -93,15 +95,14 @@ Update the package using:
   # make -j
 ```
 
-### <a name="using-cutlang-from-source-remove"></a> Remove
+ ### <a name="using-cutlang-from-source-remove"></a> Remove
 Remove the package using:
 ```bash
   rm -rf /path/to/CutLang
 ```
 
-## <a name="using-cutlang-with-conda"></a> with Conda
-Available on **Linux, macOS**
-[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
+### <a name="using-cutlang-with-conda"></a> :black_small_square: with Conda
+Available on **Linux, macOS**  [![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
 **Requirements**
@@ -132,7 +133,7 @@ Remove the environment using:
   conda env remove --name <my-environment>
 ```
 
-## <a name="using-cutlang-with-docker"></a> with Docker
+### <a name="using-cutlang-with-docker"></a> :black_small_square: with Docker
 Available on **Linux, macOS, and Windows**
 
 ### <a name="using-cutlang-with-docker-setup"></a> Setup
@@ -187,7 +188,7 @@ docker images -a | grep "cutlang-root-vnc" | awk '{print $3}' | xargs docker rmi
 ```
 
 
-## <a name="using-cutlang-with-jupyter"></a> with Jupyter
+### <a name="using-cutlang-with-jupyter"></a> :black_small_square: with Jupyter
 Available on **Linux, macOS, Windows**
 *In order to run CutLang in Jupyter, you must first complete the setup from source or with conda or docker.*
 
@@ -201,6 +202,14 @@ Available on **Linux, macOS, Windows**
   # or
   CLA_Jupyter notebook
   # Jupyter will be started, you can use by using the link 127.0.0.1:8888/... in the logs
+```
+
+### <a name="jupyter-cutlang-magic"></a> Jupyter CutLang Magic
+*CutLang can be used on Jupyter notebooks with ROOT*
+- You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
+- You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
+```bash
+%%cutlang file=<root-file-name> filetype=<root-file-type> ...
 ```
 
 ## <a name="running-cutlang"></a> Running CutLang
@@ -222,17 +231,19 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 ## <a name="tutorial"></a> Tutorial
-- ## Launch with binder:  
-with *jupyter lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
-with *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
+ ### :black_small_square: Launch with binder:  
 
-- ## **Launch with self host:** 
+with *Jupyter Lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
 
-### <a name="tutorial-setup"></a> Setup (Self host)
+with *Jupyter Notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
+
+### :black_small_square: **Launch with Self Host:** 
+
+### <a name="tutorial-setup"></a> Setup 
   
-- :warning: ***CutLang installation should be complete and CLA command should run without any problems.***
+ :warning: **CutLang installation should be complete and CLA command should run without any problems.**
 
-### <a name="tutorial-starting"></a>  Starting (Self host)
+### <a name="tutorial-starting"></a>  Starting 
 
 Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 
@@ -244,19 +255,12 @@ Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
   # Then you can browse index and other ipynb files in binder folder
 ```
 
-### <a name="tutorial-update"></a> Update (Self host)
+### <a name="tutorial-update"></a> Update
 ```bash
   CLA_tutorial_update
   # force update (temporary, do not use unless necessary)
 ```
 
-## <a name="jupyter-cutlang-magic"></a> Jupyter CutLang Magic
-*CutLang can be used on Jupyter notebooks with ROOT*
-- You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
-- You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
-```bash
-%%cutlang file=<root-file-name> filetype=<root-file-type> ...
-```
 
 ## <a name="faq"></a> FAQ
 <details>
