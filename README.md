@@ -66,7 +66,7 @@ ADL (Analysis Description Language) is a domain-specific language used to descri
 ## <a name="using-cutlang"></a> Using CutLang
 Cutlang is available on **Linux, macOS, and Windows (partially)**.
 
-### <a name="using-cutlang-from-source"></a> :black_small_square: from Source
+### <a name="using-cutlang-from-source"></a> :black_small_square: <ins> from Source </ins>
 Available on **Linux, macOS, and Windows**
 
  ### <a name="using-cutlang-from-source-setup"></a> Setup
@@ -109,7 +109,7 @@ Remove the package using:
   rm -rf /path/to/CutLang
 ```
 
-### <a name="using-cutlang-with-conda"></a> :black_small_square: with Conda
+### <a name="using-cutlang-with-conda"></a> :black_small_square: <ins> with Conda </ins>
 Available on **Linux, macOS**  [![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
@@ -141,7 +141,7 @@ Remove the environment using:
   conda env remove --name <my-environment>
 ```
 
-### <a name="using-cutlang-with-docker"></a> :black_small_square: with Docker
+### <a name="using-cutlang-with-docker"></a> :black_small_square: <ins> with Docker</ins>
 Available on **Linux, macOS, and Windows**
 
 ### <a name="using-cutlang-with-docker-setup"></a> Setup
@@ -196,7 +196,7 @@ docker images -a | grep "cutlang-root-vnc" | awk '{print $3}' | xargs docker rmi
 ```
 
 
-### <a name="using-cutlang-with-jupyter"></a> :black_small_square: with Jupyter
+### <a name="using-cutlang-with-jupyter"></a> :black_small_square: <ins>with Jupyter</ins>
 Available on **Linux, macOS, Windows**
 *In order to run CutLang in Jupyter, you must first complete the setup from source or with conda or docker.*
 
@@ -239,13 +239,13 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 ## <a name="tutorial"></a> Tutorial
- ### :black_small_square: Launch with Binder:  
+ ### :black_small_square: <ins> Launch with Binder:</ins>
 
  - with Jupyter Lab: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
 
  - with Jupyter Notebook: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
-### :black_small_square: **Launch with Self Host:** 
+### :black_small_square: <ins> Launch with Self Host: </ins>
 
 ### <a name="tutorial-setup"></a> Setup 
   
@@ -271,10 +271,11 @@ Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 
 
 ## <a name="faq"></a> FAQ
-<details>
-<summary> Where to find an example ntuple? </summary>
+<details><summary> Where to find an example ntuple? </summary>
+<p>
 <a name="faq-where-to-find-an-example-ntuple"></a> 
 Ntuple files are kept in CLA directory.
+</p>
 </details>
 
 <details>
@@ -285,7 +286,7 @@ Example adl files are kept in runs directory, you can also check out the reposit
 
 ## <a name="contributing"></a> Contributing
 
-### <a name="contributing-setting-up-the-development-environment"></a> Setting Up The Development Environment
+### <a name="contributing-setting-up-the-development-environment"></a> <ins> Setting Up The Development Environment </ins>
 
 ### <a name="contributing-setting-up-the-development-environment-from-source"></a> :black_small_square: from Source
 You can refer to [using CutLang from source](#using-cutlang-from-source)
@@ -328,7 +329,7 @@ Exec the container using (in the another terminal window):
  # make -j
 ```
 
-### <a name="contributing-build-and-deploy-environment"></a> Build and Deploy Environment
+### <a name="contributing-build-and-deploy-environment"></a> <ins>Build and Deploy Environment</ins>
 
 ### <a name="contributing-build-and-deploy-environment-conda"></a> :black_small_square: Conda
 **Requirements**
