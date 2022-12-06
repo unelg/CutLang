@@ -279,10 +279,10 @@ Example adl files are kept in runs directory, you can also check out the reposit
 
 ### <a name="contributing-setting-up-the-development-environment"></a> Setting Up The Development Environment
 
-### <a name="contributing-setting-up-the-development-environment-from-source"></a> from Source
+### <a name="contributing-setting-up-the-development-environment-from-source"></a> :black_small_square: from Source
 You can refer to [using CutLang from source](#using-cutlang-from-source)
 
-### <a name="contributing-setting-up-the-development-environment-with-conda"></a> with Conda
+### <a name="contributing-setting-up-the-development-environment-with-conda"></a> :black_small_square: with Conda
 Create and activate the environment using
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -301,7 +301,7 @@ Create and activate the environment using
  # make -j
 ```
 
-### <a name="contributing-setting-up-the-development-environment-with-docker"></a> with Docker
+### <a name="contributing-setting-up-the-development-environment-with-docker"></a> :black_small_square: with Docker
 Compile CutLang, and build and run the container using:
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -320,9 +320,10 @@ Exec the container using (in the another terminal window):
  # make -j
 ```
 
-## <a name="contributing-build-and-deploy-environment"></a> Build and deploy environment
-### <a name="contributing-build-and-deploy-environment-conda"></a> Conda
-Requirements
+### <a name="contributing-build-and-deploy-environment"></a> Build and Deploy Environment
+
+### <a name="contributing-build-and-deploy-environment-conda"></a> :black_small_square: Conda
+**Requirements**
 - [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
 
 See https://anaconda.org
@@ -338,7 +339,7 @@ See https://anaconda.org
  # conda create -c conda-forge -c <your-username> --name <your-environment> cutlang
 ```
 
-### <a name="contributing-build-and-deploy-environment-docker"></a> Docker
+### <a name="contributing-build-and-deploy-environment-docker"></a> :black_small_square: Docker
 See https://hub.docker.com
 
 ```bash
