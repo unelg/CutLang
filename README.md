@@ -279,10 +279,10 @@ Example adl files are kept in runs directory, you can also check out the reposit
 
 ### <a name="contributing-setting-up-the-development-environment"></a> Setting Up The Development Environment
 
-### <a name="contributing-setting-up-the-development-environment-from-source"></a> From source
+### <a name="contributing-setting-up-the-development-environment-from-source"></a> from Source
 You can refer to [using CutLang from source](#using-cutlang-from-source)
 
-### <a name="contributing-setting-up-the-development-environment-with-conda"></a> With conda
+### <a name="contributing-setting-up-the-development-environment-with-conda"></a> with Conda
 Create and activate the environment using
 ```bash
  git clone https://github.com/unelg/CutLang.git
