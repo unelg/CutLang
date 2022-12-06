@@ -1,4 +1,4 @@
-![cutlangg copy](https://user-images.githubusercontent.com/87129919/205994618-b75705d9-4fc5-43a5-a9f3-83f618eacf38.png)
+![cutlangg copy](https://user-images.githubusercontent.com/87129919/205994964-43ac15b7-076e-40d1-aad2-561cfe2527c2.png)
 
 
 
