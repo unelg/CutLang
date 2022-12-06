@@ -227,11 +227,11 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 ## <a name="tutorial"></a> Tutorial
- ### :black_small_square: Launch with binder:  
+ ### :black_small_square: Launch with Binder:  
 
-with *Jupyter Lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
+ - with Jupyter Lab: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
 
-with *Jupyter Notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
+ - with Jupyter Notebook: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
 ### :black_small_square: **Launch with Self Host:** 
 
@@ -266,7 +266,7 @@ Ntuple files are kept in CLA directory.
 </details>
 
 <details>
-<summary> Where to find example adl files? </summary>
+<summary> Where to find example ADL files? </summary>
 <a name="faq-where-to-find-an-example-ntuple"></a> 
 Example adl files are kept in runs directory, you can also check out the repository at https://github.com/ADL4HEP/ADLLHCanalyses
 </details>
