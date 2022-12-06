@@ -3,6 +3,7 @@
 
 ## About
 <img width="350" src = "https://user-images.githubusercontent.com/87129919/205978363-ddf03199-46aa-4572-bcb1-545fd2e82682.jpg" align = "right" >
+
 This is the repository for ***CutLang: A Particle Physics Analysis Description Language Runtime Interpreter***. 
 CutLang is a domain-specific language and interpreter for cut-based HEP data analysis. It allows users to write analysis in ADL (Analysis Description Language) files, which are then interpreted by the CutLang framework at run time. The linterpreter is implemented in C++ and is built on top of the CERN data analysis framework ROOT. CutLang offers several features to make data analysis more efficient and error-free, including object definitions, event selections, histogramming, and Monte Carlo weighting. It also supports multi-core/multi-CPU hardware and has the ability to save events at any stage of the analysis. The latest version CutLang V3 uses the Lex/Yacc-based approach for ADL file processing and has several enhancements over the previous version, including improved handling of object combinatorics, the ability to include tables and weights, and support for more complex algorithms.
 CutLang provides a standard and accessible way to write and interpret HEP analyses. By facilitating the preservation, sharing, and communication of HEP analysis methods, CutLang and ADL can help to advance the field of HEP data analysis.
@@ -14,11 +15,9 @@ CutLang provides a standard and accessible way to write and interpret HEP analys
 
 
 ### What is ADL? 
-ADL (Analysis Description Language) is a domain-specific language used to describe and implement analysis in high-energy particle physics experiments. ADL allows users to write HEP analyses in a clear and easily readable format. ADL is written in a way that is independent of any specific computing framework, making it easier to share and compare analyses between different users and experiments. It is used to define the criteria for selecting events of interest and to specify how the selected events should be processed (e.g. by calculating certain variables or performing specific cuts). ADL is typically used in conjunction with a Monte Carlo simulation to generate samples of events and a data analysis framework to process the events and produce results. You can read more about it [here]http://cern.ch/adl.
+ADL (Analysis Description Language) is a domain-specific language used to describe and implement analysis in high-energy particle physics experiments. ADL allows users to write HEP analyses in a clear and easily readable format. ADL is written in a way that is independent of any specific computing framework, making it easier to share and compare analyses between different users and experiments. It is used to define the criteria for selecting events of interest and to specify how the selected events should be processed (e.g. by calculating certain variables or performing specific cuts). ADL is typically used in conjunction with a Monte Carlo simulation to generate samples of events and a data analysis framework to process the events and produce results. You can read more about it [here](http://cern.ch/adl).
 
- <div align="center" >
-  <img src="https://user-images.githubusercontent.com/87129919/205975336-c6b1e85c-6055-4247-987d-68cc01b7f5cf.jpg">
-</div>
+ <div align="center" > <img src="https://user-images.githubusercontent.com/87129919/205975336-c6b1e85c-6055-4247-987d-68cc01b7f5cf.jpg"> </div>
 
 
 
