@@ -11,11 +11,7 @@ CutLang provides a standard and accessible way to write and interpret HEP analys
 ADL (Analysis Description Language) is a domain-specific language used to describe and implement analysis in high-energy particle physics experiments. ADL allows users to write HEP analyses in a clear and easily readable format. ADL is written in a way that is independent of any specific computing framework, making it easier to share and compare analyses between different users and experiments. It is used to define the criteria for selecting events of interest and to specify how the selected events should be processed (e.g. by calculating certain variables or performing specific cuts). ADL is typically used in conjunction with a Monte Carlo simulation to generate samples of events and a data analysis framework to process the events and produce results.
 
 
-**Launch tutorial:**
 
-With *jupyter lab*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb)
-
-With *jupyter notebook*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
 ## Contents
 <details>
