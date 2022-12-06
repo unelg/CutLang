@@ -1,4 +1,5 @@
- <img src="https://user-images.githubusercontent.com/87129919/205792409-4f18e21a-71fc-4acc-9c29-31251370ad6f.png" align="right"  height="50"/> 
+ <img src="https://user-images.githubusercontent.com/87129919/205923941-83ed108a-ec52-4d2c-8e5f-180bb7c84f9d.png" align="right"  height="50"/> 
+
 
 ## About
 This is the repository for *CutLang: A Particle Physics Analysis Description Language Runtime Interpreter*. 
