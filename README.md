@@ -159,7 +159,7 @@ For Windows:
 #For example:
 #docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v ~/example_work_dir/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest
 ```
-Execute the container by entering `docker exec -it CutLang-root-vnc bash` . 
+Execute the container by `docker exec -it CutLang-root-vnc bash` . 
 
 If you have installed the container successfully, you will see: 
 ```bash
