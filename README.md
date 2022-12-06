@@ -310,7 +310,7 @@ Create and activate the environment using
  # make -j
 ```
 
-### <a name="contributing-setting-up-the-development-environment-with-docker"></a> :black_small_square: with Docker
+### <a name="contributing-setting-up-the-development-environment-with-docker"></a> :radio_button: with Docker
 Compile CutLang, and build and run the container using:
 ```bash
  git clone https://github.com/unelg/CutLang.git
