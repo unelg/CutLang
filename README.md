@@ -242,13 +242,13 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
 
 ## <a name="tutorial"></a> Tutorial
- ### :radio_button: <ins> Launch with Binder:</ins>
+ ### <ins> Launch with Binder:</ins>
 
  - with Jupyter Lab: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/lab/tree/binder/index.ipynb) 
 
  - with Jupyter Notebook: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/unelg/CutLang/master?urlpath=/notebooks/binder/index.ipynb)
 
-### :radio_button: <ins> Launch with Self Host: </ins>
+### <ins> Launch with Self Host: </ins>
 
 ### <a name="tutorial-setup"></a> Setup 
   
