@@ -201,10 +201,10 @@ docker images -a | grep "cutlang-root-vnc" | awk '{print $3}' | xargs docker rmi
 ### <a name="using-cutlang-with-jupyter"></a> :radio_button: <ins>with Jupyter</ins>
 Available on **Linux, macOS, Windows**
 
-:warning: *In order to run CutLang in Jupyter, you must first complete the setup from source or with conda or docker.*
+:warning: *In order to run CutLang in Jupyter, you must first complete the setup from source or with Conda or Docker.*
 
 ### <a name="using-cutlang-with-jupyter-setup"></a> Setup
-- **You should have completed the CutLang setup and be able to run the CLA command without any problems.**
+- You should have completed the CutLang setup and be able to run the CLA command without any problems.
 
 ### <a name="using-cutlang-with-jupyter-starting"></a> Starting
 *Starts Jupyter with "ROOT c++ with CutLang" kernel in your current directory*
