@@ -216,7 +216,7 @@ Available on **Linux, macOS, Windows**
 ```
 
 ### <a name="jupyter-cutlang-magic"></a> Jupyter CutLang Magic
-*CutLang can be used on Jupyter notebooks with ROOT*
+CutLang can be used on Jupyter notebooks with ROOT
 - You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
 - You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
 ```bash
