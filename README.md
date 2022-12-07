@@ -149,7 +149,8 @@ Available on **Linux, macOS, and Windows**
 <ins>**Requirements**</ins>
 - [Docker](https://www.docker.com/products/docker-desktop)
 
-Download the image and run the container, using:
+After installing the Docker, download the image and run the container using:
+
 ```bash
   docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v $PWD/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc:latest 
 #If you would like to re-run by mounting another directory, you should stop the container using
