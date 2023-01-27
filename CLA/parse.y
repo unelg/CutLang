@@ -89,7 +89,8 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
 %token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
 %token TRGE TRGM SKPE SKPH SAVE CSV 
-%token IDX
+%token IDX METSIGNIF
+%token TTBARNNLOREC
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
@@ -1102,6 +1103,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                     int type=newList2[0]->type; // type is JETS or FJETS etc..
                                     $$=new SFuncNode(userfuncE, fMtautau, type, "XXX" , newList2,  newList1, newList);
                         }
+        | TTBARNNLOREC '(' NUMBER NUMBER NUMBER NUMBER ')' {
+                                $$=new SFuncNode(userfuncF, RecursiveReweighting, 0, "XXX" , $3, $4, $5, $6 );
+                        }
         | HT { $$=new SFuncNode(ht,1,"JET"); }
         | HT '(' ID  ')' {
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -1116,6 +1120,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        }
                          }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
+       | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
        | description '(' particules ')' {      cout << "\n*******new variable "<< $1 << " is a new description!******\n"; 

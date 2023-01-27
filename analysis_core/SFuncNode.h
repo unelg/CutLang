@@ -35,17 +35,21 @@ private:
     double (*g3)(AnalysisObjects*, string, int,                      double (*func)(std::vector<TLorentzVector>, TVector2 ));
     double (*g4)(AnalysisObjects*, string, int, TLorentzVector,      double (*func)(std::vector<TLorentzVector>, TLorentzVector ));
     double (*g5)(AnalysisObjects*, string, int, TLorentzVector, TLorentzVector, TLorentzVector,   double (*func)(TLorentzVector, TLorentzVector, TLorentzVector ));
+    double (*g6)(AnalysisObjects*, string, int, double, double, double, double, double (*func)(double, double, double, double));//fTTbarNNLORec
+
     std::vector<TLorentzVector> (*h1)(std::vector<TLorentzVector>, int);
                          double (*h2)(std::vector<TLorentzVector>);
                          double (*h3)(std::vector<TLorentzVector>, TVector2 );
                          double (*h4)(std::vector<TLorentzVector>, TLorentzVector );
                          double (*h5)(TLorentzVector, TLorentzVector, TLorentzVector );
+                         double (*h6)(double, double, double, double);
     bool ext;
     int type = 1;
     float value = -1.0;
     std::vector<myParticle*> inputParticlesA;
     std::vector<myParticle*> inputParticlesB;
     std::vector<myParticle*> inputParticlesC;
+    double pv1, pv2, pv3, pv4;
 
 
 public:
@@ -59,6 +63,7 @@ public:
         g3=NULL;
         g4=NULL;
         g5=NULL;
+        g6=NULL;
         ext=false;
         value=val;
         symbol=s;
@@ -78,6 +83,7 @@ public:
         g3=NULL;
         g4=NULL;
         g5=NULL;
+        g6=NULL;
         ext=false;
         symbol=s;
         left=child;
@@ -99,6 +105,7 @@ public:
         g2=NULL;
         g4=NULL;
         g5=NULL;
+        g6=NULL;
         g1=func;
         h1=tunc;
         ext=true;
@@ -116,6 +123,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (
                Node *objectNodeA = NULL, Node *objectNodeB = NULL){
         DEBUG("*****************************************EXTERN SF :"<<s <<"\n");
         f=NULL;
+        g6=NULL;
         g5=NULL;
         g4=NULL;
         g3=NULL;
@@ -142,6 +150,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (
         g2=NULL;
         g4=NULL;
         g5=NULL;
+        g6=NULL;
         g3=func;
         h3=tunc;
         ext=true;
@@ -165,6 +174,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         g2=NULL;
         g3=NULL;
         g5=NULL;
+        g6=NULL;
         g4=func;
         h4=tunc;
         ext=true;
@@ -190,6 +200,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         g2=NULL;
         g3=NULL;
         g4=NULL;
+        g6=NULL;
         g5=func;
         h5=tunc;
         ext=true;
@@ -203,6 +214,40 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
 }
+//--------------------------------g6
+SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double pt1, double pt2, double m1, double pt3, double (*gunc)(double a1, double a2, double a3, double a4)),
+              double (*tunc) (double a1, double a2, double a3, double a4),
+                      int id,
+               std::string s,
+                  double apt1, double apt2, double apt3, double apt4,
+               Node *objectNodeA = NULL, Node *objectNodeB = NULL){
+        DEBUG("*****************************************EXTERN SF T5:"<<s <<"\n");
+        f=NULL;
+        g1=NULL;
+        g2=NULL;
+        g3=NULL;
+        g4=NULL;
+        g5=NULL;
+        g6=func;
+        h6=tunc;
+        ext=true;
+        type=id;
+        symbol=s;
+        left=NULL;
+        right=NULL;
+        pv1=apt1; 
+        pv2=apt2; 
+        pv3=apt3; 
+        pv4=apt4; 
+ //      inputParticlesA=input1;
+ //      inputParticlesB=input2;
+ //      inputParticlesC=input3;
+        userObjectA = objectNodeA;
+        userObjectB = objectNodeB;
+}
+
+
+
 //---------------------------end of extern function types
     
     virtual double evaluate(AnalysisObjects* ao) override ;
@@ -221,7 +266,8 @@ double btagsf(AnalysisObjects* ao, string s, float value);
 double xslumicorrsf(AnalysisObjects* ao, string s, float value);
 double count(AnalysisObjects* ao, string s, float id);
 double getIndex(AnalysisObjects* ao, string s, float id); // new internal function
-double met(AnalysisObjects* ao, string s, float id);
+double met   (AnalysisObjects* ao, string s, float id);
+double metsig(AnalysisObjects* ao, string s, float id);
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id);
 double hlt_trg(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);
@@ -231,11 +277,14 @@ double userfuncC(AnalysisObjects* ao, string s, int id, double (*func)(std::vect
 double userfuncD(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*func)(std::vector<TLorentzVector> jets, TLorentzVector amet ));
 double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLorentzVector l2,  TLorentzVector m1,
                                                             double (*func)(TLorentzVector la, TLorentzVector lb, TLorentzVector amet ) );
+double userfuncF(AnalysisObjects* ao, string s, int id, double l1, double l2,  double m1, double l3,
+                                                            double (*func)(double la, double lb, double amet, double lab ) );
 
 std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1);
 double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet);
+double fTTbarNNLORec(double lep1, double lep2, double amet, double lab);
 
 
 /*

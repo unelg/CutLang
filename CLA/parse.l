@@ -82,6 +82,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "BJET" return BJET;
 [iI][nN][dD][eE][xX] return IDX;
 
+[Mm][eE][tT][sS][iI][gG] return METSIGNIF;
+
 [uU][nN][iI][oO][nN] return UNION;
 [aA][lL][iI][aA][sS] return ALIAS;
 [bB][tT][aA][gG] return ISBTAG;
@@ -144,6 +146,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "mvaTight" return MVATIGHT;  
 "mvaLoose" return MVALOOSE;   
 "m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
+"fTTrr" return TTBARNNLOREC;
 
 [aA][nN][yY][oO][fF] return ANYOF;
 [aA][lL][lL][oO][fF] return ALLOF;

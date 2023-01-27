@@ -181,6 +181,10 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                    BUFFERED_VALUES.insert(std::pair<string, double >(extkey.Data(), retval));
                 }
               }
+           else if (g6 != NULL) { // F
+            retval=(*g6)(ao, symbol, type, pv1, pv2, pv3, pv4,  h6);
+           }
+
            delete aPart;
            delete bPart;
            delete cPart;
@@ -265,23 +269,20 @@ double met(AnalysisObjects* ao, string s, float id){
 }
 
 
-double metsig(AnalysisObjects* ao, string s, float id) { 
+//defining resolutions: 
 
-
-	//defining resolutions: 
-
-	double Frespt(double pt) {
+double Frespt(double pt) {
 	  return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);
 	}
 
-	double Fresphi(double pt) {
+double Fresphi(double pt) {
 	  return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);
 	}
 
 
 	// defining the elements of the rotated covariant matrix 
 
-	void sumrotatedcov(double phi, double respt, double resphi, double pt, double& covxx, double& covyy, double& covxy) {
+void sumrotatedcov(double phi, double respt, double resphi, double pt, double& covxx, double& covyy, double& covxy) {
 	  double x = respt * respt;
 	  double y = pt * pt * resphi * resphi;
 
@@ -291,7 +292,8 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	}
 
 
-	double calculatemetsig(AnalysisObjects* ao, string s, float id){
+//double calculatemetsig(AnalysisObjects* ao, string s, float id)
+double metsig(AnalysisObjects* ao, string s, float id) { 
 	  double covxx, covyy, covxy;
 	  double mety = 0;
 	  double metx = 0;
@@ -317,8 +319,7 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	  }
 
 	    return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovxy;
-	}
-
+}
 
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
@@ -434,6 +435,20 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
    double retvalue= (*func)(l1, l2, m1);
    return (retvalue);
 }
+
+double userfuncF(AnalysisObjects* ao, string s, int id, double l1, double l2,  double m1, double l3,
+          double (*func)(double la, double lb, double amet, double lab ) ){
+// string contains what to send
+// id contains the particle type ASSUME ID=JET TYPE,
+
+   DEBUG("UserfunctionF :"<<s<<"\n");
+   DEBUG("evaluating external function :"<<s<<"\n");
+   double retvalue= (*func)(l1, l2, m1, l3);
+   return (retvalue);
+}
+
+
+
 
 std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1) {
  TLorentzVector h1;
