@@ -6,6 +6,7 @@
 //  Copyright © 2018 Anna-Monica. All rights reserved.
 //  Copyright © 2020 Gokhan Unel. All rights reserved.
 //
+#include <cmath>
 #include "SFuncNode.h"
 #include "ValueNode.h"
 #include "ObjectNode.hpp"
@@ -262,6 +263,63 @@ double met(AnalysisObjects* ao, string s, float id){
      DEBUG("MET:" << ao->met["MET"].Mod() <<"\n");
     return ( ao->met["MET"].Mod() );
 }
+
+
+double metsig(AnalysisObjects* ao, string s, float id) { 
+
+
+	//defining resolutions: 
+
+	double Frespt(double pt) {
+	  return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);
+	}
+
+	double Fresphi(double pt) {
+	  return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);
+	}
+
+
+	// defining the elements of the rotated covariant matrix 
+
+	void sumrotatedcov(double phi, double respt, double resphi, double pt, double& covxx, double& covyy, double& covxy) {
+	  double x = respt * respt;
+	  double y = pt * pt * resphi * resphi;
+
+	  covxx = x * cos(phi) * cos(phi) + y * sin(phi) * sin(phi);
+	  covyy = x * sin(phi) * sin(phi) + y * cos(phi) * cos(phi);
+	  covxy = x * cos(phi) * sin(phi) - y * sin(phi) * cos(phi);
+	}
+
+
+	double calculatemetsig(AnalysisObjects* ao, string s, float id){
+	  double covxx, covyy, covxy;
+	  double mety = 0;
+	  double metx = 0;
+
+	  int Njet = ao->jets.at("JET").size();
+	  for (int nj=0; nj<Njet; nj++){
+	    double phi=jets["JET"].at(nj).lv().Phi();
+	    double pt=jets["JET"].at(nj).lv().Phi();
+	    double respt = Frespt(pt);
+	    double resphi=Fresphi(phi);
+
+	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
+	    double det = covxx * covyy - covxy * covxy;
+	    double ncovxx = covyy / det;
+	    double ncovyy = covxx / det;
+	    double ncovxy = -covxy / det;
+
+	    double dptx = sin(phi) * pt;
+	    double dpty = cos(phi) * pt;
+
+	    metx += dptx;
+	    mety += dpty;
+	  }
+
+	    return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovxy;
+	}
+
+
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
      bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
