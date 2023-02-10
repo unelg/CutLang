@@ -292,7 +292,6 @@ void sumrotatedcov(double phi, double respt, double resphi, double pt, double& c
 	}
 
 
-//double calculatemetsig(AnalysisObjects* ao, string s, float id)
 double metsig(AnalysisObjects* ao, string s, float id) { 
 	  double covxx, covyy, covxy;
 	  double mety = 0;
@@ -302,9 +301,9 @@ double metsig(AnalysisObjects* ao, string s, float id) {
           double ncovxx, ncovyy, ncovxy; 
 	  for (int nj=0; nj<Njet; nj++){
 	    double phi=ao->jets["JET"].at(nj).lv().Phi();
-	    double pt=ao->jets["JET"].at(nj).lv().Phi();
+	    double  pt=ao->jets["JET"].at(nj).lv().Pt();
 	    double respt = Frespt(pt);
-	    double resphi=Fresphi(phi);
+	    double resphi=Fresphi(pt);
 
 	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
