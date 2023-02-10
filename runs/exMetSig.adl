@@ -5,5 +5,6 @@ region   testNameM
   select      ALL                    # to count all events
   select      Size (MUO) >  1        # events with 2 or more muons
   select      MET > 500   # MET example
+  print      MetSig
   select      MetSig > 0.5   # MET significance example
 

@@ -299,17 +299,18 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	  double metx = 0;
 
 	  int Njet = ao->jets.at("JET").size();
+          double ncovxx, ncovyy, ncovxy; 
 	  for (int nj=0; nj<Njet; nj++){
-	    double phi=jets["JET"].at(nj).lv().Phi();
-	    double pt=jets["JET"].at(nj).lv().Phi();
+	    double phi=ao->jets["JET"].at(nj).lv().Phi();
+	    double pt=ao->jets["JET"].at(nj).lv().Phi();
 	    double respt = Frespt(pt);
 	    double resphi=Fresphi(phi);
 
 	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
-	    double ncovxx = covyy / det;
-	    double ncovyy = covxx / det;
-	    double ncovxy = -covxy / det;
+	           ncovxx = covyy / det;
+	           ncovyy = covxx / det;
+	           ncovxy = -covxy / det;
 
 	    double dptx = sin(phi) * pt;
 	    double dpty = cos(phi) * pt;
