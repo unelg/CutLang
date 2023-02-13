@@ -3,7 +3,7 @@
 
 region   testNameM
   select      ALL                    # to count all events
-  select      Size (JET) >  0        # events with 2 or more jets
+  select      Size (MUO) >  0        # events with 2 or more jets
   select      MET > 10   # MET example
   print      MetSig size(JET) 
   select      MetSig > 0.5   # MET significance example
