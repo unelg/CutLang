@@ -297,11 +297,36 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	  double mety = 0;
 	  double metx = 0;
 
+//summing over jets
 	  int Njet = ao->jets.at("JET").size();
           double ncovxx, ncovyy, ncovxy; 
 	  for (int nj=0; nj<Njet; nj++){
 	    double phi=ao->jets["JET"].at(nj).lv().Phi();
-	    double  pt=ao->jets["JET"].at(nj).lv().Pt();
+	    double pt=ao->jets["JET"].at(nj).lv().Pt()
+
+	    double respt = Frespt(pt);
+	    double resphi=Fresphi(pt);
+
+	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
+	    double det = covxx * covyy - covxy * covxy;
+         // elements of the rotated covariant matrix 
+	           ncovxx = covyy / det;
+	           ncovyy = covxx / det;
+	           ncovxy = -covxy / det;
+
+	    double dptx = sin(phi) * pt;
+	    double dpty = cos(phi) * pt;
+
+	    metx += dptx;
+	    mety += dpty;
+
+//muons
+	  int Nmuo = ao->muos.at("MUO").size();  
+             double ncovxx, ncovyy, ncovxy; 
+	  for (int nj=0; Nmuo<Njet; nj++){
+	    double phi=ao->muos["MUO"].at(nj).lv().Phi();
+	    double pt=ao->muos["MUO"].at(nj).lv().Pt()
+
 	    double respt = Frespt(pt);
 	    double resphi=Fresphi(pt);
 
@@ -316,10 +341,57 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 
 	    metx += dptx;
 	    mety += dpty;
+
+//electrons
+	  int Neles = ao->eles.at("ELE").size();
+             double ncovxx, ncovyy, ncovxy; 
+	  for (int nj=0; nj<Neles; nj++){
+	    double phi=ao->eles["ELE"].at(nj).lv().Phi();
+	    double pt=ao->eles["ELE"].at(nj).lv().Pt()
+
+	    double respt = Frespt(pt);
+	    double resphi=Fresphi(pt);
+
+	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
+	    double det = covxx * covyy - covxy * covxy;
+	           ncovxx = covyy / det;
+	           ncovyy = covxx / det;
+	           ncovxy = -covxy / det;
+
+	    double dptx = sin(phi) * pt;
+	    double dpty = cos(phi) * pt;
+
+	    metx += dptx;
+	    mety += dpty;
+//photons
+
+	  int Nphos = ao->gams.at("PHO").size();
+             double ncovxx, ncovyy, ncovxy; 
+	  for (int nj=0; nj<Neles; nj++){
+	    double phi=ao->gams["PHO"].at(nj).lv().Phi();
+	    double pt=ao->gams["PHO"].at(nj).lv().Pt()
+
+	    double respt = Frespt(pt);
+	    double resphi=Fresphi(pt);
+
+	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
+	    double det = covxx * covyy - covxy * covxy;
+	           ncovxx = covyy / det;
+	           ncovyy = covxx / det;
+	           ncovxy = -covxy / det;
+
+	    double dptx = sin(phi) * pt;
+	    double dpty = cos(phi) * pt;
+
+	    metx += dptx;
+	    mety += dpty;
+}
+
+	   return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovx
+
+
 	  }
 
-	    return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovxy;
-}
 
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
