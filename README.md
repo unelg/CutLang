@@ -6,12 +6,7 @@
 <img width="300" src = "https://user-images.githubusercontent.com/87129919/205978363-ddf03199-46aa-4572-bcb1-545fd2e82682.jpg" align = "right" >
 
 This is the repository for ***CutLang: A Particle Physics Analysis Description Language Runtime Interpreter***. 
-CutLang is a domain-specific language and interpreter for cut-based HEP data analysis. It allows users to write analysis in ADL (Analysis Description Language) files, which are then interpreted by the CutLang framework at run time. The interpreter is implemented in C++ and is built on top of the CERN data analysis framework ROOT. CutLang offers several features to make data analysis more efficient and error-free, including object definitions, event selections, histogramming, and Monte Carlo weighting. It also supports multi-core/multi-CPU hardware and has the ability to save events at any stage of the analysis. The latest version CutLang V3 uses the Lex/Yacc-based approach for ADL file processing and has several enhancements over the previous version, including improved handling of object combinatorics, the ability to include tables and weights, and support for more complex algorithms.
-CutLang provides a standard and accessible way to write and interpret HEP analyses. By facilitating the preservation, sharing, and communication of HEP analysis methods, CutLang and ADL can help to advance the field of HEP data analysis.
-
-
-
-
+CutLang is a domain-specific language and interpreter for cut-based HEP data analysis. It allows users to write analysis in ADL (Analysis Description Language) files, which are then interpreted by the CutLang framework at run time. The interpreter is implemented in C++ and is built on top of the CERN data analysis framework ROOT. CutLang offers several features to make data analysis more efficient and error-free, including object definitions, event selections, histogramming, and Monte Carlo weighting. It also supports multi-core/multi-CPU hardware and has the ability to save events at any stage of the analysis. The latest version CutLang V3 uses the Lex/Yacc-based approach for ADL file processing and has several enhancements over the previous version, including improved handling of object combinatorics, the ability to include tables and weights and support for more complex algorithms. By providing a standard and human-readable way for writing and interpretation, CutLang and ADL is aiming to advance the field of HEP data analysis.
 
 
 
