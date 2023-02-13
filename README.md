@@ -366,4 +366,4 @@ See https://hub.docker.com
 ```
 
 ## <a name="contributing-note"></a> Note
-Please, if version is updated, wait until all tests have been checked in the respective commit and the packages have been released. (Related mail will be sent)
+If a newer version is released, please wait until all the tests are checked in the respective commit and the associated packages have been available. A notifying mail will be sent.
