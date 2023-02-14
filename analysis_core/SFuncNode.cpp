@@ -319,7 +319,7 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	    metx += dptx;
 	    mety += dpty;
 
-                      }
+          }
      //muons
 	  int Nmuo = ao->muos.at("MUO").size();  
 	  for (int nj=0; nj<Nmuo; nj++){
@@ -387,7 +387,7 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	    mety += dpty;
         }
 
-  return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovx
+  return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovxy;
 
 
 	  }
