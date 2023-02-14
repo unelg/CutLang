@@ -268,6 +268,7 @@ double met(AnalysisObjects* ao, string s, float id){
     return ( ao->met["MET"].Mod() );
 }
 
+//--------------METSIG------------------//
 
 //defining resolutions: 
 
@@ -294,32 +295,36 @@ void sumrotatedcov(double phi, double respt, double resphi, double pt, double& c
 
 double metsig(AnalysisObjects* ao, string s, float id) { 
 	  double covxx, covyy, covxy;
-    double ncovxx, ncovyy, ncovxy; 
+          double ncovxx = 0;
+          double ncovyy = 0;
+          double ncovxy = 0;
 	  double mety = 0;
 	  double metx = 0;
 
     //summing over jets
 	  int Njet = ao->jets.at("JET").size();
 	  for (int nj=0; nj<Njet; nj++){
-	    double phi=ao->jets["JET"].at(nj).lv().Phi();
-	    double pt=ao->jets["JET"].at(nj).lv().Pt();
+	    double myphi=ao->jets["JET"].at(nj).lv().Phi();
+	    double mypt=ao->jets["JET"].at(nj).lv().Pt();
 
-	    double respt = Frespt(pt);
-	    double resphi=Fresphi(pt);
+	    double myrespt = Frespt(mypt);
+	    double myresphi= Fresphi(mypt);
 
-	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
+	    sumrotatedcov(myphi, myrespt, myresphi, mypt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
-	           ncovxx = covyy / det;
-	           ncovyy = covxx / det;
-		   ncovxy = -covxy / det;
+	           ncovxx += covyy / det;
+	           ncovyy += covxx / det;
+		   ncovxy += -covxy / det;
 
-	    double dptx = sin(phi) * pt;
-	    double dpty = cos(phi) * pt;
+	    double dptx = sin(myphi) * mypt;
+	    double dpty = cos(myphi) * mypt;
 
 	    metx += dptx;
 	    mety += dpty;
 
           }
+   
+     
      //muons
 	  int Nmuo = ao->muos.at("MUO").size();  
 	  for (int nj=0; nj<Nmuo; nj++){
@@ -331,9 +336,9 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 
 	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
-	           ncovxx = covyy / det;
-	           ncovyy = covxx / det;
-	           ncovxy = -covxy / det;
+	           ncovxx += covyy / det;
+	           ncovyy += covxx / det;
+	           ncovxy += -covxy / det;
 
 	    double dptx = sin(phi) * pt;
 	    double dpty = cos(phi) * pt;
@@ -353,9 +358,9 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 
 	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
-	           ncovxx = covyy / det;
-	           ncovyy = covxx / det;
-	           ncovxy = -covxy / det;
+	           ncovxx += covyy / det;
+	           ncovyy += covxx / det;
+	           ncovxy += -covxy / det;
 
 	    double dptx = sin(phi) * pt;
 	    double dpty = cos(phi) * pt;
@@ -376,9 +381,9 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 
 	    sumrotatedcov(phi, respt, resphi, pt, covxx, covyy, covxy);
 	    double det = covxx * covyy - covxy * covxy;
-	           ncovxx = covyy / det;
-	           ncovyy = covxx / det;
-	           ncovxy = -covxy / det;
+	           ncovxx += covyy / det;
+	           ncovyy += covxx / det;
+	           ncovxy += -covxy / det;
 
 	    double dptx = sin(phi) * pt;
 	    double dpty = cos(phi) * pt;
@@ -386,6 +391,8 @@ double metsig(AnalysisObjects* ao, string s, float id) {
 	    metx += dptx;
 	    mety += dpty;
         }
+        
+        
 
   return metx * metx * ncovxx + mety * mety * ncovyy + 2 * metx * mety * ncovxy;
 
