@@ -268,26 +268,20 @@ double met(AnalysisObjects* ao, string s, float id){
     return ( ao->met["MET"].Mod() );
 }
 
-//--------------/ MET Significance /------------------//
-
-
-//Define resolution: 
+//MetSig
 double resopt(double pt) {return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);}
 double resophi(double pt) {return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);}
 
-//Define rotated covariant matrix: 
 void rotatedcov(double pt, double phi, double resopt, double resophi, double& covxx, double& covyy, double& covxy){
   covxx = resopt * resopt * cos(phi) * cos(phi) + pt * pt * resophi * resophi * sin(phi) * sin(phi);
   covyy = resopt * resopt * sin(phi) * sin(phi) + pt * pt * resophi * resophi * cos(phi) * cos(phi);
   covxy = resopt * resopt * cos(phi) * sin(phi) - pt * pt * resophi * resophi * sin(phi) * cos(phi);
   }
 
-
 double metsig(AnalysisObjects* ao, string s, float id){
-  double covxx, covyy, covxy, ncovxx, ncovyy, ncovxy, nphi, npt,
+  double covxx, covyy, covxy, ncovxx, ncovyy, ncovxy, nphi, npt, det,
   sumcovxx = 0, sumcovyy = 0, sumcovxy = 0, pty = 0, ptx = 0;
 
-  //Sum over jets:
   for (int nj=0; nj< ao->jets.at("JET").size(); nj++){
     nphi = ao->jets["JET"].at(nj).lv().Phi();
     npt  = ao->jets["JET"].at(nj).lv().Pt();
@@ -295,17 +289,13 @@ double metsig(AnalysisObjects* ao, string s, float id){
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
     }  
-  
-  //Sum over muons:
   for (int nj=0; nj<ao->muos.at("MUO").size(); nj++){
     nphi = ao->muos["MUO"].at(nj).lv().Phi();
     npt  = ao->muos["MUO"].at(nj).lv().Pt();
     rotatedcov(npt,nphi, resopt(npt), resophi(npt),covxx, covyy, covxy);
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
-     }
-
-  //Sum over electrons: 
+    }
   for (int nj=0; nj<ao->eles.at("ELE").size(); nj++){
     nphi = ao->eles["ELE"].at(nj).lv().Phi();
     npt  = ao->eles["ELE"].at(nj).lv().Pt();
@@ -313,8 +303,6 @@ double metsig(AnalysisObjects* ao, string s, float id){
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
     }
-
-  //Sum over photons: 
   for (int nj=0; nj<ao->gams.at("PHO").size(); nj++){
     nphi = ao->gams["PHO"].at(nj).lv().Phi();
     npt  = ao->gams["PHO"].at(nj).lv().Pt();
@@ -323,14 +311,12 @@ double metsig(AnalysisObjects* ao, string s, float id){
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
     }
  
-  //Taking the inverse of the summed rotated covariant matrix: 
-  double det = sumcovxx * sumcovyy - sumcovxy * sumcovxy;
+  det = sumcovxx * sumcovyy - sumcovxy * sumcovxy;
   ncovxx =  sumcovyy/det; ncovyy = sumcovxx/det; ncovxy = -sumcovxy/det;        
-
   return ptx * ptx * ncovxx + pty * pty * ncovyy + 2 * ptx * pty * ncovxy;
   }
 
-//
+//MetSig end
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
      bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
