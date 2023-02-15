@@ -276,7 +276,7 @@ void rotatedcov(double pt, double phi, double resopt, double resophi, double& co
   covxx = resopt * resopt * cos(phi) * cos(phi) + pt * pt * resophi * resophi * sin(phi) * sin(phi);
   covyy = resopt * resopt * sin(phi) * sin(phi) + pt * pt * resophi * resophi * cos(phi) * cos(phi);
   covxy = resopt * resopt * cos(phi) * sin(phi) - pt * pt * resophi * resophi * sin(phi) * cos(phi);
-  }
+}
 
 double metsig(AnalysisObjects* ao, string s, float id){
   double covxx, covyy, covxy, ncovxx, ncovyy, ncovxy, nphi, npt, det,
@@ -288,33 +288,33 @@ double metsig(AnalysisObjects* ao, string s, float id){
     rotatedcov(npt,nphi,resopt(npt),resophi(npt),covxx,covyy,covxy);
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
-    }  
+  }  
   for (int nj=0; nj<ao->muos.at("MUO").size(); nj++){
     nphi = ao->muos["MUO"].at(nj).lv().Phi();
     npt  = ao->muos["MUO"].at(nj).lv().Pt();
     rotatedcov(npt,nphi, resopt(npt), resophi(npt),covxx, covyy, covxy);
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
-    }
+  }
   for (int nj=0; nj<ao->eles.at("ELE").size(); nj++){
     nphi = ao->eles["ELE"].at(nj).lv().Phi();
     npt  = ao->eles["ELE"].at(nj).lv().Pt();
     rotatedcov(npt,nphi,resopt(npt),resophi(npt),covxx,covyy,covxy);
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
-    }
+  }
   for (int nj=0; nj<ao->gams.at("PHO").size(); nj++){
     nphi = ao->gams["PHO"].at(nj).lv().Phi();
     npt  = ao->gams["PHO"].at(nj).lv().Pt();
     rotatedcov(npt,nphi,resopt(npt), resophi(npt),covxx,covyy,covxy);
     sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
     ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
-    }
+  }
  
   det = sumcovxx * sumcovyy - sumcovxy * sumcovxy;
   ncovxx =  sumcovyy/det; ncovyy = sumcovxx/det; ncovxy = -sumcovxy/det;        
   return ptx * ptx * ncovxx + pty * pty * ncovyy + 2 * ptx * pty * ncovxy;
-  }
+}
 
 //MetSig end
 
