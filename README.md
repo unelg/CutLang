@@ -62,7 +62,7 @@ ADL (Analysis Description Language) is a domain-specific language used to descri
 ## <a name="using-cutlang"></a> Using CutLang
 Cutlang is available on **Linux, macOS, and Windows (partially)**.
 
-### <a name="using-cutlang-from-source"></a> :radio_button: <ins> from Source </ins>
+### <a name="using-cutlang-from-source"></a> &#9670;	 <ins> from Source </ins>
 Available on **Linux, macOS, and Windows**
 
  ### <a name="using-cutlang-from-source-setup"></a> Setup
@@ -105,7 +105,7 @@ Remove the package using:
   rm -rf /path/to/CutLang
 ```
 
-### <a name="using-cutlang-with-conda"></a> :radio_button: <ins> with Conda </ins>
+### <a name="using-cutlang-with-conda"></a> &#9670; <ins> with Conda </ins>
 Available on **Linux, macOS**  [![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
 ### <a name="using-cutlang-with-conda-setup"></a> Setup
@@ -137,7 +137,7 @@ Remove the environment using:
   conda env remove --name <my-environment>
 ```
 
-### <a name="using-cutlang-with-docker"></a> :radio_button: <ins> with Docker</ins>
+### <a name="using-cutlang-with-docker"></a> &#9670; <ins> with Docker</ins>
 Available on **Linux, macOS, and Windows**
 
 ### <a name="using-cutlang-with-docker-setup"></a> Setup
@@ -193,7 +193,7 @@ docker images -a | grep "cutlang-root-vnc" | awk '{print $3}' | xargs docker rmi
 ```
 
 
-### <a name="using-cutlang-with-jupyter"></a> :radio_button: <ins>with Jupyter</ins>
+### <a name="using-cutlang-with-jupyter"></a> &#9670; <ins>with Jupyter</ins>
 Available on **Linux, macOS, Windows**
 
 :warning: *In order to run CutLang in Jupyter, you must first complete the setup from source or with Conda or Docker.*
@@ -286,10 +286,10 @@ Example adl files are kept in runs directory, you can also check out the reposit
 
 ### <a name="contributing-setting-up-the-development-environment"></a> <ins> Setting Up The Development Environment </ins>
 
-### <a name="contributing-setting-up-the-development-environment-from-source"></a> :radio_button: from Source
+### <a name="contributing-setting-up-the-development-environment-from-source"></a> &#9670; from Source
 You can refer to [using CutLang from source](#using-cutlang-from-source)
 
-### <a name="contributing-setting-up-the-development-environment-with-conda"></a> :radio_button: with Conda
+### <a name="contributing-setting-up-the-development-environment-with-conda"></a> &#9670; with Conda
 Create and activate the environment using
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -308,7 +308,7 @@ Create and activate the environment using
  # make -j
 ```
 
-### <a name="contributing-setting-up-the-development-environment-with-docker"></a> :radio_button: with Docker
+### <a name="contributing-setting-up-the-development-environment-with-docker"></a> &#9670; with Docker
 Compile CutLang, and build and run the container using:
 ```bash
  git clone https://github.com/unelg/CutLang.git
@@ -329,7 +329,7 @@ Exec the container using (in the another terminal window):
 
 ### <a name="contributing-build-and-deploy-environment"></a> <ins>Build and Deploy Environment</ins>
 
-### <a name="contributing-build-and-deploy-environment-conda"></a> :radio_button: Conda
+### <a name="contributing-build-and-deploy-environment-conda"></a> &#9670; Conda
 <ins>**Requirements**</ins>
 - [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
 
@@ -346,7 +346,7 @@ See https://anaconda.org
  # conda create -c conda-forge -c <your-username> --name <your-environment> cutlang
 ```
 
-### <a name="contributing-build-and-deploy-environment-docker"></a> :radio_button: Docker
+### <a name="contributing-build-and-deploy-environment-docker"></a> &#9670; Docker
 See https://hub.docker.com
 
 ```bash
