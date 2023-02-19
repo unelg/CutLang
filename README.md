@@ -65,10 +65,9 @@ Cutlang is available on **Linux, macOS, and Windows (partially)**.
 ### <a name="using-cutlang-from-source"></a> &#9670;	 <ins> from Source </ins>
 Available on **Linux, macOS, and Windows**
 
- ### <a name="using-cutlang-from-source-setup"></a> Setup
+ ### <a name="using-cutlang-from-source-setup"></a> &#9655;		Setup
  
-  <ins>**Requirements**</ins>
-  
+<ins>**Dependencies:**</ins>
   - [ROOT6](root.cern.ch)
   - command line compilation utilities (make, gcc, g++...)
   - flex
@@ -88,7 +87,7 @@ Setup the package using:
 ```
 Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
- ### <a name="using-cutlang-from-source-update"></a> Update
+ ### <a name="using-cutlang-from-source-update"></a> &#9655;	Update
 Update the package using:
 ```bash
   cd CutLang
@@ -99,7 +98,7 @@ Update the package using:
   # make -j
 ```
 
- ### <a name="using-cutlang-from-source-remove"></a> Remove
+ ### <a name="using-cutlang-from-source-remove"></a> &#9655;	Remove
 Remove the package using:
 ```bash
   rm -rf /path/to/CutLang
@@ -108,8 +107,8 @@ Remove the package using:
 ### <a name="using-cutlang-with-conda"></a> &#9670; <ins> with Conda </ins>
 Available on **Linux, macOS**  [![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/version.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/latest_release_date.svg?v=c)](https://anaconda.org/cutlang/cutlang)[![Anaconda-Server Badge](https://anaconda.org/cutlang/cutlang/badges/platforms.svg?v=c)](https://anaconda.org/cutlang/cutlang)
 
-### <a name="using-cutlang-with-conda-setup"></a> Setup
-<ins>**Requirements**</ins>
+### <a name="using-cutlang-with-conda-setup"></a> &#9655;	Setup
+<ins>**Dependencies:**</ins>
 - [Anaconda](https://www.anaconda.com/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 
 Create and activate the environment using:
@@ -119,7 +118,7 @@ Create and activate the environment using:
 ```
 Now, you can run CutLang (please see [Running](#running-cutlang) part)
 
-### <a name="using-cutlang-with-conda-update"></a> Update
+### <a name="using-cutlang-with-conda-update"></a> &#9655;	Update
 Update the environment using:
 ```bash
  conda create -c conda-forge -c cutlang --name <my-environment> cutlang # remove the existing environment and install the latest version
@@ -130,7 +129,7 @@ Update the environment using:
  CLA_conda_update
 ```
 
-### <a name="using-cutlang-with-conda-remove"></a> Remove
+### <a name="using-cutlang-with-conda-remove"></a> &#9655;	Remove
 Remove the environment using:
 ```bash
   conda deactivate <my-environment>
@@ -140,8 +139,8 @@ Remove the environment using:
 ### <a name="using-cutlang-with-docker"></a> &#9670; <ins> with Docker</ins>
 Available on **Linux, macOS, and Windows**
 
-### <a name="using-cutlang-with-docker-setup"></a> Setup
-<ins>**Requirements**</ins>
+### <a name="using-cutlang-with-docker-setup"></a> &#9655;	Setup
+<ins>**Dependencies:**</ins>
 - [Docker](https://www.docker.com/products/docker-desktop)
 
 After installing the Docker, download the image and run the container using:
@@ -176,7 +175,7 @@ https://github.com/ADL4HEP/ADLLHCanalyses
 Now, the container is ready to run CutLang.
 You can leave the container by typing `exit` on the command line. 
 
-### <a name="using-cutlang-with-docker-update"></a> Update
+### <a name="using-cutlang-with-docker-update"></a> &#9655;	 Update
 In case an update is necessary, you can perform the update as follows:
 ```bash
 docker pull cutlang/cutlang-root-vnc:latest
@@ -184,7 +183,7 @@ docker stop CutLang-root-vnc && docker container rm CutLang-root-vnc
 docker run -p 8888:8888 -p 5901:5901 -p 6080:6080 -d -v $PWD/:/src --name CutLang-root-vnc cutlang/cutlang-root-vnc
 ```
 
-### <a name="using-cutlang-with-docker-remove"></a> Remove
+### <a name="using-cutlang-with-docker-remove"></a> &#9655;	Remove
 Remove the docker container and image using
 ```bash
 docker stop CutLang-root-vnc
@@ -198,10 +197,10 @@ Available on **Linux, macOS, Windows**
 
 :warning: *In order to run CutLang in Jupyter, you must first complete the setup from source or with Conda or Docker.*
 
-### <a name="using-cutlang-with-jupyter-setup"></a> Setup
+### <a name="using-cutlang-with-jupyter-setup"></a> &#9655;	Setup
 - You should have completed the CutLang setup and be able to run the CLA command without any problems.
 
-### <a name="using-cutlang-with-jupyter-starting"></a> Starting
+### <a name="using-cutlang-with-jupyter-starting"></a> &#9655;	Starting
 *Starts Jupyter with "ROOT c++ with CutLang" kernel in your current directory*
 ```bash
   CLA_Jupyter lab
@@ -210,7 +209,7 @@ Available on **Linux, macOS, Windows**
   # Jupyter will be started, you can use by using the link 127.0.0.1:8888/... in the logs
 ```
 
-### <a name="jupyter-cutlang-magic"></a> Jupyter CutLang Magic
+### <a name="jupyter-cutlang-magic"></a> &#9655; Jupyter CutLang Magic
 CutLang can be used on Jupyter notebooks with ROOT
 - You can see how to use ROOT notebooks from the [link](https://root.cern.ch/notebooks/HowTos/HowTo_ROOT-Notebooks.html)
 - You can also run CutLang on any cell as (For detailed information, you can check the [tutorial](#tutorial) section.)
@@ -245,11 +244,11 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 
 ### <ins> Launch with Self Host: </ins>
 
-### <a name="tutorial-setup"></a> Setup 
+### <a name="tutorial-setup"></a> &#9655;	Setup 
   
  :warning: *CutLang installation should be complete and CLA command should run without any problems.*
 
-### <a name="tutorial-starting"></a>  Starting 
+### <a name="tutorial-starting"></a>  &#9655; Starting 
 
 Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
 
@@ -261,7 +260,7 @@ Starts Jupyter with "ROOT c++ with CutLang" kernel in $CUTLANG_PATH directory
   # Then you can browse index and other ipynb files in binder folder
 ```
 
-### <a name="tutorial-update"></a> Update
+### <a name="tutorial-update"></a> &#9655;	Update
 ```bash
   CLA_tutorial_update
   # force update (temporary, do not use unless necessary)
@@ -330,7 +329,7 @@ Exec the container using (in the another terminal window):
 ### <a name="contributing-build-and-deploy-environment"></a> <ins>Build and Deploy Environment</ins>
 
 ### <a name="contributing-build-and-deploy-environment-conda"></a> &#9670; Conda
-<ins>**Requirements**</ins>
+<ins>**Dependencies:**</ins>
 - [conda-build](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html)
 
 See https://anaconda.org
