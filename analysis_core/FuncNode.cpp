@@ -714,6 +714,10 @@ double IsoVarof( dbxParticle* apart){
  return apart->Attribute(3);
 }
 
+double MiniIsoVarof( dbxParticle* apart){
+ return apart->Attribute(3); // TO BE REVIEWED
+}
+
 double specialf( dbxParticle* apart){
 // cout << "we got:"<< apart->Attribute(apart->nAttribute() -1)<<"\n";
  return apart->Attribute(apart->nAttribute() -1);

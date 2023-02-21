@@ -122,6 +122,7 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
 "isolationVar" return ISOVAR;
+"miniIso" return MINIISO;
 "miniPFRelIsoAll" return RELISO;
 "relIsoall" return RELISOALL;
 "pfRelIso03all" return PFRELISO03ALL;
