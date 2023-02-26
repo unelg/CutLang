@@ -97,7 +97,7 @@ public:
   TRefArray Constituents; // references to constituents
   TRefArray Particles; // references to generated particles
   TLorentzVector Area;
-  ClassDef(Jet, 5)
+  ClassDef(Jet, 6)
 };
 
 class Vertex: public TObject {
@@ -148,6 +148,26 @@ public:
   ClassDef(Photon, 5)
 };
 
+class Tower: public TObject {
+public:
+   Float_t         ET;
+   Float_t         Eta;
+   Float_t         Phi;
+   Float_t         E;
+   Float_t         T;
+   Float_t         X;
+   Float_t         Y;
+   Float_t         Z;
+   Int_t           NTimeHits;
+   Float_t         Eem;
+   Float_t         Ehad;
+   Float_t         Etrk;
+   Float_t         Edges[4];   //[EFlowPhoton_]
+   TRefArray       Particles;
+  ClassDef(Tower, 5)
+};
+
+
 class Electron: public TObject {
 public:
   Float_t PT; // electron transverse momentum
@@ -191,6 +211,60 @@ public:
   ClassDef(Muon, 5)
 };
 
+
+class Track: public TObject {
+public:
+   Int_t           PID; // HEP ID number
+   Int_t           Charge;
+   Float_t         P;
+   Float_t         PT;
+   Float_t         Eta;
+   Float_t         Phi;
+   Float_t         CtgTheta;
+   Float_t         C;
+   Float_t         Mass;
+   Float_t         EtaOuter;
+   Float_t         PhiOuter;
+   Float_t         T;
+   Float_t         X;
+   Float_t         Y;
+   Float_t         Z;
+   Float_t         TOuter;
+   Float_t         XOuter;
+   Float_t         YOuter;
+   Float_t         ZOuter;
+   Float_t         Xd;
+   Float_t         Yd;
+   Float_t         Zd;
+   Float_t         XFirstHit;
+   Float_t         YFirstHit;
+   Float_t         ZFirstHit;
+   Float_t         L;
+   Float_t         D0;
+   Float_t         DZ;
+   Float_t         Nclusters;
+   Float_t         dNdx;
+   Float_t         ErrorP;
+   Float_t         ErrorPT;
+   Float_t         ErrorPhi;
+   Float_t         ErrorCtgTheta;
+   Float_t         ErrorT;
+   Float_t         ErrorD0;
+   Float_t         ErrorDZ;
+   Float_t         ErrorC;
+   Float_t         ErrorD0Phi;
+   Float_t         ErrorD0C;
+   Float_t         ErrorD0DZ;
+   Float_t         ErrorD0CtgTheta;
+   Float_t         ErrorPhiC;
+   Float_t         ErrorPhiDZ;
+   Float_t         ErrorPhiCtgTheta;
+   Float_t         ErrorCDZ;
+   Float_t         ErrorCCtgTheta;
+   Float_t         ErrorDZCtgTheta;
+  ClassDef(Track, 5)
+};
+/*
 class Track: public TObject {
 public:
   Int_t PID; // HEP ID number
@@ -227,6 +301,7 @@ public:
   Int_t VertexIndex; // reference to vertex
   ClassDef(Track, 5)
 };
+*/
 
 class ScalarHT: public TObject {
 public:

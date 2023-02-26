@@ -87,6 +87,9 @@ void delphes::Loop(analy_struct aselect, char *extname)
    TClonesArray *branchPhoton = UseBranch("Photon", fChain);
    TClonesArray *branchElectron = UseBranch("Electron", fChain);
    TClonesArray *branchMuon = UseBranch("Muon", fChain);
+   TClonesArray *branchEFlowPhoton = UseBranch("EFlowPhoton", fChain);
+   TClonesArray *branchEFT = UseBranch("EFlowTrack", fChain);
+   TClonesArray *branchEFN = UseBranch("EFlowNeutralHadron", fChain);
    TClonesArray *branchMET = UseBranch("MissingET", fChain);
 //-----------------------------------------------------------min and max nb events
    Long64_t nentries = fChain->GetEntriesFast();
@@ -112,6 +115,9 @@ void delphes::Loop(analy_struct aselect, char *extname)
    Int_t i, j;
    TObject *object;
    TLorentzVector momentum;
+   Track *eftrk;
+   Tower *efpho;
+   Tower *efnh;
 
 //--------------------------------------------------------------event loop
    for (Long64_t je=startevent; je<lastevent; ++je) {
@@ -191,10 +197,60 @@ void delphes::Loop(analy_struct aselect, char *extname)
               adbxm->addAttribute( muon->DZ);
               adbxm->addAttribute( muon->D0);
               adbxm->addAttribute( muon->IsolationVar   );
+//---calculate miniiso here.
+	      double minisovar=0.0;
+              double coneradius;
+              if (muon->PT < 50) { // small PT recipe 
+                coneradius=0.2;
+              } else if (muon->PT < 200){             // medium PT recipe
+                coneradius=10 / (muon->PT) ;
+              } else {        // large PT recipe
+                coneradius=0.05;
+              }
+// EFphotons
+              for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
+               efpho= ( Tower *) branchEFlowPhoton->At(im);
+   DEBUG("mPT:"<<muon->PT<<" ET:"<<efpho->ET<<" Eta:"<<efpho->Eta << " Phi:"<< efpho->Phi << " E:"<<efpho->E<<"\n");
+               slv.SetPtEtaPhiE( efpho->ET, efpho->Eta, efpho->Phi, efpho->E ); // all in GeV
+               // DEBUG("M:"<<slv.M()<<"\n");
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) { minisovar+=slv.Pt();
+                                          cout << " pt:"<<efpho->ET<<"\n";
+                                        }
+              }
+              cout << "P mini iso:"<<minisovar<<"\n";
+// EFTracks
+              for ( int it=0; it < branchEFT->GetEntriesFast(); ++it){
+               eftrk= ( Track *) branchEFT->At(it);
+               if ( eftrk->PT == muon->PT) { cout << "Same PT as muon\n"; }
+               slv.SetPtEtaPhiM( eftrk->PT, eftrk->Eta, eftrk->Phi,  eftrk->Mass ); // all in GeV
+if (it == 0){
+   DEBUG("tET:"<<eftrk->PT<<" Eta:"<<eftrk->Eta << " Phi:"<< eftrk->Phi << " M:"<<eftrk->Mass <<"\n");
+}
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) minisovar+=slv.Pt();
+              }
+              cout << "T mini iso:"<<minisovar<<"\n";
+
+// EFNeutralHAdrons
+              for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
+               efnh= ( Tower *) branchEFN->At(in);
+   DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
+               slv.SetPtEtaPhiE( efnh->ET, efnh->Eta, efnh->Phi, efnh->E ); // all in GeV
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) minisovar+=slv.Pt();
+              }
+              cout << "N mini iso:"<<minisovar<<"\n";
+
+
+              minisovar=minisovar/muon->PT;
+             if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
+              adbxm->addAttribute( minisovar );
+                
               muons.push_back(*adbxm);
               delete adbxm;
       }
-      DEBUG("Muons OK:"<< std::endl);
+      DEBUG("Muons OK:"<< branchMuon->GetEntriesFast()<< std::endl);
 
 //ELECTRONS
       if (branchElectron != NULL)
