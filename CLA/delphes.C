@@ -87,6 +87,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
    TClonesArray *branchPhoton = UseBranch("Photon", fChain);
    TClonesArray *branchElectron = UseBranch("Electron", fChain);
    TClonesArray *branchMuon = UseBranch("Muon", fChain);
+   TClonesArray *branchTrack = UseBranch("Track", fChain);
    TClonesArray *branchEFlowPhoton = UseBranch("EFlowPhoton", fChain);
    TClonesArray *branchEFT = UseBranch("EFlowTrack", fChain);
    TClonesArray *branchEFN = UseBranch("EFlowNeutralHadron", fChain);
@@ -112,6 +113,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
    Electron *electron;
    Muon *muon;
    MissingET *metd;
+   Track *track;
    Int_t i, j;
    TObject *object;
    TLorentzVector momentum;
@@ -153,9 +155,9 @@ void delphes::Loop(analy_struct aselect, char *extname)
        vector<dbxTau>      taus;
        vector<dbxPhoton>   photons;
        vector<dbxJet>      jets;
-       vector<dbxJet>    ljets;
+       vector<dbxJet>     ljets;
        vector<dbxTruth>   truth;
-       vector<dbxTrack>   track;
+       vector<dbxTrack>   tracks;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
 
@@ -164,12 +166,12 @@ void delphes::Loop(analy_struct aselect, char *extname)
        map<string, vector<dbxTau>      > taus_map;
        map<string, vector<dbxPhoton>   > gams_map;
        map<string, vector<dbxJet>      > jets_map;
-       map<string, vector<dbxJet>     >ljets_map;
+       map<string, vector<dbxJet>      >ljets_map;
        map<string, vector<dbxTruth>    >truth_map;
        map<string, vector<dbxTrack>    >track_map;
        map<string, vector<dbxParticle> >combo_map;
        map<string, vector<dbxParticle> >constits_map;
-       map<string, TVector2            >  met_map;
+       map<string, TVector2            >met_map;
 
 //temporary variables
        TLorentzVector  alv, alv_up, alv_down, slv;
@@ -182,6 +184,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        //dbxTau      *adbxt;
        dbxPhoton   *adbxp;
        dbxTruth    *adbxgen;
+       dbxTrack    *adbxtrk;
 
       DEBUG("Begin Filling"<<std::endl);
       if (branchMuon != NULL)
@@ -215,14 +218,14 @@ void delphes::Loop(analy_struct aselect, char *extname)
                // DEBUG("M:"<<slv.M()<<"\n");
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) { minisovar+=slv.Pt();
-                                          cout << " pt:"<<efpho->ET<<"\n";
+//                                          cout << " pt:"<<efpho->ET<<"\n";
                                         }
               }
-              cout << "P mini iso:"<<minisovar<<"\n";
+//              cout << "P mini iso:"<<minisovar<<"\n";
 // EFTracks
               for ( int it=0; it < branchEFT->GetEntriesFast(); ++it){
                eftrk= ( Track *) branchEFT->At(it);
-               if ( eftrk->PT == muon->PT) { cout << "Same PT as muon\n"; }
+//               if ( eftrk->PT == muon->PT) { cout << "Same PT as muon\n"; }
                slv.SetPtEtaPhiM( eftrk->PT, eftrk->Eta, eftrk->Phi,  eftrk->Mass ); // all in GeV
 if (it == 0){
    DEBUG("tET:"<<eftrk->PT<<" Eta:"<<eftrk->Eta << " Phi:"<< eftrk->Phi << " M:"<<eftrk->Mass <<"\n");
@@ -230,7 +233,7 @@ if (it == 0){
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
               }
-              cout << "T mini iso:"<<minisovar<<"\n";
+//              cout << "T mini iso:"<<minisovar<<"\n";
 
 // EFNeutralHAdrons
               for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
@@ -240,13 +243,15 @@ if (it == 0){
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
               }
-              cout << "N mini iso:"<<minisovar<<"\n";
+//              cout << "N mini iso:"<<minisovar<<"\n";
 
 
-              minisovar=minisovar/muon->PT;
-             if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
+              minisovar=(minisovar-muon->PT)/muon->PT;
+             //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
+//              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
               adbxm->addAttribute( minisovar );
-                
+              if (minisovar > 0.2) cout << minisovar << " muon" << endl;
+
               muons.push_back(*adbxm);
               delete adbxm;
       }
@@ -267,6 +272,62 @@ if (it == 0){
               adbxe->addAttribute( electron->IsolationVar );
               adbxe->addAttribute( electron->ErrorD0); //3
               adbxe->addAttribute( electron->ErrorDZ);  //4
+
+
+//---calculate miniiso here.
+	      double minisovar=0.0;
+              double coneradius;
+              if (electron->PT < 50) { // small PT recipe 
+                coneradius=0.2;
+              } else if (electron->PT < 200){             // medium PT recipe
+                coneradius=10 / (electron->PT) ;
+              } else {        // large PT recipe
+                coneradius=0.05;
+              }
+// EFphotons
+              for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
+               efpho= ( Tower *) branchEFlowPhoton->At(im);
+   DEBUG("mPT:"<<electron->PT<<" ET:"<<efpho->ET<<" Eta:"<<efpho->Eta << " Phi:"<< efpho->Phi << " E:"<<efpho->E<<"\n");
+               slv.SetPtEtaPhiE( efpho->ET, efpho->Eta, efpho->Phi, efpho->E ); // all in GeV
+               // DEBUG("M:"<<slv.M()<<"\n");
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) { minisovar+=slv.Pt();
+//                                          cout << " pt:"<<efpho->ET<<"\n";
+                                        }
+              }
+//              cout << "P mini iso:"<<minisovar<<"\n";
+// EFTracks
+              for ( int it=0; it < branchEFT->GetEntriesFast(); ++it){
+               eftrk= ( Track *) branchEFT->At(it);
+//               if ( eftrk->PT == electron->PT) { cout << "Same PT as electron\n"; }
+               slv.SetPtEtaPhiM( eftrk->PT, eftrk->Eta, eftrk->Phi,  eftrk->Mass ); // all in GeV
+if (it == 0){
+   DEBUG("tET:"<<eftrk->PT<<" Eta:"<<eftrk->Eta << " Phi:"<< eftrk->Phi << " M:"<<eftrk->Mass <<"\n");
+}
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) minisovar+=slv.Pt();
+              }
+//              cout << "T mini iso:"<<minisovar<<"\n";
+
+// EFNeutralHAdrons
+              for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
+               efnh= ( Tower *) branchEFN->At(in);
+   DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
+               slv.SetPtEtaPhiE( efnh->ET, efnh->Eta, efnh->Phi, efnh->E ); // all in GeV
+               double deltaR=alv.DeltaR(slv);
+               if (deltaR < coneradius) minisovar+=slv.Pt();
+              }
+//              cout << "N mini iso:"<<minisovar<<"\n";
+
+
+              minisovar=(minisovar-electron->PT)/electron->PT;
+             //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
+//              cout << " --> electron pT, mini iso:"<< electron->PT << ", " << minisovar<<"\n";
+
+              if (minisovar > 0.1) cout << minisovar << " electron" << endl;
+
+              adbxe->addAttribute( minisovar );
+
               electrons.push_back(*adbxe);
               delete adbxe;
       }
@@ -284,6 +345,49 @@ if (it == 0){
                 delete adbxp;
         }
         DEBUG("Photons OK:"<<i<<std::endl);
+
+//------------------------------------------------------
+// TRACKS...
+    // Selecting tracks
+      if (branchTrack != NULL)
+      for(i = 0; i < branchTrack->GetEntriesFast(); ++i) {
+        track= (Track*) branchTrack->At(i);
+        double Tr_pt = track->PT;
+        double Tr_eta = track->Eta;
+        int TparticleId  =  track->PID; 
+        slv.SetPtEtaPhiM( Tr_pt, Tr_eta, track->Phi,  track->Mass );
+        adbxtrk= new dbxTrack(slv);
+        adbxtrk->setParticleIndx(i);
+      	adbxtrk->setPdgID( TparticleId );
+
+        double mT = 0.01;
+        if(!(fabs(Tr_eta) < 2.4)) continue;  // selecting tracks pT,eta
+
+        bool isElectron   = ( TparticleId== 11 || TparticleId == -11) ;
+        bool isMuon       = ( TparticleId== 13 || TparticleId == -13) ;
+        double aFlavor = 0;
+        double IsoCone    = 0.3 ;
+        double ChargedSum = 0.0;
+        for(int kk = 0; kk < branchTrack->GetEntriesFast(); ++kk) {
+         Track *atrack = (Track*) branchTrack->At(kk);
+         alv.SetPtEtaPhiM( atrack->PT, atrack->Eta, atrack->Phi,  atrack->Mass );
+         double deltaR=slv.DeltaR(alv);
+         if (deltaR < IsoCone && atrack->Charge>0) ChargedSum+=atrack->PT;
+        } 
+//  we extract the main  track's PT?
+        ChargedSum -= Tr_pt;
+        adbxtrk->setPtCone(ChargedSum);
+
+ //iso tracks
+        if ( (isMuon || isElectron) && Tr_pt >  5 && mT < 100 && ChargedSum/Tr_pt < 0.2) { aFlavor=1; }
+        if (!(isMuon || isElectron) && Tr_pt > 10 && mT < 100 && ChargedSum/Tr_pt < 0.1) { aFlavor=2; }
+
+        adbxtrk->setFlavor(aFlavor); 
+        tracks.push_back(*adbxtrk);
+        delete adbxtrk;
+      }
+//------------------------------------------------------
+
 
     // Loop over all jets in event
     if (branchJet != NULL)
@@ -417,7 +521,7 @@ if (it == 0){
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
+       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",      tracks) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
     if (constits_map.size() < 1) // we only add this if it was previously empty...
