@@ -45,11 +45,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(ao->track[ac].at(ai).pdgID()  );
+		                                         inputPart->setPtCone(ao->track[ac].at(ai).PtCone()  );
 		                                         inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->track[ac].at(ai).ParticleIndx()  );
                                                          ka=ao->track[ac].at(ai).nAttribute();
-                                                         DEBUG("Gen Nattr:"<<ka<<"\n");
+                                                         DEBUG("Trk Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
-                   //                                       cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
+                                                          cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
                                                             inputPart->addAttribute(ao->track[ac].at(ai).Attribute(anat) );
                                                          }
 //                                                          cout <<"----------------done----------------------\n";
@@ -413,7 +414,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      }
      DEBUG("Particle constructed \t");
      return (*f)(&myPart );
-     DEBUG("\n");
+     DEBUG(" .\n");
 }
 
 FuncNode::~FuncNode() {}

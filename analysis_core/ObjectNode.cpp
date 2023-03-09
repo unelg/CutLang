@@ -1451,6 +1451,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
          DEBUG("===============\n");
          TString dname;
          for (int ipart=(ao->track)[name].size()-1; ipart>=0; ipart--){
+           if ( (ao->track)[name].at(ipart).nAttribute() < 9) continue;
            int child1=(ao->track)[name].at(ipart).Attribute(8);
            int child2=(ao->track)[name].at(ipart).Attribute(9);
            int pidx=(ao->track)[name].at(ipart).ParticleIndx();
