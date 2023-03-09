@@ -521,7 +521,7 @@ if (it == 0){
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
        ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",      tracks) );
+       track_map.insert( pair <string,vector<dbxTrack>    > ("TRK",        tracks) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
     if (constits_map.size() < 1) // we only add this if it was previously empty...
