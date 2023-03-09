@@ -250,7 +250,7 @@ if (it == 0){
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
               adbxm->addAttribute( minisovar );
-              if (minisovar > 0.2) cout << minisovar << " muon" << endl;
+//              if (minisovar > 0.2) cout << minisovar << " muon" << endl;
 
               muons.push_back(*adbxm);
               delete adbxm;
@@ -324,7 +324,7 @@ if (it == 0){
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> electron pT, mini iso:"<< electron->PT << ", " << minisovar<<"\n";
 
-              if (minisovar > 0.1) cout << minisovar << " electron" << endl;
+ //             if (minisovar > 0.1) cout << minisovar << " electron" << endl;
 
               adbxe->addAttribute( minisovar ); //[5]
 
@@ -361,7 +361,6 @@ if (it == 0){
       	adbxtrk->setPdgID( TparticleId );
 
         double mT = 0.01;
-        if(!(fabs(Tr_eta) < 2.4)) continue;  // selecting tracks pT,eta
 
         bool isElectron   = ( TparticleId== 11 || TparticleId == -11) ;
         bool isMuon       = ( TparticleId== 13 || TparticleId == -13) ;
@@ -372,10 +371,14 @@ if (it == 0){
          Track *atrack = (Track*) branchTrack->At(kk);
          alv.SetPtEtaPhiM( atrack->PT, atrack->Eta, atrack->Phi,  atrack->Mass );
          double deltaR=slv.DeltaR(alv);
-         if (deltaR < IsoCone && atrack->Charge>0) ChargedSum+=atrack->PT;
+         if (deltaR < IsoCone ) ChargedSum+=atrack->PT;
+ //        if (deltaR < IsoCone && fabs(atrack->Charge) >0) ChargedSum+=atrack->PT;
         } 
+//        cout <<" Charged sum:"<<ChargedSum<<"\t";
 //  we extract the main  track's PT?
         ChargedSum -= Tr_pt;
+//        cout <<" corrected:"<<ChargedSum<<"\n";
+ //       cout <<"PDGID:"<<TparticleId<<"\n";
         adbxtrk->setPtCone(ChargedSum);
 
  //iso tracks

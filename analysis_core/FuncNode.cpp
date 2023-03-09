@@ -50,7 +50,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                          ka=ao->track[ac].at(ai).nAttribute();
                                                          DEBUG("Trk Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
-                                                          cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
+                                                          //cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
                                                             inputPart->addAttribute(ao->track[ac].at(ai).Attribute(anat) );
                                                          }
 //                                                          cout <<"----------------done----------------------\n";
@@ -433,7 +433,7 @@ double flavorof( dbxParticle* apart){
 
 double pdgIDof( dbxParticle* apart){
    double pdgID = apart->pdgID();
-   DEBUG(" pdgIDof:"<<pdgID<<"\t");
+//   DEBUG(" pdgIDof:"<<pdgID<<"\t");
    return pdgID;
 }
 
