@@ -25,11 +25,13 @@ public:
     }
     
     virtual void getParticles(std::vector<myParticle *>* particles) override{
+     condition->getParticles(particles);
     }
 
     virtual void getParticlesAt(std::vector<myParticle *>* particles, int index) override{
-
+     condition->getParticlesAt(particles, index);
     }
+
     virtual void Reset() override{
     }
     
