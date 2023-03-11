@@ -34,6 +34,7 @@ public:
     }
 
     virtual double evaluate(AnalysisObjects* ao) override {
+        std::cout <<"\nUNARY EVALUATE\n";
         return (*f)(left->evaluate(ao));
     }
     

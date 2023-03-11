@@ -67,6 +67,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
               case photon_t: ipart2_max=(ao->gams).at(bcol2).size(); break;
                 case fjet_t: ipart2_max=(ao->ljets).at(bcol2).size(); break;
                  case tau_t: ipart2_max=(ao->taus).at(bcol2).size(); break;
+               case track_t: ipart2_max=(ao->track).at(bcol2).size(); break;
                case combo_t: ipart2_max=(ao->combos)[bcol2].size(); break;
               case consti_t: {constiloop=true;
                             TString konsname=bcol2;
@@ -81,7 +82,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
 
 
                    default:
-                       std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
+                       std::cerr << "LN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
                 }
         } catch(...) {
                             std::cerr << "YOU WANT TO LOOP A PARTICLE TYPE YOU DIDN'T CREATE:"<<bcol2 <<" !\n";

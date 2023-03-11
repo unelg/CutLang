@@ -47,7 +47,7 @@ double HistoNode1D::evaluate(AnalysisObjects* ao) {
                            
                            
                                       default:
-                                          std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
+                                          std::cerr << "HN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
                                    }
                            } catch(...) {
                                                std::cerr << "YOU WANT TO histo A PARTICLE TYPE YOU DIDN'T CREATE:"<<bcol2 <<" !\n";

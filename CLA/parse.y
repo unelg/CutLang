@@ -457,11 +457,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                   } 
          | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
-                                       if (TmpCriteria.size() < 1) {
+ //                                      if (TmpCriteria.size() < 1) {
                                         $$=new FuncNode(pdgIDof,newList,"pdgID");
-                                       } else {
-                                        $$=new FuncNode(pdgIDof,newList,"pdgID", TmpCriteria[0]);
-                                       }
+   //                                    } else {
+     //                                   $$=new FuncNode(pdgIDof,newList,"pdgID", TmpCriteria[0]);
+       //                                }
                                   }
          | '{' particules '}' PDGID {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -2868,6 +2868,13 @@ criteria : criteria criterion
          ;
 criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
+          | PRINT variablelist
+                  { DEBUG("print in CSV format\n");
+                    string pippo="Print"; pippo+= to_string(cutcount);
+                    TmpCriteria.push_back( new SaveNode(pippo,0,VariableList) );
+                    VariableList.clear();
+                  }
+         
           | HISTO action    { TmpCriteria.push_back($2); }
           | REJEC condition { Node* a = new UnaryAONode(LogicalNot,$2,"NOT"); 
                               TmpCriteria.push_back(a); }

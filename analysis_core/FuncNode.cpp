@@ -298,7 +298,7 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
 
         int size=particles->size();
         for (int i=0; i<inputParticles.size(); i++){
-            DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index <<"\n");
+            DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index << " Coll:"<<inputParticles[i]->collection <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
                 if (inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection)  // AHA BU !!!!!!!!!!!!!!
@@ -311,7 +311,6 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
                 particles->push_back(inputParticles[i]);
             }
             }    
-
 }
 
 void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
@@ -321,6 +320,9 @@ void FuncNode::getParticlesAt(std::vector<myParticle *>* particles, int index){
 
 double FuncNode::evaluate(AnalysisObjects* ao) {
      DEBUG("\nIn function Node evaluate, #particles:"<< inputParticles.size() <<"\n");
+     DEBUG("Now:"<<getStr()<<"\n");
+     DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
+                      << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 // all objects in *ao are as they were read from the file   // returns 1, hardcoded. see ObjectNode.cpp  
      if(userObjectA) { double retval=userObjectA->evaluate(ao); 
                        DEBUG("UOA RetVal:"<< retval  <<"\n");
@@ -343,7 +345,7 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
      if(userObjectC)  userObjectC->evaluate(ao); 
      if(userObjectD)  userObjectD->evaluate(ao); 
      if ( userObjectA || userObjectB || userObjectC || userObjectD ) DEBUG("UOs EVALUATED:"<< getStr() <<"\n");
-
+     DEBUG("Now:"<<getStr()<<"\n");
      DEBUG("P_0 Type:"<<inputParticles[0]->type<<" collection:"
                       << inputParticles[0]->collection << " index:"<<inputParticles[0]->index<<"\n");
 
@@ -368,10 +370,11 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
                     case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+                   case 19: ipart2_max=(ao->track).at(base_collection2).size(); break;
                    case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
 
                    default:
-                       std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
+                       std::cerr << "FN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
                 }
      } catch(...) {
 //                    is it an object we can create?

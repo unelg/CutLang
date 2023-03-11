@@ -123,10 +123,11 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
                     case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+                   case 19: ipart2_max=(ao->track).at(base_collection2).size(); break;
                    case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
 
                    default:
-                       std::cerr << "WRONG PARTICLE TYPE:"<<inputParticles2[0]->type << std::endl; break;
+                       std::cerr << "LFN WRONG PARTICLE TYPE:"<<inputParticles2[0]->type << std::endl; break;
                 }
                 } catch(...) {
                             std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n";
