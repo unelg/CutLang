@@ -525,6 +525,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
                  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                     case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -624,6 +625,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
                   case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                      case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -706,6 +708,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
              case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -789,6 +792,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
                     case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -882,6 +886,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
                     case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case   fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                     case    tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -1007,6 +1012,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 //                      break;
 //                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                  case pureV_t: ipart2_max=1; break;
                     case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                     case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -1125,6 +1131,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 //                      break;
 //                  case 4: ipart_max=abc.tagJets(ao, 1).size(); //light jets
 //                      break;
+                   case pureV_t: ipart_max=1; break;
                     case photon_t: ipart_max=(ao->gams)[collectionName].size(); break;
                     case fjet_t: 
                             if ( (ao->ljets).find(collectionName) == ao->ljets.end() ) {
@@ -1346,6 +1353,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                  case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
               case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
                    case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+                 case pureV_t: ipart2_max=1; break;
                 case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                   case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -1526,6 +1534,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                  case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
               case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
                    case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+                 case pureV_t: ipart2_max=1; break;
                 case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
                   case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
@@ -1618,6 +1627,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 		    case truth_t: ipart_max=(ao->truth).at(collectionName).size(); break;
 		    case track_t: ipart_max=(ao->track).at(collectionName).size(); break;
                     case   jet_t: ipart_max=(ao->jets).at(collectionName).size(); break;
+                    case pureV_t: ipart_max=1; break;
                     case photon_t: ipart_max=(ao->gams).at(collectionName).size(); break;
                     case fjet_t: ipart_max=(ao->ljets).at(collectionName).size(); break;
                     case tau_t: ipart_max=(ao->taus).at(collectionName).size(); break;
@@ -1828,6 +1838,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 			  case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
 			  case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
 			  case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+                          case pureV_t: ipart2_max=1; break;
 			  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
 			  case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
 			  case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
