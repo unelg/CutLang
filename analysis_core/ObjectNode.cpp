@@ -1454,13 +1454,14 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         map <string, std::vector<dbxParticle>  >::iterator itpa;
 
         if(simpleloop){
-          DEBUG("--TRK simple loop-- "<< ipart_max<<"\n");
-          for (int ipart=ipart_max-1; ipart>=0; ipart--){
+          DEBUG("--TRK simple loop-- "<< ipart_max<<"\n"); // number of candidates in the event. maybe 90 tracks
+          for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all candidates.
              int pidx=(ao->track)[name].at(ipart).ParticleIndx(); // why - something??
-             for (int jp=0; jp<particles->size(); jp++){
+             for (int jp=0; jp<particles->size(); jp++){ // number of particles in the cut. maybe 2 tracks used
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
-                if (mycutstr.Contains("if")) {
+             }
+             if (mycutstr.Contains("if")) {
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
 
@@ -1468,19 +1469,25 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 //               cout <<"R:"<<(*cutIterator)->right->getStr()<<"\n";
 //               cout << jp<< " of "<<particles->size()<<" Right old\t T:"<< aparticles->at(0)->type <<
 //                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
-                 aparticles->at(jp)->collection=name;
-                 aparticles->at(jp)->index=ipart;
+                 DEBUG("Right Has:"<<aparticles->size()<<" particles in the criterion.\n");
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+//                  cout << kjp<<" idx:"<<aparticles->at(kjp)->index<<" type:"<<aparticles->at(kjp)->type<<" name"<<aparticles->at(kjp)->collection<<"\n";
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
 //--
                  bparticles.clear();
                  (*cutIterator)->left->getParticlesAt(aparticles,0);
 //               cout <<"L:"<<(*cutIterator)->left->getStr()<<"\n";
 //               cout << jp<< " of "<<particles->size()<<" left old\t T:"<< aparticles->at(0)->type <<
 //                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
-                 aparticles->at(jp)->collection=name;
-                 aparticles->at(jp)->index=ipart;
+                 DEBUG("Left Has:"<<aparticles->size()<<"particles in the criterion.\n");
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
 //--
-               }
-             }
+            }
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
