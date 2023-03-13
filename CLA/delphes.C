@@ -211,6 +211,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
                 coneradius=0.05;
               }
 // EFphotons
+              if (branchEFlowPhoton)
               for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
                efpho= ( Tower *) branchEFlowPhoton->At(im);
    DEBUG("mPT:"<<muon->PT<<" ET:"<<efpho->ET<<" Eta:"<<efpho->Eta << " Phi:"<< efpho->Phi << " E:"<<efpho->E<<"\n");
@@ -223,6 +224,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
               }
 //              cout << "P mini iso:"<<minisovar<<"\n";
 // EFTracks
+              if (branchEFT)
               for ( int it=0; it < branchEFT->GetEntriesFast(); ++it){
                eftrk= ( Track *) branchEFT->At(it);
 //               if ( eftrk->PT == muon->PT) { cout << "Same PT as muon\n"; }
@@ -236,6 +238,7 @@ if (it == 0){
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
 // EFNeutralHAdrons
+              if (branchEFN)
               for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
                efnh= ( Tower *) branchEFN->At(in);
    DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
@@ -250,7 +253,7 @@ if (it == 0){
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
               adbxm->addAttribute( minisovar );
-//              if (minisovar > 0.2) cout << minisovar << " muon" << endl;
+//             if (minisovar > 0.2) cout << minisovar << " muon" << endl;
 
               muons.push_back(*adbxm);
               delete adbxm;
@@ -285,6 +288,7 @@ if (it == 0){
                 coneradius=0.05;
               }
 // EFphotons
+              if (branchEFlowPhoton)
               for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
                efpho= ( Tower *) branchEFlowPhoton->At(im);
    DEBUG("mPT:"<<electron->PT<<" ET:"<<efpho->ET<<" Eta:"<<efpho->Eta << " Phi:"<< efpho->Phi << " E:"<<efpho->E<<"\n");
@@ -297,6 +301,7 @@ if (it == 0){
               }
 //              cout << "P mini iso:"<<minisovar<<"\n";
 // EFTracks
+              if (branchEFT)
               for ( int it=0; it < branchEFT->GetEntriesFast(); ++it){
                eftrk= ( Track *) branchEFT->At(it);
 //               if ( eftrk->PT == electron->PT) { cout << "Same PT as electron\n"; }
@@ -310,6 +315,7 @@ if (it == 0){
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
 // EFNeutralHAdrons
+              if (branchEFN)
               for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
                efnh= ( Tower *) branchEFN->At(in);
    DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
