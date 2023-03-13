@@ -297,13 +297,10 @@ void FuncNode::Reset() {
 void FuncNode::getParticles(std::vector<myParticle *>* particles) {
 
         int size=particles->size();
-        cout << "this function "<<this->getStr() << " has "<<inputParticles.size()<<" particles\n";
         for (int i=0; i<inputParticles.size(); i++){
             DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index << " Coll:"<<inputParticles[i]->collection <<"\n");
-            cout<<"FN getP i:"<<i<<" idx:"<<inputParticles[i]->index << " Coll:"<<inputParticles[i]->collection <<"\n";
             bool found=false;
             for(int j=0;j<size;j++){
-            cout<<"compare to:"<<j<<" idx:"<<particles->at(j)->index << " Coll:"<<particles->at(j)->collection <<"\n";
                 if (inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection)  // AHA BU !!!!!!!!!!!!!!
                 {
                     found=true;break;

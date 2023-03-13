@@ -2511,7 +2511,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 YYERROR;
                                      } 
                                      if(it != ObjectCuts->end() ){
-                                      DEBUG("Union with object type part1\n");
+                                      DEBUG("Union with known object type part1\n");
                                       ObjectNode* child1=(ObjectNode*)it->second; // e.g. goodEle definition
                                       a->type =child1->type; a->collection = $6; // e.g. goodEle type & collection name
                                       newList.push_back(a);
@@ -2534,7 +2534,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                YYERROR;
                                       }
                                       if(iu != ObjectCuts->end() ){
-                                        DEBUG("Union with object type part2\n");
+                                        DEBUG("Union with known object type part2\n");
                                         ObjectNode* child2=(ObjectNode*)iu->second; // e.g. goodMuo type & collection name
                                         b->type =child2->type; b->collection = $8; // e.g. goodMuo type & collection name
                                         newList.push_back(b);
@@ -2557,7 +2557,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      map<string,vector<Node*> >::iterator ikc;
                                      map<string,vector<Node*> >::iterator iuc;
 
-                                     if(iu != ObjectCuts->end() ){//if I dont have objects, 
+                                     if(iu == ObjectCuts->end() && it == ObjectCuts->end()  ){//if I dont have objects, 
                                        DEBUG($6 << " and "<< $8 << " seen first time, Adding their defining cuts in Union.\n");
                                        ikc = criteriaBank.find($6);
                                        iuc = criteriaBank.find($8);

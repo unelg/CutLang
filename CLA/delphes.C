@@ -241,7 +241,7 @@ if (it == 0){
               if (branchEFN)
               for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
                efnh= ( Tower *) branchEFN->At(in);
-   DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
+   DEBUG(" PT:"<<efnh->ET<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
                slv.SetPtEtaPhiE( efnh->ET, efnh->Eta, efnh->Phi, efnh->E ); // all in GeV
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
@@ -318,7 +318,7 @@ if (it == 0){
               if (branchEFN)
               for (int in=0; in < branchEFN->GetEntriesFast(); ++in){
                efnh= ( Tower *) branchEFN->At(in);
-   DEBUG(" PT:"<<efnh->PT<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
+   DEBUG(" PT:"<<efnh->ET<<" Eta:"<<efnh->Eta << " Phi:"<< efnh->Phi << " E:"<<efnh->E<<"\n");
                slv.SetPtEtaPhiE( efnh->ET, efnh->Eta, efnh->Phi, efnh->E ); // all in GeV
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
