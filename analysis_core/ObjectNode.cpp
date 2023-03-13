@@ -12,7 +12,7 @@
 #include "Comb.h"
 #include "Denombrement.h"
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -1583,7 +1583,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
 
-                 (*cutIterator)->right->getParticles(aparticles);
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
                  DEBUG("Right Has:"<<aparticles->size()<<" particles in the criterion.\n");
                  for (int kjp=0; kjp<aparticles->size(); kjp++){
                   aparticles->at(kjp)->collection=name;
