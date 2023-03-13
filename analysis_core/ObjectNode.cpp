@@ -12,7 +12,7 @@
 #include "Comb.h"
 #include "Denombrement.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -373,35 +373,32 @@ object goodjets take Jet
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
-                DEBUG("-----------Now ipart:"<<ipart<<"\n");
-               for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
+              DEBUG("-----------Now ipart:"<<ipart<<"\n");
+              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
-                if (mycutstr.Contains("if")) {
+              }
+              if (mycutstr.Contains("if")) {
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
 
                  (*cutIterator)->right->getParticlesAt(aparticles,0);
-//               cout <<"R:"<<(*cutIterator)->right->getStr()<<"\n";
-//               cout << jp<< " of "<<particles->size()<<" Right old\t T:"<< aparticles->at(0)->type <<
-//                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
-                 aparticles->at(jp)->collection=name;
-                 aparticles->at(jp)->index=ipart;
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
 //--
                  bparticles.clear();
                  (*cutIterator)->left->getParticlesAt(aparticles,0);
-//               cout <<"L:"<<(*cutIterator)->left->getStr()<<"\n";
-//               cout << jp<< " of "<<particles->size()<<" left old\t T:"<< aparticles->at(0)->type <<
-//                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
-                 aparticles->at(jp)->collection=name;
-                 aparticles->at(jp)->index=ipart;
-//--
-                }
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
               }
-               DEBUG("Simple CutIte:"<<(*cutIterator)->getStr()<<"\t");
-               bool ppassed=(*cutIterator)->evaluate(ao);
-               DEBUG("P/F:"<<ppassed<<"\n");
-               if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
+              DEBUG("Simple CutIte:"<<(*cutIterator)->getStr()<<"\t");
+              bool ppassed=(*cutIterator)->evaluate(ao);
+              DEBUG("P/F:"<<ppassed<<"\n");
+              if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
             }
             DEBUG(name <<" has " << (ao->jets)[name].size()<<" jets left after simpleloop.\n");
         } else { // if not a simple evaluation
@@ -481,6 +478,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->eles)[name].size();
         bool simpleloop=true;
  
+        TString mycutstr=(*cutIterator)->getStr();
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
@@ -503,6 +501,23 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
             }
@@ -564,12 +579,12 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->muos)[name].size();
         bool simpleloop=true;
+        TString mycutstr=(*cutIterator)->getStr();
  
         DEBUG("Psize:"<<particles->size() <<"\t"<<" ipart_max:"<<ipart_max<<"\n");
         if ( particles->size()==0) {
            DEBUG("mu CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool kill_all=false;
-           TString mycutstr=(*cutIterator)->getStr();
            if ( mycutstr.Contains("kill") ) kill_all=true;
 
            int retval=(*cutIterator)->evaluate(ao);
@@ -596,10 +611,27 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if(simpleloop){
             DEBUG("ONE particle  Muon Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
+              for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
-               }
+              }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                DEBUG("here @"<<ipart<<"\t");
                DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
                bool ppassed=(*cutIterator)->evaluate(ao);
@@ -664,6 +696,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->gams)[name].size();
         bool simpleloop=true;
+        TString mycutstr=(*cutIterator)->getStr();
  
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
@@ -687,6 +720,23 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
             }
@@ -747,6 +797,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         bool simpleloop=true;
 
         DEBUG("Psize:"<<particles->size() <<"\n");
+        TString mycutstr=(*cutIterator)->getStr();
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -764,11 +815,27 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         if(simpleloop){
             DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
+              for (int jp=0; jp<particles->size(); jp++){
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
-                DEBUG("n:"<<name<<" idx:"<<ipart<<"\n");
-               }
+              }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                DEBUG("FJet:"<< ipart<<" Cut ite:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG(ppassed<<"\n");
@@ -831,12 +898,12 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->taus)[name].size();
         bool simpleloop=true;
+        TString mycutstr=(*cutIterator)->getStr();
  
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool kill_all=false;
-           TString mycutstr=(*cutIterator)->getStr();
            if ( mycutstr.Contains("kill") ) kill_all=true;
 
            int retval=(*cutIterator)->evaluate(ao);
@@ -863,11 +930,30 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if(simpleloop){
             DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;
-                particles->at(0)->collection=name;
+              for (int jp=0; jp<particles->size(); jp++){
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+              }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
-            }
+           } 
         }
         else {
             DEBUG("size=2\n");
@@ -937,6 +1023,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    for(auto cutIterator=criteria->begin();cutIterator!=criteria->end();cutIterator++){
      DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<"\t");
      particles->clear();
+     TString mycutstr=(*cutIterator)->getStr();
      if ((*cutIterator)->getStr().CompareTo(" qo") == 0){
        (*cutIterator)->getParticles(particles);
      } else {
@@ -956,7 +1043,6 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         if ( OPS==0) {
            DEBUG("combo CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool kill_all=false;
-           TString mycutstr=(*cutIterator)->getStr();
            if ( mycutstr.Contains("kill") ) kill_all=true;
 
            int retval=(*cutIterator)->evaluate(ao);
@@ -986,8 +1072,23 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
                }
-               DEBUG("here @"<<ipart<<"\t");
-               DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) { DEBUG("Killing Combo:"<<ipart);
                    (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
@@ -1301,6 +1402,23 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
              }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 (*cutIterator)->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 (*cutIterator)->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
@@ -1465,22 +1583,15 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
 
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-//               cout <<"R:"<<(*cutIterator)->right->getStr()<<"\n";
-//               cout << jp<< " of "<<particles->size()<<" Right old\t T:"<< aparticles->at(0)->type <<
-//                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
+                 (*cutIterator)->right->getParticles(aparticles);
                  DEBUG("Right Has:"<<aparticles->size()<<" particles in the criterion.\n");
                  for (int kjp=0; kjp<aparticles->size(); kjp++){
-//                  cout << kjp<<" idx:"<<aparticles->at(kjp)->index<<" type:"<<aparticles->at(kjp)->type<<" name"<<aparticles->at(kjp)->collection<<"\n";
                   aparticles->at(kjp)->collection=name;
                   aparticles->at(kjp)->index=ipart;
                  }
 //--
                  bparticles.clear();
                  (*cutIterator)->left->getParticlesAt(aparticles,0);
-//               cout <<"L:"<<(*cutIterator)->left->getStr()<<"\n";
-//               cout << jp<< " of "<<particles->size()<<" left old\t T:"<< aparticles->at(0)->type <<
-//                            " I:"<< aparticles->at(0)->index << " C:"<< aparticles->at(0)->collection << "\n";
                  DEBUG("Left Has:"<<aparticles->size()<<"particles in the criterion.\n");
                  for (int kjp=0; kjp<aparticles->size(); kjp++){
                   aparticles->at(kjp)->collection=name;
