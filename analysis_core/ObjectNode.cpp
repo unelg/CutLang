@@ -269,6 +269,62 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     //Save AO somewhere to return in next time
     return 1;
 }
+// ********************************** Helper Functions
+void updateParticles (Node *cutIt, std::vector<myParticle *>* particles, int ipart, std::string name ){
+        TString mycutstr=cutIt->getStr();
+             for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
+                particles->at(jp)->index=ipart;
+                particles->at(jp)->collection=name;
+              }
+              if (mycutstr.Contains("if")) {
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+
+                 cutIt->right->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+//--
+                 bparticles.clear();
+                 cutIt->left->getParticlesAt(aparticles,0);
+                 for (int kjp=0; kjp<aparticles->size(); kjp++){
+                  aparticles->at(kjp)->collection=name;
+                  aparticles->at(kjp)->index=ipart;
+                 }
+              }
+}
+
+int getCollectionSize(int t2, std::string base_collection2, AnalysisObjects *ao ){
+
+            int ipart2_max;
+             try {
+                switch(t2){
+                    case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
+	           case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
+	           case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
+                case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
+                     case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
+//                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
+//                        break;
+//                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
+//                        break;
+                   case pureV_t: ipart2_max=1; break;
+                  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
+                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
+                     case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
+                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
+
+                    default:
+                        std::cerr << "WRONG PARTICLE JET TYPE:"<<t2 << std::endl;
+                        break;
+                }
+                } catch(...) {
+                            std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n"; 
+                            _Exit(-1);
+                }
+      return (ipart2_max);
+}
 
 // ***********************************JET ALL
 
@@ -357,45 +413,11 @@ object goodjets take Jet
           }// end of loop over all particles (jets) in the event.
          continue; // will move to the next cut iterator
         } // done with constis
-//------------------------------just to see
-/*
-        for ( int ipa = (ao->jets)[name].size()-1; ipa>=0; ipa--){
-            DEBUG(name <<" "<<ipa<<" has ");
-            TString konsname=name;
-                    konsname+="_";
-                    konsname+=ipa;
-                    konsname+="c";
-             string consname=(string)konsname;
-             int ciCount =(ao->constits).find(consname)->second.size();
-            DEBUG(ciCount<<" constituents\n"); 
-        }
-*/
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
               DEBUG("-----------Now ipart:"<<ipart<<"\n");
-              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-              }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
-              DEBUG("Simple CutIte:"<<(*cutIterator)->getStr()<<"\t");
+              updateParticles(*cutIterator, particles, ipart, name);
               bool ppassed=(*cutIterator)->evaluate(ao);
               DEBUG("P/F:"<<ppassed<<"\n");
               if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -409,32 +431,9 @@ object goodjets take Jet
                 particles->at(0)->collection=name;             
                 int ipart2_max=-1;
                 string base_collection2=particles->at(1)->collection;
-                try {
-                switch(particles->at(1)->type){
-                    case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	           case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-	           case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                     case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                    case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                        break;
-//                    case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                        break;
-                   case pureV_t: ipart2_max=1; break;
-                  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                     case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-
-                    default:
-                        std::cerr << "WRONG PARTICLE JET TYPE:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
-                } catch(...) {
-                            std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n"; 
-                            _Exit(-1);
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
+
                 bool totpass=false;
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
                     particles->at(1)->index=kpart;             
@@ -497,27 +496,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
  
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-               }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
+                updateParticles(*cutIterator, particles, ipart, name);
                 bool ppassed=(*cutIterator)->evaluate(ao);
                 if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
             }
@@ -530,27 +509,8 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(0)->collection=name;
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                    case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	           case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-	           case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                     case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-                 case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                   case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                    case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                  case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try ELE:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     particles->at(1)->collection=base_collection2;
@@ -609,33 +569,10 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if ( ptypeset.size()==2) {simpleloop=false; }
 
         if(simpleloop){
-            DEBUG("ONE particle  Muon Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-              for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-              }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
-               DEBUG("here @"<<ipart<<"\t");
-               DEBUG("cut "<<(*cutIterator)->getStr()<<"\n");
+               updateParticles(*cutIterator, particles, ipart, name);
                bool ppassed=(*cutIterator)->evaluate(ao);
-               if (!ppassed) { DEBUG("Killing muon:"<<ipart);
+               if (!ppassed) { DEBUG("Removing muon id:"<<ipart);
                    (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
                }
             }
@@ -647,27 +584,8 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                   case  muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-		   case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-	           case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                     case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-                  case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                     case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try MUO:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
 
@@ -714,29 +632,8 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if ( ptypeset.size()==2) {simpleloop=false; }
        
         if(simpleloop){
-            DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-               }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
+               updateParticles(*cutIterator, particles, ipart, name);
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
             }
@@ -748,26 +645,8 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-               case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	      case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-	      case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-           case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-             case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size();break;
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try PHO:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
@@ -815,27 +694,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         if(simpleloop){
             DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-              for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-              }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
+               updateParticles(*cutIterator, particles, ipart, name);
                DEBUG("FJet:"<< ipart<<" Cut ite:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG(ppassed<<"\n");
@@ -849,33 +708,14 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                    case     muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-		    case    truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                    case    track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                    case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case      jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-                    case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try FJET:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
                      if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
                      if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
                     }
-
 
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
@@ -928,31 +768,10 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if ( ptypeset.size()==2) {simpleloop=false; }
 
         if(simpleloop){
-            DEBUG("size=1\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-              for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-              }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
-                bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
+              updateParticles(*cutIterator, particles, ipart, name);
+              bool ppassed=(*cutIterator)->evaluate(ao);
+              if (!ppassed) (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
            } 
         }
         else {
@@ -962,33 +781,14 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                    case  muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	            case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break; 
-                    case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                    case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case   jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-                    case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case   fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                    case    tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                    case  combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try Tau:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
                     for (int jp=2; jp<particles->size(); jp++){
                      if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
                      if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
                     }
-
 
                     bool ppassed=(*cutIterator)->evaluate(ao);
                     if (!ppassed) {
@@ -1068,31 +868,11 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         if(simpleloop){
             DEBUG("ONE particle  Combo Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               for (int jp=0; jp<OPS; jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-               }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
-               bool ppassed=(*cutIterator)->evaluate(ao);
-               if (!ppassed) { DEBUG("Killing Combo:"<<ipart);
+              updateParticles(*cutIterator, particles, ipart, name);
+              bool ppassed=(*cutIterator)->evaluate(ao);
+              if (!ppassed) { DEBUG("Killing Combo:"<<ipart);
                    (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-               }
+              }
             }
         }
         else { // end of simpleloop
@@ -1103,27 +883,8 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                    case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-                    case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                    case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                    case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-//                  case 3: ipart2_max=abc.tagJets(ao, 1).size(); //b-jets
-//                      break;
-//                  case 4: ipart2_max=abc.tagJets(ao, 1).size(); //light jets
-//                      break;
-                  case pureV_t: ipart2_max=1; break;
-                    case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-
-                    default:
-                        std::cerr << "WRONG PARTICLE TYPE! "<<particles->at(1)->type << std::endl;
-                        break;
-                }
                 t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
                 DEBUG("ipart1 t:"<<t1<< " i:"<<ipart<< " ipart2 t:"<<particles->at(1)->type<<"\n");
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
@@ -1398,27 +1159,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
           DEBUG("--GEN simple loop-- "<< ipart_max<<"\n");
           for (int ipart=ipart_max-1; ipart>=0; ipart--){
              int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
-             for (int jp=0; jp<particles->size(); jp++){
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-             }
-              if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-              }
+             updateParticles(*cutIterator, particles, ipart, name);
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
@@ -1465,21 +1206,9 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                  case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	         case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                 case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-              case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                   case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-                 case pureV_t: ipart2_max=1; break;
-                case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                  case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                 case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-                      default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try Truth:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
+                t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
+
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
 
@@ -1575,30 +1304,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
           DEBUG("--TRK simple loop-- "<< ipart_max<<"\n"); // number of candidates in the event. maybe 90 tracks
           for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all candidates.
              int pidx=(ao->track)[name].at(ipart).ParticleIndx(); // why - something??
-             for (int jp=0; jp<particles->size(); jp++){ // number of particles in the cut. maybe 2 tracks used
-                particles->at(jp)->index=ipart;
-                particles->at(jp)->collection=name;
-             }
-             if (mycutstr.Contains("if")) {
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-
-                 (*cutIterator)->right->getParticlesAt(aparticles,0);
-                 DEBUG("Right Has:"<<aparticles->size()<<" particles in the criterion.\n");
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-                 bparticles.clear();
-                 (*cutIterator)->left->getParticlesAt(aparticles,0);
-                 DEBUG("Left Has:"<<aparticles->size()<<"particles in the criterion.\n");
-                 for (int kjp=0; kjp<aparticles->size(); kjp++){
-                  aparticles->at(kjp)->collection=name;
-                  aparticles->at(kjp)->index=ipart;
-                 }
-//--
-            }
+             updateParticles(*cutIterator, particles, ipart, name);
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
@@ -1646,21 +1352,9 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                 particles->at(0)->index=ipart;  // 6213
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
-                switch(particles->at(1)->type){
-                  case muon_t: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-	         case truth_t: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                 case track_t: ipart2_max=(ao->track).at(base_collection2).size(); break;
-              case electron_t: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                   case jet_t: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-                 case pureV_t: ipart2_max=1; break;
-                case photon_t: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                  case fjet_t: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case tau_t: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                 case combo_t: ipart2_max=(ao->combos).at(base_collection2).size(); break;
-                      default:
-                        std::cerr << "WRONG PARTICLE TYPE! Try Track:"<<particles->at(1)->type << std::endl;
-                        break;
-                }
+                t2=particles->at(1)->type;
+                ipart2_max=getCollectionSize(t2, base_collection2, ao);
+
                 for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                     particles->at(1)->index=kpart;
 
@@ -1679,10 +1373,6 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         }// end of two particles
     }// end of cutIterator
 }//end of create new Track
-
-
-
-
 
 
 //--------------------- combinatorics
