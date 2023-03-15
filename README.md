@@ -237,7 +237,7 @@ The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will 
 
 ### <ins> Getting Started with Examples: </ins>
 
-First, download some simple event samples (if the wget command does not work, you have to install wget first) :
+First, download some simple event samples:
 
 ```bash
 wget https://www.dropbox.com/s/zza28peyjy8qgg6/T2tt_700_50.root
@@ -262,6 +262,9 @@ CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex06_bins.adl
 ```bash
 CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex12_counts.adl
 ```
+
+More ADL files for various full LHC analyses (focusing on signal region selections) can be found in [this git repository.](https://github.com/ADL4HEP/ADLLHCanalyses)
+
 
 
 ## <a name="tutorial"></a> Tutorial
