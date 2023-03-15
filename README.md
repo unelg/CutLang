@@ -25,7 +25,7 @@ ADL (Analysis Description Language) is a domain-specific language used to descri
 <details>
 <summary>Table of Contents</summary>
 
-- [Using CutLang](#using-cutlang)
+- [Installing CutLang](#using-cutlang)
   - [From source](#using-cutlang-from-source)
     - [Setup](#using-cutlang-from-source-setup)
     - [Update](#using-cutlang-from-source-update)
@@ -59,7 +59,7 @@ ADL (Analysis Description Language) is a domain-specific language used to descri
   - [Note](#contributing-note)
 </details>
 
-## <a name="using-cutlang"></a> Using CutLang
+## <a name="using-cutlang"></a> Installing CutLang
 Cutlang is available on **Linux, macOS, and Windows (partially)**.
 
 ### <a name="using-cutlang-from-source"></a> &#9670;	 <ins> from Source </ins>
@@ -233,7 +233,36 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
 - Input event formats can be: *DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format)* 
 - Number of events is optional.
 
-The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default.  
+The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default. 
+
+### <ins> Getting Started with Examples: </ins>
+
+First, download some simple event samples (if the wget command does not work, you have to install wget first) :
+
+```bash
+wget https://www.dropbox.com/s/zza28peyjy8qgg6/T2tt_700_50.root
+```
+
+The samples contain SUSY events in DELPHES format.
+
+ADL syntax is self-descriptive. One can study and run several tutorial examples to learn the main syntax rules. These examples can be seen by: 
+
+```bash
+ls /CutLang/runs/tutorials/*.adl
+```
+
+Read each ADL file in the tutorials directory to understand the algorithm and syntax. Then run the ADL files with the commands given below. If there are histograms made, check out the resulting ROOT file and inspect the histograms.
+
+```bash
+CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex05_functions.adl
+```
+```bash
+CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex06_bins.adl
+```
+```bash
+CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex12_counts.adl
+```
+
 
 ## <a name="tutorial"></a> Tutorial
  ### <ins> Launch with Binder:</ins>
