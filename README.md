@@ -251,7 +251,7 @@ ADL syntax is self-descriptive. One can study and run several tutorial examples 
 ls /CutLang/runs/tutorials/*.adl
 ```
 
-Read each ADL file in the tutorials directory to understand the algorithm and syntax. Then run the ADL files with the commands given below. If there are histograms made, check out the resulting ROOT file and inspect the histograms.
+Read the ADL files in the tutorials directory to understand the algorithm and syntax. Then run the ADL files with the commands given below. If there are histograms made, check out the resulting ROOT file and inspect the histograms.
 
 ```bash
 CLA T2tt_700_50.root DELPHES -i /CutLang/runs/tutorials/ex05_functions.adl
