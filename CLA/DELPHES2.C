@@ -92,7 +92,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     // >>> MUON >>>
 
     dbxMuon *adbxm;
-    for (unsigned int i=0; i<Muon_size; i++) {
+    for (int i=0; i<Muon_size; i++) {
         alv.SetPtEtaPhiM(Muon_PT[i], Muon_Eta[i], Muon_Phi[i],  (105.658/1E3)); // all in GeV
 
         adbxm = new dbxMuon(alv);
@@ -113,7 +113,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 	adbxm->addAttribute(Muon_ErrorDZ[i]);
 //	adbxm->addAttribute(Muon_T[i]); // time of flight
 
-    for (unsigned int j=0; j<MuonTight_size && Tcount<MuonTight_size; j++) {
+    for (int j=0; j<MuonTight_size && Tcount<MuonTight_size; j++) {
         cout << "M T:"<<MuonTight_T[j]<< " "<<j <<endl;
         if (Muon_T[i] == MuonTight_T[j] ) { 
            cout << "tight set\n";
@@ -121,7 +121,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Tcount++;
         }
     }
-    for (unsigned int j=0; j<MuonMedium_size && Mcount<MuonMedium_size; j++) {
+    for (int j=0; j<MuonMedium_size && Mcount<MuonMedium_size; j++) {
         cout << "M M:"<<MuonMedium_T[j]<< " "<<j <<endl;
         if (Muon_T[i] == MuonMedium_T[j] ) { 
            cout << "Medium set\n";
@@ -129,7 +129,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Mcount++;
         }
     }
-    for (unsigned int j=0; j<MuonLoose_size && Lcount<MuonLoose_size; j++) {
+    for (int j=0; j<MuonLoose_size && Lcount<MuonLoose_size; j++) {
         cout << "M L:"<<MuonLoose_T[j]<< " "<<j <<endl;
         if (Muon_T[i] == MuonLoose_T[j] ) { 
            cout << "Loose set\n";
@@ -152,7 +152,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     Tcount=0;
     Mcount=0;
     Lcount=0;
-    for (unsigned int i=0; i<Electron_size; i++) {
+    for (int i=0; i<Electron_size; i++) {
         alv.SetPtEtaPhiM(Electron_PT[i], Electron_Eta[i], Electron_Phi[i],  (0.511/1E3) ); // all in GeV
         adbxe = new dbxElectron(alv);
 	adbxe->setCharge(Electron_Charge[i]);
@@ -173,7 +173,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 		adbxe->addAttribute(Electron_ErrorDZ[i]);
 //		adbxe->addAttribute(Electron_T[i]);
 		
-    for (unsigned int j=0; j<ElectronTight_size && Tcount<ElectronTight_size; j++) {
+    for (int j=0; j<ElectronTight_size && Tcount<ElectronTight_size; j++) {
         cout << "E T:"<<ElectronTight_T[j]<< " "<<j <<endl;
         if (Electron_T[i] == ElectronTight_T[j] ) { 
            cout << "tight set\n";
@@ -181,7 +181,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Tcount++;
         }
     }
-    for (unsigned int j=0; j<ElectronMedium_size && Mcount<ElectronMedium_size; j++) {
+    for (int j=0; j<ElectronMedium_size && Mcount<ElectronMedium_size; j++) {
         cout << "E M:"<<ElectronMedium_T[j]<< " "<<j <<endl;
         if (Electron_T[i] == ElectronMedium_T[j] ) { 
            cout << "Medium set\n";
@@ -189,7 +189,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Mcount++;
         }
     }
-    for (unsigned int j=0; j<ElectronLoose_size && Lcount<ElectronLoose_size; j++) {
+    for (int j=0; j<ElectronLoose_size && Lcount<ElectronLoose_size; j++) {
         cout << "E L:"<<ElectronLoose_T[j]<< " "<<j <<endl;
         if (Electron_T[i] == ElectronLoose_T[j] ) { 
            cout << "Loose set\n";
@@ -213,7 +213,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     Tcount=0;
     Mcount=0;
     Lcount=0;
-    for (unsigned int i=0; i<Photon_size; i++) {
+    for (int i=0; i<Photon_size; i++) {
         alv.SetPtEtaPhiE(Photon_PT[i], Photon_Eta[i], Photon_Phi[i], Photon_E[i]); // all in GeV
 
         adbxp = new dbxPhoton(alv);
@@ -231,7 +231,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 //		adbxp->addAttribute(Photon_T[i]);
     cout << "P N:"<<Photon_T[j]<< " "<<j <<endl;
 		
-    for (unsigned int j=0; j<PhotonTight_size && Tcount<PhotonTight_size; j++) {
+    for (int j=0; j<PhotonTight_size && Tcount<PhotonTight_size; j++) {
         cout << "P T:"<<PhotonTight_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonTight_T[j] ) { 
            cout << "tight set\n";
@@ -239,7 +239,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Tcount++;
         }
     }
-    for (unsigned int j=0; j<PhotonMedium_size && Mcount<PhotonMedium_size; j++) {
+    for (int j=0; j<PhotonMedium_size && Mcount<PhotonMedium_size; j++) {
         cout << "P M:"<<PhotonMedium_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonMedium_T[j] ) { 
            cout << "Medium set\n";
@@ -247,7 +247,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
            Mcount++;
         }
     }
-    for (unsigned int j=0; j<PhotonLoose_size && Lcount<PhotonLoose_size; j++) {
+    for (int j=0; j<PhotonLoose_size && Lcount<PhotonLoose_size; j++) {
         cout << "P L:"<<PhotonLoose_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonLoose_T[j] ) { 
            cout << "Loose set\n";
@@ -271,7 +271,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     Mcount=0;
     Lcount=0;
     dbxJet *adbxj;
-    for (unsigned int i=0; i<JetPUPPI_; i++) {
+    for (int i=0; i<JetPUPPI_; i++) {
         alv.SetPtEtaPhiM(JetPUPPI_PT[i], JetPUPPI_Eta[i], JetPUPPI_Phi[i],  JetPUPPI_Mass[i]); // all in GeV
         adbxj = new dbxJet(alv);
         adbxj->setFlavor(JetPUPPI_Flavor[i]);
@@ -281,7 +281,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 //	adbxj->setClusterE(JetPUPPI_EhadOverEem[i]);
         adbxj->setCharge(JetPUPPI_Charge[i]); 
 // constits need to be added 
-    for (unsigned int j=0; j<JetPUPPITight_size && Tcount<JetPUPPITight_size; j++) {
+    for (int j=0; j<JetPUPPITight_size && Tcount<JetPUPPITight_size; j++) {
         cout << "j T:"<<JetPUPPITight_T[j]<< " "<<j <<endl;
         if (JetPUPPI_T[i] == JetPUPPITight_T[j] ) { 
            cout << "tight set\n";
@@ -299,7 +299,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
         }
     }
 */
-    for (unsigned int j=0; j<JetPUPPILoose_size && Lcount<JetPUPPILoose_size; j++) {
+    for (int j=0; j<JetPUPPILoose_size && Lcount<JetPUPPILoose_size; j++) {
         cout << "j L:"<<JetPUPPILoose_T[j]<< " "<<j <<endl;
         if (JetPUPPI_T[i] == JetPUPPILoose_T[j] ) { 
            cout << "Loose set\n";
@@ -343,7 +343,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     // >>> LJET >>>
 
     dbxJet *adbxlj;
-    for (unsigned int i=0; i<JetPUPPIAK8_; i++) {
+    for (int i=0; i<JetPUPPIAK8_; i++) {
         alv.SetPtEtaPhiM(JetPUPPIAK8_PT[i], JetPUPPIAK8_Eta[i], JetPUPPIAK8_Phi[i],  JetPUPPIAK8_Mass[i]); // all in GeV
         adbxlj = new dbxJet(alv);
         adbxlj->setParticleIndx(i);
