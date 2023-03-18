@@ -39,7 +39,7 @@ public:
         errors=tabe.second;
         right=NULL;
         if (errors){
-          for (int ii=0; ii<tabe.first.size(); ii+=5){
+          for (unsigned int ii=0; ii<tabe.first.size(); ii+=5){
            atable.push_back( tabe.first[ii]);
            errtable.push_back( tabe.first[ii+1]);
            errtable.push_back( tabe.first[ii+2]);
@@ -59,7 +59,7 @@ public:
         errors=tabe.second;
         right=NULL;
         if (errors){
-          for (int ii=0; ii<tabe.first.size(); ii+=7){
+          for (unsigned int ii=0; ii<tabe.first.size(); ii+=7){
            atable.push_back( tabe.first[ii]);
            errtable.push_back( tabe.first[ii+1]);
            errtable.push_back( tabe.first[ii+2]);
