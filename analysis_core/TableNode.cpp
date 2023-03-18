@@ -52,7 +52,7 @@ double TableNode::evaluate(AnalysisObjects* ao) {
              DEBUG("2 Size:"<<inputParts2.size()<<" 0th:"<<inputParts2[0]->index<<"\n");
              FuncNode *pippo;
              if (inputParts2[0]->index == 6213) {
-                 if (pippo=dynamic_cast< FuncNode*>(left2) ) {
+                 if ((pippo=dynamic_cast< FuncNode*>(left2)) ) {
                    DEBUG("TABLE 2nd func downcast OK\n");
                    pippo->setParticleIndex(0,   inputParts1[0]->index);
                    pippo->setParticleCollection(0, inputParts1[0]->collection);

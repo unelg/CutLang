@@ -153,11 +153,6 @@ for (int i = 2; i < argc; i++) {
 //  TApplication* theApp = new TApplication("App", &argc, argv);
 
   TChain *chain;
-  TChain *cmuos;
-  TChain *celes;
-  TChain *ctaus;
-  TChain *cjets;
-  TChain *cphotons;
 
   std::string leafname;
 
@@ -179,6 +174,11 @@ for (int i = 2; i < argc; i++) {
    cout << "~Now using new POET files.~~~~~~ alpha!\n";
    leafname="events";
 /*
+  TChain *cmuos;
+  TChain *celes;
+  TChain *ctaus;
+  TChain *cjets;
+  TChain *cphotons;
      chain = new TChain("mymuons/Events");
      celes = new TChain("myelectrons/Events");
      chain->AddFriend(celes);
@@ -252,61 +252,62 @@ for (int i = 2; i < argc; i++) {
   }
   if (chain->GetEntries() > 0 ) {
     cout << "initialized with the chain..."<< chain->GetEntries()<<endl; 
+    string xxx="XXX";
 
    if (use_lhco){
-    lhco *lhcoa=new lhco("XXX",chain);
+    lhco *lhcoa=new lhco((char*)xxx.c_str(),chain);
           lhcoa->Loop(aselect, username);
    } else if (use_DELPHES2){
-    DELPHES2 *DELPHES2a=new DELPHES2("XXX",chain);
+    DELPHES2 *DELPHES2a=new DELPHES2((char*)xxx.c_str(),chain);
           cout << "DELPHES2 obj ok\n";
              DELPHES2a->Loop(aselect, username);
   } else if (use_poet){
-    newpoet *poeta=new newpoet("XXX",chain);
+    newpoet *poeta=new newpoet((char*)xxx.c_str(),chain);
           poeta->Loop(aselect, username);
    } else if (use_lvl0){
-    lvl0 *lvl0a=new lvl0("XXX",chain);
+    lvl0 *lvl0a=new lvl0((char*)xxx.c_str(),chain);
           lvl0a->Loop(aselect, username);
    } else if (use_cmsnano){
-    CMSnanoAOD *CMSnanoAODa=new CMSnanoAOD("XXX",chain);
+    CMSnanoAOD *CMSnanoAODa=new CMSnanoAOD((char*)xxx.c_str(),chain);
                 CMSnanoAODa->Loop(aselect, username);
    } else if (use_cmsod){
-    cmsod *cmsoda=new cmsod("XXX",chain);
+    cmsod *cmsoda=new cmsod((char*)xxx.c_str(),chain);
            cmsoda->Loop(aselect, username);
    } else if (use_cmsodR2){
-    cmsod2 *cmsoda=new cmsod2("XXX",chain);
+    cmsod2 *cmsoda=new cmsod2((char*)xxx.c_str(),chain);
            cmsoda->Loop(aselect, username);
    } else if (use_atlasod){
-    atlasopen *atlasoda=new atlasopen("XXX",chain);
+    atlasopen *atlasoda=new atlasopen((char*)xxx.c_str(),chain);
                atlasoda->Loop(aselect, username);
    } else if (use_atlasodR2){
-    atlasopenR2 *atlasoda=new atlasopenR2("XXX",chain);
+    atlasopenR2 *atlasoda=new atlasopenR2((char*)xxx.c_str(),chain);
                atlasoda->Loop(aselect, username);
    } else if (use_vllmin){
-     VLLMin *vllmina=new VLLMin("XXX",chain);
+     VLLMin *vllmina=new VLLMin((char*)xxx.c_str(),chain);
              vllmina->Loop(aselect, username);
   } else if (use_atlmin){
-    AtlMin *atlmina=new AtlMin("XXX",chain);
+    AtlMin *atlmina=new AtlMin((char*)xxx.c_str(),chain);
             atlmina->Loop(aselect, username);
   } else if (use_atltrt){
-   AtlasTRT *atltrta=new AtlasTRT("XXX",chain);
+   AtlasTRT *atltrta=new AtlasTRT((char*)xxx.c_str(),chain);
              atltrta->Loop(aselect, username);
    } else if (use_fcc){
-    fcc *fcca=new fcc("XXX",chain);
+    fcc *fcca=new fcc((char*)xxx.c_str(),chain);
          fcca->Loop(aselect, username);
    } else if (use_delphes){
-    delphes *delphesa=new delphes("XXX",chain);
+    delphes *delphesa=new delphes((char*)xxx.c_str(),chain);
              delphesa->Loop(aselect, username);
    } else if (use_vllbg3){
-    VLLBG3 *VLLBG3a=new VLLBG3("XXX",chain);
+    VLLBG3 *VLLBG3a=new VLLBG3((char*)xxx.c_str(),chain);
            VLLBG3a->Loop(aselect, username);
    } else if (use_vllsignal){
-    VLLMinSignal *VLLMinSignala=new VLLMinSignal("XXX",chain);
+    VLLMinSignal *VLLMinSignala=new VLLMinSignal((char*)xxx.c_str(),chain);
           VLLMinSignala->Loop(aselect, username);
    } else if (use_vllg){
-    VLLg *VLLga=new VLLg("XXX",chain);
+    VLLg *VLLga=new VLLg((char*)xxx.c_str(),chain);
           VLLga->Loop(aselect, username);
    } else if (use_vllf){
-    VLLf *VLLfa=new VLLf("XXX",chain);
+    VLLf *VLLfa=new VLLf((char*)xxx.c_str(),chain);
           VLLfa->Loop(aselect, username);
   }
 

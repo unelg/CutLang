@@ -39,7 +39,6 @@ void atlasopenR2::Loop(analy_struct aselect, char *extname)
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
    float blow_th=0.7892;
-   int prev_RunNumber=-1;
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -58,7 +57,6 @@ void atlasopenR2::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
-   Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -68,13 +66,6 @@ void atlasopenR2::Loop(analy_struct aselect, char *extname)
 #ifdef __DEBUG__
 std::cout << "Read Event"<<std::endl;
 #endif
-/*
-       int RunNumber=137;
-       if (int(RunNumber)!=prev_RunNumber) {
-               cout << "Working on Run #:"<<RunNumber<<endl;
-               prev_RunNumber=RunNumber;
-       }
-*/
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
        vector<dbxTau>       taus;

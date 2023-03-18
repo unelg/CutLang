@@ -1552,7 +1552,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);  
                         }
 
-        | TRK '[' index ':' index ']' {
+       | TRK '[' index ':' index ']' {
                                 tmp="trk_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
@@ -1588,7 +1588,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         }
 
 
-        | LEP '_' index {       tmp="lep_"+to_string((int)$3);                        
+       | LEP '_' index {        tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 1; a->collection = "ELE";
@@ -1596,7 +1596,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 a->index = (int)$3;
                                 TmpParticle.push_back(a);  
                         }
-        | LEP '[' index ':' index ']' {
+       | LEP '[' index ':' index ']' {
                                 tmp="lep_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
@@ -1611,7 +1611,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
-        | LEP '_' index ':' index {
+       | LEP '_' index ':' index {
                                 tmp="lep_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
@@ -1626,7 +1626,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
-        | LEP '[' index ']' {   tmp="lep_"+to_string((int)$3);                        
+       | LEP '[' index ']' {    tmp="lep_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->index = (int)$3; a->type = 1; a->collection = "ELE";
@@ -1634,20 +1634,20 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 TmpParticle.push_back(a);  
                         }
 
-        | PHO '[' index ']' {   tmp="pho_"+to_string((int)$3);                        
+       | PHO '[' index ']' {    tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
 
-        | PHO '_' index {       tmp="pho_"+to_string((int)$3);                        
+       | PHO '_' index {        tmp="pho_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 8; a->index = (int)$3; a->collection = "PHO";
                                 TmpParticle.push_back(a);  
                         }
-        | PHO '[' index ':' index ']' {
+       | PHO '[' index ':' index ']' {
                                 tmp="pho_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
@@ -1660,7 +1660,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                  }else TmpParticle.push_back(a);
                                 }
                         } 
-        | PHO '_' index ':' index {
+       | PHO '_' index ':' index {
                                 tmp="pho_"+to_string((int)$3);
                                 $$=strdup(tmp.c_str());
                                 for (int ii=(int)$3; ii<=(int)$5; ii++){
@@ -1681,7 +1681,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 a->type = 8; a->index = 6213; a->collection = "PHO";
                                 TmpParticle.push_back(a);
                         }
-        | JET '[' index ']' {   tmp="jet_"+to_string((int)$3);                        
+       | JET '[' index ']' {    tmp="jet_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
                                 myParticle* a = new myParticle;
                                 a->type = 2; a->index = (int)$3; a->collection = "JET";

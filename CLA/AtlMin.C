@@ -59,9 +59,6 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    map<string, TVector2            >  met_map;
 
    evt_data anevt;
-   int extra_analysis_count=1;
-   int year=2015;
-   int prev_RunNumber=-1;
 
 //temporary variables
        TLorentzVector  alv;
@@ -338,6 +335,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                   cout <<ri<<" finished\n";
                  }//2 3 counting
                } else { // tree
+                    string xxx="XXX";
                     syst_names[resultstr[2]] = resultstr[4] ; // with []
                     syst_names[resultstr[3]] = resultstr[4] ; // with []
                     syst_struct asyst;
@@ -348,7 +346,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                     asyst.index=systindex;
                     syst_names[resultstr[2]] = resultstr[4] ; // with []
                     systematics[resultstr[2]] = asyst ; // with []
-                    syst_objects[resultstr[2]] = new AtlMin("XXX",(TChain *)afile->Get(resultstr[2].c_str()) );
+                    syst_objects[resultstr[2]] = new AtlMin((char*)xxx.c_str() ,(TChain *)afile->Get(resultstr[2].c_str()) );
                     systindex++;
                     syst_struct bsyst;
                     bsyst.vartype=resultstr[4];
@@ -357,7 +355,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                     bsyst.varid=-1;
                     bsyst.index=systindex;
                     syst_names[resultstr[3]] = resultstr[4] ; // with []
-                    syst_objects[resultstr[3]]=new AtlMin("XXX",(TChain *)afile->Get(resultstr[3].c_str()) );
+                    syst_objects[resultstr[3]]=new AtlMin((char*)xxx.c_str(),(TChain *)afile->Get(resultstr[3].c_str()) );
                     systematics[resultstr[3]] = bsyst ; // with []
                     systindex++;
 
@@ -391,7 +389,6 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    }
 
 // ******************************************************************
-   Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) { // event loop here
 
      //  if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -401,7 +398,6 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
        evt_data oldevt=a0.evt;
-       int subsyst;
        double wvalue;
 
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {

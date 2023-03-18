@@ -358,9 +358,10 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
 
      if (inputParticles[0]->index == 6213) {
       string base_collection2=inputParticles[0]->collection;
-      int base_type2=inputParticles[0]->type;
-      int ipart2_max=-1;
-     try {
+         int base_type2=inputParticles[0]->type;
+         int ipart2_max=-1;
+         bool constiloop=false;
+       try {
                 switch(abs(inputParticles[0]->type) ){ 
                    case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
                    case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
@@ -372,18 +373,38 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
                    case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
                    case 19: ipart2_max=(ao->track).at(base_collection2).size(); break;
                    case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
+                   case 21: 
+                            ipart2_max=(ao->jets).at(base_collection2).size(); constiloop=true; 
+                            break;
 
                    default:
-                       std::cerr << "FN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
+                       std::cerr << "FN WRONG PARTICLE TYPE:"<<inputParticles[0]->type  
+                                 << " index:"<<inputParticles[0]->index 
+                                 << " collection:"<<inputParticles[0]->collection 
+                                 << std::endl; break;
                 }
-     } catch(...) {
+           } catch(...) {
 //                    is it an object we can create?
 //                    userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
                             std::cerr << "YOU WANT A PARTICLE TYPE YOU DIDN'T CREATE:"<<base_collection2 <<" !\n";
                             _Exit(-1);
      }
-        // now we know how many we want
-        DEBUG ("loop over "<< ipart2_max<<" particles\t");
+
+        if (constiloop) { // basename: previous base object, name: new object
+          for (int ipart=ipart2_max-1; ipart>=0; ipart--){ // loop over all particles, jets, in an event.
+            TString konsname=base_collection2;
+                    konsname+="_";
+                    konsname+=ipart;
+                    konsname+="c";
+             string consname=(string)konsname;
+             int constiCount =(ao->constits).find(consname)->second.size();
+             DEBUG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~for "<<consname<<" constituents size:"<<constiCount<<"\n");
+           }
+     }//constiloop
+
+
+
+// now we know how many we want
         std::vector<myParticle*>  inputParticles1;
         std::vector<myParticle>  inputParticles0;
         for (int ip2=0; ip2 < ipart2_max; ip2++){

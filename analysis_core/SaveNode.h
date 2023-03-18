@@ -46,8 +46,18 @@ public:
             savetype = "variableList";
             variableList = VariableList;
 	}
-    virtual void getParticles(std::vector<myParticle *>* particles) override{}
-    virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{}
+    virtual void getParticles(std::vector<myParticle *>* particles) override{
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+                 variableList[0]->getParticlesAt(aparticles,0);
+                  particles->push_back(bparticles[0]);
+                 }
+    virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{
+                 std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+                 variableList[0]->getParticlesAt(aparticles,0);
+                  particles->push_back(bparticles[index]);
+                 }
     virtual void Reset() override{}
     virtual void createFile() override {
             if(savetype=="variableList"){
@@ -78,11 +88,16 @@ public:
             }
             csvsave << "\n";
            } else {
+// .........vector<Node*> variableList;
             for (int i = 0; i < (int)variableList.size(); i++)
             {
+                std::vector<myParticle *>  bparticles;
+                 std::vector<myParticle *> *aparticles=&bparticles;
+                 variableList[i]->getParticlesAt(aparticles,0);
+                  std::cout<< aparticles->at(i)->index <<"c ";
                   std::cout<< variableList[i]->evaluate(ao) << " , ";
             }
-            std::cout << "\n";
+            std::cout << "\t";
            }
             return 1;
       }

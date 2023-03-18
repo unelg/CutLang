@@ -19,11 +19,10 @@ class DumpdbxA : public dbxA {
   public: 
       DumpdbxA(char *aname) : dbxA ( aname)
          {
-         sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-         int r=dbxA::setDir(cname);  // make the relevant root directory
+         cname=aname;
+         int r=dbxA::setDir(aname);  // make the relevant root directory
          if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
          r=dbxA::defHistos(30);  // make the relevant root directory
-         //grl_cut=false;
          }
       int getInputs();
       int Finalize();
@@ -42,7 +41,7 @@ class DumpdbxA : public dbxA {
 
    private:
       bool grl_cut;
-      char cname[CHMAX];
+      string cname;
       int TRGe, TRGm;
 
       TFile *ftsave;

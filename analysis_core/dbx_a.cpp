@@ -7,21 +7,20 @@
 dbxA:: ~dbxA() {}
 
 dbxA:: dbxA(char *aname) {
-  GEV = 1000.;
   p_runno=-1;
   p_lumino=-1;
-  HFtype=-1;
-  sprintf (cname, "%s",aname); // more checks here
+  cname=aname;
 
 //  cout << "This is "<<cname<<endl;
 
-  char tmp[128];
-  sprintf (tmp, "histoOut-%s.root",cname);
+  TString afile="histoOut-";
+          afile+=cname;
+          afile+=".root";
 
   if (strcmp(aname,"same")==0) {
-   histoOut= new TFile (tmp,"update");
+   histoOut= new TFile (afile.Data(),"update");
   } else {
-   histoOut= new TFile (tmp,"recreate");
+   histoOut= new TFile (afile.Data(),"recreate");
   }
   setDataCardPrefix(cname);
 }
@@ -51,7 +50,7 @@ int dbxA::saveHistos() {
   int retval=0;
   cout << "saving...\t";
   histoOut->Flush();
-  histoOut->Write(cname);
+  histoOut->Write(cname.c_str());
   cout << "saved.\n";
   return retval;
 }

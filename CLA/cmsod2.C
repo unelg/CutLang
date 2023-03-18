@@ -31,8 +31,6 @@ void cmsod2::Loop(analy_struct aselect, char *extname)
 
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
-   float blow_th=1.7400;
-   int prev_RunNumber=-1;
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -87,11 +85,8 @@ std::cout << "Read Event"<<std::endl;
 //temporary variables
        TLorentzVector  alv;
        TVector2 met;
-       dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
@@ -127,6 +122,7 @@ std::cout << "Electrons OK:"<< nElectron <<std::endl;
 #endif
 /*
 //PHOTONS
+       dbxPhoton   *adbxp;
       for (unsigned int i=0; i<0; i++) {
               alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
               adbxp= new dbxPhoton(alv);
@@ -140,6 +136,8 @@ std::cout << "Electrons OK:"<< nElectron <<std::endl;
 std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #endif
 //JETS
+   float blow_th=1.7400;
+       dbxJet      *adbxj;
       for (unsigned int i=0; i<0; i++) {
               alv.SetPxPyPzE( Jet_Px[i], Jet_Py[i], Jet_Pz[i], Jet_E[i] ); // all in GeV
               adbxj= new dbxJet(alv);

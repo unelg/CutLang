@@ -484,13 +484,6 @@ void DELPHES2::Loop(analy_struct aselect, char *extname)
         cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
     }
     cout << "last entry " << lastevent << endl;
-    // <<< "Long64_t nentries" anchor <<<
-    
-
-   Long64_t nbytes = 0, nb = 0;
-
-    // >>> "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor >>>
-    // for (Long64_t jentry=0;jentry<nentries;jentry++) {
     for (Long64_t j=startevent; j<lastevent; ++j) {
 
         if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
@@ -503,16 +496,5 @@ void DELPHES2::Loop(analy_struct aselect, char *extname)
     }// event loop ends.
 
     aCtrl.Finalize();
-        // <<< "for (Long64_t jentry=0;jentry<nentries;jentry++) {" anchor <<<
-        /*
-    
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-   }
-}
-
-*/
 }
     

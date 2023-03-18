@@ -100,9 +100,9 @@ void AnalysisController::Initialize(char *extname) {
  */
 	for (int i=0; i<aselect.BPcount; i++) {
                 analyindex++;
-		char tmp[128];
-		sprintf (tmp,"BP_%i",analyindex);
-		dbxAnalyses.push_back( new BPdbxA(tmp) ); // BP analysis with name
+                string tmp="BP_";
+                       tmp+=std::to_string(analyindex);
+		dbxAnalyses.push_back( new BPdbxA((char *)tmp.c_str() ) ); // BP analysis with name
 
           if (aselect.dosystematics) { // another loop here for systematics
             for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
@@ -125,9 +125,9 @@ void AnalysisController::Initialize(char *extname) {
  *  Dump analysis
  */
 	for (int i=0; i<aselect.Dumpcount; i++) {
-		char tmp[32];
-		sprintf (tmp,"Dump_%i",i+1);
-		dbxAnalyses.push_back( new DumpdbxA(tmp) ); // Dump analysis with name
+                string tmp="BP_";
+                       tmp+=(i+1);
+		dbxAnalyses.push_back( new DumpdbxA((char*)tmp.c_str() ) ); // Dump analysis with name
 	}
 	DEBUG("End of Dumper initialization\n");
 

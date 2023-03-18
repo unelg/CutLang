@@ -348,7 +348,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         int ipart_max = (ao->jets)[name].size();
         bool simpleloop=true;
         bool constiloop=false;
-        bool anyof=false;
+        bool anyof=false; // by default allof?
  
         DEBUG("Nb of cut particles is :"<<particles->size() << " Current Cut is:"<< (*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
@@ -391,6 +391,10 @@ object goodjets take Jet
              string consname=(string)konsname;
              int constiCount =(ao->constits).find(consname)->second.size();
              DEBUG("for "<<consname<<" constituents size:"<<constiCount<<"\n");
+             if (mycutstr.Contains("save")) {
+                cout<<"for "<<consname<<" #constituents:"<<constiCount<<"\t";
+             }
+             bool totpass=false;//------------------------
              for (int ic=constiCount-1; ic>=0; ic--){
 //---------------these are the particles to be dealt with, like a loop!
               for (int jp=0; jp<particles->size(); jp++){//the particles in the cut, e.g. pT(JET_jp) > 10
@@ -400,20 +404,31 @@ object goodjets take Jet
               }
               DEBUG("For consti:"<<ic<<" CutIte:"<<(*cutIterator)->getStr()<<"\n"); // this is like qOf, applied on each constituent
               bool ppassed=(*cutIterator)->evaluate(ao); // check on constituents?
+              totpass |= ppassed;
               DEBUG("Result:"<<ppassed<<"\n");
-              if (!ppassed) { 
-                            DEBUG("consti "<< ic <<" failed and will be removed.\n");
-                            (ao->constits).find(consname)->second.erase( (ao->constits).find(consname)->second.begin()+ic); // erase consti
-                            }
+              if (!ppassed & !anyof) { 
+                    cout<<"consti "<< ic <<" failed and will be removed since !any.\n";
+                    DEBUG("consti "<< ic <<" failed and will be removed since !any.\n");
+                    (ao->constits).find(consname)->second.erase( (ao->constits).find(consname)->second.begin()+ic); // erase consti
+              }
              }//end of loop over constituent
-           if ( (ao->constits).find(consname)->second.size() < 1) {
+             if (mycutstr.Contains("save")) { cout <<"\n"; }
+             if (anyof & !totpass) {
+               cout<<ipart<<"th jet removed from "<<name<<" since one or more constituents failed.\n";
+               DEBUG(ipart<<"th jet removed from "<<name<<" since one or more constituents failed.\n");
+               (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
+             }
+             if ( (ao->constits).find(consname)->second.size() < 1) {
+               cout<<ipart<<"th jet removed from "<<name<<" since all constituents were removed.\n";
                DEBUG(ipart<<"th jet removed from "<<name<<" since all constituents were removed.\n");
                (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
-           }
+             }
           }// end of loop over all particles (jets) in the event.
+          for (int ii=0; ii<(ao->jets).find(name)->second.size(); ii++) cout<< "Remaining "<<ii<<"th jet\n";
+
          continue; // will move to the next cut iterator
         } // done with constis
-
+        else
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
               DEBUG("-----------Now ipart:"<<ipart<<"\n");
@@ -448,6 +463,7 @@ object goodjets take Jet
                     totpass |= ppassed;
                     DEBUG("Local Pass/Fail:"<<ppassed<< " Global P/F: "<< totpass <<"\n");
                     if (!ppassed & !anyof) {
+                         cout<<"removing !any:"<<name<< " idx:"<<ipart<<"\n";
                          DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                         break; // we can quit at first mismatch.
@@ -456,6 +472,7 @@ object goodjets take Jet
 
 //-----------------the particle removed in case of any should happen here.
                  if (anyof & !totpass) {
+                         cout<<"removing:"<<name<< " idx:"<<ipart<<"\n";
                          DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                  }

@@ -74,8 +74,6 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
-   int prev_RunNumber=-1;
-
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -128,14 +126,6 @@ void delphes::Loop(analy_struct aselect, char *extname)
        if ( je%verboseFreq == 0 ) cout << "Processing event " << je << endl;
        DEBUG("Read Event"<<std::endl);
        int RunNumber=137;
-/*
-       if (int(RunNumber)!=prev_RunNumber) {
-               cout << "Working on Run #:"<<RunNumber<<endl;
-               prev_RunNumber=RunNumber;
-       }
-*/
-//        usleep(1000000);
-//        cout <<"evt:"<<je<<"\n";
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
   ttreader->Next();

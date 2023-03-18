@@ -83,11 +83,6 @@ void AtlasTRT::Loop(analy_struct aselect, char *extname)
 //temporary variables
        TLorentzVector  alv;
        TVector2 met;
-       dbxJet      *adbxj;
-       dbxElectron *adbxe;
-       dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
        dbxTruth    *adbxg;
        dbxTrack    *adbxk;
 

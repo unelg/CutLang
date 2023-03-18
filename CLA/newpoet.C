@@ -35,8 +35,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
 
     // >>> GetPhysicsObjects >>>
 
-    int retval=fChain->GetEntry(j);
-    DEBUG( "Read:"<<retval<<"bytes\n");
+    fChain->GetEntry(j);
     vector<dbxMuon>     muons;
     vector<dbxElectron> electrons;
     vector<dbxPhoton>   photons;
@@ -69,10 +68,6 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
 
     //temporary variables
     TLorentzVector  alv;
-    //TLorentzVector dummyTlv(0.,0.,0.,0.);
-    int Tcount=0;
-    int Mcount=0;
-    int Lcount=0;
 
     dbxMuon *adbxm;
     for (unsigned int i=0; i<numbermuon; i++) {
@@ -245,7 +240,6 @@ void newpoet::Loop(analy_struct aselect, char *extname)
         cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
     }
     cout << "last entry " << lastevent << endl;
-   Long64_t nbytes = 0, nb = 0;
 
     for (Long64_t j=startevent; j<lastevent; ++j) {
 

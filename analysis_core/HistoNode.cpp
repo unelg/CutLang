@@ -56,11 +56,11 @@ double HistoNode1D::evaluate(AnalysisObjects* ao) {
                            DEBUG ("loop over "<< ipartMax<<" particles\n");
                            FuncNode *pippo;
                            DEBUG("it will do: "<<left->getStr()<<"\n");
-                           if (pippo=dynamic_cast< FuncNode*>(left) ) {
+                           if ((pippo=dynamic_cast< FuncNode*>(left)) ) {
                             DEBUG("downcast OK\n");
                            } else {
                             DEBUG("downcast FAILS\n");
-                             if (pippo=dynamic_cast< FuncNode*>(left->left) ) {
+                             if ((pippo=dynamic_cast< FuncNode*>(left->left)) ) {
                                DEBUG("down-downcast OK\n");
                              }
                            }

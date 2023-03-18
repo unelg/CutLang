@@ -32,7 +32,6 @@ void atlasopen::Loop(analy_struct aselect, char *extname)
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
    float blow_th=0.7892;
-   int prev_RunNumber=-1;
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -51,7 +50,6 @@ void atlasopen::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
-   Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -62,13 +60,6 @@ void atlasopen::Loop(analy_struct aselect, char *extname)
 #ifdef __DEBUG__
 std::cout << "Read Event"<<std::endl;
 #endif
-/*
-       int RunNumber=137;
-       if (int(RunNumber)!=prev_RunNumber) {
-               cout << "Working on Run #:"<<RunNumber<<endl;
-               prev_RunNumber=RunNumber;
-       }
-*/
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
        vector<dbxTau>       taus;
@@ -99,7 +90,6 @@ std::cout << "Read Event"<<std::endl;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
        dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
@@ -148,6 +138,7 @@ std::cout << "Muons, Electrons and Taus OK:"<< Electron_ <<std::endl;
 
 /*
 //PHOTONS
+        dbxPhoton   *adbxp;
         for (unsigned int i=0; i<Photon_size; i++) {
                 alv.SetPtEtaPhiM( Photon_PT[i], Photon_Eta[i], Photon_Phi[i], 0 ); // all in GeV
                 adbxp= new dbxPhoton(alv);

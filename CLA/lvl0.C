@@ -32,7 +32,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    }
 
    int verboseFreq(aselect.verbfreq);
-   int extra_analysis_count=1;
    int prev_RunNumber=-1;
 
    map < string, string > syst_names;
@@ -52,7 +51,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
-   Long64_t nbytes = 0, nb = 0;
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -96,7 +94,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        std::vector<double> scale_mus_msup, scale_mus_mslow, scale_mus_idup, scale_mus_idlow;
        std::vector<double> scale_mus_sfup, scale_mus_sflow, scale_ele_rescaleup, scale_ele_rescalelow;
        std::vector<double> scale_ele_sfup, scale_ele_sflow;
-       bool is_mc=true;
        TVector2 met;
        TVector2 met_jesp, met_jesn, met_jerp, met_jern, met_jespileupp, met_jespileupn, met_jesbjetp, met_jesbjetn;//Jets
        TVector2 met_escalerp, met_escalern, met_esfp, met_esfn;//Electrons
@@ -144,9 +141,9 @@ void lvl0::Loop(analy_struct aselect, char *extname)
    for (int iii=0; iii<event->nt_evt.weight_bTagSF_77_eigenvars_B_up.size(); iii++){ cout<< event->nt_evt.weight_bTagSF_77_eigenvars_B_up.at(iii)<<" ";}
    cout <<"\n";
 */
-   int km=0; // this is to count number of systematics
    map < string,   AnalysisObjects > analysis_objs_map;
 /*
+   int km=0; // this is to count number of systematics
   if (aselect.dosystematics) {
 #ifdef __DEBUG__
    cout << "Running with systematics.\n";

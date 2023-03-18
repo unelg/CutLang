@@ -50,25 +50,8 @@ public:
    void   setDataCardPrefix(string dcp) { dataCardPrefix = dcp; }
    string getDataCardPrefix() { return dataCardPrefix; }
 
-   char cname[128];
+   string cname;
    TH1D *eff, *hbincounts;
-// list the analysis parameters here.
-   float minpte, minptm, minptg, maxmet;
-   float maxetae,maxetam,maxetag, minmetmu,minmwte,minmwtmu;  // leptons
-   float minmete,minmwtmete;  // met and mwt related
-   float minmetm,minmwtmetm;  // met and mwt related
-   float minptj, maxetaj;   // basic jet definitions 
-   float mindrjm, mindrje; // isolation related
-   float minptj1, minptj2, minEj2,  minetaj2, mindrjj, minetajj;
-   float mqhxmin, mqhxmax,maxdeltam;//related to reconstructed quark mass
-   float maxMuPtCone, maxMuEtCone, maxElPtCone, maxElEtCone;
-   float jetVtxf2011,jetVtxf2012,jetVtxf;
-   int HFtype;
-   int TRGe, TRGm;
-
-
-// mass values that could be used in the analysis
-   Double_t GEV;
 
 private:
 // file to output histogtrams

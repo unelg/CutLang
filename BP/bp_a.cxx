@@ -69,7 +69,6 @@ int BPdbxA:: readAnalysisParams() {
 // ---------------------------DBX style defs, objects and cuts
     string tempLine;
     string tempS1, tempS2;
-    size_t found, foundp, foundr, foundw, founds, foundsave;
     TString DefList2file="\n";
     TString CutList2file="\n";
     TString ObjList2file="\n";
@@ -189,17 +188,16 @@ int BPdbxA:: readAnalysisParams() {
 
 //-----create the relevant output directory
     if (!algorithmnow) {
-       int r=dbxA::setDir(cname);  // make the relevant root directory
+       int r=dbxA::setDir((char*)cname.c_str() );  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-       dbxA::ChangeDir(cname);
+       dbxA::ChangeDir((char*)cname.c_str() );
     } else {
        TString icn=dbxA::getDataCardPrefix();
           int clength = icn.Length();
-          std::string csysnam=cname;
-          asysnam=csysnam.substr(clength,  -1);
+          asysnam=cname.substr(clength,  -1);
        if (asysnam.Length() > 0 ) {
            algoname+=asysnam;
-           asysnam=csysnam.substr(clength+1,  -1);
+           asysnam=cname.substr(clength+1,  -1);
            systematicsRun=true;
            cout <<"This is a run with sysname: "<< asysnam << " algo:"<<algoname<< ".\n";
        }
@@ -240,7 +238,7 @@ int BPdbxA:: readAnalysisParams() {
     unsigned int effsize=NodeCuts.size()+1; // all is always there 
  
 //-----create the eff histograms
-       int r=dbxA::defHistos( effsize);  // enough room
+       dbxA::defHistos( effsize);  // enough room
 
 //----------put into output file as text
     TText cinfo(0,0,CutList2file.Data());

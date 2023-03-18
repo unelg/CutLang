@@ -109,11 +109,11 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        DEBUG("Looping one by one\n");
        FuncNode *pippo;
         DEBUG("it will do: "<<left->getStr()<<"\n");
-        if (pippo=dynamic_cast< FuncNode*>(left) ) {
+        if ((pippo=dynamic_cast< FuncNode*>(left)) ) {
          DEBUG("downcast OK\n");
         } else {
          DEBUG("downcast FAILS\n");
-          if (pippo=dynamic_cast< FuncNode*>(left->left) ) {
+          if ((pippo=dynamic_cast< FuncNode*>(left->left)) ) {
             DEBUG("down-downcast OK\n");
           }
         }

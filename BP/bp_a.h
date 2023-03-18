@@ -17,10 +17,9 @@ class BPdbxA : public dbxA {
   public: 
       BPdbxA(char *aname) : dbxA ( aname)
          {
-         sprintf (cname,"%s",aname); // keep the current analysis name in the class variable
-//       int r=dbxA::setDir(cname);  // make the relevant root directory
+          cname=aname;
+//       int r=dbxA::setDir(aname);  // make the relevant root directory
 //       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
-         //grl_cut=false;
          }
 
       int getInputs(std::string);
@@ -44,7 +43,7 @@ class BPdbxA : public dbxA {
       
    private:
       bool grl_cut;
-      char cname[CHMAX];
+      string cname;
       TString algoname;
       TString asysnam;
       std::string mysystematics;

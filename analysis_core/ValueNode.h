@@ -20,10 +20,7 @@ public:
                 pval=true;
                 left=NULL;
                 right=NULL;
-                char buf[64];
-                std::sprintf(buf, "%.2f", v);
-                symbol=std::string(buf);
-               // symbol=std::to_string(v);
+                symbol=std::to_string(v);
             }
     ValueNode(std::string evtvar){
                 value=0;

@@ -30,8 +30,6 @@ void VLLg::Loop( analy_struct aselect, char *extname )
 
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
-   float blow_th=1.7400;
-   int prev_RunNumber=-1;
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -58,7 +56,6 @@ void VLLg::Loop( analy_struct aselect, char *extname )
 #ifdef __DEBUG__
 std::cout << "Read Event"<<std::endl;
 #endif
-       int RunNumber=137;
 
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
@@ -89,8 +86,6 @@ std::cout << "Read Event"<<std::endl;
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
 
     #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;

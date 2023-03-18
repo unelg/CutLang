@@ -47,9 +47,6 @@ void VLLBG3::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     map<string, TVector2            >  met_map;
 
     evt_data anevt;
-    int extra_analysis_count=1;
-    int year=2015;
-    int prev_RunNumber=-1;
 
     //temporary variables
     TLorentzVector  alv;
@@ -58,13 +55,13 @@ void VLLBG3::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
     dbxJet      *adbxj;
     dbxElectron *adbxe;
     dbxMuon     *adbxm;
-    dbxPhoton   *adbxp;
 
     #ifdef __DEBUG__
         std::cout << "Begin Filling"<<std::endl;
     #endif
         /*
         // PHOTONS -------- // now tau info
+    dbxPhoton   *adbxp;
         for (unsigned int i=0; i<tau_pt->size(); i++) {
             alv.SetPtEtaPhiE( tau_pt->at(i)*0.001, tau_eta->at(i), tau_phi->at(i), tau_m->at(i)*0.001 ); // all in GeV
             adbxp= new dbxPhoton(alv);
@@ -346,7 +343,6 @@ void VLLBG3::Loop(analy_struct aselect, char *extname)
   if (lastevent> fChain->GetEntriesFast() ){ lastevent=fChain->GetEntriesFast();
     cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
   }
-  Long64_t nbytes = 0, nb = 0;
   for (Long64_t j=startevent; j<lastevent; ++j) {
 
       //  if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
