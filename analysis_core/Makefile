@@ -1,7 +1,7 @@
 objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
 ROOTCFLAGS    = $(shell root-config --cflags)
-CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  -D__STANDALONE__ 
+CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  
 CXX           = $(shell root-config --cxx) -g
 
 
@@ -16,7 +16,6 @@ all : $(objects)
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_photon.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_jet.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_truth.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_track.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("dbx_track.h+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("DBXNtuple.cpp+");}' &
 	root -q -l -b -e '{gROOT->LoadMacro("delphesParticles.h+");}' &
