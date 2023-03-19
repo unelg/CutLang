@@ -81,10 +81,6 @@ CLA.exe : checks auxiliaries $(OBJS_1) $(OBJS_2) softlinks
 	sed "s/XXXXYYYYZZZZ/$(TODAYDATE)/g"  CLA.Q > CLA.C ; $(CXX) $(CXXFLAGS) $(INCLUDES) -c CLA.C
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) CLA.o $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS)  $(LIBS)
 
-deneme.exe : checks auxiliaries $(OBJS_1) $(OBJS_2) softlinks
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c deneme.C
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS_1) $(OBJS_2) deneme.o $(SUBDIRLOC)analysis_core/*.o $(CXXFLAGS)  $(LIBS)
-
 checks:
 ifeq (${BISEXE},1)
 	@echo no yacc or bison. Can NOT Continue. Please install bison
