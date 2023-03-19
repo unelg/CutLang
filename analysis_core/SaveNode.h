@@ -81,6 +81,8 @@ public:
     }
     virtual double evaluate(AnalysisObjects* ao) override {
       if(variableList.size() > 0){
+           std::vector<myParticle *>  bparticles;
+           std::vector<myParticle *> *aparticles=&bparticles;
            if (selector) {
             for (int i = 0; i < (int)variableList.size(); i++)
             {
@@ -91,13 +93,14 @@ public:
 // .........vector<Node*> variableList;
             for (int i = 0; i < (int)variableList.size(); i++)
             {
-                std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-                 variableList[i]->getParticlesAt(aparticles,0);
-                  std::cout<< aparticles->at(i)->index <<"c ";
-                  std::cout<< variableList[i]->evaluate(ao) << " , ";
+                variableList[i]->getParticlesAt(aparticles,0);
+                //std::cout<< aparticles->at(i)->index <<"c "; // what if we have 0 particles?
+                std::cout<< variableList[i]->evaluate(ao) << " , ";
             }
-            std::cout << "\t";
+            if (aparticles->size()>0){
+              if (aparticles->at(0)->type == 21) {std::cout<<"\t";} else std::cout << "\n"; 
+            } else
+            std::cout << "\n";
            }
             return 1;
       }

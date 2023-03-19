@@ -361,19 +361,18 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
 //---------this needs to be tested at PARSING TIME!!!!!!!!!! NGU TODO
         std::set<int> ptypeset; // set of types, same type twice doesn't exist.
         int t1=particles->at(0)->type;
-        int t2;
+        int t2, jindex=-1;
         for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
-         if (particles->at(kp)->type == consti_t) constiloop=true;
+         if (particles->at(kp)->type == consti_t) { constiloop=true;}
         }
-        DEBUG ("A ConstiLoop:"<<constiloop<<"\n");
 //--------------------- if we have a LoopNode(max, min, sum) no constiloop.
         TString mycutstr=(*cutIterator)->getStr();
         if ( mycutstr.Contains("anyof") ) { anyof=true;  };
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false;}
-        DEBUG ("B ConstiLoop:"<<constiloop<<"\n");
+        DEBUG ("ConstiLoop T/F:"<<constiloop<<"\n");
 /*
 object goodjets take Jet
   select  q(Jet constituents ) != 0                        # remove neutral constituents
@@ -384,9 +383,10 @@ object goodjets take Jet
 //--------------------
         if (constiloop) { // basename: previous base object, name: new object
           for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all particles, jets, in an event.
+            jindex=(ao->jets).find(name)->second.at(ipart).ParticleIndx();
             TString konsname=name;
                     konsname+="_";
-                    konsname+=ipart;
+                    konsname+=jindex;
                     konsname+="c";
              string consname=(string)konsname;
              int constiCount =(ao->constits).find(consname)->second.size();
@@ -414,13 +414,13 @@ object goodjets take Jet
              }//end of loop over constituent
              if (mycutstr.Contains("save")) { cout <<"\n"; }
              if (anyof & !totpass) {
-               cout<<ipart<<"th jet removed from "<<name<<" since one or more constituents failed.\n";
-               DEBUG(ipart<<"th jet removed from "<<name<<" since one or more constituents failed.\n");
+               cout<<ipart<<"th jet removed from "<<name<<" since all " <<(ao->constits).find(consname)->second.size() <<"constituents failed.\n";
+               DEBUG(ipart<<"th jet removed from "<<name<<" since all " <<(ao->constits).find(consname)->second.size() <<"constituents failed.\n");
                (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
              }
              if ( (ao->constits).find(consname)->second.size() < 1) {
-               cout<<ipart<<"th jet removed from "<<name<<" since all constituents were removed.\n";
-               DEBUG(ipart<<"th jet removed from "<<name<<" since all constituents were removed.\n");
+               cout<<ipart<<"th jet removed from "<<name<<" since all constituents failed and there was no any.\n";
+               DEBUG(ipart<<"th jet removed from "<<name<<" since all constituents failed and there was no any.\n");
                (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
              }
           }// end of loop over all particles (jets) in the event.
