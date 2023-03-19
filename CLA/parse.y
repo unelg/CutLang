@@ -1272,15 +1272,15 @@ list3 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle2); } ',' particule
      ;
 particules : particules particule {                                                 
                             DEBUG("Got a new particle"<<$2<<", size:"<<TmpParticle.size()<<"\t");
-                            int ip=TmpParticle.size()-1;
-                            DEBUG("collection:"<<TmpParticle[ip]->collection<<" t:"<<TmpParticle[ip]->type<<" i:"<<TmpParticle[ip]->index<<"\n");
+//                          int ip=TmpParticle.size()-1;
+//                          DEBUG("collection:"<<TmpParticle[ip]->collection<<" t:"<<TmpParticle[ip]->type<<" i:"<<TmpParticle[ip]->index<<"\n");
                                                 string s=$$;
                                                 string s2=$2;
                                                 s=s+" "+s2;
                                                 $$=strdup(s.c_str());
                             DEBUG("Check the new particle, size:"<<TmpParticle.size()<<"\t");
-                            int ik=TmpParticle.size()-1;
-                            DEBUG("collection:"<<TmpParticle[ik]->collection<<" t:"<<TmpParticle[ik]->type<<" i:"<<TmpParticle[ik]->index<<"\n");
+//                          int ik=TmpParticle.size()-1;
+//                          DEBUG("collection:"<<TmpParticle[ik]->collection<<" t:"<<TmpParticle[ik]->type<<" i:"<<TmpParticle[ik]->index<<"\n");
                                   }
             | particules '+' particule {
                                                 string s=$$;
