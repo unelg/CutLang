@@ -105,7 +105,7 @@ std::cout << "Begin Filling"<<std::endl;
 //MUONS
 // E2 = p^2 + m^2
         muons_=10;
-	for (unsigned int i=0; i<muons_; i++) {
+	for (int i=0; i<muons_; i++) {
                 mpx=fChain->GetLeaf("muons.core.p4.px")->GetValue(i);
                 mpy=fChain->GetLeaf("muons.core.p4.py")->GetValue(i);
                 mpz=fChain->GetLeaf("muons.core.p4.pz")->GetValue(i);
@@ -131,7 +131,7 @@ std::cout << "Muons OK:"<< muons_<<std::endl;
 
 //ELECTRONS
         electrons_=10;
-	for (unsigned int i=0; i<electrons_; i++) {
+	for (int i=0; i<electrons_; i++) {
                 mpx=fChain->GetLeaf("electrons.core.p4.px")->GetValue(i);
                 mpy=fChain->GetLeaf("electrons.core.p4.py")->GetValue(i);
                 mpz=fChain->GetLeaf("electrons.core.p4.pz")->GetValue(i);
@@ -155,7 +155,7 @@ std::cout << "Electrons OK:"<< electrons_ <<std::endl;
 #endif
 //PHOTONS
         photons_=100;
-        for (unsigned int i=0; i<photons_; i++) {
+        for (int i=0; i<photons_; i++) {
                 mpx=fChain->GetLeaf("photons.core.p4.px")->GetValue(i);
                 mpy=fChain->GetLeaf("photons.core.p4.py")->GetValue(i);
                 mpz=fChain->GetLeaf("photons.core.p4.pz")->GetValue(i);
@@ -178,7 +178,7 @@ std::cout << "Photons OK:"<<photons_<<std::endl;
 
 //JETS
         jets_=100;
-	for (unsigned int i=0; i<jets_; i++) {
+	for (int i=0; i<jets_; i++) {
                 mpx=fChain->GetLeaf("jets.core.p4.px")->GetValue(i);
                 mpy=fChain->GetLeaf("jets.core.p4.py")->GetValue(i);
                 mpz=fChain->GetLeaf("jets.core.p4.pz")->GetValue(i);

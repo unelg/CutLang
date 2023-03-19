@@ -22,10 +22,10 @@ YACCV      = $(shell which yacc)
 FLEXV      = $(shell which flex)
 LEXEV      = $(shell which lex)
 
-CXX           = $(shell root-config --cxx) -g -O2  -D__GRID__  -D__STANDALONE__  
+CXX           = $(shell root-config --cxx) -g -O2 
 #-D_CLV_
 #-D__DEBUG__
-CXXFLAGS      =$(INCLUDES) -Wall -fPIC
+CXXFLAGS      =$(INCLUDES) -Wall -fPIC -Wunused-variable -Wsign-compare
 LD            = $(shell root-config --ld) -stdlib=libstdc++
 #LDFLAGS       = -g
 SOFLAGS       = -shared

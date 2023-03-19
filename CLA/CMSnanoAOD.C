@@ -273,7 +273,7 @@ std::cout << "MET OK"<<std::endl;
         myreader.SetEntry(j);
 
         // Extract the values
-        for (int hv=0; hv<myHLTs.size(); hv++){
+        for (unsigned int hv=0; hv<myHLTs.size(); hv++){
                 Bool_t trgvalue=*(myHLTs[hv]);
 //                DEBUG(myHLT_names[hv]<<":" << trgvalue << std::endl);
                 anevt.hlt_map[myHLT_names[hv]]=trgvalue; // filling map

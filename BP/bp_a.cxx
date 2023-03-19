@@ -91,7 +91,7 @@ int BPdbxA:: readAnalysisParams() {
        string firstword=resultstr[0];
        for(auto& c : firstword) { c = tolower(c); } // convert to lowercase
        string toplam;
-       if (resultstr.size() >1) for(int ic=1; ic<resultstr.size(); ic++) {
+       if (resultstr.size() >1) for(unsigned int ic=1; ic<resultstr.size(); ic++) {
 //                cout << resultstr[ic] <<".\n";
                   toplam+=resultstr[ic];
                   if (ic<resultstr.size()-1) toplam+=" ";
@@ -126,7 +126,7 @@ int BPdbxA:: readAnalysisParams() {
                     con1+=" <= ";
                     con1+=resultstr[2];
             binCL.push_back(con1.Data());
-            for(int ic=3; ic<resultstr.size(); ic++) {
+            for(unsigned int ic=3; ic<resultstr.size(); ic++) {
                 con1 =resultstr[1];
                 con1+=" [] ";
                 con1+=resultstr[ic-1];
@@ -281,7 +281,7 @@ int BPdbxA:: readAnalysisParams() {
     unsigned int binsize=BinCuts.size(); // bins 
     if (binsize>0) hbincounts= new TH1D("bincounts","event counts in bins ",binsize,0.5,binsize+0.5);
     if (binsize==binCL.size() ) {
-     for (int jbin=0; jbin<binsize; jbin++){
+     for (unsigned int jbin=0; jbin<binsize; jbin++){
        DEBUG("Bin from User C++:"<<binCL[jbin]<<"\n");
        hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
      }
@@ -350,7 +350,7 @@ for (map<string,vector<cntHisto> >::iterator ichi = cntHistos.begin(); ichi != c
            string downname=ih->cH_name; downname+="_down";
            TH1D* chistoU= new TH1D(  upname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
            TH1D* chistoD= new TH1D(downname.c_str(), ih->cH_title.c_str(), ih->cH_means.size(), 0.5, 0.5+ih->cH_means.size());
-           for (int iv=0; iv<ih->cH_means.size(); iv++){
+           for (unsigned int iv=0; iv<ih->cH_means.size(); iv++){
      //        cout<< ih->cH_means[iv] << " stat +" << ih->cH_StatErr_p[iv] << " -"<<ih->cH_StatErr_n[iv] 
       //                               << "  sys +" << ih->cH_SystErr_p[iv] << " -"<<ih->cH_SystErr_n[iv] <<"\n";  
              chistoM->SetBinContent(1+iv, ih->cH_means[iv]);
@@ -402,7 +402,7 @@ int BPdbxA::printEfficiencies() {
   PrintEfficiencies(eff, skip_histos);
   cout <<"Bins for analysis : "<< cname <<endl;
   cout <<setprecision(6);
-  for (int ii=0; ii<bincounts.size(); ii++) std::cout<<"\t\t\t\t\t\tBin:"<<ii<<" has:"<<bincounts[ii]<<" events\n";
+  for (unsigned int ii=0; ii<bincounts.size(); ii++) std::cout<<"\t\t\t\t\t\tBin:"<<ii<<" has:"<<bincounts[ii]<<" events\n";
   return 0;
 }
 
@@ -510,7 +510,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                 Snode=Snode->left;
                 DEBUG("Moved left\n");
               } else {
-                for (int ip=0; ip<(banker->second).size(); ip++){
+                for (unsigned int ip=0; ip<(banker->second).size(); ip++){
                     DEBUG(" pid "<<ip<<"\t");
                     DEBUG("Bank-> Coll:"<<(banker->second).at(ip)->collection<<"\t");
                     DEBUG("\ttype:"<< (banker->second).at(ip)->type <<"\tindex:"<<(banker->second).at(ip)->index<<"\n");
@@ -518,7 +518,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
                 ((SearchNode *)Snode)->setParticles(&(banker->second) );
                  DEBUG("------ written\n");
                  Snode->getParticles(&myParticles);
-                for (int ip=0; ip<(myParticles).size(); ip++){
+                for (unsigned int ip=0; ip<(myParticles).size(); ip++){
                     DEBUG(" pid "<<ip<<"\t");
                     DEBUG("Read back:"<<(myParticles).at(ip)->collection<<"\t");
                     DEBUG("\ttype:"<< (myParticles).at(ip)->type <<"\tindex:"<<(myParticles).at(ip)->index<<"\n");
@@ -579,7 +579,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
              do {
                searcher->getParticles(&theseParticles);
                DEBUG("Before Eval"<<iter->first<<" "<<theseParticles.size()<<"\n");
-               for (int ip=0; ip<theseParticles.size(); ip++){
+               for (unsigned int ip=0; ip<theseParticles.size(); ip++){
                  DEBUG("initially:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<"\n");
                  originalParticleIndices.push_back(theseParticles[ip]->index);  
                } 
@@ -618,7 +618,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
              if (theseParticles.size()==0) searcher=searcher->left;
              } while (theseParticles.size()==0 && searcher!=NULL);
 
-             for (int ip=0; ip<theseParticles.size(); ip++){
+             for (unsigned int ip=0; ip<theseParticles.size(); ip++){
                DEBUG("to Bank] Coll:"<<theseParticles[ip]->collection<<" type:"<< theseParticles[ip]->type<<" index:"<<theseParticles[ip]->index<<" "<<originalParticleIndices[ip] <<"\n");
                if (originalParticleIndices[ip]<0) bParticles.push_back(theseParticles[ip]);
              }

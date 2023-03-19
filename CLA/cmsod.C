@@ -97,7 +97,7 @@ std::cout << "Read Event"<<std::endl;
 std::cout << "Begin Filling"<<std::endl;
 #endif
 
-        for (unsigned int i=0; i<NMuon; i++) {
+        for (int i=0; i<NMuon; i++) {
                 alv.SetPxPyPzE( Muon_Px[i], Muon_Py[i], Muon_Pz[i], Muon_E[i] ); // all in GeV
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_Charge[i] );
@@ -112,7 +112,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
 #endif
 //ELECTRONS
 
-        for (unsigned int i=0; i<NElectron; i++) {
+        for (int i=0; i<NElectron; i++) {
                 alv.SetPxPyPzE( Electron_Px[i], Electron_Py[i], Electron_Pz[i], Electron_E[i] ); // all in GeV
                 adbxe= new dbxElectron(alv);
                 adbxe->setCharge(Electron_Charge[i] );
@@ -126,7 +126,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
 std::cout << "Electrons OK:"<< Electron_ <<std::endl;
 #endif
 //PHOTONS
-        for (unsigned int i=0; i<NPhoton; i++) {
+        for (int i=0; i<NPhoton; i++) {
                 alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
                 adbxp= new dbxPhoton(alv);
                 adbxp->setCharge(0);
@@ -139,7 +139,7 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
 std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #endif
 //JETS
-        for (unsigned int i=0; i<NJet; i++) {
+        for (int i=0; i<NJet; i++) {
                 alv.SetPxPyPzE( Jet_Px[i], Jet_Py[i], Jet_Pz[i], Jet_E[i] ); // all in GeV
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);

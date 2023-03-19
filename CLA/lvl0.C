@@ -58,15 +58,6 @@ void lvl0::Loop(analy_struct aselect, char *extname)
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
 //--------variables-------
-       vector<dbxMuon> muons_sf_pos, muons_sf_neg, muons_ms_pos,muons_ms_neg,muons_id_pos,muons_id_neg;
-       vector<dbxElectron> eles_sf_pos, eles_sf_neg;
-       vector<dbxJet> jets_goodjee ;
-       vector<dbxJet> jetBtaggedUp, jetBtaggedDown;
-       vector<dbxJet> jets_jes_pos, jets_jes_neg, jets_jespileup_pos, jets_jesbjetescale_pos;
-       vector<dbxJet> jets_jer_pos, jets_jer_neg, jets_jespileup_neg, jets_jesbjetescale_neg;
-       vector<dbxJet> jesu_jets_Down [16];
-       vector<dbxJet> jesu_jets_Up   [16];
-
        vector<dbxMuon>     muons;
        vector<dbxElectron> electrons;
        vector<dbxTau>      taus;

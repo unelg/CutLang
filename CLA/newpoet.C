@@ -70,7 +70,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     TLorentzVector  alv;
 
     dbxMuon *adbxm;
-    for (unsigned int i=0; i<numbermuon; i++) {
+    for (int i=0; i<numbermuon; i++) {
         alv.SetPxPyPzE(muon_px[i], muon_py[i], muon_pz[i],  muon_e[i]); // all in GeV
         adbxm = new dbxMuon(alv);
         adbxm->setCharge(muon_ch[i]);
@@ -89,7 +89,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     DEBUG("MUON OK\n");
 
    dbxElectron *adbxe;
-    for (unsigned int i=0; i<numberelectron; i++) {
+    for (int i=0; i<numberelectron; i++) {
         alv.SetPxPyPzE(electron_px[i], electron_py[i], electron_pz[i],  electron_e[i]); // all in GeV
         adbxe = new dbxElectron(alv);
         adbxe->setCharge(electron_ch[i]);
@@ -108,7 +108,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     DEBUG("ELECTRON OK\n");
 
    dbxTau *adbxt;
-    for (unsigned int i=0; i<numbertau; i++) {
+    for (int i=0; i<numbertau; i++) {
         alv.SetPxPyPzE(tau_px[i], tau_py[i], tau_pz[i],  tau_e[i]); // all in GeV
         adbxt = new dbxTau(alv);
         adbxt->setCharge(tau_ch[i]);
@@ -119,7 +119,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     DEBUG("TAU OK\n");
 
    dbxPhoton *adbxp;
-    for (unsigned int i=0; i<numberphoton; i++) {
+    for (int i=0; i<numberphoton; i++) {
         alv.SetPxPyPzE(photon_px[i], photon_py[i], photon_pz[i],  photon_e[i]); // all in GeV
         adbxp = new dbxPhoton(alv);
         adbxp->setCharge(0);
@@ -130,7 +130,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     DEBUG("Photon OK\n");
 
    dbxJet *adbxj;
-    for (unsigned int i=0; i<numberjet; i++) {
+    for (int i=0; i<numberjet; i++) {
         alv.SetPtEtaPhiM(jet_pt[i], jet_eta[i], jet_phi[i],  jet_mass[i]); // all in GeV
         adbxj = new dbxJet(alv);
         adbxj->setCharge(jet_ch[i]);
@@ -141,7 +141,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     }
     DEBUG("JET OK\n");
 
-    for (unsigned int i=0; i<numberfatjet; i++) {
+    for (int i=0; i<numberfatjet; i++) {
         alv.SetPtEtaPhiM(fatjet_pt[i], fatjet_eta[i], fatjet_phi[i],  fatjet_mass[i]); // all in GeV
         adbxj = new dbxJet(alv);
         adbxj->setCharge(fatjet_ch[i]);

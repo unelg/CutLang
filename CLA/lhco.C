@@ -105,7 +105,7 @@ std::cout << "Begin Filling"<<std::endl;
 #endif
 //MUONS
 
-	for (unsigned int i=0; i<Muon_; i++) {
+	for ( int i=0; i<Muon_; i++) {
 		alv.SetPtEtaPhiM( Muon_PT[i], Muon_Eta[i], Muon_Phi[i], (105.658/1E3) ); // all in GeV
 		adbxm= new dbxMuon(alv);
 		adbxm->setCharge(Muon_Charge[i] );
@@ -121,7 +121,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
 #endif
 //ELECTRONS
 
-	for (unsigned int i=0; i<Electron_; i++) {
+	for (int i=0; i<Electron_; i++) {
 		alv.SetPtEtaPhiM( Electron_PT[i], Electron_Eta[i], Electron_Phi[i], (0.511/1E3) ); // all in GeV
 		adbxe= new dbxElectron(alv);
 		adbxe->setCharge(Electron_Charge[i] );
@@ -135,7 +135,7 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
 std::cout << "Electrons OK:"<< Electron_ <<std::endl;
 #endif
 //PHOTONS
-        for (unsigned int i=0; i<Photon_size; i++) {
+        for (int i=0; i<Photon_size; i++) {
         	alv.SetPtEtaPhiM( Photon_PT[i], Photon_Eta[i], Photon_Phi[i], 0 ); // all in GeV
         	adbxp= new dbxPhoton(alv);
         	adbxp->setCharge(0);
@@ -148,7 +148,7 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
 std::cout << "Photons OK:"<<Photon_size<<std::endl;
 #endif
 //JETS
-	for (unsigned int i=0; i<Jet_; i++) {
+	for (int i=0; i<Jet_; i++) {
   		alv.SetPtEtaPhiM( Jet_PT[i], Jet_Eta[i], Jet_Phi[i], Jet_Mass[i] ); // all in GeV
   		adbxj= new dbxJet(alv);
   		adbxj->setCharge(-99);

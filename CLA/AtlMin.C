@@ -23,7 +23,7 @@
 #else
 #define DEBUG(a)
 #endif
-
+  
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
 
@@ -398,7 +398,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
        evt_data oldevt=a0.evt;
-       double wvalue;
+       double wvalue=0;
 
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
 
