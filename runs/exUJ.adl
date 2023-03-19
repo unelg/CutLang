@@ -1,0 +1,23 @@
+
+object jetA : JET
+	select pT(JET) > 70
+        print (pt(JET constituents))
+        select anyof(pt(JET constituents)) > 20 # behaves ok
+        print (pt(JET constituents))
+        select anyof(pt(JET constituents)) > 22 # behaves ok
+        print (pt(JET constituents))
+
+object jetB : JET
+	select pT(JET) [] 30 60
+        select abs(eta(JET)) < 2.2 ? E(JET)>10 : E(JET) < 100
+
+object newJets : Union(jetA, jetB)
+
+region testUJ
+	select all
+	select size(JET) > 0
+	select size(jetA) > 0
+	select size(jetB) > 0
+        select size(newJets) > 0
+        print size(jetA) size(jetB) size(newJets)
+
