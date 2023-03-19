@@ -214,8 +214,8 @@ variablelist : variablelist e { VariableList.push_back($2); DEBUG("new variable\
 NUMBER : INT { $$ = (float)$1; } 
        | NB  { $$ = $1; }
        ;
-LEPTON : ELE {$$="ELE";} | MUO {$$="MUO";} | TAU {$$="TAU";} ;
-ERRTYPE: ERR_SYST { $$="ERR_SYST";} | ERR_STAT { $$="ERR_STAT";}
+LEPTON : ELE {$$=(char *)"ELE";} | MUO {$$=(char *)"MUO";} | TAU {$$=(char *)"TAU";} ;
+ERRTYPE: ERR_SYST { $$=(char *)"ERR_SYST";} | ERR_STAT { $$=(char *)"ERR_STAT";}
 SYSTVTYPE: SYST_W_MC { $$=1;}  |SYST_W_JVT {$$=2; } |SYST_W_PILEUP {$$=3;} | SYST_W_LEP  { $$=4;} | SYST_W_BTAG { $$=5;} | SYST_TTREE {$$=6;}
 
 bool: TRUE {$$ = 1;} | FALSE {$$ =  0;} ;
@@ -357,7 +357,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                          parts->push_back(name+" : "+$4);
                                          vector<myParticle*> newList;
                                          DEBUG("Particle list\n");
-                                         for (int ip=0; ip<TmpParticle.size(); ip++){
+                                         for (unsigned int ip=0; ip<TmpParticle.size(); ip++){
                                            DEBUG(TmpParticle[ip]->type <<" "<<TmpParticle[ip]->index<< " "<< TmpParticle[ip]->collection<<"\n");
                                          }
                                          TmpParticle.swap(newList);
@@ -831,7 +831,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                   }
          | '{' particules '}' ETA {     vector<myParticle*> newList;
                                         DEBUG("Eta with "<<TmpParticle.size()<<" particles\n");
-                                        for (int ij=0; ij<TmpParticle.size(); ij++){
+                                        for (unsigned int ij=0; ij<TmpParticle.size(); ij++){
                                           DEBUG("Col:"<<TmpParticle[ij]->collection<< " type:"<<TmpParticle[ij]->type<<" idx:"<<TmpParticle[ij]->index<<"\n");
                                         }
                                         TmpParticle.swap(newList);
@@ -2518,7 +2518,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      }
                                      if(ik != ListParts->end() ){
                                        DEBUG("Union with 1st particle\n");
-                                       for (int np=0; np<ik->second.size(); np++) {
+                                       for (unsigned int np=0; np<ik->second.size(); np++) {
                                         DEBUG("t:" <<ik->second.at(np)->type  << " i:"<<ik->second.at(np)->index<< " c:"<<ik->second.at(np)->collection<<"\n");
                                        }
                                         newList=ik->second ; //newlist is <particle*> so is ik->second
@@ -2541,7 +2541,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                       }
                                       if(iy != ListParts->end() ){
                                        DEBUG("Union with 2nd particle\n");
-                                       for (int np=0; np<iy->second.size(); np++) {
+                                       for (unsigned int np=0; np<iy->second.size(); np++) {
                                         DEBUG("t:" <<iy->second.at(np)->type  << " i:"<<iy->second.at(np)->index<< " c:"<<iy->second.at(np)->collection<<"\n");
                                        }
                                         new2List=iy->second ;
@@ -2897,7 +2897,7 @@ command : CMD condition { //find a way to print commands
                          Node* l2=new ValueNode(tmpBoxlist[0] );
                          Node* c2=new BinaryNode(le,$2,l2,"<=");
                          BinCuts->insert(make_pair(++bincount, c2));
-                        for (int in=1; in<tmpBoxlist.size(); in++){
+                        for (unsigned int in=1; in<tmpBoxlist.size(); in++){
                          DEBUG("lim:"<<tmpBoxlist[in-1]<<" -- "<< tmpBoxlist[in]<<"\n");
                          Node* l1=new ValueNode(tmpBoxlist[in-1] );
                          Node* l2=new ValueNode(tmpBoxlist[in  ] );
@@ -3037,7 +3037,7 @@ command : CMD condition { //find a way to print commands
                        std::map<string, std::vector<cntHisto> >::iterator chit;
                        chit = cntHistos->find(aCutHist);
                        DEBUG(chit->second.size()<<" =? "<<chist_a.size() <<"\n");
-                       for (int ichi=0; ichi<chit->second.size(); ichi++){
+                       for (unsigned int ichi=0; ichi<chit->second.size(); ichi++){
                            chit->second.at(ichi).cH_means.push_back(chist_a[ichi] );
                            chit->second.at(ichi).cH_StatErr_p.push_back(chist_stat_p[ichi] );
                            chit->second.at(ichi).cH_StatErr_n.push_back(chist_stat_n[ichi] );
@@ -3221,8 +3221,8 @@ action : condition { $$=$1; }
 				}
         | ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' function {
                                                 $$=new HistoNode1D($1,$3,$5,$7,$9,$11);
-                                                Node *abu=$11;
-                                                DEBUG("func. 1D histo:"<<$1<<" d:"<<$3<<". "<<$5<<" "<<$7<<" "<<$9<<" "<<abu->getStr() <<"\n");
+//                                                Node *abu=$11;
+//                                                DEBUG("func. 1D histo:"<<$1<<" d:"<<$3<<". "<<$5<<" "<<$7<<" "<<$9<<" "<<abu->getStr() <<"\n");
 				}
 	| ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID ',' ID {
 					map<string, Node *>::iterator it1 ;
