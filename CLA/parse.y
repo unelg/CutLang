@@ -3140,21 +3140,6 @@ command : CMD condition { //find a way to print commands
                                                 NodeCuts->insert(make_pair(++cutcount,h));
                                         }
 					}
-	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' ID  ',' function {
-                                        //find child node
-                                        map<string, Node *>::iterator it ;
-                                        it = NodeVars->find($18);
-                                        if(it == NodeVars->end()) {
-                                                DEBUG($18<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Histo variable not defined");
-                                                YYERROR;//stops parsing if variable not found
-                                        }
-                                        else {
-                                                Node* child=it->second;
-                                                Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, child, $20);
-                                                NodeCuts->insert(make_pair(++cutcount,h));
-                                        }
-					}
 	| HISTO ID ',' description ',' INT ',' NUMBER ',' NUMBER ',' INT ',' NUMBER ',' NUMBER ',' function ',' function {
                                                 Node* h=new HistoNode2D($2,$4,$6,$8,$10,$12,$14, $16, $18, $20);
                                                 NodeCuts->insert(make_pair(++cutcount,h));
