@@ -1,0 +1,39 @@
+#ADL/CL example 13: Jet Constituents
+#
+#Sometimes, the analysis might necessitate a selection based on jet constituents, which can be 
+# defined as the individual particles that make up a jet; photons, electrons, muons, hadrons etc. 
+# ADL allows the modifier word constituents only in case of jets (or any other jet-like objects,
+# such as the large radius FatJets) to refer to these. An example for defining a new jet object
+# based on criteria on the constituents is given below. 
+
+info analysis
+    title "ADL/CL ex13: Jet Constituents"
+
+#OBJECT SELECTION
+object jetA : JET
+	select pT(JET) > 70
+        select anyof(pt(JET constituents)) > 20 #in this case, anyof() function returns jets that contains any
+        #constituent that has a missing transverse momentum (pT) above 20 GeV.   
+        select anyof(pt(JET constituents)) > 22 #by using the anyof() function a second time, it is stated that 
+# jetA has at least two constituetns that has a pT of 20 GeV and 22 GeV, respectively. 
+
+object jetB : JET
+        #Select the missing transverse momentum (pT) of jetB between 30 and 60 GeV
+	select pT(JET) [] 30 60 
+        #The below cut states that if the absolute value of the candidates of jetB are smaller than 2.2 radians, choose 
+        #the jets that have an energy greater than 10 GeV as jetB. If not, choose 
+        #the jets that have an energy smaller than 100 GeV as jetB. 
+        select abs(eta(JET)) < 2.2 ? E(JET)>10 : E(JET) < 100
+
+object newJets : Union(jetA, jetB) #A new object newJets is defined in this line by the usage of Union() function. Union()
+# function creates a new set with the input objects that it has received.  
+
+
+#EVENT SELECTION
+region baseline
+	select all
+	select size(JET) > 0
+	select size(jetA) > 0
+	select size(jetB) > 0
+        select size(newJets) > 0
+
