@@ -429,7 +429,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 
   DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
   double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
-  DEBUG("--w:"<<evt_weight<<"\n");
+  DEBUG("--event user weight:"<<evt_weight<<" TRGe:"<< TRGe<< " TRGm:"<<TRGm<<"\n");
   if (controlword == 0){
 
 //   if (systematicsRun) {
@@ -448,8 +448,10 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 */
 //   }
 
-    if(TRGe>1 || TRGm> 1) evt_weight = anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
-//    cout <<" evntno:"<< anevt.event_no<<"--w:"<< anevt.weight_pileup <<"\n";
+    if(TRGe>1 || TRGm> 1) { evt_weight *= anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+      //cout <<" evntno:"<< anevt.event_no<<"--w:"<< anevt.weight_pileup<<" "<<anevt.weight_mc<<" "<<anevt.weight_jvt <<"\n";
+      // evt_weight *= 1; // CHANGE ME
+    }
     ao->evt.user_evt_weight*=evt_weight;
   } else { // this is a dependent region, with pre-selection that failed at some point
 // no need to calculate something that we know will fail.
@@ -647,6 +649,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         iter++; //moves on to the next cut
     }// loop over all binnings   
 
+   if  (controlword > 0 ) { ao->evt.user_evt_weight=evt_weight; }
 // les cuts sont finis ici.
     return 10000+NodeCuts.size();
 }

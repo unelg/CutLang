@@ -188,8 +188,9 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                DEBUG(dbxAnalyses[k]->getName()<<" to be executed with defaults"<<endl);
                int lastpass=0;
                if(do_deps) { // take care to analyses depending on each other
+                DEBUG("this is an analysis dependency.\n");
                 if ( depAnalyses.find(k) != depAnalyses.end() ){ // if result is True, this analysis is dependent, get info from 0.
-                   DEBUG("this is a dependent analysis.\n");
+                   DEBUG(cout<<"this is a dependent analysis. use from REF.\n");
                    if (mainAresults < 10000) controlword=mainAresults; // means last cut fails.
                    else {
                       lastpass=1;
@@ -197,11 +198,13 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                    }
                    a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                 } else { // if I am below I have an independent analysis aftr a dep one.
+                   DEBUG("this is an independent analysis aftr a dependent one. \n");
                    a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
                    controlword=0;
                 }
                } else {// below is all independent
-                   a0.evt.user_evt_weight=refA0.evt.user_evt_weight;
+                   DEBUG("there are no dependencies here \n");
+                   a0.evt.user_evt_weight=refA0.evt.user_evt_weight; //this is 1.
                }
 //----------------------------------------------
 	       evret=dbxAnalyses[k]->makeAnalysis(&a0, controlword, lastpass);   //------------------------------ regular analysis
@@ -220,6 +223,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
                    if (mainAnalyses.find(k) != mainAnalyses.end() ) {   //was k==mainAnalysis
                     mainAresults=evret; // save the results from main;
                     DEBUG("Main at "<<k<<" has evret:"<<evret<<"\n");
+                    refA0.evt.user_evt_weight=a0.evt.user_evt_weight;
                    }
                 }
              } else {      // the below is a dumper
