@@ -15,6 +15,7 @@ dbxParticle:: dbxParticle() : TObject() {
   p_istight=0;
   p_ismedium=0;
   p_isloose=0;
+  p_attribute.clear();
 }
 dbxParticle:: dbxParticle (TLorentzVector lv){
   p_istight = 0;
@@ -26,6 +27,7 @@ dbxParticle:: dbxParticle (TLorentzVector lv){
   p_istight=0;
   p_ismedium=0;
   p_isloose=0;
+  p_attribute.clear();
 }
 
 dbxParticle:: ~dbxParticle() {}
@@ -38,7 +40,7 @@ dbxParticle:: dbxParticle (TLorentzVector lv, int q){
   p_istight=0;
   p_ismedium=0;
   p_isloose=0;
-
+  p_attribute.clear();
 }
 dbxParticle  dbxParticle::operator+ (dbxParticle& p)
 {
