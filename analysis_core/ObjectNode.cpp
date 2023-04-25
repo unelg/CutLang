@@ -1199,6 +1199,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
          DEBUG("===============\n");
          TString dname;
          for (int ipart=(ao->truth)[name].size()-1; ipart>=0; ipart--){
+           if ((ao->truth)[name].at(ipart).nAttribute() < 9) break;
            int child1=(ao->truth)[name].at(ipart).Attribute(8);
            int child2=(ao->truth)[name].at(ipart).Attribute(9);
            int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
