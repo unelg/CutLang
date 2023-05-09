@@ -1,3 +1,6 @@
 [submodule "ADLLHCanalyses"]
 	path = ADLLHCanalyses
 	url = https://github.com/ADL4HEP/ADLLHCanalyses
+[submodule "jsroot"]
+	path = scripts/JsRoot620/jsroot
+	url = https://github.com/root-project/jsroot
