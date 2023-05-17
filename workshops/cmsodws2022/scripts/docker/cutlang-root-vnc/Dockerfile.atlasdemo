@@ -1,5 +1,10 @@
-FROM rootproject/root:6.26.04-ubuntu-arm64
+##FROM rootproject/root:6.26.04-ubuntu-arm64
 #root6-arm64-tgz
+#FROM golang:1.16-alpine
+FROM ubuntu:22.04
+
+
+
 WORKDIR /usr/local
 
 COPY ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/packages.txt packages.txt
@@ -22,10 +27,26 @@ RUN apt-get -qq -y update && \
     ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 
+
+RUN wget https://www.dropbox.com/s/dpdgr2k7iqnahcc/root6-ubuntu-arm64.tgz &&\
+    tar xzf root6-ubuntu-arm64.tgz && \
+    mkdir /opt/; mv root_install /opt/root && \
+    rm -f root6-ubuntu-arm64.tgz && \
+    echo /opt/root/lib >> /etc/ld.so.conf && \
+    ldconfig
+    
+ENV ROOTSYS=/opt/root
+ENV PATH=/opt/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PYTHONPATH=/opt/root/lib:
+
 # CutLang dependencies
 RUN apt-get update -y
-RUN apt-get install python3-pip -y
-RUN pip install jupyterlab notebook metakernel
+#RUN apt-get install python3-pip -y
+#RUN pip install jupyterlab 
+#RUN pip install notebook 
+#RUN pip install IPython
+#RUN pip install metakernel
+
 
 RUN apt-get install -y bison flex make wget git
 RUN apt-get install -y nano
@@ -98,6 +119,7 @@ RUN echo "echo and for LHC analysis implementations, see" >> /home/cmsusr/.bashr
 RUN echo "echo https://github.com/ADL4HEP/ADLLHCanalyses" >> /home/cmsusr/.bashrc
 
 WORKDIR /src
+
 
 # CutLang other dependencies
 RUN apt-get install -y vim

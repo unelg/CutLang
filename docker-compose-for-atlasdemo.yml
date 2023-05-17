@@ -1,0 +1,16 @@
+version: "4.1"
+
+services:
+  src:
+    container_name: CutLang-Root-vnc-arm2
+    image: cutlang/cutlang-root-vnc-arm2
+    build:
+      context: .
+      dockerfile: ./workshops/cmsodws2022/scripts/docker/cutlang-root-vnc/Dockerfile.atlasdemo
+    volumes:
+      - ./:/src
+    platform: linux/arm64
+    ports:
+      - "5901:5901"
+      - "6080:6080"
+      - "8888:8888"

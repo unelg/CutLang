@@ -1,6 +1,6 @@
 #include "SearchNode.h"
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
@@ -22,13 +22,13 @@ void SearchNode::performInnerOperation(vector<int> *v,vector<int> *indices, doub
              DEBUG("diff:"<<diff<<" c_diff:"<<*current_difference<<"\n");
              *current_difference = fabs(diff);
              bestIndices=*v;
-        } else { DEBUG("\n");}
+        } else { DEBUG("\n"); }
       }
 
 void SearchNode::runNestedLoopBarb( int start, vector<int> Ns, int level, int maxDepth, vector<int> *v,
                                     vector<int> *indices,double *curr_diff,AnalysisObjects* ao, vector<int> types, vector<string> acs) {
 DEBUG("------------------------------------------------new search ----------------------------------------------------------------\n");
-      const int unk_MAX=6; // max unknowns
+      const int unk_MAX=8; // max unknowns
       bool found_at_least_one=false;
       int ip_N[unk_MAX]; 
       int tip[unk_MAX]; 
@@ -49,7 +49,7 @@ DEBUG("------------------------------------------------new search --------------
 */
       int unkidx=0;  
       int knowns=0;  
-      for (int kk=0; kk<unk_MAX; kk++){
+      for (int kk=0; kk<unk_MAX; kk++){ // up to max
            if (kk < particles.size() ) {
              if (particles.at(kk)->index < 0){  // a particle I will be searching
                 oi[unkidx]=particles.at(kk)->index;
@@ -59,7 +59,6 @@ DEBUG("------------------------------------------------new search --------------
              } 
            }
         }
-    
       for (int i=maxDepth; i<unk_MAX; i++)  { ip_N[i]=1; tip[i]=1;} 
       for (int kk=0; kk<Ns.size(); kk++){
        DEBUG("oi:"<<oi[kk]<<"  type:"<<tip[kk]<< " maxN:"<< ip_N[kk]<< " order:"<<indices->at(kk)<<"\n" );
@@ -191,9 +190,10 @@ DEBUG("------------------------------------------------new search --------------
                        DEBUG("BETTER diff:"<<diff<<" OLD c_diff:"<<*curr_diff<<"\n");
                        *curr_diff = fabs(diff);
                        bestIndices.clear();
-                       for(int i=0;i<v->size();i++){ bestIndices.push_back( v->at(i) ); }
-                       found_at_least_one=true;
-                 } else { DEBUG("OLD diff was better...\n");}
+                       int ijkl;
+                       for(int iq=0;iq<v->size();iq++){bestIndices.push_back( v->at(iq) ); }
+                     found_at_least_one=true;
+                 } else { DEBUG("OLD diff was better...\n"); }
 
                  v->clear();
                 }}
@@ -242,8 +242,10 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
         std::map<string, std::pair<int, unordered_set<int> > >::iterator forbidit;
         vector<int> indices;
         for(int i=0;i<particles.size();i++){
-             DEBUG("SearchN Part:"<<i<<" idx:"<<particles.at(i)->index<< " addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<< " type:"<<particles.at(i)->type<<"\n");
+             DEBUG("\t SearchN Part:"<<i<<" idx:"<<particles.at(i)->index<< " addr:"<<particles.at(i)<<" name:"<< particles.at(i)->collection<< " type:"<<particles.at(i)->type<<"\n");
+            
              if(particles.at(i)->index<0) indices.push_back(i);
+
              else {
                 forbidit=FORBIDDEN_INDEX_LIST.find( particles.at(i)->collection  ); 
                 if (forbidit == FORBIDDEN_INDEX_LIST.end() ){
@@ -258,7 +260,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 			forbidit->second.second.insert(particles.at(i)->index);  
                 }
              }
-        }
+      }
 
         int MaxDepth=indices.size();//number of nested loops needed
         DEBUG("SearchN Depth:"<<MaxDepth<<" particles will be searched.\n");
@@ -292,6 +294,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                     DEBUG("Max candidate:"<<Max<<" collection:"<< ac<< " particle index:"<<i<<"\n");
                         candids.push_back(Max);
                }// end of loop over particles
+ // ok up to here                  
 
                     DEBUG("Before find, # types:"<<candids.size()<< " Best index vector size:"<<bestIndices.size()<<"\n");
                     vector<int> v;//--------------------why not pass it by reference?!
@@ -301,10 +304,11 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 
                    DEBUG("After find, Best index vector size:"<<bestIndices.size()<<" MaxDepth"<<MaxDepth<<"\n");
                    if (bestIndices.size() < 1 ) {  
-                         DEBUG("!!! Best index could not be found.\n"); 
+                         cout<<"!!! Best index could not be found.\n"; 
                          double  leftval=left->evaluate(ao);
                          return 1; 
                    }
+                    
                    int maxFound = bestIndices.size();
 //                    if (MaxDepth < bestIndices.size()) maxFound = MaxDepth;
                    for(int i=0;i<maxFound;i++){
@@ -321,8 +325,9 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                          std::pair<int, unordered_set<int> > tpippo (20, pippo); // NGU better type!!!!!!
                          FORBIDDEN_INDEX_LIST.insert(std::pair<string, std::pair<int, unordered_set<int> > >(ac, tpippo) );
                         } else {
-                         forbidit->second.second.insert(bestIndices[i]);
+                         forbidit->second.second.insert( bestIndices[i]);
                         }
+
                    }
         } else{
                 DEBUG("SearchN No negative index found... Returning evaluation as is.\n");
@@ -333,7 +338,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
                 if (leftval == rightval) { return 1; }
                 else { std::cout<<"no negatif index, left is not right?!\n"; return 0;} // NGU TODO we should improve.
         }
-        DEBUG("\n");
+        DEBUG("EOS. \n");
         particles.resize(6);
         return 1;
     }

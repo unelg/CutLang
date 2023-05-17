@@ -101,6 +101,10 @@ std::cout << "Begin Filling"<<std::endl;
             adbxj= new dbxJet(alv);
             adbxj->setCharge(-99);
             adbxj->setParticleIndx(i);
+           //adbxj->setJVtxf(jets_DFCommonJets_fJvt->at(i));
+//          adbxj->setFlavor(jets_btagFlag_DL1r_FixedCutBEff_85->at(i) );
+//          adbxj->set_isbtagged_77( jets_btagFlag_DL1r_FixedCutBEff_85->at(i) ); // 5 is btag
+
             jets.push_back(*adbxj);
             delete adbxj;
         }
@@ -129,6 +133,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxm->setPdgID( lep_ID_0 );
             adbxm->setParticleIndx(0);
             adbxm->setZ0(lep_Z0SinTheta_0 );
+            adbxm->setIsLoose(lep_isolationFCLoose_0);
+            adbxm->setIsMedium(lep_isMedium_0);
             muons.push_back(*adbxm);
             delete adbxm;
         }
@@ -138,6 +144,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxe->setPdgID( lep_ID_0 );
             adbxe->setParticleIndx(0);
             adbxe->setZ0(lep_Z0SinTheta_0 );
+            adbxe->setIsLoose(lep_isolationFCLoose_0);
+            adbxe->setIsMedium(lep_isMedium_0);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
@@ -150,6 +158,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxm->setPdgID( lep_ID_1 );
             adbxm->setParticleIndx(1);
             adbxm->setZ0(lep_Z0SinTheta_1 );
+            adbxm->setIsLoose(lep_isolationFCLoose_1);
+            adbxm->setIsMedium(lep_isMedium_1);
             muons.push_back(*adbxm);
             delete adbxm;
         }
@@ -159,6 +169,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxe->setPdgID( lep_ID_1 );
             adbxe->setParticleIndx(1);
             adbxe->setZ0(lep_Z0SinTheta_1 );
+            adbxe->setIsLoose(lep_isolationFCLoose_1);
+            adbxe->setIsMedium(lep_isMedium_1);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
@@ -171,6 +183,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxm->setPdgID( lep_ID_2 );
             adbxm->setParticleIndx(2);
             adbxm->setZ0(lep_Z0SinTheta_2 );
+            adbxm->setIsLoose(lep_isolationFCLoose_2);
+            adbxm->setIsMedium(lep_isMedium_2);
             muons.push_back(*adbxm);
             delete adbxm;
         }
@@ -180,6 +194,8 @@ std::cout << "Begin Filling"<<std::endl;
             adbxe->setPdgID( lep_ID_2 );
             adbxe->setParticleIndx(2);
             adbxe->setZ0(lep_Z0SinTheta_2 );
+            adbxe->setIsLoose(lep_isolationFCLoose_2);
+            adbxe->setIsMedium(lep_isMedium_2);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
@@ -191,6 +207,9 @@ std::cout << "Begin Filling"<<std::endl;
             adbxm->setCharge(lep_ID_3 / 13 );
             adbxm->setPdgID( lep_ID_3 );
             adbxm->setParticleIndx(3);
+//            adbxm->setZ0(lep_Z0SinTheta_3 );
+            adbxm->setIsLoose(lep_isolationFCLoose_3);
+            adbxm->setIsMedium(lep_isMedium_3);
             muons.push_back(*adbxm);
             delete adbxm;
         }
@@ -199,6 +218,9 @@ std::cout << "Begin Filling"<<std::endl;
             adbxe->setCharge(lep_ID_3 / 11 );
             adbxe->setPdgID( lep_ID_3 );
             adbxe->setParticleIndx(3);
+//            adbxe->setZ0(lep_Z0SinTheta_3 );
+            adbxe->setIsLoose(lep_isolationFCLoose_3);
+            adbxe->setIsMedium(lep_isMedium_3);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
