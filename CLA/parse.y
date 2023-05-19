@@ -137,8 +137,26 @@ input : initializations countformats definitions_objects commands
 initializations : initializations initialization 
         | 
         ;
-initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; }
-                | TRGM  '=' INT {DataFormats->at(1)=$3; }
+initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe"; 
+                                        map<string, Node*>::iterator it ;
+                                        it = NodeVars->find(name);
+                                        if(it != NodeVars->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        Node* v0= new ValueNode($3);
+                                        NodeVars->insert(make_pair(name,v0) ); }
+                | TRGM  '=' INT {DataFormats->at(1)=$3; string name="TRGm"; 
+                                        map<string, Node*>::iterator it ;
+                                        it = NodeVars->find(name);
+                                        if(it != NodeVars->end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                                YYERROR;//stops parsing if variable already defined
+                                        }
+                                        Node* v0= new ValueNode($3);
+                                        NodeVars->insert(make_pair(name,v0) ); }
                 | SKPH  '=' INT {DataFormats->at(3)=$3; }
                 | SKPE  '=' INT {DataFormats->at(2)=$3; }
                 | ADLINFO ID { }
@@ -1180,13 +1198,29 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    |'(' e ')' {   $$=$2; }
    | NB {  tmp=to_string($1); $$=new ValueNode($1);} 
    | INT {  $$=new ValueNode($1);} 
+   | TRGM { 
+            map<string, Node *>::iterator it;
+            string name="TRGm";
+            it = NodeVars->find(name);
+            if(it != NodeVars->end()) {
+              $$=it->second;
+            }
+          }
+   | TRGE { 
+            map<string, Node *>::iterator it;
+            string name="TRGe";
+            it = NodeVars->find(name);
+            if(it != NodeVars->end()) {
+              $$=it->second;
+            }
+          }
    | EVENTNO {  $$=new ValueNode("EventNo");} 
    | MCCHANNELNUMBER {  $$=new ValueNode("ChannelNo");} 
    | HFCLASSIFICATION { $$=new ValueNode("HFCLASSIFICATION");} 
    | RUNYEAR {  $$=new ValueNode("RunYear");} 
    | function {$$=$1; pnum=0;}
    //to make the difference between ID + ID and ID ID in particules ->create two maps
-   | ID { //we want the original defintions as well
+   | ID { //we want the original definitions as well
                 DEBUG($1<<" is a node variable candidate\n");
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
@@ -3259,6 +3293,8 @@ action : condition { $$=$1; }
 				}
        | ALL { $$=new SFuncNode(all,1,"all"); }
        | NONE { $$=new SFuncNode(none,1,"none"); }
+       | LEPSF {  $$=new SFuncNode(lepsf,1,"LEPSF"); }
+       | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

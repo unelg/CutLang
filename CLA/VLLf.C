@@ -22,12 +22,14 @@ extern bool fctrlc;
 extern TTreeReader *ttreader;
 
 
-//#define _CLV_
+#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
 #define DEBUG(a)
 #endif
+
+
 
 void VLLf::Loop(  analy_struct aselect, char *extname )
 {
@@ -41,7 +43,6 @@ void VLLf::Loop(  analy_struct aselect, char *extname )
    int verboseFreq(aselect.verbfreq);
    evt_data anevt;
    float blow_th=1.7400;
-   int prev_RunNumber=-1;
 
    map < string, string > syst_names;
    AnalysisController aCtrl(&aselect, syst_names);
@@ -58,8 +59,8 @@ void VLLf::Loop(  analy_struct aselect, char *extname )
    if (lastevent > fChain->GetEntriesFast() ) { lastevent=fChain->GetEntriesFast();
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
-   
-for (Long64_t j=startevent; j<lastevent; ++j) {
+
+   for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
@@ -97,8 +98,6 @@ DEBUG("Read Event\n");
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
 
 DEBUG("Begin Filling\n");
 
@@ -109,7 +108,7 @@ DEBUG("Begin Filling\n");
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);
                 adbxj->setParticleIndx(i);
-                //adbxj->setJVtxf(jets_DFCommonJets_fJvt->at(i));
+//                adbxj->setJVtxf(jets_DFCommonJets_fJvt->at(i));
                 adbxj->setFlavor(jets_btagFlag_DL1r_FixedCutBEff_85->at(i) );
                 adbxj->set_isbtagged_77( jets_btagFlag_DL1r_FixedCutBEff_85->at(i) ); // 5 is btag
                 jets.push_back(*adbxj);
@@ -117,17 +116,14 @@ DEBUG("Begin Filling\n");
         }
 DEBUG("Jets ok\n");
 
-#ifdef __DEBUG__
-        cout << "1L:"<<(int)onelep_type<<" 2L:"<<(int)dilep_type<<" 3L:"<<(int)trilep_type<<" 4L:"<<(int)quadlep_type<<"\n";
-        cout << "1L:"<<lep_Pt_0<<" 2L:"<<lep_Pt_1<<" 3L:"<<lep_Pt_2<<" 4L:"<<lep_Pt_3<<"\n";
-#endif
+//LEPTONS
       for (int ii=1; ii<2; ii++){
         int nlep=0;
         if( (int)onelep_type >0 ) nlep=1;
         if( (int)dilep_type >0  ) nlep=2;
         if( (int)trilep_type >0 ) nlep=3;
         if( (int)quadlep_type>0 ) nlep=4;
-	if( (int)fivelep_type>0 ) nlep=5;
+        if( (int)fivelep_type>0 ) nlep=5;
 
         if (nlep==0) break;
         alv0.SetPtEtaPhiE( lep_Pt_0*0.001, lep_Eta_0, lep_Phi_0, lep_E_0*0.001 ); // all in GeV       
@@ -152,7 +148,6 @@ DEBUG("Jets ok\n");
             adbxe->setIsTight(lep_isTightLH_0);
             electrons.push_back(*adbxe);
             delete adbxe;
-	    
         }
         if (nlep==1) break;
         alv1.SetPtEtaPhiE( lep_Pt_1*0.001, lep_Eta_1, lep_Phi_1, lep_E_1*0.001 ); // all in GeV       
@@ -179,14 +174,14 @@ DEBUG("Jets ok\n");
             electrons.push_back(*adbxe);
             delete adbxe;
         }
-	if (nlep==2) break;
-	alv2.SetPtEtaPhiE( lep_Pt_2*0.001, lep_Eta_2, lep_Phi_2, lep_E_2*0.001 ); // all in GeV
+        if (nlep==2) break;
+        alv2.SetPtEtaPhiE( lep_Pt_2*0.001, lep_Eta_2, lep_Phi_2, lep_E_2*0.001 ); // all in GeV       
 //2
-	if (abs(lep_ID_2)==13) { // muons
+        if (abs(lep_ID_2)==13) { // muons
             adbxm= new dbxMuon(alv2);
             adbxm->setCharge(lep_ID_2 / 13 );
             adbxm->setPdgID( lep_ID_2 );
-            adbxm->setParticleIndx(1);
+            adbxm->setParticleIndx(2);
             adbxm->setZ0(lep_Z0SinTheta_2 );
             adbxm->setIsLoose(lep_isolationFCLoose_2);
             adbxm->setIsMedium(lep_isMedium_2);
@@ -197,22 +192,21 @@ DEBUG("Jets ok\n");
             adbxe= new dbxElectron(alv2);
             adbxe->setCharge(lep_ID_2 / 11 );
             adbxe->setPdgID( lep_ID_2 );
-            adbxe->setParticleIndx(1);
+            adbxe->setParticleIndx(2);
             adbxe->setZ0(lep_Z0SinTheta_2 );
             adbxe->setIsLoose(lep_isolationFCLoose_2);
             adbxe->setIsTight(lep_isTightLH_2);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
-
         if (nlep==3) break;
-        alv3.SetPtEtaPhiE( lep_Pt_3*0.001, lep_Eta_3, lep_Phi_3, lep_E_3*0.001 ); // all in GeV
+        alv3.SetPtEtaPhiE( lep_Pt_3*0.001, lep_Eta_3, lep_Phi_3, lep_E_3*0.001 ); // all in GeV       
 //3
         if (abs(lep_ID_3)==13) { // muons
             adbxm= new dbxMuon(alv3);
             adbxm->setCharge(lep_ID_3 / 13 );
             adbxm->setPdgID( lep_ID_3 );
-            adbxm->setParticleIndx(1);
+            adbxm->setParticleIndx(3);
             adbxm->setZ0(lep_Z0SinTheta_3 );
             adbxm->setIsLoose(lep_isolationFCLoose_3);
             adbxm->setIsMedium(lep_isMedium_3);
@@ -223,21 +217,21 @@ DEBUG("Jets ok\n");
             adbxe= new dbxElectron(alv3);
             adbxe->setCharge(lep_ID_3 / 11 );
             adbxe->setPdgID( lep_ID_3 );
-            adbxe->setParticleIndx(1);
+            adbxe->setParticleIndx(3);
             adbxe->setZ0(lep_Z0SinTheta_3 );
             adbxe->setIsLoose(lep_isolationFCLoose_3);
             adbxe->setIsTight(lep_isTightLH_3);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
-	if (nlep==4) break;
+        if (nlep==4) break;
         alv4.SetPtEtaPhiE( lep_Pt_4*0.001, lep_Eta_4, lep_Phi_4, lep_E_4*0.001 ); // all in GeV
 //4
         if (abs(lep_ID_4)==13) { // muons
             adbxm= new dbxMuon(alv4);
             adbxm->setCharge(lep_ID_4 / 13 );
             adbxm->setPdgID( lep_ID_4 );
-            adbxm->setParticleIndx(1);
+            adbxm->setParticleIndx(4);
             adbxm->setZ0(lep_Z0SinTheta_4 );
             adbxm->setIsLoose(lep_isolationFCLoose_4);
             adbxm->setIsMedium(lep_isMedium_4);
@@ -248,14 +242,14 @@ DEBUG("Jets ok\n");
             adbxe= new dbxElectron(alv4);
             adbxe->setCharge(lep_ID_4 / 11 );
             adbxe->setPdgID( lep_ID_4 );
-            adbxe->setParticleIndx(1);
+            adbxe->setParticleIndx(4);
             adbxe->setZ0(lep_Z0SinTheta_4 );
             adbxe->setIsLoose(lep_isolationFCLoose_4);
             adbxe->setIsTight(lep_isTightLH_4);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
-	if (nlep==5) break;
+        if (nlep==5) break;
         alv5.SetPtEtaPhiE( lep_Pt_5*0.001, lep_Eta_5, lep_Phi_5, lep_E_5*0.001 ); // all in GeV
 //5
         if (abs(lep_ID_5)==13) { // muons
@@ -280,45 +274,16 @@ DEBUG("Jets ok\n");
             electrons.push_back(*adbxe);
             delete adbxe;
         }
-
-
-        }
-        
-       unsigned int tausize=nTaus_OR;
-       for (unsigned int k=0; k<tausize; k++) {
-           if (k==0) alv.SetPtEtaPhiE( taus_pt_0*0.001, taus_eta_0, taus_phi_0, taus_E_0 );
-           if (k==1) alv.SetPtEtaPhiE( taus_pt_1*0.001, taus_eta_1, taus_phi_1, taus_E_1 );
-           if (k==2) alv.SetPtEtaPhiE( taus_pt_2*0.001, taus_eta_2, taus_phi_2, taus_E_2 );
-           if (k==3) alv.SetPtEtaPhiE( taus_pt_3*0.001, taus_eta_3, taus_phi_3, taus_E_3 );
-           adbxt= new dbxTau(alv);
-           if (k==0) adbxt->setCharge(taus_charge_0);
-	   if (k==1) adbxt->setCharge(taus_charge_1);
-	   if (k==2) adbxt->setCharge(taus_charge_2);
-	   if (k==3) adbxt->setCharge(taus_charge_3);
-           adbxt->setParticleIndx(k);
-           taus.push_back(*adbxt);
-           delete adbxt;
-           
        }
-       
-       
 //MET
         met.SetMagPhi( met_met*0.001,  met_phi);
 
 
-   
 //------------ auxiliary information -------
-        anevt.ChannelNo=mcChannelNumber;
-	//anevt.Mll=Mll01;
-	//anevt.dileptype=dilep_type;
-	//anevt.quadleptype=quadlep_type;
-	//anevt.vlltype=VLL_type;
-	//anevt.vlldecaytype=VLL_decaytype;
-        anevt.RunYear=RunYear;
         anevt.run_no=runNumber;
-        anevt.correction_weight=1.0/totalEventsWeighted;
+        anevt.correction_weight=1.0;
         anevt.luminosity_weight=1.0;
-        anevt.weight_xsec=xs;
+        anevt.weight_xsec=mc_xSection;
         anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
@@ -328,46 +293,37 @@ DEBUG("Jets ok\n");
         anevt.TRG_j= 0;
         anevt.vxp_maxtrk_no= 9;
         anevt.badjet=0;
-        anevt.weight_mc=weight_mc;
-        anevt.m_HF_Classification=m_HF_Classification;
-        anevt.weight_pileup=weight_pileup;
-	anevt.weight_jvt=jvtSF_customOR;
+        anevt.mcevt_weight=1.0;
+        anevt.pileup_weight=1.0;
         anevt.z_vtx_weight = 1.0;
-        anevt.weight_bTagSF_77 = bTagSF_weight_DL1r_Continuous;
-        anevt.weight_leptonSF = custTrigSF_TightElMediumMuID_FCLooseIso_DLT;
+        anevt.weight_bTagSF_77 = 1.0;
+        anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
         anevt.lar_Error=0;
         anevt.core_Flags=0;
         anevt.maxEvents=nentries;
 
-#ifdef __DEBUG__
-std::cout << "Filling finished"<<std::endl;
-#endif
 
+
+DEBUG("Filling finished"<<std::endl);
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
         gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
         jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
+       ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
        truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
        track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
        combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
+    if (constits_map.size() < 1) // we only add this if it was previously empty...
+    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map, combo_map, constits_map, met_map, anevt};
+    AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
+    aCtrl.RunTasks(a0);
 
-        aCtrl.RunTasks(a0);
 
-      
-} // end of for over events
+}// end of event loop
+   aCtrl.Finalize();
 
-  aCtrl.Finalize();
-
-}  
-   
-   
-   
-   
-   
+}
