@@ -26,7 +26,7 @@
 extern int yyparse(list<string> *parts,map<string,Node*>* NodeVars,map<string,vector<myParticle*> >* ListParts,map<int,Node*>* NodeCuts,
                                        map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts, vector<string>* Initializations, 
                                        vector<int>* TRGValues, map<string,pair<vector<float>, bool> >* ListTables,
-                                       map<string, vector<cntHisto> >*cntHistos, map<int, vector<string> > *systmap);
+                                       map<string, vector<cntHisto> >*cntHistos, map<int, vector<string> > *systmap, map<int, string > *BinNames);
 
 extern FILE* yyin;
 extern int cutcount;
@@ -217,7 +217,7 @@ int BPdbxA:: readAnalysisParams() {
        cutcount=0;
        bincount=0;
        cout <<"==Parsing started:\t";
-       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap);
+       retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap, &BinNames);
        cout <<"\t Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
@@ -283,7 +283,11 @@ int BPdbxA:: readAnalysisParams() {
     if (binsize==binCL.size() ) {
      for (unsigned int jbin=0; jbin<binsize; jbin++){
        DEBUG("Bin from User C++:"<<binCL[jbin]<<"\n");
-       hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
+       if (BinNames[1+jbin].size() > 0) {
+         hbincounts->GetXaxis()->SetBinLabel(1+jbin,BinNames[jbin+1].c_str()  );
+       } else {
+        hbincounts->GetXaxis()->SetBinLabel(1+jbin,binCL[jbin].c_str() );
+       }
      }
     } else {
      std::map<int, Node*>::iterator biter = BinCuts.begin();
@@ -637,6 +641,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != BinCuts.end())
     {
         DEBUG("+++++ Binning: "<<iter->first<<" |"<<"\t");
+//        cout<<"+++++ Binning: "<<iter->first<<" |"<<"\t"<< BinNames[iter->first]<<"\n";
         double d=iter->second->evaluate(ao); // execute the selection cut
         DEBUG("\t****Result : " << d << std::endl);
         evt_weight = ao->evt.user_evt_weight;
@@ -648,6 +653,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         }
         iter++; //moves on to the next cut
     }// loop over all binnings   
+//  --------> example for bins with names  for (i=1;i<=nx;i++) h->GetXaxis()->SetBinLabel(i,people[i-1]);
 
    if  (controlword > 0 ) { ao->evt.user_evt_weight=evt_weight; }
 // les cuts sont finis ici.

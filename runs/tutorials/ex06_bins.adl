@@ -45,13 +45,13 @@ region hadronic
   select MT2j0j1 > 300 
   # Define variable boundary bins on jet multiplicity and MT2j0j1:
   # Each line corresponds to one bin
-  bin size(jets) [] 4 5 and MT2j0j1 [] 300 500
-  bin size(jets) [] 4 5 and MT2j0j1 [] 500 800
+  bin "wak wak" size(jets) [] 4 5 and MT2j0j1 [] 300 500
+  bin "hahaha" size(jets) [] 4 5 and MT2j0j1 [] 500 800
   bin size(jets) [] 4 5 and MT2j0j1 [] 800 1000
   bin size(jets) [] 4 5 and MT2j0j1 > 1000
   bin size(jets) >= 6 and MT2j0j1 [] 300 500
   bin size(jets) >= 6 and MT2j0j1 [] 500 800
-  bin size(jets) >= 6 and MT2j0j1 > 800
+  bin "dust bin" size(jets) >= 6 and MT2j0j1 > 800
 
 region leptonic
   select size(jets) >= 3  

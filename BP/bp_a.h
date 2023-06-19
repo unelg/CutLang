@@ -69,6 +69,7 @@ class BPdbxA : public dbxA {
         map<int, std::vector<std::string> > systmap;
         map<int,Node*> NodeCuts;//cuts and histos
         map<int,Node*> BinCuts;//binning
+        map<int,string> BinNames;//binning
         map<std::string,Node*> ObjectCuts;//cuts for user defined objects
         std::vector<std::string> NameInitializations;
         std::vector<int> TRGValues;
