@@ -53,6 +53,7 @@ std::map< std::string, std::pair<int, unordered_set<int> > >SearchNode::FORBIDDE
 std::map< std::string, double > SFuncNode::BUFFERED_VALUES; 
 std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 std::map< std::string, vector<Node*> > criteriaBank;
+std::map< std::string, vector<Node*> > VariableListBank;
 
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
@@ -91,7 +92,7 @@ std::map< std::string, vector<Node*> > criteriaBank;
 %token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF
-%token TTBARNNLOREC
+%token TTBARNNLOREC OME
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
@@ -254,6 +255,48 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         TmpParticle.swap(newList);
                                         ListParts->insert(make_pair(name,newList));
 				}
+            | DEF ID '=' '{' variablelist '}' {
+                             cout << "Found a variable list\n";
+                             string name = $2;
+                             map<string,vector<Node*> >::iterator it ;
+                             it = VariableListBank.find(name);
+                             if(it != VariableListBank.end()) {
+                                                DEBUG(name<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable List already defined.");
+                                                YYERROR;//stops parsing if variable already defined
+                              }
+                             VariableListBank.insert(make_pair(name,VariableList) );
+                             VariableList.clear();
+
+            }
+            | DEF ID '=' OME '(' description ',' ID ')' {
+                             cout << "Found an ONNX model execution:"<< $6 << "\n"; 
+                             string vname = $8;
+                             map<string,vector<Node*> >::iterator itv ;
+                             itv = VariableListBank.find(vname);
+                             if(itv == VariableListBank.end()) {
+                                                DEBUG(vname<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined! ");
+                                                YYERROR;//stops parsing if variable already defined
+                              }
+                              map<string, Node*>::iterator it ;
+                              string name = $2;
+                              it = NodeVars->find(name);
+                              if(it != NodeVars->end()) {
+                              	DEBUG(name<<" : ");
+                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
+                                YYERROR;//stops parsing if variable already defined
+                              }
+//NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList)));
+                              string pippo="Print";
+                              NodeVars->insert(make_pair(name,new OMENode(pippo,0,itv->second) ));
+
+            }
+            | DEF ID '=' OME '(' description ',' variablelist ')' {
+//             1  2   3   4   5    6          7     8          9              
+                               cout << "Found an ONNX model execution:"<< $6 << "\n"; 
+            }
+
             | DEF ID '=' CONSTITS list2 {  DEBUG($2<<" will be defined as the children of particles.\n");
                                    pnum=0;
                                    string name = $2;
@@ -1250,8 +1293,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                      cout <<"found as an object\n";
                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is known as an object.");
                      YYERROR;//stops parsing if variable not found
-                   }
-                } 
+                   } // not an object cut
+                }// not a node variable 
         }
     | ID '(' ID ')' {
                 map<string, Node *>::iterator it;
