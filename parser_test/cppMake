@@ -1,5 +1,0 @@
-#!/bin/bash
-/usr/bin/bison -d -v -ob.cpp parse.y
-flex -o l.cpp parse.l
-g++ b.cpp l.cpp main.cpp -o main
-./main
