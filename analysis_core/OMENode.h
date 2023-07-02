@@ -99,14 +99,14 @@ public:
 
 
         std::vector<Ort::Value> input_tensors;
-        for(int i = 0; i < input_tensor_values.size(); i++){
+        for(int i = 0; i < input_data.size(); i++){
             std::cout << input_data[i] << " , "; // modified this part! prints the input data.
         }
 
-        input_tensors.emplace_back(vec_to_tensor<float>(input_data, input_shape));
+        input_tensors.emplace_back(vec_to_tensor<float>(input_data, input_shapes));
 
         // double-check the dimensions of the input tensor
-        assert(input_tensors[0].IsTensor() && input_tensors[0].GetTensorTypeAndShapeInfo().GetShape() == input_shape);
+        assert(input_tensors[0].IsTensor() && input_tensors[0].GetTensorTypeAndShapeInfo().GetShape() == input_shapes);
         std::cout << "\ninput_tensor shape: " << print_shape(input_tensors[0].GetTensorTypeAndShapeInfo().GetShape()) << std::endl;
 
         // pass data through model
