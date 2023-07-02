@@ -287,8 +287,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,"Variable already defined");
                                 YYERROR;//stops parsing if variable already defined
                               }
-//NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList)));
-                              string pippo="Print";
+                              string pippo=$6;
                               NodeVars->insert(make_pair(name,new OMENode(pippo,0,itv->second) ));
 
             }

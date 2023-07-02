@@ -12,13 +12,14 @@
 #include <ios>
 #include <stdio.h>
 #include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <sstream>
+/*
 #include <algorithm>  
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <sstream>
-#include <string>
-#include <vector>
 #include <onnxruntime_cxx_api.h>
 
 template <typename T>
@@ -28,19 +29,22 @@ Ort::Value vec_to_tensor(std::vector<T>& data, const std::vector<std::int64_t>& 
   auto tensor = Ort::Value::CreateTensor<T>(mem_info, data.data(), data.size(), shape.data(), shape.size());
   return tensor;
 }
+*/
+
 
 class OMENode : public Node{
 private:
       vector<Node*> variableList;
-      vector<float> OME_input;
       short int selector;
+      TString commando="./OME ";
 public:
 	OMENode(std::string s, short int sele, vector<Node*> VariableList){
-        path_of_model=s;
+        symbol=s;
         selector=sele;
-		left = NULL;
-		right = NULL;
+	left = NULL;
+	right = NULL;
         variableList = VariableList;
+        commando+=s;
 	}
     virtual void getParticles(std::vector<myParticle *>* particles) override{
                  std::vector<myParticle *>  bparticles;
@@ -61,8 +65,8 @@ public:
         ss << v[v.size() - 1];
         return ss.str();
     }
-
-    virtual float OnnxModelEvaluator(std::basic_string<ORTCHAR_T> model_file, std::vector<float> input_data){
+/*
+    virtual float OnnxModelEvaluator(std::basic_string<ORTCHAR_T> model_file, std::vector<double> input_data){
         Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "OME_TEST");
         Ort::SessionOptions session_options;
         Ort::Session session = Ort::Session(env, model_file.c_str(), session_options);
@@ -147,23 +151,45 @@ public:
             exit(-1);
         }
     };
-
+*/
     virtual void Reset() override{}
 
 
     virtual double evaluate(AnalysisObjects* ao) override {
            std::vector<myParticle *>  bparticles;
            std::vector<myParticle *> *aparticles=&bparticles;
-            for (int i = 0; i < (int)variableList.size(); i++)
+           std::vector<double> NNvalues;
+           TString command = commando; // shell command
+           for (int i = 0; i < (int)variableList.size(); i++)
             {
                 variableList[i]->getParticlesAt(aparticles,0);
-                std::cout<< variableList[i]->evaluate(ao) << " , ";
-                OME_input[i] = variableList[i]->evaluate(ao);
+                //std::cout<< aparticles->at(i)->index <<"c "; // what if we have 0 particles?
+                double aval=variableList[i]->evaluate(ao);
+                NNvalues.push_back(aval);
+                std::cout<< aval << " , ";
+                command += " ";
+                command += aval;
             }
             std::cout << "\n";
-            OnnxModelEvaluator(path_of_model, OME_input);
+//          OnnxModelEvaluator(symbol, NNvalues);
+    // Execute the shell command and retrieve the result
+    std::string result = "";
+    FILE* pipe = popen(command.Data(), "r");
+    if (pipe) {
+        char buffer[1024];
+        while (!feof(pipe)) {
+            if (fgets(buffer, 128, pipe) != nullptr) {
+                result += buffer;
+            }
+        }
+        pclose(pipe);
+    }
+    
+    // Print the result
+    std::cout << "Command output:\n" << result << std::endl;
+    
 
-            return 1;
+    return 1;
         
     }
     virtual ~OMENode() {}
