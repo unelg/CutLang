@@ -3,6 +3,7 @@ define NNvars = { size(JET) pT(JET[0])
                eta(JET[0]) phi(JET[0])
                MET }
 
+define minPT = 212.3
 
 define NNdisc4J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_4jets.onnx" , NNvars)
 define NNdisc5J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_5jets.onnx" , NNvars)
@@ -10,9 +11,15 @@ define NNdisc6J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_6jets.onnx" , NNvars)
 define NNdisc7J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_7jets.onnx" , NNvars)
 define NNdisc8J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_8jets.onnx" , NNvars)
 
+
+object goodJets : JET
+	select pT(JET) > minPT	
+
+
  region NNj
  	select ALL
         select size(JET) > 0
+        select size(goodJets) > 1
         select NNdisc4J >  0.1
 #       select NNdisc5J >  0.2
 #       select NNdisc6J >  0.3
