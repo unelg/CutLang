@@ -470,6 +470,16 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 // *************************************
 /// CutLang execution starts-------here*
 // *************************************
+    std::map<string, Node*>::iterator oter = ObjectCuts.begin();
+    while(oter != ObjectCuts.end())
+    {    Node * ocut = oter->second;
+         vector<myParticle *> theseParticles;
+         while (ocut != NULL) {
+           ocut->Reset();
+           ocut=ocut->left;
+         }
+        oter++;
+    }
 
     std::map<int, Node*>::iterator iter = NodeCuts.begin();
 //----------------------reset 
