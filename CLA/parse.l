@@ -67,8 +67,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [Ss][Kk][Ii][Pp][Hh][Ii][Ss][Tt][Oo][Ss] return SKPH;
 [Ss][Kk][Ii][Pp][Ee][Ff][Ff][Ss] return SKPE;
 [Gg][Ee][Nn] return GEN;
-[eE][lL][eE]|"Electron" return ELE;//particles
-[mM][uU][oO]|"Muon" return MUO;
+[eE][lL][eE]|"Electron"|"electron" return ELE;//particles
+[mM][uU][oO]|"Muon"|"muon" return MUO;
 [tT][aA][uU] return TAU;
 [tT][rR][kK] return TRK;
 [pP][hH][oO]|"Photon" return PHO;

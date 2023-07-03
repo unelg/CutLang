@@ -150,12 +150,14 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
         {
             for(int i(right_begin); i <= right_end; i++)
             {
+//               cout<<"=====>"<<i<<"\n";
                 a.right = i;
                 swap(temp[a.left],temp[a.right]);
                 sort(temp,pas, nbZ);
                 suppr_by_set(output, temp, tab_select, real_end+1, pas);
                  ++itteration;
                 reccursion(comb, etape, tab_select, temp, output, left_begin, right_end, real_end, interrup, pas, nbZ);
+//                cout<<"=====> after recursion"<<itteration<<"\n";
 
                 if (a.left != left_begin && i != right_end)
                 {
@@ -163,7 +165,7 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
                     right_begin = righ_begin_temp;
                 }
             }
-
+//            cout<<"out of for\n";
             if(a.left != interrup + 1)
             {
                 --a.left;
@@ -172,7 +174,9 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
             else
                 arret = 1;
 
+//        cout<<"inside inner while left:"<< a.left<<" right:"<<a.right<< " arret:"<<arret <<"\n";
         }while( (a.left>(left_begin-pas+1) || a.right != right_end) && (arret == 0) );
+//        cout<<"out of inner while\n";
 
         --right_end;
 
@@ -195,6 +199,7 @@ void etape(vector<vector<int>> tab_select, vector<int> tab , vector<vector<int>>
 
             reccursion(comb, etape, tab_select, temp, output, left_begin, right_end, real_end, interrup, pas, nbZ);
         }
+//        cout<<"inside while right:"<< right_end<<" real:"<<real_end<< " arret:"<<arret <<"\n";
     }while(right_end >= real_end && arret==0);
 }
 
@@ -205,10 +210,13 @@ void etape_combinatoire(vector<vector<int>> tab_select, vector<int> tab , vector
     {
         n = n + pas;
     }
+//     cout <<"before comb\n";
         comb(right_end-real_end + pas, pas, real_end+1-pas, tab_select, output, tab, itteration, (real_end+1)/pas);
+//     cout <<"after comb\n";
 
     for(int i(n); i > (left_begin - 1); i= i - pas)
     {
+//     cout <<"loop:"<<i<<"\n";
         etape(tab_select, tab, output, i, i+1 , right_end, real_end, i, pas);
     }
 }
@@ -233,15 +241,18 @@ Denombrement::Denombrement( int JetReconstr, int JetTotal, vector<vector<int>> t
 }
 
 Denombrement::Denombrement( int JetReconstr, int JetTotal) : nJetRecontr(JetReconstr), nJetTotal(JetTotal) //,nParticles(JetTotal)
-{
+{ //-------------------------------3                 4
 //---------------------------combine JetReconstr particles, out of JetTotal 
 //   if (nParticles.size()<2){
     if (nJetTotal>2)
     {
         vector<int> tab(nJetTotal+1);
         for(int i = 0; i<nJetTotal+1 ; ++i) { tab[i] = i; }
+//        cout <<"Before suppr_by_set\n";
         suppr_by_set(out, tab, tab_selection, nZ*nJetRecontr, nJetRecontr);
+//        cout <<"Before etape_combinatoire\n";
         etape_combinatoire( tab_selection, tab, out, nJetRecontr-1, nJetRecontr, nJetTotal, nZ*nJetRecontr-1, nJetRecontr-1, nJetRecontr, 0);
+//        cout <<"After etape_combinatoire\n";
     } else {
         Comb simple_combination = Comb(nJetTotal+1, nJetRecontr);
         out = simple_combination.output();
@@ -268,7 +279,7 @@ void Denombrement::affiche()
         for(int j = 0; j<out[i].size(); ++j)
         {
             cout<< out[i][j] << " ";
-            if(j%nJetRecontr == nJetRecontr-1) cout<<"  ";
+            if(j%nJetRecontr == nJetRecontr-1) cout<<" \t ";
         }
         cout<<"\n";
     }

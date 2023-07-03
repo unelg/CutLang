@@ -407,24 +407,21 @@ object goodjets take Jet
               totpass |= ppassed;
               DEBUG("Result:"<<ppassed<<"\n");
               if (!ppassed & !anyof) { 
-                    cout<<"consti "<< ic <<" failed and will be removed since !any.\n";
                     DEBUG("consti "<< ic <<" failed and will be removed since !any.\n");
                     (ao->constits).find(consname)->second.erase( (ao->constits).find(consname)->second.begin()+ic); // erase consti
               }
              }//end of loop over constituent
              if (mycutstr.Contains("save")) { cout <<"\n"; }
              if (anyof & !totpass) {
-               cout<<ipart<<"th jet removed from "<<name<<" since all " <<(ao->constits).find(consname)->second.size() <<"constituents failed.\n";
                DEBUG(ipart<<"th jet removed from "<<name<<" since all " <<(ao->constits).find(consname)->second.size() <<"constituents failed.\n");
                (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
              }
              if ( (ao->constits).find(consname)->second.size() < 1) {
-               cout<<ipart<<"th jet removed from "<<name<<" since all constituents failed and there was no any.\n";
                DEBUG(ipart<<"th jet removed from "<<name<<" since all constituents failed and there was no any.\n");
                (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart); // erase jets without constituents
              }
           }// end of loop over all particles (jets) in the event.
-          for (int ii=0; ii<(ao->jets).find(name)->second.size(); ii++) cout<< "Remaining "<<ii<<"th jet\n";
+//          for (int ii=0; ii<(ao->jets).find(name)->second.size(); ii++) cout<< "Remaining "<<ii<<"th jet\n";
 
          continue; // will move to the next cut iterator
         } // done with constis
@@ -463,8 +460,7 @@ object goodjets take Jet
                     totpass |= ppassed;
                     DEBUG("Local Pass/Fail:"<<ppassed<< " Global P/F: "<< totpass <<"\n");
                     if (!ppassed & !anyof) {
-                         cout<<"removing !any:"<<name<< " idx:"<<ipart<<"\n";
-                         DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
+                         DEBUG("removing !any:"<<name<< " idx:"<<ipart<<"\n");
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                         break; // we can quit at first mismatch.
                     }
@@ -472,7 +468,6 @@ object goodjets take Jet
 
 //-----------------the particle removed in case of any should happen here.
                  if (anyof & !totpass) {
-                         cout<<"removing:"<<name<< " idx:"<<ipart<<"\n";
                          DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
                         (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
                  }
@@ -1426,7 +1421,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
    (*cutIterator)->getParticles(particles);
    requested_size=particles->size();
    DEBUG("iCut: "<<(*cutIterator)->getStr()<<"\n");
-   DEBUG("iPsize:"<<particles->size() <<"\n");
+   DEBUG("iPsize:"<<particles->size() <<"\n"); //------ combine iPsize particles
 
 // at this point I have the particles I will use to construct the combined object. like j1 and j2
 // now we find how many of those particles we have in each event
@@ -1475,15 +1470,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 
     vector<int> temp_index;
     vector<vector<int>> combi_out; 
-    
+//    for (int ik=0; ik<available_parts.size(); ik++){cout<<available_parts[ik]<<" ";}; cout<<" .\n"; 
 
     if (available_parts.size() < 2) {
 //---- NANT's code to produce all the combined objetcs
     DEBUG ("req max:"<<requested_max <<" req_size:"<< requested_size <<" \n");
-    Comb combinations_part (requested_max, requested_size);
+    Comb combinations_part (requested_max, requested_size); // we combine requested_size particles out of requested_max.
 
 #ifdef _CLV_
     combinations_part.affiche();
+    cout<<"--------------------------------------\n";
 #endif
     combi_out = combinations_part.output();// example: out  = {{0,1} , {0,2}, {1,2}} si ipart_max = 3 et particles->size() = 2
     } else { // works for two particles for now
@@ -1493,9 +1489,9 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
        temp_index.push_back(ipa1); temp_index.push_back(ipa2);
        combi_out.push_back(temp_index);
        temp_index.clear();
+      }
      }
-     }
-    }
+    } //end of else
 
     TLorentzVector  alv;
     int apq = 0;
@@ -1631,10 +1627,13 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ P or F: ~~~~~~ "<<ppassed<<"\n");
                if (!ppassed) {
-		// 			(ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-		 			bad_combinations.push_back(combi_out[ipart]);
-		 			good_combinations.erase(combi_out[ipart]);
-	     		    } else      good_combinations.insert(combi_out[ipart]);
+                              DEBUG("Removing:"<<name<<" " <<ipart<<"th combi.\n");
+			      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+		 	      bad_combinations.push_back(combi_out[ipart]);
+		 	      good_combinations.erase(combi_out[ipart]);
+	     		    } else {      
+                              good_combinations.insert(combi_out[ipart]);
+                            }
            DEBUG("A cut finished.\n");
 	   }
       } else {
@@ -1686,6 +1685,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	  bool ppassed=(*cutIterator)->evaluate(ao);
 	  DEBUG("ooooooooooooooooooo P or F: ~~~ "<<ppassed<<"\n");
 	  if (!ppassed) {
+            DEBUG("Removing:"<<name<<" " <<ipart<<"th combi.\n");
 	    (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
 	        bad_combinations.push_back(combi_out[ipart]);
 	        good_combinations.erase(combi_out[ipart]);
@@ -1710,13 +1710,14 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     int new_req_max= requested_max-1;
     if  (available_parts.size()>1 ) new_req_max = requested_size;    
 
-    DEBUG("Before denombre : "<< requested_size<< "  max:"<<new_req_max<<"\n");
+    DEBUG("Requested Size: "<< requested_size<< "  max:"<<new_req_max<< " available_parts:"<<available_parts.size()<<"\n");
     vector<vector<int>> out_selection;
 
-
+/*
     if (available_parts.size() < 2) { // NANT
+      DEBUG("Before Denombrement: \n");
       Denombrement All_possibles_combinations = Denombrement(requested_size, new_req_max);
-      DEBUG("Before selection : \n");
+      DEBUG("Before selection All_possibles_combinations.affiche() : \n");
 #ifdef _CLV_
       All_possibles_combinations.affiche();
 #endif
@@ -1736,7 +1737,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
      }
      DEBUG("Number of bads:"<< bad_combinations.size() <<"\n");
     }// ngu
-    
+*/   
     DEBUG("After addition, types #:"<<ao->combos.size()<< " \t");
     DEBUG(" remaining combo particle#:"<<(ao->combos)[name].size()<< " \n");
 
