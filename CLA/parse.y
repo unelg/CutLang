@@ -82,7 +82,7 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %parse-param {std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables}
 %parse-param {std::map<std::string, std::vector<cntHisto> >* cntHistos}
 %parse-param {std::map<int, std::vector<std::string> > *systmap}
-%parse-param {std::map<int,string>* BinNames}
+%parse-param {std::map<int, std::string>* BinNames}
 %token COUNTSFORMAT COUNTS ERR_SYST ERR_STAT PROCESS
 %token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI PAPTITLE
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
