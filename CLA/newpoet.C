@@ -83,6 +83,8 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxm->addAttribute( muon_TkIso03[i] ); // attri 1
         adbxm->addAttribute( muon_pfreliso03all[i] ); // attri 2 - dummy
         adbxm->addAttribute( muon_pfreliso03all[i] ); // attri 3
+        adbxm->addAttribute( muon_sip3d[i] ); // attri 4
+        adbxm->addAttribute( muon_pfreliso04DBCorr[i] ); // attri 5
         muons.push_back(*adbxm);
         delete adbxm;
     }
@@ -102,6 +104,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxe->addAttribute( electron_ismvaLoose[i] ); // attri 1
         adbxe->addAttribute( electron_iso[i] ); // attri 2
         adbxe->addAttribute( electron_iso[i] ); // attri 3
+        adbxe->addAttribute( electron_sip3d[i] ); // attri 4
         electrons.push_back(*adbxe);
         delete adbxe;
     }
@@ -135,6 +138,7 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxj = new dbxJet(alv);
         adbxj->setCharge(jet_ch[i]);
         adbxj->setParticleIndx(i);
+        adbxj->addAttribute( jet_corrpt[i] ); // attri 0
         adbxj->setFlavor(jet_btag[i]); // btag distro
         jets.push_back(*adbxj);
         delete adbxj;

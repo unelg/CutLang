@@ -100,9 +100,12 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][eE][rR][tT][eE][xX][yY] return VERY;
 [vV][eE][rR][tT][eE][xX][zZ] return VERZ;
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
-[tT][iI][gG][hH][tT] return ISTIGHT;
+[iI][sS][tT][iI][gG][hH][tT] return ISTIGHT;
 [mM][eE][dD][iI][uU][mM] return ISMEDIUM;
 [lL][oO][oO][sS][eE] return ISLOOSE;
+"sip3d" return SIP3D;
+"corrpT" return CORRPT;
+"pfreliso04DBCorr" return PFRELISO04DBCORR;
 "isZCandidate" return ZCANDID;
 "tightId" return TIGHTID;
 "btagDeepB" return DEEPB;

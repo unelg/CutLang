@@ -186,6 +186,9 @@ double truthMatchProbof( dbxParticle* apart);
 double truthIDof( dbxParticle* apart);
 double truthParentIDof( dbxParticle* apart);
 double IDXof( dbxParticle* apart);
+double sip3d( dbxParticle* apart);
+double corrpT( dbxParticle* apart);
+double pfreliso04DBCorr( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */

@@ -768,3 +768,16 @@ double truthMatchProbof( dbxParticle* apart){
  return apart->Attribute(3);
 }
 
+double sip3d( dbxParticle* apart) {
+
+return apart->Attribute(4);
+}
+double corrpT( dbxParticle* apart){
+return apart->Attribute(0);
+}
+double pfreliso04DBCorr( dbxParticle* apart){
+return apart->Attribute(5);
+}
+
+
+

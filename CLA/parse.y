@@ -99,6 +99,7 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %token RELISO TAUISO DXY EDXY DZ EDZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
 %token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
 %token ISTIGHT ISMEDIUM ISLOOSE ISOVAR MINIISO
+%token SIP3D CORRPT PFRELISO04DBCORR
 %token TIGHTID PUID GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
@@ -950,6 +951,19 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isTight,newList,"isTight");
                                  }
+         | SIP3D '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(sip3d,newList,"sip3d");
+                                 }
+         | PFRELISO04DBCORR '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(pfreliso04DBCorr,newList,"pfreliso04DBCorr");
+                                 }
+         | CORRPT '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(corrpT,newList,"corrpT");
+                                 }
+
          | '{' particules '}' ISMEDIUM { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isMedium,newList,"isMedium");
