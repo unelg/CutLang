@@ -1,4 +1,5 @@
-FROM rootproject/root:6.26.04-ubuntu-arm64
+#FROM rootproject/root:6.26.04-ubuntu-arm64
+FROM rootproject/root:6.26.04-ubuntu22.04
 #root6-arm64-tgz
 WORKDIR /usr/local
 
