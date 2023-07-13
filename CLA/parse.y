@@ -2648,7 +2648,8 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      map<string,vector<Node*> >::iterator ikc;
                                      map<string,vector<Node*> >::iterator iuc;
 
-                                     if(iu == ObjectCuts->end() && it == ObjectCuts->end()  ){//if I dont have objects, 
+                                     if(1  ){//if I dont have objects, 
+                                     //if(iu == ObjectCuts->end() && it == ObjectCuts->end()  ){//if I dont have objects, 
                                        DEBUG($6 << " and "<< $8 << " seen first time, Adding their defining cuts in Union.\n");
                                        ikc = criteriaBank.find($6);
                                        iuc = criteriaBank.find($8);
