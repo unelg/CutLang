@@ -1,2 +1,169 @@
 Errors: 
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+Line 4383: CLA ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+Line 4384: /home/runner/work/CutLang/CutLang/runs/CLA.sh
+Line 4385: /home/runner/work/CutLang/CutLang/runs
+Line 4386: /home/runner/work/CutLang/CutLang
+Line 4387: Single Analysis
+Line 4388: /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 4389: CLA v2.14.1	compiled on Thu Jul 13 10:12:54 UTC 2023
+Line 4390: Analysis run count is 1
+Line 4391: ~Now using Delphes files.~~~~~~ beta!
+Line 4392: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 4393: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 4394: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 4395: open ./delphes_events_ttbar.root
+Line 4396: RetVal:1
+Line 4397: initialized with the chain...1000
+Line 4398:  #systematic included:0
+Line 4399: 	 REGION/ALGO:testUJ
+Line 4400: ==Parsing started:		 Parsing finished.==
+Line 4401: We have 6 CutLang Cuts, 3 CutLang objects and 0 Bins
+Line 4402: TRGe:1  TRGm:0
+Line 4403:  => 0 BP_1
+Line 4404: End of analysis initialization
+Line 4405: number of entries 1000
+Line 4406: Forced number of entries 1000
+Line 4407: starting entry 0  last:1000
+Line 4408: Processing event 0
+Line 4409: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 4410: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 4411: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 4412: for jetA_0c #constituents:1	71.3741 ,
+Line 4413: for jetA_0c #constituents:1	71.3741 ,
+Line 4414: for jetA_0c #constituents:1	71.3741 ,
+Line 4415:  Generating stack trace...
+Line 4416:  0x00007fa3609d0a1e in TClingDataMemberInfo::TypeTrueName(ROOT::TMetaUtils::TNormalizedCtxt const&) const + 0x16e from /home/runner/work/CutLang/CutLang/root/lib/libCling.so
+Line 4417:  0x00007fa3668f5576 in TDataMember::Property() const + 0x2c6 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4418:  0x00007fa3668f714e in TDataMember::Init(bool) + 0x6e from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4419:  0x00007fa3668f8896 in TDataMember::TDataMember(DataMemberInfo_t*, TClass*) + 0x146 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4420:  0x00007fa366902f73 in TListOfDataMembers::Get(DataMemberInfo_t*, bool) + 0x1b3 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4421:  0x00007fa366903367 in TListOfDataMembers::Load() + 0x267 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4422:  0x00007fa3668d9bb6 in TClass::CreateListOfDataMembers(std::atomic<TListOfDataMembers*>&, TDictionary::EMemberSelection, bool) + 0xb6 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4423:  0x00007fa3668e709a in TClass::GetDataMember(char const*) const + 0x10a from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4424:  0x00007fa3668ea662 in TBuildRealData::Inspect(TClass*, char const*, char const*, void const*, bool) + 0x42 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4425:  0x00007fa36094ca3b in TCling::InspectMembers(TMemberInspector&, void const*, TClass const*, bool) at TCling.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libCling.so
+Line 4426:  0x00007fa3668dc835 in TClass::CallShowMembers(void const*, TMemberInspector&, bool) const + 0xc5 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4427:  0x00007fa3668e8f9d in TClass::BuildRealData(void*, bool) at TClass.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4428:  0x00007fa3663ed948 in TStreamerInfo::Build(bool) + 0x328 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4429:  0x00007fa3668dad29 in TClass::GetStreamerInfoImpl(int, bool) const + 0x239 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4430:  0x00007fa3668daeae in TClass::GetStreamerInfo(int, bool) const + 0x6e from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4431:  0x00007fa36631f454 in TBufferFile::WriteClassBuffer(TClass const*, void*) + 0x344 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4432:  0x00007fa36691ffff in TStreamerBase::Streamer(TBuffer&) + 0x19f from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4433:  0x00007fa36631ef86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4434:  0x00007fa366326564 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4435:  0x00007fa3668a650d in TObjArray::Streamer(TBuffer&) + 0x21d from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4436:  0x00007fa36631ef86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4437:  0x00007fa36632644f in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4438:  0x00007fa3663ed08b in TStreamerInfo::Streamer(TBuffer&) + 0x48b from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4439:  0x00007fa36631ef86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4440:  0x00007fa366326564 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4441:  0x00007fa3668a18ac in TList::Streamer(TBuffer&) + 0x22c from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4442:  0x00007fa3663ca352 in TKey::TKey(TObject const*, char const*, int, TDirectory*) + 0x1e2 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4443:  0x00007fa366397f75 in TFile::WriteStreamerInfo() + 0x485 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4444:  0x00007fa366396993 in TFile::Close(char const*) + 0xb3 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4445:  0x00007fa366396f96 in TFile::~TFile() + 0x26 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4446:  0x00007fa36639727d in TFile::~TFile() at TFile.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 4447:  0x00007fa36689f178 in TList::Delete(char const*) + 0x4d8 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4448:  0x00007fa3667dd64c in TROOT::~TROOT() + 0x17c from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 4449:  0x00007fa3650a8495 in <unknown> from /lib/x86_64-linux-gnu/libc.so.6
+Line 4450:  0x00007fa3650a8610 in on_exit + 0x0 from /lib/x86_64-linux-gnu/libc.so.6
+Line 4451:  0x000055a55dcf68f1 in ObjectNode::evaluate(AnalysisObjects*) + 0x151 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4452:  0x000055a55dcf6cec in ObjectNode::evaluate(AnalysisObjects*) + 0x54c from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4453:  0x000055a55dd1a106 in SFuncNode::evaluate(AnalysisObjects*) + 0x1356 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4454:  0x000055a55dcb4253 in BinaryNode::evaluate(AnalysisObjects*) + 0x33 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4455:  0x000055a55db9610d in BPdbxA::makeAnalysis(AnalysisObjects*, int, int) + 0x68d from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4456:  0x000055a55dccb422 in AnalysisController::RunTasks(AnalysisObjects, std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, AnalysisObjects, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, AnalysisObjects> > >) + 0x582 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4457:  0x000055a55dbde404 in delphes::Loop(analy_struct, char*) + 0x1c74 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4458:  0x000055a55db94149 in main + 0x1d09 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4459:  0x00007fa36508cd90 in <unknown> from /lib/x86_64-linux-gnu/libc.so.6
+Line 4460:  0x00007fa36508ce40 in __libc_start_main + 0x80 from /lib/x86_64-linux-gnu/libc.so.6
+Line 4461:  0x000055a55db94d95 in _start + 0x25 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 4462: malloc(): unaligned tcache chunk detected
+Line 4463: /home/runner/work/CutLang/CutLang/runs/CLA.sh: line 367:  9923 Aborted                 (core dumped) $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS}
+Line 4464: end CLA single
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+Line 7517: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+Line 7518: CLA v2.14.1	compiled on Thu Jul 13 10:12:54 UTC 2023
+Line 7519: Analysis run count is 1
+Line 7520: ~Now using Delphes files.~~~~~~ beta!
+Line 7521: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 7522: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 7523: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 7524: open ./delphes_events_ttbar.root
+Line 7525: RetVal:1
+Line 7526: initialized with the chain...1000
+Line 7527:  #systematic included:0
+Line 7528: 	 REGION/ALGO:testUJ
+Line 7529: ==Parsing started:		 Parsing finished.==
+Line 7530: We have 6 CutLang Cuts, 3 CutLang objects and 0 Bins
+Line 7531: TRGe:1  TRGm:0
+Line 7532:  => 0 BP_1
+Line 7533: End of analysis initialization
+Line 7534: number of entries 1000
+Line 7535: Forced number of entries 1000
+Line 7536: starting entry 0  last:1000
+Line 7537: Processing event 0
+Line 7538: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 7539: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 7540: for jetA_0c #constituents:12	2.29212 , 	12.532 , 	35.7432 , 	1.78638 , 	4.7284 , 	2.70737 , 	3.76744 , 	1.44893 , 	1.0741 , 	4.03658 , 	2.26944 , 	1.93917 ,
+Line 7541: for jetA_0c #constituents:1	71.3741 ,
+Line 7542: for jetA_0c #constituents:1	71.3741 ,
+Line 7543: for jetA_0c #constituents:1	71.3741 ,
+Line 7544:  Generating stack trace...
+Line 7545:  0x00007f1814068a1e in TClingDataMemberInfo::TypeTrueName(ROOT::TMetaUtils::TNormalizedCtxt const&) const + 0x16e from /home/runner/work/CutLang/CutLang/root/lib/libCling.so
+Line 7546:  0x00007f1819f8d576 in TDataMember::Property() const + 0x2c6 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7547:  0x00007f1819f8f14e in TDataMember::Init(bool) + 0x6e from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7548:  0x00007f1819f90896 in TDataMember::TDataMember(DataMemberInfo_t*, TClass*) + 0x146 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7549:  0x00007f1819f9af73 in TListOfDataMembers::Get(DataMemberInfo_t*, bool) + 0x1b3 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7550:  0x00007f1819f9b367 in TListOfDataMembers::Load() + 0x267 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7551:  0x00007f1819f71bb6 in TClass::CreateListOfDataMembers(std::atomic<TListOfDataMembers*>&, TDictionary::EMemberSelection, bool) + 0xb6 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7552:  0x00007f1819f7f09a in TClass::GetDataMember(char const*) const + 0x10a from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7553:  0x00007f1819f82662 in TBuildRealData::Inspect(TClass*, char const*, char const*, void const*, bool) + 0x42 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7554:  0x00007f1813fe4a3b in TCling::InspectMembers(TMemberInspector&, void const*, TClass const*, bool) at TCling.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libCling.so
+Line 7555:  0x00007f1819f74835 in TClass::CallShowMembers(void const*, TMemberInspector&, bool) const + 0xc5 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7556:  0x00007f1819f80f9d in TClass::BuildRealData(void*, bool) at TClass.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7557:  0x00007f1819a85948 in TStreamerInfo::Build(bool) + 0x328 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7558:  0x00007f1819f72d29 in TClass::GetStreamerInfoImpl(int, bool) const + 0x239 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7559:  0x00007f1819f72eae in TClass::GetStreamerInfo(int, bool) const + 0x6e from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7560:  0x00007f18199b7454 in TBufferFile::WriteClassBuffer(TClass const*, void*) + 0x344 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7561:  0x00007f1819fb7fff in TStreamerBase::Streamer(TBuffer&) + 0x19f from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7562:  0x00007f18199b6f86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7563:  0x00007f18199be564 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7564:  0x00007f1819f3e50d in TObjArray::Streamer(TBuffer&) + 0x21d from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7565:  0x00007f18199b6f86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7566:  0x00007f18199be44f in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7567:  0x00007f1819a8508b in TStreamerInfo::Streamer(TBuffer&) + 0x48b from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7568:  0x00007f18199b6f86 in TBufferFile::WriteObjectClass(void const*, TClass const*, bool) + 0x1a6 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7569:  0x00007f18199be564 in TBufferIO::WriteObjectAny(void const*, TClass const*, bool) at TBufferIO.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7570:  0x00007f1819f398ac in TList::Streamer(TBuffer&) + 0x22c from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7571:  0x00007f1819a62352 in TKey::TKey(TObject const*, char const*, int, TDirectory*) + 0x1e2 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7572:  0x00007f1819a2ff75 in TFile::WriteStreamerInfo() + 0x485 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7573:  0x00007f1819a2e993 in TFile::Close(char const*) + 0xb3 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7574:  0x00007f1819a2ef96 in TFile::~TFile() + 0x26 from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7575:  0x00007f1819a2f27d in TFile::~TFile() at TFile.cxx:? from /home/runner/work/CutLang/CutLang/root/lib/libRIO.so.6.26
+Line 7576:  0x00007f1819f37178 in TList::Delete(char const*) + 0x4d8 from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7577:  0x00007f1819e7564c in TROOT::~TROOT() + 0x17c from /home/runner/work/CutLang/CutLang/root/lib/libCore.so.6.26
+Line 7578:  0x00007f1818740495 in <unknown> from /lib/x86_64-linux-gnu/libc.so.6
+Line 7579:  0x00007f1818740610 in on_exit + 0x0 from /lib/x86_64-linux-gnu/libc.so.6
+Line 7580:  0x000055d5608528f1 in ObjectNode::evaluate(AnalysisObjects*) + 0x151 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7581:  0x000055d560852cec in ObjectNode::evaluate(AnalysisObjects*) + 0x54c from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7582:  0x000055d560876106 in SFuncNode::evaluate(AnalysisObjects*) + 0x1356 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7583:  0x000055d560810253 in BinaryNode::evaluate(AnalysisObjects*) + 0x33 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7584:  0x000055d5606f210d in BPdbxA::makeAnalysis(AnalysisObjects*, int, int) + 0x68d from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7585:  0x000055d560827422 in AnalysisController::RunTasks(AnalysisObjects, std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, AnalysisObjects, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, AnalysisObjects> > >) + 0x582 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7586:  0x000055d56073a404 in delphes::Loop(analy_struct, char*) + 0x1c74 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7587:  0x000055d5606f0149 in main + 0x1d09 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7588:  0x00007f1818724d90 in <unknown> from /lib/x86_64-linux-gnu/libc.so.6
+Line 7589:  0x00007f1818724e40 in __libc_start_main + 0x80 from /lib/x86_64-linux-gnu/libc.so.6
+Line 7590:  0x000055d5606f0d95 in _start + 0x25 from /home/runner/work/CutLang/CutLang/CLA/CLA.exe
+Line 7591: malloc(): unaligned tcache chunk detected
+Line 7592: /home/runner/work/CutLang/CutLang/scripts/CLApy_helper.sh: line 4: 10187 Aborted                 (core dumped) $1
+Line 7593: Single Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exUJ.adl -e 1000 -v 500
+
+Total error: 2
