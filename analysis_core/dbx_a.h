@@ -39,7 +39,6 @@ public:
    string getName() { return cname;}
    virtual int initGRL() { return 0;}
    virtual int readAnalysisParams() { return 0;}
-   virtual int bookAdditionalHistos() { return 0;}
    virtual int setQCD() { return 0;}
    virtual int printEfficiencies() { return 0;}
    virtual int setDir(char *); // to have multiple directories
@@ -50,7 +49,8 @@ public:
    void   setDataCardPrefix(string dcp) { dataCardPrefix = dcp; }
    string getDataCardPrefix() { return dataCardPrefix; }
 
-   string cname;
+   std::string cname;
+   std::string itype;
    TH1D *eff, *hbincounts;
 
 private:

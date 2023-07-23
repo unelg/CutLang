@@ -88,27 +88,22 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
 %token SYSTEMATIC SYST_W_MC SYST_W_JVT SYST_W_PILEUP SYST_W_LEP SYST_W_BTAG SYST_TTREE
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
-%token ELE MUO LEP TAU PHO JET BJET QGJET NUMET METLV GEN //particle types
-%token TRK TRUTHMATCHPROB AVERAGEMU TRUTHID TRUTHPARENTID TRTHITS //atlas TRT additions
+%token ELE MUO LEP TAU PHO JET BJET QGJET FJET NUMET METLV GEN TRK //particle types
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF
 %token TTBARNNLOREC OME
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
-%token NUMOF HT METMWT MWT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
-%token DEEPB FJET MSOFTD TAU1 TAU2 TAU3 // razor additions
-%token RELISO TAUISO DXY EDXY DZ EDZ SOFTID ISBTAG ISCTAG ISTAUTAG RELISOALL PFRELISO03ALL
-%token IDDECAYMODE IDISOTIGHT IDANTIELETIGHT IDANTIMUTIGHT
-%token ISTIGHT ISMEDIUM ISLOOSE ISOVAR MINIISO
-%token SIP3D CORRPT PFRELISO04DBCORR
-%token TIGHTID PUID GENPARTIDX DECAYMODE
+%token NUMOF HT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
+%token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
+%token ISTIGHT ISMEDIUM ISLOOSE MINIISO
+%token GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
-%token ZCANDID EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION //
-%token SIEIE  SUBJET1_BTAG SUBJET2_BTAG MVATIGHT MVALOOSE // CMSnano & POET attribs
+%token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION //
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -257,21 +252,21 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         ListParts->insert(make_pair(name,newList));
 				}
             | DEF ID '=' '{' variablelist '}' {
-                             cout << "Found a variable list\n";
+//                             cout << "Found a variable list\n";
                              string name = $2;
                              map<string,vector<Node*> >::iterator it ;
                              it = VariableListBank.find(name);
                              if(it != VariableListBank.end()) {
-                                                DEBUG(name<<" : ");
-                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable List already defined.");
-                                                YYERROR;//stops parsing if variable already defined
-                              }
-                             VariableListBank.insert(make_pair(name,VariableList) );
-                             VariableList.clear();
-
+                                                cout<<name<<" already defined\n";
+//                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable List already defined.");
+//                                                YYERROR;//stops parsing if variable already defined
+                             } else {
+                              VariableListBank.insert(make_pair(name,VariableList) );
+                              VariableList.clear();
+                             }
             }
             | DEF ID '=' OME '(' description ',' ID ')' {
-                             cout << "Found an ONNX model execution:"<< $6 << "\n"; 
+//                             cout << "Found an ONNX model execution:"<< $6 << "\n"; 
                              string vname = $8;
                              map<string,vector<Node*> >::iterator itv ;
                              itv = VariableListBank.find(vname);
@@ -521,9 +516,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
  //                                      if (TmpCriteria.size() < 1) {
                                         $$=new FuncNode(pdgIDof,newList,"pdgID");
-   //                                    } else {
-     //                                   $$=new FuncNode(pdgIDof,newList,"pdgID", TmpCriteria[0]);
-       //                                }
+   //                                   } else {
+   //                                   $$=new FuncNode(pdgIDof,newList,"pdgID", TmpCriteria[0]);
+   //                                   }
                                   }
          | '{' particules '}' PDGID {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -577,46 +572,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isBTag,newList,"BTAG");
                                     }
-         | '{' particules '}' DEEPB {   vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(DeepBof,newList,"deepB");
-                                    }
-         | DEEPB '(' particules ')' {   vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(DeepBof,newList,"deepB");
-                                    }
-         | '{' particules '}' MSOFTD {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(MsoftDof,newList,"msoftD");
-                                  }
-         | MSOFTD '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(MsoftDof,newList,"msoftD");
-                                  }
-         | '{' particules '}' TAU1 {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau1of,newList,"tau1");
-                                  }
-         | TAU1 '(' particules ')' {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau1of,newList,"tau1");
-                                  }
-         | '{' particules '}' TAU2 {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau2of,newList,"tau2");
-                                  }
-         | TAU2 '(' particules ')' {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau2of,newList,"tau2");
-                                  }
-         | '{' particules '}' TAU3 {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau3of,newList,"tau3");
-                                  }
-         | TAU3 '(' particules ')' {    vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tau3of,newList,"tau3");
-                                  }
          | '{' particules '}' DXY {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(dxyof,newList,"dxy");
@@ -689,119 +644,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(vtof,newList,"vt");
                                   }
-         | '{' particules '}' SUBJET1_BTAG {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sub1btagof,newList,"SUBJET1_BTAG");
-                                  }
-         | SUBJET1_BTAG '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sub1btagof,newList,"SUBJET1_BTAG");
-                                  }
-         | '{' particules '}' SUBJET2_BTAG {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sub2btagof,newList,"SUBJET2_BTAG");
-                                  }
-         | SUBJET2_BTAG '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sub2btagof,newList,"SUBJET2_BTAG");
-                                  }
-         | '{' particules '}' MVALOOSE {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(mvalooseof,newList,"MVALOOSE");
-                                  }
-         | MVALOOSE '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(mvalooseof,newList,"MVALOOSE");
-                                  }
-         | '{' particules '}' MVATIGHT {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(mvatightof,newList,"MVATIGHT");
-                                  }
-         | MVATIGHT '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(mvatightof,newList,"MVATIGHT");
-                                  }
-         | '{' particules '}' SIEIE {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sieieof,newList,"SIEIEOF");
-                                  }
-         | SIEIE '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sieieof,newList,"SIEIEOF");
-                                  }
-         | '{' particules '}' RELISO {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
-                                  }
-         | RELISO '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(relisoof,newList,"miniPFRelIsoAll");
-                                  }
-         | '{' particules '}' RELISOALL {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(relisoallof,newList,"relIsoall");
-                                  }
-         | RELISOALL '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(relisoallof,newList,"relIsoall");
-                                  }
-         | '{' particules '}' PFRELISO03ALL {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pfreliso03allof,newList,"pfRelIso03all");
-                                  }
-         | PFRELISO03ALL '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pfreliso03allof,newList,"pfRelIso03all");
-                                  }
-         | '{' particules '}' IDDECAYMODE {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
-                                  }
-         | IDDECAYMODE '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(iddecaymodeof,newList,"idDecayMode");
-                                     }
-         | '{' particules '}' IDISOTIGHT {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idisotightof,newList,"idIsoTight");
-                                  }
-         | IDISOTIGHT '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idisotightof,newList,"idIsoTight");
-                                  }
-         | '{' particules '}' IDANTIELETIGHT {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
-                                  }
-         | IDANTIELETIGHT '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idantieletightof,newList,"idAntiEleTight");
-                                  }
-         | '{' particules '}' IDANTIMUTIGHT {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");
-                                  }
-         | IDANTIMUTIGHT '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(idantimutightof,newList,"idAntiMuTight");
-
-                                  }
-         | '{' particules '}' TIGHTID {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tightidof,newList,"tightId");
-                                  }
-         | TIGHTID '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tightidof,newList,"tightId");
-                                  }
-         | '{' particules '}' PUID {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(puidof,newList,"puId");
-                                  }
-         | PUID '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(puidof,newList,"puId");
-                                  }
          | '{' particules '}' GENPARTIDX {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(genpartidxof,newList,"genPartIdx");
@@ -810,70 +652,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(genpartidxof,newList,"genPartIdx");
                                   }
-         | '{' particules '}' DECAYMODE {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(decaymodeof,newList,"decayMode");
-                                  }
-         | DECAYMODE '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(decaymodeof,newList,"decayMode");
-                                  }
-         | '{' particules '}' TRUTHPARENTID {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthParentIDof,newList,"truthParentID");
-                                  }
-         | TRUTHPARENTID '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthParentIDof,newList,"truthParentID");
-                                  }
-         | '{' particules '}' TRUTHID {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthIDof,newList,"truthID");
-                                  }
-         | TRUTHID '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthIDof,newList,"truthID");
-                                  }
-         | '{' particules '}' TRUTHMATCHPROB {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthMatchProbof,newList,"truthMatchProb");
-                                  }
-         | TRUTHMATCHPROB '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(truthMatchProbof,newList,"truthMatchProb");
-                                  }
-         | '{' particules '}' AVERAGEMU {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(averageMuof,newList,"averageMu");
-                                  }
-         | AVERAGEMU '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(averageMuof,newList,"averageMu");
-                                  }
 
-         | '{' particules '}' SOFTID {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(softIdof,newList,"softId");
-                                  }
-         | SOFTID '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(softIdof,newList,"softId");
-                                  }
          | '{' particules '}' STATUS {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(softIdof,newList,"status"); // status and softID are same attrib
+                                        $$=new FuncNode(pdgIDof,newList,"status"); // status and softID are same attrib
                                   }
          | STATUS '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        $$=new FuncNode(softIdof,newList,"status"); // status and softID are same attrib
-                                  }
-         | '{' particules '}' TAUISO {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
-                                  }
-         | TAUISO '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(tauisoof,newList,"dMVAnewDM2017v2");
+                                        $$=new FuncNode(pdgIDof,newList,"status"); // status and softID are same attrib
                                   }
          | '{' particules '}' PHI {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -927,14 +713,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(EtConeof,newList,"etcone");
                                  }
-         | '{' particules '}' ISOVAR { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(IsoVarof,newList,"isovar");
-                                 }
-         | ISOVAR '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(IsoVarof,newList,"isovar");
-                                 }
          | '{' particules '}' MINIISO { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(MiniIsoVarof,newList,"miniiso");
@@ -951,19 +729,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isTight,newList,"isTight");
                                  }
-         | SIP3D '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(sip3d,newList,"sip3d");
-                                 }
-         | PFRELISO04DBCORR '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pfreliso04DBCorr,newList,"pfreliso04DBCorr");
-                                 }
-         | CORRPT '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(corrpT,newList,"corrpT");
-                                 }
-
          | '{' particules '}' ISMEDIUM { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isMedium,newList,"isMedium");
@@ -979,14 +744,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | ISLOOSE '(' particules ')' { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(isLoose,newList,"isLoose");
-                                 }
-         | '{' particules '}' ZCANDID { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isZcandid,newList,"isZcandid");
-                                 }
-         | ZCANDID '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isZcandid,newList,"isZcandid");
                                  }
          | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -1206,12 +963,24 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
-       | description '(' particules ')' {      cout << "\n*******new variable "<< $1 << " is a new description!******\n"; 
-                                        vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        std::string varname=$1;
-                                        $$=new FuncNode(specialf,newList, varname);
-                                        }
+       | ID '(' particules ')' {  cout << "\n******* "<< $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"******\n"; 
+                                      vector<myParticle*> newList;
+                                      TmpParticle.swap(newList);
+                                      myParticle* a = newList[0];
+                                      std::string p0s= a->collection; // FJET or RCJET or JetPUPPIAK8?
+                                      if ( p0s=="FJET" ) {
+                                         if ( Initializations->at(0) == "ATLMIN" ) p0s="rcjet";
+                                         if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
+                                      }
+                                      std::string funame=$1; 
+                                      bool named=(funame.find('_') != std::string::npos);
+                                      std::string varname="~";
+                                                  if (!named) varname+=p0s;
+                                                  if (!named) varname+="_";
+                                                  varname+=funame;
+                                                  varname+="~";
+                                      $$=new FuncNode(specialf,newList, varname);
+                               }
         ;
 //-------------------------------------------------------------------------
  e : e '+' e { $$=new BinaryNode(add,$1,$3,"+"); }

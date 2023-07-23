@@ -76,6 +76,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [fF][jJ][eE][tT]|"FatJet" return FJET;
 [qQ][gG][jJ][eE][tT] return QGJET;
 [bB][iI][nN] return BINS;
+"daughters"|"constituents" return CONSTITS;
 "NUMET" return NUMET;
 "METLV" return METLV;
 "LEP" return LEP;
@@ -84,79 +85,48 @@ vardef {varname}" "?":"" "?.*"\n"
 [iI][nN][dD][eE][xX] return IDX;
 
 [Mm][eE][tT][sS][iI][gG] return METSIGNIF;
+"applyHM" return APPLYHM;
+"genPartIdx" return GENPARTIDX;
 
 [uU][nN][iI][oO][nN] return UNION;
 [aA][lL][iI][aA][sS] return ALIAS;
+
 [bB][tT][aA][gG] return ISBTAG;
 [cC][tT][aA][gG] return ISCTAG;
 [tT][aA][uU][tT][aA][gG] return ISTAUTAG;
+
 [pP][dD][gG][iI][dD] return PDGID;
+[sS][tT][aA][tT][uU][sS] return STATUS;
 [fF][lL][aA][vV][oO][rR]|[bB][tT][aA][gG][gG][eE][rR] return FLAVOR;
 [pP][tT][cC][oO][nN][eE] return PTCONE;
 [eE][tT][cC][oO][nN][eE] return ETCONE;
-[sS][tT][aA][tT][uU][sS] return STATUS;
+
 [vV][eE][rR][tT][eE][xX][tT] return VERT;
 [vV][eE][rR][tT][eE][xX][xX] return VERX;
 [vV][eE][rR][tT][eE][xX][yY] return VERY;
 [vV][eE][rR][tT][eE][xX][zZ] return VERZ;
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
+
 [iI][sS][tT][iI][gG][hH][tT] return ISTIGHT;
 [mM][eE][dD][iI][uU][mM] return ISMEDIUM;
 [lL][oO][oO][sS][eE] return ISLOOSE;
-"sip3d" return SIP3D;
-"corrpT" return CORRPT;
-"pfreliso04DBCorr" return PFRELISO04DBCORR;
-"isZCandidate" return ZCANDID;
-"tightId" return TIGHTID;
-"btagDeepB" return DEEPB;
-"msoftdrop" return MSOFTD;
-"truthMatchProb" return TRUTHMATCHPROB;
-"averageMu" return AVERAGEMU;
-"truthID" return TRUTHID;
-"truthParentID" return TRUTHPARENTID;
-"TRTHits" return TRTHITS;
-"daughters"|"constituents" return CONSTITS;
-"tau1" return TAU1;
-"tau2" return TAU2;
-"tau3" return TAU3;
 "fmegajets" return FMEGAJETS;
 "fhemisphere" return FHEMISPHERE;
 "fMR" return FMR;
 "fMTR" return FMTR;
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
-"isolationVar" return ISOVAR;
 "miniIso" return MINIISO;
-"miniPFRelIsoAll" return RELISO;
-"relIsoall" return RELISOALL;
-"pfRelIso03all" return PFRELISO03ALL;
+
 "dxy"|[dD]"0" return DXY;
 "edxy"|[eE][dD]"0" return EDXY;
 "dz" return DZ;
 "edz" return EDZ;
-"dMVAnewDM2017v2" return TAUISO;
-"softId" return SOFTID;
-"applyHM" return APPLYHM;
-"idDecayMode" return IDDECAYMODE;
-"idIsoTight" return IDISOTIGHT;
-"idAntiEleTight" return IDANTIELETIGHT; 
-"idAntiMuTight" return IDANTIMUTIGHT;
-"puId" return PUID;
-"genPartIdx" return GENPARTIDX;
-"decayMode" return DECAYMODE;
-"HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
-"sieie" return SIEIE;
-"subjet1btag" return  SUBJET1_BTAG;
-"subjet2btag" return  SUBJET2_BTAG;
-"mvaTight" return MVATIGHT;  
-"mvaLoose" return MVALOOSE;   
+
 "m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
 "fTTrr" return TTBARNNLOREC;
 
-[aA][nN][yY][oO][fF] return ANYOF;
-[aA][lL][lL][oO][fF] return ALLOF;
-
-
+"HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;
@@ -169,14 +139,15 @@ vardef {varname}" "?":"" "?.*"\n"
 [sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs 
 [nN][bB][jJ] return NBF;
 [fF][hH][tT] return HT; // attention
-"METMWT" return METMWT;
-"MWT" return MWT;
 "MET" return MET;
-[aA][lL][lL] return ALL;
-[nN][oO][nN][eE] return NONE;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;
+
+[aA][nN][yY][oO][fF] return ANYOF;
+[aA][lL][lL][oO][fF] return ALLOF;
+[aA][lL][lL] return ALL;
+[nN][oO][nN][eE] return NONE;
 "=="|"EQ" return EQ;//comparison operators
 "!="|"NE" return NE;
 "~!" return MAXIMIZE;
@@ -221,6 +192,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()^:\[\]{}_mqPE,?=] return *yytext;
-[a-zA-Z][0-9a-zA-Z]*?+[-0-9a-zA-Z]* yylval.s=strdup(yytext);return ID;
+[a-zA-Z]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
 %%

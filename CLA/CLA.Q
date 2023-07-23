@@ -70,7 +70,7 @@ int main(int argc, char*argv[])
  string inptype;
  char *username=NULL;
 
-cout << "CLA v2.14.1\t";
+cout << "CLA v2.50.0\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
@@ -140,6 +140,8 @@ for (int i = 2; i < argc; i++) {
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
  }
+
+ aselect.inputtype=inptype;
 
 /** Chain the files  split by ',' */
   std::string argStr = argv[1];

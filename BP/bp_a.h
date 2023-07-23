@@ -22,12 +22,9 @@ class BPdbxA : public dbxA {
 //       if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
          }
 
-      int getInputs(std::string);
       int initGRL();
       int readAnalysisParams();
-      int plotVariables(int sel);
       int printEfficiencies();
-      int bookAdditionalHistos();
       int makeAnalysis(AnalysisObjects *ao, int controlword, int preResults );
       int Finalize();
       int saveHistos() {

@@ -5,6 +5,7 @@
 # ADL allows the modifier word constituents only in case of jets (or any other jet-like objects,
 # such as the large radius FatJets) to refer to these. An example for defining a new jet object
 # based on criteria on the constituents is given below. 
+# NOTE: not all mc files contain jet constituents.
 
 info analysis
     title "ADL/CL ex13: Jet Constituents"

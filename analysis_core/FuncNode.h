@@ -139,16 +139,13 @@ double    Rapof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
 double 	pdgIDof( dbxParticle* apart);
 double flavorof( dbxParticle* apart);
-double MsoftDof( dbxParticle* apart);
-double  DeepBof( dbxParticle* apart);
 double   isBTag( dbxParticle* apart);
 double isTauTag( dbxParticle* apart);
 double isTight ( dbxParticle* apart);
 double isMedium( dbxParticle* apart);
 double isLoose ( dbxParticle* apart);
-double   tau1of( dbxParticle* apart);
-double   tau2of( dbxParticle* apart);
-double   tau3of( dbxParticle* apart);
+double genpartidxof( dbxParticle* apart);
+
 double    dxyof( dbxParticle* apart);
 double   edxyof( dbxParticle* apart);
 double     dzof( dbxParticle* apart);
@@ -158,37 +155,11 @@ double     vyof( dbxParticle* apart);
 double     vzof( dbxParticle* apart);
 double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
-double  sieieof( dbxParticle* apart);
-double sub1btagof( dbxParticle* apart);
-double sub2btagof( dbxParticle* apart);
-double mvalooseof( dbxParticle* apart);
-double mvatightof( dbxParticle* apart);
-double relisoof( dbxParticle* apart);
-double isZcandid ( dbxParticle* apart);
-double relisoallof( dbxParticle* apart);
-double pfreliso03allof( dbxParticle* apart);
-double iddecaymodeof( dbxParticle* apart);
-double idisotightof( dbxParticle* apart);
-double idantieletightof( dbxParticle* apart);
-double idantimutightof( dbxParticle* apart);
-double tightidof( dbxParticle* apart);
-double    puidof( dbxParticle* apart);
-double genpartidxof( dbxParticle* apart);
-double decaymodeof( dbxParticle* apart);
-double tauisoof( dbxParticle* apart);
-double softIdof( dbxParticle* apart);
+
 double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
-double IsoVarof( dbxParticle* apart);
 double MiniIsoVarof( dbxParticle* apart);
-double averageMuof( dbxParticle* apart);
-double truthMatchProbof( dbxParticle* apart);
-double truthIDof( dbxParticle* apart);
-double truthParentIDof( dbxParticle* apart);
 double IDXof( dbxParticle* apart);
-double sip3d( dbxParticle* apart);
-double corrpT( dbxParticle* apart);
-double pfreliso04DBCorr( dbxParticle* apart);
 
 //other functions to be added
 #endif /* FuncNode_h */
