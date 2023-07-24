@@ -100,6 +100,54 @@ public:
   ClassDef(Jet, 6)
 };
 
+class FatJet: public TObject {
+public:
+  Float_t PT; // jet transverse momentum
+  Float_t Eta; // jet pseudorapidity
+  Float_t Phi; // jet azimuthal angle
+  Float_t T; //particle arrival time of flight
+  Float_t Mass; // jet invariant mass
+  Float_t DeltaEta; // jet radius in pseudorapidity
+  Float_t DeltaPhi; // jet radius in azimuthal angle
+  UInt_t Flavor; // jet flavor
+  UInt_t FlavorAlgo; // jet flavor
+  UInt_t FlavorPhys; // jet flavor
+  UInt_t BTag; // 0 or 1 for a jet that has been tagged as containing a heavy quark
+  UInt_t BTagAlgo; // 0 or 1 for a jet that has been tagged as containing a heavy quark
+  UInt_t BTagPhys; // 0 or 1 for a jet that has been tagged as containing a heavy quark
+  UInt_t TauTag; // 0 or 1 for a jet that has been tagged as a tau
+  Float_t TauWeight; // probability for jet to be identified as tau
+  Int_t Charge; // tau charge
+  Float_t EhadOverEem; // ratio of the hadronic versus electromagnetic energy deposited in the calorimeter
+  Int_t NCharged; // number of charged constituents
+  Int_t NNeutrals; // number of neutral constituents
+  Float_t NeutralEnergyFraction;  // charged energy fraction
+  Float_t ChargedEnergyFraction;  // neutral energy fraction 
+  Float_t Beta; // (sum pt of charged pile-up constituents)/(sum pt of charged constituents)
+  Float_t BetaStar; // (sum pt of charged constituents coming from hard interaction)/(sum pt of charged constituents)
+  Float_t MeanSqDeltaR; // average distance (squared) between constituent and jet weighted by pt (squared) of constituent
+  Float_t PTD; // average pt between constituent and jet weighted by pt of constituent
+  Float_t FracPt[5]; // (sum pt of constituents within a ring 0.1*i < DeltaR < 0.1*(i+1))/(sum pt of constituents)
+  Float_t Tau[5]; // N-subjettiness
+  TLorentzVector SoftDroppedJet;
+  TLorentzVector SoftDroppedSubJet1;
+  TLorentzVector SoftDroppedSubJet2;
+  TLorentzVector TrimmedP4[5]; // first entry (i=0) is the total Trimmed Jet 4-momenta and from i=1 to 4 are the trimmed subjets 4-momenta
+  TLorentzVector PrunedP4[5]; // first entry (i=0) is the total Pruned Jet 4-momenta and from i=1 to 4 are the pruned subjets 4- momenta
+  TLorentzVector SoftDroppedP4[5]; // first entry (i=0) is the total SoftDropped Jet 4-momenta and from i=1 to 4 are the pruned subjets 4-momenta
+  Int_t NSubJetsTrimmed; // number of subjets trimmed
+  Int_t NSubJetsPruned; // number of subjets pruned
+  Int_t NSubJetsSoftDropped; // number of subjets soft-dropped
+  Double_t ExclYmerge23;
+  Double_t ExclYmerge34;
+  Double_t ExclYmerge45;
+  Double_t ExclYmerge56;
+  TRefArray Constituents; // references to constituents
+  TRefArray Particles; // references to generated particles
+  TLorentzVector Area;
+  ClassDef(FatJet, 6)
+};
+
 class Vertex: public TObject {
 public:
   Float_t T; // vertex position (t component)

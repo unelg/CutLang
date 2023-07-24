@@ -82,6 +82,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
    TClonesArray *branchParticle = UseBranch("Particle", fChain);
    TClonesArray *branchJet = UseBranch("Jet", fChain);
+   TClonesArray *branchFJet = UseBranch("FatJet", fChain);
    TClonesArray *branchPhoton = UseBranch("Photon", fChain);
    TClonesArray *branchElectron = UseBranch("Electron", fChain);
    TClonesArray *branchMuon = UseBranch("Muon", fChain);
@@ -107,6 +108,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
    GenParticle *particle;
    Jet *jet;
+   FatJet *fjet;
    Photon *photon;
    Electron *electron;
    Muon *muon;
@@ -171,7 +173,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
-       //dbxTau      *adbxt;
+       dbxTau      *adbxt;
        dbxPhoton   *adbxp;
        dbxTruth    *adbxgen;
        dbxTrack    *adbxtrk;
@@ -386,7 +388,7 @@ if (it == 0){
         delete adbxtrk;
       }
 //------------------------------------------------------
-
+// regular jets
 
     // Loop over all jets in event
     if (branchJet != NULL)
@@ -438,6 +440,65 @@ if (it == 0){
     }
     }// end of loop over jets
     DEBUG("Jets:"<<i<<std::endl);
+
+
+
+//------------------------------------------------------
+// FAT jets
+
+    // Loop over all jets in event
+    if (branchFJet != NULL)
+    for(i = 0; i < branchFJet->GetEntriesFast(); ++i) { 
+      fjet = (FatJet*) branchFJet->At(i);
+      alv.SetPtEtaPhiM( fjet->PT, fjet->Eta, fjet->Phi, fjet->Mass ); // all in GeV
+//      cout<<"This Jet pt: "<<fjet->PT<<", eta: "<<fjet->Eta<<", phi: "<<fjet->Phi <<" Q:"<<fjet->Charge<<endl;
+      adbxj= new dbxJet(alv);
+      adbxj->setCharge(fjet->Charge);
+      adbxj->setParticleIndx(i);
+      adbxj->setFlavor(fjet->Flavor);
+      adbxj->set_isbtagged_77(  (bool)fjet->BTag ); //  btag
+      adbxj->set_isTautagged( (bool)fjet->TauTag); // tau tag
+// Loop over all jet's constituents
+      for(j = 0; j < fjet->Particles.GetEntriesFast(); ++j) {
+       object = fjet->Particles.At(j);
+// Check if the constituent is accessible
+       if(object == 0) continue;
+       if(object->IsA() == GenParticle::Class()) {
+        particle = (GenParticle*) object;
+//        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
+        alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
+        adbxgen= new dbxTruth(alv);
+        adbxgen->setCharge( particle->Charge );
+        adbxgen->setPdgID(  particle->PID );
+        adbxgen->setParticleIndx(j);
+        adbxgen->addAttribute( particle->DZ);  //0
+        adbxgen->addAttribute( particle->D0);  
+        adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        adbxgen->addAttribute( particle->Status ); //3
+        adbxgen->addAttribute( particle->Z ); //4
+        adbxgen->addAttribute( particle->Y ); //5
+        adbxgen->addAttribute( particle->X ); //6
+        adbxgen->addAttribute( particle->T ); //7
+        constis.push_back(*adbxgen);
+        delete adbxgen;
+       }
+      }// end of loop over jets constits.
+
+    ljets.push_back(*adbxj);
+    delete adbxj;
+    if (constis.size() > 0){
+      TString cname ="FJET_";
+              cname+=i;    // jet index
+              cname+="c"; //  c for constituents
+       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
+       DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
+       constis.clear();
+    }
+    }// end of loop over fjets
+    DEBUG("FatJets:"<<i<<std::endl);
+
+
+
 
 
 //-----------------------------
