@@ -208,9 +208,9 @@ int BPdbxA:: readAnalysisParams() {
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
        bincount=0;
-       cout <<"==Parsing started:\t";
+       cout <<"==Parsing started:\n";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap, &BinNames);
-       cout <<"\t Parsing finished.==\n";
+       cout <<"Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
          cout << "Offending text is: "<< yytext<<"\n";

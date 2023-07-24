@@ -102,7 +102,7 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
-%token ASCEND DESCEND ALIAS PM HLT_ISO_MU HLT
+%token ASCEND DESCEND ALIAS PM HLT
 %token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION //
 %token <real> PNB
 %token <real> NB 
@@ -481,12 +481,10 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
 function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       DEBUG("Mass function with:"<< newList.size() <<" particles.\n");
                                   }
          | 'm' '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);
                                        $$=new FuncNode(Mof,newList,"m");
-                                       DEBUG("Mass function\n");
                                   }
          | 'q' '(' particules ')' {    vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -963,11 +961,20 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
-       | ID '(' particules ')' {  cout << "\n******* "<< $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"******\n"; 
+       | ID '(' particules ')' {  cout << $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\t\t"; 
+                                      cout<<"\n";
                                       vector<myParticle*> newList;
                                       TmpParticle.swap(newList);
                                       myParticle* a = newList[0];
                                       std::string p0s= a->collection; // FJET or RCJET or JetPUPPIAK8?
+                                      switch (a->type){
+                                       case 12: p0s="MUO"; break;
+                                       case 11: p0s="TAU"; break;
+                                       case  1: p0s="ELE"; break;
+                                       case  2: p0s="JET"; break;
+                                       case  8: p0s="PHO"; break;
+                                       case  9: p0s="FJET"; break;
+                                      }
                                       if ( p0s=="FJET" ) {
                                          if ( Initializations->at(0) == "ATLMIN" ) p0s="rcjet";
                                          if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
@@ -1048,11 +1055,12 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original definitions as well
                 DEBUG($1<<" is a node variable candidate\n");
+                cout<<$1<<" is a node variable candidate\n";
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
                   $$=it->second;
-                } else { // cout<<"\t"<<$1<<"\t";
+                } else {  cout<<"\t"<<$1<<"\n";
                    map<string, Node *>::iterator ito;
 //                 for (ito=ObjectCuts->begin(); ito!=ObjectCuts->end(); ito++){
 //                  cout <<"Map has Object:"<<ito->first << "-vs-"<< string($1)<<"-\n"; 
@@ -1062,8 +1070,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                      map<string,vector<myParticle*> >::iterator itp;
                      itp=ListParts->find($1);
                      if(itp==ListParts->end() ) {
-                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"is NOT a known object nor variable, not even a particle!");
-                       YYERROR;
+                      cout<<$1<<"is NOT a known object nor variable, not even a particle.\n"; // NGUU
+                      std::string varname="~";
+                                  varname+=$1;
+                                  varname+="~";
+                      $$=new SFuncNode(specialsf,-6699.4488, varname);
                      } else {
                      //  cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
                        vector<myParticle*> newList= itp->second;
@@ -1078,30 +1089,31 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                    } // not an object cut
                 }// not a node variable 
         }
-    | ID '(' ID ')' {
-                map<string, Node *>::iterator it;
-                it = NodeVars->find($1);
-     
-                if(it == NodeVars->end()) {
-                        DEBUG($1<<" : ");
-                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
-                        YYERROR;//stops parsing if variable not found
-                }
-                else {
-                        DEBUG(it->first <<" node ID recognized.\t");
-                        DEBUG(it->second->getStr()<<"\n");
-                }
-                map<string,Node*>::iterator ito = ObjectCuts->find($3);
-                if(ito == ObjectCuts->end()) {
-                    std::string message = "User object not defined: "; message += $3;
-                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
-                    YYERROR;
-                } else {
-                    DEBUG(ito->first <<" OBJ id recognized.\n");
-                    it->second->setUserObjects(ito->second);
-                }
-                $$=it->second;
-    } 
+//  | ID '(' ID ')' {
+//              DEBUG("ID ( ID \n");
+//              map<string, Node *>::iterator it;
+//              it = NodeVars->find($1);
+//   
+//              if(it == NodeVars->end()) {
+//                      DEBUG($1<<" is not a node var.\n");
+//                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable with paranthesis not defined");
+//                      YYERROR;//stops parsing if variable not found
+//              }
+//              else {
+//                      DEBUG(it->first <<" node ID recognized.\t");
+//                      DEBUG(it->second->getStr()<<"\n");
+//              }
+//              map<string,Node*>::iterator ito = ObjectCuts->find($3);
+//              if(ito == ObjectCuts->end()) {
+//                  std::string message = "User object not defined: "; message += $3;
+//                  yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+//                  YYERROR;
+//              } else {
+//                  DEBUG(ito->first <<" OBJ id recognized.\n");
+//                  it->second->setUserObjects(ito->second);
+//              }
+//              $$=it->second;
+//  } 
    ;
 //------------------------------------------
 list2 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
@@ -2096,8 +2108,8 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                 }
              }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
-
-                DEBUG ("Particle candidate "<< $1 <<" has no index\n");
+                       
+                DEBUG ("User Particle candidate "<< $1 <<" has no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      

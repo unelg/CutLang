@@ -126,7 +126,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
 "fTTrr" return TTBARNNLOREC;
 
-"HLT_IsoMu17_eta2p1_LooseIsoPFTau20"  return HLT_ISO_MU;
 [pP][hH][iI] return PHI;//functions
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;

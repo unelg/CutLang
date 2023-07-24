@@ -23,8 +23,9 @@
 #include "analysis_core.h"
 #include "myParticle.h"
 
+int levenshtein(const std::string &s1_input, const std::string &s2_input) ;
 
- struct indicesA{
+struct indicesA{
    std::vector< std::vector <int> > tableA;
         int max_col;
         int max_row;

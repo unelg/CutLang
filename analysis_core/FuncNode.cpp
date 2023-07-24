@@ -240,34 +240,6 @@ void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *object
 
 
 
-int levenshtein(const std::string &s1_input, const std::string &s2_input) {
-
-
-    std::string s1 = s1_input, s2 = s2_input;
-
-    std::transform(s1.begin(), s1.end(), s1.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-
-    std::transform(s2.begin(), s2.end(), s2.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-
-    if (s1[0] != s2[0]) return 1000;
-
-    const size_t len1 = s1.size(), len2 = s2.size();
-    std::vector<std::vector<int>> d(len1 + 1, std::vector<int>(len2 + 1));
-
-    d[0][0] = 0;
-    for(int i = 1; i <= len1; ++i) d[i][0] = i;
-    for(int i = 1; i <= len2; ++i) d[0][i] = i;
-
-    for(int i = 1; i <= len1; ++i)
-        for(int j = 1; j <= len2; ++j)
-            d[i][j] = std::min({ d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1) });
-
-    return d[len1][len2];
-}
-
-
 
 FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*> input, std::string s, 
                          Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
@@ -330,10 +302,7 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
              cerr<<"Assuming Float for: "<< s<<"\n";
              ttrdrF = new myTTreaderF( ttreader, realstr);
              ttrdr=ttrdrF;
-//           cerr << s << " of type "<< bc_name << " can not be handled by this version of CL !!!!!!!\n";
-//           special_function=false;
          }
-//double avalue=ttrdr->readvalue(index);
 
         } else special_function=false;
 

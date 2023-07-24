@@ -109,7 +109,7 @@ DEBUG("------------------------------------------------new search --------------
          for(int i=0;i<v->size();i++){
                       particles.at(indices->at(i))->index=v->at(i);
          }   
-         double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+         double tmpval=left->evaluate(ao); 
          double diff=right->evaluate(ao)-tmpval;
 
          if ( (*f)(diff,*curr_diff) ) {
@@ -182,10 +182,10 @@ DEBUG("------------------------------------------------new search --------------
 
 //-------~1min in 25k events
                  double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
-                 DEBUG("left ok: \n");
+                 DEBUG("left returns:"<<tmpval<< "\t");
                  double diff=right->evaluate(ao)-tmpval;
 
-                 DEBUG("compare: \n");
+                 DEBUG("right:"<<right->evaluate(ao)<<" compare: \n");
                  if ( (*f)(diff,*curr_diff) ) {
                        DEBUG("BETTER diff:"<<diff<<" OLD c_diff:"<<*curr_diff<<"\n");
                        *curr_diff = fabs(diff);

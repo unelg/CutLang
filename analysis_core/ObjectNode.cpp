@@ -1405,7 +1405,7 @@ void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<in
 }
 
 void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
-   DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<"\n"); //xxx
+   DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<" #Criteria:"<<criteria->size() <<"\n"); //xxx
 
    vector<dbxParticle>  combination;
    dbxParticle *adbxp;
@@ -1579,9 +1579,10 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       bool simpleloop=true;
       DEBUG("***** Cur Cut: "<<(*cutIterator)->getStr()<<"\t Psize:"<<particles->size() <<" max_partices in event:"<<ipart_max<<"\n");
       if ( particles->size()==0) {
-           DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
+           DEBUG("particle size=0, CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
-           continue;
+           cutIterator++;
+           continue; // goes where?
       }
       std::set<int> ptypeset;
       std::set<int> pindexset;
