@@ -653,6 +653,9 @@ double isLoose(dbxParticle* apart){
 double MiniIsoVarof( dbxParticle* apart){
  return apart->Attribute(3); // TO BE REVIEWED
 }
+double AbsIsoVarof( dbxParticle* apart){
+ return apart->Attribute(4); // TO BE REVIEWED
+}
 
 double specialf( dbxParticle* apart){
 // cout << "we got:"<< apart->Attribute(apart->nAttribute() -1)<<"\n";

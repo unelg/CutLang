@@ -116,7 +116,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
-"miniIso" return MINIISO;
+[mM][iI][nN][iI][iI][sS][oO] return MINIISO;
+[aA][bB][sS][iI][sS][oO] return ABSISO;
 
 "dxy"|[dD]"0" return DXY;
 "edxy"|[eE][dD]"0" return EDXY;

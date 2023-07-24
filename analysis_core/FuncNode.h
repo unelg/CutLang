@@ -159,6 +159,7 @@ double    vtrof( dbxParticle* apart);
 double CCountof( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
 double MiniIsoVarof( dbxParticle* apart);
+double AbsIsoVarof( dbxParticle* apart);
 double IDXof( dbxParticle* apart);
 
 //other functions to be added

@@ -95,7 +95,7 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
-%token ISTIGHT ISMEDIUM ISLOOSE MINIISO
+%token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
 %token GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
@@ -710,6 +710,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | ETCONE '(' particules ')' {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(EtConeof,newList,"etcone");
+                                 }
+         | '{' particules '}' ABSISO { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(AbsIsoVarof,newList,"absiso");
+                                 }
+         | ABSISO '(' particules ')' { vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(AbsIsoVarof,newList,"absiso");
                                  }
          | '{' particules '}' MINIISO { vector<myParticle*> newList;
                                         TmpParticle.swap(newList);

@@ -189,12 +189,14 @@ void delphes::Loop(analy_struct aselect, char *extname)
               adbxm->setEtCone(muon->IsolationVarRhoCorr);
               adbxm->setPtCone(muon->IsolationVar       );
               adbxm->setParticleIndx(i);
-              adbxm->addAttribute( muon->DZ);
-              adbxm->addAttribute( muon->D0);
-              adbxm->addAttribute( muon->IsolationVar   );
+              adbxm->addAttribute( muon->DZ);          //0
+              adbxm->addAttribute( muon->D0);         //1
+              adbxm->addAttribute( muon->IsolationVar   ); //2
 //---calculate miniiso here.
 	      double minisovar=0.0;
+	      double absisovar=0.0;
               double coneradius;
+
               if (muon->PT < 50) { // small PT recipe 
                 coneradius=0.2;
               } else if (muon->PT < 200){             // medium PT recipe
@@ -202,6 +204,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
               } else {        // large PT recipe
                 coneradius=0.05;
               }
+
 // EFphotons
               if (branchEFlowPhoton)
               for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
@@ -226,7 +229,9 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
+               if (deltaR < 0.3) absisovar+=slv.Pt();
               }
+              
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
 // EFNeutralHAdrons
@@ -241,10 +246,11 @@ if (it == 0){
 //              cout << "N mini iso:"<<minisovar<<"\n";
 
 
-              minisovar=(minisovar-muon->PT)/muon->PT;
+//              minisovar=(minisovar-muon->PT)/muon->PT;
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
-              adbxm->addAttribute( minisovar );
+              adbxm->addAttribute( minisovar ); // 3
+              adbxm->addAttribute( absisovar ); // 4
 //             if (minisovar > 0.2) cout << minisovar << " muon" << endl;
 
               muons.push_back(*adbxm);
@@ -265,12 +271,11 @@ if (it == 0){
               adbxe->addAttribute( electron->DZ);         // 0
               adbxe->addAttribute( electron->D0     );   // 1
               adbxe->addAttribute( electron->IsolationVar );
-              adbxe->addAttribute( electron->ErrorD0); //3
-              adbxe->addAttribute( electron->ErrorDZ);  //4
 
 
 //---calculate miniiso here.
 	      double minisovar=0.0;
+	      double absisovar=0.0;
               double coneradius;
               if (electron->PT < 50) { // small PT recipe 
                 coneradius=0.2;
@@ -303,6 +308,7 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
+               if (deltaR < 0.3) absisovar+=slv.Pt();
               }
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
@@ -324,7 +330,8 @@ if (it == 0){
 
  //             if (minisovar > 0.1) cout << minisovar << " electron" << endl;
 
-              adbxe->addAttribute( minisovar ); //[5]
+              adbxe->addAttribute( minisovar ); // mini 3
+              adbxe->addAttribute( absisovar ); // abs  4
 
               electrons.push_back(*adbxe);
               delete adbxe;
