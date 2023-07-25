@@ -23,7 +23,8 @@ struct analy_struct {   // Declare analysis types
 	bool dosystematics;
 	bool doQCD;
 	bool doRS;
-	std::string hlt;
+   	std::string hlt;
+	std::string inputtype;
         std::string dependencies;
 };
 

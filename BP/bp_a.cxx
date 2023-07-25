@@ -41,15 +41,6 @@ bool is_number(const std::string& s)
     return( strspn( s.c_str(), "-.0123456789" ) == s.size() );
 }
 
-int BPdbxA::getInputs(std::string aname) {
-        int retval=0;
-        return retval;
-}
-
-int BPdbxA::plotVariables(int sel) {
- return 0;  
-}
-
 //--------------------------
 int BPdbxA:: readAnalysisParams() {
   int retval=0;
@@ -211,14 +202,15 @@ int BPdbxA:: readAnalysisParams() {
 
 // ---------------------------read CutLang style cuts using lex/yacc
        NameInitializations={" "," "};
+       NameInitializations[0]=itype;
        TRGValues={1,0,0,0,0};
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
        cutcount=0;
        bincount=0;
-       cout <<"==Parsing started:\t";
+       cout <<"==Parsing started:\n";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap, &BinNames);
-       cout <<"\t Parsing finished.==\n";
+       cout <<"Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
          cout << "Offending text is: "<< yytext<<"\n";
@@ -416,10 +408,6 @@ int BPdbxA:: initGRL() {
   return retval;
 }
 
-//------------------------
-int BPdbxA::bookAdditionalHistos() {
-  return 0;
-}
 //------------------------
 int BPdbxA::Finalize(){       
   std::cout <<"finalize.\n";

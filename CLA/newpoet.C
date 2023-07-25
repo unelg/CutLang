@@ -79,12 +79,6 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxm->setIsMedium(muon_isMedium[i]);
         adbxm->setIsLoose (muon_isLoose[i] );
         adbxm->setParticleIndx(i);
-        adbxm->addAttribute( muon_isHighPt[i] ); // attri 0
-        adbxm->addAttribute( muon_TkIso03[i] ); // attri 1
-        adbxm->addAttribute( muon_pfreliso03all[i] ); // attri 2 - dummy
-        adbxm->addAttribute( muon_pfreliso03all[i] ); // attri 3
-        adbxm->addAttribute( muon_sip3d[i] ); // attri 4
-        adbxm->addAttribute( muon_pfreliso04DBCorr[i] ); // attri 5
         muons.push_back(*adbxm);
         delete adbxm;
     }
@@ -100,11 +94,6 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxe->setIsTight(electron_isTight[i]);
         adbxe->setIsMedium(electron_isMedium[i]);
         adbxe->setIsLoose(electron_isLoose[i]);
-        adbxe->addAttribute( electron_ismvaTight[i] ); // attri 0
-        adbxe->addAttribute( electron_ismvaLoose[i] ); // attri 1
-        adbxe->addAttribute( electron_iso[i] ); // attri 2
-        adbxe->addAttribute( electron_iso[i] ); // attri 3
-        adbxe->addAttribute( electron_sip3d[i] ); // attri 4
         electrons.push_back(*adbxe);
         delete adbxe;
     }
@@ -138,7 +127,6 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxj = new dbxJet(alv);
         adbxj->setCharge(jet_ch[i]);
         adbxj->setParticleIndx(i);
-        adbxj->addAttribute( jet_corrpt[i] ); // attri 0
         adbxj->setFlavor(jet_btag[i]); // btag distro
         jets.push_back(*adbxj);
         delete adbxj;
@@ -150,12 +138,6 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
         adbxj = new dbxJet(alv);
         adbxj->setCharge(fatjet_ch[i]);
         adbxj->setParticleIndx(i);
-        adbxj->addAttribute( fatjet_softdropmass[i]); // attri 0
-        adbxj->addAttribute( fatjet_tau1[i]     ); // attri 1
-        adbxj->addAttribute( fatjet_tau2[i]     ); // attri 2
-        adbxj->addAttribute( fatjet_tau3[i]     ); // attri 3
-        adbxj->addAttribute( fatjet_subjet1btag[i]     ); // attri 4
-        adbxj->addAttribute( fatjet_subjet2btag[i]     ); // attri 5
         ljets.push_back(*adbxj);
         delete adbxj;
     }

@@ -103,6 +103,7 @@ void AnalysisController::Initialize(char *extname) {
                 string tmp="BP_";
                        tmp+=std::to_string(analyindex);
 		dbxAnalyses.push_back( new BPdbxA((char *)tmp.c_str() ) ); // BP analysis with name
+                dbxAnalyses.back()->itype=aselect.inputtype; // ATL or CMS or FCC...
 
           if (aselect.dosystematics) { // another loop here for systematics
             for (map<string,string>::iterator it = syst_names.begin(); it != syst_names.end(); it++) {
@@ -111,9 +112,10 @@ void AnalysisController::Initialize(char *extname) {
                                             s+= it->first;
                                 std::string targetVar = it->second ;
                                 k++;
-                                cout <<k<<"th syst (" << s << ") analysis initialized  with card: "<<tmp<<" , ";
+                                cout <<k<<"th syst (" << s << ") analysis type:"<<aselect.inputtype<< " initialized  with card: "<<tmp<<" , ";
                                 dbxAnalyses.push_back( new BPdbxA( (char*)s.c_str() ) ); // analysis with new name
                                 dbxAnalyses.back()->setDataCardPrefix(tmp);  // but with old datacard
+                                dbxAnalyses.back()->itype=aselect.inputtype; // ATL or CMS or FCC...
                                 cout << endl;
             }
           }// end of systematics if
@@ -138,7 +140,6 @@ void AnalysisController::Initialize(char *extname) {
 		dbxAnalyses[k]->initGRL();
 		dbxAnalyses[k]->readAnalysisParams();
                 std::cout << " => " << k << " "<< dbxAnalyses[k]->getName() <<endl;
-		dbxAnalyses[k]->bookAdditionalHistos();
          if (do_RS ) {
            todos.push_back( dbxAnalyses[k] );
          }

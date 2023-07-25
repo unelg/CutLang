@@ -237,6 +237,10 @@ void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *object
         userObjectD=objectNoded;
 }
 
+
+
+
+
 FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*> input, std::string s, 
                          Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
         f=func;
@@ -248,32 +252,57 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
         userObjectC=objectNodec;
         userObjectD=objectNoded;
        DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
+        int maxDist =6;
 
-        if (s.find('"') != std::string::npos) {
-         s.erase(std::remove( s.begin(), s.end(), '\"' ),s.end());
+        if (s.find('~') != std::string::npos) {
+         s.erase(std::remove( s.begin(), s.end(), '~' ),s.end());
          cout << "** sf:"<< s<<"\t"; //this is special function
          special_function=true;
          TTree *at = ttreader->GetTree();
-         TBranch *ab= at->GetBranch(s.c_str() );
+         TObjArray *lbranches = at->GetListOfBranches();
+         if (lbranches == 0) {
+            cerr<<"No branches found in this ntuple!\n";
+            exit(-2);
+         }
+         std::vector<int> distances;
+         for (int i = 0; i < lbranches->GetEntries(); ++i) {
+          TBranch *abranch = (TBranch*)lbranches->At(i);
+          int dist = levenshtein(s, abranch->GetName());
+          distances.push_back(dist);
+         }
+
+         int minDist = *std::min_element(distances.begin(), distances.end());
+         int minIndex = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
+         TBranch *ab = (TBranch*)lbranches->At(minIndex);
          std::string bc_name=ab->GetClassName();
-         cout << " type:"<<bc_name<<"\n";
-         if (  bc_name.find("vector<float>") != std::string::npos ) {
-             ttrdrF = new myTTreaderF( ttreader, s);
+         std::string realstr=ab->GetName();
+         TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
+         std::string type_name = aleaf->GetTypeName();
+//         s=realstr; // should I keep the orig?
+         cout << "Real Str:"<<realstr<< "\t type:"<<bc_name<< " \t dist:"<<minDist <<"\n";
+         if (minDist > maxDist) {
+           cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
+           exit(-123);
+         }
+
+
+         if (  type_name.find("Float_t") != std::string::npos ) {
+             ttrdrF = new myTTreaderF( ttreader, realstr);
              ttrdr=ttrdrF;
-         } else if (bc_name.find("vector<double>") != std::string::npos ) {
-             ttrdrD = new myTTreaderD( ttreader, s);
+         } else if (type_name.find("Double_t") != std::string::npos ) {
+             ttrdrD = new myTTreaderD( ttreader, realstr);
              ttrdr=ttrdrD;
-         } else if (bc_name.find("vector<int>") != std::string::npos ) {
-             ttrdrI= new myTTreaderI ( ttreader, s);
+         } else if (type_name.find("Int_t") != std::string::npos ) {
+             ttrdrI= new myTTreaderI ( ttreader, realstr);
              ttrdr=ttrdrI;
-         } else if (bc_name.find("vector<bool>") != std::string::npos ) {
-             ttrdrB= new myTTreaderB ( ttreader, s);
+         } else if (type_name.find("Bool_t") != std::string::npos ) {
+             ttrdrB= new myTTreaderB ( ttreader, realstr);
              ttrdr=ttrdrB;
          } else {
-            cerr << s << " of type "<< bc_name << " can not be handled by this version of CL !!!!!!!\n";
-            special_function=false;
+             cerr<<"Assuming Float for: "<< s<<"\n";
+             ttrdrF = new myTTreaderF( ttreader, realstr);
+             ttrdr=ttrdrF;
          }
-//double avalue=ttrdr->readvalue(index);
 
         } else special_function=false;
 
@@ -520,16 +549,6 @@ double Phiof( dbxParticle* apart){
     return phi;
 }
 
-double MsoftDof( dbxParticle* apart){
-    double MsoftD=apart->Attribute(0) ;
-    DEBUG(" MsoftD:"<<MsoftD<<"\t");
-    return MsoftD;
-}
-double DeepBof( dbxParticle* apart){
-    double DeepB=apart->Flavor();
-    DEBUG(" DeepB:"<<DeepB<<"\t");
-    return DeepB;
-}
 double PtConeof( dbxParticle* apart){
     double ptc=apart->PtCone();
     DEBUG(" PTC:"<<ptc<<"\t");
@@ -552,21 +571,6 @@ double isTauTag( dbxParticle* apart){
     return Tval;
 }
 
-double tau1of( dbxParticle* apart){
-    double tau1=apart->Attribute(1) ;
-    DEBUG(" tau1:"<<tau1<<"\t");
-    return tau1;
-}
-double tau2of( dbxParticle* apart){
-    double tau2=apart->Attribute(2) ;
-    DEBUG(" tau2:"<<tau2<<"\t");
-    return tau2;
-}
-double tau3of( dbxParticle* apart){
-    double tau3=apart->Attribute(3) ;
-    DEBUG(" tau3:"<<tau3<<"\t");
-    return tau3;
-}
 //----------for electron and muons
 double dzof( dbxParticle* apart){
     double dz=999;
@@ -596,16 +600,6 @@ double dxyof( dbxParticle* apart){
     DEBUG(" dxy:"<<dxy<<"\t");
     return dxy;
 }
-double relisoof( dbxParticle* apart){
-   double v=apart->Attribute(2);
-   DEBUG(" relisoof:"<<v<<"\t");
-   return v;
-}
-double softIdof( dbxParticle* apart){
-   double v=apart->Attribute(3);
-   DEBUG(" softidof:"<<v<<"\t");
-   return v;
-}
 double vzof( dbxParticle* apart){ 
    double v=apart->Attribute(4);
    DEBUG(" vert z of:"<<v<<"\t");
@@ -633,92 +627,16 @@ double vtrof( dbxParticle* apart){
    DEBUG(" vert tr of:"<<v<<"\t");
    return v;
 }
-double tauisoof( dbxParticle* apart){
-   double v=apart->Attribute(0); // tau attri0
-   DEBUG(" Tau iso of:"<<v<<"\t");
-   return v;
-}
 double CCountof( dbxParticle* apart){
    double v=apart->Attribute(9) - apart->Attribute(8)+1;
    DEBUG("# Children :"<<v<<"\n");
    return v;
 }
-//---------for tau's added by SS
-double iddecaymodeof( dbxParticle* apart){
-   double v=apart->Attribute(1);
-   DEBUG(" iddecaymode:"<<v<<"\t");
-   return v;
-}
-double idisotightof( dbxParticle* apart){
-   double v=apart->Attribute(2);
-   DEBUG(" idisotight:"<<v<<"\t");
-   return v;
-}
-double idantieletightof( dbxParticle* apart){
-   double v=apart->Attribute(3);
-   DEBUG(" idantieletight:"<<v<<"\t");
-   return v;
-}
-double idantimutightof( dbxParticle* apart){
-   double v=apart->Attribute(4);
-   DEBUG(" idantimutight:"<<v<<"\t");
-   return v;
-}
-double tightidof( dbxParticle* apart){
-   double v=apart->Attribute(4);
-   DEBUG(" tightID for mus:"<<v<<"\t");
-   return v;
-}
-double puidof( dbxParticle* apart){
-   double v=apart->Attribute(0);
-   DEBUG(" PU ID for jets:"<<v<<"\t");
-   return v;
-}
+
 double genpartidxof( dbxParticle* apart){
    double v=apart->Attribute(5);
    DEBUG(" genPartIdx:"<<v<<"\t");
    return v;
-}
-double relisoallof( dbxParticle* apart){
-   double v=apart->Attribute(6);
-   DEBUG(" tau reliso_all:"<<v<<"\t");
-   return v;
-}
-
-double sieieof( dbxParticle* apart){
-   double v=apart->Attribute(0);
-   DEBUG(" Photon sieie:"<<v<<"\t");
-   return v;
-}
-
-double sub1btagof( dbxParticle* apart){
-   double v=apart->Attribute(4);
-   DEBUG(" fatjet sub1btagof:"<<v<<"\t");
-   return v;
-}
-
-double sub2btagof( dbxParticle* apart){
-   double v=apart->Attribute(5);
-   DEBUG(" fatjet sub2btagof:"<<v<<"\t");
-   return v;
-}
-
-double decaymodeof( dbxParticle* apart){
-   double v=apart->Attribute(7);
-   DEBUG(" tau decay mode:"<<v<<"\t");
-   return v;
-}
-double pfreliso03allof( dbxParticle* apart){
-   double v=apart->Attribute(6);
-   DEBUG(" muon pfRelIso03_all:"<<v<<"\t");
-   return v;
-}
-
-double mvatightof(dbxParticle* apart){
-    return 1*(int)apart->Attribute(0);
-}
-double mvalooseof(dbxParticle* apart){
-    return 1*(int)apart->Attribute(1);
 }
 
 double isTight(dbxParticle* apart){
@@ -731,16 +649,12 @@ double isLoose(dbxParticle* apart){
     return 1*(int)apart->isLoose();
 }
 
-double isZcandid(dbxParticle* apart){
-    return apart->Attribute( apart->nAttribute() -1);
-}
-
-double IsoVarof( dbxParticle* apart){
- return apart->Attribute(3);
-}
 
 double MiniIsoVarof( dbxParticle* apart){
  return apart->Attribute(3); // TO BE REVIEWED
+}
+double AbsIsoVarof( dbxParticle* apart){
+ return apart->Attribute(4); // TO BE REVIEWED
 }
 
 double specialf( dbxParticle* apart){
@@ -753,30 +667,6 @@ double nbfof( dbxParticle* apart){
     int nbf=(apart->isTight() % 100 ); // modulo 100 to remove possible tau tags
     DEBUG("NBJ:"<<nbf<<"\n");
     return nbf;
-}
-//------------TRK
-double truthIDof( dbxParticle* apart){
- return apart->Attribute(0);
-}
-double truthParentIDof( dbxParticle* apart){
- return apart->Attribute(1);
-}
-double averageMuof( dbxParticle* apart){
- return apart->Attribute(2);
-}
-double truthMatchProbof( dbxParticle* apart){
- return apart->Attribute(3);
-}
-
-double sip3d( dbxParticle* apart) {
-
-return apart->Attribute(4);
-}
-double corrpT( dbxParticle* apart){
-return apart->Attribute(0);
-}
-double pfreliso04DBCorr( dbxParticle* apart){
-return apart->Attribute(5);
 }
 
 

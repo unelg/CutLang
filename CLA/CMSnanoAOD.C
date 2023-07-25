@@ -102,8 +102,6 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(Muon_charge[i] );
                 adbxm->setPdgID(-13*Muon_charge[i] );
-//                adbxm->setEtCone(Muon_IsolationVarRhoCorr[i] );
-//                adbxm->setPtCone(Muon_IsolationVar[i]        );
                 adbxm->addAttribute( Muon_dz[i]);         // attri 0
                 adbxm->addAttribute( Muon_dxy[i]     );   // attri 1
                 adbxm->addAttribute( Muon_miniPFRelIso_all[i]     ); // attri 2

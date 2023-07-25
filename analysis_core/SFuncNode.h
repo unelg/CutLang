@@ -11,7 +11,7 @@
 #include "Node.h"
 #include "Hemisphere.h"
 #include "mt2_bisect.h"
-
+#include "TTreeReader.h"
 
 //#define _CLV_
 #ifdef _CLV_
@@ -23,8 +23,79 @@
 using namespace std;
 //takes care of functions with arguments
 
+extern TTreeReader *ttreader;
+
+class SFTTreader {
+  public:
+        virtual double readvalue(){ return 0; }
+};
+
+class SFTTreaderI : public SFTTreader{
+private:
+     double avalue;
+public:
+       TTreeReaderValue<Int_t> *my_reader;
+       SFTTreaderI(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderValue<Int_t>(*ttreader, s.c_str() );
+       }
+      double readvalue() {
+        avalue=*(my_reader->Get() );
+        return avalue;
+      }
+};
+
+class SFTTreaderD : public SFTTreader{
+private:
+     double avalue;
+public:
+       TTreeReaderValue<Double_t> *my_reader;
+       SFTTreaderD(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderValue<Double_t>(*ttreader, s.c_str() );
+       }
+      double readvalue() {
+        avalue=*(my_reader->Get() );
+        return avalue;
+      }
+};
+
+class SFTTreaderF : public SFTTreader{
+private:
+     double avalue;
+public:
+       TTreeReaderValue<Float_t> *my_reader;
+       SFTTreaderF(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderValue<Float_t>(*ttreader, s.c_str() );
+       }
+      double readvalue() {
+        avalue=*(my_reader->Get() );
+        return avalue;
+      }
+};
+
+class SFTTreaderB : public SFTTreader{
+private:
+     double avalue;
+public:
+       TTreeReaderValue<Bool_t> *my_reader;
+       SFTTreaderB(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderValue<Bool_t>(*ttreader, s.c_str() );
+       }
+      double readvalue() {
+        avalue=*(my_reader->Get() );
+        return avalue;
+      }
+};
+
+
+
 class SFuncNode : public Node {
 private:
+    bool special_function;
+      SFTTreader *ttrdr;
+      SFTTreaderF *ttrdrF;
+      SFTTreaderD *ttrdrD;
+      SFTTreaderB *ttrdrB;
+      SFTTreaderI *ttrdrI;
     static std::map< std::string, double > BUFFERED_VALUES;
     //should add something related to trigger types
     Node* userObjectA;
@@ -71,7 +142,63 @@ public:
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
-        DEBUG("** SF node with no left right nodes.\n");
+        DEBUG("** regular simple SF node.\n");
+        int maxDist =6;
+
+        if (s.find('~') != std::string::npos) {
+         s.erase(std::remove( s.begin(), s.end(), '~' ),s.end());
+         cout << "** sf:"<< s<<"\t"; //this is special function
+         special_function=true;
+         TTree *at = ttreader->GetTree();
+         TObjArray *lbranches = at->GetListOfBranches();
+         if (lbranches == 0) {
+            cerr<<"No branches found in this ntuple!\n";
+            exit(-2);
+         }
+         std::vector<int> distances;
+         for (int i = 0; i < lbranches->GetEntries(); ++i) {
+          TBranch *abranch = (TBranch*)lbranches->At(i);
+          int dist = levenshtein(s, abranch->GetName());
+          distances.push_back(dist);
+         }
+
+         int minDist = *std::min_element(distances.begin(), distances.end());
+         int minIndex = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
+         TBranch *ab = (TBranch*)lbranches->At(minIndex);
+         std::string bc_name=ab->GetClassName();
+         std::string realstr=ab->GetName();
+         TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
+         std::string type_name = aleaf->GetTypeName();
+//         s=realstr; // should I keep the orig?
+         cout << "Real Str:"<<realstr<< "\t type:"<<bc_name<< " \t dist:"<<minDist <<"\n";
+         if (minDist > maxDist) {
+           cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
+           exit(-123);
+         }
+
+
+         if (  type_name.find("Float_t") != std::string::npos ) {
+             ttrdrF = new SFTTreaderF( ttreader, realstr);
+             ttrdr=ttrdrF;
+         } else if (type_name.find("Double_t") != std::string::npos ) {
+             ttrdrD = new SFTTreaderD( ttreader, realstr);
+             ttrdr=ttrdrD;
+         } else if (type_name.find("Int_t") != std::string::npos ) {
+             ttrdrI= new SFTTreaderI ( ttreader, realstr);
+             ttrdr=ttrdrI;
+         } else if (type_name.find("Bool_t") != std::string::npos ) {
+             ttrdrB= new SFTTreaderB ( ttreader, realstr);
+             ttrdr=ttrdrB;
+         } else {
+             cerr<<"Assuming Float for: "<< s<<"\n";
+             ttrdrF = new SFTTreaderF( ttreader, realstr);
+             ttrdr=ttrdrF;
+         }
+
+        } else special_function=false;
+
+
+
 
 }
     SFuncNode(double (*func)(AnalysisObjects* ao, string s, float val),
@@ -285,6 +412,7 @@ std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1);
 double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet);
 double fTTbarNNLORec(double lep1, double lep2, double amet, double lab);
+double specialsf(AnalysisObjects* ao, string s, float value);
 
 
 /*

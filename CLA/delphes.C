@@ -82,6 +82,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
    TClonesArray *branchParticle = UseBranch("Particle", fChain);
    TClonesArray *branchJet = UseBranch("Jet", fChain);
+   TClonesArray *branchFJet = UseBranch("FatJet", fChain);
    TClonesArray *branchPhoton = UseBranch("Photon", fChain);
    TClonesArray *branchElectron = UseBranch("Electron", fChain);
    TClonesArray *branchMuon = UseBranch("Muon", fChain);
@@ -107,6 +108,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
    GenParticle *particle;
    Jet *jet;
+   FatJet *fjet;
    Photon *photon;
    Electron *electron;
    Muon *muon;
@@ -171,7 +173,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        dbxJet      *adbxj;
        dbxElectron *adbxe;
        dbxMuon     *adbxm;
-       //dbxTau      *adbxt;
+       dbxTau      *adbxt;
        dbxPhoton   *adbxp;
        dbxTruth    *adbxgen;
        dbxTrack    *adbxtrk;
@@ -187,12 +189,14 @@ void delphes::Loop(analy_struct aselect, char *extname)
               adbxm->setEtCone(muon->IsolationVarRhoCorr);
               adbxm->setPtCone(muon->IsolationVar       );
               adbxm->setParticleIndx(i);
-              adbxm->addAttribute( muon->DZ);
-              adbxm->addAttribute( muon->D0);
-              adbxm->addAttribute( muon->IsolationVar   );
+              adbxm->addAttribute( muon->DZ);          //0
+              adbxm->addAttribute( muon->D0);         //1
+              adbxm->addAttribute( muon->IsolationVar   ); //2
 //---calculate miniiso here.
 	      double minisovar=0.0;
+	      double absisovar=0.0;
               double coneradius;
+
               if (muon->PT < 50) { // small PT recipe 
                 coneradius=0.2;
               } else if (muon->PT < 200){             // medium PT recipe
@@ -200,6 +204,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
               } else {        // large PT recipe
                 coneradius=0.05;
               }
+
 // EFphotons
               if (branchEFlowPhoton)
               for ( int im=0; im < branchEFlowPhoton->GetEntriesFast(); ++im){
@@ -224,7 +229,9 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
+               if (deltaR < 0.3) absisovar+=slv.Pt();
               }
+              
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
 // EFNeutralHAdrons
@@ -239,10 +246,11 @@ if (it == 0){
 //              cout << "N mini iso:"<<minisovar<<"\n";
 
 
-              minisovar=(minisovar-muon->PT)/muon->PT;
+//              minisovar=(minisovar-muon->PT)/muon->PT;
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
-              adbxm->addAttribute( minisovar );
+              adbxm->addAttribute( minisovar ); // 3
+              adbxm->addAttribute( absisovar ); // 4
 //             if (minisovar > 0.2) cout << minisovar << " muon" << endl;
 
               muons.push_back(*adbxm);
@@ -263,12 +271,11 @@ if (it == 0){
               adbxe->addAttribute( electron->DZ);         // 0
               adbxe->addAttribute( electron->D0     );   // 1
               adbxe->addAttribute( electron->IsolationVar );
-              adbxe->addAttribute( electron->ErrorD0); //3
-              adbxe->addAttribute( electron->ErrorDZ);  //4
 
 
 //---calculate miniiso here.
 	      double minisovar=0.0;
+	      double absisovar=0.0;
               double coneradius;
               if (electron->PT < 50) { // small PT recipe 
                 coneradius=0.2;
@@ -301,6 +308,7 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
+               if (deltaR < 0.3) absisovar+=slv.Pt();
               }
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
@@ -322,7 +330,8 @@ if (it == 0){
 
  //             if (minisovar > 0.1) cout << minisovar << " electron" << endl;
 
-              adbxe->addAttribute( minisovar ); //[5]
+              adbxe->addAttribute( minisovar ); // mini 3
+              adbxe->addAttribute( absisovar ); // abs  4
 
               electrons.push_back(*adbxe);
               delete adbxe;
@@ -386,7 +395,7 @@ if (it == 0){
         delete adbxtrk;
       }
 //------------------------------------------------------
-
+// regular jets
 
     // Loop over all jets in event
     if (branchJet != NULL)
@@ -438,6 +447,65 @@ if (it == 0){
     }
     }// end of loop over jets
     DEBUG("Jets:"<<i<<std::endl);
+
+
+
+//------------------------------------------------------
+// FAT jets
+
+    // Loop over all jets in event
+    if (branchFJet != NULL)
+    for(i = 0; i < branchFJet->GetEntriesFast(); ++i) { 
+      fjet = (FatJet*) branchFJet->At(i);
+      alv.SetPtEtaPhiM( fjet->PT, fjet->Eta, fjet->Phi, fjet->Mass ); // all in GeV
+//      cout<<"This Jet pt: "<<fjet->PT<<", eta: "<<fjet->Eta<<", phi: "<<fjet->Phi <<" Q:"<<fjet->Charge<<endl;
+      adbxj= new dbxJet(alv);
+      adbxj->setCharge(fjet->Charge);
+      adbxj->setParticleIndx(i);
+      adbxj->setFlavor(fjet->Flavor);
+      adbxj->set_isbtagged_77(  (bool)fjet->BTag ); //  btag
+      adbxj->set_isTautagged( (bool)fjet->TauTag); // tau tag
+// Loop over all jet's constituents
+      for(j = 0; j < fjet->Particles.GetEntriesFast(); ++j) {
+       object = fjet->Particles.At(j);
+// Check if the constituent is accessible
+       if(object == 0) continue;
+       if(object->IsA() == GenParticle::Class()) {
+        particle = (GenParticle*) object;
+//        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
+        alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
+        adbxgen= new dbxTruth(alv);
+        adbxgen->setCharge( particle->Charge );
+        adbxgen->setPdgID(  particle->PID );
+        adbxgen->setParticleIndx(j);
+        adbxgen->addAttribute( particle->DZ);  //0
+        adbxgen->addAttribute( particle->D0);  
+        adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        adbxgen->addAttribute( particle->Status ); //3
+        adbxgen->addAttribute( particle->Z ); //4
+        adbxgen->addAttribute( particle->Y ); //5
+        adbxgen->addAttribute( particle->X ); //6
+        adbxgen->addAttribute( particle->T ); //7
+        constis.push_back(*adbxgen);
+        delete adbxgen;
+       }
+      }// end of loop over jets constits.
+
+    ljets.push_back(*adbxj);
+    delete adbxj;
+    if (constis.size() > 0){
+      TString cname ="FJET_";
+              cname+=i;    // jet index
+              cname+="c"; //  c for constituents
+       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
+       DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
+       constis.clear();
+    }
+    }// end of loop over fjets
+    DEBUG("FatJets:"<<i<<std::endl);
+
+
+
 
 
 //-----------------------------

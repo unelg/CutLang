@@ -193,6 +193,12 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
         delete aPart;
         delete bPart;
         delete cPart;
+
+        if (special_function) {
+                  double avalue=ttrdr->readvalue();
+                  DEBUG(symbol<<" SF read new attrib:"<< avalue << "\n");
+                  return avalue;
+        }
         double arv=(*f)(ao, symbol, value);              
         DEBUG("ARV="<<arv<<"\n");
         return arv;
@@ -546,3 +552,28 @@ double xslumicorrsf(AnalysisObjects* ao, string s, float value){
 	ao->evt.user_evt_weight *= ao->evt.weight_xsec;
 	return 1;
 }
+double specialsf(AnalysisObjects* ao, string s, float value){
+        return 1;
+}
+
+int levenshtein(const std::string &s1_input, const std::string &s2_input) {
+
+    std::string s1 = s1_input, s2 = s2_input;
+    std::transform(s1.begin(), s1.end(), s1.begin(), [](unsigned char c){ return std::tolower(c); });
+    std::transform(s2.begin(), s2.end(), s2.begin(), [](unsigned char c){ return std::tolower(c); });
+
+    if (s1[0] != s2[0]) return 1000;
+
+    const size_t len1 = s1.size(), len2 = s2.size();
+    std::vector<std::vector<int>> d(len1 + 1, std::vector<int>(len2 + 1));
+
+    d[0][0] = 0;
+    for(unsigned int i = 1; i <= len1; ++i) d[i][0] = i;
+    for(unsigned int i = 1; i <= len2; ++i) d[0][i] = i;
+
+    for(unsigned int i = 1; i <= len1; ++i)
+        for(unsigned int j = 1; j <= len2; ++j)
+            d[i][j] = std::min({ d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1) });
+
+    return d[len1][len2];
+};
