@@ -984,7 +984,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        case  9: p0s="FJET"; break;
                                       }
                                       if ( p0s=="FJET" ) {
-                                         if ( Initializations->at(0) == "ATLMIN" ) p0s="rcjet";
+                                         if ( Initializations->at(0) == "ATLMIN" ) p0s="vrcjet";
                                          if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
                                       }
                                       std::string funame=$1; 
@@ -1063,7 +1063,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original definitions as well
                 DEBUG($1<<" is a node variable candidate\n");
-                cout<<$1<<" is a node variable candidate\n";
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
@@ -1078,7 +1077,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                      map<string,vector<myParticle*> >::iterator itp;
                      itp=ListParts->find($1);
                      if(itp==ListParts->end() ) {
-                      cout<<$1<<"is NOT a known object nor variable, not even a particle.\n"; // NGUU
+                      cout<<$1<<"is a special function from NTUPLE.\n"; // NGUU
                       std::string varname="~";
                                   varname+=$1;
                                   varname+="~";
