@@ -49,6 +49,7 @@ public :
    Float_t         weight_globalLeptonTriggerSF;
    Float_t         weight_oldTriggerSF;
    Float_t         weight_bTagSF_MV2c10_77;
+   Float_t         weight_bTagSF_DL1r_77;
    Float_t         weight_jvt;
    Float_t         weight_pileup_UP;
    Float_t         weight_pileup_DOWN;
@@ -192,7 +193,7 @@ public :
    vector<int>     *jet_truthPartonLabel;
    vector<char>    *jet_isTrueHS;
    vector<int>     *jet_truthflavExtended;
-   vector<char>    *jet_isbtagged_MV2c10_77;
+   vector<char>    *jet_isbtagged_DL1r_77;
    vector<float>   *jet_MV2r;
    vector<float>   *jet_MV2rmu;
    vector<float>   *jet_DL1;
@@ -293,6 +294,7 @@ public :
    TBranch        *b_weight_globalLeptonTriggerSF;   //!
    TBranch        *b_weight_oldTriggerSF;   //!
    TBranch        *b_weight_bTagSF_MV2c10_77;   //!
+   TBranch        *b_weight_bTagSF_DL1r_77;   //!
    TBranch        *b_weight_jvt;   //!
    TBranch        *b_weight_pileup_UP;   //!
    TBranch        *b_weight_pileup_DOWN;   //!
@@ -436,7 +438,7 @@ public :
    TBranch        *b_jet_truthPartonLabel;   //!
    TBranch        *b_jet_isTrueHS;   //!
    TBranch        *b_jet_truthflavExtended;   //!
-   TBranch        *b_jet_isbtagged_MV2c10_77;   //!
+   TBranch        *b_jet_isbtagged_DL1r_77;   //!
    TBranch        *b_jet_MV2r;   //!
    TBranch        *b_jet_MV2rmu;   //!
    TBranch        *b_jet_DL1;   //!
@@ -648,7 +650,7 @@ void AtlMin::Init(TTree *tree, int year)
    jet_truthPartonLabel = 0;
    jet_isTrueHS = 0;
    jet_truthflavExtended = 0;
-   jet_isbtagged_MV2c10_77 = 0;
+   jet_isbtagged_DL1r_77 = 0;
    jet_MV2r = 0;
    jet_MV2rmu = 0;
    jet_DL1 = 0;
@@ -732,6 +734,7 @@ void AtlMin::Init(TTree *tree, int year)
    fChain->SetBranchAddress("weight_globalLeptonTriggerSF", &weight_globalLeptonTriggerSF, &b_weight_globalLeptonTriggerSF);
    fChain->SetBranchAddress("weight_oldTriggerSF", &weight_oldTriggerSF, &b_weight_oldTriggerSF);
    fChain->SetBranchAddress("weight_bTagSF_MV2c10_77", &weight_bTagSF_MV2c10_77, &b_weight_bTagSF_MV2c10_77);
+   fChain->SetBranchAddress("weight_bTagSF_DL1r_77", &weight_bTagSF_DL1r_77, &b_weight_bTagSF_DL1r_77);
    fChain->SetBranchAddress("weight_jvt", &weight_jvt, &b_weight_jvt);
    fChain->SetBranchAddress("weight_pileup_UP", &weight_pileup_UP, &b_weight_pileup_UP);
    fChain->SetBranchAddress("weight_pileup_DOWN", &weight_pileup_DOWN, &b_weight_pileup_DOWN);
@@ -875,7 +878,7 @@ void AtlMin::Init(TTree *tree, int year)
    fChain->SetBranchAddress("jet_truthPartonLabel", &jet_truthPartonLabel, &b_jet_truthPartonLabel);
    fChain->SetBranchAddress("jet_isTrueHS", &jet_isTrueHS, &b_jet_isTrueHS);
    fChain->SetBranchAddress("jet_truthflavExtended", &jet_truthflavExtended, &b_jet_truthflavExtended);
-   fChain->SetBranchAddress("jet_isbtagged_MV2c10_77", &jet_isbtagged_MV2c10_77, &b_jet_isbtagged_MV2c10_77);
+   fChain->SetBranchAddress("jet_isbtagged_DL1r_77", &jet_isbtagged_DL1r_77, &b_jet_isbtagged_DL1r_77);
    fChain->SetBranchAddress("jet_MV2r", &jet_MV2r, &b_jet_MV2r);
    fChain->SetBranchAddress("jet_MV2rmu", &jet_MV2rmu, &b_jet_MV2rmu);
    fChain->SetBranchAddress("jet_DL1", &jet_DL1, &b_jet_DL1);

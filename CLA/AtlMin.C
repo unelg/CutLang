@@ -72,10 +72,9 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        dbxPhoton   *adbxp;
        dbxParticle *adbxparticle;
 
-#ifdef __DEBUG__
-std::cout << "Begin Filling"<<std::endl;
-#endif
+ DEBUG("Begin Filling\n");
 
+/*
 // PHOTONS -------- // now truth info
         for (unsigned int i=0; i<truth_pt->size(); i++) {
                 alv.SetPtEtaPhiE( truth_pt->at(i)*0.001, truth_eta->at(i), truth_phi->at(i), truth_e->at(i)*0.001 ); // all in GeV
@@ -90,6 +89,8 @@ std::cout << "Begin Filling"<<std::endl;
 std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
 #endif
 
+
+*/
 //MUONS
         for (unsigned int i=0; i<mu_pt->size(); i++) {
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
@@ -107,9 +108,9 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
                 muons.push_back(*adbxm);
                 delete adbxm;
         }
-#ifdef __DEBUG__
-std::cout << "Muons OK:"<< mu_pt->size()<<std::endl;
-#endif
+
+DEBUG("Muons OK:"<< mu_pt->size()<<std::endl);
+
 
 //ELECTRONS
         for (unsigned int i=0; i<el_e->size(); i++) {
@@ -137,9 +138,9 @@ std::cout << "Muons OK:"<< mu_pt->size()<<std::endl;
                 delete adbxe;
         }
 
-#ifdef __DEBUG__
-std::cout << "Electrons OK:"<< el_e->size() <<std::endl;
-#endif
+
+
+DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
 
 //JETS
         for (unsigned int i=0; i<jet_pt->size(); i++) {
@@ -149,44 +150,38 @@ std::cout << "Electrons OK:"<< el_e->size() <<std::endl;
                 adbxj->setjvt(jet_jvt->at(i));
                 adbxj->setParticleIndx(i);
                 if (b_jet_truthflav != NULL) adbxj->setFlavor(jet_truthflav->at(i) );
-                adbxj->set_isbtagged_77(bool(jet_isbtagged_MV2c10_77->at(i)));
+                adbxj->set_isbtagged_77(bool(jet_isbtagged_DL1r_77->at(i)));
+                
 //                            if  (jet_isbtagged_MV2c10_77->at(i)>0)  std::cout << bool(jet_isbtagged_MV2c10_77->at(i)) <<"\n";
-                adbxj->setmv2c00(jet_mv2c00->at(i));
-                adbxj->setmv2c10(jet_mv2c10->at(i));
-                adbxj->setmv2c20(jet_mv2c20->at(i));
-                adbxj->setip3dsv1(jet_ip3dsv1->at(i));
+///             adbxj->setmv2c00(jet_mv2c00->at(i));
+///             adbxj->setmv2c10(jet_mv2c10->at(i));
+///             adbxj->setmv2c20(jet_mv2c20->at(i));
+///             adbxj->setip3dsv1(jet_ip3dsv1->at(i));
 
                 jets.push_back(*adbxj);
                 delete adbxj;
         }
-#ifdef __DEBUG__
-std::cout << "Jets OK:"<< jet_pt->size() <<std::endl;
-#endif
+ DEBUG("Jets OK:"<< jet_pt->size() <<std::endl);
 //MET
         met.SetMagPhi( met_met*0.001,  met_phi); //mev-->gev
-#ifdef __DEBUG__
-std::cout << "MET OK"<<std::endl;
-#endif
+ DEBUG("MET OK"<<std::endl );
+
     
     //LJETS
          
-         for (unsigned int i=0; i<rcjet_pt->size(); i++) {
-             alv.SetPtEtaPhiE( rcjet_pt->at(i)*0.001, rcjet_eta->at(i), rcjet_phi->at(i), rcjet_e->at(i)*0.001 ); // all in GeV
+         for (unsigned int i=0; i<vrcjet_2m_t_pt->size(); i++) {
+             alv.SetPtEtaPhiE( vrcjet_2m_t_pt->at(i)*0.001, vrcjet_2m_t_eta->at(i), vrcjet_2m_t_phi->at(i), vrcjet_2m_t_e->at(i)*0.001 ); // all in GeV
              adbxlj= new dbxJet(alv);
-             //adbxlj->set_rcjetsub_mv2c10_isbtagged(rcjetsub_mv2c10->at(i));
-             /*for (unsigned int i=0; i<rcjetsub_mv2c10->size(); i++) {
-                 adbxlj->rcjetsub_mv2c10_isbtagged(rcjetsub_mv2c10->at(i));
-             }*/
              
              bool is_bljet = false;
-             for (unsigned int j=0; j<rcjetsub_mv2c10->at(i).size(); j++) { // this is loop over subjets
-               alv.SetPtEtaPhiE( rcjetsub_pt->at(i).at(j)*0.001, rcjetsub_eta->at(i).at(j), rcjetsub_phi->at(i).at(j), rcjetsub_e->at(i).at(j)*0.001);
+             for (unsigned int j=0; j<vrcjetsub_2m_t_pt->at(i).size(); j++) { // this is loop over subjets
+               alv.SetPtEtaPhiE( vrcjetsub_2m_t_pt->at(i).at(j)*0.001, vrcjetsub_2m_t_eta->at(i).at(j), vrcjetsub_2m_t_phi->at(i).at(j), vrcjetsub_2m_t_e->at(i).at(j)*0.001);
                adbxparticle = new dbxParticle(alv);
                constis.push_back(*adbxparticle);
                delete adbxparticle;              
-               if (rcjetsub_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
+               if (vrcjetsub_2m_t_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
              }
-             DEBUG("FJET:"<<i<< "  #childen:"<< rcjetsub_mv2c10->at(i).size()<<"\n");
+             DEBUG("FJET:"<<i<< "  #childen:"<< vrcjetsub_2m_t_mv2c10->at(i).size()<<"\n");
              adbxlj->setParticleIndx(i);
              adbxlj->set_isbtagged_77(is_bljet);
              adbxlj->addAttribute( 0);   // 0
@@ -198,7 +193,7 @@ std::cout << "MET OK"<<std::endl;
              adbxlj->addAttribute( 0);  //6
              adbxlj->addAttribute( 0);  //7
              adbxlj->addAttribute( 1);  //8
-             adbxlj->addAttribute( rcjetsub_mv2c10->at(i).size() );  //9
+             adbxlj->addAttribute( vrcjetsub_2m_t_mv2c10->at(i).size() );  //9
              
              ljets.push_back(*adbxlj);
              delete adbxlj;
@@ -212,7 +207,7 @@ std::cout << "MET OK"<<std::endl;
                constis.clear();
              }
            }// end of loop over ljets
-           DEBUG("LJets OK:"<< rcjet_pt->size() <<std::endl);
+           DEBUG("LJets OK:"<< ljets.size() <<std::endl);
 
 //        cout<<"Evt:"<<eventNumber<<"\n";
 
@@ -230,7 +225,7 @@ std::cout << "MET OK"<<std::endl;
   anevt.weight_mc=weight_mc;
   anevt.weight_pileup=weight_pileup;
   anevt.weight_leptonSF=weight_leptonSF;
-  anevt.weight_bTagSF_77=weight_bTagSF_MV2c10_77;
+  anevt.weight_bTagSF_77=weight_bTagSF_DL1r_77; // was weight_bTagSF_MV2c10_77;
   anevt.weight_jvt=weight_jvt;
   DEBUG("Filling finished."<<std::endl);
 

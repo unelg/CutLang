@@ -279,23 +279,23 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
 //         s=realstr; // should I keep the orig?
-         cout << "Real Str:"<<realstr<< "\t type:"<<bc_name<< " \t dist:"<<minDist <<"\n";
+         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist <<"\n";
          if (minDist > maxDist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);
          }
 
 
-         if (  type_name.find("Float_t") != std::string::npos ) {
+         if (  type_name.find("loat") != std::string::npos ) {
              ttrdrF = new myTTreaderF( ttreader, realstr);
              ttrdr=ttrdrF;
-         } else if (type_name.find("Double_t") != std::string::npos ) {
+         } else if (type_name.find("ouble") != std::string::npos ) {
              ttrdrD = new myTTreaderD( ttreader, realstr);
              ttrdr=ttrdrD;
-         } else if (type_name.find("Int_t") != std::string::npos ) {
+         } else if (type_name.find("nt") != std::string::npos ) {
              ttrdrI= new myTTreaderI ( ttreader, realstr);
              ttrdr=ttrdrI;
-         } else if (type_name.find("Bool_t") != std::string::npos ) {
+         } else if (type_name.find("ool") != std::string::npos ) {
              ttrdrB= new myTTreaderB ( ttreader, realstr);
              ttrdr=ttrdrB;
          } else {
