@@ -129,7 +129,6 @@ std::map< std::string, vector<Node*> > VariableListBank;
 %type <s> LEPTON
 %type <s> ERRTYPE 
 %type <real> NUMBER
-%type <node> NodePo
 %%
 input : initializations countformats definitions_objects commands 
       | initializations countformats objects_definitions commands

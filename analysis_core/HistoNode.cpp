@@ -64,13 +64,15 @@ double HistoNode1D::evaluate(AnalysisObjects* ao) {
                                DEBUG("down-downcast OK\n");
                              }
                            }
+                         for (int ifu=0; ifu<fl.size(); ifu++){
                            for (int ii=0; ii<ipartMax; ii++) {
                              DEBUG("now for particle "<<ii<<"\n");
                              pippo->setParticleIndex(0, ii);
-                             double value = left->evaluate(ao);
+                             double value = fl[ifu]->evaluate(ao);
                              DEBUG("Histo Loop retval:"<<value<<"\n");
 		             ahisto1->Fill(value, ao->evt.user_evt_weight);
                            }
+                         }
                            pippo->setParticleIndex(0, 6213);
                            return 1;
                           }// end of inner if with 6213
