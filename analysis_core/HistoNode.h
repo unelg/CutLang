@@ -17,9 +17,10 @@ private:
     int binsx;
     TH1D *ahisto1;
     std::vector<myParticle*> inputParticles;
+    vector<Node*> fl;
 
 public:
-    HistoNode1D( std::string id,std::string desc,int n, float l1, float l2,Node* l){
+    HistoNode1D( std::string id,std::string desc,int n, float l1, float l2, vector<Node*> l){
         this->id=id;
         Desciption=desc;
         lowerLimitx=l1;
@@ -27,10 +28,11 @@ public:
         binsx=n;
         symbol="histo "+id+","+Desciption+","+std::to_string(l1)+","+std::to_string(l2)+","+std::to_string(n);
         ahisto1 = new TH1D(id.data(), Desciption.data(), binsx, lowerLimitx, upperLimitx);
-        left=l;
+        fl=l;
+        left=l[0]; // what?
         right=NULL;
     }
-    HistoNode1D( std::string id,std::string desc, vector<float> ls, Node* l){
+    HistoNode1D( std::string id,std::string desc, vector<float> ls, vector<Node*> l){
         this->id=id;
         Desciption=desc;
         lowerLimitx=ls[0];
@@ -42,7 +44,8 @@ public:
                                        }
         symbol="histo "+id+","+Desciption+",variable bins";
         ahisto1 = new TH1D(id.data(), Desciption.data(), binsx-1, xvals);
-        left=l;
+        fl=l;
+        left=l[0]; // what?
         right=NULL;
         free(xvals);
     }

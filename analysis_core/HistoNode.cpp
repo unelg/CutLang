@@ -75,9 +75,11 @@ double HistoNode1D::evaluate(AnalysisObjects* ao) {
                            return 1;
                           }// end of inner if with 6213
                     } // end of >0
-                    double value = left->evaluate(ao);
-                    DEBUG("Filling with:"<<value<<"\n");
-		    ahisto1->Fill(value, ao->evt.user_evt_weight);
+                    for (int ifu=0; ifu<fl.size(); ifu++){
+                     double value = fl[ifu]->evaluate(ao);
+                     DEBUG("Filling with:"<<value<<"\n");
+		     ahisto1->Fill(value, ao->evt.user_evt_weight);
+                    }
 		    return 1;
 };
 //-----

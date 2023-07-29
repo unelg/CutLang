@@ -317,7 +317,7 @@ elif [ ${PRLL} -ne 1 ]; then
     done
 #   echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
     echo "------- merging all root files"
-    hadd -f $PWD/histoOut-${rbase}.root $allHistos # merging all root files
+    hadd -f $PWD/histoOut-${rbase}.root $allHistos >> /dev/null # merging all root files
     wait
     # prints efficiencies of combined files
     if [ $? -eq 0 ]; then
@@ -342,23 +342,24 @@ else
   echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
   $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
   if [ $? -eq 0 ]; then
-    echo "CutLang finished successfully, now adding histograms"
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+    echo "CutLang finished successfully, now merging histograms into: " histoOut-${rbase}.root
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
       rm -f  $PWD/histoOut-${rbase}.root
     fi
-    hadd $PWD/histoOut-${rbase}.root $PWD/histoOut-BP_*.root
+    hadd $PWD/histoOut-${rbase}.root $PWD/histoOut-BP_*.root >> /dev/null
     #if histoList command is given, the ${INIFILE}.tmp is produced, and now it gets deleted.
     if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
       rm -f ${INIFILE}
     fi
     if [ $? -eq 0 ]; then
-    echo "hadd finished successfully, now removing auxiliary files"
-    rm -f $PWD/histoOut-BP_*.root
-    rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
-    rm -f $PWD/BP_*-card.ini 
-    rm -f $PWD/out1 
-    rm -f $PWD/algdeps.cmd
+      rm -f $PWD/histoOut-BP_*.root
+      rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
+      rm -f $PWD/BP_*-card.ini 
+      rm -f $PWD/out1 
+      rm -f $PWD/algdeps.cmd
+    else 
+     echo "hadd failed. Check auxiliary files. "
     fi
   fi
 
