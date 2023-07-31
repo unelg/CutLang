@@ -65,7 +65,7 @@ void VLLf::Loop(  analy_struct aselect, char *extname )
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
-       ttreader->Next();
+       ttreader->SetEntry(j);
 
 DEBUG("Read Event\n");
 

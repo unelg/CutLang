@@ -231,7 +231,7 @@ void newpoet::Loop(analy_struct aselect, char *extname)
 
         if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
         if (0 > LoadTree (j)) break;
-             ttreader->Next();
+         ttreader->SetEntry(j);
         if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
         AnalysisObjects a0;

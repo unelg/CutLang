@@ -20,7 +20,7 @@ extern TTreeReader *ttreader;
 void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
     fChain->GetEntry(j);
-    ttreader->Next();
+    ttreader->SetEntry(j);
     vector<dbxMuon>     muons;
     vector<dbxElectron> electrons;
     vector<dbxPhoton>   photons;

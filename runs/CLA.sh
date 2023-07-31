@@ -284,6 +284,7 @@ elif [ ${PRLL} -ne 1 ]; then
       rm -f $WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-BP_*.root
       echo $WORK_PATH/temp_runs_${SHELL_ID}_${i} copied from runs
   done
+
   multitask(){
     lp=$1
     if [[ $datafile == *"://"* ]]; then
@@ -293,6 +294,9 @@ elif [ ${PRLL} -ne 1 ]; then
     fi
 
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
+    echo 'S *********************************************************'
+    pwd
+    echo 'E *********************************************************'
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
       echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
       ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
@@ -300,7 +304,10 @@ elif [ ${PRLL} -ne 1 ]; then
       echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
       ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
     fi
+      cat ../temp_adl_$SHELL_ID/out_${lp}.txt
+      sleep 10;
   }
+
   if [ $? -eq 0 ]; then # multithreading
     for ((i = 0 ; i < ${PRLL} ; i++)); do
       multitask "$i" &
@@ -323,7 +330,7 @@ elif [ ${PRLL} -ne 1 ]; then
     if [ $? -eq 0 ]; then
       root -l -q \
       ''${WORK_PATH}'/analysis_core/FinalEff.C("'${PWD}'/histoOut-'${rbase}'.root", '$sh', '$se')'
-     rm -r $WORK_PATH/temp*  # removes temp folders
+########################################     rm -r $WORK_PATH/temp*  # removes temp folders
 
       echo "hadd (merging all root files) finished successfully, now removing auxiliary files"
       rm -f $PWD/histoOut-BP_*.root

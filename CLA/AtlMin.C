@@ -33,7 +33,8 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
 
    fChain->GetEntry(j);
-   ttreader->Next();
+//   ttreader->Next();
+   ttreader->SetEntry(j);
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;

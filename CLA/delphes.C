@@ -130,7 +130,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
        int RunNumber=137;
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
-  ttreader->Next();
+  ttreader->SetEntry(je);
 
   TBranchMap::iterator itBranchMap;
   TBranch *branch;
