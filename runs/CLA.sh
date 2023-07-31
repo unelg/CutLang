@@ -14,9 +14,9 @@ WORK_PATH=`dirname $RUNS_PATH`  # /home/.../CutLang
 
 SHELL_ID=$$
 
-echo $SCRIPT
-echo $RUNS_PATH
-echo $WORK_PATH
+##echo $SCRIPT
+##echo $RUNS_PATH
+##echo $WORK_PATH
 
 EVENTS=0
 ADLFILE=$RUNS_PATH/CLA.ini
@@ -39,7 +39,6 @@ if [ $# -lt 2 ]; then
  echo "ROOT file type can be:"; grep "inptype ==" $WORK_PATH/CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
  exit 1
 fi
-
 
 POSITIONAL=()
 while [[ $# -gt 2 ]]
@@ -136,7 +135,7 @@ case $key in
     ;;
     -d|--deps)
 # speedup
-    echo "******************" $DEPS "***"
+    echo "Running " $DEPS " dependencies"
     DEPS="XXX"
     DEPP=" -d "
     shift # past argument
@@ -184,8 +183,6 @@ if [ $ADLFILE == "$RUNS_PATH/CLA.ini" ]; then
   INIFILE=$ADLFILE
   echo "ATTENTION ! XXXXXXXXX running with default ADL file CLA.ini XXXXXXXX"
 fi
-
-
 
 # for ialgo in `seq $Nalgo`; do
 #  ../scripts/ini2txt.sh  BP_$ialgo
@@ -241,7 +238,7 @@ else
     if [ -f "algdeps.cmd" ]; then
      DEPS=`cat algdeps.cmd`
      cat algdeps.cmd
-     echo "******************" $DEPS "***"
+     ## echo "******************" $DEPS "***"
      rm -f algdeps.cmd
     fi
    fi
@@ -277,15 +274,18 @@ elif [ ${PRLL} -ne 1 ]; then
   else
     intrvl=$(( EVENTS/PRLL)) # workload division
   fi
-  echo "**********************************************************************************************"
+# echo "**********************************************************************************************"
   echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} -PLL ${PRLL} ${HLTLIST} ${DEPS}
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
-      cp -a $WORK_PATH/runs/. $WORK_PATH/temp_runs_${SHELL_ID}_${i}
+      mkdir $WORK_PATH/temp_runs_${SHELL_ID}_${i}
+      cp -a $WORK_PATH/runs/*.sh $WORK_PATH/temp_runs_${SHELL_ID}_${i}
       rm -f $WORK_PATH/temp_runs_${SHELL_ID}_${i}/histoOut-BP_*.root
-      echo $WORK_PATH/temp_runs_${SHELL_ID}_${i} copied from runs
+#     echo $WORK_PATH/temp_runs_${SHELL_ID}_${i} copied from runs
   done
 
-  multitask(){
+####################################
+  multitask(){ #####################
+####################################
     lp=$1
     if [[ $datafile == *"://"* ]]; then
       _dataf=$datafile
@@ -294,19 +294,15 @@ elif [ ${PRLL} -ne 1 ]; then
     fi
 
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
-    echo 'S *********************************************************'
-    pwd
-    echo 'E *********************************************************'
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
       echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 2>/dev/null > ../temp_adl_$SHELL_ID/out_${lp}.txt
     else
       echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP > ../temp_adl_$SHELL_ID/out_${lp}.txt
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP 2>/dev/null > ../temp_adl_$SHELL_ID/out_${lp}.txt
     fi
-      cat ../temp_adl_$SHELL_ID/out_${lp}.txt
-      sleep 10;
   }
+#####################################
 
   if [ $? -eq 0 ]; then # multithreading
     for ((i = 0 ; i < ${PRLL} ; i++)); do
@@ -323,14 +319,14 @@ elif [ ${PRLL} -ne 1 ]; then
       allHistos+=" "
     done
 #   echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
-    echo "------- merging all root files"
+    echo "----> merging all root files"
     hadd -f $PWD/histoOut-${rbase}.root $allHistos >> /dev/null # merging all root files
     wait
     # prints efficiencies of combined files
     if [ $? -eq 0 ]; then
-      root -l -q \
+      root -l -b -q \
       ''${WORK_PATH}'/analysis_core/FinalEff.C("'${PWD}'/histoOut-'${rbase}'.root", '$sh', '$se')'
-########################################     rm -r $WORK_PATH/temp*  # removes temp folders
+      rm -r $WORK_PATH/temp*  # removes temp folders
 
       echo "hadd (merging all root files) finished successfully, now removing auxiliary files"
       rm -f $PWD/histoOut-BP_*.root
@@ -350,7 +346,6 @@ else
   $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
   if [ $? -eq 0 ]; then
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-    echo "CutLang finished successfully, now merging histograms into: " histoOut-${rbase}.root
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
       rm -f  $PWD/histoOut-${rbase}.root
     fi
@@ -368,6 +363,8 @@ else
     else 
      echo "hadd failed. Check auxiliary files. "
     fi
+  else
+    echo "CutLang failed. Output file: " histoOut-${rbase}.root
   fi
 
   echo end CLA single
