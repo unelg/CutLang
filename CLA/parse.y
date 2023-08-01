@@ -2437,23 +2437,44 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      }
                                      map<string,vector<Node*> >::iterator ikc;
                                      map<string,vector<Node*> >::iterator iuc;
+                                     Node *p1=NULL, *p2=NULL;
+                                     ikc = criteriaBank.find($6);
+                                     iuc = criteriaBank.find($8);
+                                     vector<myParticle *> partis, qartis;
+                                     ikc->second[0]->getParticles(&partis);
+                                     iuc->second[0]->getParticles(&qartis);
 
-                                     if(1  ){//if I dont have objects, 
-                                     //if(iu == ObjectCuts->end() && it == ObjectCuts->end()  ){//if I dont have objects, 
+                                     if ( 1 )
+                                     {//if I dont have objects, 
                                        DEBUG($6 << " and "<< $8 << " seen first time, Adding their defining cuts in Union.\n");
-                                       ikc = criteriaBank.find($6);
-                                       iuc = criteriaBank.find($8);
-                                       Node* p0   =new ObjectNode("Combo",NULL ,createNewEle  ,ikc->second ,  "LCombo" );
-                                       Node* p1   =new ObjectNode($6     ,p0   ,createNewEle  ,ikc->second ,  "ELE" );
-                                       Node* p2   =new ObjectNode($8     ,p1   ,createNewMuo  ,iuc->second ,  "MUO" );
-                                       Node* obj  =new ObjectNode($2     ,p2   ,createNewCombo,newNList,  $2 );
+                                       Node* p0   =new ObjectNode("Combo",NULL ,createNewCombo ,ikc->second ,  "LCombo" );  //  was createNewEle
+                                       if (partis[0]->type == electron_t) { 
+                                          p1 =new ObjectNode($6     ,p0   ,createNewEle   ,ikc->second ,  "ELE" );
+                                       } else if (partis[0]->type == muon_t) {
+                                          p1 =new ObjectNode($6     ,p0   ,createNewMuo   ,ikc->second ,  "MUO" );
+                                       } else if (partis[0]->type == jet_t) {
+                                          p1 =new ObjectNode($6     ,p0   ,createNewJet   ,ikc->second ,  "JET" );
+                                       }
+                                       if (qartis[0]->type == electron_t) { 
+                                          p2 =new ObjectNode($8     ,p1   ,createNewEle   ,iuc->second ,  "ELE" );
+                                       } else if (qartis[0]->type == muon_t) {
+                                          p2 =new ObjectNode($8     ,p1   ,createNewMuo   ,iuc->second ,  "MUO" );
+                                       } else if (qartis[0]->type == jet_t) {
+                                          p2 =new ObjectNode($8     ,p1   ,createNewJet   ,iuc->second ,  "JET" );
+                                       }
+
+                                //     Node* p1   =new ObjectNode($6     ,p0   ,createNewJet   ,ikc->second ,  "JET" );        // add
+                                //     Node* p2   =new ObjectNode($8     ,p1   ,createNewJet   ,iuc->second ,  "JET" );        // add
+///                                    Node* p1   =new ObjectNode($6     ,p0   ,createNewEle   ,ikc->second ,  "ELE" );        // add
+///                                    Node* p2   =new ObjectNode($8     ,p1   ,createNewMuo   ,iuc->second ,  "MUO" );        // add
+                                       Node* obj  =new ObjectNode($2     ,p2   ,createNewCombo ,newNList    ,     $2 );
                                        ObjectCuts->insert(make_pair($2,obj));
                                      } else { // if I already have these objects 
                                        DEBUG($6 << " and "<< $8 << " NOT seen first time, Adding in Union.\n");
                                        DEBUG("newNList size:"<<newNList.size()<<"\n");
                                        Node* p0  =new ObjectNode("Combo",NULL ,createNewCombo,newNList,  "LCombo" );
-//                                     Node* obj =new ObjectNode($2     ,p0   ,createNewCombo,newNList,  $2 );
                                        Node* obj =new ObjectNode($2     ,p0   ,NULL          ,newNList,  $2 );
+//                                     Node* obj =new ObjectNode($2     ,p0   ,createNewCombo,newNList,  $2 );
                                        ObjectCuts->insert(make_pair($2,obj));
                                      }
                                   }

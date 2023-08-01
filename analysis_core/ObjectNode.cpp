@@ -61,6 +61,8 @@ ObjectNode::ObjectNode(std::string id,
           if (symbol == "ELE") {type=electron_t;}
           if (symbol == "MUO") {type=muon_t;}
           if (symbol == "TAU") {type=tau_t;}
+          if (symbol == "JET" ) type=jet_t;
+          if (symbol == "FJET" ) type=fjet_t;
       }
       DEBUG("previous found:" << anode->name<<" this type is:"<<type<<"\n");
     } else { // if null
@@ -136,7 +138,8 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       } // if it is here we already have basename electrons
       if (type == combo_t){
          if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; 
-      } // we already have basename muons
+         if(  ao->jets.find(basename)!=ao->jets.end()) basename="Combo"; 
+      } // we already have basename defined
     DEBUG("new basename:"<<basename<<"\n");
 
 // is it in the map list?
@@ -203,7 +206,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        }
        if (anode->left) {
         anode=(ObjectNode*)anode->left;
-        DEBUG("~~~~~~~~~~~~~~MOVED LEFT\n");
+        DEBUG("~~~~~~~~~~~~~~MOVED LEFT "<<ccount<<"\n");
        }
        ccount++;
       } // end of while

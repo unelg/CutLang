@@ -126,7 +126,7 @@ void delphes::Loop(analy_struct aselect, char *extname)
 
        if ( fctrlc ) { cout << "Processed " << je << " events\n"; break; }
        if ( je%verboseFreq == 0 ) cout << "Processing event " << je << endl;
-       DEBUG("Read Event"<<std::endl);
+       DEBUG("Read Event:"<<je<<std::endl);
        int RunNumber=137;
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
@@ -580,7 +580,7 @@ if (it == 0){
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 
-        DEBUG("Filling finished"<<std::endl);
+        DEBUG("Filling finished evt:"<<j<<std::endl);
         muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
         eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
         taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );

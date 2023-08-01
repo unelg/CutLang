@@ -311,7 +311,8 @@ elif [ ${PRLL} -ne 1 ]; then
     wait
   fi
   if [ $? -eq 0 ]; then
-    rbase=`echo ${INIFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+    rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+    echo '#################' $rbase
     rm -f $PWD/histoOut-${rbase}.root
     allHistos=""
     for ((i = 0 ; i < ${PRLL} ; i++)); do
@@ -337,7 +338,7 @@ elif [ ${PRLL} -ne 1 ]; then
     fi
   fi
 
-  echo end CLA_multicore
+  echo "end CLA_multicore. Output file: " histoOut-${rbase}.root
 
 else
 
@@ -364,10 +365,10 @@ else
      echo "hadd failed. Check auxiliary files. "
     fi
   else
-    echo "CutLang failed. Output file: " histoOut-${rbase}.root
+    echo "CutLang failed. "
   fi
 
-  echo end CLA single
+  echo "end CLA single. Output file: " histoOut-${rbase}.root
 
 fi
 

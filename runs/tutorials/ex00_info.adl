@@ -12,3 +12,5 @@ info analysisExample
   doi "10.1007/JHEP11(2017)029"
 
 
+region test
+   select ALL

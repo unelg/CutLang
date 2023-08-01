@@ -304,7 +304,7 @@ double SearchNode::evaluate(AnalysisObjects* ao) {
 
                    DEBUG("After find, Best index vector size:"<<bestIndices.size()<<" MaxDepth"<<MaxDepth<<"\n");
                    if (bestIndices.size() < 1 ) {  
-                         cout<<"!!! Best index could not be found.\n"; 
+                         DEBUG("!!! Best index could not be found.\n"); 
                          double  leftval=left->evaluate(ao);
                          return 1; 
                    }
