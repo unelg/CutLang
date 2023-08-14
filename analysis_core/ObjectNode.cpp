@@ -106,7 +106,7 @@ void ObjectNode::getParticlesAt(std::vector<myParticle *>* particles, int index)
 
 double ObjectNode::evaluate(AnalysisObjects* ao){
     //test if the AO thing not null=> then avoid function call
-    DEBUG(" working for:"<<name << "  my type:"<<type<<"\n");
+    DEBUG("ON Evaluate, working for:"<<name << "  my type:"<<type<<"\n");
     //this->Reset(); ///////NGU
     std::string basename="xxx";
     bool keepworking=true;
@@ -114,11 +114,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size()<<" Co:"<<ao->combos.size() <<"\n"); 
     map <string, std::vector<dbxElectron>  >::iterator itE;
     for (itE=ao->eles.begin();itE!=ao->eles.end();itE++){
-     DEBUG("avaiables e- are "<<itE->first<<" size:"<<itE->second.size()<<"\n");
+     DEBUG("avaiable e-s are "<<itE->first<<" size:"<<itE->second.size()<<"\n");
     }
     map <string, std::vector<dbxMuon>  >::iterator itM;
     for (itM=ao->muos.begin();itM!=ao->muos.end();itM++){
-     DEBUG("avaiables mu are "<<itM->first<<" size:"<<itM->second.size()<<"\n");
+     DEBUG("avaiable mus are "<<itM->first<<" size:"<<itM->second.size()<<"\n");
     }
     DEBUG("# iparticles:"<< particles.size()<< " symbol:"<<symbol<<"\n");
     if (particles.size() >0) {
@@ -133,6 +133,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       DEBUG("basename:"<< basename<< " name:"<<name<<" symbol:"<<symbol<<"  type:"<<type<<"\n");
       if (basename=="Combo" && type!=combo_t) basename=symbol;
 //-----------------------------NGU TODO FIXME
+
+      if (type==jet_t && basename != "JET" ){  
+         if(  ao->jets.find(basename)!=ao->jets.end()) basename=symbol; 
+      } // if it is here we already have basename jets
+
       if (type==muon_t){  
          if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; 
       } // if it is here we already have basename electrons
@@ -177,6 +182,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                       break;
 
         case jet_t:       if (ao->jets.find(basename)==ao->jets.end()  ){
+                                DEBUG(" *****basename "<<basename<< " named JET not fount, it WILL BE evaluated.\n");
                			anode->evaluate(ao);
                                 DEBUG(" Jets evaluated.\n");
                	      } else keepworking=false;
@@ -192,9 +198,9 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
                	      } else keepworking=false;
                       break;
        case combo_t:       if (ao->combos.find(basename)==ao->combos.end()  ){
-                                DEBUG(" *****basename COMBOs not fount, it WILL BE evaluated.\n");
+                                DEBUG(" *****basename "<<basename<< " COMBO not fount, it WILL BE evaluated.\n");
                			anode->evaluate(ao);
-                                DEBUG(" *****evaluation done.\n");
+                                DEBUG(" *****COMBO evaluation done.\n");
                                 type=combo_t;
                	      } else { 
                                DEBUG("COMBO found with basename:"<<basename<<"\n"); 

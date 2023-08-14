@@ -11,6 +11,8 @@ _SCRIPT=`realpath -s $0`
 SCRIPT=`realpath $0`            # /home/.../CutLang/runs/CLA.sh
 RUNS_PATH=`dirname $SCRIPT`    # /home/.../CutLang/runs
 WORK_PATH=`dirname $RUNS_PATH`  # /home/.../CutLang
+tempdir=$(mktemp -d /tmp/CLAdir.XXXXXX)
+execmd=$WORK_PATH/CLA/CLA.exe
 
 SHELL_ID=$$
 
@@ -28,9 +30,10 @@ PRLL=1
 DEPS="w"
 DEPP=" "
 HLTLIST=" "
-datafile=$1
+datadir=$(realpath $1)
 datatype=$2
 numcpu=1
+addRootName=0
 
 if [ $# -lt 2 ]; then
  echo ERROR: not enough arguments
@@ -39,6 +42,7 @@ if [ $# -lt 2 ]; then
  echo "ROOT file type can be:"; grep "inptype ==" $WORK_PATH/CLA/CLA.C | cut -f3 -d'=' | cut -f1 -d')'
  exit 1
 fi
+
 
 POSITIONAL=()
 while [[ $# -gt 2 ]]
@@ -52,6 +56,12 @@ case $key in
       echo "$ADLFILE does NOT exist!"
       exit 1
     fi
+    origdir=$PWD
+    pushd . > /dev/null
+    echo cp $ADLFILE $tempdir
+    cp $ADLFILE $tempdir 
+    cd $tempdir;
+    ADLFILE=`echo $ADLFILE | rev | cut -d'/' -f 1|rev`
     INIFILE=_lastrun.adl
 # convert the \ signs back to same line
     sed -e ':x /\\$/ { N; s/\\\n//g ; bx }' ${ADLFILE} > ${INIFILE}
@@ -127,6 +137,10 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -n|--rootname)
+    addRootName=1
+    shift # past value
+    ;;
     -h|--help)
     echo command line arguments:
     cat $0 | grep '|-'|grep -v grep| cut -f1 -d')'
@@ -140,12 +154,12 @@ case $key in
     DEPP=" -d "
     shift # past argument
     ;;
-    --syst)
+    -S|--systematics)
     echo "******************" Systematics Run "******************"
     SYST=1
     shift # past argument
     ;;
-    --rs)
+    -r|--runsummary)
 # Run Summary
     echo "~~~~~~~~~~~~~" Run Summary "~~~~~~~~~~~~"
     EXARG="${EXARG} -RS "
@@ -173,9 +187,18 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [ -n ${datafile+x} ] && [ ! -f "$datafile" ]; then
-  tput setaf 1; echo "${datafile} does not exist."
-  tput sgr0
+inputfilelist="${datadir}"
+
+if [ -d ${datadir} ]; then
+   echo "====> working with a directory !"
+   addRootName=1
+   inputfilelist=`ls ${datadir}/*.root`
+   echo $inputfilelist
+   echo '-----------------------------'
+else if [ -n ${datadir+x} ] && [ ! -f "$datadir" ]; then
+  	tput setaf 1; echo "${datadir} does not exist."
+  	tput sgr0
+     fi
 fi
 
 if [ $ADLFILE == "$RUNS_PATH/CLA.ini" ]; then
@@ -255,8 +278,12 @@ if [ `echo $LD_LIBRARY_PATH | grep $WORK_PATH/CLA > /dev/null ; echo $?` -ne 0 ]
 fi
 
 
+
+
+for datafile in $inputfilelist; do
+
 if ! [[ "${PRLL}" =~ ^[0-9]+$ ]] || [ ${PRLL} -gt $numcpu ] || [ ${PRLL} -lt 0 ]; then
-  echo "Please write an integer between 1 and $((numcpu - 1 )) after -j or use 0 for optimum performance"
+  echo "Please write an integer between 1 and $((numcpu - 1 )) after -j or use 0 to use all cores"
 elif [ ${PRLL} -ne 1 ]; then
   if [ ${PRLL} -eq 0 ]; then # automatically divides jobs to numcpu-1
     PRLL=$((numcpu - 1 ))
@@ -275,7 +302,7 @@ elif [ ${PRLL} -ne 1 ]; then
     intrvl=$(( EVENTS/PRLL)) # workload division
   fi
 # echo "**********************************************************************************************"
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} -PLL ${PRLL} ${HLTLIST} ${DEPS}
+  echo $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} -PLL ${PRLL} ${HLTLIST} ${DEPS}
   for ((i = 0 ; i < ${PRLL} ; i++)); do # temp folders created
       mkdir $WORK_PATH/temp_runs_${SHELL_ID}_${i}
       cp -a $WORK_PATH/runs/*.sh $WORK_PATH/temp_runs_${SHELL_ID}_${i}
@@ -337,14 +364,13 @@ elif [ ${PRLL} -ne 1 ]; then
       rm -f $PWD/algdeps.cmd
     fi
   fi
-
   echo "end CLA_multicore. Output file: " histoOut-${rbase}.root
-
 else
-
+########################################## SINGLE CORE
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
-  echo $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
-  $WORK_PATH/CLA/CLA.exe $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
+  echo $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
+  $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
+  database=`echo ${datafile} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
   if [ $? -eq 0 ]; then
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
@@ -355,20 +381,21 @@ else
     if grep -q "histoList" `echo ${INIFILE} | sed 's/.tmp//g'`; then
       rm -f ${INIFILE}
     fi
-    if [ $? -eq 0 ]; then
-      rm -f $PWD/histoOut-BP_*.root
-      rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
-      rm -f $PWD/BP_*-card.ini 
-      rm -f $PWD/out1 
-      rm -f $PWD/algdeps.cmd
-    else 
-     echo "hadd failed. Check auxiliary files. "
+    if [ $? -ne 0 ]; then
+     echo "hadd failed. Check auxiliary files in $tempdir ."
     fi
   else
     echo "CutLang failed. "
   fi
-
-  echo "end CLA single. Output file: " histoOut-${rbase}.root
+  if [ $addRootName -eq 0 ]; then
+     outfilename=histoOut-${rbase}.root
+  else
+     outfilename=histoOut-${rbase}-${database}.root
+  fi
+  echo "end CLA single. Output file: " $outfilename
+  mv histoOut-${rbase}.root ${origdir}/$outfilename
 
 fi
-
+done
+popd > /dev/null
+rm -r "$tempdir"
