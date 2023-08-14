@@ -229,7 +229,7 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
-               if (deltaR < 0.3) absisovar+=slv.Pt();
+               if (deltaR < 0.3 && eftrk->PT != muon->PT) absisovar+=slv.Pt();
               }
               
 //              cout << "T mini iso:"<<minisovar<<"\n";
@@ -308,7 +308,7 @@ if (it == 0){
 }
                double deltaR=alv.DeltaR(slv);
                if (deltaR < coneradius) minisovar+=slv.Pt();
-               if (deltaR < 0.3) absisovar+=slv.Pt();
+               if (deltaR < 0.3 && eftrk->PT != electron->PT) absisovar+=slv.Pt();
               }
 //              cout << "T mini iso:"<<minisovar<<"\n";
 
