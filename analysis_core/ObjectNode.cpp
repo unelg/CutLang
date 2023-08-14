@@ -130,11 +130,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
       ObjectNode* anode=(ObjectNode*)left;
       basename=anode->name;
 
-      DEBUG("basename:"<< basename<< " name:"<<name<<" symbol:"<<symbol<<"  type:"<<type<<"\n");
+      DEBUG("basename:"<< basename<< " name:"<<name<<" symbol:"<<symbol<<"  type:"<<type<< " Ccount:"<<ccount<<"\n");
       if (basename=="Combo" && type!=combo_t) basename=symbol;
 //-----------------------------NGU TODO FIXME
 
-      if (type==jet_t && basename != "JET" ){  
+      if (type==jet_t && basename != "JET" && ccount ==1 ){  
          if(  ao->jets.find(basename)!=ao->jets.end()) basename=symbol; 
       } // if it is here we already have basename jets
 
@@ -216,11 +216,7 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
        }
        ccount++;
       } // end of while
-      DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\n");
- //   if(criteria[0]->getStr().CompareTo(" qo") == 0){
- //     DEBUG("Enforcing type 20\n");
- //     type=combo_t;
- //   }
+    DEBUG("criter:"<< criteria[0]->getStr() << ". diff:"<<criteria[0]->getStr().CompareTo(" qo") <<"\n");
     
     DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<" name:"<<name<<"\n");
     if (ccount>=10) exit (1);

@@ -70,49 +70,6 @@ case $key in
     Nalgo=`cat pippo | wc -l`
     rm pippo
     
-    # for histoList command
-    if grep -q "histoList" "$INIFILE"; then
-     cat ${INIFILE} | grep -v '^#' > ${INIFILE}.tmp
-     INIFILE=${INIFILE}.tmp
-    fi
-    
-    while grep -q "histoList" "$INIFILE"; do #while there is a histoList command in the .ini file, loop continues
-     a=($(awk '/histoList/{ print NR; }' "$INIFILE")) #get the line numbers where histoList command written
-     b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
-     histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${INIFILE}) #get the name given by the user
-#     echo "************", $histListName
-     count=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$INIFILE" | wc -l) #how many times user prefers to fill same set of histos
-
-     if [ $count -gt 1 ]; then
-       countMinor=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$INIFILE" | wc -l) #get the same count again, but now it will be always modified
-        c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
-        d=${c[0]}
-        let d++
-        whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
-        while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
-          counttmp=0
-          for k in ${whereToInsert}; do
-#            echo $k
-            awk -v d="$d" -v e="${k}" 'NR==d{store=$0}1;NR==e{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-            let f=k+1
-            awk -v e="$f" -v counttmp=${counttmp} -F" " -vOFS=" " 'NR==e{$2=$2counttmp}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-            let counttmp+=1
-#            echo $counttmp
-          done
-          awk -v d="$d" 'NR==d{next}1' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-        done
-        grep -v -w ${histListName} ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-     fi
-     
-     c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$INIFILE")
-     let c++
-     whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${INIFILE}) #get line number to insert
-     while grep -w -A1 "histoList ${histListName}" ${INIFILE} |  grep -q -w 'histo'; do
-      awk -v c="$c" -v d="${whereToInsert}" 'NR==c{store=$0;next}1;NR==d{print store}' ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-     done
-     grep -v -w ${histListName} ${INIFILE} > ${INIFILE}.tmp && cp ${INIFILE}.tmp ${INIFILE} && rm -f ${INIFILE}.tmp
-    done
-
     # for select HLT command
     hltInFile=$(grep -E "select HLT" ${INIFILE} | sed 's/select HLT//g')
     hltList=""
@@ -277,9 +234,56 @@ if [ `echo $LD_LIBRARY_PATH | grep $WORK_PATH/CLA > /dev/null ; echo $?` -ne 0 ]
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK_PATH/CLA/
 fi
 
+for bpfile in `ls -1 BP_*-card.ini`; do
+#   echo "AAAAAAAAAAAAAAAAAAAAAAAAA" $abpfile
 
+    # for histoList command
+    if grep -q "histoList" "$bpfile"; then
+     cat ${bpfile} | grep -v '^#' > ${bpfile}.tmp
+     abpfile=${bpfile}.tmp
+    fi
+    
+    while grep -q "histoList" "$abpfile"; do #while there is a histoList command in the .ini file, loop continues
+     a=($(awk '/histoList/{ print NR; }' "$abpfile")) #get the line numbers where histoList command written
+     b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
+     histListName=$(awk -v b="$b" 'FNR == b {print $2}' ${abpfile}) #get the name given by the user
+#    echo "************", $histListName
+     count=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$abpfile" | wc -l) #how many times user prefers to fill same set of histos
 
+     if [ $count -gt 1 ]; then
+       countMinor=$(awk -v histListName="${histListName}" '$1 == histListName {print NR}' "$abpfile" | wc -l) #get the same count again, but now it will be always modified
+        c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$abpfile")
+        d=${c[0]}
+        let d++
+        whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${abpfile}) #get line number to insert
+        while grep -w -A1 "histoList ${histListName}" ${abpfile} |  grep -q -w 'histo'; do
+          counttmp=0
+          for k in ${whereToInsert}; do
+#            echo $k
+            awk -v d="$d" -v e="${k}" 'NR==d{store=$0}1;NR==e{print store}' ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+            let f=k+1
+            awk -v e="$f" -v counttmp=${counttmp} -F" " -vOFS=" " 'NR==e{$2=$2counttmp}1' ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+            let counttmp+=1
+#           echo $counttmp
+          done
+          awk -v d="$d" 'NR==d{next}1' ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+        done
+        grep -v -w ${histListName} ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+     fi
+     
+     c=$(awk -v histListName="${histListName}" '$2 == histListName {print NR}' "$abpfile")
+     let c++
+     whereToInsert=$( awk -v histListName="${histListName}" '$1 == histListName {print NR;}' ${abpfile}) #get line number to insert
+     while grep -w -A1 "histoList ${histListName}" ${abpfile} |  grep -q -w 'histo'; do
+      awk -v c="$c" -v d="${whereToInsert}" 'NR==c{store=$0;next}1;NR==d{print store}' ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+     done
+     grep -v -w ${histListName} ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
+    done
+#   echo 'finished................... for ' ${bpfile}
+    mv ${abpfile} ${bpfile}
+done
 
+######### finished HistoList
 for datafile in $inputfilelist; do
 
 if ! [[ "${PRLL}" =~ ^[0-9]+$ ]] || [ ${PRLL} -gt $numcpu ] || [ ${PRLL} -lt 0 ]; then
@@ -398,4 +402,4 @@ else
 fi
 done
 popd > /dev/null
-rm -r "$tempdir"
+#rm -r "$tempdir"
