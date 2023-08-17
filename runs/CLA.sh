@@ -58,8 +58,7 @@ case $key in
     fi
     origdir=$PWD
     pushd . > /dev/null
-    echo cp $ADLFILE $tempdir
-    cp $ADLFILE $tempdir 
+    cp $ADLFILE $tempdir; 
     cd $tempdir;
     ADLFILE=`echo $ADLFILE | rev | cut -d'/' -f 1|rev`
     INIFILE=_lastrun.adl
@@ -211,7 +210,7 @@ if [ ${PRLL} -ne 1 ]; then
   echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl > _tempor.adl; mv _tempor.adl $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
 else
   if [ $Nalgo -gt 1 ]; then
-  echo Analysis with Multiple Regions
+  echo Analysis with Multiple Regions $tempdir
   $WORK_PATH/scripts/separate_algos.sh ${INIFILE}
    if [ $DEPS == "XXX" ]; then
     
@@ -224,7 +223,7 @@ else
    fi
 
   else
-   echo Single Analysis
+   echo Single Analysis $tempdir
    cp ${INIFILE} $PWD/BP_1-card.ini
    Nalgo=1
   fi
@@ -236,13 +235,19 @@ fi
 
 for bpfile in `ls -1 BP_*-card.ini`; do
 #   echo "AAAAAAAAAAAAAAAAAAAAAAAAA" $abpfile
-
+    HISTOLISTVAR=0
     # for histoList command
     if grep -q "histoList" "$bpfile"; then
      cat ${bpfile} | grep -v '^#' > ${bpfile}.tmp
      abpfile=${bpfile}.tmp
+     HISTOLISTVAR=1
     fi
     
+    if [ $HISTOLISTVAR -eq 0 ]; then
+     continue
+    fi
+
+
     while grep -q "histoList" "$abpfile"; do #while there is a histoList command in the .ini file, loop continues
      a=($(awk '/histoList/{ print NR; }' "$abpfile")) #get the line numbers where histoList command written
      b=${a[0]} #always work on zeroth variable. Since they will disappear one-by-one, working on the zeroth variable won't cause any harm.
@@ -279,7 +284,7 @@ for bpfile in `ls -1 BP_*-card.ini`; do
      done
      grep -v -w ${histListName} ${abpfile} > ${abpfile}.tmp && cp ${abpfile}.tmp ${abpfile} && rm -f ${abpfile}.tmp
     done
-#   echo 'finished................... for ' ${bpfile}
+    echo 'finished................... for ' ${bpfile}
     mv ${abpfile} ${bpfile}
 done
 
@@ -374,7 +379,7 @@ else
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
   echo $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
   $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
-  database=`echo ${datafile} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
+  database=`echo ${datafile} | rev | cut -d'/' -f 1 | cut -f2- -d'.'|rev`
   if [ $? -eq 0 ]; then
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
