@@ -326,8 +326,8 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                       }
                   }
                   systindex++;
-                  freaders.push_back(TTreeReaderArray<Float_t>( *ttr_map[ "nominal" ], resultstr[ri].c_str() ) ); //push only the generic name
-                  cout <<ri<<" finished\n";
+                  freaders.push_back(TTreeReaderArray<Float_t>( *(ttr_map["nominal"]), resultstr[ri].c_str() ) ); //push only the generic name
+                  cout <<"XXXXXXXXXXXXXXXXX:"<<ri<<" "<< resultstr[ri]<< " @:"<< ttr_map["nominal"] <<" finished\n";
                  }//2 3 counting
                } else { // tree
                     string xxx="XXX";
@@ -396,19 +396,24 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 
        AnalysisObjects a0;
        GetPhysicsObjects(j, &a0);
+       ttr_map["nominal"]->SetEntry(j);
        evt_data oldevt=a0.evt;
        double wvalue=0;
+       
+
 
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
-         cout << it->first<<"\n";
 
+         cout << "it nam:"<<it->first<<"\t"<<it->second.vartype<<"\t" ;
          int jsyst=it->second.index;
          int jid=it->second.varid;
+         cout <<" jsyst:"<<jsyst <<" jid:"<< jid<<"\n";
          if (jid >=0){
            wvalue = freaders.at(jsyst)[jid]; //may not be zero?
-//           cout <<"Wv:"<<wvalue<<"\n";
+           cout <<"Wv:"<<wvalue<<"\n";
            if (jsyst>0) a0.evt=oldevt;
          }
+
          if (it->second.vartype ==  "weight_jvt" ) {
                 a0.evt.weight_jvt=wvalue; // cout <<  "jvt\n";
          	analysis_objs_map[it->first] = a0;
