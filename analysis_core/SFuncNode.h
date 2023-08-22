@@ -23,7 +23,6 @@
 using namespace std;
 //takes care of functions with arguments
 
-extern TTreeReader *ttreader;
 
 class SFTTreader {
   public:
@@ -35,6 +34,7 @@ private:
      double avalue;
 public:
        TTreeReaderValue<Int_t> *my_reader;
+TTreeReader *ttreader=NULL;
        SFTTreaderI(TTreeReader *ttreader, string s) {
            my_reader = new TTreeReaderValue<Int_t>(*ttreader, s.c_str() );
        }
@@ -49,6 +49,7 @@ private:
      double avalue;
 public:
        TTreeReaderValue<Double_t> *my_reader;
+TTreeReader *ttreader=NULL;
        SFTTreaderD(TTreeReader *ttreader, string s) {
            my_reader = new TTreeReaderValue<Double_t>(*ttreader, s.c_str() );
        }
@@ -63,6 +64,7 @@ private:
      double avalue;
 public:
        TTreeReaderValue<Float_t> *my_reader;
+TTreeReader *ttreader=NULL;
        SFTTreaderF(TTreeReader *ttreader, string s) {
            my_reader = new TTreeReaderValue<Float_t>(*ttreader, s.c_str() );
        }
@@ -77,6 +79,7 @@ private:
      double avalue;
 public:
        TTreeReaderValue<Bool_t> *my_reader;
+TTreeReader *ttreader=NULL;
        SFTTreaderB(TTreeReader *ttreader, string s) {
            my_reader = new TTreeReaderValue<Bool_t>(*ttreader, s.c_str() );
        }
@@ -91,6 +94,7 @@ public:
 class SFuncNode : public Node {
 private:
     bool special_function;
+TTreeReader *ttreader=NULL;
       SFTTreader *ttrdr;
       SFTTreaderF *ttrdrF;
       SFTTreaderD *ttrdrD;

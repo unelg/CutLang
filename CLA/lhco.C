@@ -21,7 +21,6 @@
 // header and lines to handle ctrl+C gracefully
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
-extern TTreeReader *ttreader;
 
 void lhco::Loop(analy_struct aselect, char *extname)
 {
@@ -59,7 +58,6 @@ void lhco::Loop(analy_struct aselect, char *extname)
        if (0 > LoadTree (j)) break;
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
        fChain->GetEntry(j);
-       ttreader->SetEntry(j);
 
        int RunNumber=137;
        if (int(RunNumber)!=prev_RunNumber) {

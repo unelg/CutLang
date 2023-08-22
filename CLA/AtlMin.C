@@ -27,14 +27,12 @@
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
 
-extern TTreeReader *ttreader;
+extern map<string, TTreeReader*> ttr_map;
 
 void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
 
    fChain->GetEntry(j);
-//   ttreader->Next();
-   ttreader->SetEntry(j);
 
    vector<dbxMuon>     muons;
    vector<dbxElectron> electrons;
@@ -73,7 +71,7 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        dbxPhoton   *adbxp;
        dbxParticle *adbxparticle;
 
- DEBUG("Begin Filling\n");
+ DEBUG("Begin Filling MUONS\n");
 
 /*
 // PHOTONS -------- // now truth info
@@ -93,19 +91,20 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
 
 */
 //MUONS
-        for (unsigned int i=0; i<mu_pt->size(); i++) {
+          cout<<"Begin Filling MUONS "<<mu_e->size()<<"\n";
+              for (unsigned int i=0; i<mu_e->size(); i++) {
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
-//                if (i==1) cout <<"********* mu pt:"<<mu_pt->at(i)*0.001<<"\n";
+//                if (i==1) cout <<"********* mu Z:"<<mu_isZCand->at(i)<<"\n";
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(mu_charge->at(i) );
 		adbxm->setPdgID(-13*mu_charge->at(i) );
-                adbxm->setEtCone(mu_topoetcone20->at(i) );
-                adbxm->setPtCone(mu_ptvarcone30->at(i)  );
+//                adbxm->setEtCone(mu_topoetcone20->at(i) );
+//                adbxm->setPtCone(mu_ptvarcone30->at(i)  );
                 adbxm->setParticleIndx(i);
-                adbxm->setisZCand(mu_isZCand->at(i) );
-                adbxm->settrigMatch_HLT_mu26_ivarmedium(mu_trigMatch_HLT_mu26_ivarmedium->at(i));
-                adbxm->settrigMatch_HLT_mu50(mu_trigMatch_HLT_mu50->at(i));
-                adbxm->settrigMatch_HLT_mu20_iloose_L1MU15(mu_trigMatch_HLT_mu20_iloose_L1MU15->at(i));
+//                adbxm->setisZCand(mu_isZCand->at(i) );
+//               adbxm->settrigMatch_HLT_mu26_ivarmedium(mu_trigMatch_HLT_mu26_ivarmedium->at(i));
+//                adbxm->settrigMatch_HLT_mu50(mu_trigMatch_HLT_mu50->at(i));
+//                adbxm->settrigMatch_HLT_mu20_iloose_L1MU15(mu_trigMatch_HLT_mu20_iloose_L1MU15->at(i));
                 muons.push_back(*adbxm);
                 delete adbxm;
         }
@@ -261,7 +260,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
    bool  doSystematics(aselect.dosystematics);
    map < string, syst_struct > systematics; // contains all
    map < string, string > syst_names; // contains all
-   map < string, AtlMin *> syst_objects;
+   map < string, AtlMin*> syst_objects;
 
    if (doSystematics) {
        string tempLine;
@@ -327,13 +326,16 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                       }
                   }
                   systindex++;
-                  freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[ri].c_str() ) ); //push only the generic name
+                  //freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[ri].c_str() ) ); //push only the generic name
                   cout <<ri<<" finished\n";
                  }//2 3 counting
                } else { // tree
                     string xxx="XXX";
                     syst_names[resultstr[2]] = resultstr[4] ; // with []
                     syst_names[resultstr[3]] = resultstr[4] ; // with []
+                    
+                    cout << "B r2:"<< resultstr[2]<<" r3:"<<resultstr[3]<<" r4:"<<resultstr[4]<<"\n";                   
+
                     syst_struct asyst;
                     asyst.vartype=resultstr[4];
                     asyst.varname=resultstr[2];
@@ -354,6 +356,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                     syst_objects[resultstr[3]]=new AtlMin((char*)xxx.c_str(),(TChain *)afile->Get(resultstr[3].c_str()) );
                     systematics[resultstr[3]] = bsyst ; // with []
                     systindex++;
+                    cout << "A r2:"<< resultstr[2]<<" r3:"<<resultstr[3]<<" r4:"<<resultstr[4]<<"\n";                   
 
                     // TFile * _afile = TFile::Open(fileList[0].c_str());
                     // ttreader =  new TTreeReader(leafname.c_str(), _afile);
@@ -418,18 +421,20 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                 a0.evt.weight_bTagSF_77=wvalue; //  cout <<  "w BTAG:" << wvalue <<"\n";
          	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "ttree" ) {
-		AnalysisObjects au;
-//            	Init(it->second.chain,0); 
-//                 atlmin_sau->GetPhysicsObjects(j, &au);
-//        	GetPhysicsObjects(j, &au);
-             	syst_objects[it->first]->GetPhysicsObjects(j, &au);
-        	analysis_objs_map[it->first] = au;
-  	      it++;
 		AnalysisObjects ad;
-//              	Init(it->second.chain,0); 
-// 	       		GetPhysicsObjects(j, &ad);
-                syst_objects[it->first]->GetPhysicsObjects(j, &ad);
+                cout<<"NAme D:"<<it->first<<"\n";
+             	syst_objects[it->first]->GetPhysicsObjects(j, &ad);
         	analysis_objs_map[it->first] = ad;
+  	      it++;
+		AnalysisObjects au;
+                cout<<"NAme U:"<<it->first<<"\n";
+                syst_objects[it->first]->GetPhysicsObjects(j, &au);
+        	analysis_objs_map[it->first] = au;
+
+             for ( map<string, TTreeReader*>::iterator itr=ttr_map.begin(); itr!= ttr_map.end(); itr++){
+                     (itr->second)->SetEntry(j);
+             }
+
 
          } else {
 	        cout << "problem with: "<<it->second.vartype<< ", no such systematics type.\n";

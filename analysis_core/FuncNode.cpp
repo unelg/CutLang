@@ -7,8 +7,6 @@
 #define DEBUG(a)
 #endif
 
-extern TTreeReader *ttreader;
-
 void FuncNode::ResetParticles(){
       for(int i=0;i<originalParticles.size();i++){
 /*
@@ -69,7 +67,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                          }
                                                         if (special_function) {
                                              			int nix=ao->truth[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -85,10 +83,11 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsLoose (ao->muos[ac].at(ai).isLoose() ); 
                                                         ka=ao->muos[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
-                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
+//                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
                                                         if (special_function) {
                                              			int nix=ao->muos[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+                                                                DEBUG("Will read nix:"<<nix<<"\n");
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -107,7 +106,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->addAttribute(ao->eles[ac].at(ai).isZCand() );
                                                         if (special_function) {
                                              			int nix=ao->eles[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -124,7 +123,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
                                                         if (special_function) {
                                              			int nix=ao->taus[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -167,7 +166,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
                                                         if (special_function) {
                                              			int nix=ao->jets[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -187,7 +186,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
                                                         if (special_function) {
                                              			int nix=ao->ljets[ac].at(ai).ParticleIndx();
-								double avalue=ttrdr->readvalue(nix);
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -237,28 +236,13 @@ void FuncNode::setUserObjects(Node *objectNodea, Node *objectNodeb, Node *object
         userObjectD=objectNoded;
 }
 
+void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
+         int maxTTRdist = 6;
+         m_ttreader=ttr;
 
-
-
-
-FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*> input, std::string s, 
-                         Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
-        f=func;
-        symbol=s;
-        inputParticles=input; // type, index, string=ELE, crELE, ELEsr... and/or Node*objectNode
-        myParticle apart;
-        userObjectA=objectNodea;
-        userObjectB=objectNodeb;
-        userObjectC=objectNodec;
-        userObjectD=objectNoded;
-       DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
-        int maxDist =6;
-
-        if (s.find('~') != std::string::npos) {
-         s.erase(std::remove( s.begin(), s.end(), '~' ),s.end());
          cout << "** sf:"<< s<<"\t"; //this is special function
          special_function=true;
-         TTree *at = ttreader->GetTree();
+         TTree *at = m_ttreader->GetTree();
          TObjArray *lbranches = at->GetListOfBranches();
          if (lbranches == 0) {
             cerr<<"No branches found in this ntuple!\n";
@@ -279,32 +263,45 @@ FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*>
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
 //         s=realstr; // should I keep the orig?
-         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist <<"\n";
-         if (minDist > maxDist) {
+         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+         if (minDist > maxTTRdist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);
          }
 
 
          if (  type_name.find("loat") != std::string::npos ) {
-             ttrdrF = new myTTreaderF( ttreader, realstr);
+             ttrdrF = new myTTreaderF( m_ttreader, realstr);
              ttrdr=ttrdrF;
          } else if (type_name.find("ouble") != std::string::npos ) {
-             ttrdrD = new myTTreaderD( ttreader, realstr);
+             ttrdrD = new myTTreaderD( m_ttreader, realstr);
              ttrdr=ttrdrD;
          } else if (type_name.find("nt") != std::string::npos ) {
-             ttrdrI= new myTTreaderI ( ttreader, realstr);
+             ttrdrI= new myTTreaderI ( m_ttreader, realstr);
              ttrdr=ttrdrI;
          } else if (type_name.find("ool") != std::string::npos ) {
-             ttrdrB= new myTTreaderB ( ttreader, realstr);
+             ttrdrB= new myTTreaderB ( m_ttreader, realstr);
              ttrdr=ttrdrB;
          } else {
              cerr<<"Assuming Float for: "<< s<<"\n";
-             ttrdrF = new myTTreaderF( ttreader, realstr);
+             ttrdrF = new myTTreaderF( m_ttreader, realstr);
              ttrdr=ttrdrF;
          }
+}
 
-        } else special_function=false;
+FuncNode::FuncNode(double (*func)(dbxParticle* apart ), std::vector<myParticle*> input, std::string s, 
+                         Node *objectNodea, std::string as,  Node *objectNodeb, Node *objectNodec, Node *objectNoded ){
+        f=func;
+        symbol=s;
+        inputParticles=input; // type, index, string=ELE, crELE, ELEsr... and/or Node*objectNode
+        myParticle apart;
+        userObjectA=objectNodea;
+        userObjectB=objectNodeb;
+        userObjectC=objectNodec;
+        userObjectD=objectNoded;
+       DEBUG(" Received:"<<input.size() <<" particles for "<<s<<"\n");
+
+      special_function=false;
 
       for (int i=0; i<input.size(); i++){
 //     cout <<" Collection:"<<inputParticles[i]->collection<<" type:"<< inputParticles[i]->type<<" index:"<<inputParticles[i]->index<<"\n";

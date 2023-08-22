@@ -25,6 +25,8 @@
 
 extern int yylex();
 extern int yylineno;
+extern map<string, TTreeReader*> ttr_map;
+
 void yyerror(list<string> *parts, map<string,Node*>* NodeVars, map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
                 vector<string>* Initializations, vector<int>* DataFormats, map <string, pair<vector<float>, bool> >* ListTables,
@@ -991,12 +993,13 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                       }
                                       std::string funame=$1; 
                                       bool named=(funame.find('_') != std::string::npos);
-                                      std::string varname="~";
+                                      std::string varname="";
                                                   if (!named) varname+=p0s;
                                                   if (!named) varname+="_";
                                                   varname+=funame;
-                                                  varname+="~";
-                                      $$=new FuncNode(specialf,newList, varname);
+                                      Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
+                                           ((FuncNode *)sf)->setTTRaddr( ttr_map[ Initializations->at(1) ], varname);
+                                       $$ = sf;
                                }
         ;
 //-------------------------------------------------------------------------

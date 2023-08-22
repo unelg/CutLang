@@ -11,7 +11,9 @@
 #include "DBXNtuple.h"
 #include "TFile.h"
 #include "TTree.h"
-
+#include <TChain.h>
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
 
 class BPdbxA : public dbxA {
   public: 
@@ -46,6 +48,8 @@ class BPdbxA : public dbxA {
       std::string mysystematics;
       std::vector<TString> effCL;
       std::vector< string> binCL;
+      TTree *old_tree;
+      TTreeReader *bpttr;
 
       unsigned short int TRGe, TRGm;
       unsigned int systematics_bci;

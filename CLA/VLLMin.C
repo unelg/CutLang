@@ -15,12 +15,9 @@
 #include "AnalysisController.h"
 #include "TTreeReader.h"
 
-extern TTreeReader *ttreader;
-
 void VLLMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
     fChain->GetEntry(j);
-    ttreader->SetEntry(j);
     vector<dbxMuon>     muons;
     vector<dbxElectron> electrons;
     vector<dbxPhoton>   photons;

@@ -550,7 +550,7 @@ AtlMin::AtlMin( char *file_name, TChain *tree, int year) : fChain(0)
 {
     TChain* chain;
     if (tree == 0) {
-        chain = new TChain("nominal"); cout << "I am here" << endl;
+        chain = new TChain("nominal"); 
         chain->Add(file_name);
     }
     if (tree == 0) {

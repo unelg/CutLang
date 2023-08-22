@@ -17,12 +17,13 @@
 #include "DELPHES2.h"
 #include "dbxParticle.h"
 #include "newpoet.h"
-//#include "dbxAna.h"
 #include <TH2.h>
 #include <TError.h>
 #include <TApplication.h>
-//#include "TDSet.h"
-//#include <TProof.h>
+
+#include <TKey.h>
+#include <TTree.h>
+#include <TCollection.h>
 
 #include <iostream>
 #include <cstring>
@@ -32,7 +33,8 @@
 using namespace std;
 
 int root_analysisd3pd(string sample, analy_struct aselect);
-TTreeReader *ttreader;
+
+map<string, TTreeReader*> ttr_map;
 
 int main(int argc, char*argv[])
 {
@@ -175,22 +177,6 @@ for (int i = 2; i < argc; i++) {
   }else if (use_poet){
    cout << "~Now using new POET files.~~~~~~ alpha!\n";
    leafname="events";
-/*
-  TChain *cmuos;
-  TChain *celes;
-  TChain *ctaus;
-  TChain *cjets;
-  TChain *cphotons;
-     chain = new TChain("mymuons/Events");
-     celes = new TChain("myelectrons/Events");
-     chain->AddFriend(celes);
-     ctaus = new TChain("mytaus/Events");
-     chain->AddFriend(ctaus);
-     cjets = new TChain("myjets/Events");
-     chain->AddFriend(cjets);
-  cphotons = new TChain("myphotons/Events");
-     chain->AddFriend(cphotons);
-*/
   }else if (use_cmsodR2){
    cout << "~Now using CMS Open Data R2 files.~~~~~~ beta!\n";
    leafname="Events";
@@ -236,8 +222,28 @@ for (int i = 2; i < argc; i++) {
 
    chain = new TChain(leafname.c_str() );
    TFile * _afile = TFile::Open(fileList[0].c_str());
-   ttreader =  new TTreeReader(leafname.c_str(), _afile);
 
+   TIter next(_afile->GetListOfKeys());
+   TKey* key;
+   while ((key = (TKey*)next())) {
+        TClass* cl = gROOT->GetClass(key->GetClassName());
+        if (!cl->InheritsFrom("TTree")) continue;
+        TTree* tree = (TTree*)key->ReadObj();
+        string curtree = tree->GetName();
+        std::cout << "Processing tree: " << curtree << "\t";
+        TTreeReader* treader = new TTreeReader(tree);
+        ttr_map[curtree] = treader;
+        std::cout << " Addr:"<<  treader<<"\n";
+
+    }
+ 
+
+
+
+
+
+
+ 
 
   int aret;
   for (unsigned int iFile=0; iFile<fileList.size(); ++iFile){
@@ -245,12 +251,6 @@ for (int i = 2; i < argc; i++) {
     gErrorIgnoreLevel = 5000;
     aret=chain->Add(fileList[iFile].c_str(), 0);
     cout << "RetVal:"<<aret<<endl;
-//  if (use_wank){
-//   aret=celes->Add(fileList[iFile].c_str(), 0);
-//   aret=ctaus->Add(fileList[iFile].c_str(), 0);
-//   aret=cjets->Add(fileList[iFile].c_str(), 0);
-//   aret=cphotons->Add(fileList[iFile].c_str(), 0);
-//  }
   }
   if (chain->GetEntries() > 0 ) {
     cout << "initialized with the chain..."<< chain->GetEntries()<<endl; 

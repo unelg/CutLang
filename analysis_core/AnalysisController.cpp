@@ -116,6 +116,7 @@ void AnalysisController::Initialize(char *extname) {
                                 dbxAnalyses.push_back( new BPdbxA( (char*)s.c_str() ) ); // analysis with new name
                                 dbxAnalyses.back()->setDataCardPrefix(tmp);  // but with old datacard
                                 dbxAnalyses.back()->itype=aselect.inputtype; // ATL or CMS or FCC...
+                           //     dbxAnalyses.back()->setTTree(s);  // the name of the tree
                                 cout << endl;
             }
           }// end of systematics if

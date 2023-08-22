@@ -8,8 +8,6 @@
 #include <iterator>
 #include <vector>
 #include "SearchNode.h"
-#include "TTreeReader.h"
-#include "TTreeReaderArray.h"
 
 #include "bp_a.h"
 #include "analysis_core.h"
@@ -33,8 +31,6 @@ extern int cutcount;
 extern int bincount;
 extern int yylineno;
 extern char * yytext;
-extern TTreeReader *ttreader;
-
 
 bool is_number(const std::string& s)
 {
@@ -190,8 +186,10 @@ int BPdbxA:: readAnalysisParams() {
            algoname+=asysnam;
            asysnam=cname.substr(clength+1,  -1);
            systematicsRun=true;
-           cout <<"This is a run with sysname: "<< asysnam << " algo:"<<algoname<< ".\n";
+       } else { 
+        asysnam="nominal"; // NGU FIXME
        }
+       cout <<"This is a run with name: "<< asysnam << " algo:"<<algoname<< ".\n";
        int r=dbxA::setDir((char *)algoname.Data());  // make the relevant root directory
        if (r)  std::cout <<"Root Directory Set Failure in:"<<cname<<std::endl;
        dbxA::ChangeDir((char *)algoname.Data());
@@ -201,8 +199,9 @@ int BPdbxA:: readAnalysisParams() {
     }
 
 // ---------------------------read CutLang style cuts using lex/yacc
-       NameInitializations={" "," "};
+       NameInitializations={" "," "," "};
        NameInitializations[0]=itype;
+       NameInitializations[1]=asysnam;
        TRGValues={1,0,0,0,0};
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
@@ -416,12 +415,15 @@ int BPdbxA::Finalize(){
 
 /////////////////////////
 int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass){
-
+  
   evt_data anevt = ao->evt; // event information
+  DEBUG("Now running :"<<algoname<< "\n");  
 
   DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
   double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
   DEBUG("--event user weight:"<<evt_weight<<" TRGe:"<< TRGe<< " TRGm:"<<TRGm<<"\n");
+
+  
   if (controlword == 0){
 
 //   if (systematicsRun) {

@@ -28,7 +28,6 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
-extern TTreeReader *ttreader;
 
 
 TClonesArray* delphes::UseBranch(const char *branchName, TTree *fChain){
@@ -130,7 +129,6 @@ void delphes::Loop(analy_struct aselect, char *extname)
        int RunNumber=137;
 // Load selected branches with data from specified event
   fChain->LoadTree(je);
-  ttreader->SetEntry(je);
 
   TBranchMap::iterator itBranchMap;
   TBranch *branch;

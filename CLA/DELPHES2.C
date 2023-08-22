@@ -33,7 +33,6 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
-extern TTreeReader *ttreader;
 
 // <<< "include" anchor <<<
    
@@ -43,7 +42,6 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     // >>> GetPhysicsObjects >>>
 
     fChain->GetEntry(j);
-    ttreader->SetEntry(j);
     vector<dbxMuon>         muons; 
     vector<dbxElectron> electrons; 
     vector<dbxPhoton>     photons; 
