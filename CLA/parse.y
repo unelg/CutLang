@@ -58,6 +58,8 @@ std::map< int, vector<myParticle *> > BPdbxA::particleBank;
 std::map< std::string, vector<Node*> > criteriaBank;
 std::map< std::string, vector<Node*> > VariableListBank;
 
+std::map< std::string, int> systBANK;
+
 //modify types to ints in myParticle => Done
 //see how to give input to yyparse and get output -> DONE
 //read file
@@ -179,6 +181,8 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe";
                                      systvars.push_back($3);
                                      systvars.push_back($4);
                      systmap->insert(make_pair($5,systvars));
+                     systBANK[$3]=$5;
+                     systBANK[$4]=$5;
                     }// syst on 
                   } 
                 ;
@@ -997,8 +1001,12 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                                   if (!named) varname+=p0s;
                                                   if (!named) varname+="_";
                                                   varname+=funame;
+                                       int asys=systBANK[Initializations->at(1)];
+                                       string nsys=Initializations->at(1);
+                                      if (asys != 6){nsys="nominal";}
+                                      cout << "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
-                                           ((FuncNode *)sf)->setTTRaddr( ttr_map[ Initializations->at(1) ], varname);
+                               ((FuncNode *)sf)->setTTRaddr( ttr_map[ Initializations->at(1) ], varname);
                                        $$ = sf;
                                }
         ;

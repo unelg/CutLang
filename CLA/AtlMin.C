@@ -326,7 +326,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                       }
                   }
                   systindex++;
-                  //freaders.push_back(TTreeReaderArray<Float_t>(*ttreader, resultstr[ri].c_str() ) ); //push only the generic name
+                  freaders.push_back(TTreeReaderArray<Float_t>( *ttr_map[ "nominal" ], resultstr[ri].c_str() ) ); //push only the generic name
                   cout <<ri<<" finished\n";
                  }//2 3 counting
                } else { // tree
