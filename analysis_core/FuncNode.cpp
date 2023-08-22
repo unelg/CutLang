@@ -86,8 +86,10 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 //                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
                                                         if (special_function) {
                                              			int nix=ao->muos[ac].at(ai).ParticleIndx();
+                                                                cout<<"Will read nix:"<<nix<<" addr:"<<m_ttreader<<"\n";
                                                                 DEBUG("Will read nix:"<<nix<<"\n");
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
+                                                                cout<<"Val:"<<avalue<<"\n";
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -240,7 +242,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          int maxTTRdist = 6;
          m_ttreader=ttr;
 
-         cout << "** sf:"<< s<<"\t"; //this is special function
+         cout << "** sf:"<< s<< " addr:"<<ttr<<"\t"; //this is special function
          special_function=true;
          TTree *at = m_ttreader->GetTree();
          TObjArray *lbranches = at->GetListOfBranches();

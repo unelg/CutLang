@@ -400,6 +400,7 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
        double wvalue=0;
 
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
+         cout << it->first<<"\n";
 
          int jsyst=it->second.index;
          int jid=it->second.varid;

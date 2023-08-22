@@ -173,7 +173,7 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe";
                 | PAPDOI description { }
                 | PAPHEPDATA description { }
                 | SYSTEMATIC bool description description SYSTVTYPE {
-//                 cout <<$3<< " & "<< $4<< " ARE of type:"<< $5 << " and status:"<< $2<<"\n";
+                 cout <<$3<< " & "<< $4<< " ARE of type:"<< $5 << " and status:"<< $2<<"\n";
 //here we prepare a bit coded integer containing the systematics
                     DataFormats->at(4)=$5;
                     if ($2 > 0) {
@@ -181,8 +181,12 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe";
                                      systvars.push_back($3);
                                      systvars.push_back($4);
                      systmap->insert(make_pair($5,systvars));
-                     systBANK[$3]=$5;
-                     systBANK[$4]=$5;
+                     string pippo=$3;
+                      pippo.erase(std::remove(pippo.begin(), pippo.end(), '\"'),pippo.end() );
+                     systBANK[pippo]=$5;
+                      pippo=$4;
+                      pippo.erase(std::remove(pippo.begin(), pippo.end(), '\"'),pippo.end() );
+                     systBANK[pippo]=$5;
                     }// syst on 
                   } 
                 ;
@@ -1003,10 +1007,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                                   varname+=funame;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
-                                      if (asys != 6){nsys="nominal";}
-                                      cout << "Special Func:"<<nsys<<"\n";
+                                      if (asys < 6){nsys="nominal";}
+                                      cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
-                               ((FuncNode *)sf)->setTTRaddr( ttr_map[ Initializations->at(1) ], varname);
+                               ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
                                }
         ;
