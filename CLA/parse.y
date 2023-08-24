@@ -173,7 +173,7 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe";
                 | PAPDOI description { }
                 | PAPHEPDATA description { }
                 | SYSTEMATIC bool description description SYSTVTYPE {
-                 cout <<$3<< " & "<< $4<< " ARE of type:"<< $5 << " and status:"<< $2<<"\n";
+//                 cout <<$3<< " & "<< $4<< " ARE of type:"<< $5 << " and status:"<< $2<<"\n";
 //here we prepare a bit coded integer containing the systematics
                     DataFormats->at(4)=$5;
                     if ($2 > 0) {
@@ -268,7 +268,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                              map<string,vector<Node*> >::iterator it ;
                              it = VariableListBank.find(name);
                              if(it != VariableListBank.end()) {
-                                                cout<<name<<" already defined\n";
+                                                  DEBUG(name<<" already defined\n");
 //                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable List already defined.");
 //                                                YYERROR;//stops parsing if variable already defined
                              } else {
@@ -981,8 +981,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
-       | ID '(' particules ')' {  cout << $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\t\t"; 
-                                      cout<<"\n";
+       | ID '(' particules ')' {  cout << $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\n"; 
                                       vector<myParticle*> newList;
                                       TmpParticle.swap(newList);
                                       myParticle* a = newList[0];
@@ -1008,7 +1007,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
                                       if (asys < 6){nsys="nominal";}
-                                      cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
+                                    //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;

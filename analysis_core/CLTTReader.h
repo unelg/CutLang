@@ -41,8 +41,6 @@ public:
            sin=s;
       }
       double readvalue(int nix, TTreeReader *ttreader) {
-        cout <<"size:"<<my_reader->GetSize()<<"\n";
-        cout <<"addr:"<<ttreader<<"\n";
         avalue=my_reader->At(nix) ; //->At(nix)
         return avalue;
       }

@@ -5,6 +5,7 @@
 *.lhco
 *.so
 a.out
+CLA.C
 a.out.dSYM
 .DS_Store
 *pd.o

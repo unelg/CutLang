@@ -91,7 +91,6 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
 
 */
 //MUONS
-          cout<<"Begin Filling MUONS "<<mu_e->size()<<"\n";
               for (unsigned int i=0; i<mu_e->size(); i++) {
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
 //                if (i==1) cout <<"********* mu Z:"<<mu_isZCand->at(i)<<"\n";
@@ -327,14 +326,14 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
                   }
                   systindex++;
                   freaders.push_back(TTreeReaderArray<Float_t>( *(ttr_map["nominal"]), resultstr[ri].c_str() ) ); //push only the generic name
-                  cout <<"XXXXXXXXXXXXXXXXX:"<<ri<<" "<< resultstr[ri]<< " @:"<< ttr_map["nominal"] <<" finished\n";
+             //     cout <<"XXXXXXXXXXXXXXXXX:"<<ri<<" "<< resultstr[ri]<< " @:"<< ttr_map["nominal"] <<" finished\n";
                  }//2 3 counting
                } else { // tree
                     string xxx="XXX";
                     syst_names[resultstr[2]] = resultstr[4] ; // with []
                     syst_names[resultstr[3]] = resultstr[4] ; // with []
                     
-                    cout << "B r2:"<< resultstr[2]<<" r3:"<<resultstr[3]<<" r4:"<<resultstr[4]<<"\n";                   
+             //       cout << "B r2:"<< resultstr[2]<<" r3:"<<resultstr[3]<<" r4:"<<resultstr[4]<<"\n";                   
 
                     syst_struct asyst;
                     asyst.vartype=resultstr[4];
@@ -404,13 +403,13 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
 
        for (map<string,syst_struct>::iterator it = systematics.begin(); it != systematics.end(); it++) {
 
-         cout << "it nam:"<<it->first<<"\t"<<it->second.vartype<<"\t" ;
+ //        cout << "it nam:"<<it->first<<"\t"<<it->second.vartype<<"\t" ;
          int jsyst=it->second.index;
          int jid=it->second.varid;
-         cout <<" jsyst:"<<jsyst <<" jid:"<< jid<<"\n";
+ //        cout <<" jsyst:"<<jsyst <<" jid:"<< jid<<"\n";
          if (jid >=0){
            wvalue = freaders.at(jsyst)[jid]; //may not be zero?
-           cout <<"Wv:"<<wvalue<<"\n";
+ //          cout <<"Wv:"<<wvalue<<"\n";
            if (jsyst>0) a0.evt=oldevt;
          }
 
@@ -428,12 +427,12 @@ void AtlMin::Loop( analy_struct aselect, char *extname)
          	analysis_objs_map[it->first] = a0;
          } else if (it->second.vartype == "ttree" ) {
 		AnalysisObjects ad;
-                cout<<"NAme D:"<<it->first<<"\n";
+   //             cout<<"NAme D:"<<it->first<<"\n";
              	syst_objects[it->first]->GetPhysicsObjects(j, &ad);
         	analysis_objs_map[it->first] = ad;
   	      it++;
 		AnalysisObjects au;
-                cout<<"NAme U:"<<it->first<<"\n";
+     //           cout<<"NAme U:"<<it->first<<"\n";
                 syst_objects[it->first]->GetPhysicsObjects(j, &au);
         	analysis_objs_map[it->first] = au;
 

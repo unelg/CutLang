@@ -86,10 +86,10 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 //                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
                                                         if (special_function) {
                                              			int nix=ao->muos[ac].at(ai).ParticleIndx();
-                                                                cout<<"Will read nix:"<<nix<<" addr:"<<m_ttreader<<"\n";
+                                                                //cout<<"Will read nix:"<<nix<<" addr:"<<m_ttreader<<"\n";
                                                                 DEBUG("Will read nix:"<<nix<<"\n");
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
-                                                                cout<<"Val:"<<avalue<<"\n";
+                                                                //cout<<"Val:"<<avalue<<"\n";
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
@@ -242,7 +242,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          int maxTTRdist = 6;
          m_ttreader=ttr;
 
-         cout << "** sf:"<< s<< " addr:"<<ttr<<"\t"; //this is special function
+//         cout << "** sf:"<< s<< " addr:"<<ttr<<"\t"; //this is special function
          special_function=true;
          TTree *at = m_ttreader->GetTree();
          TObjArray *lbranches = at->GetListOfBranches();
@@ -265,7 +265,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
 //         s=realstr; // should I keep the orig?
-         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+//         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
          if (minDist > maxTTRdist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);

@@ -6,8 +6,9 @@ if python -c "import IPython" &> /dev/null; then
     echo "IPython is installed."
     isProd="${1:-1}"
     source $CUTLANG_PATH/scripts/setup_kernel.sh $ROOTSYS $isProd
-    echo done.
+    echo "done. CLA, CLA_compile,... are now available."
 else
-    echo "Done. But, IPython is not installed. You might want to install it if you want to use jupiter notebooks."
+    echo "done. CLA, CLA_compile,... are now available."
+    echo "But, IPython is not installed. You might want to install it if you want to use jupiter notebooks."
 fi
 
