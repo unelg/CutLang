@@ -33,6 +33,7 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern map<string, TTreeReader*> ttr_map;
 
 // <<< "include" anchor <<<
    
@@ -490,6 +491,7 @@ void DELPHES2::Loop(analy_struct aselect, char *extname)
 
         AnalysisObjects a0;
         GetPhysicsObjects(j, &a0, nentries);
+        ttr_map["Delphes"]->SetEntry(j);
         aCtrl.RunTasks(a0);
     }// event loop ends.
 

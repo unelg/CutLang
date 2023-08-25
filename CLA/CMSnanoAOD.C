@@ -19,6 +19,7 @@
 // header and lines to handle ctrl+C gracefully
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern map<string, TTreeReader*> ttr_map;
 
 void CMSnanoAOD::Loop(analy_struct aselect, char *extname)
 {
@@ -248,7 +249,7 @@ std::cout << "MET OK"<<std::endl;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 
-   //   myreader.next();  
+        ttr_map["Events"]->SetEntry(j);
         TTreeReader myreader("Events",fChain->GetDirectory() );
         vector<TTreeReaderValue<Bool_t> > myHLTs;
         vector<string> myHLT_names;

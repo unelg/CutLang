@@ -19,6 +19,7 @@ using namespace std;
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern map<string, TTreeReader*> ttr_map;
 
 
 #define _CLV_
@@ -317,6 +318,7 @@ DEBUG("Filling finished"<<std::endl);
     if (constits_map.size() < 1) // we only add this if it was previously empty...
     constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
 
+    ttr_map["nominal"]->SetEntry(j);
     AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
     aCtrl.RunTasks(a0);
 

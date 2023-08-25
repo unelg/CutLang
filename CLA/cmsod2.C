@@ -17,6 +17,7 @@
 
 //#define __DEBUG__
 extern bool fctrlc;
+extern map<string, TTreeReader*> ttr_map;
 
 void cmsod2::Loop(analy_struct aselect, char *extname)
 {
@@ -196,7 +197,7 @@ std::cout << "Filling finished"<<std::endl;
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map, combo_map, constits_map, met_map,  anevt};
-
+        ttr_map["Events"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 
    }// event loop ends.

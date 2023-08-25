@@ -27,7 +27,7 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
-// <<< "include" anchor <<<
+extern map<string, TTreeReader*> ttr_map;
 
 void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
 {
@@ -234,6 +234,7 @@ void newpoet::Loop(analy_struct aselect, char *extname)
 
         AnalysisObjects a0;
         GetPhysicsObjects(j, &a0, nentries);
+        ttr_map["events"]->SetEntry(j);
         aCtrl.RunTasks(a0);
     }// event loop ends.
 

@@ -15,6 +15,7 @@
 #include "AnalysisController.h"
 #include "TTreeReader.h"
 
+extern map<string, TTreeReader*> ttr_map;
 void VLLMinSignal::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
     fChain->GetEntry(j);
@@ -309,6 +310,7 @@ void VLLMinSignal::Loop(analy_struct aselect, char *extname)
 
         AnalysisObjects a0;
         GetPhysicsObjects(j, &a0);
+        ttr_map["physics"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 
     }// event loop ends.
