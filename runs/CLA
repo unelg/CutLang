@@ -1,1 +1,12 @@
-$CUTLANG_PATH/runs/CLA.sh "$@"
+#!/bin/bash
+
+# Extract the extension of the first argument
+FILE_EXTENSION="${1##*.}"
+
+# Check if the file extension is 'txt'
+if [ "$FILE_EXTENSION" == "txt" ]; then
+    $CUTLANG_PATH/CLA_multifile.sh "$@"
+else
+    $CUTLANG_PATH/CLA.sh "$@"
+fi
+
