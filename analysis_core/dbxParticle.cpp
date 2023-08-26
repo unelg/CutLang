@@ -20,10 +20,6 @@ dbxParticle:: dbxParticle() : TObject() {
 dbxParticle:: dbxParticle (TLorentzVector lv){
   p_istight = 0;
   p_lvector=lv;
-  p_scalefactor=1.;
-  p_scalefactorreco=1.;
-  p_scalefactorid=1.;
-  p_scalefactortrig=1.;
   p_istight=0;
   p_ismedium=0;
   p_isloose=0;
@@ -36,7 +32,6 @@ dbxParticle:: dbxParticle (TLorentzVector lv, int q){
   p_pdgID = 0.;
   p_charge=q; // initalized
   p_lvector=lv;
-  p_scalefactor=1.;
   p_istight=0;
   p_ismedium=0;
   p_isloose=0;
@@ -111,53 +106,18 @@ int dbxParticle:: setTlv (TLorentzVector lv){
  return 0;
 }
 
-
-int dbxParticle:: setScaleFactor (double sf){
- p_scalefactor=sf;
- return 0;
-}
-
-int dbxParticle:: setScaleFactorReco (double sf){
- p_scalefactorreco=sf;
- return 0;
-}
-int dbxParticle:: setScaleFactorId (double sf){
- p_scalefactorid=sf;
- return 0;
-}
-int dbxParticle:: setScaleFactorTrig (double sf){
- p_scalefactortrig=sf;
- return 0;
-}
-int dbxParticle:: setScaleFactorTrigMcEff (double sf){
- p_scalefactortrig_mceff=sf;
- return 0;
-}
-int dbxParticle:: setScaleFactorIso(double sf){
- p_scalefactoriso=sf;
- return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////
-//These don't make sense now, we keep them for historical reasons 26.02.2014
-int dbxParticle:: setScaleFactorUncertainty (double sf){
- p_escalefactor=sf;
- return 0;
-}
-
-int dbxParticle:: setScaleFactorUncertaintyUp (double sf){
- p_scalefactorup=sf;
- return 0;
-}
-
-int dbxParticle:: setScaleFactorUncertaintyDown (double sf){
- p_scalefactordown= sf;
- return 0;
-}
-
-//////////////////////////////////////////////////////////////////////////
 int dbxParticle:: scaleLorentzVector ( double scale ){
  p_lvector*=scale;
+ return 0;
+}
+
+int dbxParticle:: scalePt ( double scale ){
+ p_lvector.SetPerp(p_lvector.Perp() * scale);
+ return 0;
+}
+
+int dbxParticle:: scaleE ( double scale ){
+ p_lvector.SetE( p_lvector.E() * scale);
  return 0;
 }
 

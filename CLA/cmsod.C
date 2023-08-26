@@ -107,7 +107,7 @@ std::cout << "Begin Filling"<<std::endl;
         }
 
 #ifdef __DEBUG__
-std::cout << "Muons OK:"<< Muon_<<std::endl;
+std::cout << "Muons OK:"<< NMuon<<std::endl;
 #endif
 //ELECTRONS
 
@@ -122,21 +122,9 @@ std::cout << "Muons OK:"<< Muon_<<std::endl;
         }
 
 #ifdef __DEBUG__
-std::cout << "Electrons OK:"<< Electron_ <<std::endl;
+std::cout << "Electrons OK:"<< NElectron <<std::endl;
 #endif
-//PHOTONS
-        for (int i=0; i<NPhoton; i++) {
-                alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
-                adbxp= new dbxPhoton(alv);
-                adbxp->setCharge(0);
-                adbxp->setParticleIndx(i);
-                adbxp->setEtCone(Photon_Iso[i]  );
-                photons.push_back(*adbxp);
-                delete adbxp;
-        }
-#ifdef __DEBUG__
-std::cout << "Photons OK:"<<Photon_size<<std::endl;
-#endif
+
 //JETS
         for (int i=0; i<NJet; i++) {
                 alv.SetPxPyPzE( Jet_Px[i], Jet_Py[i], Jet_Pz[i], Jet_E[i] ); // all in GeV
@@ -149,7 +137,21 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 delete adbxj;
         }
 #ifdef __DEBUG__
-std::cout << "Jets:"<<Jet_<<std::endl;
+std::cout << "Jets:"<<NJet<<std::endl;
+#endif
+
+//PHOTONS
+        for (int i=0; i<NPhoton; i++) {
+                alv.SetPxPyPzE( Photon_Px[i], Photon_Py[i], Photon_Pz[i], Photon_E[i] ); // all in GeV
+                adbxp= new dbxPhoton(alv);
+                adbxp->setCharge(0);
+                adbxp->setParticleIndx(i);
+                adbxp->setEtCone(Photon_Iso[i]  );
+                photons.push_back(*adbxp);
+                delete adbxp;
+        }
+#ifdef __DEBUG__
+std::cout << "Photons OK:"<<NPhoton<<std::endl;
 #endif
 //MET
         met.Set(MET_px, MET_py);

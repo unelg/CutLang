@@ -31,6 +31,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
       double retval;
       std::string bcol2;
       int ipart2_max;
+      int ipart2_idx;
 
       DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
       DEBUG("LeftNodes size:"<<lefs.size()<<"\n");
@@ -43,19 +44,20 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
         DEBUG("Loop particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
                      << inputParticles[ii]->collection << " index:"<<inputParticles[ii]->index<<"\n");
         if (inputParticles[ii]->index > 9999) oneParticleAtATime=true; 
+        ipart2_idx=inputParticles[ii]->index;
        }
        ipart2_max=0; // loop counter
        bool constiloop=false;
        std::string consname;
        int base_type2=inputParticles[0]->type;
        std::vector<myParticle*> spareParticles;
+       bcol2=inputParticles[0]->collection;
 
        if ( inputParticles[0]->index==16213    // from a number to all particles
          || inputParticles[0]->index==6213     // from zero to all particles
          || inputParticles[0]->type==consti_t  // all constituents of a given JET/FJET/bJET...
          ) // here we loop over all particles in the collection
        {
-        bcol2=inputParticles[0]->collection;
         consname=bcol2;
         try {
                 switch(inputParticles[0]->type){
@@ -170,6 +172,28 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
 
        if (g==NULL) { return (*f)(result_list);}  // 1D case
        else {
+       
+     map <string, std::vector<dbxJet>  >::iterator itJ;
+    for (itJ=ao->jets.begin();itJ!=ao->jets.end();itJ++){
+     DEBUG("avaiable jets are "<<itJ->first<<" size:"<<itJ->second.size()<<"\n");
+    }
+/*
+       cout << "-------"<<symbol<< " t:"<<inputParticles[0]->type<<" bcol2:"<<bcol2<<" idx:"<<ipart2_idx<<"\t";
+       for (int kk=0; kk<result_list.size(); kk++) cout<< result_list[kk]<<" "; cout<<"\n";
+*/
+       if (symbol=="scalePT" || symbol=="scaleE"){
+        switch(inputParticles[0]->type){
+           case muon_t:      (ao->muos  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case truth_t:     (ao->truth )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case electron_t:  (ao->eles  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case jet_t:       (ao->jets  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case photon_t:    (ao->gams  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case fjet_t:      (ao->ljets )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case tau_t:       (ao->taus  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+           case combo_t:     (ao->combos)[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
+                default:  std::cerr << "LN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
+         }//end of loop over switch 
+       } else {
         std::vector<bool> retvals=(*g)(result_list);
         if (inputParticles.size()==1) { // here we loop over all particles in the collection
         if (retvals.size() < ipart2_max) {
@@ -190,16 +214,19 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
                  case tau_t:  ( ao->taus)[bcol2].erase((ao->taus  ).find(bcol2)->second.begin()+ii); break;
                case combo_t: (ao->combos)[bcol2].erase((ao->combos).find(bcol2)->second.begin()+ii); break;
                case pureV_t: break;
+                    default:  std::cerr << "LN WRONG PARTICLE TYPE:"<<inputParticles[0]->type << std::endl; break;
           }//loop over switch 
          }// loop over kill 
         } // loop over particles and results
         } // loop over all particles or not
-       return 1;
-       }
+      } // end of else
+      return 1;
+      }
 }
 
 
 double sumof(std::vector<double> xlist){
+// cout <<" sumof\t"<<xlist.size()<<"\n";
  double retval=0;
  for (unsigned int ii=0; ii<xlist.size(); ii++) retval+=xlist[ii];
  DEBUG("Sum:"<<retval<<"\n");
@@ -259,6 +286,26 @@ std::vector<bool> hitmissR(std::vector<double> xlist){
  DEBUG("hit/miss to Reject:"<<xlist[ii]<< " vs " << r << "\t");
  if (xlist[ii]> r ) { retvals.push_back(false); DEBUG("Missed.\n");} 
  else { retvals.push_back(true); DEBUG("Hit.\n"); }
+ }
+ return retvals;
+}
+
+//-----------------------------------------------------
+std::vector<bool> scalePT(std::vector<double> xlist){
+// random number setup is here
+ std::vector<bool> retvals;
+
+ for (unsigned int ii=0; ii<xlist.size(); ii++) {
+  retvals.push_back(true); 
+ }
+ return retvals;
+}
+std::vector<bool> scaleE(std::vector<double> xlist){
+// random number setup is here
+ std::vector<bool> retvals;
+
+ for (unsigned int ii=0; ii<xlist.size(); ii++) {
+  retvals.push_back(true); 
  }
  return retvals;
 }

@@ -88,6 +88,7 @@ region baseline
   select ALL
   weight xsecWeight  0.0123
   weight lumiWeight  run2lumi
+  print size(ELE)
   select Size(mediumEle) >= 1 
   # Apply trigger efficiencies as event weights:
   # Use a 1d efficiency:
@@ -96,5 +97,4 @@ region baseline
   # weight eleTrig2Weight eleTrigger2( {mediumEle_0}pT, {mediumEle_0}Eta ) 
   # Require leading jet NOT to be b-tagged:
   select applyHM( btagMedium( {JET_0}pT , {JET_0}Eta ) == 0) # 0 to reject, 1 to accept.
-
 

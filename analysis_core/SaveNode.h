@@ -94,7 +94,7 @@ public:
             for (int i = 0; i < (int)variableList.size(); i++)
             {
                 variableList[i]->getParticlesAt(aparticles,0);
-                //std::cout<< aparticles->at(i)->index <<"c "; // what if we have 0 particles?
+    //            std::cout<<"i:"<<i<<" "<< aparticles->at(i)->index <<"c "<< variableList[i]->getStr(); // what if we have 0 particles?
                 std::cout<< variableList[i]->evaluate(ao) << " , ";
             }
             if (aparticles->size()>0){

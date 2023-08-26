@@ -155,16 +155,9 @@ public:
        void setPPPE(float px, float py, float pz, float Ee ){p_lvector.SetPxPyPzE(px, py, pz, Ee ); }
        void addTlv(TLorentzVector *alv){p_lvector.SetPxPyPzE( p_lvector.Px()+alv->Px(),  p_lvector.Py()+alv->Py(),  p_lvector.Pz()+alv->Pz(),  p_lvector.E()+alv->E()); }
        void addTlv(TLorentzVector alv){p_lvector.SetPxPyPzE( p_lvector.Px()+alv.Px(),  p_lvector.Py()+alv.Py(),  p_lvector.Pz()+alv.Pz(),  p_lvector.E()+alv.E()); }
-	int setScaleFactor ( double );
-	int setScaleFactorReco ( double );
-	int setScaleFactorId ( double );
-	int setScaleFactorTrig ( double );
-	int setScaleFactorTrigMcEff(double);
-	int setScaleFactorIso (double );
-	int setScaleFactorUncertainty ( double );
-	int setScaleFactorUncertaintyUp ( double );
-	int setScaleFactorUncertaintyDown ( double );
 	int scaleLorentzVector ( double );
+	int scalePt ( double );
+	int scaleE ( double );
 	int setZ0 (double );
 	void setAttribute(int k, double v) {
                   if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
@@ -185,15 +178,6 @@ public:
 	bool    isLoose() { return p_isloose; }
 	int    ParticleIndx() { return p_particleindx; }
 	TLorentzVector lv()  const{ return p_lvector; }
-	double ScaleFactor()  { return p_scalefactor; }
-	double ScaleFactorReco()  { return p_scalefactorreco; }
-	double ScaleFactorId()  { return p_scalefactorid; }
-	double ScaleFactorTrig()  { return p_scalefactortrig; }
-	double ScaleFactorTrigMcEff()  { return p_scalefactortrig_mceff; }
-	double ScaleFactorIso() { return p_scalefactoriso; }
-	double ScaleFactorUncertainty()  { return p_escalefactor; }
-	double ScaleFactorUncertaintyUp()  { return p_scalefactorup; }
-	double ScaleFactorUncertaintyDown()  { return p_scalefactordown; }
 	double Z0() {return p_z0;}
 
 
@@ -206,15 +190,6 @@ private:
 	double p_flavor;
 	int p_particleindx;
 	TLorentzVector p_lvector;
-	double p_scalefactor;
-	double p_scalefactorreco;
-	double p_scalefactorid;
-	double p_scalefactortrig;
-	double p_scalefactortrig_mceff;
-	double p_scalefactoriso;
-	double p_escalefactor;
-	double p_scalefactorup;
-	double p_scalefactordown;
 	 int p_istight;
 	bool p_ismedium;
 	bool p_isloose;

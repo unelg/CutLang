@@ -265,7 +265,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
 //         s=realstr; // should I keep the orig?
-//         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
          if (minDist > maxTTRdist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);

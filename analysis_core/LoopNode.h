@@ -20,6 +20,7 @@ protected:
     std::vector<myParticle*> inputParticles;
 
 public:
+// f: min, max sum, g:boolean list for HitMiss h:scale PT
     LoopNode(std::vector<bool> (*func)(std::vector<double>), Node* l, std::string s){
         g=func;
         f=NULL;
@@ -72,6 +73,8 @@ double minof(std::vector<double> xlist);
 double maxof(std::vector<double> xlist);
 std::vector<bool> hitmissA(std::vector<double> xlist);
 std::vector<bool> hitmissR(std::vector<double> xlist);
+std::vector<bool> scalePT(std::vector<double> xlist);
+std::vector<bool> scaleE(std::vector<double> xlist);
 
 
 #endif /* LoopNode_h */

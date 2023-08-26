@@ -104,7 +104,7 @@ std::map< std::string, int> systBANK;
 %token GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
-%token MINIMIZE MAXIMIZE  APPLYHM PRINT
+%token MINIMIZE MAXIMIZE  APPLYHM PRINT APPLYPTF APPLYEF
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT
@@ -1006,7 +1006,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                                   varname+=funame;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
-                                      if (asys < 6){nsys="nominal";}
+                                      if (asys < 6){
+                                         if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
+                                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+                                      }
                                     //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
@@ -2787,6 +2790,7 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
           | PRINT variablelist
                   { DEBUG("print in CSV format\n");
+                    cout <<"criterion\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     TmpCriteria.push_back( new SaveNode(pippo,0,VariableList) );
                     VariableList.clear();
@@ -2847,6 +2851,7 @@ command : CMD condition { //find a way to print commands
                   }
         | PRINT variablelist
                   { DEBUG("print in CSV format\n");
+                    cout<<"CMD\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList))); 
                     VariableList.clear();
@@ -2908,6 +2913,8 @@ command : CMD condition { //find a way to print commands
                                 else b = new LoopNode(hitmissA, a,"hitmissAcc");
                                 NodeCuts->insert(make_pair(++cutcount,b));
                     }
+
+
     	| WEIGHT ID ID {  map<string, Node *>::iterator it ;
                           it = NodeVars->find($3);
                           if(it == NodeVars->end()) {
@@ -3077,6 +3084,7 @@ ifstatement : condition '?' action ':' action %prec '?' {
 action  : condition { $$=$1; }
         | PRINT variablelist
                   { DEBUG("print in CSV format\n");
+                    cout <<"Action\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     $$= new SaveNode(pippo,0,VariableList) ;
                     VariableList.clear();
@@ -3093,6 +3101,21 @@ action  : condition { $$=$1; }
        | NONE { $$=new SFuncNode(none,1,"none"); }
        | LEPSF {  $$=new SFuncNode(lepsf,1,"LEPSF"); }
        | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
+       | APPLYPTF '(' ID '(' e ',' e ')' ')'  { 
+                                DEBUG("PT factor using "<< $3 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$5, $7, itt->second, "applyPTF"); //function, 
+                                b = new LoopNode(scalePT, a,"scalePT");
+                                $$=b;
+                    }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

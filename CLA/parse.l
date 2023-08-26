@@ -86,6 +86,8 @@ vardef {varname}" "?":"" "?.*"\n"
 
 [Mm][eE][tT][sS][iI][gG] return METSIGNIF;
 "applyHM" return APPLYHM;
+"applyPTF"|"scalePT"  return APPLYPTF;
+"applyEF"|"scaleE"  return APPLYEF;
 "genPartIdx" return GENPARTIDX;
 
 [uU][nN][iI][oO][nN] return UNION;
