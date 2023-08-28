@@ -5,6 +5,15 @@
 
 #ifndef SaveNode_h
 #define SaveNode_h
+
+//#define _CLV_
+
+#ifdef _CLV_
+#define DEBUG(a) std::cout<<a
+#else
+#define DEBUG(a)
+#endif
+
 #include "Node.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -79,7 +88,11 @@ public:
 	    	ftsave->Close();
             }
     }
+
+//--------------------------------------------------------
     virtual double evaluate(AnalysisObjects* ao) override {
+//--------------------------------------------------------
+      DEBUG( "SN Eval:"<<selector<<" "<<variableList.size()<<"\n");
       if(variableList.size() > 0){
            std::vector<myParticle *>  bparticles;
            std::vector<myParticle *> *aparticles=&bparticles;
@@ -94,7 +107,9 @@ public:
             for (int i = 0; i < (int)variableList.size(); i++)
             {
                 variableList[i]->getParticlesAt(aparticles,0);
- //               std::cout<<"i:"<<i<<" "<< aparticles->at(i)->index <<"s:"<< aparticles->at(i)->collection<<" t:"<<aparticles->at(i)->type <<"\n"; // what if we have 0 particles?
+             DEBUG("received particles:"<<aparticles->size()<< "\n");
+             if (aparticles->size() >0) {
+               DEBUG("i:"<<i<<" "<< aparticles->at(i)->index <<"s:"<< aparticles->at(i)->collection<<" t:"<<aparticles->at(i)->type <<"\n"); // what if we have 0 particles?
              if (aparticles->at(i)->index==6213 && variableList[i]->getStr().Length()<=3) {
               string base_coll=aparticles->at(i)->collection;
               int base_typ=aparticles->at(i)->type;
@@ -118,8 +133,11 @@ public:
                   std::cout<< variableList[i]->evaluate(ao) << " , ";
                 }
                 aparticles->at(i)->index=6213;// once we loop we go back
-             } else
+             }
+             } else {
+                DEBUG("not a particle loop:\n");
                 std::cout<< variableList[i]->evaluate(ao) << " , ";
+             }
             }
             if (aparticles->size()>0){
               if (aparticles->at(0)->type == 21) {std::cout<<"\t";} else std::cout << "\n"; 

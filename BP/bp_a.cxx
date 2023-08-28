@@ -580,6 +580,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
           DEBUG("EXEcuting...\n");
 
            if (optimize.find(iter->first) != optimize.end()){
+             DEBUG("optimizer.\n");
              Node *searcher=iter->second;
              vector<myParticle *> theseParticles;
              do {
