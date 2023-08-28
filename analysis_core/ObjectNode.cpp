@@ -332,7 +332,6 @@ int getCollectionSize(int t2, std::string base_collection2, AnalysisObjects *ao 
 }
 
 // ***********************************JET ALL
-
 void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myParticle *>* particles, std::string name, std::string basename){
     DEBUG("Creating new JETtype named:"<<name<<" #Jtypes:"<<ao->jets.size()<< " Duplicating:"<<basename<<"\n");
     ao->jets.insert( std::pair<string, vector<dbxJet> >(name, (ao->jets)[basename]) );

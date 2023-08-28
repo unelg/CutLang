@@ -13,7 +13,6 @@ public:
 };
 
 
-
 class myTTreaderF : public myTTreader{
 private:
      double avalue;

@@ -1096,11 +1096,22 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                      map<string,vector<myParticle*> >::iterator itp;
                      itp=ListParts->find($1);
                      if(itp==ListParts->end() ) {
-                      cout<<$1<<"is a special function from NTUPLE.\n"; // NGUU
-                      std::string varname="~";
-                                  varname+=$1;
-                                  varname+="~";
-                      $$=new SFuncNode(specialsf,1 , varname);
+                      cout<<$1<<"is a special function from NTUPLE.\n"; // NGU SF
+                      std::string varname=$1;
+                      int asys=systBANK[Initializations->at(1)];
+                      string nsys=Initializations->at(1);
+                      if (asys < 6){
+                         if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
+                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+                      }
+                      cout <<" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n";
+
+                      Node *ssf=new SFuncNode(specialsf,1 , varname);
+                      ((SFuncNode *)ssf)->setTTRaddr( ttr_map[ nsys ], varname);
+
+                      $$ = ssf;
+
+
                      } else {
                      //  cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
                        vector<myParticle*> newList= itp->second;
@@ -2790,7 +2801,6 @@ criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
           | PRINT variablelist
                   { DEBUG("print in CSV format\n");
-                    cout <<"criterion\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     TmpCriteria.push_back( new SaveNode(pippo,0,VariableList) );
                     VariableList.clear();
@@ -2851,7 +2861,6 @@ command : CMD condition { //find a way to print commands
                   }
         | PRINT variablelist
                   { DEBUG("print in CSV format\n");
-                    cout<<"CMD\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList))); 
                     VariableList.clear();
@@ -3084,7 +3093,6 @@ ifstatement : condition '?' action ':' action %prec '?' {
 action  : condition { $$=$1; }
         | PRINT variablelist
                   { DEBUG("print in CSV format\n");
-                    cout <<"Action\n";
                     string pippo="Print"; pippo+= to_string(cutcount);
                     $$= new SaveNode(pippo,0,VariableList) ;
                     VariableList.clear();

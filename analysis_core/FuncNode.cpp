@@ -18,7 +18,6 @@ void FuncNode::ResetParticles(){
       }
 }
  
-//map <string, double > attribute_map;
    
 void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
@@ -270,7 +269,6 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);
          }
-
 
          if (  type_name.find("loat") != std::string::npos ) {
              ttrdrF = new myTTreaderF( m_ttreader, realstr);

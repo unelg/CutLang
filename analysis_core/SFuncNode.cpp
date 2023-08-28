@@ -18,6 +18,58 @@
 #define DEBUG(a)
 #endif
 
+void SFuncNode::setTTRaddr( TTreeReader *ttr, string s){
+         int maxTTRdist =6;
+         m_ttreader=ttr;
+
+         cout << "** sf:"<< s<<"\t"; //this is special function
+         special_function=true;
+         TTree *at = m_ttreader->GetTree();
+         TObjArray *lbranches = at->GetListOfBranches();
+         if (lbranches == 0) {
+            cerr<<"No branches found in this ntuple!\n";
+            exit(-2);
+         }
+         std::vector<int> distances;
+         for (int i = 0; i < lbranches->GetEntries(); ++i) {
+          TBranch *abranch = (TBranch*)lbranches->At(i);
+          int dist = levenshtein(s, abranch->GetName());
+          distances.push_back(dist);
+         }
+
+         int minDist = *std::min_element(distances.begin(), distances.end());
+         int minIndex = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
+         TBranch *ab = (TBranch*)lbranches->At(minIndex);
+         std::string bc_name=ab->GetClassName();
+         std::string realstr=ab->GetName();
+         TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
+         std::string type_name = aleaf->GetTypeName();
+//         s=realstr; // should I keep the orig?
+         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+         if (minDist > maxTTRdist) {
+           cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
+           exit(-123);
+         }
+
+         if (  type_name.find("loat") != std::string::npos ) {
+             ttrdrF = new SFTTreaderF( m_ttreader, realstr);
+             ttrdr=ttrdrF;
+         } else if (type_name.find("ouble") != std::string::npos ) {
+             ttrdrD = new SFTTreaderD( m_ttreader, realstr);
+             ttrdr=ttrdrD;
+         } else if (type_name.find("nt") != std::string::npos ) {
+             ttrdrI= new SFTTreaderI ( m_ttreader, realstr);
+             ttrdr=ttrdrI;
+         } else if (type_name.find("ool") != std::string::npos ) {
+             ttrdrB= new SFTTreaderB ( m_ttreader, realstr);
+             ttrdr=ttrdrB;
+         } else {
+             cerr<<"Assuming Float for: "<< s<<"\n";
+             ttrdrF = new SFTTreaderF( m_ttreader, realstr);
+             ttrdr=ttrdrF;
+         }
+}
+
 double SFuncNode::evaluate(AnalysisObjects* ao) {
 
         DEBUG("*******In SF,"<<symbol<<" Extern True/False:"<< ext <<"\n"); 

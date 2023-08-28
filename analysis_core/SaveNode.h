@@ -94,7 +94,31 @@ public:
             for (int i = 0; i < (int)variableList.size(); i++)
             {
                 variableList[i]->getParticlesAt(aparticles,0);
-    //            std::cout<<"i:"<<i<<" "<< aparticles->at(i)->index <<"c "<< variableList[i]->getStr(); // what if we have 0 particles?
+ //               std::cout<<"i:"<<i<<" "<< aparticles->at(i)->index <<"s:"<< aparticles->at(i)->collection<<" t:"<<aparticles->at(i)->type <<"\n"; // what if we have 0 particles?
+             if (aparticles->at(i)->index==6213 && variableList[i]->getStr().Length()<=3) {
+              string base_coll=aparticles->at(i)->collection;
+              int base_typ=aparticles->at(i)->type;
+              int ipa_max=-1;
+              switch(abs(base_typ) ){
+                   case 12: ipa_max=(ao->muos).at(base_coll).size(); break;
+                   case 10: ipa_max=(ao->truth).at(base_coll).size(); break;
+                    case 1: ipa_max=(ao->eles).at(base_coll).size(); break;
+                    case 2: ipa_max=(ao->jets).at(base_coll).size(); break;
+                    case 8: ipa_max=(ao->gams).at(base_coll).size(); break;
+                    case 9: ipa_max=(ao->ljets).at(base_coll).size(); break;
+                   case 11: ipa_max=(ao->taus).at(base_coll).size(); break;
+                   case 19: ipa_max=(ao->track).at(base_coll).size(); break;
+                   case 20: ipa_max=(ao->combos)[base_coll].size(); break;
+                   default:
+                       std::cerr << "FN WRONG PARTICLE TYPE:"<<base_typ
+                                 << " collection:"<<base_coll << std::endl; break;
+                }
+                for (int ipart=ipa_max-1; ipart>=0; ipart--){ // loop over all particles,
+                  aparticles->at(i)->index=ipart;
+                  std::cout<< variableList[i]->evaluate(ao) << " , ";
+                }
+                aparticles->at(i)->index=6213;// once we loop we go back
+             } else
                 std::cout<< variableList[i]->evaluate(ao) << " , ";
             }
             if (aparticles->size()>0){
