@@ -2923,18 +2923,25 @@ command : CMD condition { //find a way to print commands
                                 NodeCuts->insert(make_pair(++cutcount,b));
                     }
 
-
-    	| WEIGHT ID ID {  map<string, Node *>::iterator it ;
-                          it = NodeVars->find($3);
-                          if(it == NodeVars->end()) {
-                                DEBUG($3<<" : ");
-                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Weight variable not defined");
-                                YYERROR;//stops parsing if variable not found
-                           } 
-                           Node* child=it->second;
-                           Node* a = new SFuncNode(uweight, child ,$2);
-			   NodeCuts->insert(make_pair(++cutcount,a));
+    	| WEIGHT ID e {  
+                              Node* child=$3;
+                              Node* a = new SFuncNode(uweight, child ,$2);
+			      NodeCuts->insert(make_pair(++cutcount,a));
                         }
+
+//  	| WEIGHT ID ID {  map<string, Node *>::iterator it ;
+//                        cout<<"*****************************************************************************here is WEIGHT\n";
+//                        it = NodeVars->find($3);
+//                        if(it != NodeVars->end()) {
+//                            Node* child=it->second;
+//                            Node* a = new SFuncNode(uweight, child ,$2);
+//      		      NodeCuts->insert(make_pair(++cutcount,a));
+//                         } else {
+//                            DEBUG($3<<" : ");
+//                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Weight variable not defined");
+//                            YYERROR;//stops parsing if variable not found
+//                         }
+//                      }
  
     	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
 			NodeCuts->insert(make_pair(++cutcount,a));
