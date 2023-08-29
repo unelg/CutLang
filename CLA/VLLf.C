@@ -22,7 +22,7 @@ extern bool fctrlc;
 extern map<string, TTreeReader*> ttr_map;
 
 
-#define _CLV_
+//#define _CLV_
 #ifdef _CLV_
 #define DEBUG(a) std::cout<<a
 #else
