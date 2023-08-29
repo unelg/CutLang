@@ -6,14 +6,10 @@
 #include "cmsod2.h"
 #include "delphes.h"
 #include "lvl0.h"
-#include "VLLMin.h"
 #include "CMSnanoAOD.h"
 #include "AtlMin.h"
 #include "AtlasTRT.h"
-#include "VLLBG3.h"
-#include "VLLg.h"
 #include "VLLf.h"
-#include "VLLMinSignal.h"
 #include "DELPHES2.h"
 #include "dbxParticle.h"
 #include "newpoet.h"
@@ -63,10 +59,6 @@ int main(int argc, char*argv[])
  bool use_cmsodR2=false;
  bool use_cmsnano=false;
  bool use_vllf=false;
- bool use_vllg=false;
- bool use_vllmin=false;
- bool use_vllbg3 =false;
- bool use_vllsignal =false;
  bool use_DELPHES2=false;
 
  string inptype;
@@ -113,7 +105,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | ATLASVLL | POET | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLBG3 | VLLSIGNAL | VLLG]\n"
+                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | POET | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLF]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -126,7 +118,6 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "DELPHES2"){ use_DELPHES2 =true;}
  else if (inptype == "LVL0")    { use_lvl0 =true;}
  else if (inptype == "DELPHES") { use_delphes =true;}
- else if (inptype == "ATLASVLL"){ use_vllmin =true;}
  else if (inptype == "ATLMIN")  { use_atlmin =true;}
  else if (inptype == "ATLTRT")  { use_atltrt =true;}
  else if (inptype == "ATLASOD") { use_atlasod =true;}
@@ -134,10 +125,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "CMSOD")   { use_cmsod =true;}
  else if (inptype == "CMSODR2") { use_cmsodR2 =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
- else if (inptype == "VLLBG3")	{ use_vllbg3 =true;}
- else if (inptype == "VLLG")	{ use_vllg =true;}
  else if (inptype == "VLLF")	{ use_vllf =true;}
- else if (inptype == "VLLSIGNAL")	{ use_vllsignal =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
@@ -198,23 +186,11 @@ for (int i = 2; i < argc; i++) {
   }else if (use_atltrt){
    cout << "~Now using ATLAS TRT NTUPLE files.~~~~~~ alpha!\n";
    leafname="track_tree";
-  }else if (use_vllmin){
-   cout << "~Now using ATLAS VLL MIN Data files.~~~~~~ alpha!\n";
-   leafname="/physics";
   }else if (use_delphes){
    cout << "~Now using Delphes files.~~~~~~ beta!\n";
    leafname = "Delphes";
-  }else if (use_vllbg3){
-   cout << "~Now using ATLAS v3 background files.~~~~~~ alpha!\n";
-   leafname = "NOSYS/physics";
-  }else if (use_vllsignal){
-   cout << "~Now using ATLAS VLL Signal files.~~~~~~ alpha!\n";
-   leafname = "physics";
   }else if (use_vllf){
    cout << "~Now using ATLAS VLL Group f files.~~~~~~ alpha!\n";
-   leafname = "nominal";
-  }else if (use_vllg){
-   cout << "~Now using ATLAS VLL Group g files.~~~~~~ alpha!\n";
    leafname = "nominal";
   }else{
    leafname = "physics";
@@ -284,9 +260,6 @@ for (int i = 2; i < argc; i++) {
    } else if (use_atlasodR2){
     atlasopenR2 *atlasoda=new atlasopenR2((char*)xxx.c_str(),chain);
                atlasoda->Loop(aselect, username);
-   } else if (use_vllmin){
-     VLLMin *vllmina=new VLLMin((char*)xxx.c_str(),chain);
-             vllmina->Loop(aselect, username);
   } else if (use_atlmin){
     AtlMin *atlmina=new AtlMin((char*)xxx.c_str(),chain);
             atlmina->Loop(aselect, username);
@@ -299,15 +272,6 @@ for (int i = 2; i < argc; i++) {
    } else if (use_delphes){
     delphes *delphesa=new delphes((char*)xxx.c_str(),chain);
              delphesa->Loop(aselect, username);
-   } else if (use_vllbg3){
-    VLLBG3 *VLLBG3a=new VLLBG3((char*)xxx.c_str(),chain);
-           VLLBG3a->Loop(aselect, username);
-   } else if (use_vllsignal){
-    VLLMinSignal *VLLMinSignala=new VLLMinSignal((char*)xxx.c_str(),chain);
-          VLLMinSignala->Loop(aselect, username);
-   } else if (use_vllg){
-    VLLg *VLLga=new VLLg((char*)xxx.c_str(),chain);
-          VLLga->Loop(aselect, username);
    } else if (use_vllf){
     VLLf *VLLfa=new VLLf((char*)xxx.c_str(),chain);
           VLLfa->Loop(aselect, username);

@@ -1007,7 +1007,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
                                       if (asys < 6){
-                                         if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
+                                         if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
                                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                                       }
                                     //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
