@@ -38,6 +38,7 @@ private:
         myTTreaderD *ttrdrD;
         myTTreaderB *ttrdrB;
         myTTreaderI *ttrdrI;
+	myTTreaderC *ttrdrC;
 
         friend class HistoNode1D;
         friend class HistoNode2D;

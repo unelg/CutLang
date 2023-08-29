@@ -93,7 +93,21 @@ public:
       }
 };
 
-
+class SFTTreaderC : public SFTTreader {
+private:
+	double avalue;
+	string sin;
+public: 
+	TTreeReaderValue<Char_t> *my_reader;
+	SFTTreaderC(TTreeReader *ttreader, string s) {
+	   my_reader = new TTreeReaderValue<Char_t>(*ttreader, s.c_str() );
+	   sin=s;
+	}
+	double readvalue() {
+	  avalue=*(my_reader->Get() );
+	  return avalue;
+        }
+};
 
 class SFuncNode : public Node {
 private:
@@ -105,6 +119,7 @@ private:
       SFTTreaderD *ttrdrD;
       SFTTreaderB *ttrdrB;
       SFTTreaderI *ttrdrI;
+      SFTTreaderC *ttrdrC;
     static std::map< std::string, double > BUFFERED_VALUES;
     //should add something related to trigger types
     Node* userObjectA;

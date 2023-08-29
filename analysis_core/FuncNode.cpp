@@ -282,7 +282,10 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          } else if (type_name.find("ool") != std::string::npos ) {
              ttrdrB= new myTTreaderB ( m_ttreader, realstr);
              ttrdr=ttrdrB;
-         } else {
+	 } else if (type_name.find("char") != std::string::npos ) {
+	     ttrdrC= new myTTreaderC ( m_ttreader, realstr);
+	     ttrdr=ttrdrC;
+	 } else {
              cerr<<"Assuming Float for: "<< s<<"\n";
              ttrdrF = new myTTreaderF( m_ttreader, realstr);
              ttrdr=ttrdrF;

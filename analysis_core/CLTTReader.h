@@ -74,4 +74,18 @@ public:
       }
 };
 
+class myTTreaderC : public myTTreader {
+private:
+     double avalue;
+public:
+     TTreeReaderArray<Char_t> *my_reader;
+     myTTreaderC( TTreeReader *ttreader, string s) {
+	     my_reader = new TTreeReaderArray<Char_t>(*ttreader, s.c_str() );
+     }
+     double readvalue(int nix, TTreeReader *ttreader) {
+       avalue=my_reader->At(nix) ;
+       return avalue;
+     }
+};
+
 #endif
