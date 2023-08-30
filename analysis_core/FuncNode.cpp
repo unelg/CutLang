@@ -152,6 +152,12 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setIsMedium(ao->gams[ac].at(ai).isMedium() ); 
                                                         inputPart->setIsLoose (ao->gams[ac].at(ai).isLoose() ); 
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
+                                                        if (special_function) {
+                                             			int nix=ao->gams[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                        }
                                                         break;
                                             case jet_t: DEBUG("jet:"<<ai<<" \t");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
@@ -241,7 +247,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          int maxTTRdist = 6;
          m_ttreader=ttr;
 
-//         cout << "** sf:"<< s<< " addr:"<<ttr<<"\t"; //this is special function
+         DEBUG("TTR SF:"<< s<< " addr:"<<ttr<<"\t"); //this is special function
          special_function=true;
          TTree *at = m_ttreader->GetTree();
          TObjArray *lbranches = at->GetListOfBranches();
@@ -263,8 +269,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          std::string realstr=ab->GetName();
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
-//         s=realstr; // should I keep the orig?
-         cout << " Real Str:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+         cout<< "User var:"<<s << " Ntuple var:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
          if (minDist > maxTTRdist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);

@@ -2800,7 +2800,7 @@ criteria : criteria criterion
 criterion : CMD condition   { TmpCriteria.push_back($2); }
           | CMD action      { TmpCriteria.push_back($2); }
           | PRINT variablelist
-                  { DEBUG("print in CSV format\n");
+                  { DEBUG("criterion print in CSV format\n");
                     string pippo="Print"; pippo+= to_string(cutcount);
                     TmpCriteria.push_back( new SaveNode(pippo,0,VariableList) );
                     VariableList.clear();
@@ -2860,7 +2860,7 @@ command : CMD condition { //find a way to print commands
                     VariableList.clear();
                   }
         | PRINT variablelist
-                  { DEBUG("print in CSV format\n");
+                  { DEBUG("cmd print in CSV format\n");
                     string pippo="Print"; pippo+= to_string(cutcount);
                     NodeCuts->insert(make_pair(++cutcount, new SaveNode(pippo,0,VariableList))); 
                     VariableList.clear();
@@ -3099,7 +3099,7 @@ ifstatement : condition '?' action ':' action %prec '?' {
             ;
 action  : condition { $$=$1; }
         | PRINT variablelist
-                  { DEBUG("print in CSV format\n");
+                  { DEBUG("Action print in CSV format\n");
                     string pippo="Print"; pippo+= to_string(cutcount);
                     $$= new SaveNode(pippo,0,VariableList) ;
                     VariableList.clear();

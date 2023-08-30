@@ -108,11 +108,16 @@ public:
             {
                 variableList[i]->getParticlesAt(aparticles,0);
              DEBUG("received particles:"<<aparticles->size()<< "\n");
+
              if (aparticles->size() >0) {
-               DEBUG("i:"<<i<<" "<< aparticles->at(i)->index <<"s:"<< aparticles->at(i)->collection<<" t:"<<aparticles->at(i)->type <<"\n"); // what if we have 0 particles?
-             if (aparticles->at(i)->index==6213 && variableList[i]->getStr().Length()<=3) {
-              string base_coll=aparticles->at(i)->collection;
-              int base_typ=aparticles->at(i)->type;
+               DEBUG("i:"<<i<<" "<< aparticles->at(0)->index<<" "<<variableList[i]->getStr() 
+                  <<" s:"<< aparticles->at(0)->collection<<" t:"<<aparticles->at(0)->type <<"\n"); 
+             TString aa=variableList[i]->getStr();
+             if (aparticles->at(0)->index==6213 && !aa.Contains("ave") && !aa.Contains("min") 
+                                                && !aa.Contains("max") && !aa.Contains("sum") ) {
+
+              string base_coll=aparticles->at(0)->collection;
+              int base_typ=aparticles->at(0)->type;
               int ipa_max=-1;
               switch(abs(base_typ) ){
                    case 12: ipa_max=(ao->muos).at(base_coll).size(); break;
@@ -128,17 +133,22 @@ public:
                        std::cerr << "FN WRONG PARTICLE TYPE:"<<base_typ
                                  << " collection:"<<base_coll << std::endl; break;
                 }
-                for (int ipart=ipa_max-1; ipart>=0; ipart--){ // loop over all particles,
-                  aparticles->at(i)->index=ipart;
+                //cout << "max:"<<ipa_max<<"\n";
+                for (int ipart=0; ipart<ipa_max; ipart++){ // loop over all particles,
+                  aparticles->at(0)->index=ipart;
                   std::cout<< variableList[i]->evaluate(ao) << " , ";
                 }
-                aparticles->at(i)->index=6213;// once we loop we go back
-             }
-             } else {
-                DEBUG("not a particle loop:\n");
-                std::cout<< variableList[i]->evaluate(ao) << " , ";
-             }
-            }
+                aparticles->at(0)->index=6213;// once we loop we go back
+                continue; // go to next variable;
+              }
+              } // end of >0 
+               
+              DEBUG("not a loop:\n");
+              std::cout<< variableList[i]->evaluate(ao) << " , ";
+
+            }// end of loop over variables
+
+
             if (aparticles->size()>0){
               if (aparticles->at(0)->type == 21) {std::cout<<"\t";} else std::cout << "\n"; 
             } else
