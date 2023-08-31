@@ -187,6 +187,7 @@ public:
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
         DEBUG("** SF node with child node as left.\n");
+        special_function=false;
 }
 
 //------------------------- g1 with userfuncA
@@ -211,6 +212,7 @@ public:
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 }
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets)),
               double (*tunc) (std::vector<TLorentzVector> jets),
@@ -233,6 +235,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 
 }
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (std::vector<TLorentzVector> jets, TVector2 amet)),
@@ -256,6 +259,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double (*gunc) (
         right=NULL;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 
 }
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector alv, double (*gunc) (std::vector<TLorentzVector> jets, TLorentzVector amet)),
@@ -281,6 +285,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         inputParticlesA=input;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 }
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a1, TLorentzVector a2, TLorentzVector b1, double (*gunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet)),
               double (*tunc) (TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet),
@@ -309,6 +314,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, TLorentzVector a
         inputParticlesC=input3;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 }
 //--------------------------------g6
 SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double pt1, double pt2, double m1, double pt3, double (*gunc)(double a1, double a2, double a3, double a4)),
@@ -340,6 +346,7 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double pt1, doub
  //      inputParticlesC=input3;
         userObjectA = objectNodeA;
         userObjectB = objectNodeB;
+        special_function=false;
 }
 
 
