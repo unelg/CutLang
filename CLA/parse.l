@@ -51,9 +51,9 @@ vardef {varname}" "?":"" "?.*"\n"
 "weight_BTagSF"   return SYST_W_BTAG;
 "RunYear" return RUNYEAR;
 "mcChannelNumber" return MCCHANNELNUMBER;
-"eventno" return EVENTNO;
-"runno" return RUNNO;
-"LBno" return LBNO;
+[eE][vV][eE][nN][tT][nN][oO] return EVENTNO;
+[rR][uU][nN][nN][oO] return RUNNO;
+[lL][bB][nN][oO] return LBNO;
 "OME" return OME;
 
 [pP][rR][iI][nN][tT] return PRINT;

@@ -1088,7 +1088,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
                   $$=it->second;
-                } else {  cout<<"\t"<<$1<<"\n";
+                } else {                 DEBUG("\t"<<$1<<"\n");
                    map<string, Node *>::iterator ito;
 //                 for (ito=ObjectCuts->begin(); ito!=ObjectCuts->end(); ito++){
 //                  cout <<"Map has Object:"<<ito->first << "-vs-"<< string($1)<<"-\n"; 
@@ -2849,7 +2849,7 @@ command : CMD condition { //find a way to print commands
                             BinCuts->insert(make_pair(++bincount, $2));
                         }
         | BINS description condition {  DEBUG("a new bin is found\n"); 
-                            cout << "the bin-name is:"<<$2<<"\n";
+                            DEBUG( "the bin-name is:"<<$2<<"\n");
                             BinCuts->insert(make_pair(++bincount, $3));
                             BinNames->insert(make_pair(bincount,$2));
                         }

@@ -97,6 +97,3 @@ region baseline
   # Require leading jet NOT to be b-tagged:
   select applyHM( btagMedium( {JET_0}pT , {JET_0}Eta ) == 0) # 0 to reject, 1 to accept.
 
-region testSig
- baseline
- weight xsecOther  0.321
