@@ -36,6 +36,8 @@ public:
     virtual double evaluate(AnalysisObjects* ao) override {
         if (pval) return value;
         if (symbol=="RunYear")   return ao->evt.RunYear;
+        if (symbol=="LBNo") return ao->evt.lumiblk_no;
+        if (symbol=="RunNo") return ao->evt.run_no;
         if (symbol=="ChannelNo") return ao->evt.ChannelNo;
         if (symbol=="HFCLASSIFICATION") return ao->evt.m_HF_Classification;
         

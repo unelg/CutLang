@@ -263,6 +263,7 @@ for (int i = 2; i < argc; i++) {
   } else if (use_atlmin){
     AtlMin *atlmina=new AtlMin((char*)xxx.c_str(),chain);
             atlmina->Loop(aselect, username);
+            delete atlmina;
   } else if (use_atltrt){
    AtlasTRT *atltrta=new AtlasTRT((char*)xxx.c_str(),chain);
              atltrta->Loop(aselect, username);
@@ -278,6 +279,9 @@ for (int i = 2; i < argc; i++) {
   }
 
   cout << "finished."<<endl;
+  _afile->Close();
+  cout << "input file Closed."<<endl;
+  delete _afile;
 
   } else {
     std::cout <<"WARNING: No events found in files " << std::endl;

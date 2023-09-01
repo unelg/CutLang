@@ -386,7 +386,7 @@ for (map<string,vector<cntHisto> >::iterator ichi = cntHistos.begin(); ichi != c
     }
 
 #endif
-
+  fclose(yyin);
   return retval;
 }
 
@@ -409,7 +409,8 @@ int BPdbxA:: initGRL() {
 
 //------------------------
 int BPdbxA::Finalize(){       
-  std::cout <<"finalize.\n";
+  dbxA::Finalize();
+  std::cout<< cname<<" finalized.\n";
   return 1;
 }
 

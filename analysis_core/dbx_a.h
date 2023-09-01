@@ -35,6 +35,7 @@ public:
    virtual int makeAnalysis(AnalysisObjects *ao, map <int, TVector2>, vector <double>){std::cout<<"3RR0Rg!\n"; return 0;}
 
    virtual int saveHistos();
+   virtual int Finalize();
    virtual int defHistos(unsigned int);
    string getName() { return cname;}
    virtual int initGRL() { return 0;}

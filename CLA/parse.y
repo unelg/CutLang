@@ -108,7 +108,7 @@ std::map< std::string, int> systBANK;
 %token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT
-%token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION //
+%token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION RUNNO LBNO
 %token <real> PNB
 %token <real> NB 
 %token <integer> INT
@@ -1075,6 +1075,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
             }
           }
    | EVENTNO {  $$=new ValueNode("EventNo");} 
+   | RUNNO {  $$=new ValueNode("RunNo");} 
+   | LBNO {  $$=new ValueNode("LBNo");} 
    | MCCHANNELNUMBER {  $$=new ValueNode("ChannelNo");} 
    | HFCLASSIFICATION { $$=new ValueNode("HFCLASSIFICATION");} 
    | RUNYEAR {  $$=new ValueNode("RunYear");} 

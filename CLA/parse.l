@@ -52,6 +52,8 @@ vardef {varname}" "?":"" "?.*"\n"
 "RunYear" return RUNYEAR;
 "mcChannelNumber" return MCCHANNELNUMBER;
 "eventno" return EVENTNO;
+"runno" return RUNNO;
+"LBno" return LBNO;
 "OME" return OME;
 
 [pP][rR][iI][nN][tT] return PRINT;

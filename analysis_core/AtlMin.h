@@ -167,49 +167,20 @@ public :
    vector<int>     *el_true_firstEgMotherPdgId;
    vector<char>    *el_true_isPrompt;
    vector<char>    *el_true_isChargeFl;
+
    vector<float>   *mu_pt;
    vector<float>   *mu_eta;
    vector<float>   *mu_phi;
    vector<float>   *mu_e;
    vector<float>   *mu_charge;
-   vector<float>   *mu_topoetcone20;
-   vector<float>   *mu_ptvarcone30;
-   vector<float>   *mu_d0sig;
-   vector<float>   *mu_delta_z0_sintheta;
-   vector<int>     *mu_true_type;
-   vector<int>     *mu_true_origin;
-   vector<char>    *mu_true_isPrompt;
    vector<float>   *jet_pt;
    vector<float>   *jet_eta;
    vector<float>   *jet_phi;
    vector<float>   *jet_e;
-   vector<float>   *jet_mv2c00;
-   vector<float>   *jet_mv2c10;
-   vector<float>   *jet_mv2c20;
-   vector<float>   *jet_ip3dsv1;
    vector<float>   *jet_jvt;
-   vector<char>    *jet_passfjvt;
-   vector<int>     *jet_truthflav;
-   vector<int>     *jet_truthPartonLabel;
-   vector<char>    *jet_isTrueHS;
-   vector<int>     *jet_truthflavExtended;
+   vector<float>   *jet_truthflav;
    vector<char>    *jet_isbtagged_DL1r_77;
-   vector<float>   *jet_MV2r;
-   vector<float>   *jet_MV2rmu;
-   vector<float>   *jet_DL1;
-   vector<float>   *jet_DL1r;
-   vector<float>   *jet_DL1rmu;
-   vector<float>   *jet_MV2cl100;
-   vector<float>   *jet_MV2c100;
-   vector<float>   *jet_DL1_pu;
-   vector<float>   *jet_DL1_pc;
-   vector<float>   *jet_DL1_pb;
-   vector<float>   *jet_DL1r_pu;
-   vector<float>   *jet_DL1r_pc;
-   vector<float>   *jet_DL1r_pb;
-   vector<float>   *jet_DL1rmu_pu;
-   vector<float>   *jet_DL1rmu_pc;
-   vector<float>   *jet_DL1rmu_pb;
+
    vector<float>   *rcjet_pt;
    vector<float>   *rcjet_eta;
    vector<float>   *rcjet_phi;
@@ -417,28 +388,22 @@ public :
    TBranch        *b_mu_phi;   //!
    TBranch        *b_mu_e;   //!
    TBranch        *b_mu_charge;   //!
-   TBranch        *b_mu_topoetcone20;   //!
-   TBranch        *b_mu_ptvarcone30;   //!
-   TBranch        *b_mu_d0sig;   //!
-   TBranch        *b_mu_delta_z0_sintheta;   //!
-   TBranch        *b_mu_true_type;   //!
-   TBranch        *b_mu_true_origin;   //!
-   TBranch        *b_mu_true_isPrompt;   //!
    TBranch        *b_jet_pt;   //!
    TBranch        *b_jet_eta;   //!
    TBranch        *b_jet_phi;   //!
    TBranch        *b_jet_e;   //!
+   TBranch        *b_jet_jvt;   //!
+   TBranch        *b_jet_isbtagged_DL1r_77;   //!
+   TBranch        *b_jet_truthflav;   //!
+
    TBranch        *b_jet_mv2c00;   //!
    TBranch        *b_jet_mv2c10;   //!
    TBranch        *b_jet_mv2c20;   //!
    TBranch        *b_jet_ip3dsv1;   //!
-   TBranch        *b_jet_jvt;   //!
    TBranch        *b_jet_passfjvt;   //!
-   TBranch        *b_jet_truthflav;   //!
    TBranch        *b_jet_truthPartonLabel;   //!
    TBranch        *b_jet_isTrueHS;   //!
    TBranch        *b_jet_truthflavExtended;   //!
-   TBranch        *b_jet_isbtagged_DL1r_77;   //!
    TBranch        *b_jet_MV2r;   //!
    TBranch        *b_jet_MV2rmu;   //!
    TBranch        *b_jet_DL1;   //!
@@ -629,44 +594,15 @@ void AtlMin::Init(TTree *tree, int year)
    mu_phi = 0;
    mu_e = 0;
    mu_charge = 0;
-   mu_topoetcone20 = 0;
-   mu_ptvarcone30 = 0;
-   mu_d0sig = 0;
-   mu_delta_z0_sintheta = 0;
-   mu_true_type = 0;
-   mu_true_origin = 0;
-   mu_true_isPrompt = 0;
+
    jet_pt = 0;
    jet_eta = 0;
    jet_phi = 0;
    jet_e = 0;
-   jet_mv2c00 = 0;
-   jet_mv2c10 = 0;
-   jet_mv2c20 = 0;
-   jet_ip3dsv1 = 0;
    jet_jvt = 0;
-   jet_passfjvt = 0;
    jet_truthflav = 0;
-   jet_truthPartonLabel = 0;
-   jet_isTrueHS = 0;
-   jet_truthflavExtended = 0;
    jet_isbtagged_DL1r_77 = 0;
-   jet_MV2r = 0;
-   jet_MV2rmu = 0;
-   jet_DL1 = 0;
-   jet_DL1r = 0;
-   jet_DL1rmu = 0;
-   jet_MV2cl100 = 0;
-   jet_MV2c100 = 0;
-   jet_DL1_pu = 0;
-   jet_DL1_pc = 0;
-   jet_DL1_pb = 0;
-   jet_DL1r_pu = 0;
-   jet_DL1r_pc = 0;
-   jet_DL1r_pb = 0;
-   jet_DL1rmu_pu = 0;
-   jet_DL1rmu_pc = 0;
-   jet_DL1rmu_pb = 0;
+
    rcjet_pt = 0;
    rcjet_eta = 0;
    rcjet_phi = 0;
@@ -857,44 +793,14 @@ void AtlMin::Init(TTree *tree, int year)
    fChain->SetBranchAddress("mu_phi", &mu_phi, &b_mu_phi);
    fChain->SetBranchAddress("mu_e", &mu_e, &b_mu_e);
    fChain->SetBranchAddress("mu_charge", &mu_charge, &b_mu_charge);
-   fChain->SetBranchAddress("mu_topoetcone20", &mu_topoetcone20, &b_mu_topoetcone20);
-   fChain->SetBranchAddress("mu_ptvarcone30", &mu_ptvarcone30, &b_mu_ptvarcone30);
-   fChain->SetBranchAddress("mu_d0sig", &mu_d0sig, &b_mu_d0sig);
-   fChain->SetBranchAddress("mu_delta_z0_sintheta", &mu_delta_z0_sintheta, &b_mu_delta_z0_sintheta);
-   fChain->SetBranchAddress("mu_true_type", &mu_true_type, &b_mu_true_type);
-   fChain->SetBranchAddress("mu_true_origin", &mu_true_origin, &b_mu_true_origin);
-   fChain->SetBranchAddress("mu_true_isPrompt", &mu_true_isPrompt, &b_mu_true_isPrompt);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
    fChain->SetBranchAddress("jet_e", &jet_e, &b_jet_e);
-   fChain->SetBranchAddress("jet_mv2c00", &jet_mv2c00, &b_jet_mv2c00);
-   fChain->SetBranchAddress("jet_mv2c10", &jet_mv2c10, &b_jet_mv2c10);
-   fChain->SetBranchAddress("jet_mv2c20", &jet_mv2c20, &b_jet_mv2c20);
-   fChain->SetBranchAddress("jet_ip3dsv1", &jet_ip3dsv1, &b_jet_ip3dsv1);
    fChain->SetBranchAddress("jet_jvt", &jet_jvt, &b_jet_jvt);
-   fChain->SetBranchAddress("jet_passfjvt", &jet_passfjvt, &b_jet_passfjvt);
    fChain->SetBranchAddress("jet_truthflav", &jet_truthflav, &b_jet_truthflav);
-   fChain->SetBranchAddress("jet_truthPartonLabel", &jet_truthPartonLabel, &b_jet_truthPartonLabel);
-   fChain->SetBranchAddress("jet_isTrueHS", &jet_isTrueHS, &b_jet_isTrueHS);
-   fChain->SetBranchAddress("jet_truthflavExtended", &jet_truthflavExtended, &b_jet_truthflavExtended);
    fChain->SetBranchAddress("jet_isbtagged_DL1r_77", &jet_isbtagged_DL1r_77, &b_jet_isbtagged_DL1r_77);
-   fChain->SetBranchAddress("jet_MV2r", &jet_MV2r, &b_jet_MV2r);
-   fChain->SetBranchAddress("jet_MV2rmu", &jet_MV2rmu, &b_jet_MV2rmu);
-   fChain->SetBranchAddress("jet_DL1", &jet_DL1, &b_jet_DL1);
-   fChain->SetBranchAddress("jet_DL1r", &jet_DL1r, &b_jet_DL1r);
-   fChain->SetBranchAddress("jet_DL1rmu", &jet_DL1rmu, &b_jet_DL1rmu);
-   fChain->SetBranchAddress("jet_MV2cl100", &jet_MV2cl100, &b_jet_MV2cl100);
-   fChain->SetBranchAddress("jet_MV2c100", &jet_MV2c100, &b_jet_MV2c100);
-   fChain->SetBranchAddress("jet_DL1_pu", &jet_DL1_pu, &b_jet_DL1_pu);
-   fChain->SetBranchAddress("jet_DL1_pc", &jet_DL1_pc, &b_jet_DL1_pc);
-   fChain->SetBranchAddress("jet_DL1_pb", &jet_DL1_pb, &b_jet_DL1_pb);
-   fChain->SetBranchAddress("jet_DL1r_pu", &jet_DL1r_pu, &b_jet_DL1r_pu);
-   fChain->SetBranchAddress("jet_DL1r_pc", &jet_DL1r_pc, &b_jet_DL1r_pc);
-   fChain->SetBranchAddress("jet_DL1r_pb", &jet_DL1r_pb, &b_jet_DL1r_pb);
-   fChain->SetBranchAddress("jet_DL1rmu_pu", &jet_DL1rmu_pu, &b_jet_DL1rmu_pu);
-   fChain->SetBranchAddress("jet_DL1rmu_pc", &jet_DL1rmu_pc, &b_jet_DL1rmu_pc);
-   fChain->SetBranchAddress("jet_DL1rmu_pb", &jet_DL1rmu_pb, &b_jet_DL1rmu_pb);
+
    fChain->SetBranchAddress("rcjet_pt", &rcjet_pt, &b_rcjet_pt);
    fChain->SetBranchAddress("rcjet_eta", &rcjet_eta, &b_rcjet_eta);
    fChain->SetBranchAddress("rcjet_phi", &rcjet_phi, &b_rcjet_phi);

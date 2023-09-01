@@ -35,6 +35,11 @@ void dbxA:: addRunLumiInfo(int rn, int lbn, int evtno, bool rslt) {  // to keep 
  return ;
 }
 
+int dbxA:: Finalize() {
+  histoOut->Close();
+  delete histoOut;
+  return 0;
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int dbxA:: makeAnalysis(AnalysisObjects *ao, int idx) {
   return 0;

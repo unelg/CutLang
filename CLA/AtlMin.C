@@ -97,13 +97,7 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
                 adbxm= new dbxMuon(alv);
                 adbxm->setCharge(mu_charge->at(i) );
 		adbxm->setPdgID(-13*mu_charge->at(i) );
-//                adbxm->setEtCone(mu_topoetcone20->at(i) );
-//                adbxm->setPtCone(mu_ptvarcone30->at(i)  );
                 adbxm->setParticleIndx(i);
-//                adbxm->setisZCand(mu_isZCand->at(i) );
-//               adbxm->settrigMatch_HLT_mu26_ivarmedium(mu_trigMatch_HLT_mu26_ivarmedium->at(i));
-//                adbxm->settrigMatch_HLT_mu50(mu_trigMatch_HLT_mu50->at(i));
-//                adbxm->settrigMatch_HLT_mu20_iloose_L1MU15(mu_trigMatch_HLT_mu20_iloose_L1MU15->at(i));
                 muons.push_back(*adbxm);
                 delete adbxm;
         }
@@ -151,12 +145,6 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
                 if (b_jet_truthflav != NULL) adbxj->setFlavor(jet_truthflav->at(i) );
                 adbxj->set_isbtagged_77(bool(jet_isbtagged_DL1r_77->at(i)));
                 
-//                            if  (jet_isbtagged_MV2c10_77->at(i)>0)  std::cout << bool(jet_isbtagged_MV2c10_77->at(i)) <<"\n";
-///             adbxj->setmv2c00(jet_mv2c00->at(i));
-///             adbxj->setmv2c10(jet_mv2c10->at(i));
-///             adbxj->setmv2c20(jet_mv2c20->at(i));
-///             adbxj->setip3dsv1(jet_ip3dsv1->at(i));
-
                 jets.push_back(*adbxj);
                 delete adbxj;
         }

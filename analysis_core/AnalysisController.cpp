@@ -265,6 +265,7 @@ void AnalysisController::Finalize(){
 	{
 		dbxAnalyses[i]->printEfficiencies();
 		dbxAnalyses[i]->saveHistos();
+		dbxAnalyses[i]->Finalize();
 	}
 
 }
