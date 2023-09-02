@@ -32,7 +32,7 @@ double TableNode::evaluate(AnalysisObjects* ao) {
             if (left2==NULL){ // 1D
               DEBUG("aval:"<<aval<<"\t");
               for (it=0; it<atable.size(); it+=3){ // 3 is for 1D only. value, min, max.
-               if ( aval>=atable[it+1] && aval<atable[it+2]){
+               if ( aval>=atable[it+1] && aval<=atable[it+2]){
                 range_found=true;
                 tval=atable[it];
                 DEBUG(" tval:"<<tval<<"\n");
@@ -66,7 +66,7 @@ double TableNode::evaluate(AnalysisObjects* ao) {
                    
              DEBUG("\naval:"<<aval<< " bval:"<<bval<<"\t");
              for (it=0; it<atable.size(); it+=5){ // 5 is for 2D only. value, min, max, min2, max2.
-               if (aval>=atable[it+1] && aval<atable[it+2] && bval>=atable[it+3] && bval<atable[it+4]){
+               if (aval>=atable[it+1] && aval<=atable[it+2] && bval>=atable[it+3] && bval<=atable[it+4]){
                 range_found=true;
                 tval=atable[it];
                 DEBUG(" tval:"<<tval<<"\n");
