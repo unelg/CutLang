@@ -2931,24 +2931,10 @@ command : CMD condition { //find a way to print commands
 			      NodeCuts->insert(make_pair(++cutcount,a));
                         }
 
-//  	| WEIGHT ID ID {  map<string, Node *>::iterator it ;
-//                        cout<<"*****************************************************************************here is WEIGHT\n";
-//                        it = NodeVars->find($3);
-//                        if(it != NodeVars->end()) {
-//                            Node* child=it->second;
-//                            Node* a = new SFuncNode(uweight, child ,$2);
-//      		      NodeCuts->insert(make_pair(++cutcount,a));
-//                         } else {
-//                            DEBUG($3<<" : ");
-//                            yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Weight variable not defined");
-//                            YYERROR;//stops parsing if variable not found
-//                         }
-//                      }
- 
     	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
 			NodeCuts->insert(make_pair(++cutcount,a));
 			}
-    	| WEIGHT ID ID '(' function ')' {
+    	| WEIGHT ID ID '(' e ')' {
                                 DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;
                                 string name = $3;
@@ -2961,7 +2947,7 @@ command : CMD condition { //find a way to print commands
 				Node* a = new TableNode(tweight,$5,itt->second, $2);
 				NodeCuts->insert(make_pair(++cutcount,a));
 			}
-    	| WEIGHT ID ID '(' function ',' function ')' {
+    	| WEIGHT ID ID '(' e ',' e ')' {
                                 DEBUG("Weight named "<< $2  <<" will be from table "<< $3<< " using variables: "<< $5 <<","<< $7 << "\n");
                                 map<string, pair<vector<float>,bool> >::iterator itt;
                                 string name = $3;
