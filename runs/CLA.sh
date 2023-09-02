@@ -348,7 +348,6 @@ elif [ ${PRLL} -ne 1 ]; then
   fi
   if [ $? -eq 0 ]; then
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
-    echo '#################' $rbase
     rm -f $PWD/histoOut-${rbase}.root
     allHistos=""
     for ((i = 0 ; i < ${PRLL} ; i++)); do

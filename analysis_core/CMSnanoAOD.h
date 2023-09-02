@@ -26,9 +26,9 @@ using namespace std;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 const Int_t nElectron_ = 50;
-const Int_t nFatJet_   = 50; // SEZEN beni unutma
-const Int_t nGenJetAK8_ = 50;
-const Int_t nGenJet_ = 50;
+const Int_t nFatJet_   = 150; // SEZEN beni unutma
+const Int_t nGenJetAK8_ = 150;
+const Int_t nGenJet_ = 150;
 const Int_t nGenPart_ = 200;
 const Int_t nMuon_ = 100;
 const Int_t nTau_ = 100;
@@ -48,7 +48,7 @@ public :
    Float_t         CaloMET_phi;
    Float_t         CaloMET_pt;
    Float_t         CaloMET_sumEt;
-   UInt_t          nElectron;
+   UInt_t          nElectron=0;
    Float_t         Electron_deltaEtaSC[nElectron_];   //[nElectron]
    Float_t         Electron_dr03EcalRecHitSumEt[nElectron_];   //[nElectron]
    Float_t         Electron_dr03HcalDepth1TowerSumEt[nElectron_];   //[nElectron]
@@ -94,7 +94,7 @@ public :
    Bool_t          Electron_mvaFall17noIso_WP90[nElectron_];   //[nElectron]
    Bool_t          Electron_mvaFall17noIso_WPL[nElectron_];   //[nElectron]
 
-   UInt_t          nFatJet;
+   UInt_t          nFatJet=0;
    Float_t         FatJet_area[nFatJet_];   //[nFatJet]
    Float_t         FatJet_btagCMVA[nFatJet_];   //[nFatJet]
    Float_t         FatJet_btagCSVV2[nFatJet_];   //[nFatJet]
@@ -115,17 +115,17 @@ public :
    Int_t           FatJet_subJetIdx1[nFatJet_];   //[nFatJet]
    Int_t           FatJet_subJetIdx2[nFatJet_];   //[nFatJet]
 
-   UInt_t          nGenJetAK8;
+   UInt_t          nGenJetAK8=0;
    Float_t         GenJetAK8_eta[nGenJetAK8_];   //[nGenJetAK8]
    Float_t         GenJetAK8_mass[nGenJetAK8_];   //[nGenJetAK8]
    Float_t         GenJetAK8_phi[nGenJetAK8_];   //[nGenJetAK8]
    Float_t         GenJetAK8_pt[nGenJetAK8_];   //[nGenJetAK8]
-   UInt_t          nGenJet;
+   UInt_t          nGenJet=0;
    Float_t         GenJet_eta[nGenJet_];   //[nGenJet]
    Float_t         GenJet_mass[nGenJet_];   //[nGenJet]
    Float_t         GenJet_phi[nGenJet_];   //[nGenJet]
    Float_t         GenJet_pt[nGenJet_];   //[nGenJet]
-   UInt_t          nGenPart;
+   UInt_t          nGenPart=0;
    Float_t         GenPart_eta[nGenPart_];   //[nGenPart]
    Float_t         GenPart_mass[nGenPart_];   //[nGenPart]
    Float_t         GenPart_phi[nGenPart_];   //[nGenPart]
@@ -134,7 +134,7 @@ public :
    Int_t           GenPart_pdgId[nGenPart_];   //[nGenPart]
    Int_t           GenPart_status[nGenPart_];   //[nGenPart]
    Int_t           GenPart_statusFlags[nGenPart_];   //[nGenPart]
-   UInt_t          nSubGenJetAK8;
+   UInt_t          nSubGenJetAK8=0;
    Float_t         SubGenJetAK8_eta[12];   //[nSubGenJetAK8]
    Float_t         SubGenJetAK8_mass[12];   //[nSubGenJetAK8]
    Float_t         SubGenJetAK8_phi[12];   //[nSubGenJetAK8]
@@ -148,7 +148,7 @@ public :
    Float_t         Generator_xpdf2;
    Int_t           Generator_id1;
    Int_t           Generator_id2;
-   UInt_t          nGenVisTau;
+   UInt_t          nGenVisTau=0;
    Float_t         GenVisTau_eta[3];   //[nGenVisTau]
    Float_t         GenVisTau_mass[3];   //[nGenVisTau]
    Float_t         GenVisTau_phi[3];   //[nGenVisTau]
@@ -162,7 +162,7 @@ public :
    Float_t         LHEPdfWeight[1];   //[nLHEPdfWeight]
    UInt_t          nLHEScaleWeight;
    Float_t         LHEScaleWeight[1];   //[nLHEScaleWeight]
-   UInt_t          nIsoTrack;
+   UInt_t          nIsoTrack=0;
    Float_t         IsoTrack_dxy[5];   //[nIsoTrack]
    Float_t         IsoTrack_dz[5];   //[nIsoTrack]
    Float_t         IsoTrack_eta[5];   //[nIsoTrack]
@@ -175,7 +175,7 @@ public :
    Int_t           IsoTrack_pdgId[5];   //[nIsoTrack]
    Bool_t          IsoTrack_isHighPurityTrack[5];   //[nIsoTrack]
    Bool_t          IsoTrack_isPFcand[5];   //[nIsoTrack]
-   UInt_t          nJet;
+   UInt_t          nJet=0;
    Float_t         Jet_area[nJet_];   //[nJet]
    Float_t         Jet_btagCMVA[nJet_];   //[nJet]
    Float_t         Jet_btagCSVV2[nJet_];   //[nJet]
@@ -230,7 +230,7 @@ public :
    Float_t         MET_pt;
    Float_t         MET_significance;
    Float_t         MET_sumEt;
-   UInt_t          nMuon;
+   UInt_t          nMuon=0;
    Float_t         Muon_dxy[nMuon_];   //[nMuon]
    Float_t         Muon_dxyErr[nMuon_];   //[nMuon]
    Float_t         Muon_dz[nMuon_];   //[nMuon]
@@ -260,7 +260,7 @@ public :
    Bool_t          Muon_mediumId[nMuon_];   //[nMuon]
    Bool_t          Muon_softId[nMuon_];   //[nMuon]
    Bool_t          Muon_tightId[nMuon_];   //[nMuon]
-   UInt_t          nPhoton;
+   UInt_t          nPhoton=0;
    Float_t         Photon_eCorr[nPhoton_];   //[nPhoton]
    Float_t         Photon_energyErr[nPhoton_];   //[nPhoton]
    Float_t         Photon_eta[nPhoton_];   //[nPhoton]
@@ -315,7 +315,7 @@ public :
    Int_t           SoftActivityJetNjets10;
    Int_t           SoftActivityJetNjets2;
    Int_t           SoftActivityJetNjets5;
-   UInt_t          nSubJet;
+   UInt_t          nSubJet=0;
    Float_t         SubJet_btagCMVA[10];   //[nSubJet]
    Float_t         SubJet_btagCSVV2[10];   //[nSubJet]
    Float_t         SubJet_btagDeepB[10];   //[nSubJet]
@@ -329,7 +329,7 @@ public :
    Float_t         SubJet_tau2[10];   //[nSubJet]
    Float_t         SubJet_tau3[10];   //[nSubJet]
    Float_t         SubJet_tau4[10];   //[nSubJet]
-   UInt_t          nTau;
+   UInt_t          nTau=0;
    Float_t         Tau_chargedIso[nTau_];   //[nTau]
    Float_t         Tau_dxy[nTau_];   //[nTau]
    Float_t         Tau_dz[nTau_];   //[nTau]
