@@ -372,7 +372,13 @@ elif [ ${PRLL} -ne 1 ]; then
       rm -f $PWD/algdeps.cmd
     fi
   fi
-  echo "end CLA_multicore. Output file: " histoOut-${rbase}.root
+  if [ $addRootName -eq 0 ]; then
+     outfilename=histoOut-${rbase}.root
+  else
+     outfilename=histoOut-${rbase}-${database}.root
+  fi
+  echo "end CLA_multicore. Output file:  " ${outfilename} 
+  mv histoOut-${rbase}.root ${origdir}/$outfilename
 else
 ########################################## SINGLE CORE
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
