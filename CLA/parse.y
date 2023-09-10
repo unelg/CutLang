@@ -1002,7 +1002,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                          if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
                                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                                       }
-                                      cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
+                                      DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
@@ -1080,7 +1080,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original definitions as well
                 DEBUG($1<<" is a node variable candidate\n");
-                cout<<$1<<" is a node variable candidate\n";
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
@@ -1103,7 +1102,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                          if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                       }
-                      cout <<" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n";
+                      DEBUG(" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n");
 
                       Node *ssf=new SFuncNode(specialsf,1 , varname);
                       ((SFuncNode *)ssf)->setTTRaddr( ttr_map[ nsys ], varname);
@@ -3102,6 +3101,21 @@ action  : condition { $$=$1; }
        | NONE { $$=new SFuncNode(none,1,"none"); }
        | LEPSF {  $$=new SFuncNode(lepsf,1,"LEPSF"); }
        | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
+       | APPLYPTF '(' ID '(' e ')' ')'  { 
+                                DEBUG("PT factor using "<< $3 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$5, itt->second, "applyPTF"); //function, 
+                                b = new LoopNode(scalePT, a,"scalePT");
+                                $$=b;
+                    }
        | APPLYPTF '(' ID '(' e ',' e ')' ')'  { 
                                 DEBUG("PT factor using "<< $3 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

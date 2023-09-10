@@ -24,6 +24,7 @@
 
 //---------EVALUATE---------
 double TableNode::evaluate(AnalysisObjects* ao) {
+            DEBUG("Table Node\n");
             double aval=left->evaluate(ao);
             double bval, cval, dval, tval; 
             bool range_found=false;

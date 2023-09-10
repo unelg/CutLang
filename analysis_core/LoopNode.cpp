@@ -39,6 +39,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        left=lefs[in];
        this->getParticles(&inputParticles);       
  
+       DEBUG("LoopNode: ---> #particles:"<< inputParticles.size()<<"\n");
        bool oneParticleAtATime=false;
        for (int ii=0; ii<inputParticles.size(); ii++){
         DEBUG("Loop particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
