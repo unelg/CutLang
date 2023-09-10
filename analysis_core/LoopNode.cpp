@@ -154,7 +154,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
              int anindex=spareParticles[ii]->index;
               ((LFuncNode*)left)->setParticleIndex(0, anindex);
               retval=left->evaluate(ao);
-              DEBUG("retval:"<<retval<<"\n");
+              DEBUG("spare retval:"<<retval<<"\n");
               result_list.push_back(retval); 
           }
           ((LFuncNode*)left)->setParticleIndex(0, 16213);

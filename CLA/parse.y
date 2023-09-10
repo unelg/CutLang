@@ -3101,6 +3101,12 @@ action  : condition { $$=$1; }
        | NONE { $$=new SFuncNode(none,1,"none"); }
        | LEPSF {  $$=new SFuncNode(lepsf,1,"LEPSF"); }
        | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
+       | APPLYPTF '('  e ')'  { 
+                                Node* b;
+				Node* a = $3;
+                                b = new LoopNode(scalePT, a,"scalePT");
+                                $$=b;
+       }
        | APPLYPTF '(' ID '(' e ')' ')'  { 
                                 DEBUG("PT factor using "<< $3 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;
