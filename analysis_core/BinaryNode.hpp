@@ -88,6 +88,19 @@ double div(double left, double right) {
     return left / right;
 }
 
+double lshift(double left, double right) {
+    return (int)left << (int)right;
+}
+double rshift(double left, double right) {
+    return (int)left >> (int)right;
+}
+double bitwand(double left, double right) {
+    return (int)left & (int)right;
+}
+double bitwor(double left, double right) {
+    return (int)left | (int)right;
+}
+
 //double power ALREADY EXIST
 double lt(double left, double right){
     return (double)(left<right);
@@ -121,5 +134,4 @@ double mxof(double left, double right){
 }
 
 
-//if CONDITION-> later
 #endif /* AONode_hpp */

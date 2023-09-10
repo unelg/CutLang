@@ -1,0 +1,8 @@
+
+
+algo bitwise
+	print 5 & 9  ## expect   1 
+	print 5 | 9  ## expect   13
+ 	print 9 << 1 ## expect   18
+ 	print 9 >> 1 ## expect   4
+

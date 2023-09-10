@@ -192,10 +192,11 @@ vardef {varname}" "?":"" "?.*"\n"
 [mM][iI][nN] return MIN;
 [mM][aA][xX] return MAX;
 "+-"|"-+" return PM;
+"<<"|">>" return *yytext;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
-[-+*/()^:\[\]{}_mqPE,?=] return *yytext;
+[-+*/()&|^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
 %%
