@@ -27,6 +27,8 @@ private:
     std::vector<float>   atable;
     std::vector<float> errtable;
     Node* left2;
+    Node* left3;
+    Node* left4;
     bool errors; 
 
 public:
@@ -36,6 +38,8 @@ public:
         symbol=s;
         left=l;
         left2=NULL;
+        left3=NULL;
+        left4=NULL;
         errors=tabe.second;
         right=NULL;
         if (errors){
@@ -50,12 +54,38 @@ public:
           atable=tabe.first;
         }
     }
-    TableNode(double (*func)(double, AnalysisObjects*), 
+    TableNode(double (*func)(double, AnalysisObjects*),  // 2 parameter table
               Node* l, Node* l2, std::pair<std::vector<float>, bool> tabe, std::string s){
         f=func;
         symbol=s;
         left=l;
         left2=l2;
+        left3=NULL;
+        left4=NULL;
+        errors=tabe.second;
+        right=NULL;
+        if (errors){
+          for (unsigned int ii=0; ii<tabe.first.size(); ii+=7){
+           atable.push_back( tabe.first[ii]);
+           errtable.push_back( tabe.first[ii+1]);
+           errtable.push_back( tabe.first[ii+2]);
+           atable.push_back( tabe.first[ii+3]);
+           atable.push_back( tabe.first[ii+4]);
+           atable.push_back( tabe.first[ii+5]);
+           atable.push_back( tabe.first[ii+6]);
+          }
+        } else {
+          atable=tabe.first;
+        }
+    }
+    TableNode(double (*func)(double, AnalysisObjects*),  // 4 parameter table
+              Node* l, Node* l2, Node* l3, Node* l4, std::pair<std::vector<float>, bool> tabe, std::string s){
+        f=func;
+        symbol=s;
+        left=l;
+        left2=l2;
+        left3=l3;
+        left4=l4;
         errors=tabe.second;
         right=NULL;
         if (errors){

@@ -100,7 +100,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [tT][aA][uU][tT][aA][gG] return ISTAUTAG;
 
 [pP][dD][gG][iI][dD] return PDGID;
-[sS][tT][aA][tT][uU][sS] return STATUS;
 [fF][lL][aA][vV][oO][rR]|[bB][tT][aA][gG][gG][eE][rR] return FLAVOR;
 [pP][tT][cC][oO][nN][eE] return PTCONE;
 [eE][tT][cC][oO][nN][eE] return ETCONE;
@@ -197,6 +196,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()&|^:\[\]{}_mqPE,?=] return *yytext;
-[a-zA-Z]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
+[a-zA-Z0-9]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
 %%

@@ -105,7 +105,7 @@ std::map< std::string, int> systBANK;
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT APPLYPTF APPLYEF
-%token VERT VERX VERY VERZ VERTR STATUS CONSTITS 
+%token VERT VERX VERY VERZ VERTR CONSTITS  
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT
 %token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION RUNNO LBNO
@@ -662,15 +662,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(genpartidxof,newList,"genPartIdx");
                                   }
-
-         | '{' particules '}' STATUS {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pdgIDof,newList,"status"); // status and softID are same attrib
-                                  }
-         | STATUS '(' particules ')' {  vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(pdgIDof,newList,"status"); // status and softID are same attrib
-                                  }
          | '{' particules '}' PHI {     vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Phiof,newList,"phi");
@@ -993,13 +984,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                        case  2: p0s="JET"; break;
                                        case  8: p0s="PHO"; break;
                                        case  9: p0s="FJET"; break;
+                                       case 10: p0s="GEN"; break;
                                       }
                                       if ( p0s=="FJET" ) {
                                          if ( Initializations->at(0) == "ATLMIN" ) p0s="vrcjet";
                                          if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
                                       }
                                       std::string funame=$1; 
-                                      bool named=(funame.find('_') != std::string::npos);
+                                      bool named=0; //(funame.find('_') != std::string::npos);
                                       std::string varname="";
                                                   if (!named) varname+=p0s;
                                                   if (!named) varname+="_";
@@ -1010,7 +1002,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                          if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
                                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                                       }
-                                    //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
+                                      cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
@@ -1088,6 +1080,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    //to make the difference between ID + ID and ID ID in particules ->create two maps
    | ID { //we want the original definitions as well
                 DEBUG($1<<" is a node variable candidate\n");
+                cout<<$1<<" is a node variable candidate\n";
                 map<string, Node *>::iterator it;
                 it = NodeVars->find($1);
                 if(it != NodeVars->end()) {
@@ -2062,6 +2055,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
              }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
+                cout<<"Particle candidate "<< $1 <<" has _ and index:"<< $3<<"\n" ;
                 DEBUG("Particle candidate "<< $1 <<" has _ and index:"<< $3<<"\n" );
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
@@ -3120,6 +3114,21 @@ action  : condition { $$=$1; }
                                 }
                                 Node* b;
 				Node* a = new TableNode(thitmiss,$5, $7, itt->second, "applyPTF"); //function, 
+                                b = new LoopNode(scalePT, a,"scalePT");
+                                $$=b;
+                    }
+       | APPLYPTF '(' ID '(' e ',' e  ',' e ',' e  ')' ')'  { 
+                                DEBUG("PT factor using "<< $3 <<"\n");
+                                map<string, pair<vector<float>, bool> >::iterator itt;
+                                string name = $3;
+                                itt = ListTables->find(name);
+                                if(itt == ListTables->end()) {
+                                       DEBUG(name<<" : ");
+                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
+                                       YYERROR;//stops parsing if table is not defined
+                                }
+                                Node* b;
+				Node* a = new TableNode(thitmiss,$5, $7, $9, $11, itt->second, "applyPTF"); //function, 
                                 b = new LoopNode(scalePT, a,"scalePT");
                                 $$=b;
                     }
