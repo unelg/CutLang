@@ -163,9 +163,9 @@ double TableNode::evaluate(AnalysisObjects* ao) {
              DEBUG("err range:"<<sigleft<<","<< sigright<<" modified tval:"<<f4->GetRandom()<<"\n"); 
             }
 
-    return (*f)(tval, ao);
+    return tval;
+    //return (*f)(tval, ao);
     }
-
 
 double tweight(double value, AnalysisObjects* ao ) {
     ao->evt.user_evt_weight *= value;

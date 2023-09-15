@@ -47,7 +47,7 @@ typedef struct evt_data
 
 #if USE_MEMCOPY
 
-		memcpy(this,right,sizeof(evt_data));
+		memcpy((void *)this,&right,sizeof(evt_data));
 #else
 
 		run_no       =right.run_no;
@@ -66,7 +66,6 @@ typedef struct evt_data
 		isemuoverlap =right.isemuoverlap;
 		vxp_maxtrk_no=right.vxp_maxtrk_no;
 		vxpType      =right.vxpType;
-		lar_Error    =right.lar_Error;
 		pileup_weight=right.pileup_weight;
 		bad_lar_feb  =right.bad_lar_feb;
 		met_loose    =right.met_loose;
@@ -84,7 +83,6 @@ typedef struct evt_data
 		 weight_xsec =right.weight_xsec; 
                 weight_jvt   =right.weight_jvt;
        weight_sherpa_22_vjets=right.weight_sherpa_22_vjets;
-                hlt_map=right.hlt_map;
 #endif
 	}
 	unsigned int run_no, RunYear;
@@ -97,13 +95,11 @@ typedef struct evt_data
 	bool isemuoverlap;
 	unsigned int vxp_maxtrk_no;
 	int vxpType;
-	unsigned int lar_Error;
 	float pileup_weight;
 	bool bad_lar_feb;
 	TVector2 met_loose;
 	unsigned int maxEvents;
 	bool HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
-        std::map< std::string, Bool_t > hlt_map;
 	unsigned int core_Flags;
 	float z_vtx_weight;
         double user_evt_weight;

@@ -94,9 +94,11 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         if(userObjectD)  userObjectD->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
 
         for (int jj=0; jj< inputParticles.size(); jj++){
-         DEBUG("P0_"<<jj<<" Type:"<<inputParticles[jj]->type<<" collection:"<< inputParticles[jj]->collection << " index:"<<inputParticles[jj]->index<<"\n");
+         DEBUG("P10_"<<jj<<" Type:"<<inputParticles[jj]->type<<" collection:"<< inputParticles[jj]->collection << " index:"<<inputParticles[jj]->index<<"\n");
+//         cout<<"P1_"<<jj<<" Type:"<<inputParticles[jj]->type<<" collection:"<< inputParticles[jj]->collection << " index:"<<inputParticles[jj]->index<<"\n";
         }
-        DEBUG("P1_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
+        DEBUG("P2_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n");
+//        cout<<"P2_0 Type:"<<inputParticles2[0]->type<<" collection:"<< inputParticles2[0]->collection << " index:"<<inputParticles2[0]->index<<"\n";
 
      bool failed=false;
      for (int kk=0; kk<inputParticles.size(); kk++){
@@ -162,8 +164,8 @@ double LFuncNode::evaluate(AnalysisObjects* ao)  {
         DEBUG("Constructing First particle\n");
         partConstruct(ao, &inputParticles,&myPart);
         DEBUG("Finished constructing First particle\n");
-        DEBUG("AF P0_"<<0<<" Type:"<<inputParticles[0]->type<< " index:"<<inputParticles[0]->index<<"\n");
-        DEBUG("AF P1_"<<0<<" Type:"<<inputParticles2[0]->type<< " index:"<<inputParticles2[0]->index<<"\n");
+//      cout<<"AF P0_"<<0<<" Type:"<<inputParticles[0]->type<< " index:"<<inputParticles[0]->index<<"\n";
+//      cout<<"AF P1_"<<0<<" Type:"<<inputParticles2[0]->type<< " index:"<<inputParticles2[0]->index<<"\n";
         return (*f2)(&myPart,&myPart2);
 }
 

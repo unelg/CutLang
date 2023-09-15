@@ -356,7 +356,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
  
         DEBUG("Nb of cut particles is :"<<particles->size() << " Current Cut is:"<< (*cutIterator)->getStr()<<"\n");
         if ( particles->size()==0) {
-           DEBUG("No particle in CutIte:"<<(*cutIterator)->getStr()<<"\t");
+           DEBUG("No particle in CutIte:"<<(*cutIterator)->getStr()<<"\t");  //aaaaaaaaaaaaaaaaa
            bool ppassed=(*cutIterator)->evaluate(ao);
            DEBUG (" P/F:"<<ppassed<<"\n");
            if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin(), (ao->jets).find(name)->second.end());

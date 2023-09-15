@@ -232,10 +232,14 @@ fi
 if [ `echo $LD_LIBRARY_PATH | grep $WORK_PATH/CLA > /dev/null ; echo $?` -ne 0 ]; then
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK_PATH/CLA/
 fi
-
-for bpfile in `ls -1 BP_*-card.ini`; do
+echo `date +%s`
+for bpfile in BP_*-card.ini; do
 #   echo "AAAAAAAAAAAAAAAAAAAAAAAAA" $abpfile
     HISTOLISTVAR=0
+    if ! grep -q "histoList" "$bpfile"; then
+        continue
+    fi
+
     # for histoList command
     if grep -q "histoList" "$bpfile"; then
      cat ${bpfile} | grep -v '^#' > ${bpfile}.tmp
@@ -287,7 +291,7 @@ for bpfile in `ls -1 BP_*-card.ini`; do
     echo 'finished................... for ' ${bpfile}
     mv ${abpfile} ${bpfile}
 done
-
+echo `date +%s`
 ######### finished HistoList
 for datafile in $inputfilelist; do
 

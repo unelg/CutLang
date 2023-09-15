@@ -209,7 +209,7 @@ int BPdbxA:: readAnalysisParams() {
        bincount=0;
        cout <<"==Parsing started:\n";
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap, &BinNames);
-       cout <<"Parsing finished.==\n";
+       cout <<"  Parsing finished.==\n";
        if (retval){
          cout << "\nyyParse returns SYNTAX error in the input file.\n";
          cout << "Offending text is: "<< yytext<<"\n";

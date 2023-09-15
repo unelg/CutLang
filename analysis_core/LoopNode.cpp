@@ -35,6 +35,8 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
 
       DEBUG("\nWe are in LoopNode, "<<this->getStr()<<"\n");
       DEBUG("LeftNodes size:"<<lefs.size()<<"\n");
+       this->left->getParticles(&inputParticles);       
+       DEBUG("left LoopNode: ---> #particles:"<< inputParticles.size()<<"\n");
       for (int in=0; in<lefs.size(); in++){ // loop over all possible left branches.
        left=lefs[in];
        this->getParticles(&inputParticles);       
@@ -50,8 +52,10 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        ipart2_max=0; // loop counter
        bool constiloop=false;
        std::string consname;
-       int base_type2=inputParticles[0]->type;
        std::vector<myParticle*> spareParticles;
+       int base_type2;
+    if (inputParticles.size() >0 ){
+       base_type2=inputParticles[0]->type;
        bcol2=inputParticles[0]->collection;
 
        if ( inputParticles[0]->index==16213    // from a number to all particles
@@ -105,7 +109,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
                      << spareParticles[ii]->collection << " index:"<<spareParticles[ii]->index<<"\n");
        }
       }
-
+  }
       if   (inputParticles.size()==1 
         && (inputParticles[0]->index==6213 || inputParticles[0]->type==consti_t) ) // here we loop over all particles in the collection
       {
@@ -183,6 +187,8 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        for (int kk=0; kk<result_list.size(); kk++) cout<< result_list[kk]<<" "; cout<<"\n";
 */
        if (symbol=="scalePT" || symbol=="scaleE"){
+        DEBUG("Scaling..."<< symbol<< " #parts:"<<inputParticles.size() <<"\n");
+        if (inputParticles.size() >0) // ?????????????????????????????????? NGU
         switch(inputParticles[0]->type){
            case muon_t:      (ao->muos  )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;
            case truth_t:     (ao->truth )[bcol2].at(ipart2_idx).scalePt(result_list[0]);  break;

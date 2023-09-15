@@ -172,6 +172,7 @@ DEBUG("------------------------------------------------new search --------------
                       if ( (oi[3]== (-100+oi[0]) ) && (ip[0]>ip[3]) ) continue;
           
                  DEBUG("testing the combi::"<<ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\n");
+ //                cout<<"testing the combi::"<<ip[0]<<" "<<ip[1]<<" "<<ip[2]<<" "<<ip[3]<<" "<<ip[4]<<" "<<ip[5]<<"\n";
                  for (int i=0; i<maxDepth; i++) v->push_back(ip[i]);
                   DEBUG("New Set:\n");
                   for(int i=0;i<v->size();i++){
@@ -181,7 +182,7 @@ DEBUG("------------------------------------------------new search --------------
                   DEBUG("now left evaluate\n");
 
 //-------~1min in 25k events
-                 double tmpval=left->evaluate(ao); // enabling this makes total 1min6s, without it 12s
+                 double tmpval=left->evaluate(ao); // enabling this gives another +20s in Brr's analysis
                  DEBUG("left returns:"<<tmpval<< "\t");
                  double diff=right->evaluate(ao)-tmpval;
 
