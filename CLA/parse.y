@@ -105,9 +105,9 @@ std::map< std::string, int> systBANK;
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT APPLYPTF APPLYEF
-%token VERT VERX VERY VERZ VERTR CONSTITS  
+%token VERT VERX VERY VERZ VERTR CONSTITS 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
-%token ASCEND DESCEND ALIAS PM HLT
+%token ASCEND DESCEND ALIAS PM 
 %token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION RUNNO LBNO
 %token <real> PNB
 %token <real> NB 
@@ -263,14 +263,11 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         ListParts->insert(make_pair(name,newList));
 				}
             | DEF ID '=' '{' variablelist '}' {
-//                             cout << "Found a variable list\n";
                              string name = $2;
                              map<string,vector<Node*> >::iterator it ;
                              it = VariableListBank.find(name);
                              if(it != VariableListBank.end()) {
                                                   DEBUG(name<<" already defined\n");
-//                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable List already defined.");
-//                                                YYERROR;//stops parsing if variable already defined
                              } else {
                               VariableListBank.insert(make_pair(name,VariableList) );
                               VariableList.clear();
@@ -395,7 +392,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
                                         it = ListParts->find(name);
-                                        DEBUG("here\n");
+                                        DEBUG("Define : here\n");
                                         if(it != ListParts->end()) {
                                                 DEBUG(name<<" : ");
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Particule already defined");
@@ -816,7 +813,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
                     }
 // ID should be here. it contains object IDs
-        | NUMOF '(' ID ')'  {     //     map<string,vector<myParticle*> >::iterator itdef=ListParts->find("HiggsBoosted");
+        | NUMOF '(' ID ')'  {     
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
                                        if (it == ObjectCuts->end() ) {
                                            std::string message = "OBJect not defined: ";
@@ -980,21 +977,20 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                       switch (a->type){
                                        case 12: p0s="MUO"; break;
                                        case 11: p0s="TAU"; break;
+                                       case 10: p0s="GEN"; break;
                                        case  1: p0s="ELE"; break;
                                        case  2: p0s="JET"; break;
                                        case  8: p0s="PHO"; break;
                                        case  9: p0s="FJET"; break;
-                                       case 10: p0s="GEN"; break;
                                       }
                                       if ( p0s=="FJET" ) {
                                          if ( Initializations->at(0) == "ATLMIN" ) p0s="vrcjet";
                                          if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
                                       }
                                       std::string funame=$1; 
-                                      bool named=0; //(funame.find('_') != std::string::npos);
                                       std::string varname="";
-                                                  if (!named) varname+=p0s;
-                                                  if (!named) varname+="_";
+                                                  varname+=p0s;
+                                                  varname+="_";
                                                   varname+=funame;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
@@ -1002,7 +998,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                          if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
                                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                                       }
-                                      DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
+                                    //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
@@ -1102,11 +1098,13 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                          if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
                          if (Initializations->at(0)=="CMSNANO") nsys="Events";
                       }
-                      DEBUG(" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n");
+                      cout <<" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n";
 
                       Node *ssf=new SFuncNode(specialsf,1 , varname);
                       ((SFuncNode *)ssf)->setTTRaddr( ttr_map[ nsys ], varname);
+
                       $$ = ssf;
+
 
                      } else {
                      //  cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
@@ -1122,46 +1120,45 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                    } // not an object cut
                 }// not a node variable 
         }
-| ID '(' e ')' { // TABLE
-            DEBUG("Weight "<< $1  <<"could be from table, using variable: "<< $3 << "\n");
-            map<string, pair<vector<float>, bool> >::iterator itt;
-            string name = $1;
-            itt = ListTables->find(name);
-                if(itt == ListTables->end()) {
-                  DEBUG(name<<" : ");
-                  yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
-                  YYERROR;//stops parsing if table is not defined
-                }
-            Node* a = new TableNode(tweight,$3,itt->second, name);
-            $$ = a;
-}
-| ID '(' e ',' e ')' { // TABLE
-            DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << "\n");
-            map<string, pair<vector<float>,bool> >::iterator itt;
-            string name = $1;
-            itt = ListTables->find(name);
-            if(itt == ListTables->end()) {
+  | ID '(' e ')' { // TABLE
+              DEBUG("Weight "<< $1  <<"could be from table, using variable: "<< $3 << "\n");
+              map<string, pair<vector<float>, bool> >::iterator itt;
+              string name = $1;
+              itt = ListTables->find(name);
+                  if(itt == ListTables->end()) {
                     DEBUG(name<<" : ");
                     yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
                     YYERROR;//stops parsing if table is not defined
-            }
-            Node* a = new TableNode(tweight,$3, $5, itt->second, name);
-            $$ = a;
-}
-| ID '(' e ',' e ',' e ',' e ')' { // TABLE
-            DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << ","<<$7<<","<<$9 "\n");
-            map<string, pair<vector<float>,bool> >::iterator itt;
-            string name = $1;
-            itt = ListTables->find(name);
-            if(itt == ListTables->end()) {
-                    DEBUG(name<<" : ");
-                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
-                    YYERROR;//stops parsing if table is not defined
-            }
-            Node* a = new TableNode(tweight,$3, $5, $7, $9, itt->second, name);
-            $$ = a;
-}
-
+                  }
+              Node* a = new TableNode(tweight,$3,itt->second, name);
+              $$ = a;
+  }
+  | ID '(' e ',' e ')' { // TABLE
+              DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << "\n");
+              map<string, pair<vector<float>,bool> >::iterator itt;
+              string name = $1;
+              itt = ListTables->find(name);
+              if(itt == ListTables->end()) {
+                      DEBUG(name<<" : ");
+                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                      YYERROR;//stops parsing if table is not defined
+              }
+              Node* a = new TableNode(tweight,$3, $5, itt->second, name);
+              $$ = a;
+  }
+  | ID '(' e ',' e ',' e ',' e ')' { // TABLE
+              DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << ","<<$7<<","<<$9 "\n");
+              map<string, pair<vector<float>,bool> >::iterator itt;
+              string name = $1;
+              itt = ListTables->find(name);
+              if(itt == ListTables->end()) {
+                      DEBUG(name<<" : ");
+                      yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                      YYERROR;//stops parsing if table is not defined
+              }
+              Node* a = new TableNode(tweight,$3, $5, $7, $9, itt->second, name);
+              $$ = a;
+  }
 
 
 
@@ -2095,7 +2092,6 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
              }
         | ID '_' index { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                 //ngu
-                cout<<"Particle candidate "<< $1 <<" has _ and index:"<< $3<<"\n" ;
                 DEBUG("Particle candidate "<< $1 <<" has _ and index:"<< $3<<"\n" );
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
@@ -2184,9 +2180,24 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         $$=$1;
                 }
              }
+       | CONSTITS '(' particule ',' index ')'  {  
+                         DEBUG("Daugther Particules \t");
+                         cout<<"Daugther Particules \t";
+                         vector<myParticle*> newList;
+                         TmpParticle.swap(newList);
+                         int daugther_idx=$5;
+                         newList[0]->type = 31;
+                  //       newList[0]->subindex=daugther_idx;
+                         cout<<" #:"<<newList.size()<<" i:"<<newList[0]->index<<" C:"<<newList[0]->collection<< " T:"<< newList[0]->type <<" D:"<< $5<<"\n";
+                         string  tmp= newList[0]->collection+ "_" + to_string( daugther_idx);          //to_string(newList[0]->index);
+                         cout <<" -----> sending "<< tmp<<"\n";
+                         newList.swap(TmpParticle);
+                         $$=strdup(tmp.c_str());
+                         }
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                        
                 DEBUG ("User Particle candidate "<< $1 <<" has no index\n");
+                cout<<"User Particle candidate "<< $1 <<" has no index\n";
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
@@ -2278,12 +2289,15 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         $$=strdup(tmp.c_str());               
                        }
                 } else {
+                        cout <<" is a ListPart "<< TmpParticle.size()<<" ";
                         DEBUG("IDSize:"<<TmpParticle.size()<<" ");
                         vector<myParticle*> newList= it->second;
                         DEBUG("Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n");
+                        cout<<"Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n";
                         DEBUG("Checking if it was previously checked.\n");
 // check all cuts here, if we see size( $1) OK, otherwise add.
                         if (NodeCuts->size() > 0) {
+                        cout<<"aa NodeCuts->size() > 0\n";
                           std::map<int, Node*>::iterator iter = NodeCuts->begin();
                           std::size_t sfound=std::string::npos;
                           string aparticle=newList[0]->collection;
@@ -2292,6 +2306,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                              sfound=pippo.find(aparticle);
                              if (sfound !=std::string::npos) {
                                 DEBUG($1<< "found in previous cuts, nothing to do.\n");
+                                cout<<$1<< "found in previous cuts, nothing to do.\n";
                                 break;
                              }
                              iter++;
@@ -2315,6 +2330,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                            }
                           }
                         }
+                        cout<<"inserting into TmpParticle.\n";
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
                  }
@@ -2911,14 +2927,6 @@ command : CMD condition { //find a way to print commands
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-//      | CMD HLT description {
-//                     string s=$3;
-//                     s.replace(s.find("\""), 1, "");
-//                     s.replace(s.find("\""), 1, "");
-//                     cout<<"HLT TRG:"<<s<<"\n";
-//                     Node* a=new SFuncNode(hlt_trg,1, s); 
-//                     NodeCuts->insert(make_pair(++cutcount,a));
-//                   }
         | CMD LEPSF {  
                       Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
@@ -2939,7 +2947,6 @@ command : CMD condition { //find a way to print commands
                                   else b = new LoopNode(hitmissA, $4 ,"hitmissAcc");
                                 NodeCuts->insert(make_pair(++cutcount,b));
                     }
-
     	| WEIGHT ID e {  
                               Node* child=$3;
                               Node* a = new SFuncNode(uweight, child ,$2);
@@ -3089,10 +3096,10 @@ action  : condition { $$=$1; }
        | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
        | APPLYPTF '(' e ')'  { 
                                 Node* b;
-				Node* a = $3;
+                                Node* a = $3;
                                 b = new LoopNode(scalePT, a,"scalePT");
                                 $$=b;
-       }
+                    }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

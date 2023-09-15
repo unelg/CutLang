@@ -78,11 +78,10 @@ vardef {varname}" "?":"" "?.*"\n"
 [fF][jJ][eE][tT]|"FatJet" return FJET;
 [qQ][gG][jJ][eE][tT] return QGJET;
 [bB][iI][nN] return BINS;
-"daughters"|"constituents" return CONSTITS;
+"daughter"|"constituents" return CONSTITS;
 "NUMET" return NUMET;
 "METLV" return METLV;
 "LEP" return LEP;
-[hH][lL][tT] return HLT;
 "BJET" return BJET;
 [iI][nN][dD][eE][xX] return IDX;
 
