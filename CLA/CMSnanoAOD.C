@@ -244,7 +244,6 @@ std::cout << "MET OK"<<std::endl;
         anevt.weight_bTagSF_77 = 1.0;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
-        anevt.lar_Error=0;
         anevt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20=HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
@@ -269,13 +268,14 @@ std::cout << "MET OK"<<std::endl;
         }
         myreader.SetEntry(j);
 
+/*
         // Extract the values
         for (unsigned int hv=0; hv<myHLTs.size(); hv++){
                 Bool_t trgvalue=*(myHLTs[hv]);
 //                DEBUG(myHLT_names[hv]<<":" << trgvalue << std::endl);
                 anevt.hlt_map[myHLT_names[hv]]=trgvalue; // filling map
         }
-
+*/
 #ifdef __DEBUG__
 std::cout << "Filling finished"<<std::endl;
 #endif

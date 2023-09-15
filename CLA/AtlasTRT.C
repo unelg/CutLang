@@ -134,7 +134,6 @@ std::cout << "Begin Filling"<<std::endl;
         anevt.weight_bTagSF_77 = 1.0;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
-        anevt.lar_Error=0;
         anevt.core_Flags=0;
         anevt.maxEvents=nentries;        
 

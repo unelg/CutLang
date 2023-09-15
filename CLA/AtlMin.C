@@ -113,19 +113,7 @@ DEBUG("Muons OK:"<< mu_pt->size()<<std::endl);
 		adbxe->setPdgID(-11*el_charge->at(i) );
                 adbxe->setPtCone(el_ptvarcone20->at(i));// 30 has 20 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 adbxe->setEtCone20(el_ptvarcone20->at(i) );
-                if (b_el_true_origin) adbxe->settrue_origin(el_true_origin->at(i));
-                if (b_el_true_type) adbxe->settrue_type(el_true_type->at(i));
                 adbxe->setParticleIndx(i);
-                adbxe->setClusterEta(el_cl_eta->at(i) );
-                adbxe->setd0sig(el_d0sig->at(i) );
-                adbxe->setdelta_z0_sintheta(el_delta_z0_sintheta->at(i) );
-                adbxe->setisZCand(el_isZCand->at(i) );
-                adbxe->settrigMatch_HLT_e60_lhmedium_nod0(el_trigMatch_HLT_e60_lhmedium_nod0->at(i));
-                adbxe->settrigMatch_HLT_e26_lhtight_nod0_ivarloose(el_trigMatch_HLT_e26_lhtight_nod0_ivarloose->at(i));
-                adbxe->settrigMatch_HLT_e140_lhloose_nod0(el_trigMatch_HLT_e140_lhloose_nod0->at(i));
-                adbxe->settrigMatch_HLT_e60_lhmedium(el_trigMatch_HLT_e60_lhmedium->at(i));
-                adbxe->settrigMatch_HLT_e24_lhmedium_L1EM20VH(el_trigMatch_HLT_e24_lhmedium_L1EM20VH->at(i));
-                adbxe->settrigMatch_HLT_e120_lhloose(el_trigMatch_HLT_e120_lhloose->at(i));
 
                 electrons.push_back(*adbxe);
                 delete adbxe;
@@ -140,7 +128,6 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
                 alv.SetPtEtaPhiE( jet_pt->at(i)*0.001, jet_eta->at(i), jet_phi->at(i), jet_e->at(i)*0.001 ); // all in GeV
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);
-                adbxj->setjvt(jet_jvt->at(i));
                 adbxj->setParticleIndx(i);
                 if (b_jet_truthflav != NULL) adbxj->setFlavor(jet_truthflav->at(i) );
                 adbxj->set_isbtagged_77(bool(jet_isbtagged_DL1r_77->at(i)));
@@ -171,16 +158,6 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
              DEBUG("FJET:"<<i<< "  #childen:"<< vrcjetsub_2m_t_mv2c10->at(i).size()<<"\n");
              adbxlj->setParticleIndx(i);
              adbxlj->set_isbtagged_77(is_bljet);
-             adbxlj->addAttribute( 0);   // 0
-             adbxlj->addAttribute( 0);  // 1 
-             adbxlj->addAttribute( 0); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
-             adbxlj->addAttribute( 0); // 3
-             adbxlj->addAttribute( 0);  //4
-             adbxlj->addAttribute( 0);  //5
-             adbxlj->addAttribute( 0);  //6
-             adbxlj->addAttribute( 0);  //7
-             adbxlj->addAttribute( 1);  //8
-             adbxlj->addAttribute( vrcjetsub_2m_t_mv2c10->at(i).size() );  //9
              
              ljets.push_back(*adbxlj);
              delete adbxlj;

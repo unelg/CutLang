@@ -160,7 +160,6 @@ DEBUG("Photons OK\n");
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);
                 adbxj->setParticleIndx(i);
-                adbxj->setJVtxf(jet_jvt->at(i));
                 adbxj->setFlavor(jet_MV2c10->at(i) );
                 adbxj->set_isbtagged_77( jet_MV2c10->at(i) > blow_th ); // 5 is btag
 //                adbxj->setJVtxf(jet_jvf->at(i));
@@ -192,7 +191,6 @@ DEBUG("MET ok\n");
         anevt.weight_bTagSF_77 = scaleFactor_BTAG;
         anevt.weight_leptonSF = scaleFactor_LepTRIGGER;
         anevt.vxpType=0;
-        anevt.lar_Error=0;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

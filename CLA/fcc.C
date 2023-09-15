@@ -166,7 +166,6 @@ std::cout << "Electrons OK:"<< electrons_ <<std::endl;
         	adbxp= new dbxPhoton(alv);
         	adbxp->setCharge(0);
         	adbxp->setParticleIndx(i);
-                adbxp->setClusterE(-99 );
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
@@ -192,7 +191,6 @@ std::cout << "Photons OK:"<<photons_<<std::endl;
   		adbxj->setParticleIndx(i);
                 adbxj->set_isbtagged_77( jfv==5); // I am not sure about this one, NGU
                 adbxj->setFlavor( jfv); // I am not sure about this one, NGU
-                adbxj->setJVtxf( -99 );
   	        jets.push_back(*adbxj);
 //                adbxj->dump();
                 delete adbxj;
@@ -222,7 +220,6 @@ std::cout << "MET OK"<<std::endl;
 	anevt.pileup_weight=1.1;
 	anevt.z_vtx_weight = 1.1;
 	anevt.vxpType=0;
-	anevt.lar_Error=0;
 	anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

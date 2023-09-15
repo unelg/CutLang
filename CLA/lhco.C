@@ -138,7 +138,6 @@ std::cout << "Electrons OK:"<< Electron_ <<std::endl;
         	adbxp= new dbxPhoton(alv);
         	adbxp->setCharge(0);
         	adbxp->setParticleIndx(i);
-                adbxp->setClusterE(Photon_EhadOverEem[i] );
                 photons.push_back(*adbxp);
                 delete adbxp;
         }
@@ -152,7 +151,6 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
   		adbxj->setCharge(-99);
   		adbxj->setParticleIndx(i);
                 adbxj->setFlavor(Jet_BTag[i] );
-                adbxj->setJVtxf(Jet_Ntrk[i] );
   	        jets.push_back(*adbxj);
                 delete adbxj;
         }
@@ -180,7 +178,6 @@ std::cout << "MET OK"<<std::endl;
 	anevt.pileup_weight=1.1;
 	anevt.z_vtx_weight = 1.1;
 	anevt.vxpType=0;
-	anevt.lar_Error=0;
 	anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

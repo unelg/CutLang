@@ -157,7 +157,6 @@ std::cout << "Photons OK:"<<Photon_size<<std::endl;
                 alv.SetPtEtaPhiE( jet_pt[i]*0.001, jet_eta[i], jet_phi[i], jet_E[i]*0.001 ); // all in GeV
                 adbxj= new dbxJet(alv);
                 adbxj->setCharge(-99);
-                adbxj->setJVtxf(jet_jvf[i]);
                 adbxj->setParticleIndx(i);
                 adbxj->setFlavor(jet_MV1[i] );
                 adbxj->set_isbtagged_77( jet_MV1[i] > blow_th ); // 5 is btag
@@ -191,7 +190,6 @@ std::cout << "MET OK"<<std::endl;
         anevt.weight_bTagSF_77 = 1.0;
         anevt.weight_leptonSF = 1.0;
         anevt.vxpType=0;
-        anevt.lar_Error=0;
         anevt.core_Flags=0;
 	anevt.maxEvents=nentries;
 

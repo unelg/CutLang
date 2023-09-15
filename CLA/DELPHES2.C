@@ -217,39 +217,27 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
 
         adbxp = new dbxPhoton(alv);
         adbxp->setCharge(0);
-	adbxp->setClusterE(Photon_EhadOverEem[i]);
-		adbxp->addAttribute(0);
-		adbxp->addAttribute(0);
-		adbxp->addAttribute(Photon_IsolationVar[i]);
-		adbxp->addAttribute(Photon_IsolationVarRhoCorr[i]);
-		adbxp->addAttribute(Photon_SumPtCharged[i]);
-		adbxp->addAttribute(Photon_SumPtNeutral[i]);
-		adbxp->addAttribute(Photon_SumPtChargedPU[i]);
-		adbxp->addAttribute(Photon_SumPt[i]);
-		adbxp->addAttribute(Photon_Status[i]);
-//		adbxp->addAttribute(Photon_T[i]);
-    cout << "P N:"<<Photon_T[j]<< " "<<j <<endl;
 		
     for (int j=0; j<PhotonTight_size && Tcount<PhotonTight_size; j++) {
-        cout << "P T:"<<PhotonTight_T[j]<< " "<<j <<endl;
+//        cout << "P T:"<<PhotonTight_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonTight_T[j] ) { 
-           cout << "tight set\n";
+//           cout << "tight set\n";
            adbxp->setIsTight (true);
            Tcount++;
         }
     }
     for (int j=0; j<PhotonMedium_size && Mcount<PhotonMedium_size; j++) {
-        cout << "P M:"<<PhotonMedium_T[j]<< " "<<j <<endl;
+ //       cout << "P M:"<<PhotonMedium_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonMedium_T[j] ) { 
-           cout << "Medium set\n";
+  //         cout << "Medium set\n";
            adbxp->setIsMedium (true);
            Mcount++;
         }
     }
     for (int j=0; j<PhotonLoose_size && Lcount<PhotonLoose_size; j++) {
-        cout << "P L:"<<PhotonLoose_T[j]<< " "<<j <<endl;
+  //      cout << "P L:"<<PhotonLoose_T[j]<< " "<<j <<endl;
         if (Photon_T[i] == PhotonLoose_T[j] ) { 
-           cout << "Loose set\n";
+   //        cout << "Loose set\n";
            adbxp->setIsLoose (true);
            Lcount++;
         }
@@ -259,7 +247,6 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
         delete adbxp;
     }
 
-    cout<<"PHOTON OK\n";
     DEBUG("PHOTON OK\n")
 
     // <<< PHOTON <<<
@@ -281,7 +268,6 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
         adbxj->setCharge(JetPUPPI_Charge[i]); 
 // constits need to be added 
     for (int j=0; j<JetPUPPITight_size && Tcount<JetPUPPITight_size; j++) {
-        cout << "j T:"<<JetPUPPITight_T[j]<< " "<<j <<endl;
         if (JetPUPPI_T[i] == JetPUPPITight_T[j] ) { 
            cout << "tight set\n";
            adbxj->setIsTight (true);
@@ -299,9 +285,9 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     }
 */
     for (int j=0; j<JetPUPPILoose_size && Lcount<JetPUPPILoose_size; j++) {
-        cout << "j L:"<<JetPUPPILoose_T[j]<< " "<<j <<endl;
+//        cout << "j L:"<<JetPUPPILoose_T[j]<< " "<<j <<endl;
         if (JetPUPPI_T[i] == JetPUPPILoose_T[j] ) { 
-           cout << "Loose set\n";
+//           cout << "Loose set\n";
            adbxj->setIsLoose (true);
            Lcount++;
         }
@@ -419,7 +405,6 @@ anevt.z_vtx_weight = 1.0;
 anevt.weight_bTagSF_77 = 1.0;
 anevt.weight_leptonSF = 1.0;
 anevt.vxpType=0;
-anevt.lar_Error=0;
 anevt.core_Flags=0;
 anevt.maxEvents=nentries;
     

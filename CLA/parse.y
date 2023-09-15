@@ -1106,9 +1106,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 
                       Node *ssf=new SFuncNode(specialsf,1 , varname);
                       ((SFuncNode *)ssf)->setTTRaddr( ttr_map[ nsys ], varname);
-
                       $$ = ssf;
-
 
                      } else {
                      //  cout<<" is a particle, we wrongly assumed it was a variable. trying to rectify...\n";
@@ -1124,6 +1122,49 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                    } // not an object cut
                 }// not a node variable 
         }
+| ID '(' e ')' { // TABLE
+            DEBUG("Weight "<< $1  <<"could be from table, using variable: "<< $3 << "\n");
+            map<string, pair<vector<float>, bool> >::iterator itt;
+            string name = $1;
+            itt = ListTables->find(name);
+                if(itt == ListTables->end()) {
+                  DEBUG(name<<" : ");
+                  yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                  YYERROR;//stops parsing if table is not defined
+                }
+            Node* a = new TableNode(tweight,$3,itt->second, name);
+            $$ = a;
+}
+| ID '(' e ',' e ')' { // TABLE
+            DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << "\n");
+            map<string, pair<vector<float>,bool> >::iterator itt;
+            string name = $1;
+            itt = ListTables->find(name);
+            if(itt == ListTables->end()) {
+                    DEBUG(name<<" : ");
+                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                    YYERROR;//stops parsing if table is not defined
+            }
+            Node* a = new TableNode(tweight,$3, $5, itt->second, name);
+            $$ = a;
+}
+| ID '(' e ',' e ',' e ',' e ')' { // TABLE
+            DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << ","<<$7<<","<<$9 "\n");
+            map<string, pair<vector<float>,bool> >::iterator itt;
+            string name = $1;
+            itt = ListTables->find(name);
+            if(itt == ListTables->end()) {
+                    DEBUG(name<<" : ");
+                    yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                    YYERROR;//stops parsing if table is not defined
+            }
+            Node* a = new TableNode(tweight,$3, $5, $7, $9, itt->second, name);
+            $$ = a;
+}
+
+
+
+
 //  | ID '(' ID ')' {
 //              DEBUG("ID ( ID \n");
 //              map<string, Node *>::iterator it;
@@ -2870,14 +2911,14 @@ command : CMD condition { //find a way to print commands
         | CMD ALL { Node* a = new SFuncNode(all,1, "all");
                     NodeCuts->insert(make_pair(++cutcount,a));
 		  }
-        | CMD HLT description {
-                       string s=$3;
-                       s.replace(s.find("\""), 1, "");
-                       s.replace(s.find("\""), 1, "");
-                       cout<<"HLT TRG:"<<s<<"\n";
-                       Node* a=new SFuncNode(hlt_trg,1, s); 
-                       NodeCuts->insert(make_pair(++cutcount,a));
-                     }
+//      | CMD HLT description {
+//                     string s=$3;
+//                     s.replace(s.find("\""), 1, "");
+//                     s.replace(s.find("\""), 1, "");
+//                     cout<<"HLT TRG:"<<s<<"\n";
+//                     Node* a=new SFuncNode(hlt_trg,1, s); 
+//                     NodeCuts->insert(make_pair(++cutcount,a));
+//                   }
         | CMD LEPSF {  
                       Node* a=new SFuncNode(lepsf,1,"LEPSF");
                       NodeCuts->insert(make_pair(++cutcount,a));
@@ -2889,36 +2930,13 @@ command : CMD condition { //find a way to print commands
                         Node* a=new SFuncNode(xslumicorrsf,1,"XSLUMICORRSF");
                         NodeCuts->insert(make_pair(++cutcount,a));
                     }
-        | CMD APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
-                                DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $11 <<"\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $4;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
+        | CMD APPLYHM '('  e  EQ INT ')' {
+//         1     2     3   4  5   6
+                                Node* c = $4;
+                                DEBUG("Hit-Miss "<< c->getStr() <<" o/x:"<< $6 <<"\n");
                                 Node* b;
-				Node* a = new TableNode(thitmiss,$6, $8, itt->second, "applyHM"); //function, 
-                                if ($11 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
-                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
-                                NodeCuts->insert(make_pair(++cutcount,b));
-                    }
-        | CMD APPLYHM '(' ID '(' e ')' EQ INT ')' { 
-                                DEBUG("Hit-Miss using "<< $4 <<" o/x:"<< $9 <<"\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $4;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"HM Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-                                Node* b;
-				Node* a = new TableNode(thitmiss,$6,itt->second, "applyHM"); //function, 
-                                if ($9 < 0.5 ) {b = new LoopNode(hitmissR, a,"hitmissRej");}
-                                else b = new LoopNode(hitmissA, a,"hitmissAcc");
+                                if ($6 < 0.5 ) b = new LoopNode(hitmissR, $4 ,"hitmissRej");
+                                  else b = new LoopNode(hitmissA, $4 ,"hitmissAcc");
                                 NodeCuts->insert(make_pair(++cutcount,b));
                     }
 
@@ -2927,38 +2945,6 @@ command : CMD condition { //find a way to print commands
                               Node* a = new SFuncNode(uweight, child ,$2);
 			      NodeCuts->insert(make_pair(++cutcount,a));
                         }
-
-    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
-			NodeCuts->insert(make_pair(++cutcount,a));
-			}
-    	| WEIGHT ID ID '(' e ')' {
-                                DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $3;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-				Node* a = new TableNode(tweight,$5,itt->second, $2);
-				NodeCuts->insert(make_pair(++cutcount,a));
-			}
-    	| WEIGHT ID ID '(' e ',' e ')' {
-                                DEBUG("Weight named "<< $2  <<" will be from table "<< $3<< " using variables: "<< $5 <<","<< $7 << "\n");
-                                map<string, pair<vector<float>,bool> >::iterator itt;
-                                string name = $3;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-				Node* a = new TableNode(tweight,$5, $7, itt->second, $2);
-				NodeCuts->insert(make_pair(++cutcount,a));
-			}
-
-
 
         | CMD ifstatement {   NodeCuts->insert(make_pair(++cutcount,$2));
 		          }
@@ -3101,57 +3087,12 @@ action  : condition { $$=$1; }
        | NONE { $$=new SFuncNode(none,1,"none"); }
        | LEPSF {  $$=new SFuncNode(lepsf,1,"LEPSF"); }
        | BTAGSF { $$=new SFuncNode(btagsf,1,"BTAGSF"); }
-       | APPLYPTF '('  e ')'  { 
+       | APPLYPTF '(' e ')'  { 
                                 Node* b;
 				Node* a = $3;
                                 b = new LoopNode(scalePT, a,"scalePT");
                                 $$=b;
        }
-       | APPLYPTF '(' ID '(' e ')' ')'  { 
-                                DEBUG("PT factor using "<< $3 <<"\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $3;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-                                Node* b;
-				Node* a = new TableNode(thitmiss,$5, itt->second, "applyPTF"); //function, 
-                                b = new LoopNode(scalePT, a,"scalePT");
-                                $$=b;
-                    }
-       | APPLYPTF '(' ID '(' e ',' e ')' ')'  { 
-                                DEBUG("PT factor using "<< $3 <<"\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $3;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-                                Node* b;
-				Node* a = new TableNode(thitmiss,$5, $7, itt->second, "applyPTF"); //function, 
-                                b = new LoopNode(scalePT, a,"scalePT");
-                                $$=b;
-                    }
-       | APPLYPTF '(' ID '(' e ',' e  ',' e ',' e  ')' ')'  { 
-                                DEBUG("PT factor using "<< $3 <<"\n");
-                                map<string, pair<vector<float>, bool> >::iterator itt;
-                                string name = $3;
-                                itt = ListTables->find(name);
-                                if(itt == ListTables->end()) {
-                                       DEBUG(name<<" : ");
-                                       yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"PTfactor Table NOT defined");
-                                       YYERROR;//stops parsing if table is not defined
-                                }
-                                Node* b;
-				Node* a = new TableNode(thitmiss,$5, $7, $9, $11, itt->second, "applyPTF"); //function, 
-                                b = new LoopNode(scalePT, a,"scalePT");
-                                $$=b;
-                    }
        | APPLYHM '(' ID '(' e ',' e ')' EQ INT ')' { 
                                 DEBUG("Hit-Miss using "<< $3 <<" o/x:"<< $10 <<"\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;
