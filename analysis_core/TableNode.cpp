@@ -13,6 +13,7 @@
 #include <math.h>
 #include "TableNode.h"
 #include "FuncNode.h"
+#include "SFuncNode.h"
 #include <TF1.h>
 //#define _CLV_
 #ifdef _CLV_
@@ -96,6 +97,7 @@ double TableNode::evaluate(AnalysisObjects* ao) {
                   DEBUG("3 Size:"<<inputParts3.size()<<" 0th:"<<inputParts3[0]->index<<"\n");
                   DEBUG("4 Size:"<<inputParts4.size()<<" 0th:"<<inputParts4[0]->index<<"\n");
                   FuncNode *pippo;
+                  SFuncNode *spippo;
                   if ( inputParts2.size()>0 && inputParts2[0]->index == 6213) {
                       if ((pippo=dynamic_cast< FuncNode*>(left2)) ) {
                         DEBUG("TABLE 2nd func downcast OK\n");
@@ -108,23 +110,31 @@ double TableNode::evaluate(AnalysisObjects* ao) {
                       bval=left2->evaluate(ao);
                       pippo->setParticleIndex(0,   6213);
                       if ((pippo=dynamic_cast< FuncNode*>(left3)) ) {
-                        DEBUG("TABLE 3nd func downcast OK\n");
-                        pippo->setParticleIndex(0,   inputParts1[0]->index);
-                        pippo->setParticleCollection(0, inputParts1[0]->collection);
-                        DEBUG("TABLE 3nd func param set OK\n");
-                       } else {
-                       std::cerr<<"TABLE 3nd function parmeters can not be set. ERROR\n"; exit (15);
+                         DEBUG("TABLE 3rd func downcast OK\n");
+                        if (inputParts3.size() >0){
+                         pippo->setParticleIndex(0,   inputParts1[0]->index);
+                         pippo->setParticleCollection(0, inputParts1[0]->collection);
+                         DEBUG("TABLE 3nd func param set OK\n");
+                        }
+                       cval=left3->evaluate(ao);
+                      }else 
+                      if ((spippo=dynamic_cast< SFuncNode*>(left3)) ) {
+                         DEBUG("TABLE 3rd sfunc param set OK\n");
+                        cval=left3->evaluate(ao);
+                      }
+                        else {
+                       std::cerr<<"TABLE 3rd function parmeters can not be set. ERROR\n"; exit (15);
                        }
-                      cval=left3->evaluate(ao);
-                      pippo->setParticleIndex(0,   6213);
+                      if (inputParts3.size() >0) pippo->setParticleIndex(0,   6213);
                       if ((pippo=dynamic_cast< FuncNode*>(left4)) ) {
                         DEBUG("TABLE 4nd func downcast OK\n");
                         pippo->setParticleIndex(0,   inputParts1[0]->index);
                         pippo->setParticleCollection(0, inputParts1[0]->collection);
                         DEBUG("TABLE 4nd func param set OK\n");
-                       } else {
-                       std::cerr<<"TABLE 4nd function parmeters can not be set. ERROR\n"; exit (15);
-                       }
+                       } 
+                      else {
+                         std::cerr<<"TABLE 4nd function parmeters can not be set. ERROR\n"; exit (15);
+                         }
                       dval=left4->evaluate(ao);
                       pippo->setParticleIndex(0,   6213);
                   } 

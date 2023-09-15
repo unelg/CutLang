@@ -1090,7 +1090,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                      map<string,vector<myParticle*> >::iterator itp;
                      itp=ListParts->find($1);
                      if(itp==ListParts->end() ) {
-                      cout<<$1<<"is a special function from NTUPLE.\n"; // NGU SF
+                      cout<<$1<<"is a SPECIAL function from NTUPLE.\n"; // NGU SF
                       std::string varname=$1;
                       int asys=systBANK[Initializations->at(1)];
                       string nsys=Initializations->at(1);
