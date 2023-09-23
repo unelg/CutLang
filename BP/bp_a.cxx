@@ -187,7 +187,7 @@ int BPdbxA:: readAnalysisParams() {
            asysnam=cname.substr(clength+1,  -1);
            systematicsRun=true;
        } else { 
-        asysnam="nominal"; // NGU FIXME
+        asysnam="nominal"; // NGU FIXME this is from CLA.Q, this is also checked in parse.y 
        }
        cout <<"This is a run with name: "<< asysnam << " algo:"<<algoname<< ".\n";
        int r=dbxA::setDir((char *)algoname.Data());  // make the relevant root directory

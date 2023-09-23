@@ -91,9 +91,6 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
 							inputPart->setParticleIndx(ao->taus[ac].at(ai).ParticleIndx()  );
-                                                        inputPart->setIsTight (ao->taus[ac].at(ai).isTight() ); 
-                                                        inputPart->setIsMedium(ao->taus[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->taus[ac].at(ai).isLoose() ); 
                                                         ka=ao->taus[ac].at(ai).nAttribute();
                                                         for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
                                                         if (special_function) {
@@ -131,9 +128,10 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                             case jet_t: DEBUG("jet:"<<ai<<" \t");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
 							inputPart->setParticleIndx(ao->jets[ac].at(ai).ParticleIndx()  );
-                                                        inputPart->setIsTight (inputPart->isTight() // previous value
-                                                                 | (ao->jets[ac].at(ai).isbtagged_77() // + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
-                                                            ) );
+                                                        inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
+//                                                      inputPart->setIsTight (inputPart->isTight() // previous value
+//                                                               | (ao->jets[ac].at(ai).isbtagged_77() // + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
+//                                                          ) );
                                                         if (special_function) {
                                              			int nix=ao->jets[ac].at(ai).ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
@@ -144,7 +142,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 
                                            case fjet_t: DEBUG("FatJet:"<< ai<<" \n");
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
-                              //                          inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
+                                                        inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
 							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         inputPart->setIsTight (inputPart->isTight() // previous value
                                                                  | (ao->ljets[ac].at(ai).isbtagged_77() // + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
@@ -237,7 +235,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          std::string realstr=ab->GetName();
          TLeaf *aleaf = ab->GetLeaf(realstr.c_str());
          std::string type_name = aleaf->GetTypeName();
-         cout<< "User var:"<<s << " Ntuple var:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n";
+         DEBUG("User var:"<<s << " Ntuple var:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n");
          if (minDist > maxTTRdist) {
            cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
            exit(-123);

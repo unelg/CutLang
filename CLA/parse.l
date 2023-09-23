@@ -109,9 +109,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][eE][rR][tT][eE][xX][zZ] return VERZ;
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
 
-[iI][sS][tT][iI][gG][hH][tT] return ISTIGHT;
-[mM][eE][dD][iI][uU][mM] return ISMEDIUM;
-[lL][oO][oO][sS][eE] return ISLOOSE;
 "fmegajets" return FMEGAJETS;
 "fhemisphere" return FHEMISPHERE;
 "fMR" return FMR;

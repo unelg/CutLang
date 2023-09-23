@@ -206,15 +206,13 @@ for (int i = 2; i < argc; i++) {
         if (!cl->InheritsFrom("TTree")) continue;
         TTree* tree = (TTree*)key->ReadObj();
         string curtree = tree->GetName();
-//        std::cout << "Processing tree: " << curtree << "\t";
+        std::cout << "Processing tree: " << curtree << "\t";
         TTreeReader* treader = new TTreeReader(tree);
         ttr_map[curtree] = treader;
-//        std::cout << " Addr:"<<  treader<<"\n";
+        std::cout << " Addr:"<<  treader<<"\n";
 
     }
  
-
-
 
 
 

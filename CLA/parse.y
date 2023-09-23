@@ -100,7 +100,8 @@ std::map< std::string, int> systBANK;
 %token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
-%token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
+//%token ISTIGHT ISMEDIUM ISLOOSE 
+%token MINIISO ABSISO
 %token GENPARTIDX DECAYMODE
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
@@ -727,30 +728,6 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(MiniIsoVarof,newList,"miniiso");
                                  }
-         | '{' particules '}' ISTIGHT { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isTight,newList,"isTight");
-                                 }
-         | ISTIGHT '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isTight,newList,"isTight");
-                                 }
-         | '{' particules '}' ISMEDIUM { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isMedium,newList,"isMedium");
-                                 }
-         | ISMEDIUM '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isMedium,newList,"isMedium");
-                                 }
-         | '{' particules '}' ISLOOSE { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isLoose,newList,"isLoose");
-                                 }
-         | ISLOOSE '(' particules ')' { vector<myParticle*> newList;
-                                        TmpParticle.swap(newList);
-                                        $$=new FuncNode(isLoose,newList,"isLoose");
-                                 }
          | '{' particules '}' PT {      vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(Ptof,newList,"pt");
@@ -994,11 +971,12 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                                   varname+=funame;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
+
                                       if (asys < 6){
-                                         if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
-                                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+                                         std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                         nsys=firstEntry.first;
                                       }
-                                    //  cout <<" asys:"<< asys<< "Special Func:"<<nsys<<"\n";
+//                                      cout <<"asys:"<< asys<< " Special Func:"<<nsys<<"\n";
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
@@ -1095,8 +1073,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                       int asys=systBANK[Initializations->at(1)];
                       string nsys=Initializations->at(1);
                       if (asys < 6){
-                         if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
-                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+   					std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                        nsys=firstEntry.first;
                       }
                       cout <<" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n";
 
@@ -1147,7 +1125,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
               $$ = a;
   }
   | ID '(' e ',' e ',' e ',' e ')' { // TABLE
-              DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << ","<<$7<<","<<$9 "\n");
+              DEBUG("table "<< $1<< " using variables: "<< $3 <<","<< $5 << ","<<$7<<","<<$9<< "\n");
               map<string, pair<vector<float>,bool> >::iterator itt;
               string name = $1;
               itt = ListTables->find(name);
@@ -2197,7 +2175,6 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | ID { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                        
                 DEBUG ("User Particle candidate "<< $1 <<" has no index\n");
-                cout<<"User Particle candidate "<< $1 <<" has no index\n";
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find($1);
      
