@@ -100,8 +100,6 @@ vardef {varname}" "?":"" "?.*"\n"
 
 [pP][dD][gG][iI][dD] return PDGID;
 [fF][lL][aA][vV][oO][rR]|[bB][tT][aA][gG][gG][eE][rR] return FLAVOR;
-[pP][tT][cC][oO][nN][eE] return PTCONE;
-[eE][tT][cC][oO][nN][eE] return ETCONE;
 
 [vV][eE][rR][tT][eE][xX][tT] return VERT;
 [vV][eE][rR][tT][eE][xX][xX] return VERX;
@@ -115,8 +113,6 @@ vardef {varname}" "?":"" "?.*"\n"
 "fMTR" return FMTR;
 "fMT2" return FMT2;
 "fMTauTau" return FMTAUTAU;
-[mM][iI][nN][iI][iI][sS][oO] return MINIISO;
-[aA][bB][sS][iI][sS][oO] return ABSISO;
 
 "dxy"|[dD]"0" return DXY;
 "edxy"|[eE][dD]"0" return EDXY;
@@ -192,6 +188,6 @@ vardef {varname}" "?":"" "?.*"\n"
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()&|^:\[\]{}_mqPE,?=] return *yytext;
-[a-zA-Z0-9]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
-"\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
+[a-zA-Z0-9]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ {yylval.s=strdup(yytext); return ID; }
+"\""[^\"]*"\"" yylval.s=strdup(yytext); return HID;
 %%

@@ -42,9 +42,13 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(ao->track[ac].at(ai).pdgID()  );
-		                                         inputPart->setPtCone(ao->track[ac].at(ai).PtCone()  );
 		                                         inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->track[ac].at(ai).ParticleIndx()  );
-//                                                          cout <<"----------------done----------------------\n";
+                                                         if (special_function) {
+                                             			int nix=ao->track[ac].at(ai).ParticleIndx();
+								double avalue=ttrdr->readvalue(nix, m_ttreader);
+                                          			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
+      								inputPart->addAttribute(avalue);
+                                                         }
 		                                         break;
 		                           case truth_t: DEBUG("truth:"<< (*i)->index <<" ");
 
@@ -237,7 +241,7 @@ void FuncNode::setTTRaddr( TTreeReader *ttr, string s) {
          std::string type_name = aleaf->GetTypeName();
          DEBUG("User var:"<<s << " Ntuple var:"<<realstr<< "\t type:"<<type_name<< " \t dist:"<<minDist << " TTR addr:"<<m_ttreader<<"\n");
          if (minDist > maxTTRdist) {
-           cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE\n";
+           cerr <<"ERROR !!!"<< s << " is not a branch in this NTUPLE, closest was:"<<realstr<<"\n";
            exit(-123);
          }
 
