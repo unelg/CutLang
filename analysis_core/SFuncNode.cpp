@@ -22,7 +22,7 @@ void SFuncNode::setTTRaddr( TTreeReader *ttr, string s){
          int maxTTRdist =6;
          m_ttreader=ttr;
 
-         cout << "** sf:"<< s<<"\t"; //this is special function
+         DEBUG( "SF Node TTR:"<< s<<"\t"); //this is special function
          special_function=true;
          TTree *at = m_ttreader->GetTree();
          TObjArray *lbranches = at->GetListOfBranches();

@@ -247,7 +247,7 @@ SYSTVTYPE: SYST_W_MC { $$=1;}  |SYST_W_JVT {$$=2; } |SYST_W_PILEUP {$$=3;} | SYS
 
 bool: TRUE {$$ = 1;} | FALSE {$$ =  0;} ;
 
-definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new particle.\n");
+definition : DEF ID  '=' particules {DEBUG($2<<" will be defined as a new particle.\n");
                                         pnum=0;
                                         map<string,vector<myParticle*> >::iterator it ;
                                         string name = $2;
@@ -260,7 +260,20 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         parts->push_back(name+" : "+$4);
                                         vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
-                                        ListParts->insert(make_pair(name,newList));
+                                        DEBUG("newList size:"<<newList.size()<<"\n");
+                                     if (newList.size() > 0) ListParts->insert(make_pair(name,newList));
+                                     else {
+                                        DEBUG("Wrongly assumed as particle, must be a node variable. TmpCriteria:"<<TmpCriteria.size()<< "\n");
+                                        Node* varvar = TmpCriteria[0];
+                                        for (int icr=1; icr<TmpCriteria.size(); icr++){ 
+                                             DEBUG(TmpCriteria[icr]->getStr()<<"\n"); 
+                                            Node* pip = new BinaryNode(add,varvar,TmpCriteria[icr],"+");
+                                            varvar = pip;
+                                        }
+                                        pnum=0;
+                                          NodeVars->insert(make_pair(name, varvar));
+                                        }
+                                     DEBUG("Defined.\n");
 				}
             | DEF ID '=' '{' variablelist '}' {
                              string name = $2;
@@ -449,7 +462,9 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                         } else {
                                           NodeVars->insert(make_pair(name,$4));
                                         }
+                                DEBUG("Defined.\n");
 			      }
+
           |  DEF ID  ':' e { DEBUG($2<< " is being prepared as a node variable.\n");
                                         pnum=0;
                                         map<string, Node*>::iterator it ;
@@ -501,7 +516,7 @@ particules : particules particule {
 //                          int ik=TmpParticle.size()-1;
 //                          DEBUG("collection:"<<TmpParticle[ik]->collection<<" t:"<<TmpParticle[ik]->type<<" i:"<<TmpParticle[ik]->index<<"\n");
                                   }
-            | particules '+' particule {
+            | particules '+' particule {        DEBUG("++++++++++ADDING TWO particles\n");
                                                 string s=$$;
                                                 string s2=$3;
                                                 s=s+" "+s2;
@@ -515,7 +530,8 @@ particules : particules particule {
                                                 $$=strdup(s.c_str());
                                         }
                                         pnum++;
-                            DEBUG("Got the first particle, size:"<<TmpParticle.size()<<"\t");
+                            DEBUG("Got a particle, size:"<<TmpParticle.size()<<"\t");
+                            if (TmpParticle.size() >0)
                             DEBUG("collection:"<<TmpParticle[0]->collection<<" t:"<<TmpParticle[0]->type<<" i:"<<TmpParticle[0]->index<<"\n");
                          }
 //          | '+' particule  {   if (pnum==0){ $$=strdup($2); }
@@ -1447,14 +1463,14 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
         | ID  { //we want the original defintions as well -> put it in parts and put the rest in vectorParts
                     
                 string pn = $1;   
-                DEBUG ("User Particle candidate "<< pn <<" has no index\n");
+                DEBUG ("User Particle OR Variable candidate "<< pn <<" has no index\n");
                 map<string,vector<myParticle*> >::iterator it;
                 it = ListParts->find(pn);
      
-                if(it == ListParts->end()) {
+                if(it == ListParts->end()) { // not a known particle
                        map<string,Node*>::iterator ito;
                        ito=ObjectCuts->find(pn);
-                       DEBUG(pn<<" := "); //------------new ID
+                       DEBUG(pn<<" was not a particle, "); //------------new ID
                        if(ito != ObjectCuts->end()) { // means found as an object
                         DEBUG(" is a user object, type:"<< ((ObjectNode*) ito->second)->type<<" ");
                         int otype=((ObjectNode*) ito->second)->type;
@@ -1526,17 +1542,28 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                        } else {
                         ito=NodeVars->find(pn);
                         if (ito==NodeVars->end()) { // not found even there!
-                          cout << pn << " is not a particle, object or variable. \n";
-                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"ID not defined");
-                          YYERROR;//stops parsing if particle not found 
-                        }
-                        cout <<  pn << " is a node variable, this is a particle. TmpCri:"<<TmpCriteria.size() <<"\n";
-                        cout << "doing some MAGIC\n";
-//                      YYERROR;//stops parsing if particle not found 
-                        TmpCriteria.push_back(ito->second );
-                        //TmpParticle.push_back(ito->second );
-                        tmp="MAGIC";
-                        $$=strdup(tmp.c_str());               
+                          cout << pn << " is not a particle, object or variable. Try to read from NTUPLE. \n";
+                          int asys=systBANK[Initializations->at(1)];
+                          string nsys=Initializations->at(1);
+                          if (asys < 6){
+                                            std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                            nsys=firstEntry.first;
+                          }
+                          DEBUG(" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n");
+                          
+                          Node *ssf=new SFuncNode(specialsf,1 , pn);
+                          ((SFuncNode *)ssf)->setTTRaddr( ttr_map[ nsys ], pn);
+                          TmpCriteria.push_back(ssf);
+                          tmp="MAGIC";
+                          $$=strdup(tmp.c_str());
+                        } else {
+                               DEBUG( pn << " *was* a node variable. TmpCri:"<<TmpCriteria.size() <<"\n");
+                               DEBUG( "doing some MAGIC to make it so.\n"); // we push into TmpCriteria.
+                               TmpCriteria.push_back(ito->second );
+                               //TmpParticle.push_back(ito->second );
+                               tmp="MAGIC";
+                               $$=strdup(tmp.c_str());
+                               }               
                        }
                 } else {
                         DEBUG("is a ListPart IDSize:"<<TmpParticle.size()<<" ");
@@ -2010,6 +2037,18 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | ID '(' particules ')' {  cout <<" "<<setw(15)<< $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\n"; 
                                       vector<myParticle*> newList;
                                       TmpParticle.swap(newList);
+                                      if (newList.size() == 0 ) { cout <<"no particle here!!!\n";
+                                        map<string, pair<vector<float>, bool> >::iterator itt;
+                                        string name = $1;
+                                        itt = ListTables->find(name);
+                                        if(itt == ListTables->end()) {
+                                          cout<<name<<" is not even a table\n";
+                                          yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Table NOT defined");
+                                          YYERROR;//stops parsing if table is not defined
+                                         }
+                                         Node* a = new TableNode(tweight,TmpCriteria[0],itt->second, name);
+                                         $$ = a;
+                                      } else {
                                       myParticle* a = newList[0];
                                       std::string p0s= a->collection; // FJET or RCJET or JetPUPPIAK8?
                                       switch (a->type){
@@ -2041,6 +2080,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
                                ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
+                                }
                                }
   | ID '(' e ')' { // TABLE
               DEBUG("Value "<< $1  <<"could be from table, using variable: "<< $3 << "\n");
