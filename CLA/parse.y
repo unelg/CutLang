@@ -993,14 +993,17 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                       std::string funame=$1; 
                                       bool named=0; //(funame.find('_') != std::string::npos);
                                       std::string varname="";
-                                                  if (!named) varname+=p0s;
-                                                  if (!named) varname+="_";
+                                                  //if (!named) varname+=p0s;
+                                                  //if (!named) varname+="_";
                                                   varname+=funame;
                                        int asys=systBANK[Initializations->at(1)];
                                        string nsys=Initializations->at(1);
                                       if (asys < 6){
-                                         if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
-                                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+                                         //if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
+                                         //if (Initializations->at(0)=="CMSNANO") nsys="Events";
+					 std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                         nsys=firstEntry.first;
+
                                       }
                                       DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
@@ -1099,8 +1102,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                       int asys=systBANK[Initializations->at(1)];
                       string nsys=Initializations->at(1);
                       if (asys < 6){
-                         if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
-                         if (Initializations->at(0)=="CMSNANO") nsys="Events";
+                         //if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
+                         //if (Initializations->at(0)=="CMSNANO") nsys="Events";
+				std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                nsys=firstEntry.first;
+
                       }
                       DEBUG(" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n");
 
