@@ -80,6 +80,7 @@ double PtConeof( dbxParticle* apart);
 double EtConeof( dbxParticle* apart);
 double AbsEtaof( dbxParticle* apart);
 double    Etaof( dbxParticle* apart);
+double  Thetaof( dbxParticle* apart);
 double    Rapof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
 double 	pdgIDof( dbxParticle* apart);

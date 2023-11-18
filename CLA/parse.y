@@ -97,7 +97,7 @@ std::map< std::string, int> systBANK;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF
 %token TTBARNNLOREC OME
-%token PHI ETA RAP ABSETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
+%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
@@ -698,6 +698,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(AbsEtaof,newList,"abseta");
                                      }
+         | '{' particules '}' THETA {   vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Thetaof,newList,"theta");
+                                  }
+         | THETA '(' particules ')' {   vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Thetaof,newList,"theta");
+                                  }
          | '{' particules '}' PTCONE {  vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(PtConeof,newList,"ptcone");

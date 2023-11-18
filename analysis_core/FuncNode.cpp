@@ -542,6 +542,12 @@ double Etaof( dbxParticle* apart){
     return eta;
 }
 
+double Thetaof( dbxParticle* apart){
+    double theta=(apart->lv()).Theta();
+    DEBUG("Theta:"<<theta<<"\t");
+    return theta;
+}
+
 double Rapof( dbxParticle* apart){
     double rap=(apart->lv()).Rapidity();
     DEBUG(" Rap:"<<rap<<"\t");

@@ -134,6 +134,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [eE][tT][aA] return ETA;
 [rR][aA][pP] return RAP;
 [Aa][bB][sS][Ee][tT][aA] return ABSETA;
+[tT][hH][eE][tT][aA] return THETA;
 [pP][tT] return PT;
 [pP][zZ] return PZ;
 [dD][rR] return DR;
