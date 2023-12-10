@@ -1,9 +1,9 @@
 
-define NNvars = { size(JET) pT(JET[0]) 
-               eta(JET[0]) phi(JET[0])
-               MET }
-
 define minPT = 212.3
+
+define NNvars = { size(JET) pT(JET[0]) 
+                  eta(JET[0]) phi(JET[0])
+                  MET }
 
 define NNdisc4J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_4jets.onnx" , NNvars)
 define NNdisc5J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_5jets.onnx" , NNvars)
