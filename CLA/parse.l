@@ -192,7 +192,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [mM][iI][nN] return MIN;
 [mM][aA][xX] return MAX;
 "+-"|"-+" return PM;
-"<<"|">>" return *yytext;
+">>" return BWR;
+"<<" return BWL;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
 {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;

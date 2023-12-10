@@ -114,7 +114,7 @@ std::map< std::string, int> systBANK;
 %token <integer> INT
 %token <s> ID HID 
 %token SIN COS TAN ABS SQRT EXP LOG HSTEP DELTA SINH COSH TANH
-%token OR AND 
+%token OR AND BWL BWR 
 %token MIN MAX
 %token TRUE FALSE
 %token LT GT LE GE EQ NE IRG ERG
@@ -1025,10 +1025,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
    | e '*' e { $$=new BinaryNode(mult,$1,$3,"*"); }
    | e '/' e { $$=new BinaryNode(div,$1,$3,"/"); }
    | e '^' e { $$=new BinaryNode(pow,$1,$3,"^"); } 	
-   | e '<<' e { $$=new BinaryNode(lshift,$1,$3,"<<"); }
-   | e '>>' e { $$=new BinaryNode(rshift,$1,$3,">>"); }
    | e '&' e { $$=new BinaryNode(bitwand,$1,$3,"&"); }
    | e '|' e { $$=new BinaryNode(bitwor,$1,$3,"|"); }
+   | e BWL e { $$=new BinaryNode(lshift,$1,$3,"<<"); }
+   | e BWR e { $$=new BinaryNode(rshift,$1,$3,">>"); }
    |'-' e %prec Unary { $$=new UnaryAONode(unaryMinu,$2,"-"); }
    | HSTEP '(' e ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
    | HSTEP '(' condition ')' { $$=new UnaryAONode(hstep,$3,"hstep"); } //Heavyside step function 
