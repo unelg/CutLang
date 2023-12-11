@@ -632,3 +632,67 @@ int levenshtein(const std::string &s1_input, const std::string &s2_input) {
 
     return d[len1][len2];
 };
+
+double fAplanarity(AnalysisObjects *ao, string s, float id)
+{
+  TMatrixD S(3, 3); // Sphericity tensor initilization
+  double sump2, aplanarity;
+  for (unsigned int i = 0; i < ao->jets.at(s).size(); i++)
+  {
+
+    S(0, 0) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Px();
+    S(0, 1) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Py();
+    S(0, 2) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Pz();
+    S(1, 0) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Px();
+    S(1, 1) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Py();
+    S(1, 2) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Pz();
+    S(2, 0) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Px();
+    S(2, 1) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Py();
+    S(2, 2) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Pz();
+    sump2 += ao->jets.at(s).at(i).lv().P() * ao->jets.at(s).at(i).lv().P();
+  }
+  for (int i = 0; i < 3; i++)
+  {
+    for (int j = 0; j < 3; j++)
+    {
+      S(i, j) /= sump2;
+    }
+  }
+  TDecompSVD *SVD = new TDecompSVD(S);
+  TVectorD eigenvals = SVD->GetSig();
+  aplanarity = 1.5 * eigenvals[2];
+  delete SVD;
+  return (aplanarity);
+}
+
+double fSphericity(AnalysisObjects *ao, string s, float id)
+{
+  TMatrixD S(3, 3); // Sphericity tensor initilization
+  double sump2, sphericity;
+  for (unsigned int i = 0; i < ao->jets.at(s).size(); i++)
+  {
+
+    S(0, 0) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Px();
+    S(0, 1) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Py();
+    S(0, 2) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Pz();
+    S(1, 0) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Px();
+    S(1, 1) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Py();
+    S(1, 2) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Pz();
+    S(2, 0) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Px();
+    S(2, 1) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Py();
+    S(2, 2) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Pz();
+    sump2 += S(0, 0) + S(1, 1) + S(2, 2);
+  }
+  for (int i = 0; i < 3; i++)
+  {
+    for (int j = 0; j < 3; j++)
+    {
+      S(i, j) /= sump2;
+    }
+  }
+  TDecompSVD *SVD = new TDecompSVD(S);
+  TVectorD eigenvals = SVD->GetSig();
+  sphericity = 1.5 * (eigenvals[1] + eigenvals[2]);
+  delete SVD;
+  return (sphericity);
+}

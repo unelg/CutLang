@@ -98,7 +98,7 @@ std::map< std::string, int> systBANK;
 %token IDX METSIGNIF
 %token TTBARNNLOREC OME
 %token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
-%token NUMOF HT MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
+%token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
 %token GENPARTIDX DECAYMODE
@@ -976,6 +976,32 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            $$=new SFuncNode(ht,id, it->first, it->second);
                                        }
                          }
+        | APLANARITY { $$=new SFuncNode(fAplanarity,1,"JET"); }                         
+        | APLANARITY '(' ID  ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           int id=((ObjectNode*)it->second)->type;  //type is used in a swicth to loop over particles
+                                           $$=new SFuncNode(fAplanarity,id, it->first, it->second);
+                                       }
+                         }
+        | SPHERICITY { $$=new SFuncNode(fSphericity,1,"JET"); }                         
+        | SPHERICITY '(' ID  ')' {
+                                       map<string,Node*>::iterator it = ObjectCuts->find($3);
+                                       if(it == ObjectCuts->end()) {
+                                           std::string message = "Object not defined: ";
+                                           message += $3;
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,message.c_str());
+                                           YYERROR;
+                                       } else {
+                                           int id=((ObjectNode*)it->second)->type;  //type is used in a swicth to loop over particles
+                                           $$=new SFuncNode(fSphericity,id, it->first, it->second);
+                                       }
+                         }                                                                         
        | MET {  $$=new SFuncNode(met,1, "MET"); }
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
