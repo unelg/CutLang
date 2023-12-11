@@ -144,6 +144,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [nN][bB][jJ] return NBF;
 [fF][hH][tT] return HT; // attention
 "MET" return MET;
+"fAplanarity" return APLANARITY;
+"fSphericity" return SPHERICITY;
 "LEPsf" return LEPSF;
 "bTagSF" return BTAGSF;
 "XSLumiCorrSF" return XSLUMICORRSF;
