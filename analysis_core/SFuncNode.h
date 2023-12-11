@@ -12,6 +12,8 @@
 #include "Hemisphere.h"
 #include "mt2_bisect.h"
 #include "TTreeReader.h"
+#include "TMatrixD.h"
+#include "TDecompSVD.h"
 
 //#define _CLV_
 #ifdef _CLV_
