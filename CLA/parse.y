@@ -114,7 +114,7 @@ std::map< std::string, int> systBANK;
 %token <integer> INT
 %token <s> ID HID 
 %token SIN COS TAN ABS SQRT EXP LOG HSTEP DELTA SINH COSH TANH
-%token OR AND BWL BWR 
+%token OR AND BWL BWR
 %token MIN MAX
 %token TRUE FALSE
 %token LT GT LE GE EQ NE IRG ERG

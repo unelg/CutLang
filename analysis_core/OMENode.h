@@ -36,7 +36,7 @@ class OMENode : public Node{
 private:
       vector<Node*> variableList;
       short int selector;
-      TString commando="./OME ";
+      TString commando="OME ";
 public:
 	OMENode(std::string s, short int sele, vector<Node*> VariableList){
         symbol=s;
