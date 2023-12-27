@@ -10,7 +10,7 @@ TODAYDATE     = $(shell date)
 SUBDIRLOC = $(shell test -d ../CLA && echo ../ || echo ./)
 
 # now we have the include directories defined, possibly using the SUBDIRLOC variable as the root
-INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC)BP/ -I$(SUBDIRLOC)Dump/
+INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC)BP/ -I$(SUBDIRLOC)Dump/ -I/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3/include
 
 # allow Make to use the same include directories as locations of the sources of various files
 VPATH = $(subst -I,:,$(INCLUDES))
@@ -31,7 +31,7 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz 
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz -L/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3/lib -lonnxruntime -rpath /usr/local/lib
 GLIBS         = $(ROOTGLIBS)
 
 #LIBS += -lzstd -lCling -lpng -ltbb -lssl -lcrypto

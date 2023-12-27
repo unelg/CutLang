@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH=$PATH:$ROOTSYS/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib:.:/usr/lib:/usr/lib/system:/usr/local/lib
 
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"

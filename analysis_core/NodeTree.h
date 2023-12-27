@@ -24,6 +24,7 @@
 #include "IfNode.h"
 #include "LoopNode.h"
 #include "ObjectNode.hpp"
+#include "TextNode.hpp"
 #include "SaveNode.h"
 #include "OMENode.h"
 //Delete Nodes

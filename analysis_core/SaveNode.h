@@ -144,15 +144,18 @@ public:
               } // end of >0 
                
               DEBUG("not a loop:\n");
-              std::cout<< variableList[i]->evaluate(ao) << " , ";
-
+              double rv=variableList[i]->evaluate(ao);
+              if (!std::isnan(rv)) {
+               std::cout<< rv << " , ";
+              } else {
+               std::cout<<variableList[i]->getStr()<<  " ";
+              }
             }// end of loop over variables
 
-
+            DEBUG("EOL over variables\n");
             if (aparticles->size()>0){
               if (aparticles->at(0)->type == 21) {std::cout<<"\t";} else std::cout << "\n"; 
-            } else
-            std::cout << "\n";
+            } else std::cout << " . \n";
            }
             return 1;
       }

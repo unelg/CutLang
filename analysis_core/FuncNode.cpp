@@ -19,7 +19,7 @@ void FuncNode::ResetParticles(){
 }
  
    
-void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
+int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
         DEBUG("\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
@@ -39,6 +39,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                 DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
 		                           case track_t: DEBUG("track:"<< (*i)->index <<" ");
+                                                         if (ai>=ao->track[ac].size()) return -1;
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(ao->track[ac].at(ai).pdgID()  );
@@ -53,7 +54,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
 //                                                          cout <<"----------------done----------------------\n";
 		                                         break;
 		                           case truth_t: DEBUG("truth:"<< (*i)->index <<" ");
-
+                                                         if (ai>=ao->truth[ac].size()) return -1; 
 		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
 		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
 		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
@@ -72,6 +73,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         }
 		                                        break;
                                            case muon_t: //ao->muons_map-->find...
+                                                        if (ai>=ao->muos[ac].size()) return -1; 
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
   							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
@@ -94,7 +96,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         }
                                                         DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
                                                         break;
-                                       case electron_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
+                                       case electron_t: 
+							if (ai>=ao->eles[ac].size()) return -1;
+							inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
 							inputPart->setParticleIndx(ao->eles[ac].at(ai).ParticleIndx()  );
@@ -113,7 +117,9 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         }
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
-                                            case tau_t: inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
+                                            case tau_t: 
+							if (ai>=ao->taus[ac].size()) return -1;
+							inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
                                                         inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
 							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
 							inputPart->setParticleIndx(ao->taus[ac].at(ai).ParticleIndx()  );
@@ -145,6 +151,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         inputPart->setTlv(inputPart->lv()+sgn*ametlv); 
                                                         break;
                                          case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
+                                                        if (ai>=ao->gams[ac].size()) return -1; 
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
 							inputPart->setParticleIndx(ao->gams[ac].at(ai).ParticleIndx()  );
                                                         ka=ao->gams[ac].at(ai).nAttribute();
@@ -160,6 +167,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         }
                                                         break;
                                             case jet_t: DEBUG("jet:"<<ai<<" \t");
+                                                        if (ai>=ao->jets[ac].size()) return -1; 
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
                                                         inputPart->setCharge(inputPart->q()+ao->jets[ac].at(ai).q()  );
@@ -180,6 +188,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         break;
 
                                            case fjet_t: DEBUG("FatJet:"<< ai<<" \n");
+                                                        if (ai>=ao->ljets[ac].size()) return -1;
                                                         inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
                                                         inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
 							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
@@ -205,13 +214,15 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                                         DEBUG("qgjet:"<<ai<<" ");
                                                         break;
                                           case combo_t: DEBUG("combo:"<< (*i)->index <<" ");
+                                                        if (ai>=ao->combos[ac].size()) return -1;
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->combos[ac].at(ai).lv()); 
                                                         inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
                                                         DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->combos[ac].at(ai).pdgID()<<"\n");
 							inputPart->setPdgID(inputPart->pdgID()+ao->combos[ac].at(ai).pdgID()  );
                                                         break;
 
-                                         case consti_t: DEBUG("consti:"<< (*i)->index <<" ");
+                                         case consti_t: DEBUG("consti:"<<(*i)->index <<" ");
+                                                        if (ai>=ao->constits[ac].size()) return -1;
                                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->constits[ac].at(ai).lv()); 
                                                         inputPart->setCharge(inputPart->q()+ao->constits[ac].at(ai).q()  );
                                                         DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->constits[ac].at(ai).pdgID()<<"\n");
@@ -224,6 +235,7 @@ void FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *inpu
                                 } // end of case
         }// end of for
 	
+return 0;
 }
 
 void FuncNode::setParticleIndex(int order, int newIndex){

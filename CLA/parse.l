@@ -11,9 +11,10 @@ class Node;
 #include "myParticle.h"
 #include "b.hpp"
 %}
-integer [0-9]+
-exp `[eE][+-]?{integer}'
-real {integer}("."{integer})
+digit   [0-9]
+integer {digit}+
+exp     [eE][+-]?{integer}
+real    {integer}(\.{integer})?({exp})?
 varname [a-zA-Z]+{integer}
 vardef {varname}" "?":"" "?.*"\n"
 %%

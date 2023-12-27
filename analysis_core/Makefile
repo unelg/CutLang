@@ -1,7 +1,7 @@
 objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
 ROOTCFLAGS    = $(shell root-config --cflags)
-CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  
+CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  -I/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3/include
 CXX           = $(shell root-config --cxx) -g
 
 

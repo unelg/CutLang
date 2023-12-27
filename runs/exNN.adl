@@ -5,11 +5,11 @@ define NNvars = { size(JET) pT(JET[0])
 
 define minPT = 212.3
 
-define NNdisc4J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_4jets.onnx" , NNvars)
-define NNdisc5J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_5jets.onnx" , NNvars)
-define NNdisc6J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_6jets.onnx" , NNvars)
-define NNdisc7J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_7jets.onnx" , NNvars)
-define NNdisc8J = OME ( "SUSY-2019-04-ONNX/SUSY-2019-04_8jets.onnx" , NNvars)
+define NNdisc4J = OME ( "/Users/ngu/sezen/CutLang/runs/SUSY-2019-04-ONNX/SUSY-2019-04_4jets.onnx" , NNvars)
+define NNdisc5J = OME ( "/Users/ngu/sezen/CutLang/runs/SUSY-2019-04-ONNX/SUSY-2019-04_5jets.onnx" , NNvars)
+define NNdisc6J = OME ( "/Users/ngu/sezen/CutLang/runs/SUSY-2019-04-ONNX/SUSY-2019-04_6jets.onnx" , NNvars)
+define NNdisc7J = OME ( "/Users/ngu/sezen/CutLang/runs/SUSY-2019-04-ONNX/SUSY-2019-04_7jets.onnx" , NNvars)
+define NNdisc8J = OME ( "/Users/ngu/sezen/CutLang/runs/SUSY-2019-04-ONNX/SUSY-2019-04_8jets.onnx" , NNvars)
 
 
 object goodJets : JET

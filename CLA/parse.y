@@ -236,7 +236,12 @@ countformat : COUNTSFORMAT ID { DEBUG($2<<" is a new format type\n"); current_cn
               }
             ;
 variablelist : variablelist e { VariableList.push_back($2); DEBUG("new variable\n");}
-             |
+             | variablelist ',' e { VariableList.push_back($3); DEBUG("new variable\n");}
+             | variablelist description {  
+                          Node* tn= new TextNode(NULL,$2); 
+                                VariableList.push_back(tn);
+                                        DEBUG("new text\n");}
+             | 
              ;
 NUMBER : INT { $$ = (float)$1; } 
        | NB  { $$ = $1; }
@@ -276,9 +281,12 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                               VariableList.clear();
                              }
             }
-            | DEF ID '=' OME '(' description ',' ID ')' {
-//                             cout << "Found an ONNX model execution:"<< $6 << "\n"; 
+            | DEF ID '=' OME '(' description ',' ID ',' ID ',' ID ',' index  ')' {
+//            1   2   3   4          6           8      10     12      14
+//                             cout << "Found an ONNX model execution:"<< $6 << "output will be from"<< $14 <<"\n"; 
                              string vname = $8;
+                             string aname = $10;
+                             string sname = $12;
                              map<string,vector<Node*> >::iterator itv ;
                              itv = VariableListBank.find(vname);
                              if(itv == VariableListBank.end()) {
@@ -286,6 +294,23 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined! ");
                                                 YYERROR;//stops parsing if variable already defined
                               }
+                             map<string,vector<Node*> >::iterator ita ;
+                             ita = VariableListBank.find(aname);
+                             if(ita == VariableListBank.end()) {
+                                                DEBUG(aname<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined! ");
+                                                YYERROR;//stops parsing if variable already defined
+                              }
+                             map<string,vector<Node*> >::iterator its ;
+                             its = VariableListBank.find(sname);
+                             if(its == VariableListBank.end()) {
+                                                DEBUG(sname<<" : ");
+                                                yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined! ");
+                                                YYERROR;//stops parsing if variable already defined
+                              }
+
+
+
                               map<string, Node*>::iterator it ;
                               string name = $2;
                               it = NodeVars->find(name);
@@ -295,11 +320,12 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                 YYERROR;//stops parsing if variable already defined
                               }
                               string pippo=$6;
-                              NodeVars->insert(make_pair(name,new OMENode(pippo,0,itv->second) ));
+                                 int oidx=$14;
+                              NodeVars->insert(make_pair(name,new OMENode(pippo, oidx, itv->second, ita->second, its->second) ));
 
             }
-            | DEF ID '=' OME '(' description ',' variablelist ')' {
-//             1  2   3   4   5    6          7     8          9              
+            | DEF ID '=' OME '(' description ','  variablelist ',' index ')' {
+//             1  2   3   4   5    6          7     8           9   10             
                                cout << "Found an ONNX model execution:"<< $6 << "\n"; 
             }
 

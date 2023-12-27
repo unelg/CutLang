@@ -15,12 +15,13 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
-/*
+
 #include <algorithm>  
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <onnxruntime_cxx_api.h>
+#include <coreml_provider_factory.h>
 
 template <typename T>
 Ort::Value vec_to_tensor(std::vector<T>& data, const std::vector<std::int64_t>& shape) {
@@ -29,23 +30,68 @@ Ort::Value vec_to_tensor(std::vector<T>& data, const std::vector<std::int64_t>& 
   auto tensor = Ort::Value::CreateTensor<T>(mem_info, data.data(), data.size(), shape.data(), shape.size());
   return tensor;
 }
-*/
 
 
 class OMENode : public Node{
 private:
-      vector<Node*> variableList;
+      std::vector<Node*> variableList;
+      std::vector<Node*>     meanList;
+      std::vector<Node*>    sigmaList;
       short int selector;
-      TString commando="OME ";
+      std::vector<float> input_tensor_values;
+      std::vector<std::string> input_names;
+      std::vector<std::int64_t> input_shapes;
+      std::vector<std::string> output_names;
+//
+      Ort::Session *session;
 public:
-	OMENode(std::string s, short int sele, vector<Node*> VariableList){
+	OMENode(std::string s, short int sele, std::vector<Node*> VariableList, std::vector<Node*> aVariableList, std::vector<Node*> sVariableList){
         symbol=s;
         selector=sele;
 	left = NULL;
 	right = NULL;
         variableList = VariableList;
-        commando+=s;
-	}
+          meanList=aVariableList;
+         sigmaList=sVariableList;
+
+//-------------------------------ONNX
+        std::vector<float> uservals;
+        symbol.erase(remove( symbol.begin(), symbol.end(), '\"' ), symbol.end());
+        std::basic_string<ORTCHAR_T> model_file = symbol;
+        Ort::Env env(ORT_LOGGING_LEVEL_ERROR, "onnx-model-executer");
+        Ort::SessionOptions session_options;
+        uint32_t coreml_flags = 0;
+//           coreml_flags |= COREML_FLAG_ONLY_ENABLE_DEVICE_WITH_ANE;
+//           coreml_flags |= COREML_FLAG_ENABLE_ON_SUBGRAPH;
+             coreml_flags |= COREML_FLAG_USE_CPU_ONLY;
+
+        Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_CoreML(session_options, coreml_flags));
+        session = new Ort::Session(env, model_file.c_str(), session_options);
+
+        Ort::AllocatorWithDefaultOptions allocator;
+
+        for (std::size_t i = 0; i < session->GetInputCount(); i++) {
+          input_names.emplace_back(session->GetInputNameAllocated(i, allocator).get());
+          input_shapes = session->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
+        }
+// some models might have negative shape values to indicate dynamic shape, e.g., for variable batch size.
+        for (auto& s : input_shapes) {
+          if (s < 0) {
+            s = 1;
+          }
+        }
+//output
+        for (std::size_t i = 0; i < session->GetOutputCount(); i++) {
+          output_names.emplace_back(session->GetOutputNameAllocated(i, allocator).get());
+          auto output_shapes = session->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
+         std::cout << "\t" << output_names.at(i) <<"\n";
+// verbose    std::cout << "\t" << output_names.at(i) << " : " << print_shape(output_shapes) << std::endl;
+        }
+
+
+        // Assume model has 1 input node and 1 output node.
+         assert(input_names.size() == 1 && output_names.size() == 1);
+}
     virtual void getParticles(std::vector<myParticle *>* particles) override{
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
@@ -59,139 +105,11 @@ public:
                   particles->push_back(bparticles[index]);
                  }
     
-    virtual std::string print_shape(const std::vector<std::int64_t>& v) {
-        std::stringstream ss("");
-        for (std::size_t i = 0; i < v.size() - 1; i++) ss << v[i] << "x";
-        ss << v[v.size() - 1];
-        return ss.str();
-    }
-/*
-    virtual float OnnxModelEvaluator(std::basic_string<ORTCHAR_T> model_file, std::vector<double> input_data){
-        Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "OME_TEST");
-        Ort::SessionOptions session_options;
-        Ort::Session session = Ort::Session(env, model_file.c_str(), session_options);
-
-        // print name/shape of inputs
-        Ort::AllocatorWithDefaultOptions allocator;
-
-        std::vector<std::string> input_names;
-        std::vector<std::int64_t> input_shapes;
-        std::cout << "Input Node Name/Shape (" << input_names.size() << "):" << std::endl;
-        for (std::size_t i = 0; i < session.GetInputCount(); i++) {
-            input_names.emplace_back(session.GetInputNameAllocated(i, allocator).get());
-            input_shapes = session.GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-            std::cout << "\t" << input_names.at(i) << " : " << print_shape(input_shapes) << std::endl;
-            std::cout << "\t" << "Input name size: " << input_names.size() << std::endl;
-
-        }
-        // some models might have negative shape values to indicate dynamic shape, e.g., for variable batch size.
-        for (auto& s : input_shapes) {
-            if (s < 0) {
-            s = 1;
-            }
-        }
-
-        // print name/shape of outputs
-        std::vector<std::string> output_names;
-        std::cout << "Output Node Name/Shape (" << output_names.size() << "):" << std::endl;
-        for (std::size_t i = 0; i < session.GetOutputCount(); i++) {
-            output_names.emplace_back(session.GetOutputNameAllocated(i, allocator).get());
-            auto output_shapes = session.GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-            std::cout << "\t" << output_names.at(i) << " : " << print_shape(output_shapes) << std::endl;
-            std::cout << "\t" << "Output name size: " << output_names.size() << std::endl;
-        }
-
-
-        std::vector<Ort::Value> input_tensors;
-        for(int i = 0; i < input_data.size(); i++){
-            std::cout << input_data[i] << " , "; // modified this part! prints the input data.
-        }
-
-        input_tensors.emplace_back(vec_to_tensor<float>(input_data, input_shapes));
-
-        // double-check the dimensions of the input tensor
-        assert(input_tensors[0].IsTensor() && input_tensors[0].GetTensorTypeAndShapeInfo().GetShape() == input_shapes);
-        std::cout << "\ninput_tensor shape: " << print_shape(input_tensors[0].GetTensorTypeAndShapeInfo().GetShape()) << std::endl;
-
-        // pass data through model
-        std::vector<const char*> input_names_char(input_names.size(), nullptr);
-        std::transform(std::begin(input_names), std::end(input_names), std::begin(input_names_char),
-                        [&](const std::string& str) { return str.c_str(); });
-
-        std::vector<const char*> output_names_char(output_names.size(), nullptr);
-        std::transform(std::begin(output_names), std::end(output_names), std::begin(output_names_char),
-                        [&](const std::string& str) { return str.c_str(); });
-
-        try {
-            auto output_tensors = session.Run(Ort::RunOptions{nullptr}, input_names_char.data(), input_tensors.data(),
-                                            input_names_char.size(), output_names_char.data(), output_names_char.size());
-            //float* floatarr = output_tensors[0].GetTensorMutableData<float>();
-            //std::cout << *floatarr << std::endl;
-            
-
-            float* output_data;
-
-            for (size_t i = 0; i < output_tensors.size(); ++i) {
-                Ort::Value& output_tensor = output_tensors[i];
-
-                // Get the output tensor data pointer and shape
-                output_data = output_tensor.GetTensorMutableData<float>();
-                Ort::TensorTypeAndShapeInfo output_info = output_tensor.GetTensorTypeAndShapeInfo();
-                std::vector<int64_t> output_shape = output_info.GetShape();
-
-                // Print the output values
-                std::cout << "Output " << i << ": \t" << *output_data << std::endl;
-            }
-
-            return output_data[0];
-
-            
-        } catch (const Ort::Exception& exception) {
-            std::cout << "ERROR running model inference: " << exception.what() << std::endl;
-            exit(-1);
-        }
-    };
-*/
     virtual void Reset() override{}
 
 
-    virtual double evaluate(AnalysisObjects* ao) override {
-           std::vector<myParticle *>  bparticles;
-           std::vector<myParticle *> *aparticles=&bparticles;
-           std::vector<double> NNvalues;
-           TString command = commando; // shell command
-           for (int i = 0; i < (int)variableList.size(); i++)
-            {
-                variableList[i]->getParticlesAt(aparticles,0);
-                //std::cout<< aparticles->at(i)->index <<"c "; // what if we have 0 particles?
-                double aval=variableList[i]->evaluate(ao);
-                NNvalues.push_back(aval);
-                std::cout<< aval << " , ";
-                command += " ";
-                command += aval;
-            }
-            std::cout << "\n";
-//          OnnxModelEvaluator(symbol, NNvalues);
-    // Execute the shell command and retrieve the result
-    std::string result = "";
-    FILE* pipe = popen(command.Data(), "r");
-    if (pipe) {
-        char buffer[1024];
-        while (!feof(pipe)) {
-            if (fgets(buffer, 128, pipe) != nullptr) {
-                result += buffer;
-            }
-        }
-        pclose(pipe);
-    }
-    
-    // Print the result
-    std::cout << "Command output:\n" << result << std::endl;
-    
+    virtual double evaluate(AnalysisObjects* ao) override ;
 
-    return 1;
-        
-    }
     virtual ~OMENode() {}
 };
 
