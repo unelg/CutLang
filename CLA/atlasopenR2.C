@@ -141,7 +141,7 @@ DEBUG("Muons, Electrons and Taus OK\n");
 
 //PHOTONS
         for (unsigned int i=0; i<photon_n; i++) {
-                alv.SetPtEtaPhiM( photon_pt->at(i), photon_eta->at(i), photon_phi->at(i), 0 ); // all in GeV
+                alv.SetPtEtaPhiM( photon_pt->at(i)*0.001, photon_eta->at(i), photon_phi->at(i), 0 ); // all in GeV
                 adbxp= new dbxPhoton(alv);
 		adbxp->setPdgID(22);
                 adbxp->setEtCone(0.001*photon_etcone20->at(i) );
