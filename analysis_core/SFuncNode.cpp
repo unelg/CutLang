@@ -633,66 +633,71 @@ int levenshtein(const std::string &s1_input, const std::string &s2_input) {
     return d[len1][len2];
 };
 
-double fAplanarity(AnalysisObjects *ao, string s, float id)
-{
-  TMatrixD S(3, 3); // Sphericity tensor initilization
-  double sump2, aplanarity;
-  for (unsigned int i = 0; i < ao->jets.at(s).size(); i++)
-  {
-
-    S(0, 0) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Px();
-    S(0, 1) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Py();
-    S(0, 2) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Pz();
-    S(1, 0) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Px();
-    S(1, 1) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Py();
-    S(1, 2) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Pz();
-    S(2, 0) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Px();
-    S(2, 1) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Py();
-    S(2, 2) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Pz();
-    sump2 += ao->jets.at(s).at(i).lv().P() * ao->jets.at(s).at(i).lv().P();
-  }
-  for (int i = 0; i < 3; i++)
-  {
-    for (int j = 0; j < 3; j++)
-    {
-      S(i, j) /= sump2;
-    }
-  }
-  TDecompSVD *SVD = new TDecompSVD(S);
-  TVectorD eigenvals = SVD->GetSig();
-  aplanarity = 1.5 * eigenvals[2];
-  delete SVD;
-  return (aplanarity);
+TMatrixDSym TLVecToTensor(TLorentzVector obj){
+  TMatrixDSym retTensor(3); 
+  retTensor.Zero();
+  retTensor[0][0] += obj.Px() * obj.Px();
+  retTensor[1][1] += obj.Py() * obj.Py();
+  retTensor[2][2] += obj.Pz() * obj.Pz();
+  retTensor[0][1] += obj.Px() * obj.Py();
+  retTensor[1][0] += obj.Py() * obj.Px();
+  retTensor[0][2] += obj.Px() * obj.Pz();
+  retTensor[2][0] += obj.Pz() * obj.Px();
+  retTensor[1][2] += obj.Py() * obj.Pz();
+  retTensor[2][1] += obj.Pz() * obj.Py();
+  return retTensor;
 }
 
-double fSphericity(AnalysisObjects *ao, string s, float id)
-{
-  TMatrixD S(3, 3); // Sphericity tensor initilization
-  double sump2, sphericity;
-  for (unsigned int i = 0; i < ao->jets.at(s).size(); i++)
-  {
+TMatrixDSym getMomentumTensor(AnalysisObjects* ao, string s, float id){
+  TMatrixDSym retTensor(3);
+  particleType pid = (particleType)id;
+  retTensor.Zero();
+  switch (pid){
+  case truth_t:    for (UInt_t i=0; i<ao->truth.at(s).size(); i++) retTensor+=TLVecToTensor(ao->truth.at(s).at(i).lv()); break;
+  case muon_t:     for (UInt_t i=0; i<ao->muos.at(s).size(); i++) retTensor+=TLVecToTensor(ao->muos.at(s).at(i).lv()); break;
+  case electron_t: for (UInt_t i=0; i<ao->eles.at(s).size(); i++) retTensor+=TLVecToTensor(ao->eles.at(s).at(i).lv()); break;
+  case tau_t:      for (UInt_t i=0; i<ao->taus.at(s).size(); i++) retTensor+=TLVecToTensor(ao->taus.at(s).at(i).lv()); break;
+  case jet_t:      for (UInt_t i=0; i<ao->jets.at(s).size(); i++) retTensor+=TLVecToTensor(ao->jets.at(s).at(i).lv());   break;
+  case fjet_t:     for (UInt_t i=0; i<ao->ljets.at(s).size(); i++) retTensor+=TLVecToTensor(ao->ljets.at(s).at(i).lv()); break;
+  case photon_t:   for (UInt_t i=0; i<ao->gams.at(s).size(); i++) retTensor+=TLVecToTensor(ao->gams.at(s).at(i).lv()); break;
+  case combo_t:    for (UInt_t i=0; i<ao->combos.at(s).size(); i++) retTensor+=TLVecToTensor(ao->combos.at(s).at(i).lv()); break;
+  }
+  retTensor *= 1./(retTensor[0][0]+retTensor[1][1]+retTensor[2][2]);
+  return retTensor;
+}
 
-    S(0, 0) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Px();
-    S(0, 1) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Py();
-    S(0, 2) += ao->jets.at(s).at(i).lv().Px() * ao->jets.at(s).at(i).lv().Pz();
-    S(1, 0) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Px();
-    S(1, 1) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Py();
-    S(1, 2) += ao->jets.at(s).at(i).lv().Py() * ao->jets.at(s).at(i).lv().Pz();
-    S(2, 0) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Px();
-    S(2, 1) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Py();
-    S(2, 2) += ao->jets.at(s).at(i).lv().Pz() * ao->jets.at(s).at(i).lv().Pz();
-    sump2 += S(0, 0) + S(1, 1) + S(2, 2);
+double fAplanarity(AnalysisObjects* ao, string s, float id){
+  double retval;
+  int ao_size = count(ao,s,id);
+  if( ao_size > 2 ){
+    TMatrixDSym momentumTensor(3);
+    TVectorD eigenValues(3);
+    momentumTensor = getMomentumTensor(ao,s,id);
+    TMatrixDSymEigen eigenSystem(momentumTensor);
+    eigenValues = eigenSystem.GetEigenValues();
+    retval = 1.5 * eigenValues(2);
+    return retval;
+  } 
+  else { 
+    retval = 0.;
   }
-  for (int i = 0; i < 3; i++)
-  {
-    for (int j = 0; j < 3; j++)
-    {
-      S(i, j) /= sump2;
-    }
+  return retval;
+}
+
+double fSphericity(AnalysisObjects* ao, string s, float id){
+  double retval;
+  int ao_size = count(ao,s,id);
+  if( ao_size > 2 ){
+    TMatrixDSym momentumTensor(3);
+    TVectorD eigenValues(3);
+    momentumTensor = getMomentumTensor(ao,s,id);
+    TMatrixDSymEigen eigenSystem(momentumTensor);
+    eigenValues = eigenSystem.GetEigenValues();
+    retval = 1.5 * (eigenValues(1)+eigenValues(2));
+    return retval;
+  } 
+  else { 
+    retval = 0.;
   }
-  TDecompSVD *SVD = new TDecompSVD(S);
-  TVectorD eigenvals = SVD->GetSig();
-  sphericity = 1.5 * (eigenvals[1] + eigenvals[2]);
-  delete SVD;
-  return (sphericity);
+  return retval;
 }
