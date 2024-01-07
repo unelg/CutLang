@@ -392,7 +392,7 @@ std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int 
 double fMT2(TLorentzVector lep1, TLorentzVector lep2, TLorentzVector amet);
 double fTTbarNNLORec(double lep1, double lep2, double amet, double lab);
 double specialsf(AnalysisObjects* ao, string s, float value);
-TMatrixDSym TVecToTensor(TLorentzVector objs);
+TMatrixDSym TLVecToTensor(TLorentzVector obj);
 TMatrixDSym getMomentumTensor(AnalysisObjects* ao, string s, float id);
 double fAplanarity(AnalysisObjects *ao, string s, float value);
 double fSphericity(AnalysisObjects *ao, string s, float id);
