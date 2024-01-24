@@ -6,7 +6,7 @@
 TString operator+(const TString &s, Float_t f)
 {
   char si[32];
-  sprintf(si, "%g", f);
+  snprintf(si, sizeof(si), "%g", f);
   return s+si;
 }
 

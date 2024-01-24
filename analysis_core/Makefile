@@ -1,8 +1,23 @@
-objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+
+
+# Define a variable for the library path
+ONNX_PATH ?=
+
+ifeq ($(strip $(ONNX_PATH)),)
+    # Library not found
+    ONNX_INC :=
+    objects := $(filter-out OMENode.o,$(patsubst %.cpp,%.o,$(wildcard *.cpp)))
+else
+    # Library found
+    ONNX_INC := -I$(ONNX_PATH)/include
+    objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+    CXXFLAGS+= -DONNX_PRESENT
+endif
 
 ROOTCFLAGS    = $(shell root-config --cflags)
-CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  -I/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3/include
+CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  $(ONNX_INC)
 CXX           = $(shell root-config --cxx) -g
+
 
 
 %.o : %.cxx

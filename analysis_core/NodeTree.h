@@ -26,7 +26,9 @@
 #include "ObjectNode.hpp"
 #include "TextNode.hpp"
 #include "SaveNode.h"
+#ifdef ONNX_PRESENT
 #include "OMENode.h"
+#endif
 //Delete Nodes
 //Print Nodes As Defined by User
 #endif /* NodeTree_h */

@@ -23,6 +23,12 @@
 //#define ERRBUG(a) std::cout<<a
 #define ERRBUG(a) std::cerr<<a
 
+#ifdef ONNX_PRESENT
+#define OMECMD new OMENode(pippo, oidx, itv->second, ita->second, its->second)    
+#else 
+#define OMECMD new SFuncNode(all,1, "all")
+#endif
+
 extern int yylex();
 extern int yylineno;
 extern map<string, TTreeReader*> ttr_map;
@@ -281,9 +287,8 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                               VariableList.clear();
                              }
             }
+            
             | DEF ID '=' OME '(' description ',' ID ',' ID ',' ID ',' index  ')' {
-//            1   2   3   4          6           8      10     12      14
-//                             cout << "Found an ONNX model execution:"<< $6 << "output will be from"<< $14 <<"\n"; 
                              string vname = $8;
                              string aname = $10;
                              string sname = $12;
@@ -321,7 +326,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                               }
                               string pippo=$6;
                                  int oidx=$14;
-                              NodeVars->insert(make_pair(name,new OMENode(pippo, oidx, itv->second, ita->second, its->second) ));
+                              NodeVars->insert(make_pair(name, OMECMD   ));
 
             }
             | DEF ID '=' OME '(' description ','  variablelist ',' index ')' {
