@@ -123,21 +123,22 @@ DEBUG("Begin Filling"<<std::endl);
                 electrons.push_back(*adbxe);
                 delete adbxe;
             }
-	    if (lep_type->at(i)==15) {
-                adbxt= new dbxTau(alv);
-                adbxt->setCharge(lep_charge->at(i) );
-		adbxt->setPdgID(-15*lep_charge->at(i));
-                adbxt->setEtCone(0.001*lep_etcone20->at(i)  );
-                adbxt->setPtCone(0.001*lep_ptcone30->at(i)  );
-                adbxt->setParticleIndx(i);
-                adbxt->setZ0(lep_z0->at(i) );
-                taus.push_back(*adbxt);
-                delete adbxt;
-            }
         }
 
 DEBUG("Muons, Electrons and Taus OK\n");
 
+// TAUS
+        for(unsigned int i=0; i<tau_n; i++){
+                alv.SetPtEtaPhiE( tau_pt->at(i)*0.001, tau_eta->at(i), tau_phi->at(i), tau_E->at(i)*0.001 ); // all in GeV
+                adbxt= new dbxTau(alv);
+                adbxt->setCharge(tau_charge->at(i) );
+		adbxt->setPdgID(-15*tau_charge->at(i));
+                adbxt->setParticleIndx(i);
+                taus.push_back(*adbxt);
+                delete adbxt;
+        }
+
+DEBUG("Taus OK\n");
 
 //PHOTONS
         for (unsigned int i=0; i<photon_n; i++) {
