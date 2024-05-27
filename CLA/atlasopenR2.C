@@ -125,7 +125,7 @@ DEBUG("Begin Filling"<<std::endl);
             }
         }
 
-DEBUG("Muons, Electrons and Taus OK\n");
+DEBUG("Muons, Electrons OK\n");
 
 // TAUS
         for(unsigned int i=0; i<tau_n; i++){
