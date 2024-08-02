@@ -11,7 +11,7 @@ ONNX_PATH ?=
 
 ifeq ($(strip $(ONNX_PATH)),)
     # Library not found
-	@echo no onnx path is given. if can specify as make  ONNX_PATH=/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3
+	#@echo no onnx path is given. if can specify as make  ONNX_PATH=/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3
     ONNX_LIB :=
     ONNX_INC :=
 else
@@ -46,7 +46,7 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz $(ONNX_LIB) -rpath /usr/local/lib
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz $(ONNX_LIB) -Wl,-rpath,/usr/local/lib
 GLIBS         = $(ROOTGLIBS)
 
 #LIBS += -lzstd -lCling -lpng -ltbb -lssl -lcrypto
