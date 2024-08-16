@@ -2852,7 +2852,7 @@ boxlist : boxlist abox
 abox : NB  {
         tmpBinlist.push_back($1);
        }
-     | INT {tmpBinlist.push_back($1)}
+     | INT {tmpBinlist.push_back($1);}
        ;
 hamhum : ALIAS ID {
           DEBUG ("ALIAS found.\t");
