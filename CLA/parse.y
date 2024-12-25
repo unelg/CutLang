@@ -24,8 +24,10 @@
 #define ERRBUG(a) std::cerr<<a
 
 #ifdef ONNX_PRESENT
+#pragma message "ONNX_PRESENT is defined"
 #define OMECMD new OMENode(pippo, oidx, itv->second, ita->second, its->second)    
 #else 
+#pragma message "ONNX_PRESENT is NOT defined"
 #define OMECMD new SFuncNode(all,1, "all")
 #endif
 

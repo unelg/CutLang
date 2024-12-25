@@ -59,12 +59,12 @@ double OMENode::evaluate(AnalysisObjects* ao) {
   std::transform(std::begin(output_names), std::end(output_names), std::begin(output_names_char),
                  [&](const std::string& str) { return str.c_str(); });
 
-//  std::cout << "Running model...\t" ;
+  std::cout << "Running model...\t" ;
   try {
     auto output_tensors = session->Run(Ort::RunOptions{nullptr}, input_names_char.data(), input_tensors.data(),
                                       input_names_char.size(), output_names_char.data(), output_names_char.size());
     float* floatarr = output_tensors.front().GetTensorMutableData<float>();
-//    std::cout<<"Score:"<<floatarr[selector]<<"\n";
+  std::cout<<"Score:"<<floatarr[selector]<<"\n";
     return (double)floatarr[selector];
     // double-check the dimensions of the output tensors
     // NOTE: the number of output tensors is equal to the number of output nodes specifed in the Run() call

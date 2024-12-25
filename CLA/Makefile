@@ -11,11 +11,13 @@ ONNX_PATH ?=
 
 ifeq ($(strip $(ONNX_PATH)),)
     # Library not found
-	#@echo no onnx path is given. if can specify as make  ONNX_PATH=/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3
+    $(info No ONNX path is given. You can specify one via \
+         'make ONNX_PATH=/path/to/onnxruntime')
     ONNX_LIB :=
     ONNX_INC :=
 else
     # Library found
+    $(info ONNX path is set to ${ONNX_PATH})
     ONNX_LIB := -L$(ONNX_PATH)/lib -lonnxruntime
     ONNX_INC := -I$(ONNX_PATH)/include
 endif
@@ -24,7 +26,7 @@ endif
 SUBDIRLOC = $(shell test -d ../CLA && echo ../ || echo ./)
 
 # now we have the include directories defined, possibly using the SUBDIRLOC variable as the root
-INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC)BP/ -I$(SUBDIRLOC)Dump/ $(ONNX_INC)
+INCLUDES  = -I$(ROOTSYS)/include  -I. -I$(SUBDIRLOC)analysis_core/ -I$(SUBDIRLOC)BP/ -I$(SUBDIRLOC)Dump/ $(ONNX_INC) 
 ###/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3/include
 
 # allow Make to use the same include directories as locations of the sources of various files
@@ -43,6 +45,7 @@ CXX           = $(shell root-config --cxx) -g -O2
 CXXFLAGS      =$(INCLUDES) -Wall -fPIC -Wunused-variable -Wsign-compare
 LD            = $(shell root-config --ld) -stdlib=libstdc++
 #LDFLAGS       = -g
+
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
@@ -112,7 +115,13 @@ endif
 b.o : parse.y
 	@echo You can run as   make ONNX_PATH=/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3
 	@echo "==================================================================================="
-	$(BISEXE) -d -v -o b.cpp parse.y; $(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
+	$(BISEXE) -d -v -o b.cpp parse.y; 
+
+ifeq ($(ONNX_PATH),)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c b.cpp
+else
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DONNX_PRESENT -c b.cpp
+endif
 
 l.o : parse.l
 	$(LEXEXE) -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
