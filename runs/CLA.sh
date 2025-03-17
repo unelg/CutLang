@@ -31,6 +31,7 @@ DEPS="w"
 DEPP=" "
 HLTLIST=" "
 datadir=$(realpath $1)
+dataurl=$1
 datatype=$2
 numcpu=1
 addRootName=0
@@ -155,6 +156,10 @@ else if [ -n ${datadir+x} ] && [ ! -f "$datadir" ]; then
   	tput setaf 1; echo "${datadir} does not exist."
   	tput sgr0
      fi
+fi
+
+if [[ $datadir == *"://"* ]]; then
+  inputfilelist=$dataurl
 fi
 
 if [ $ADLFILE == "$RUNS_PATH/CLA.ini" ]; then
