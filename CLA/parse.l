@@ -110,6 +110,8 @@ vardef {varname}" "?":"" "?.*"\n"
 [vV][eE][rR][tT][eE][xX][yY] return VERY;
 [vV][eE][rR][tT][eE][xX][zZ] return VERZ;
 [vV][eE][rR][tT][eE][xX][tT][rR] return VERTR;
+daughterX return DAUGHTERX;
+daughterY return DAUGHTERY;
 
 [iI][sS][tT][iI][gG][hH][tT] return ISTIGHT;
 [mM][eE][dD][iI][uU][mM] return ISMEDIUM;

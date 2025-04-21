@@ -103,6 +103,8 @@ double     vtof( dbxParticle* apart);
 double    vtrof( dbxParticle* apart);
 
 double CCountof( dbxParticle* apart);
+double daughterx( dbxParticle* apart);
+double daughtery( dbxParticle* apart);
 double    nbfof( dbxParticle* apart);
 double MiniIsoVarof( dbxParticle* apart);
 double AbsIsoVarof( dbxParticle* apart);

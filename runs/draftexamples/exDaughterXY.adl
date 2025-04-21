@@ -1,0 +1,17 @@
+# Draft example showing how to use X and Y variables of GEN daughters
+
+object genChargino : GEN
+  select abs(PDGID(GEN)) == 1000024
+  select constituents(GEN) == 2
+
+define decaylength = sqrt(daughterX(genChargino[0])^2 + daughterY(genChargino[0])^2)
+# Keep in mind indices are only for the mother particles
+# Daughter properties are calculated implicitly within FunctionNode.
+
+region test
+  select ALL
+  select Size(genChargino) > 0
+  print daughterX(genChargino) daughterY(genChargino)
+  print daughterX(genChargino[0]) daughterY(genChargino[0])
+  select decaylength > 0
+  print decaylength

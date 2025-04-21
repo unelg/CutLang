@@ -656,6 +656,18 @@ double CCountof( dbxParticle* apart){
    return v;
 }
 
+double daughterx( dbxParticle* apart) {
+   double v=apart->Attribute(10);
+   DEBUG("GEN daughter X variable"<<v<<"\n");
+   return v;
+}
+
+double daughtery( dbxParticle* apart) {
+   double v=apart->Attribute(11);
+   DEBUG("GEN daughter Y variable"<<v<<"\n");
+   return v;
+}
+
 double genpartidxof( dbxParticle* apart){
    double v=apart->Attribute(5);
    DEBUG(" genPartIdx:"<<v<<"\t");

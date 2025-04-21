@@ -113,7 +113,7 @@ std::map< std::string, int> systBANK;
 %token FMEGAJETS FMR FMTR FMT FMTAUTAU FMT2 // RAZOR external functions
 %token FHEMISPHERE //hemisphere external function
 %token MINIMIZE MAXIMIZE  APPLYHM PRINT APPLYPTF APPLYEF
-%token VERT VERX VERY VERZ VERTR CONSTITS  
+%token VERT VERX VERY VERZ VERTR CONSTITS DAUGHTERX DAUGHTERY 
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT
 %token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION RUNNO LBNO
@@ -558,7 +558,23 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
         | '{' particules '}' CONSTITS {vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(CCountof,newList,"ChildCountOf");
+                                  }
+        | DAUGHTERX '(' particules ')' {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(daughterx,newList,"DaughterX");
                                   } 
+        | '{' particules '}' DAUGHTERX {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(daughterx,newList,"DaughterX");
+                                  }
+        | DAUGHTERY '(' particules ')' {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(daughtery,newList,"DaughterY");
+                                  } 
+        | '{' particules '}' DAUGHTERY {vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(daughtery,newList,"DaughterY");
+                                  }
          | PDGID '(' particules ')' {  vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                         $$=new FuncNode(pdgIDof,newList,"pdgID");

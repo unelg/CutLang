@@ -528,6 +528,24 @@ if (it == 0){
                 adbxgen->addAttribute( particle->T );  //7
                 adbxgen->addAttribute( particle->D1 );  //8
                 adbxgen->addAttribute( particle->D2 );  //9
+
+		int d1 = particle->D1;
+		int d2 = particle->D2;
+		double highestPT = -99;
+		double leadingX = 0;
+	        double leadingY = 0;
+		if (d1 >= 0 && d2 >= 0 && d1 <= d2 && d2 < branchParticle->GetEntriesFast()) {
+			for (int ik = d1; ik <= d2; ik++) {
+				GenParticle *daughter = (GenParticle*) branchParticle->At(ik);
+				if (daughter->PT > highestPT) {
+					highestPT = daughter->PT;
+					leadingX = daughter->X;
+					leadingY = daughter->Y;
+				}
+			}
+		}
+		adbxgen->addAttribute(leadingX); //10
+		adbxgen->addAttribute(leadingY); //11
                 truth.push_back(*adbxgen);
 
 //
