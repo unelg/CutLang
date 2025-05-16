@@ -337,28 +337,19 @@ double resopt(double pt) {return 1.05729 - 0.452141*log(pt) + 0.067873*pow(log(p
 //double resophi(double pt) {return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);} // existing coefficients
 
 double resophi(double pt) {return pt < 100 ? 1.23*pow(pt, -0.95) : 0.017;} // checkmate's coefficients
-
-void rotatedcov(double pt, double phi, double resopt, double resophi, double& covxx, double& covyy, double& covxy){
-  covxx = resopt * resopt * cos(phi) * cos(phi) + pt * pt * resophi * resophi * sin(phi) * sin(phi);
-  covyy = resopt * resopt * sin(phi) * sin(phi) + pt * pt * resophi * resophi * cos(phi) * cos(phi);
-  covxy = resopt * resopt * cos(phi) * sin(phi) - pt * pt * resophi * resophi * sin(phi) * cos(phi);
-}
+// these are only for jets, need to find coefficients for other analysis objects
 
 void rotateXY(TMatrix &mat, TMatrix &mat_new, double phi) {
-    double c = cos(phi);
-    double s = sin(phi);
-    double cs = c * s;
-    double c2 = c * c;
-    double s2 = s * s;
+     double c = cos(phi);
+     double s = sin(phi);
+     double cc = c*c;
+     double ss = s*s;
+     double cs = c*s;
 
-    double a = mat(0,0);
-    double b = mat(0,1);  // assume symmetric: mat(1,0) == mat(0,1)
-    double d = mat(1,1);
-
-    mat_new(0,0) = c2*a + 2*cs*b + s2*d;
-    mat_new(1,1) = s2*a - 2*cs*b + c2*d;
-    mat_new(0,1) = cs*(a - d) + (c2 - s2)*b;
-    mat_new(1,0) = mat_new(0,1);  // enforce symmetry
+     mat_new(0,0) = mat(0,0)*cc + mat(1,1)*ss - cs*(mat(1,0) + mat(0,1));
+     mat_new(0,1) = mat(0,1)*cc - mat(1,0)*ss + cs*(mat(0,0) - mat(1,1));
+     mat_new(1,0) = mat(1,0)*cc - mat(0,1)*ss + cs*(mat(0,0) - mat(1,1));
+     mat_new(1,1) = mat(0,0)*ss + mat(1,1)*cc + cs*(mat(1,0) + mat(0,1));
 }
 
 double metsig(AnalysisObjects* ao, string s, float id){  
