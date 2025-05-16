@@ -10,6 +10,7 @@
 #include "AtlMin.h"
 #include "AtlasTRT.h"
 #include "VLLf.h"
+#include "VLLt.h"
 #include "DELPHES2.h"
 #include "dbxParticle.h"
 #include "newpoet.h"
@@ -59,6 +60,7 @@ int main(int argc, char*argv[])
  bool use_cmsodR2=false;
  bool use_cmsnano=false;
  bool use_vllf=false;
+ bool use_vllt=false;
  bool use_DELPHES2=false;
 
  string inptype;
@@ -105,7 +107,7 @@ for (int i = 2; i < argc; i++) {
  if (aselect.BPcount+aselect.Dumpcount < 1) {
   	     std::cout << "No analysis is set to run. Please set at least one.\n";
              std::cout << argv[0] << " filename.root \n"
-                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | POET | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLF]\n"
+                       << " [-inp LVL0 | DELPHES2 | LHCO | FCC | DELPHES | POET | ATLTRT | ATLMIN | ATLASOD | ATLASODR2 | CMSOD | CMSODR2 | CMSNANO | VLLF | VLLT]\n"
                        << " [-BP #] [-D 1|0] [-P ] \n"
                        << " [-Q 1|0] [-HF 1|0] [-S 1|0] \n"
                        << " [-EVT #] [-UN userName] [-V v_freq] \n"  ;
@@ -126,6 +128,7 @@ for (int i = 2; i < argc; i++) {
  else if (inptype == "CMSODR2") { use_cmsodR2 =true;}
  else if (inptype == "CMSNANO") { use_cmsnano =true;}
  else if (inptype == "VLLF")	{ use_vllf =true;}
+ else if (inptype == "VLLT")    { use_vllt =true;}
  else{
    std::cout<<"unknown input mode. exiting..."<<endl;
    exit(-3);
@@ -192,6 +195,9 @@ for (int i = 2; i < argc; i++) {
   }else if (use_vllf){
    cout << "~Now using ATLAS VLL Group f files.~~~~~~ alpha!\n";
    leafname = "nominal";
+  }else if (use_vllt){
+   cout << "~Now using ATLAS VLL TopCPToolkit files.~~~~~~ alpha!\n";
+   leafname = "reco";
   }else{
    leafname = "physics";
   }
@@ -276,6 +282,9 @@ for (int i = 2; i < argc; i++) {
    } else if (use_vllf){
     VLLf *VLLfa=new VLLf((char*)xxx.c_str(),chain);
           VLLfa->Loop(aselect, username);
+   } else if (use_vllt){
+    VLLt *VLLta=new VLLt((char*)xxx.c_str(),chain);
+          VLLta->Loop(aselect, username);
   }
 
   cout << "finished."<<endl;

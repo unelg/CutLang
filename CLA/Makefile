@@ -83,7 +83,7 @@ ifneq (0, ${JUPY})
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o DELPHES2.o fcc.o delphes.o atlasopen.o atlasopenR2.o AtlasTRT.o cmsod.o cmsod2.o AtlMin.o CMSnanoAOD.o VLLf.o newpoet.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o DELPHES2.o fcc.o delphes.o atlasopen.o atlasopenR2.o AtlasTRT.o cmsod.o cmsod2.o AtlMin.o CMSnanoAOD.o VLLf.o VLLt.o newpoet.o
 OBJS_2        = b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
