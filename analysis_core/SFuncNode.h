@@ -12,6 +12,8 @@
 #include "Hemisphere.h"
 #include "mt2_bisect.h"
 #include "TTreeReader.h"
+#include "TMatrixD.h"
+#include "TMatrix.h"
 #include "TMatrixDSym.h"
 #include "TMatrixDSymEigen.h"
 #include "TVectorD.h"

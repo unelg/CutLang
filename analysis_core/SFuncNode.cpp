@@ -330,8 +330,13 @@ double met(AnalysisObjects* ao, string s, float id){
 }
 
 //MetSig
-double resopt(double pt) {return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);}
-double resophi(double pt) {return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);}
+//double resopt(double pt) {return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);} existing coefficients
+
+double resopt(double pt) {return 1.05729 - 0.452141*log(pt) + 0.067873*pow(log(pt),2) - 0.00343522*pow(log(pt),3);} // checkmate's coefficients
+
+//double resophi(double pt) {return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);} // existing coefficients
+
+double resophi(double pt) {return pt < 100 ? 1.23*pow(pt, -0.95) : 0.017;} // checkmate's coefficients
 
 void rotatedcov(double pt, double phi, double resopt, double resophi, double& covxx, double& covyy, double& covxy){
   covxx = resopt * resopt * cos(phi) * cos(phi) + pt * pt * resophi * resophi * sin(phi) * sin(phi);
@@ -339,42 +344,87 @@ void rotatedcov(double pt, double phi, double resopt, double resophi, double& co
   covxy = resopt * resopt * cos(phi) * sin(phi) - pt * pt * resophi * resophi * sin(phi) * cos(phi);
 }
 
-double metsig(AnalysisObjects* ao, string s, float id){
-  double covxx, covyy, covxy, ncovxx, ncovyy, ncovxy, nphi, npt, det,
-  sumcovxx = 0, sumcovyy = 0, sumcovxy = 0, pty = 0, ptx = 0;
+void rotateXY(TMatrix &mat, TMatrix &mat_new, double phi) {
+    double c = cos(phi);
+    double s = sin(phi);
+    double cs = c * s;
+    double c2 = c * c;
+    double s2 = s * s;
 
+    double a = mat(0,0);
+    double b = mat(0,1);  // assume symmetric: mat(1,0) == mat(0,1)
+    double d = mat(1,1);
+
+    mat_new(0,0) = c2*a + 2*cs*b + s2*d;
+    mat_new(1,1) = s2*a - 2*cs*b + c2*d;
+    mat_new(0,1) = cs*(a - d) + (c2 - s2)*b;
+    mat_new(1,0) = mat_new(0,1);  // enforce symmetry
+}
+
+double metsig(AnalysisObjects* ao, string s, float id){  
+  double npt, nphi;
+  TVector2 softVec = ao->met["MET"];
+  TMatrix cov_sum(2,2);
+  TMatrix particle_u(2,2),particle_u_rot(2,2);
   for (int nj=0; nj< ao->jets.at("JET").size(); nj++){
     nphi = ao->jets["JET"].at(nj).lv().Phi();
     npt  = ao->jets["JET"].at(nj).lv().Pt();
-    rotatedcov(npt,nphi,resopt(npt),resophi(npt),covxx,covyy,covxy);
-    sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
-    ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
+    double dphi = TVector2::Phi_mpi_pi(ao->met["MET"].Phi() - nphi);
+    particle_u(0,0) = pow(resopt(npt)*npt,2);
+    particle_u(1,1) = pow(resophi(npt)*npt,2);
+    rotateXY(particle_u, particle_u_rot, dphi);
+    cov_sum += particle_u_rot;
+	  
   }  
   for (int nj=0; nj<ao->muos.at("MUO").size(); nj++){
     nphi = ao->muos["MUO"].at(nj).lv().Phi();
     npt  = ao->muos["MUO"].at(nj).lv().Pt();
-    rotatedcov(npt,nphi, resopt(npt), resophi(npt),covxx, covyy, covxy);
-    sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
-    ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
+    double dphi = TVector2::Phi_mpi_pi(ao->met["MET"].Phi() - nphi);
+    particle_u(0,0) = pow(resopt(npt)*npt,2);
+    particle_u(1,1) = pow(resophi(npt)*npt,2);
+    rotateXY(particle_u, particle_u_rot, dphi);
+    cov_sum += particle_u_rot;
   }
   for (int nj=0; nj<ao->eles.at("ELE").size(); nj++){
     nphi = ao->eles["ELE"].at(nj).lv().Phi();
     npt  = ao->eles["ELE"].at(nj).lv().Pt();
-    rotatedcov(npt,nphi,resopt(npt),resophi(npt),covxx,covyy,covxy);
-    sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
-    ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
+    double dphi = TVector2::Phi_mpi_pi(ao->met["MET"].Phi() - nphi);
+    particle_u(0,0) = pow(resopt(npt)*npt,2);
+    particle_u(1,1) = pow(resophi(npt)*npt,2);
+    rotateXY(particle_u, particle_u_rot, dphi);
+    cov_sum += particle_u_rot;
   }
   for (int nj=0; nj<ao->gams.at("PHO").size(); nj++){
     nphi = ao->gams["PHO"].at(nj).lv().Phi();
     npt  = ao->gams["PHO"].at(nj).lv().Pt();
-    rotatedcov(npt,nphi,resopt(npt), resophi(npt),covxx,covyy,covxy);
-    sumcovxx += covxx; sumcovyy += covyy; sumcovxy += covxy;
-    ptx += sin(nphi)*npt; pty += cos(nphi)*npt;
+    double dphi = TVector2::Phi_mpi_pi(ao->met["MET"].Phi() - nphi);
+    particle_u(0,0) = pow(resopt(npt)*npt,2);
+    particle_u(1,1) = pow(resophi(npt)*npt,2);
+    rotateXY(particle_u, particle_u_rot, dphi);
+    cov_sum += particle_u_rot;
+  }
+  // soft term
+  particle_u(0,0) = 10*10;
+  particle_u(1,1) = 10*10;
+  double dphi2 = TVector2::Phi_mpi_pi(ao->met["MET"].Phi() - softVec.Phi());
+  rotateXY(particle_u, particle_u_rot, dphi2);
+  cov_sum+=particle_u_rot;
+
+  double varL = cov_sum(0,0);
+  double varT = cov_sum(1,1);
+  double covLT = cov_sum(0,1);
+
+  double significance = 0;
+  double rho = 0;
+
+  double met = ao->met["MET"].Mod();
+  if( varL != 0 ){
+    rho = covLT / sqrt( varL * varT ) ;
+    if (fabs( rho ) >= 0.9 ) rho = 0; //too large - ignore it
+    significance = met/sqrt((varL*(1-pow(rho,2))));
   }
  
-  det = sumcovxx * sumcovyy - sumcovxy * sumcovxy;
-  ncovxx =  sumcovyy/det; ncovyy = sumcovxx/det; ncovxy = -sumcovxy/det;        
-  return ptx * ptx * ncovxx + pty * pty * ncovyy + 2 * ptx * pty * ncovxy;
+  return significance;
 }
 
 //MetSig end
