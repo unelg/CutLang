@@ -1050,10 +1050,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                            int id=((ObjectNode*)it->second)->type;  //type is used in a swicth to loop over particles
                                            $$=new SFuncNode(fSphericity,id, it->first, it->second);
                                        }
-                         }                                                                         
+                         }
        | MET {  $$=new SFuncNode(met,1, "MET"); }
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
-       | HARDMET {  $$=new SFuncNode(metsig, 1, "HARDMET"); }
+       | HARDMET {  $$=new SFuncNode(hardmet, 1, "HARDMET"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
        | ID '(' particules ')' {  cout << $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\n"; 
