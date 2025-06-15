@@ -376,6 +376,7 @@ double count(AnalysisObjects* ao, string s, float id);
 double getIndex(AnalysisObjects* ao, string s, float id); // new internal function
 double met   (AnalysisObjects* ao, string s, float id);
 double metsig(AnalysisObjects* ao, string s, float id);
+double hardmet(AnalysisObjects* ao, string s, float id);
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id);
 double hlt_trg(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);

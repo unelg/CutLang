@@ -88,6 +88,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [iI][nN][dD][eE][xX] return IDX;
 
 [Mm][eE][tT][sS][iI][gG] return METSIGNIF;
+"hardMET" return HARDMET;
 "applyHM" return APPLYHM;
 "applyPTF"|"scalePT"  return APPLYPTF;
 "applyEF"|"scaleE"  return APPLYEF;

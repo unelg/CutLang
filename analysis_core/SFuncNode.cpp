@@ -330,13 +330,10 @@ double met(AnalysisObjects* ao, string s, float id){
 }
 
 //MetSig
-//double resopt(double pt) {return sqrt((pt * pt) * pow((5.6 / pt), 2) + pow((1.25 / sqrt(pt)), 2) + 0.0332);} existing coefficients
 
-double resopt(double pt) {return 1.05729 - 0.452141*log(pt) + 0.067873*pow(log(pt),2) - 0.00343522*pow(log(pt),3);} // checkmate's coefficients
+double resopt(double pt) {return 1.083 - 0.4692*log(pt) + 0.0713*pow(log(pt),2) - 0.00366*pow(log(pt),3);} 
 
-//double resophi(double pt) {return sqrt((pt * pt) * pow((4.75 / pt), 2) + pow((0.426 / sqrt(pt)), 2) + 0.0232);} // existing coefficients
-
-double resophi(double pt) {return pt < 100 ? 1.23*pow(pt, -0.95) : 0.017;} // checkmate's coefficients
+double resophi(double pt) {return pt < 100 ? 1.23*pow(pt, -0.95) : 0.017;} 
 // these are only for jets, need to find coefficients for other analysis objects
 
 void rotateXY(TMatrix &mat, TMatrix &mat_new, double phi) {
@@ -414,11 +411,41 @@ double metsig(AnalysisObjects* ao, string s, float id){
     if (fabs( rho ) >= 0.9 ) rho = 0; //too large - ignore it
     significance = met/sqrt((varL*(1-pow(rho,2))));
   }
- 
+  
   return significance;
 }
 
 //MetSig end
+
+// HARDMET
+
+double hardmet(AnalysisObjects* ao, string s, float id){
+   TLorentzVector hardMET;
+   // jet
+   for (int nj=0; nj<ao->jets.at("JET").size();nj++) {
+      TLorentzVector jetLV = ao->jets["JET"].at(nj).lv();
+      hardMET -= jetLV;
+   }
+   // electron
+   for (int nj=0; nj<ao->eles.at("ELE").size();nj++) {
+      TLorentzVector eleLV = ao->eles["ELE"].at(nj).lv();
+      hardMET -= eleLV;
+   }
+   // muon
+   for (int nj=0; nj<ao->muos.at("MUO").size();nj++) {
+      TLorentzVector muoLV = ao->muos["MUO"].at(nj).lv();
+      hardMET -= muoLV;
+   }
+   // photon
+   for (int nj=0; nj<ao->gams.at("PHO").size();nj++) {
+      TLorentzVector phoLV = ao->muos["PHO"].at(nj).lv();
+      hardMET -= phoLV;
+   }
+   double hardMETPT = hardMET.Pt();
+   return hardMETPT;
+
+}
+
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
      bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
