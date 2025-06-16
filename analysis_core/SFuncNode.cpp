@@ -438,7 +438,7 @@ double hardmet(AnalysisObjects* ao, string s, float id){
    }
    // photon
    for (int nj=0; nj<ao->gams.at("PHO").size();nj++) {
-      TLorentzVector phoLV = ao->muos["PHO"].at(nj).lv();
+      TLorentzVector phoLV = ao->gams["PHO"].at(nj).lv();
       hardMET -= phoLV;
    }
    double hardMETPT = hardMET.Pt();
@@ -446,6 +446,38 @@ double hardmet(AnalysisObjects* ao, string s, float id){
 
 }
 
+double hardmet2(AnalysisObjects* ao, string s1, float id1, string s2, float id2) {
+  TLorentzVector hardMET(0,0,0,0);
+  particleType pid1 = (particleType)id1;
+  particleType pid2 = (particleType)id2;
+  // First vector
+    switch (pid1) {
+        case truth_t:    for (UInt_t i=0; i<ao->truth.at(s1).size(); i++) hardMET -= ao->truth.at(s1).at(i).lv(); break;
+        case muon_t:     for (UInt_t i=0; i<ao->muos.at(s1).size(); i++)  hardMET -= ao->muos.at(s1).at(i).lv();  break;
+        case electron_t: for (UInt_t i=0; i<ao->eles.at(s1).size(); i++)  hardMET -= ao->eles.at(s1).at(i).lv();  break;
+        case tau_t:      for (UInt_t i=0; i<ao->taus.at(s1).size(); i++)  hardMET -= ao->taus.at(s1).at(i).lv();  break;
+        case jet_t:      for (UInt_t i=0; i<ao->jets.at(s1).size(); i++)  hardMET -= ao->jets.at(s1).at(i).lv();  break;
+        case fjet_t:     for (UInt_t i=0; i<ao->ljets.at(s1).size(); i++) hardMET -= ao->ljets.at(s1).at(i).lv(); break;
+        case photon_t:   for (UInt_t i=0; i<ao->gams.at(s1).size(); i++)  hardMET -= ao->gams.at(s1).at(i).lv();  break;
+        case combo_t:    for (UInt_t i=0; i<ao->combos.at(s1).size(); i++) hardMET -= ao->combos.at(s1).at(i).lv(); break;
+        default:         std::cerr << "hardmet: No such Particle Type: " << pid1 << "\n"; break;
+    }
+    // Second vector
+    switch (pid2) {
+        case truth_t:    for (UInt_t i=0; i<ao->truth.at(s2).size(); i++) hardMET -= ao->truth.at(s2).at(i).lv(); break;
+        case muon_t:     for (UInt_t i=0; i<ao->muos.at(s2).size(); i++)  hardMET -= ao->muos.at(s2).at(i).lv();  break;
+        case electron_t: for (UInt_t i=0; i<ao->eles.at(s2).size(); i++)  hardMET -= ao->eles.at(s2).at(i).lv();  break;
+        case tau_t:      for (UInt_t i=0; i<ao->taus.at(s2).size(); i++)  hardMET -= ao->taus.at(s2).at(i).lv();  break;
+        case jet_t:      for (UInt_t i=0; i<ao->jets.at(s2).size(); i++)  hardMET -= ao->jets.at(s2).at(i).lv();  break;
+        case fjet_t:     for (UInt_t i=0; i<ao->ljets.at(s2).size(); i++) hardMET -= ao->ljets.at(s2).at(i).lv(); break;
+        case photon_t:   for (UInt_t i=0; i<ao->gams.at(s2).size(); i++)  hardMET -= ao->gams.at(s2).at(i).lv();  break;
+        case combo_t:    for (UInt_t i=0; i<ao->combos.at(s2).size(); i++) hardMET -= ao->combos.at(s2).at(i).lv(); break;
+        default:         std::cerr << "hardmet: No such Particle Type: " << pid2 << "\n"; break;
+    }
+
+    return hardMET.Pt();
+
+}
 
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id){
      bool retval=ao->evt.HLT_IsoMu17_eta2p1_LooseIsoPFTau20;
@@ -571,8 +603,6 @@ double userfuncF(AnalysisObjects* ao, string s, int id, double l1, double l2,  d
    double retvalue= (*func)(l1, l2, m1, l3);
    return (retvalue);
 }
-
-
 
 
 std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1) {
