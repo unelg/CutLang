@@ -146,6 +146,8 @@ private:
     bool ext;
     int type = 1;
     float value = -1.0;
+    string str1, str2;
+    int type1, type2;
     std::vector<myParticle*> inputParticlesA;
     std::vector<myParticle*> inputParticlesB;
     std::vector<myParticle*> inputParticlesC;
@@ -355,7 +357,6 @@ SFuncNode(double (*func)(AnalysisObjects* ao, string s, int id, double pt1, doub
 }
 
 
-
 //---------------------------end of extern function types
     void setTTRaddr( TTreeReader *ttr, string s);   
     virtual double evaluate(AnalysisObjects* ao) override ;
@@ -377,6 +378,8 @@ double getIndex(AnalysisObjects* ao, string s, float id); // new internal functi
 double met   (AnalysisObjects* ao, string s, float id);
 double metsig(AnalysisObjects* ao, string s, float id);
 double hardmet(AnalysisObjects* ao, string s, float id);
+double hardmet2(AnalysisObjects* ao, string s, float id);
+double hardmetphi(AnalysisObjects* ao, string s, float id);
 double hlt_iso_mu(AnalysisObjects* ao, string s, float id);
 double hlt_trg(AnalysisObjects* ao, string s, float id);
 double ht(AnalysisObjects* ao, string s, float id);
@@ -388,7 +391,6 @@ double userfuncE(AnalysisObjects* ao, string s, int id, TLorentzVector l1, TLore
                                                             double (*func)(TLorentzVector la, TLorentzVector lb, TLorentzVector amet ) );
 double userfuncF(AnalysisObjects* ao, string s, int id, double l1, double l2,  double m1, double l3,
                                                             double (*func)(double la, double lb, double amet, double lab ) );
-
 std::vector<TLorentzVector> negsumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> sumobj(std::vector<TLorentzVector> myjets, int p1);
 std::vector<TLorentzVector> fhemisphere(std::vector<TLorentzVector> myjets, int p1);

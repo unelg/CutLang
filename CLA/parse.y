@@ -103,7 +103,7 @@ std::map< std::string, int> systBANK;
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
 %token ELE MUO LEP TAU PHO JET BJET QGJET FJET NUMET METLV GEN TRK //particle types
 %token TRGE TRGM SKPE SKPH SAVE CSV 
-%token IDX METSIGNIF HARDMET
+%token IDX METSIGNIF HARDMET HARDMETPHI
 %token TTBARNNLOREC OME
 %token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
 %token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
@@ -1054,6 +1054,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
        | MET {  $$=new SFuncNode(met,1, "MET"); }
        | METSIGNIF {  $$=new SFuncNode(metsig, 3.1416, "METSIG"); }
        | HARDMET {  $$=new SFuncNode(hardmet, 1, "HARDMET"); }
+       | HARDMETPHI {  $$=new SFuncNode(hardmetphi, 1, "HARDMETPHI"); }
        | ALL {  $$=new SFuncNode(all,1, "all"); }
        | NONE {  $$=new SFuncNode(none,1, "none"); }
        | ID '(' particules ')' {  cout << $1 << " is an NTUPLE variable for "<<Initializations->at(0) <<"\n"; 

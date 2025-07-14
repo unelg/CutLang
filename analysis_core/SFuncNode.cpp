@@ -420,30 +420,164 @@ double metsig(AnalysisObjects* ao, string s, float id){
 // HARDMET
 
 double hardmet(AnalysisObjects* ao, string s, float id){
-   TLorentzVector hardMET;
-   // jet
-   for (int nj=0; nj<ao->jets.at("JET").size();nj++) {
-      TLorentzVector jetLV = ao->jets["JET"].at(nj).lv();
-      hardMET -= jetLV;
-   }
-   // electron
-   for (int nj=0; nj<ao->eles.at("ELE").size();nj++) {
-      TLorentzVector eleLV = ao->eles["ELE"].at(nj).lv();
-      hardMET -= eleLV;
-   }
-   // muon
-   for (int nj=0; nj<ao->muos.at("MUO").size();nj++) {
-      TLorentzVector muoLV = ao->muos["MUO"].at(nj).lv();
-      hardMET -= muoLV;
-   }
-   // photon
-   for (int nj=0; nj<ao->gams.at("PHO").size();nj++) {
-      TLorentzVector phoLV = ao->gams["PHO"].at(nj).lv();
-      hardMET -= phoLV;
-   }
-   double hardMETPT = hardMET.Pt();
-   return hardMETPT;
+    TLorentzVector hardMET;
 
+    // First, select all jets that pass pt > 30 and |eta| < 5
+    std::vector<TLorentzVector> selectedJets;
+    for (int nj = 0; nj < ao->jets.at("JET").size(); nj++) {
+        TLorentzVector jetLV = ao->jets["JET"].at(nj).lv();
+        if (jetLV.Pt() > 30 && fabs(jetLV.Eta()) < 5) {
+            selectedJets.push_back(jetLV);
+        }
+    }
+
+    // Add jets to hardMET only if they are not close to any selected electron or muon (ΔR ≥ 0.4)
+    for (const auto& jetLV : selectedJets) {
+        bool overlaps = false;
+
+        // Check ΔR with electrons
+        for (int ne = 0; ne < ao->eles.at("ELE").size(); ne++) {
+            TLorentzVector eleLV = ao->eles["ELE"].at(ne).lv();
+            if (eleLV.Pt() > 40 && fabs(eleLV.Eta()) < 2.4 &&
+                jetLV.DeltaR(eleLV) < 0.4) {
+                overlaps = true;
+                break;
+            }
+        }
+
+        // Check ΔR with muons
+        if (!overlaps) {
+            for (int nm = 0; nm < ao->muos.at("MUO").size(); nm++) {
+                TLorentzVector muoLV = ao->muos["MUO"].at(nm).lv();
+                if (muoLV.Pt() > 40 && fabs(muoLV.Eta()) < 2.4 &&
+                    jetLV.DeltaR(muoLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+        }
+
+        if (!overlaps) {
+            hardMET -= jetLV;
+        }
+    }
+
+    // Add electrons only if they are not close to any selected jet (ΔR ≥ 0.4)
+    for (int ne = 0; ne < ao->eles.at("ELE").size(); ne++) {
+        TLorentzVector eleLV = ao->eles["ELE"].at(ne).lv();
+        if (eleLV.Pt() > 40 && fabs(eleLV.Eta()) < 2.4) {
+            bool overlaps = false;
+            for (const auto& jetLV : selectedJets) {
+                if (jetLV.DeltaR(eleLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            if (!overlaps) {
+                hardMET -= eleLV;
+            }
+        }
+    }
+
+    // Add muons only if they are not close to any selected jet (ΔR ≥ 0.4)
+    for (int nm = 0; nm < ao->muos.at("MUO").size(); nm++) {
+        TLorentzVector muoLV = ao->muos["MUO"].at(nm).lv();
+        if (muoLV.Pt() > 40 && fabs(muoLV.Eta()) < 2.4) {
+            bool overlaps = false;
+            for (const auto& jetLV : selectedJets) {
+                if (jetLV.DeltaR(muoLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            if (!overlaps) {
+                hardMET -= muoLV;
+            }
+        }
+    }
+    double hardMETPT = hardMET.Pt();
+    return hardMETPT;
+}
+
+double hardmetphi(AnalysisObjects* ao, string s, float id){
+    TLorentzVector hardMETphi;
+
+    // First, select all jets that pass pt > 30 and |eta| < 5
+    std::vector<TLorentzVector> selectedJets;
+    for (int nj = 0; nj < ao->jets.at("JET").size(); nj++) {
+        TLorentzVector jetLV = ao->jets["JET"].at(nj).lv();
+        if (jetLV.Pt() > 30 && fabs(jetLV.Eta()) < 5) {
+            selectedJets.push_back(jetLV);
+        }
+    }
+
+    // Add jets to hardMETphi only if they are not close to any selected electron or muon (ΔR ≥ 0.4)
+    for (const auto& jetLV : selectedJets) {
+        bool overlaps = false;
+
+        // Check ΔR with electrons
+        for (int ne = 0; ne < ao->eles.at("ELE").size(); ne++) {
+            TLorentzVector eleLV = ao->eles["ELE"].at(ne).lv();
+            if (eleLV.Pt() > 40 && fabs(eleLV.Eta()) < 2.4 &&
+                jetLV.DeltaR(eleLV) < 0.4) {
+                overlaps = true;
+                break;
+            }
+        }
+
+        // Check ΔR with muons
+        if (!overlaps) {
+            for (int nm = 0; nm < ao->muos.at("MUO").size(); nm++) {
+                TLorentzVector muoLV = ao->muos["MUO"].at(nm).lv();
+                if (muoLV.Pt() > 40 && fabs(muoLV.Eta()) < 2.4 &&
+                    jetLV.DeltaR(muoLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+        }
+
+        if (!overlaps) {
+            hardMETphi -= jetLV;
+        }
+    }
+
+    // Add electrons only if they are not close to any selected jet (ΔR ≥ 0.4)
+    for (int ne = 0; ne < ao->eles.at("ELE").size(); ne++) {
+        TLorentzVector eleLV = ao->eles["ELE"].at(ne).lv();
+        if (eleLV.Pt() > 40 && fabs(eleLV.Eta()) < 2.4) {
+            bool overlaps = false;
+            for (const auto& jetLV : selectedJets) {
+                if (jetLV.DeltaR(eleLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            if (!overlaps) {
+                hardMETphi -= eleLV;
+            }
+        }
+    }
+
+    // Add muons only if they are not close to any selected jet (ΔR ≥ 0.4)
+    for (int nm = 0; nm < ao->muos.at("MUO").size(); nm++) {
+        TLorentzVector muoLV = ao->muos["MUO"].at(nm).lv();
+        if (muoLV.Pt() > 40 && fabs(muoLV.Eta()) < 2.4) {
+            bool overlaps = false;
+            for (const auto& jetLV : selectedJets) {
+                if (jetLV.DeltaR(muoLV) < 0.4) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            if (!overlaps) {
+                hardMETphi -= muoLV;
+            }
+        }
+    }
+
+    double hardMETPHI = hardMETphi.Phi();
+    return hardMETPHI;
 }
 
 double hardmet2(AnalysisObjects* ao, string s1, float id1, string s2, float id2) {
