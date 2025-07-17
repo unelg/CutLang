@@ -118,11 +118,11 @@ DEBUG("Jets ok\n");
 //LEPTONS
       for (int ii=1; ii<2; ii++){
         int nlep=0;
-        if( (int)onelep_type >0 ) nlep=1;
+        //if( (int)onelep_type >0 ) nlep=1;
         if( (int)dilep_type >0  ) nlep=2;
         if( (int)trilep_type >0 ) nlep=3;
         if( (int)quadlep_type>0 ) nlep=4;
-        if( (int)fivelep_type>0 ) nlep=5;
+        //if( (int)fivelep_type>0 ) nlep=5;
 
         if (nlep==0) break;
         alv0.SetPtEtaPhiE( lep_Pt_0*0.001, lep_Eta_0, lep_Phi_0, lep_E_0*0.001 ); // all in GeV       
@@ -132,7 +132,7 @@ DEBUG("Jets ok\n");
             adbxm->setPdgID( lep_ID_0 );
             adbxm->setParticleIndx(0);
             adbxm->setZ0(lep_Z0SinTheta_0 );
-            adbxm->setIsLoose(lep_isolationFCLoose_0);
+            adbxm->setIsLoose(lep_isLooseLH_0);
             adbxm->setIsMedium(lep_isMedium_0);
             muons.push_back(*adbxm);
             delete adbxm;
@@ -143,7 +143,7 @@ DEBUG("Jets ok\n");
             adbxe->setPdgID( lep_ID_0 );
             adbxe->setParticleIndx(0);
             adbxe->setZ0(lep_Z0SinTheta_0 );
-            adbxe->setIsLoose(lep_isolationFCLoose_0);
+            adbxe->setIsLoose(lep_isLooseLH_0);
             adbxe->setIsTight(lep_isTightLH_0);
             electrons.push_back(*adbxe);
             delete adbxe;
@@ -157,7 +157,7 @@ DEBUG("Jets ok\n");
             adbxm->setPdgID( lep_ID_1 );
             adbxm->setParticleIndx(1);
             adbxm->setZ0(lep_Z0SinTheta_1 );
-            adbxm->setIsLoose(lep_isolationFCLoose_1);
+            adbxm->setIsLoose(lep_isLooseLH_1);
             adbxm->setIsMedium(lep_isMedium_1);
             muons.push_back(*adbxm);
             delete adbxm;
@@ -168,7 +168,7 @@ DEBUG("Jets ok\n");
             adbxe->setPdgID( lep_ID_1 );
             adbxe->setParticleIndx(1);
             adbxe->setZ0(lep_Z0SinTheta_1 );
-            adbxe->setIsLoose(lep_isolationFCLoose_1);
+            adbxe->setIsLoose(lep_isLooseLH_1);
             adbxe->setIsTight(lep_isTightLH_1);
             electrons.push_back(*adbxe);
             delete adbxe;
@@ -182,7 +182,7 @@ DEBUG("Jets ok\n");
             adbxm->setPdgID( lep_ID_2 );
             adbxm->setParticleIndx(2);
             adbxm->setZ0(lep_Z0SinTheta_2 );
-            adbxm->setIsLoose(lep_isolationFCLoose_2);
+            adbxm->setIsLoose(lep_isLooseLH_2);
             adbxm->setIsMedium(lep_isMedium_2);
             muons.push_back(*adbxm);
             delete adbxm;
@@ -193,7 +193,7 @@ DEBUG("Jets ok\n");
             adbxe->setPdgID( lep_ID_2 );
             adbxe->setParticleIndx(2);
             adbxe->setZ0(lep_Z0SinTheta_2 );
-            adbxe->setIsLoose(lep_isolationFCLoose_2);
+            adbxe->setIsLoose(lep_isLooseLH_2);
             adbxe->setIsTight(lep_isTightLH_2);
             electrons.push_back(*adbxe);
             delete adbxe;
@@ -207,7 +207,7 @@ DEBUG("Jets ok\n");
             adbxm->setPdgID( lep_ID_3 );
             adbxm->setParticleIndx(3);
             adbxm->setZ0(lep_Z0SinTheta_3 );
-            adbxm->setIsLoose(lep_isolationFCLoose_3);
+            adbxm->setIsLoose(lep_isLooseLH_3);
             adbxm->setIsMedium(lep_isMedium_3);
             muons.push_back(*adbxm);
             delete adbxm;
@@ -218,58 +218,8 @@ DEBUG("Jets ok\n");
             adbxe->setPdgID( lep_ID_3 );
             adbxe->setParticleIndx(3);
             adbxe->setZ0(lep_Z0SinTheta_3 );
-            adbxe->setIsLoose(lep_isolationFCLoose_3);
+            adbxe->setIsLoose(lep_isLooseLH_3);
             adbxe->setIsTight(lep_isTightLH_3);
-            electrons.push_back(*adbxe);
-            delete adbxe;
-        }
-        if (nlep==4) break;
-        alv4.SetPtEtaPhiE( lep_Pt_4*0.001, lep_Eta_4, lep_Phi_4, lep_E_4*0.001 ); // all in GeV
-//4
-        if (abs(lep_ID_4)==13) { // muons
-            adbxm= new dbxMuon(alv4);
-            adbxm->setCharge(lep_ID_4 / 13 );
-            adbxm->setPdgID( lep_ID_4 );
-            adbxm->setParticleIndx(4);
-            adbxm->setZ0(lep_Z0SinTheta_4 );
-            adbxm->setIsLoose(lep_isolationFCLoose_4);
-            adbxm->setIsMedium(lep_isMedium_4);
-            muons.push_back(*adbxm);
-            delete adbxm;
-        }
-        if (abs(lep_ID_4)==11) { // electrons
-            adbxe= new dbxElectron(alv4);
-            adbxe->setCharge(lep_ID_4 / 11 );
-            adbxe->setPdgID( lep_ID_4 );
-            adbxe->setParticleIndx(4);
-            adbxe->setZ0(lep_Z0SinTheta_4 );
-            adbxe->setIsLoose(lep_isolationFCLoose_4);
-            adbxe->setIsTight(lep_isTightLH_4);
-            electrons.push_back(*adbxe);
-            delete adbxe;
-        }
-        if (nlep==5) break;
-        alv5.SetPtEtaPhiE( lep_Pt_5*0.001, lep_Eta_5, lep_Phi_5, lep_E_5*0.001 ); // all in GeV
-//5
-        if (abs(lep_ID_5)==13) { // muons
-            adbxm= new dbxMuon(alv5);
-            adbxm->setCharge(lep_ID_5 / 13 );
-            adbxm->setPdgID( lep_ID_5 );
-            adbxm->setParticleIndx(1);
-            adbxm->setZ0(lep_Z0SinTheta_5 );
-            adbxm->setIsLoose(lep_isolationFCLoose_5);
-            adbxm->setIsMedium(lep_isMedium_5);
-            muons.push_back(*adbxm);
-            delete adbxm;
-        }
-        if (abs(lep_ID_5)==11) { // electrons
-            adbxe= new dbxElectron(alv5);
-            adbxe->setCharge(lep_ID_5 / 11 );
-            adbxe->setPdgID( lep_ID_5 );
-            adbxe->setParticleIndx(1);
-            adbxe->setZ0(lep_Z0SinTheta_5 );
-            adbxe->setIsLoose(lep_isolationFCLoose_5);
-            adbxe->setIsTight(lep_isTightLH_5);
             electrons.push_back(*adbxe);
             delete adbxe;
         }
@@ -280,8 +230,8 @@ DEBUG("Jets ok\n");
 
 //------------ auxiliary information -------
         anevt.run_no=runNumber;
-	anevt.ChannelNo=mcChannelNumber;
-	anevt.RunYear=RunYear;
+	    anevt.ChannelNo=mcChannelNumber;
+	    anevt.RunYear=RunYear;
         anevt.correction_weight=1.0;
         anevt.luminosity_weight=1.0;
         anevt.weight_xsec=1.0;
@@ -300,7 +250,7 @@ DEBUG("Jets ok\n");
 	anevt.weight_jvt=jvtSF_customOR;
         anevt.z_vtx_weight = 1.0;
         anevt.weight_bTagSF_77 = bTagSF_weight_DL1r_Continuous;
-        anevt.weight_leptonSF = custTrigSF_TightElMediumMuID_FCLooseIso_DLT;
+        anevt.weight_leptonSF = custTrigSF_TightElMediumMuID_FCLooseIso_SLTorDLT;
         anevt.vxpType=0;
         anevt.lar_Error=0;
         anevt.core_Flags=0;
