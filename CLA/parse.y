@@ -1086,8 +1086,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                       if (asys < 6){
                                          //if (Initializations->at(0)=="ATLMIN" || Initializations->at(0)=="VLLF")  nsys="nominal";
                                          //if (Initializations->at(0)=="CMSNANO") nsys="Events";
-					 std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
-                                         nsys=firstEntry.first;
+					 if (Initializations->at(0)=="VLLT") nsys="reco";
+					 else {
+					 	std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                         	nsys=firstEntry.first;
+					 }
 
                                       }
                                       DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
@@ -1189,8 +1192,11 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                       if (asys < 6){
                          //if (Initializations->at(0)=="ATLMIN")  nsys="nominal";
                          //if (Initializations->at(0)=="CMSNANO") nsys="Events";
-				std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
-                                nsys=firstEntry.first;
+			      if (Initializations->at(0)=="VLLT") nsys="reco";
+			      else {
+				   std::pair<const std::string, TTreeReader*> &firstEntry = *ttr_map.begin();
+                                   nsys=firstEntry.first;
+		              }
 
                       }
                       DEBUG(" asys:"<< asys<< "Special SFunc:"<<nsys<<"\n");
