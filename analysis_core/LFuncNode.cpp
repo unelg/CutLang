@@ -195,5 +195,12 @@ double pCross(dbxParticle* apart, dbxParticle* apart2) {
     double result = vect1.Cross(vect2).Mag();
     DEBUG("Magnitude of result vector: "<<result<<"\t");
     return result;
+}
 
+double pDot(dbxParticle* apart, dbxParticle* apart2) {
+   TVector3 vect1 = apart->lv().Vect();
+   TVector3 vect2 = apart2->lv().Vect();
+   double result = vect1.Dot(vect2);
+   DEBUG("Result of dot product: "<<result<<"\t");
+   return result;
 }

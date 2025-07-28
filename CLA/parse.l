@@ -146,6 +146,7 @@ daughterY return DAUGHTERY;
 [dD][pP][hH][iI] return DPHI;
 [dD][eE][tT][aA] return DETA;
 [cC][rR][oO][sS][sS] return CROSS;
+[dD][oO][tT] return DOTP;
 [sS][iI][zZ][eE]|"Count"|"NumOf" return NUMOF;//no arg funcs 
 [nN][bB][jJ] return NBF;
 [fF][hH][tT] return HT; // attention

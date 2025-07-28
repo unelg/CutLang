@@ -11,8 +11,12 @@ define axb = Cross(lepA[0], jetB[0]) # "Cross" function returns the magnitude of
 
 define ptrel = axb / P(jetB[0])
 
+define adotb : Dot(lepA[0], jetB[0]) # "Dot" function returns scaler 
+				     # Based on TVector3::Dot
+
 region test
   select Size(lepA) >= 1
   select Size(jetB) >= 1
   print "axb:" axb
   print "ptrel:" ptrel
+  print "adotb:" adotb

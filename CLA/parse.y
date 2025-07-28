@@ -105,7 +105,7 @@ std::map< std::string, int> systBANK;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF HARDMET HARDMETPHI
 %token TTBARNNLOREC OME
-%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE CROSS //functions
+%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE CROSS DOTP //functions
 %token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
@@ -884,6 +884,18 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(pCross,newList1,newList,"pCross");
                     }
+        | list2 DOTP { 		vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(pDot,newList1,newList,"pDot");
+                    }
+        | DOTP list2 { 		vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(pDot,newList1,newList,"pDot");
+                    }
 // ID should be here. it contains object IDs
         | NUMOF '(' ID ')'  {     //     map<string,vector<myParticle*> >::iterator itdef=ListParts->find("HiggsBoosted");
                                        map<string,Node*>::iterator it = ObjectCuts->find($3);
@@ -984,7 +996,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                 }
                        }
 
-      | FMTR '(' ID ',' MET ')'{   map<string,Node*>::iterator it = ObjectCuts->find($3);
+      | FMTR '(' ID ',' METLV '[' index ']' ')'{   map<string,Node*>::iterator it = ObjectCuts->find($3);
                                    if (it == ObjectCuts->end()) {
                                          std::string message = "Object not defined: ";
                                          message += $3;

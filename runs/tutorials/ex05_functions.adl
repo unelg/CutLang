@@ -38,6 +38,8 @@ define HT : fHT(jets)
 # Calculate the "stransverse mass" MT2.
 # Use the available fMT2(obj, obj, obj) function to calculate a MT2j0j1 quantity:
 define MT2j0j1 = fMT2(jets[0], jets[1], METLV[0])
+# Calculate fMTR (external function)
+define MTR = fMTR(jets, METLV[0])
 
 # EVENT SELECTION
 region hadronic
