@@ -1,0 +1,18 @@
+# Cross product of two vectors 
+
+object lepA : ELE
+  select Pt(ELE) > 10
+
+object jetB : JET
+  select Pt(JET) > 25
+
+define axb = Cross(lepA[0], jetB[0]) # "Cross" function returns the magnitude of the cross product of two vectors 
+				     # Based on TVector3::Cross
+
+define ptrel = axb / P(jetB[0])
+
+region test
+  select Size(lepA) >= 1
+  select Size(jetB) >= 1
+  print "axb:" axb
+  print "ptrel:" ptrel

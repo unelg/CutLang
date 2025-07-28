@@ -105,7 +105,7 @@ std::map< std::string, int> systBANK;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF HARDMET HARDMETPHI
 %token TTBARNNLOREC OME
-%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE //functions
+%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE CROSS //functions
 %token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
@@ -871,6 +871,18 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         vector<myParticle*> newList1;
                                         TmpParticle1.swap(newList1);
                                         $$=new LFuncNode(dEta,newList1,newList,"dEta");
+                    }
+        | list2 CROSS { 		vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(pCross,newList1,newList,"pCross");
+                    }
+        | CROSS list2 { 		vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        vector<myParticle*> newList1;
+                                        TmpParticle1.swap(newList1);
+                                        $$=new LFuncNode(pCross,newList1,newList,"pCross");
                     }
 // ID should be here. it contains object IDs
         | NUMOF '(' ID ')'  {     //     map<string,vector<myParticle*> >::iterator itdef=ListParts->find("HiggsBoosted");

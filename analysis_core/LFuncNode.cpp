@@ -188,3 +188,12 @@ double dEta(dbxParticle* apart,dbxParticle* apart2){
     DEBUG(" dEta:"<<deltaEta<<"\t");
     return deltaEta;
 }
+
+double pCross(dbxParticle* apart, dbxParticle* apart2) {
+    TVector3 vect1 = apart->lv().Vect(); 
+    TVector3 vect2 = apart2->lv().Vect();
+    double result = vect1.Cross(vect2).Mag();
+    DEBUG("Magnitude of result vector: "<<result<<"\t");
+    return result;
+
+}

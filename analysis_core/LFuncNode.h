@@ -44,4 +44,5 @@ public:
 double dR  (dbxParticle* apart,dbxParticle* apart2);
 double dPhi(dbxParticle* apart,dbxParticle* apart2);
 double dEta(dbxParticle* apart,dbxParticle* apart2);
+double pCross(dbxParticle* apart, dbxParticle* apart2);
 #endif /* LFuncNode_h */
