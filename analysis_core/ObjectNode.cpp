@@ -138,12 +138,16 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
          if(  ao->jets.find(basename)!=ao->jets.end()) basename=symbol; 
       } // if it is here we already have basename jets
 
+      if (type==fjet_t && basename != "FJET" && ccount ==1 ) {
+      	  if ( ao->ljets.find(basename)!=ao->ljets.end()) basename=symbol;
+      }
       if (type==muon_t){  
          if(  ao->eles.find(basename)!=ao->eles.end()) basename=symbol; 
       } // if it is here we already have basename electrons
       if (type == combo_t){
          if(  ao->muos.find(basename)!=ao->muos.end()) basename="Combo"; 
          if(  ao->jets.find(basename)!=ao->jets.end()) basename="Combo"; 
+         if(  ao->ljets.find(basename)!=ao->ljets.end()) basename="Combo"; 
       } // we already have basename defined
     DEBUG("new basename:"<<basename<<"\n");
 

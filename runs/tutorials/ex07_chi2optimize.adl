@@ -50,10 +50,10 @@ define totchi2 = topchi2 + Wchi2
 # HISTOGRAM LISTS
 histoList chi2histos
   histo hW1m , "W1 mass (GeV)" , 100, 0, 200, m(W1)
-  histo hW2m , "W2 mass (GeV)" , 100, 0, 200, m(W1)
+  histo hW2m , "W2 mass (GeV)" , 100, 0, 200, m(W2)
   histo hW1mW2m , "W2 vs W1 mass (GeV)", 50, 0, 200, 50, 0, 200, m(W1), m(W2)
   histo hTop1m , "Top1 mass (GeV)" , 100, 0, 400, m(Top1)
-  histo hTop2m , "Top2 mass (GeV)" , 100, 0, 400, m(Top1)
+  histo hTop2m , "Top2 mass (GeV)" , 100, 0, 400, m(Top2)
   histo hTop1mTop2m , "W2 vs W1 mass (GeV)", 50, 0, 400, 50, 0, 400, m(Top1), m(Top2)
   histo htotchi2 , "total chi2" , 50, 0, 100, totchi2
 

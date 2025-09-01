@@ -2602,14 +2602,18 @@ objectBloc : OBJ ID TAKE ID criteria {
                                           p1 =new ObjectNode($6     ,p0   ,createNewMuo   ,ikc->second ,  "MUO" );
                                        } else if (partis[0]->type == jet_t) {
                                           p1 =new ObjectNode($6     ,p0   ,createNewJet   ,ikc->second ,  "JET" );
-                                       }
+                                       } else if (partis[0]->type == fjet_t) {
+					  p1 =new ObjectNode($6     ,p0   ,createNewFJet  ,ikc->second ,  "FJET");
+				       }
                                        if (qartis[0]->type == electron_t) { 
                                           p2 =new ObjectNode($8     ,p1   ,createNewEle   ,iuc->second ,  "ELE" );
                                        } else if (qartis[0]->type == muon_t) {
                                           p2 =new ObjectNode($8     ,p1   ,createNewMuo   ,iuc->second ,  "MUO" );
                                        } else if (qartis[0]->type == jet_t) {
                                           p2 =new ObjectNode($8     ,p1   ,createNewJet   ,iuc->second ,  "JET" );
-                                       }
+                                       } else if (qartis[0]->type == fjet_t) {
+					  p2 =new ObjectNode($8     ,p1   ,createNewFJet  ,iuc->second ,  "FJET");
+				       }
 
                                 //     Node* p1   =new ObjectNode($6     ,p0   ,createNewJet   ,ikc->second ,  "JET" );        // add
                                 //     Node* p2   =new ObjectNode($8     ,p1   ,createNewJet   ,iuc->second ,  "JET" );        // add
