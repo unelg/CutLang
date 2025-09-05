@@ -49,7 +49,7 @@ LD            = $(shell root-config --ld) -stdlib=libstdc++
 SOFLAGS       = -shared
 
 CXXFLAGS     += $(ROOTCFLAGS)
-LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -l dbx_track_h -ldelphesParticles_h -lz $(ONNX_LIB) -Wl,-rpath,/usr/local/lib
+LIBS          = $(ROOTLIBS)  -lMinuit -L. -lDBXNtuple_cpp  -ldbx_electron_h -ldbx_tau_h -ldbx_muon_h -ldbx_photon_h -ldbx_jet_h -ldbxParticle_cpp -ldbx_truth_h -ldbx_track_h -ldelphesParticles_h -lz $(ONNX_LIB) -Wl,-rpath,/usr/local/lib
 GLIBS         = $(ROOTGLIBS)
 
 #LIBS += -lzstd -lCling -lpng -ltbb -lssl -lcrypto
@@ -83,7 +83,7 @@ ifneq (0, ${JUPY})
 endif
 
 ANLOBJS       = bp_a.o dump_a.o 
-OBJS_1        = $(ANLOBJS) lhco.o lvl0.o DELPHES2.o fcc.o delphes.o atlasopen.o atlasopenR2.o AtlasTRT.o cmsod.o cmsod2.o AtlMin.o CMSnanoAOD.o VLLf.o VLLt.o newpoet.o
+OBJS_1        = $(ANLOBJS) lhco.o lvl0.o DELPHES2.o fcc.o delphes.o atlasopen.o atlasopenR2.o atlasopenV3.o AtlasTRT.o cmsod.o cmsod2.o AtlMin.o CMSnanoAOD.o VLLf.o VLLt.o newpoet.o
 OBJS_2        = b.o l.o
 
 ifneq ($(MACHINE), $(MAC))
