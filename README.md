@@ -230,7 +230,7 @@ CutLang can be run anywhere using the `CLA` (shell script) or using the `CLA.py`
  # CLA (or CLA.py) [inputrootfile] [inputeventformat] -i [adlfilename.adl] -e [numberofevents] -j 8
  # above command starts 8 simultaneous processes
 ```
-- Input event formats can be: *DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, CMSOD, VLLBG3 and LVL0 (CutLang internal format)* 
+- Input event formats can be: *DELPHES, CMSNANO, LHCO, FCC, ATLASVLL, ATLASOD, ATLASODR2, ATLASODV3, CMSOD, VLLBG3 and LVL0 (CutLang internal format)* 
 - Number of events is optional.
 
 The output will be saved in `histoOut-[adlfilename].root`.  This ROOT file will have a separate directory for each search region, which contains the relevant histograms and ADL content defining the region. The histogram(s) `cutflow` (and `bincounts`, in case search bins are specified in the region) exist by default. 
