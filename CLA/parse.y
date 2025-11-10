@@ -981,7 +981,8 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         YYERROR;
                                } else {
                                          int type=((ObjectNode*)it->second)->type; // type is JETS or FJETS etc..
-                                         $$=new SFuncNode(userfuncA, fmegajets, type, "MEGAJETS" , it->second);
+                                         //$$=new SFuncNode(userfuncA, fmegajets, type, "MEGAJETS" , it->second);
+                                         $$=new SFuncNode(userfuncA, fmegajets, type, $3 , it->second);
                                }
                        }
       | FMR '(' ID ')' {        map<string,Node*>::iterator it = ObjectCuts->find($3);
