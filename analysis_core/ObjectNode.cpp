@@ -1411,7 +1411,7 @@ void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<in
       }
 	}
 }
-
+//-------------------------------------------------------------------------------------------------------------
 void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
    DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<" #Criteria:"<<criteria->size() <<"\n"); //xxx
 
@@ -1627,16 +1627,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                    particles->at(jp)->index =temp_index[abs(1+tidx1)]; // means we respect order -1, -2 
                    DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
                 } else {
-                  particles->at(jp)->index=ipart;
-                  particles->at(jp)->collection=name;
+                    particles->at(jp)->index=ipart;
+                    particles->at(jp)->collection=name;
+                 ;
                 }
                }
-
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ P or F: ~~~~~~ "<<ppassed<<"\n");
                if (!ppassed) {
-                              DEBUG("Removing:"<<name<<" " <<ipart<<"th combi.\n");
-			      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+
+                              DEBUG("marking as bad:"<<name<<" " <<ipart<<"th combi.\n");
 		 	      bad_combinations.push_back(combi_out[ipart]);
 		 	      good_combinations.erase(combi_out[ipart]);
 	     		    } else {      
@@ -1705,6 +1705,16 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       } // two particle
       cutIterator++;
     }// end of  cut iterator loop
+
+// remove the bad combinations here
+	for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over combis
+          std::vector< vector<int> >::iterator itb; // bad list iterator
+          itb=find (bad_combinations.begin(), bad_combinations.end(), combi_out[ipart]);
+          if ( itb != bad_combinations.end() ) {
+             DEBUG("Removing:" <<ipart<<" of combis:"<<(ao->combos).find(name)->second.size() );
+  	     (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
+          }
+         }
 
    if (requested_max<=0) { //probably no particle available,never here
      vector<vector<int>> table_B;
