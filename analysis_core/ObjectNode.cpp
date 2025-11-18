@@ -1627,9 +1627,8 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                    particles->at(jp)->index =temp_index[abs(1+tidx1)]; // means we respect order -1, -2 
                    DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
                 } else {
-//                  particles->at(jp)->index=ipart;
-//                  particles->at(jp)->collection=name;
-                 ;
+                  particles->at(jp)->index=ipart;
+                  particles->at(jp)->collection=name;
                 }
                }
 
