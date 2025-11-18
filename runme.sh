@@ -10,3 +10,4 @@ make -j
 if [  $? -eq 0 ]; then
  cd ../runs;
 fi
+echo ' '
