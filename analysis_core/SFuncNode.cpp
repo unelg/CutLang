@@ -57,6 +57,9 @@ void SFuncNode::setTTRaddr( TTreeReader *ttr, string s){
          } else if (type_name.find("ouble") != std::string::npos ) {
              ttrdrD = new SFTTreaderD( m_ttreader, realstr);
              ttrdr=ttrdrD;
+         } else if (type_name.find("UInt") != std::string::npos ) {
+             ttrdrUI= new SFTTreaderUI ( m_ttreader, realstr);
+             ttrdr=ttrdrUI;
          } else if (type_name.find("nt") != std::string::npos ) {
              ttrdrI= new SFTTreaderI ( m_ttreader, realstr);
              ttrdr=ttrdrI;

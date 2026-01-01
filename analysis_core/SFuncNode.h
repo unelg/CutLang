@@ -50,6 +50,22 @@ public:
       }
 };
 
+class SFTTreaderUI : public SFTTreader{
+private:
+     double avalue;
+     string sin;
+public:
+       TTreeReaderValue<UInt_t> *my_reader;
+       SFTTreaderUI(TTreeReader *ttreader, string s) {
+           my_reader = new TTreeReaderValue<UInt_t>(*ttreader, s.c_str() );
+           sin=s;
+       }
+       double readvalue( ) {
+        avalue=*(my_reader->Get() );
+        return avalue;
+      }
+};
+
 class SFTTreaderD : public SFTTreader{
 private:
      double avalue;
@@ -124,6 +140,7 @@ private:
       SFTTreaderD *ttrdrD;
       SFTTreaderB *ttrdrB;
       SFTTreaderI *ttrdrI;
+      SFTTreaderUI *ttrdrUI;
       SFTTreaderC *ttrdrC;
     static std::map< std::string, double > BUFFERED_VALUES;
     //should add something related to trigger types

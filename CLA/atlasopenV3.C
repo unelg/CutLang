@@ -86,6 +86,7 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     std::vector<dbxJet>      jets;
     std::vector<dbxJet>      ljets;  // large-R represented as dbxJet
     std::vector<dbxTruth>    truth;
+    std::vector<dbxParticle> combos;
 
     DEBUG("Begin Filling\n");
 
@@ -222,7 +223,7 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     std::map<std::string, std::vector<dbxJet>>      ljets_map{ {"FJET", ljets} };
     std::map<std::string, std::vector<dbxTruth>>    truth_map{ {"Truth", truth} };
     std::map<std::string, std::vector<dbxTrack>>    track_map;        //empty
-    std::map<std::string, std::vector<dbxParticle>> combo_map;       //empty
+    std::map<std::string, std::vector<dbxParticle>> combo_map{ {"Combo", combos} };
     std::map<std::string, std::vector<dbxParticle>> constits_map;   //empty
 
     std::map<std::string, TVector2> met_map;    //R2-style
