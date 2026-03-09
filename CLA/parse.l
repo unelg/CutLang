@@ -131,6 +131,7 @@ daughterY return DAUGHTERY;
 "edxy"|[eE][dD]"0" return EDXY;
 "dz" return DZ;
 "edz" return EDZ;
+"Z0" return Z0;
 
 "m_HF_Classification" return HFCLASSIFICATION; // generalize event variables.
 "fTTrr" return TTBARNNLOREC;

@@ -105,7 +105,7 @@ std::map< std::string, int> systBANK;
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF HARDMET HARDMETPHI
 %token TTBARNNLOREC OME
-%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE CROSS DOTP //functions
+%token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE Z0 CROSS DOTP //functions
 %token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
@@ -835,6 +835,10 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
                                         $$=new FuncNode(nbfof,newList,"nbf");
                                   }
+         | Z0 '(' particules ')' {      vector<myParticle*> newList;
+                                        TmpParticle.swap(newList);
+                                        $$=new FuncNode(Z0of,newList,"z0");
+                                  }
 //---------------------------------------
          | list2 DR { 			vector<myParticle*> newList;
                                         TmpParticle.swap(newList);
@@ -1118,9 +1122,9 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 					 }
 
                                       }
-                                      DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
+                                      //DEBUG(" asys:"<< asys<< "Special Func:"<<nsys<<"\n");
                                       Node *sf = new FuncNode(specialf,newList, funame); // NGU SF
-                               ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
+                                      ((FuncNode *)sf)->setTTRaddr( ttr_map[ nsys ], varname);
                                        $$ = sf;
                                }
         ;

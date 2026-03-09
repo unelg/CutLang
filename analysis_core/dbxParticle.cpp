@@ -121,7 +121,7 @@ int dbxParticle:: scaleE ( double scale ){
  return 0;
 }
 
-int dbxParticle:: setZ0(double q){
+int dbxParticle:: setZZero(double q){
   p_z0=q;
  return 0;
 }

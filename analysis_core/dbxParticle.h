@@ -158,7 +158,7 @@ public:
 	int scaleLorentzVector ( double );
 	int scalePt ( double );
 	int scaleE ( double );
-	int setZ0 (double );
+	int setZZero (double );
 	void setAttribute(int k, double v) {
                   if (k>(int)p_attribute.size()) { std::cerr<<"NO Such Attribute! Use addAttribute first.\n";
                   } else { p_attribute[k]=v; }
@@ -178,7 +178,7 @@ public:
 	bool    isLoose() { return p_isloose; }
 	int    ParticleIndx() { return p_particleindx; }
 	TLorentzVector lv()  const{ return p_lvector; }
-	double Z0() {return p_z0;}
+	double ZZero() {return p_z0;}
 
 
 private:

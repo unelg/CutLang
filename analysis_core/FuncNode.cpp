@@ -583,6 +583,12 @@ double EtConeof( dbxParticle* apart){
     return etc;
 }
 
+double Z0of( dbxParticle* apart){
+    double etc=apart->ZZero();
+    DEBUG(" ETC:"<<etc<<"\t");
+    return etc;
+}
+
 double isBTag( dbxParticle* apart){
     bool Bval=((apart)->isTight())&1; //
     DEBUG(" BTAG:"<<Bval<<"\t");

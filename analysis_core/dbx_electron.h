@@ -21,7 +21,7 @@ class dbxElectron : public dbxParticle {
         int setClusterE      (double v)       { p_clE=v;            return 0;}
         int setClusterEta    (double v)       { p_clEta=v;          return 0;}
 //S.I
-       void  setd0sig(const float&v){ m_d0sig=v;}
+       void setd0sig(const float&v){ m_d0sig=v;}
        void setdelta_z0_sintheta(const float&v){m_delta_z0_sintheta=v;}
        void settrue_type(const int&v){m_true_type=v;}
        void settrue_origin(const int&v){ m_true_origin=v;}

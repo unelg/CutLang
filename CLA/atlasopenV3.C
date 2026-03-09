@@ -104,7 +104,7 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
         if (lep_d0sig)        m.setd0((*lep_d0sig)[i]);
         if (lep_ptvarcone30)  m.setPtCone((*lep_ptvarcone30)[i]);
         if (lep_topoetcone20) m.setEtCone((*lep_topoetcone20)[i]);
-        if (lep_z0)           m.setZ0((*lep_z0)[i]);
+        if (lep_z0)           m.setZZero((*lep_z0)[i]);
         m.setCharge(q);
         muos.push_back(m);
       } else if (std::abs(ltype) == 11) {
@@ -112,7 +112,7 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
         el.setCharge(q);
         if (lep_d0sig)        el.setd0sig((*lep_d0sig)[i]);
         if (lep_topoetcone20) el.setEtCone20((*lep_topoetcone20)[i]);
-        if (lep_z0)           el.setZ0((*lep_z0)[i]);
+        if (lep_z0)           el.setZZero((*lep_z0)[i]);
         eles.push_back(el);
       }
     }

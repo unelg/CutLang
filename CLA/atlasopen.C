@@ -104,7 +104,7 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxm->setEtCone(lep_etcone20[i]  );
                 adbxm->setPtCone(lep_ptcone30[i]  );
                 adbxm->setParticleIndx(i);
-                adbxm->setZ0(lep_z0[i] );
+                adbxm->setZZero(lep_z0[i] );
                 muons.push_back(*adbxm);
                 delete adbxm;
             }
@@ -115,7 +115,7 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxe->setParticleIndx(i);
                 adbxe->setEtCone(lep_etcone20[i]  );
                 adbxe->setPtCone(lep_ptcone30[i]  );
-                adbxe->setZ0(lep_z0[i] );
+                adbxe->setZZero(lep_z0[i] );
                 electrons.push_back(*adbxe);
                 delete adbxe;
             }
@@ -126,7 +126,7 @@ std::cout << "Begin Filling"<<std::endl;
                 adbxt->setEtCone(lep_etcone20[i]  );
                 adbxt->setPtCone(lep_ptcone30[i]  );
                 adbxt->setParticleIndx(i);
-                adbxt->setZ0(lep_z0[i] );
+                adbxt->setZZero(lep_z0[i] );
                 taus.push_back(*adbxt);
                 delete adbxt;
             }

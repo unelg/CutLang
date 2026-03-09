@@ -107,8 +107,10 @@ DEBUG("Begin Filling"<<std::endl);
 		adbxm->setPdgID(-13*lep_charge->at(i));
                 adbxm->setEtCone(0.001*lep_etcone20->at(i)  );
                 adbxm->setPtCone(0.001*lep_ptcone30->at(i)  );
+                adbxm->setIsTight(lep_isTightID->at(i) );
                 adbxm->setParticleIndx(i);
-                adbxm->setZ0(lep_z0->at(i) );
+                adbxm->setIsTight(lep_isTightID->at(i) );
+                adbxm->setZZero(lep_z0->at(i));
                 muons.push_back(*adbxm);
                 delete adbxm;
             }
@@ -119,7 +121,8 @@ DEBUG("Begin Filling"<<std::endl);
                 adbxe->setParticleIndx(i);
                 adbxe->setEtCone(0.001*lep_etcone20->at(i)  );
                 adbxe->setPtCone(0.001*lep_ptcone30->at(i)  );
-                adbxe->setZ0(lep_z0->at(i) );
+                adbxe->setIsTight(lep_isTightID->at(i) );
+                adbxe->setZZero(lep_z0->at(i));
                 electrons.push_back(*adbxe);
                 delete adbxe;
             }
@@ -212,6 +215,7 @@ DEBUG("Filling finished\n");
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map,  combo_map, constits_map, met_map, anevt};
+        AnalysisObjects a0;
         ttr_map["mini"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 
