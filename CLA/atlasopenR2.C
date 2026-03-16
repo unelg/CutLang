@@ -215,7 +215,6 @@ DEBUG("Filling finished\n");
          met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
         AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map,  combo_map, constits_map, met_map, anevt};
-        AnalysisObjects a0;
         ttr_map["mini"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 
