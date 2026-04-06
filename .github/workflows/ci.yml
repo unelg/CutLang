@@ -42,9 +42,9 @@ jobs:
     - name: Build ROOT
       working-directory: .
       run: |
-        wget https://root.cern/download/root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
-        tar -xzvf root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
-        rm -rf root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
+        wget https://root.cern/download/root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        tar -xzvf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        rm -rf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
     
       
     - name: CutLang Dependencies
