@@ -1,2 +1,130 @@
 Errors: 
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+Line 6645: CLA ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+Line 6646: Single Analysis /tmp/CLAdir.UrNa0b
+Line 6647: /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 6648: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6649: Analysis run count is 1
+Line 6650: ~Now using CMS Open Data files.~~~~~~ beta!
+Line 6651: open /home/runner/work/CutLang/CutLang/runs/cms_opendata_ttbar.root
+Line 6652: RetVal:1
+Line 6653: initialized with the chain...36941
+Line 6654:  #systematic included:0
+Line 6655: 	 REGION/ALGO:NNj
+Line 6656: This is a run with name: nominal algo:NNj.
+Line 6657: ==Parsing started:
+Line 6658: ERROR: syntax error	 at line: 8
+Line 6659: Parsing finished.==
+Line 6660: 
+Line 6661: yyParse returns SYNTAX error in the input file.
+Line 6662: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+Line 6665: CLA ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+Line 6666: Single Analysis /tmp/CLAdir.MtgXs5
+Line 6667: /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 6668: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6669: Analysis run count is 1
+Line 6670: ~Now using ATLAS Open Data files.~~~~~~ beta!
+Line 6671: open /home/runner/work/CutLang/CutLang/runs/atla_opendata_had_ttbar.root
+Line 6672: RetVal:1
+Line 6673: initialized with the chain...25170
+Line 6674:  #systematic included:0
+Line 6675: 	 REGION/ALGO:NNj
+Line 6676: This is a run with name: nominal algo:NNj.
+Line 6677: ==Parsing started:
+Line 6678: ERROR: syntax error	 at line: 8
+Line 6679: Parsing finished.==
+Line 6680: 
+Line 6681: yyParse returns SYNTAX error in the input file.
+Line 6682: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: CLA ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+Line 6685: CLA ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+Line 6686: Single Analysis /tmp/CLAdir.IhaDva
+Line 6687: /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+Line 6688: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6689: Analysis run count is 1
+Line 6690: ~Now using Delphes files.~~~~~~ beta!
+Line 6691: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 6692: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 6693: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 6694: open /home/runner/work/CutLang/CutLang/runs/delphes_events_ttbar.root
+Line 6695: RetVal:1
+Line 6696: initialized with the chain...1000
+Line 6697:  #systematic included:0
+Line 6698: 	 REGION/ALGO:NNj
+Line 6699: This is a run with name: nominal algo:NNj.
+Line 6700: ==Parsing started:
+Line 6701: ERROR: syntax error	 at line: 8
+Line 6702: Parsing finished.==
+Line 6703: 
+Line 6704: yyParse returns SYNTAX error in the input file.
+Line 6705: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: CLA ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+Line 6709: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+Line 6710: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6711: Analysis run count is 1
+Line 6712: ~Now using CMS Open Data files.~~~~~~ beta!
+Line 6713: open ./cms_opendata_ttbar.root
+Line 6714: RetVal:1
+Line 6715: initialized with the chain...36941
+Line 6716:  #systematic included:0
+Line 6717: 	 REGION/ALGO:NNj
+Line 6718: This is a run with name: nominal algo:NNj.
+Line 6719: ==Parsing started:
+Line 6720: ERROR: syntax error	 at line: 8
+Line 6721: Parsing finished.==
+Line 6722: 
+Line 6723: yyParse returns SYNTAX error in the input file.
+Line 6724: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+Line 6728: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+Line 6729: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6730: Analysis run count is 1
+Line 6731: ~Now using ATLAS Open Data files.~~~~~~ beta!
+Line 6732: open ./atla_opendata_had_ttbar.root
+Line 6733: RetVal:1
+Line 6734: initialized with the chain...25170
+Line 6735:  #systematic included:0
+Line 6736: 	 REGION/ALGO:NNj
+Line 6737: This is a run with name: nominal algo:NNj.
+Line 6738: ==Parsing started:
+Line 6739: ERROR: syntax error	 at line: 8
+Line 6740: Parsing finished.==
+Line 6741: 
+Line 6742: yyParse returns SYNTAX error in the input file.
+Line 6743: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >>> start: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+Line 6747: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+Line 6748: CLA v2.50.0	compiled on Mon Apr  6 16:10:17 UTC 2026
+Line 6749: Analysis run count is 1
+Line 6750: ~Now using Delphes files.~~~~~~ beta!
+Line 6751: Warning in <TClass::Init>: no dictionary for class LHEFEvent is available
+Line 6752: Warning in <TClass::Init>: no dictionary for class Event is available
+Line 6753: Warning in <TClass::Init>: no dictionary for class SortableObject is available
+Line 6754: open ./delphes_events_ttbar.root
+Line 6755: RetVal:1
+Line 6756: initialized with the chain...1000
+Line 6757:  #systematic included:0
+Line 6758: 	 REGION/ALGO:NNj
+Line 6759: This is a run with name: nominal algo:NNj.
+Line 6760: ==Parsing started:
+Line 6761: ERROR: syntax error	 at line: 8
+Line 6762: Parsing finished.==
+Line 6763: 
+Line 6764: yyParse returns SYNTAX error in the input file.
+Line 6765: Offending text is: )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <<< end: python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
+
+Total error: 6

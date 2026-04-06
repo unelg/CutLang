@@ -1,5 +1,38 @@
 Efficacy Charts:
 
+Testing exCross.adl:
+With CMSOD
+CLA ./cms_opendata_ttbar.root CMSOD -i exCross.adl -e 1000 -v 500
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+					 --> Overall efficiency	 =   96.8 % +-   1.42 %
+With ATLASOD
+CLA ./atla_opendata_had_ttbar.root ATLASOD -i exCross.adl -e 1000 -v 500
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+					 --> Overall efficiency	 =    100 % +-      0 %
+With DELPHES
+CLA ./delphes_events_ttbar.root DELPHES -i exCross.adl -e 1000 -v 500
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
+With CMSOD
+python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exCross.adl -e 1000 -v 500
+					 --> Overall efficiency	 =   96.8 % +-   1.42 %
+hadd Target file: ./histoOut-exCross.adl.root
+hadd Target path: ./histoOut-exCross.adl.root:/
+hadd Target path: ./histoOut-exCross.adl.root:/test
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
+With ATLASOD
+python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exCross.adl -e 1000 -v 500
+					 --> Overall efficiency	 =    100 % +-      0 %
+hadd Target file: ./histoOut-exCross.adl.root
+hadd Target path: ./histoOut-exCross.adl.root:/
+hadd Target path: ./histoOut-exCross.adl.root:/test
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
+With DELPHES
+python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exCross.adl -e 1000 -v 500
+					 --> Overall efficiency	 =   32.6 % +-   2.21 %
+hadd Target file: ./histoOut-exCross.adl.root
+hadd Target path: ./histoOut-exCross.adl.root:/
+hadd Target path: ./histoOut-exCross.adl.root:/test
+/home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing exMetSig.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i exMetSig.adl -e 1000 -v 500
@@ -38,35 +71,20 @@ Testing exNN.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    1.2 % +-  0.344 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.8 % +-  0.282 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
 With CMSOD
 python3 CLA.py ./cms_opendata_ttbar.root CMSOD -i exNN.adl -e 1000 -v 500
-					 --> Overall efficiency	 =    1.2 % +-  0.344 %
-hadd Target file: ./histoOut-exNN.adl.root
-hadd Target path: ./histoOut-exNN.adl.root:/
-hadd Target path: ./histoOut-exNN.adl.root:/NNj
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
 With ATLASOD
 python3 CLA.py ./atla_opendata_had_ttbar.root ATLASOD -i exNN.adl -e 1000 -v 500
-					 --> Overall efficiency	 =    0.8 % +-  0.282 %
-hadd Target file: ./histoOut-exNN.adl.root
-hadd Target path: ./histoOut-exNN.adl.root:/
-hadd Target path: ./histoOut-exNN.adl.root:/NNj
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
 With DELPHES
 python3 CLA.py ./delphes_events_ttbar.root DELPHES -i exNN.adl -e 1000 -v 500
-					 --> Overall efficiency	 =      0 % +-      0 %
-hadd Target file: ./histoOut-exNN.adl.root
-hadd Target path: ./histoOut-exNN.adl.root:/
-hadd Target path: ./histoOut-exNN.adl.root:/NNj
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe ./delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -HLT 
 Testing exUJ.adl:
 With CMSOD
