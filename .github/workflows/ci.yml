@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v6
       with:
-        node-version: '12.x'
+        node-version: '24'
     - name: chmod
       working-directory: .github/workflows
       run: |
@@ -127,7 +127,7 @@ jobs:
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
       
     - name: Upload Output File
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v6
       with:
         name: tests (ubuntu-latest)
         path: ./.github/workflows/artifacts
