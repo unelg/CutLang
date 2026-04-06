@@ -37,7 +37,7 @@ jobs:
         libmysqlclient-dev libfftw3-dev libcfitsio-dev \
         graphviz-dev libavahi-compat-libdnssd-dev \
         libldap2-dev python3-dev libxml2-dev libkrb5-dev \
-        libgsl0-dev qtwebengine5-dev;
+        libgsl0-dev qtwebengine5-dev libvdt-dev;
                    
     - name: Build ROOT
       working-directory: .
