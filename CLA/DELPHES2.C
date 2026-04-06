@@ -65,7 +65,7 @@ void DELPHES2::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nent
     map<string, vector<dbxParticle> >combo_map;
     map<string, vector<dbxParticle> >constits_map;
     map<string, TVector2            >  met_map;
-    
+
     evt_data anevt;
     
     //temporary variables
@@ -426,19 +426,30 @@ anevt.maxEvents=nentries;
 
     DEBUG("Filling finished\n")
     
-    muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-    eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-    taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-    gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-    jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-    ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-    truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truths) );
-    track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
-    combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constits) );
-    met_map.insert( pair <string,TVector2>             ("MET",           met) );
+//  muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
+//  eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
+//  taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
+//  gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
+//  jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
+//  ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
+//  truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truths) );
+//  track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
+//  combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
+//  constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constits) );
+//  met_map.insert( pair <string,TVector2>             ("MET",           met) );
 
-   *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
+    a0->muos.insert({"MUO", std::move(muons)});
+    a0->eles.insert({"ELE", std::move(electrons)});
+    a0->taus.insert({"TAU", std::move(taus)});
+    a0->gams.insert({"PHO", std::move(photons)});
+    a0->jets.insert({"JET", std::move(jets)});
+    a0->ljets.insert({"FJET", std::move(ljets)});
+    a0->truth.insert({"Truth", std::move(truths)});
+    a0->track.insert({"Track", std::move(track)});
+    a0->combos.insert({"Combo", std::move(combos)});
+    a0->constits.insert({"Constits", std::move(constits)});
+    a0->met.insert({"MET", met});
+    a0->evt = anevt;
     
     // <<< GetPhysicsObjects <<<
 
@@ -483,13 +494,21 @@ void DELPHES2::Loop(analy_struct aselect, char *extname)
         cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
     }
     cout << "last entry " << lastevent << endl;
+
+    AnalysisObjects a0;
+
     for (Long64_t j=startevent; j<lastevent; ++j) {
 
         if ( fctrlc ) { cout << "Processed " << j << " events"; break; }
         if (0 > LoadTree (j)) break;
         if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
 
-        AnalysisObjects a0;
+        a0.muos.clear();
+        a0.eles.clear();
+        a0.gams.clear();
+        a0.jets.clear();
+        a0.ljets.clear();
+
         GetPhysicsObjects(j, &a0, nentries);
         ttr_map["Delphes"]->SetEntry(j);
         aCtrl.RunTasks(a0);

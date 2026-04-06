@@ -91,14 +91,14 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
            userObjectB->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
            DEBUG("user obj B done.\n"); 
         }
-        dbxParticle *aPart= new dbxParticle;
-        dbxParticle *bPart= new dbxParticle;
-        dbxParticle *cPart= new dbxParticle;
+        dbxParticle aPart;
+        dbxParticle bPart;
+        dbxParticle cPart;
 
         TString unikID="_";
 
         if ( inputParticlesA.size()>0 ){
-           aPart->Reset();
+           aPart.Reset();
            TLorentzVector ametlv;
            DEBUG("\n input particles A "); 
            for(vector<myParticle*>::iterator i=inputParticlesA.begin();i!=inputParticlesA.end();i++){
@@ -112,18 +112,18 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                unikID+=ai;             
 
                switch (atype) { 
-		  case 10:  aPart->setTlv( aPart->lv()+ao->truth[ac].at(ai).lv()  );   break;
-                  case 12:  aPart->setTlv( aPart->lv()+ao->muos[ac].at(ai).lv()   );   break;
-                  case  1:  aPart->setTlv( aPart->lv()+ao->eles[ac].at(ai).lv()   );   break;
-                  case 11:  aPart->setTlv( aPart->lv()+ao->taus[ac].at(ai).lv()   );   break;
-                  case  2:  aPart->setTlv( aPart->lv()+ao->jets[ac].at(ai).lv()   );   break;
-                  case 19:  aPart->setTlv( aPart->lv()+ao->track[ac].at(ai).lv() );   break;
-                  case 20:  aPart->setTlv( aPart->lv()+ao->combos[ac].at(ai).lv() );   break;
-                   case 9:  aPart->setTlv( aPart->lv()+ao->ljets[ac].at(ai).lv()  );   break;
-                   case 8:  aPart->setTlv( aPart->lv()+ao->gams[ac].at(ai).lv()   );   break;
+		  case 10:  aPart.setTlv( aPart.lv()+ao->truth[ac].at(ai).lv()  );   break;
+                  case 12:  aPart.setTlv( aPart.lv()+ao->muos[ac].at(ai).lv()   );   break;
+                  case  1:  aPart.setTlv( aPart.lv()+ao->eles[ac].at(ai).lv()   );   break;
+                  case 11:  aPart.setTlv( aPart.lv()+ao->taus[ac].at(ai).lv()   );   break;
+                  case  2:  aPart.setTlv( aPart.lv()+ao->jets[ac].at(ai).lv()   );   break;
+                  case 19:  aPart.setTlv( aPart.lv()+ao->track[ac].at(ai).lv() );   break;
+                  case 20:  aPart.setTlv( aPart.lv()+ao->combos[ac].at(ai).lv() );   break;
+                   case 9:  aPart.setTlv( aPart.lv()+ao->ljets[ac].at(ai).lv()  );   break;
+                   case 8:  aPart.setTlv( aPart.lv()+ao->gams[ac].at(ai).lv()   );   break;
                    case 7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
-                            aPart->setTlv(aPart->lv()+ametlv); // v from MET using same eta approx.
+                            aPart.setTlv(aPart.lv()+ametlv); // v from MET using same eta approx.
                             break;
                    default: std::cout<<"SFN No such object! ERROR\n";
                             break;
@@ -134,7 +134,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
            DEBUG("aPart constructed \t");
         }
         if ( inputParticlesB.size()>0 ){
-           bPart->Reset();
+           bPart.Reset();
            TLorentzVector ametlv;
            DEBUG("\n input particles B "); 
            for(vector<myParticle*>::iterator i=inputParticlesB.begin();i!=inputParticlesB.end();i++){
@@ -147,17 +147,17 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                unikID+=ai;             
 
                switch (atype) { 
-		   case 10:  bPart->setTlv(  bPart->lv()+ao->truth[ac].at(ai).lv() );  break;
-                   case 12:  bPart->setTlv(  bPart->lv()+ao->muos[ac].at(ai).lv() );   break;
-                   case  1:  bPart->setTlv(  bPart->lv()+ao->eles[ac].at(ai).lv() );   break;
-                   case 11:  bPart->setTlv(  bPart->lv()+ao->taus[ac].at(ai).lv() );   break;
-                   case  2:  bPart->setTlv(  bPart->lv()+ao->jets[ac].at(ai).lv() );   break;
-                   case 20:  bPart->setTlv(  bPart->lv()+ao->combos[ac].at(ai).lv() ); break;
-                   case  9:  bPart->setTlv(  bPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
-                   case  8:  bPart->setTlv(  bPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+		   case 10:  bPart.setTlv(  bPart.lv()+ao->truth[ac].at(ai).lv() );  break;
+                   case 12:  bPart.setTlv(  bPart.lv()+ao->muos[ac].at(ai).lv() );   break;
+                   case  1:  bPart.setTlv(  bPart.lv()+ao->eles[ac].at(ai).lv() );   break;
+                   case 11:  bPart.setTlv(  bPart.lv()+ao->taus[ac].at(ai).lv() );   break;
+                   case  2:  bPart.setTlv(  bPart.lv()+ao->jets[ac].at(ai).lv() );   break;
+                   case 20:  bPart.setTlv(  bPart.lv()+ao->combos[ac].at(ai).lv() ); break;
+                   case  9:  bPart.setTlv(  bPart.lv()+ao->ljets[ac].at(ai).lv() );  break;
+                   case  8:  bPart.setTlv(  bPart.lv()+ao->gams[ac].at(ai).lv() );   break;
                    case  7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
-                            bPart->setTlv(bPart->lv()+ametlv); // v from MET using same eta approx.
+                            bPart.setTlv(bPart.lv()+ametlv); // v from MET using same eta approx.
                             break;
                    default: std::cout<<"SFN No such object! ERROR\n";
                             break;
@@ -168,7 +168,7 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
            DEBUG("bPart constructed \t");
         }
         if ( inputParticlesC.size()>0 ){
-           cPart->Reset();
+           cPart.Reset();
            TLorentzVector ametlv;
            DEBUG("\n input particles C "); 
            for(vector<myParticle*>::iterator i=inputParticlesC.begin();i!=inputParticlesC.end();i++){
@@ -181,17 +181,17 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                unikID+=ai;             
 
              switch (atype) { 
-		   case 10:  cPart->setTlv(  cPart->lv()+ao->truth[ac].at(ai).lv() );   break;
-                   case 12:  cPart->setTlv(  cPart->lv()+ao->muos[ac].at(ai).lv() );   break;
-                   case  1:  cPart->setTlv(  cPart->lv()+ao->eles[ac].at(ai).lv() );   break;
-                   case 11:  cPart->setTlv(  cPart->lv()+ao->taus[ac].at(ai).lv() );   break;
-                   case  2:  cPart->setTlv(  cPart->lv()+ao->jets[ac].at(ai).lv() );   break;
-                   case 20:  cPart->setTlv(  cPart->lv()+ao->combos[ac].at(ai).lv() ); break;
-                   case  9:  cPart->setTlv(  cPart->lv()+ao->ljets[ac].at(ai).lv() );  break;
-                   case  8:  cPart->setTlv(  cPart->lv()+ao->gams[ac].at(ai).lv() );   break;
+		   case 10:  cPart.setTlv(  cPart.lv()+ao->truth[ac].at(ai).lv() );   break;
+                   case 12:  cPart.setTlv(  cPart.lv()+ao->muos[ac].at(ai).lv() );   break;
+                   case  1:  cPart.setTlv(  cPart.lv()+ao->eles[ac].at(ai).lv() );   break;
+                   case 11:  cPart.setTlv(  cPart.lv()+ao->taus[ac].at(ai).lv() );   break;
+                   case  2:  cPart.setTlv(  cPart.lv()+ao->jets[ac].at(ai).lv() );   break;
+                   case 20:  cPart.setTlv(  cPart.lv()+ao->combos[ac].at(ai).lv() ); break;
+                   case  9:  cPart.setTlv(  cPart.lv()+ao->ljets[ac].at(ai).lv() );  break;
+                   case  8:  cPart.setTlv(  cPart.lv()+ao->gams[ac].at(ai).lv() );   break;
                    case  7: DEBUG("MET LV\n ");
                             ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
-                            cPart->setTlv(cPart->lv()+ametlv); // v from MET using same eta approx.
+                            cPart.setTlv(cPart.lv()+ametlv); // v from MET using same eta approx.
                             break;
                    default: std::cout<<"SFN No such object! ERROR\n";
                             break;
@@ -225,17 +225,14 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
                               }
            else if (g3 != NULL) {retval=(*g3)(ao, symbol, type, h3 ); // C
                               }
-           else if (g4 != NULL) {retval=(*g4)(ao, symbol, type, aPart->lv(), h4); // D
+           else if (g4 != NULL) {retval=(*g4)(ao, symbol, type, aPart.lv(), h4); // D
                               }
            else if (g5 != NULL) { // E
                 if ( BUFFERED_VALUES.find(extkey.Data()) !=BUFFERED_VALUES.end() ){
                    DEBUG("Returning buffered value:"<<(BUFFERED_VALUES[extkey.Data()]) << "\n");
-                   delete aPart;
-                   delete bPart;
-                   delete cPart;
                    return (BUFFERED_VALUES[extkey.Data()]);
                 } else { 
-                   retval=(*g5)(ao, symbol, type, aPart->lv(), bPart->lv(), cPart->lv(), h5);
+                   retval=(*g5)(ao, symbol, type, aPart.lv(), bPart.lv(), cPart.lv(), h5);
                    BUFFERED_VALUES.insert(std::pair<string, double >(extkey.Data(), retval));
                 }
               }
@@ -243,14 +240,8 @@ double SFuncNode::evaluate(AnalysisObjects* ao) {
             retval=(*g6)(ao, symbol, type, pv1, pv2, pv3, pv4,  h6);
            }
 
-           delete aPart;
-           delete bPart;
-           delete cPart;
            return retval;
         }
-        delete aPart;
-        delete bPart;
-        delete cPart;
 
         if (special_function) {
                   double avalue=ttrdr->readvalue();
@@ -271,7 +262,7 @@ double getIndex(AnalysisObjects* ao, string s, float id){ // new internal functi
     particleType pid = (particleType)id;
     DEBUG("GETINDEX function\n");
     DEBUG("STR:"<<s<<" Type:"<<pid<<" #Combos types:"<<ao->combos.size() << " #Table types:"<<ao->combosA.size()<<"\n");
-    map <string,  indicesA  >::iterator itp;
+    unordered_map <string,  indicesA  >::iterator itp;
     for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){
       DEBUG("#Combo typename:"<<itp->first<<"  Table  size:"<<itp->second.tableA.size() <<" maxRow:" 
                               <<itp->second.max_row<< " maxCol:"<< itp->second.max_col <<"\n");
@@ -290,18 +281,18 @@ double count(AnalysisObjects* ao, string s, float id) {
     particleType pid = (particleType)id;
 
     DEBUG("STR:"<<s<<" Type:"<<pid<<" #J types:"<<ao->jets.size() << " #M types:"<<ao->muos.size()<<"\n");
-    map <string, std::vector<dbxJet>  >::iterator it;
+    unordered_map <string, std::vector<dbxJet>  >::iterator it;
     for (it=ao->jets.begin();it!=ao->jets.end();it++){
       DEBUG("\t #Jtypename:"<<it->first<<"    size:"<<it->second.size() <<"\n");
     }
 
     DEBUG("\n");
-    map <string,  indicesA  >::iterator itp;
+    unordered_map <string,  indicesA  >::iterator itp;
     for (itp=ao->combosA.begin();itp!=ao->combosA.end();itp++){
       DEBUG("#ComboA typename:"<<itp->first<<"    size:"<<itp->second.tableA.size() <<"\n");
     }
 
-    ValueNode abc=ValueNode();
+  //  ValueNode abc=ValueNode();
     switch (pid) {
      case truth_t:    return (ao->truth.at(s).size()); break;
      case track_t:    return (ao->track.at(s).size()); break;
@@ -309,8 +300,8 @@ double count(AnalysisObjects* ao, string s, float id) {
      case electron_t: return (ao->eles.at(s).size()); break;
      case tau_t:      return (ao->taus.at(s).size()); break;
      case jet_t:      return (ao->jets.at(s).size()); break;
-     case bjet_t:     return ( (abc.tagJets(ao, 1, s) ).size()); break;
-     case lightjet_t: return ( (abc.tagJets(ao, 0, s) ).size()); break;
+     case bjet_t:     {ValueNode abc=ValueNode(); return ((abc.tagJets(ao, 1, s) ).size()); break;}
+     case lightjet_t: {ValueNode abc=ValueNode(); return ((abc.tagJets(ao, 0, s) ).size()); break;}
      case fjet_t:     return (ao->ljets.at(s).size()); break;
      case photon_t:   return (ao->gams.at(s).size()); break;
      case consti_t:   return (ao->constits.at(s).size()); break;

@@ -149,8 +149,9 @@ void AnalysisController::Initialize(char *extname) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisObjects> analysis_objs_map){
+void AnalysisController::RunTasks( AnalysisObjects &a0,  map <string,   AnalysisObjects> &analysis_objs_map){
 //-------------------------------------------------this is called for each event read from the ntuple file
+
    int evret=0; // return value of each analysis
    std::string delimiter = "_";
    std::string sysnam="";
@@ -233,7 +234,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
 		std::map <int, TVector2> metsmap;
 		int kmet=1;
 		for ( std::map<string, AnalysisObjects>::iterator anit=analysis_objs_map.begin(); anit!=analysis_objs_map.end(); ++anit){
-			AnalysisObjects these_objs= anit->second;
+			const AnalysisObjects &these_objs= anit->second;
 			TVector2        a_met     = these_objs.met.begin()->second ;
 			metsmap.insert ( std::pair<int, TVector2> (kmet, a_met));
 			kmet++;
@@ -244,7 +245,7 @@ void AnalysisController::RunTasks( AnalysisObjects a0,  map <string,   AnalysisO
              map<string, AnalysisObjects>::iterator il=analysis_objs_map.find(sysnam);
              if (il==analysis_objs_map.end()) {cout<<"Systematics name mismatch. "<<sysnam<<" not found, MAJOR error\n"; exit (888);};
                 DEBUG( k<<" "<<dbxAnalyses[k]->getName()<<" also known as "<< il->first<<" to be executed with systematics"<<endl );
-		AnalysisObjects these_objs=il->second;
+		AnalysisObjects &these_objs = il->second;
 		evret=dbxAnalyses[k]->makeAnalysis(&these_objs, 0, 0); // no cache
                 DEBUG("retval:"<<evret<<endl);
         }
@@ -269,4 +270,3 @@ void AnalysisController::Finalize(){
 	}
 
 }
-

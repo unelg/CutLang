@@ -17,6 +17,7 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 #include "TTreeReader.h"
+#include <unordered_map>
 
 //#define _CLV_
 #ifdef _CLV_
@@ -31,6 +32,7 @@ extern map<string, TTreeReader*> ttr_map;
 
 void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentries )
 {
+    AnalysisObjects &ao = *a0;
 
     // >>> GetPhysicsObjects >>>
 
@@ -46,17 +48,17 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     vector<dbxParticle> combos;
     vector<dbxParticle> constits;
 
-    map<string, vector<dbxMuon>     > muos_map;
-    map<string, vector<dbxElectron> > eles_map;
-    map<string, vector<dbxTau>      > taus_map;
-    map<string, vector<dbxPhoton>   > gams_map;
-    map<string, vector<dbxJet>      > jets_map;
-    map<string, vector<dbxJet>     >ljets_map;
-    map<string, vector<dbxTruth>    >truth_map;
-    map<string, vector<dbxTrack>    >track_map;
-    map<string, vector<dbxParticle> >combo_map;
-    map<string, vector<dbxParticle> >constits_map;
-    map<string, TVector2            >  met_map;
+    unordered_map<string, vector<dbxMuon> > muos_map;
+    unordered_map<string, vector<dbxElectron> > eles_map;
+    unordered_map<string, vector<dbxTau> > taus_map;
+    unordered_map<string, vector<dbxPhoton> > gams_map;
+    unordered_map<string, vector<dbxJet> > jets_map;
+    unordered_map<string, vector<dbxJet> >ljets_map;
+    unordered_map<string, vector<dbxTruth> >truth_map;
+    unordered_map<string, vector<dbxTrack> >track_map;
+    unordered_map<string, vector<dbxParticle> >combo_map;
+    unordered_map<string, vector<dbxParticle> >constits_map;
+    unordered_map<string, TVector2 >  met_map;
 
     evt_data anevt;
 
@@ -68,77 +70,60 @@ void newpoet::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0, Long64_t nentr
     //temporary variables
     TLorentzVector  alv;
 
-    dbxMuon *adbxm;
     for (int i=0; i<numbermuon; i++) {
         alv.SetPxPyPzE(muon_px[i], muon_py[i], muon_pz[i],  muon_e[i]); // all in GeV
-        adbxm = new dbxMuon(alv);
-        adbxm->setCharge(muon_ch[i]);
-        adbxm->setPdgID(muon_ch[i]*(-13) );
-        adbxm->setIsTight (muon_isTight[i] );
-        adbxm->setIsMedium(muon_isMedium[i]);
-        adbxm->setIsLoose (muon_isLoose[i] );
-        adbxm->setParticleIndx(i);
-        muons.push_back(*adbxm);
-        delete adbxm;
+        muons.emplace_back(alv);
+        muons.back().setCharge(muon_ch[i]);
+        muons.back().setPdgID(muon_ch[i]*(-13) );
+        muons.back().setIsTight (muon_isTight[i] );
+        muons.back().setIsMedium(muon_isMedium[i]);
+        muons.back().setIsLoose (muon_isLoose[i] );
+        muons.back().setParticleIndx(i);
     }
     DEBUG("MUON OK\n");
 
-   dbxElectron *adbxe;
     for (int i=0; i<numberelectron; i++) {
         alv.SetPxPyPzE(electron_px[i], electron_py[i], electron_pz[i],  electron_e[i]); // all in GeV
-        adbxe = new dbxElectron(alv);
-        adbxe->setCharge(electron_ch[i]);
-        adbxe->setParticleIndx(i);
-        adbxe->setPdgID( electron_ch[i]*(-11) );
-        adbxe->setIsTight(electron_isTight[i]);
-        adbxe->setIsMedium(electron_isMedium[i]);
-        adbxe->setIsLoose(electron_isLoose[i]);
-        electrons.push_back(*adbxe);
-        delete adbxe;
+        electrons.emplace_back(alv);
+        electrons.back().setCharge(electron_ch[i]);
+        electrons.back().setParticleIndx(i);
+        electrons.back().setPdgID( electron_ch[i]*(-11) );
+        electrons.back().setIsTight(electron_isTight[i]);
+        electrons.back().setIsMedium(electron_isMedium[i]);
+        electrons.back().setIsLoose(electron_isLoose[i]);
     }
     DEBUG("ELECTRON OK\n");
 
-   dbxTau *adbxt;
     for (int i=0; i<numbertau; i++) {
         alv.SetPxPyPzE(tau_px[i], tau_py[i], tau_pz[i],  tau_e[i]); // all in GeV
-        adbxt = new dbxTau(alv);
-        adbxt->setCharge(tau_ch[i]);
-        adbxt->setParticleIndx(i);
-        taus.push_back(*adbxt);
-        delete adbxt;
+        taus.emplace_back(alv);
+        taus.back().setCharge(tau_ch[i]);
+        taus.back().setParticleIndx(i);
     }
     DEBUG("TAU OK\n");
 
-   dbxPhoton *adbxp;
     for (int i=0; i<numberphoton; i++) {
         alv.SetPxPyPzE(photon_px[i], photon_py[i], photon_pz[i],  photon_e[i]); // all in GeV
-        adbxp = new dbxPhoton(alv);
-        adbxp->setCharge(0);
-        adbxp->setParticleIndx(i);
-        photons.push_back(*adbxp);
-        delete adbxp;
+        photons.emplace_back(alv);
+        photons.back().setCharge(0);
+        photons.back().setParticleIndx(i);
     }
     DEBUG("Photon OK\n");
 
-   dbxJet *adbxj;
     for (int i=0; i<numberjet; i++) {
         alv.SetPtEtaPhiM(jet_pt[i], jet_eta[i], jet_phi[i],  jet_mass[i]); // all in GeV
-        adbxj = new dbxJet(alv);
-        adbxj->setCharge(jet_ch[i]);
-        adbxj->setParticleIndx(i);
-        adbxj->setFlavor(jet_btag[i]); // btag distro
-        jets.push_back(*adbxj);
-        delete adbxj;
+        jets.emplace_back(alv);
+        jets.back().setCharge(jet_ch[i]);
+        jets.back().setParticleIndx(i);
+        jets.back().setFlavor(jet_btag[i]); // btag distro
     }
     DEBUG("JET OK\n");
 
     for (int i=0; i<numberfatjet; i++) {
         alv.SetPtEtaPhiM(fatjet_pt[i], fatjet_eta[i], fatjet_phi[i],  fatjet_mass[i]); // all in GeV
-        adbxj = new dbxJet(alv);
-        adbxj->setCharge(fatjet_ch[i]);
-        adbxj->setParticleIndx(i);
-        ljets.push_back(*adbxj);
-        delete adbxj;
+        ljets.emplace_back(alv);
+        ljets.back().setCharge(fatjet_ch[i]);
+        ljets.back().setParticleIndx(i);
     }
     DEBUG("FATJET OK\n");
 
@@ -168,19 +153,30 @@ anevt.maxEvents=nentries;
 
     DEBUG("Filling finished\n");
 
-    muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-    eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-    taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-    gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-    jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-    ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-    truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truths) );
-    track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
-    combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constits) );
-    met_map.insert( pair <string,TVector2>             ("MET",           met) );
+    muos_map["MUO"].swap(muons);
+    eles_map["ELE"].swap(electrons);
+    taus_map["TAU"].swap(taus);
+    gams_map["PHO"].swap(photons);
+    jets_map["JET"].swap(jets);
+    ljets_map["FJET"].swap(ljets);
+    truth_map["Truth"].swap(truths);
+    track_map["Track"].swap(track);
+    combo_map["Combo"].swap(combos);
+    constits_map["Constits"].swap(constits);
+    met_map["MET"] = met;
 
-   *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
+   ao.muos=muos_map;
+   ao.eles=eles_map;
+   ao.taus=taus_map;
+   ao.gams=gams_map;
+   ao.jets=jets_map;
+   ao.ljets=ljets_map;
+   ao.truth=truth_map;
+   ao.track=track_map;
+   ao.combos=combo_map;
+   ao.constits=constits_map;
+   ao.met=met_map;
+   ao.evt = anevt;
 
     // <<< GetPhysicsObjects <<<
 
@@ -240,4 +236,3 @@ void newpoet::Loop(analy_struct aselect, char *extname)
 
     aCtrl.Finalize();
 }
-

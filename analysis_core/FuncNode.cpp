@@ -38,55 +38,65 @@ int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input
              if (atype==7) ac="MET";
                 DEBUG("adding:"<<ac<<" idx:"<<ai<<" type:"<<atype<<"\n");
                 switch (atype) {  //----burada STR ile mapda find ediliyor
-		                           case track_t: DEBUG("track:"<< (*i)->index <<" ");
-                                                         if (ai>=ao->track[ac].size()) return -1;
-		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->track[ac].at(ai).lv()); 
-		                                         inputPart->setCharge(inputPart->q()+ao->track[ac].at(ai).q()  );
-		                                         inputPart->setPdgID(ao->track[ac].at(ai).pdgID()  );
-		                                         inputPart->setPtCone(ao->track[ac].at(ai).PtCone()  );
-		                                         inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->track[ac].at(ai).ParticleIndx()  );
-                                                         ka=ao->track[ac].at(ai).nAttribute();
+		                           case track_t: {
+                                                         DEBUG("track:"<< (*i)->index <<" ");
+                                                         auto *trackvec = (ao->track.count(ac)) ? &ao->track[ac] : nullptr;
+                                                         if (!trackvec || ai>=trackvec->size()) return -1;
+                                                         auto &antrack = trackvec->at(ai);
+		                                         inputPart->setTlv(  inputPart->lv()+sgn*antrack.lv()); 
+		                                         inputPart->setCharge(inputPart->q()+antrack.q()  );
+		                                         inputPart->setPdgID(antrack.pdgID()  );
+		                                         inputPart->setPtCone(antrack.PtCone()  );
+		                                         inputPart->setParticleIndx(inputPart->ParticleIndx() + antrack.ParticleIndx()  );
+                                                         ka=antrack.nAttribute();
                                                          DEBUG("Trk Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
-                                                          //cout << "TRKAttr:"<<anat<< " :"<<ao->track[ac].at(ai).Attribute(anat)<<"\n";
-                                                            inputPart->addAttribute(ao->track[ac].at(ai).Attribute(anat) );
+                                                         //cout << "TRKAttr:"<<anat<< " :"<<antrack.Attribute(anat)<<"\n";
+                                                            inputPart->addAttribute(antrack.Attribute(anat) );
                                                          }
 //                                                          cout <<"----------------done----------------------\n";
 		                                         break;
-		                           case truth_t: DEBUG("truth:"<< (*i)->index <<" ");
-                                                         if (ai>=ao->truth[ac].size()) return -1; 
-		                                         inputPart->setTlv(  inputPart->lv()+sgn*ao->truth[ac].at(ai).lv()); 
-		                                         inputPart->setCharge(inputPart->q()+ao->truth[ac].at(ai).q()  );
-		                                         inputPart->setPdgID(inputPart->pdgID() + ao->truth[ac].at(ai).pdgID()  );
-		                                         inputPart->setParticleIndx(ao->truth[ac].at(ai).ParticleIndx()  );
-                                                         ka=ao->truth[ac].at(ai).nAttribute();
+                                                         }
+		                           case truth_t: {
+                                                         DEBUG("truth:"<< (*i)->index <<" ");
+                                                         auto *truthvec = (ao->truth.count(ac)) ? &ao->truth[ac] : nullptr;
+                                                         if (!truthvec || ai>=truthvec->size()) return -1; 
+                                                         auto &antruth = truthvec->at(ai);
+		                                         inputPart->setTlv(  inputPart->lv()+sgn*antruth.lv()); 
+		                                         inputPart->setCharge(inputPart->q()+antruth.q()  );
+		                                         inputPart->setPdgID(inputPart->pdgID() + antruth.pdgID()  );
+		                                         inputPart->setParticleIndx(antruth.ParticleIndx()  );
+                                                         ka=antruth.nAttribute();
                                                          DEBUG("Gen Nattr:"<<ka<<"\n");
                                                          for (int anat=0; anat<ka; anat++) {
-                   //                                         cout << "GenAttr:"<<anat<< " :"<<ao->truth[ac].at(ai).Attribute(anat)<<"\n";
-                                                            inputPart->addAttribute(ao->truth[ac].at(ai).Attribute(anat) );
+                   //                                         cout << "GenAttr:"<<anat<< " :"<<antruth.Attribute(anat)<<"\n";
+                                                            inputPart->addAttribute(antruth.Attribute(anat) );
                                                          }
                                                         if (special_function) {
-                                             			int nix=ao->truth[ac].at(ai).ParticleIndx();
+                                             			int nix=antruth.ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
 		                                        break;
-                                           case muon_t: //ao->muons_map-->find...
-                                                        if (ai>=ao->muos[ac].size()) return -1; 
-                                                        inputPart->setTlv(  inputPart->lv()+sgn*ao->muos[ac].at(ai).lv() ); 
-                                                        inputPart->setCharge(inputPart->q()+ao->muos[ac].at(ai).q()  );
-  							inputPart->setPdgID(inputPart->pdgID() + ao->muos[ac].at(ai).pdgID()  );
-//							inputPart->setPdgID(ao->muos[ac].at(ai).pdgID()  );
-							inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->muos[ac].at(ai).ParticleIndx()  );
-                                                        inputPart->setIsTight (ao->muos[ac].at(ai).isTight() ); 
-                                                        inputPart->setIsMedium(ao->muos[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->muos[ac].at(ai).isLoose() ); 
-                                                        ka=ao->muos[ac].at(ai).nAttribute();
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->muos[ac].at(ai).Attribute(anat) );
-//                                                        inputPart->addAttribute(ao->muos[ac].at(ai).isZCand() );
+                                                         }
+                                           case muon_t: { //ao->muons_map-->find...
+                                                        auto *muvec = (ao->muos.count(ac)) ? &ao->muos[ac] : nullptr;
+                                                        if (!muvec || ai>=muvec->size()) return -1; 
+                                                        auto &anmu = muvec->at(ai);
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*anmu.lv() ); 
+                                                        inputPart->setCharge(inputPart->q()+anmu.q()  );
+  							inputPart->setPdgID(inputPart->pdgID() + anmu.pdgID()  );
+//							inputPart->setPdgID(anmu.pdgID()  );
+							inputPart->setParticleIndx(inputPart->ParticleIndx() + anmu.ParticleIndx()  );
+                                                        inputPart->setIsTight (anmu.isTight() ); 
+                                                        inputPart->setIsMedium(anmu.isMedium() ); 
+                                                        inputPart->setIsLoose (anmu.isLoose() ); 
+                                                        ka=anmu.nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(anmu.Attribute(anat) );
+//                                                        inputPart->addAttribute(anmu.isZCand() );
                                                         if (special_function) {
-                                             			int nix=ao->muos[ac].at(ai).ParticleIndx();
+                                             			int nix=anmu.ParticleIndx();
                                                                 //cout<<"Will read nix:"<<nix<<" addr:"<<m_ttreader<<"\n";
                                                                 DEBUG("Will read nix:"<<nix<<"\n");
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
@@ -94,48 +104,57 @@ int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
-                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<ao->muos[ac].at(ai).q()<<"  Pt:" <<ao->muos[ac].at(ai).lv().Pt()<<"  ");
+                                                        DEBUG("muon:"<<(*i)->index <<"  q:"<<anmu.q()<<"  Pt:" <<anmu.lv().Pt()<<"  ");
                                                         break;
-                                       case electron_t: 
+                                                         }
+                                       case electron_t: {
+                                                        auto *elvec = (ao->eles.count(ac)) ? &ao->eles[ac] : nullptr;
 							if (ai>=ao->eles[ac].size()) return -1;
-							inputPart->setTlv(  inputPart->lv()+sgn*ao->eles[ac].at(ai).lv() ); 
-                                                        inputPart->setCharge(inputPart->q()+ao->eles[ac].at(ai).q()  );
-							inputPart->setPdgID(inputPart->pdgID() + ao->eles[ac].at(ai).pdgID()  );
-							inputPart->setParticleIndx(ao->eles[ac].at(ai).ParticleIndx()  );
-                                                        inputPart->setIsTight (ao->eles[ac].at(ai).isTight() ); 
-                                                        inputPart->setIsMedium(ao->eles[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->eles[ac].at(ai).isLoose() ); 
-                                                        ka=ao->eles[ac].at(ai).nAttribute();
+                                                        auto &anele = elvec->at(ai);
+                                                        inputPart->setTlv(inputPart->lv() + sgn*anele.lv());
+					//		inputPart->setTlv(inputPart->lv() + sgn*ao->eles[ac].at(ai).lv() ); 
+
+                                                        inputPart->setCharge(inputPart->q()+anele.q()  );
+							inputPart->setPdgID(inputPart->pdgID() + anele.pdgID()  );
+							inputPart->setParticleIndx(anele.ParticleIndx()  );
+                                                        inputPart->setIsTight (anele.isTight() ); 
+                                                        inputPart->setIsMedium(anele.isMedium() ); 
+                                                        inputPart->setIsLoose (anele.isLoose() ); 
+                                                        ka=anele.nAttribute();
                                                         DEBUG("e- Nattr:"<<ka<<"\n");
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->eles[ac].at(ai).Attribute(anat) );
-                                                        inputPart->addAttribute(ao->eles[ac].at(ai).isZCand() );
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(anele.Attribute(anat) );
+                                                        inputPart->addAttribute(anele.isZCand() );
                                                         if (special_function) {
-                                             			int nix=ao->eles[ac].at(ai).ParticleIndx();
+                                             			int nix=anele.ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
                                                         DEBUG("electron:"<<(*i)->index<<"  ");
                                                         break;
-                                            case tau_t: 
-							if (ai>=ao->taus[ac].size()) return -1;
-							inputPart->setTlv(  inputPart->lv()+sgn*ao->taus[ac].at(ai).lv() ); 
-                                                        inputPart->setCharge(inputPart->q()+ao->taus[ac].at(ai).q()  );
-							inputPart->setPdgID(inputPart->pdgID() + ao->taus[ac].at(ai).pdgID()  );
-							inputPart->setParticleIndx(ao->taus[ac].at(ai).ParticleIndx()  );
-                                                        inputPart->setIsTight (ao->taus[ac].at(ai).isTight() ); 
-                                                        inputPart->setIsMedium(ao->taus[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->taus[ac].at(ai).isLoose() ); 
-                                                        ka=ao->taus[ac].at(ai).nAttribute();
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->taus[ac].at(ai).Attribute(anat) );
+                                                        }
+                                            case tau_t: {
+                                                        auto *tauvec = (ao->taus.count(ac)) ? &ao->taus[ac] : nullptr;
+							if (!tauvec || ai>=tauvec->size()) return -1;
+                                                        auto &antau = tauvec->at(ai);
+							inputPart->setTlv(  inputPart->lv()+sgn*antau.lv() ); 
+                                                        inputPart->setCharge(inputPart->q()+antau.q()  );
+							inputPart->setPdgID(inputPart->pdgID() + antau.pdgID()  );
+							inputPart->setParticleIndx(antau.ParticleIndx()  );
+                                                        inputPart->setIsTight (antau.isTight() ); 
+                                                        inputPart->setIsMedium(antau.isMedium() ); 
+                                                        inputPart->setIsLoose (antau.isLoose() ); 
+                                                        ka=antau.nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(antau.Attribute(anat) );
                                                         if (special_function) {
-                                             			int nix=ao->taus[ac].at(ai).ParticleIndx();
+                                             			int nix=antau.ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
                                                         DEBUG("TAU:"<<ai<<"  ");
                                                         break;
+                                                        }
                                       case muonlikeV_t: v_eta=ao->muos[ac].at(ai).lv().Eta();
                                                         ametlv.SetPtEtaPhiM(ao->met[ac].Mod(), v_eta,ao->met[ac].Phi(),0);
                                                         inputPart->setTlv(inputPart->lv()+sgn*ametlv); // met4v is v from MET using same eta approx.
@@ -150,53 +169,65 @@ int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input
                                                         ametlv.SetPxPyPzE(ao->met[ac].Px(), ao->met[ac].Py(), 0, ao->met[ac].Mod());
                                                         inputPart->setTlv(inputPart->lv()+sgn*ametlv); 
                                                         break;
-                                         case photon_t: DEBUG("gamma:"<< (*i)->index <<" ");
-                                                        if (ai>=ao->gams[ac].size()) return -1; 
-                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->gams[ac].at(ai).lv()); 
-							inputPart->setParticleIndx(ao->gams[ac].at(ai).ParticleIndx()  );
-                                                        ka=ao->gams[ac].at(ai).nAttribute();
-                                                        inputPart->setIsTight (ao->gams[ac].at(ai).isTight() ); 
-                                                        inputPart->setIsMedium(ao->gams[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->gams[ac].at(ai).isLoose() ); 
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->gams[ac].at(ai).Attribute(anat) );
+                                         case photon_t: {
+                                                        DEBUG("gamma:"<< (*i)->index <<" ");
+                                                        auto *gamvec = (ao->gams.count(ac)) ? &ao->gams[ac] : nullptr;
+                                                        if (!gamvec || ai>=gamvec->size()) return -1; 
+                                                        auto &angam = gamvec->at(ai);
+                                                        inputPart->setTlv(inputPart->lv()+sgn*angam.lv()); 
+							inputPart->setParticleIndx(angam.ParticleIndx()  );
+                                                        ka=angam.nAttribute();
+                                                        inputPart->setIsTight (angam.isTight() ); 
+                                                        inputPart->setIsMedium(angam.isMedium() ); 
+                                                        inputPart->setIsLoose (angam.isLoose() ); 
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(angam.Attribute(anat) );
                                                         if (special_function) {
-                                             			int nix=ao->gams[ac].at(ai).ParticleIndx();
+                                             			int nix=angam.ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
                                                         break;
-                                            case jet_t: DEBUG("jet:"<<ai<<" \t");
-                                                        if (ai>=ao->jets[ac].size()) return -1; 
-                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->jets[ac].at(ai).lv() ); // any jet
-                                                        inputPart->setFlavor(inputPart->Flavor() +ao->jets[ac].at(ai).Flavor()   );
-                                                        inputPart->setCharge(inputPart->q()+ao->jets[ac].at(ai).q()  );
-                                                        inputPart->setIsTight (ao->jets[ac].at(ai).isTight() // previous value 
-                                                                     | (ao->jets[ac].at(ai).isbtagged_77() + 2*ao->jets[ac].at(ai).isTautagged() // bitwise or
+                                                         }
+                                            case jet_t: {
+                                                        DEBUG("jet:"<<ai<<" \t");
+                                                        auto *jetvec = (ao->jets.count(ac)) ? &ao->jets[ac] : nullptr;
+                                                        if (!jetvec || ai>=jetvec->size()) return -1; 
+                                                        auto &anjet = jetvec->at(ai);
+                                                        inputPart->setTlv(inputPart->lv()+sgn*anjet.lv() ); // any jet
+                                                        inputPart->setFlavor(inputPart->Flavor() +anjet.Flavor()   );
+                                                        inputPart->setCharge(inputPart->q()+anjet.q()  );
+                                                        inputPart->setIsTight (anjet.isTight() // previous value 
+                                                                     | (anjet.isbtagged_77() + 2*anjet.isTautagged() // bitwise or
                                                             ) ); 
-                                                        inputPart->setIsMedium(ao->jets[ac].at(ai).isMedium() ); 
-                                                        inputPart->setIsLoose (ao->jets[ac].at(ai).isLoose() ); 
-							inputPart->setParticleIndx(ao->jets[ac].at(ai).ParticleIndx()  );
-                                                        ka=ao->jets[ac].at(ai).nAttribute();
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->jets[ac].at(ai).Attribute(anat) );
+                                                        inputPart->setIsMedium(anjet.isMedium() ); 
+                                                        inputPart->setIsLoose (anjet.isLoose() ); 
+							inputPart->setParticleIndx(anjet.ParticleIndx()  );
+                                                        ka=anjet.nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(anjet.Attribute(anat) );
                                                         if (special_function) {
-                                             			int nix=ao->jets[ac].at(ai).ParticleIndx();
+                                             			int nix=anjet.ParticleIndx();
 								double avalue=ttrdr->readvalue(nix, m_ttreader);
                                           			DEBUG(ac<<"read and pushed new attrib:"<< avalue << "\n");
       								inputPart->addAttribute(avalue);
                                                         }
                                                         break;
+                                                        }
 
-                                           case fjet_t: DEBUG("FatJet:"<< ai<<" \n");
-                                                        if (ai>=ao->ljets[ac].size()) return -1;
-                                                        inputPart->setTlv(inputPart->lv()+sgn*ao->ljets[ac].at(ai).lv());
-                                                        inputPart->setFlavor(inputPart->Flavor() +ao->ljets[ac].at(ai).Flavor()   );
-							inputPart->setParticleIndx(ao->ljets[ac].at(ai).ParticleIndx()  );
+                                           case fjet_t: {
+                                                        DEBUG("FatJet:"<< ai<<" \n");
+                                                        auto *ljetvec = (ao->ljets.count(ac)) ? &ao->ljets[ac] : nullptr;
+                                                        if (!ljetvec || ai>=ljetvec->size()) return -1;
+                                                        auto &anljet = ljetvec->at(ai);
+                                                        inputPart->setTlv(inputPart->lv()+sgn*anljet.lv());
+                                                        inputPart->setFlavor(inputPart->Flavor() +anljet.Flavor()   );
+							inputPart->setParticleIndx(anljet.ParticleIndx()  );
                                                         inputPart->setIsTight( inputPart->isTight() // add to the existing one
-                                                                 + ao->ljets[ac].at(ai).isbtagged_77() +100* ao->ljets[ac].at(ai).isTautagged() );
-                                                        ka=ao->ljets[ac].at(ai).nAttribute();
-                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(ao->ljets[ac].at(ai).Attribute(anat) );
+                                                                 + anljet.isbtagged_77() +100* anljet.isTautagged() );
+                                                        ka=anljet.nAttribute();
+                                                        for (int anat=0; anat<ka; anat++) inputPart->addAttribute(anljet.Attribute(anat) );
                                                         break; 
+                                                        }
                                          
 					   case bjet_t: inputPart->setTlv(inputPart->lv()+sgn*tagJets(ao, 1, ac)[ ai ].lv() ); // b jet
                                                         inputPart->setIsTight( tagJets(ao,1, ac)[ai].isbtagged_77()   );
@@ -213,21 +244,29 @@ int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input
 //							inputPart->setParticleIndx(inputPart->ParticleIndx() + ao->ljets[ac].at(ai).ParticleIndx()  );
                                                         DEBUG("qgjet:"<<ai<<" ");
                                                         break;
-                                          case combo_t: DEBUG("combo:"<< (*i)->index <<" ");
-                                                        if (ai>=ao->combos[ac].size()) return -1;
-                                                        inputPart->setTlv(  inputPart->lv()+sgn*ao->combos[ac].at(ai).lv()); 
-                                                        inputPart->setCharge(inputPart->q()+ao->combos[ac].at(ai).q()  );
-                                                        DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->combos[ac].at(ai).pdgID()<<"\n");
-							inputPart->setPdgID(inputPart->pdgID()+ao->combos[ac].at(ai).pdgID()  );
+                                          case combo_t: {
+                                                        DEBUG("combo:"<< (*i)->index <<" ");
+                                                        auto *combovec = (ao->combos.count(ac)) ? &ao->combos[ac] : nullptr;
+                                                        if (!combovec || ai>=combovec->size()) return -1;
+                                                        auto &ancombo = combovec->at(ai);
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*ancombo.lv()); 
+                                                        inputPart->setCharge(inputPart->q()+ancombo.q()  );
+                                                        DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ancombo.pdgID()<<"\n");
+							inputPart->setPdgID(inputPart->pdgID()+ancombo.pdgID()  );
                                                         break;
+                                                        }
 
-                                         case consti_t: DEBUG("consti:"<<(*i)->index <<" ");
-                                                        if (ai>=ao->constits[ac].size()) return -1;
-                                                        inputPart->setTlv(  inputPart->lv()+sgn*ao->constits[ac].at(ai).lv()); 
-                                                        inputPart->setCharge(inputPart->q()+ao->constits[ac].at(ai).q()  );
-                                                        DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ao->constits[ac].at(ai).pdgID()<<"\n");
-							inputPart->setPdgID(inputPart->pdgID()+ao->constits[ac].at(ai).pdgID()  );
+                                         case consti_t: {
+                                                        DEBUG("consti:"<<(*i)->index <<" ");
+                                                        auto *constivec = (ao->constits.count(ac)) ? &ao->constits[ac] : nullptr;
+                                                        if (!constivec || ai>=constivec->size()) return -1;
+                                                        auto &anconsti = constivec->at(ai);
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*anconsti.lv()); 
+                                                        inputPart->setCharge(inputPart->q()+anconsti.q()  );
+                                                        DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<anconsti.pdgID()<<"\n");
+							inputPart->setPdgID(inputPart->pdgID()+anconsti.pdgID()  );
                                                         break;
+                                                        }
 
                                             default: std::cout<<"FN. No such object of type "<<atype<<" collection:"<<ac<<" idx:"<<ai<<" ERROR!\n";
                                                         exit(1);
@@ -709,6 +748,4 @@ double nbfof( dbxParticle* apart){
     DEBUG("NBJ:"<<nbf<<"\n");
     return nbf;
 }
-
-
 

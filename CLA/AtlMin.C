@@ -16,6 +16,7 @@
 #include <iostream>
 #include <sstream>      // std::istringstream
 #include <string>
+#include <unordered_map>
 
 //#define _CLV_
 #ifdef _CLV_
@@ -31,6 +32,7 @@ extern map<string, TTreeReader*> ttr_map;
 
 void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
 {
+   AnalysisObjects &ao = *a0;
 
    fChain->GetEntry(j);
 
@@ -45,17 +47,17 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
    vector<dbxParticle> combos;
    vector<dbxParticle> constis;
 
-   map<string, vector<dbxMuon>     > muos_map;
-   map<string, vector<dbxElectron> > eles_map;
-   map<string, vector<dbxTau>      > taus_map;
-   map<string, vector<dbxPhoton>   > gams_map;
-   map<string, vector<dbxJet>      > jets_map;
-   map<string, vector<dbxJet>     >ljets_map;
-   map<string, vector<dbxTruth>    >truth_map;
-   map<string, vector<dbxTrack>    >track_map;
-   map<string, vector<dbxParticle> >combo_map;
-   map<string, vector<dbxParticle> >constits_map;
-   map<string, TVector2            >  met_map;
+   unordered_map<string, vector<dbxMuon> > muos_map;
+   unordered_map<string, vector<dbxElectron> > eles_map;
+   unordered_map<string, vector<dbxTau> > taus_map;
+   unordered_map<string, vector<dbxPhoton> > gams_map;
+   unordered_map<string, vector<dbxJet> > jets_map;
+   unordered_map<string, vector<dbxJet> >ljets_map;
+   unordered_map<string, vector<dbxTruth> >truth_map;
+   unordered_map<string, vector<dbxTrack> >track_map;
+   unordered_map<string, vector<dbxParticle> >combo_map;
+   unordered_map<string, vector<dbxParticle> >constits_map;
+   unordered_map<string, TVector2 >  met_map;
 
    evt_data anevt;
 
@@ -63,13 +65,6 @@ void AtlMin::GetPhysicsObjects( Long64_t j, AnalysisObjects *a0 )
        TLorentzVector  alv;
        TLorentzVector dummyTlv(0.,0.,0.,0.);
        TVector2 met;
-       dbxJet      *adbxj;
-       dbxJet      *adbxlj;
-       dbxElectron *adbxe;
-       dbxMuon     *adbxm;
-       //dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
-       dbxParticle *adbxparticle;
 
  DEBUG("Begin Filling MUONS\n");
 
@@ -94,12 +89,10 @@ std::cout << "Photons OK:"<< truth_pt->size()<<std::endl;
               for (unsigned int i=0; i<mu_e->size(); i++) {
                 alv.SetPtEtaPhiE( mu_pt->at(i)*0.001, mu_eta->at(i), mu_phi->at(i), mu_e->at(i)*0.001 ); // all in GeV
 //                if (i==1) cout <<"********* mu Z:"<<mu_isZCand->at(i)<<"\n";
-                adbxm= new dbxMuon(alv);
-                adbxm->setCharge(mu_charge->at(i) );
-		adbxm->setPdgID(-13*mu_charge->at(i) );
-                adbxm->setParticleIndx(i);
-                muons.push_back(*adbxm);
-                delete adbxm;
+                muons.emplace_back(alv);
+                muons.back().setCharge(mu_charge->at(i) );
+		muons.back().setPdgID(-13*mu_charge->at(i) );
+                muons.back().setParticleIndx(i);
         }
 
 DEBUG("Muons OK:"<< mu_pt->size()<<std::endl);
@@ -108,27 +101,24 @@ DEBUG("Muons OK:"<< mu_pt->size()<<std::endl);
 //ELECTRONS
         for (unsigned int i=0; i<el_e->size(); i++) {
                 alv.SetPtEtaPhiE( el_pt->at(i)*0.001, el_eta->at(i), el_phi->at(i), el_e->at(i)*0.001 ); // all in GeV
-                adbxe= new dbxElectron(alv);
-                adbxe->setCharge(el_charge->at(i) );
-		adbxe->setPdgID(-11*el_charge->at(i) );
-                adbxe->setPtCone(el_ptvarcone20->at(i));// 30 has 20 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                adbxe->setEtCone20(el_ptvarcone20->at(i) );
-                if (b_el_true_origin) adbxe->settrue_origin(el_true_origin->at(i));
-                if (b_el_true_type) adbxe->settrue_type(el_true_type->at(i));
-                adbxe->setParticleIndx(i);
-                adbxe->setClusterEta(el_cl_eta->at(i) );
-                adbxe->setd0sig(el_d0sig->at(i) );
-                adbxe->setdelta_z0_sintheta(el_delta_z0_sintheta->at(i) );
-                adbxe->setisZCand(el_isZCand->at(i) );
-                adbxe->settrigMatch_HLT_e60_lhmedium_nod0(el_trigMatch_HLT_e60_lhmedium_nod0->at(i));
-                adbxe->settrigMatch_HLT_e26_lhtight_nod0_ivarloose(el_trigMatch_HLT_e26_lhtight_nod0_ivarloose->at(i));
-                adbxe->settrigMatch_HLT_e140_lhloose_nod0(el_trigMatch_HLT_e140_lhloose_nod0->at(i));
-                adbxe->settrigMatch_HLT_e60_lhmedium(el_trigMatch_HLT_e60_lhmedium->at(i));
-                adbxe->settrigMatch_HLT_e24_lhmedium_L1EM20VH(el_trigMatch_HLT_e24_lhmedium_L1EM20VH->at(i));
-                adbxe->settrigMatch_HLT_e120_lhloose(el_trigMatch_HLT_e120_lhloose->at(i));
-
-                electrons.push_back(*adbxe);
-                delete adbxe;
+                electrons.emplace_back(alv);
+                electrons.back().setCharge(el_charge->at(i) );
+		electrons.back().setPdgID(-11*el_charge->at(i) );
+                electrons.back().setPtCone(el_ptvarcone20->at(i));// 30 has 20 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                electrons.back().setEtCone20(el_ptvarcone20->at(i) );
+                if (b_el_true_origin) electrons.back().settrue_origin(el_true_origin->at(i));
+                if (b_el_true_type) electrons.back().settrue_type(el_true_type->at(i));
+                electrons.back().setParticleIndx(i);
+                electrons.back().setClusterEta(el_cl_eta->at(i) );
+                electrons.back().setd0sig(el_d0sig->at(i) );
+                electrons.back().setdelta_z0_sintheta(el_delta_z0_sintheta->at(i) );
+                electrons.back().setisZCand(el_isZCand->at(i) );
+                electrons.back().settrigMatch_HLT_e60_lhmedium_nod0(el_trigMatch_HLT_e60_lhmedium_nod0->at(i));
+                electrons.back().settrigMatch_HLT_e26_lhtight_nod0_ivarloose(el_trigMatch_HLT_e26_lhtight_nod0_ivarloose->at(i));
+                electrons.back().settrigMatch_HLT_e140_lhloose_nod0(el_trigMatch_HLT_e140_lhloose_nod0->at(i));
+                electrons.back().settrigMatch_HLT_e60_lhmedium(el_trigMatch_HLT_e60_lhmedium->at(i));
+                electrons.back().settrigMatch_HLT_e24_lhmedium_L1EM20VH(el_trigMatch_HLT_e24_lhmedium_L1EM20VH->at(i));
+                electrons.back().settrigMatch_HLT_e120_lhloose(el_trigMatch_HLT_e120_lhloose->at(i));
         }
 
 
@@ -138,15 +128,12 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
 //JETS
         for (unsigned int i=0; i<jet_pt->size(); i++) {
                 alv.SetPtEtaPhiE( jet_pt->at(i)*0.001, jet_eta->at(i), jet_phi->at(i), jet_e->at(i)*0.001 ); // all in GeV
-                adbxj= new dbxJet(alv);
-                adbxj->setCharge(-99);
-                adbxj->setjvt(jet_jvt->at(i));
-                adbxj->setParticleIndx(i);
-                if (b_jet_truthflav != NULL) adbxj->setFlavor(jet_truthflav->at(i) );
-                adbxj->set_isbtagged_77(bool(jet_isbtagged_DL1r_77->at(i)));
-                
-                jets.push_back(*adbxj);
-                delete adbxj;
+                jets.emplace_back(alv);
+                jets.back().setCharge(-99);
+                jets.back().setjvt(jet_jvt->at(i));
+                jets.back().setParticleIndx(i);
+                if (b_jet_truthflav != NULL) jets.back().setFlavor(jet_truthflav->at(i) );
+                jets.back().set_isbtagged_77(bool(jet_isbtagged_DL1r_77->at(i)));
         }
  DEBUG("Jets OK:"<< jet_pt->size() <<std::endl);
 //MET
@@ -158,32 +145,27 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
          
          for (unsigned int i=0; i<vrcjet_2m_t_pt->size(); i++) {
              alv.SetPtEtaPhiE( vrcjet_2m_t_pt->at(i)*0.001, vrcjet_2m_t_eta->at(i), vrcjet_2m_t_phi->at(i), vrcjet_2m_t_e->at(i)*0.001 ); // all in GeV
-             adbxlj= new dbxJet(alv);
+             ljets.emplace_back(alv);
              
              bool is_bljet = false;
              for (unsigned int j=0; j<vrcjetsub_2m_t_pt->at(i).size(); j++) { // this is loop over subjets
                alv.SetPtEtaPhiE( vrcjetsub_2m_t_pt->at(i).at(j)*0.001, vrcjetsub_2m_t_eta->at(i).at(j), vrcjetsub_2m_t_phi->at(i).at(j), vrcjetsub_2m_t_e->at(i).at(j)*0.001);
-               adbxparticle = new dbxParticle(alv);
-               constis.push_back(*adbxparticle);
-               delete adbxparticle;              
+               constis.emplace_back(alv);
                if (vrcjetsub_2m_t_mv2c10->at(i).at(j) > 0.77 ) is_bljet = true;
              }
              DEBUG("FJET:"<<i<< "  #childen:"<< vrcjetsub_2m_t_mv2c10->at(i).size()<<"\n");
-             adbxlj->setParticleIndx(i);
-             adbxlj->set_isbtagged_77(is_bljet);
-             adbxlj->addAttribute( 0);   // 0
-             adbxlj->addAttribute( 0);  // 1 
-             adbxlj->addAttribute( 0); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
-             adbxlj->addAttribute( 0); // 3
-             adbxlj->addAttribute( 0);  //4
-             adbxlj->addAttribute( 0);  //5
-             adbxlj->addAttribute( 0);  //6
-             adbxlj->addAttribute( 0);  //7
-             adbxlj->addAttribute( 1);  //8
-             adbxlj->addAttribute( vrcjetsub_2m_t_mv2c10->at(i).size() );  //9
-             
-             ljets.push_back(*adbxlj);
-             delete adbxlj;
+             ljets.back().setParticleIndx(i);
+             ljets.back().set_isbtagged_77(is_bljet);
+             ljets.back().addAttribute( 0);   // 0
+             ljets.back().addAttribute( 0);  // 1 
+             ljets.back().addAttribute( 0); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+             ljets.back().addAttribute( 0); // 3
+             ljets.back().addAttribute( 0);  //4
+             ljets.back().addAttribute( 0);  //5
+             ljets.back().addAttribute( 0);  //6
+             ljets.back().addAttribute( 0);  //7
+             ljets.back().addAttribute( 1);  //8
+             ljets.back().addAttribute( vrcjetsub_2m_t_mv2c10->at(i).size() );  //9
 
              if (constis.size() > 0){
                TString cname ="FJET_";
@@ -216,20 +198,31 @@ DEBUG("Electrons OK:"<< el_e->size() <<std::endl);
   anevt.weight_jvt=weight_jvt;
   DEBUG("Filling finished."<<std::endl);
 
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
-       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
-         met_map.insert( pair <string,TVector2>             ("MET",           met) );
+        muos_map["MUO"].swap(muons);
+        eles_map["ELE"].swap(electrons);
+        taus_map["TAU"].swap(taus);
+        gams_map["PHO"].swap(photons);
+        jets_map["JET"].swap(jets);
+        ljets_map["FJET"].swap(ljets);
+        truth_map["Truth"].swap(truth);
+        track_map["Track"].swap(track);
+        combo_map["Combo"].swap(combos);
+        constits_map["Constits"].swap(constis);
+        met_map["MET"] = met;
   DEBUG("MAP finished."<<std::endl);
 
-        *a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map, anevt};
+        ao.muos=muos_map;
+        ao.eles=eles_map;
+        ao.taus=taus_map;
+        ao.gams=gams_map;
+        ao.jets=jets_map;
+        ao.ljets=ljets_map;
+        ao.truth=truth_map;
+        ao.track=track_map;
+        ao.combos=combo_map;
+        ao.constits=constits_map;
+        ao.met=met_map;
+        ao.evt = anevt;
   DEBUG("retuning"<<std::endl);
 }
 

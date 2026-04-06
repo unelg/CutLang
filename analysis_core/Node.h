@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 
 #include "dbxParticle.h"
 #include "dbx_electron.h"
@@ -32,19 +33,19 @@ struct indicesA{
  };
 
 struct AnalysisObjects {
-    std::map<std::string, std::vector<dbxMuon>     > muos;
-    std::map<std::string, std::vector<dbxElectron> > eles;
-    std::map<std::string, std::vector<dbxTau>      > taus;
-    std::map<std::string, std::vector<dbxPhoton>   > gams;
-    std::map<std::string, std::vector<dbxJet>      > jets;
-    std::map<std::string, std::vector<dbxJet>      >ljets;
-    std::map<std::string, std::vector<dbxTruth>    >truth;
-    std::map<std::string, std::vector<dbxTrack>    >track;
-    std::map<std::string, std::vector<dbxParticle> >combos;
-    std::map<std::string, std::vector<dbxParticle> >constits;
-    std::map<std::string, TVector2                 > met;
-                          evt_data                   evt;
-    std::map<std::string, indicesA >             combosA;
+    std::unordered_map<std::string, std::vector<dbxMuon>     >  muos;
+    std::unordered_map<std::string, std::vector<dbxElectron> >  eles;
+    std::unordered_map<std::string, std::vector<dbxTau>      >  taus;
+    std::unordered_map<std::string, std::vector<dbxPhoton>   >  gams;
+    std::unordered_map<std::string, std::vector<dbxJet>      >  jets;
+    std::unordered_map<std::string, std::vector<dbxJet>      >  ljets;
+    std::unordered_map<std::string, std::vector<dbxTruth>    >  truth;
+    std::unordered_map<std::string, std::vector<dbxTrack>    >  track;
+    std::unordered_map<std::string, std::vector<dbxParticle> >  combos;
+    std::unordered_map<std::string, std::vector<dbxParticle> >  constits;
+    std::unordered_map<std::string, TVector2                 >  met;
+                          evt_data                    evt;
+    std::unordered_map<std::string, indicesA >                 combosA;
 };
 
 enum particleType{

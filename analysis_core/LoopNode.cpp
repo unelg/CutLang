@@ -174,7 +174,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        if (g==NULL) { return (*f)(result_list);}  // 1D case
        else {
        
-     map <string, std::vector<dbxJet>  >::iterator itJ;
+     unordered_map <string, std::vector<dbxJet>  >::iterator itJ;
     for (itJ=ao->jets.begin();itJ!=ao->jets.end();itJ++){
      DEBUG("avaiable jets are "<<itJ->first<<" size:"<<itJ->second.size()<<"\n");
     }

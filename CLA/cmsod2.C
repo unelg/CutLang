@@ -14,6 +14,7 @@
 #include "analysis_core.h"
 #include "AnalysisController.h"
 #include "TTreeReader.h"
+#include <unordered_map>
 
 //#define __DEBUG__
 extern bool fctrlc;
@@ -48,7 +49,27 @@ void cmsod2::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
-   for (Long64_t j=startevent; j<lastevent; ++j) {
+   // Declare maps BEFORE the event loop
+ unordered_map<string, vector<dbxMuon>     > muos_map;
+ unordered_map<string, vector<dbxElectron> > eles_map;
+ unordered_map<string, vector<dbxTau>      > taus_map;
+ unordered_map<string, vector<dbxPhoton>   > gams_map;
+ unordered_map<string, vector<dbxJet>      > jets_map;
+ unordered_map<string, vector<dbxJet>      > ljets_map;
+ unordered_map<string, vector<dbxTruth>    > truth_map;
+ unordered_map<string, vector<dbxTrack>    > track_map;
+ unordered_map<string, vector<dbxParticle> > combo_map;
+ unordered_map<string, vector<dbxParticle> > constits_map;
+ unordered_map<string, TVector2            > met_map;
+// Pre-populate with fixed keys once
+muos_map["MUO"];  eles_map["ELE"];  taus_map["TAU"];
+gams_map["PHO"];  jets_map["JET"];  ljets_map["FJET"];
+truth_map["Truth"]; track_map["Track"];
+combo_map["Combo"]; constits_map["Constits"]; met_map["MET"];
+
+AnalysisObjects a0;
+
+for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
        if ( j%verboseFreq == 0 ) cout << "Processing event " << j << endl;
@@ -68,37 +89,32 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxTrack>    track;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
- 
-       map<string, vector<dbxMuon>     > muos_map;
-       map<string, vector<dbxElectron> > eles_map;
-       map<string, vector<dbxTau>      > taus_map;
-       map<string, vector<dbxPhoton>   > gams_map;
-       map<string, vector<dbxJet>      > jets_map;
-       map<string, vector<dbxJet>     >ljets_map;
-       map<string, vector<dbxTruth>    >truth_map;
-       map<string, vector<dbxTrack>    >track_map;
-       map<string, vector<dbxParticle> >combo_map;
-       map<string, vector<dbxParticle> >constits_map;
-       map<string, TVector2            >  met_map;
+       muos_map["MUO"].clear();
+       eles_map["ELE"].clear();
+       taus_map["TAU"].clear();
+       gams_map["PHO"].clear();
+       jets_map["JET"].clear();
+       ljets_map["FJET"].clear();
+       truth_map["Truth"].clear();
+       track_map["Track"].clear();
+       combo_map["Combo"].clear();
+       constits_map["Constits"].clear();
+       met_map["MET"].Clear();
 
 //temporary variables
        TLorentzVector  alv;
        TVector2 met;
-       dbxElectron *adbxe;
-       dbxMuon     *adbxm;
 
 #ifdef __DEBUG__
 std::cout << "Begin Filling"<<std::endl;
 #endif
       for (unsigned int i=0; i<nMuon; i++) {
               alv.SetPtEtaPhiM( Muon_pt[i], Muon_eta[i], Muon_phi[i], Muon_mass[i] ); // all in GeV
-              adbxm= new dbxMuon(alv);
-              adbxm->setCharge(Muon_charge[i] );
-              adbxm->setEtCone(Muon_pfRelIso03_all[i]  );
-              adbxm->setPtCone(Muon_pfRelIso04_all[i]  );
-              adbxm->setParticleIndx(i);
-              muons.push_back(*adbxm);
-              delete adbxm;
+              muons.emplace_back(alv);
+              muons.back().setCharge(Muon_charge[i] );
+              muons.back().setEtCone(Muon_pfRelIso03_all[i]  );
+              muons.back().setPtCone(Muon_pfRelIso04_all[i]  );
+              muons.back().setParticleIndx(i);
       }
 
 #ifdef __DEBUG__
@@ -108,12 +124,10 @@ std::cout << "Muons OK:"<< nMuon<<std::endl;
 
       for (unsigned int i=0; i<nElectron; i++) {
               alv.SetPtEtaPhiM( Electron_pt[i], Electron_eta[i], Electron_phi[i], Electron_mass[i] ); // all in GeV
-              adbxe= new dbxElectron(alv);
-              adbxe->setCharge(Electron_charge[i] );
-              adbxe->setEtCone(Electron_pfRelIso03_all[i]  );
-              adbxe->setParticleIndx(i);
-              electrons.push_back(*adbxe);
-              delete adbxe;
+              electrons.emplace_back(alv);
+              electrons.back().setCharge(Electron_charge[i] );
+              electrons.back().setEtCone(Electron_pfRelIso03_all[i]  );
+              electrons.back().setParticleIndx(i);
       }
 
 #ifdef __DEBUG__
@@ -184,19 +198,29 @@ std::cout << "MET OK"<<std::endl;
 std::cout << "Filling finished"<<std::endl;
 #endif
 
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
-       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
-         met_map.insert( pair <string,TVector2>             ("MET",           met) );
-
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map, combo_map, constits_map, met_map,  anevt};
+        muos_map["MUO"].swap(muons);
+        eles_map["ELE"].swap(electrons);
+        taus_map["TAU"].swap(taus);
+        gams_map["PHO"].swap(photons);
+        jets_map["JET"].swap(jets);
+        ljets_map["FJET"].swap(ljets);
+        truth_map["Truth"].swap(truth);
+        track_map["Track"].swap(track);
+        combo_map["Combo"].swap(combos);
+        constits_map["Constits"].swap(constis);
+        met_map["MET"] = met;
+        a0.muos = muos_map;
+        a0.eles = eles_map;
+        a0.taus = taus_map;
+        a0.gams = gams_map;
+        a0.jets = jets_map;
+        a0.ljets = ljets_map;
+        a0.truth = truth_map;
+        a0.track = track_map;
+        a0.combos = combo_map;
+        a0.constits = constits_map;
+        a0.met = met_map;
+        a0.evt = anevt;
         ttr_map["Events"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 

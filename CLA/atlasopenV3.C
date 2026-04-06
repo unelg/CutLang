@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 
 #include <TLorentzVector.h>
 #include <TVector2.h>
@@ -61,6 +62,26 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     std::cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << std::endl;
   }
 
+  // Declare maps BEFORE the event loop
+  std::unordered_map<std::string, std::vector<dbxMuon>     > muos_map;
+  std::unordered_map<std::string, std::vector<dbxElectron> > eles_map;
+  std::unordered_map<std::string, std::vector<dbxTau>      > taus_map;
+  std::unordered_map<std::string, std::vector<dbxPhoton>   > gams_map;
+  std::unordered_map<std::string, std::vector<dbxJet>      > jets_map;
+  std::unordered_map<std::string, std::vector<dbxJet>      > ljets_map;
+  std::unordered_map<std::string, std::vector<dbxTruth>    > truth_map;
+  std::unordered_map<std::string, std::vector<dbxTrack>    > track_map;
+  std::unordered_map<std::string, std::vector<dbxParticle> > combo_map;
+  std::unordered_map<std::string, std::vector<dbxParticle> > constits_map;
+  std::unordered_map<std::string, TVector2                 > met_map;
+  // Pre-populate with fixed keys once
+  muos_map["MUO"];  eles_map["ELE"];  taus_map["TAU"];
+  gams_map["PHO"];  jets_map["JET"];  ljets_map["FJET"];
+  truth_map["Truth"]; track_map["Track"];
+  combo_map["Combo"]; constits_map["Constits"]; met_map["MET"];
+
+  AnalysisObjects a0;
+
   for (Long64_t j = startevent; j < lastevent; ++j) {
     if (fctrlc) { cout << "Processed " << j << " events\n"; break; }  
     if (j % verboseFreq == 0) cout << "Processing event " << j << endl;  
@@ -88,6 +109,18 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     std::vector<dbxTruth>    truth;
     std::vector<dbxParticle> combos;
 
+    muos_map["MUO"].clear();
+    eles_map["ELE"].clear();
+    taus_map["TAU"].clear();
+    gams_map["PHO"].clear();
+    jets_map["JET"].clear();
+    ljets_map["FJET"].clear();
+    truth_map["Truth"].clear();
+    track_map["Track"].clear();
+    combo_map["Combo"].clear();
+    constits_map["Constits"].clear();
+    met_map["MET"].Clear();
+
     DEBUG("Begin Filling\n");
 
     // leptons (mu/e)
@@ -100,20 +133,22 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
       const int q     = lep_charge ? (*lep_charge)[i] : 0;
 
       if (std::abs(ltype) == 13) {
-        dbxMuon m(p4);
-        if (lep_d0sig)        m.setd0((*lep_d0sig)[i]);
-        if (lep_ptvarcone30)  m.setPtCone((*lep_ptvarcone30)[i]);
-        if (lep_topoetcone20) m.setEtCone((*lep_topoetcone20)[i]);
-        if (lep_z0)           m.setZZero((*lep_z0)[i]);
-        m.setCharge(q);
-        muos.push_back(m);
+        muos.emplace_back(p4);
+        muos.back().setCharge(q);
+        muos.back().setPdgID(-13*q);
+        if (lep_d0sig)        muos.back().setd0((*lep_d0sig)[i]);
+        if (lep_ptvarcone30)  muos.back().setPtCone((*lep_ptvarcone30)[i]);
+        if (lep_topoetcone20) muos.back().setEtCone((*lep_topoetcone20)[i]);
+        if (lep_z0)           muos.back().setZZero((*lep_z0)[i]);
+        muos.back().setParticleIndx(i);
       } else if (std::abs(ltype) == 11) {
-        dbxElectron el(p4);
-        el.setCharge(q);
-        if (lep_d0sig)        el.setd0sig((*lep_d0sig)[i]);
-        if (lep_topoetcone20) el.setEtCone20((*lep_topoetcone20)[i]);
-        if (lep_z0)           el.setZZero((*lep_z0)[i]);
-        eles.push_back(el);
+        eles.emplace_back(p4);
+        eles.back().setCharge(q);
+        eles.back().setPdgID(-11*q);
+        if (lep_d0sig)        eles.back().setd0sig((*lep_d0sig)[i]);
+        if (lep_topoetcone20) eles.back().setEtCone20((*lep_topoetcone20)[i]);
+        if (lep_z0)           eles.back().setZZero((*lep_z0)[i]);
+        eles.back().setParticleIndx(i);
       }
     }
 
@@ -124,19 +159,20 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     jets.reserve(nj);
     for (size_t i = 0; i < nj; ++i) {
       TLorentzVector p4; p4.SetPtEtaPhiE((*jet_pt)[i], (*jet_eta)[i], (*jet_phi)[i], (*jet_e)[i]);
-      dbxJet jtmp(p4);
+      jets.emplace_back(p4);
+      jets.back().setCharge(-99);
+      jets.back().setParticleIndx(i);
 
       // 77% WP: integer quantile 1..5; 77% ↔ q>=3
       int q = 0;
       if (jet_btag_quantile) {
         q = (*jet_btag_quantile)[i];
-        jtmp.setFlavor(q);             // store discrete quantile (optional)
-        jtmp.set_isbtagged_77(q >= 3);
+        jets.back().setFlavor(q);             // store discrete quantile (optional)
+        jets.back().set_isbtagged_77(q >= 3);
       } else {
-        jtmp.set_isbtagged_77(false);
+        jets.back().set_isbtagged_77(false);
       }
-      if (jet_jvt && i < jet_jvt->size()) jtmp.setjvt((*jet_jvt)[i]);
-      jets.push_back(jtmp);
+      if (jet_jvt && i < jet_jvt->size()) jets.back().setjvt((*jet_jvt)[i]);
     }
 
     // large-R jets (export as "FJET")
@@ -144,8 +180,9 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     ljets.reserve(nfj);
     for (size_t i = 0; i < nfj; ++i) {
       TLorentzVector p4; p4.SetPtEtaPhiE((*largeRJet_pt)[i], (*largeRJet_eta)[i], (*largeRJet_phi)[i], (*largeRJet_e)[i]);
-      dbxJet l(p4);
-      ljets.push_back(l);
+      ljets.emplace_back(p4);
+      ljets.back().setCharge(-99);
+      ljets.back().setParticleIndx(i);
     }
 
     DEBUG("Jets ok\n");
@@ -155,11 +192,13 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
     gams.reserve(ng);
     for (size_t i = 0; i < ng; ++i) {
       TLorentzVector p4; p4.SetPtEtaPhiE((*photon_pt)[i], (*photon_eta)[i], (*photon_phi)[i], (*photon_e)[i]);
-      dbxPhoton g(p4);
-      if (photon_isTightID && i < photon_isTightID->size()) g.setIsTight((*photon_isTightID)[i]);
-      if (photon_ptcone20 && i < photon_ptcone20->size()) g.setPtCone((*photon_ptcone20)[i]);
-      if (photon_topoetcone40 && i < photon_topoetcone40->size()) g.setEtCone((*photon_topoetcone40)[i]);
-      gams.push_back(g);
+      gams.emplace_back(p4);
+      gams.back().setPdgID(22);
+      gams.back().setCharge(0);
+      gams.back().setParticleIndx(i);
+      if (photon_isTightID && i < photon_isTightID->size()) gams.back().setIsTight((*photon_isTightID)[i]);
+      if (photon_ptcone20 && i < photon_ptcone20->size()) gams.back().setPtCone((*photon_ptcone20)[i]);
+      if (photon_topoetcone40 && i < photon_topoetcone40->size()) gams.back().setEtCone((*photon_topoetcone40)[i]);
     }
     
     DEBUG("Photons OK\n");
@@ -169,32 +208,32 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
       const size_t ntm = truth_muon_pt->size();
       for (size_t i = 0; i < ntm; ++i) {
         TLorentzVector p4; p4.SetPtEtaPhiM((*truth_muon_pt)[i], (*truth_muon_eta)[i], (*truth_muon_phi)[i], 0.10566);
-        dbxTruth t(p4); t.setPdgID(13);
-        truth.push_back(t);
+        truth.emplace_back(p4);
+        truth.back().setPdgID(13);
       }
     }
     if (truth_elec_pt) {
       const size_t nte = truth_elec_pt->size();
       for (size_t i = 0; i < nte; ++i) {
         TLorentzVector p4; p4.SetPtEtaPhiM((*truth_elec_pt)[i], (*truth_elec_eta)[i], (*truth_elec_phi)[i], 0.000511);
-        dbxTruth t(p4); t.setPdgID(11);
-        truth.push_back(t);
+        truth.emplace_back(p4);
+        truth.back().setPdgID(11);
       }
     }
     if (truth_tau_pt) {
       const size_t ntt = truth_tau_pt->size();
       for (size_t i = 0; i < ntt; ++i) {
         TLorentzVector p4; p4.SetPtEtaPhiM((*truth_tau_pt)[i], (*truth_tau_eta)[i], (*truth_tau_phi)[i], 1.77686);
-        dbxTruth t(p4); t.setPdgID(15);
-        truth.push_back(t);
+        truth.emplace_back(p4);
+        truth.back().setPdgID(15);
       }
     }
     if (truth_photon_pt) {
       const size_t ntg = truth_photon_pt->size();
       for (size_t i = 0; i < ntg; ++i) {
         TLorentzVector p4; p4.SetPtEtaPhiM((*truth_photon_pt)[i], (*truth_photon_eta)[i], (*truth_photon_phi)[i], 0.0);
-        dbxTruth t(p4); t.setPdgID(22);
-        truth.push_back(t);
+        truth.emplace_back(p4);
+        truth.back().setPdgID(22);
       }
     }
     if (truth_jet_pt) {
@@ -202,44 +241,43 @@ void atlasopenV3::Loop(analy_struct aselect, char* extname) {
       for (size_t i = 0; i < ntj; ++i) {
         const float mj = (truth_jet_m && i < truth_jet_m->size()) ? (*truth_jet_m)[i] : 0.0f;
         TLorentzVector p4; p4.SetPtEtaPhiM((*truth_jet_pt)[i], (*truth_jet_eta)[i], (*truth_jet_phi)[i], mj);
-        dbxTruth t(p4); t.setPdgID(0);   // 0 = generic truth jet (no PDG)
-        truth.push_back(t);
+        truth.emplace_back(p4);
+        truth.back().setPdgID(0);   // 0 = generic truth jet (no PDG)
       }
     }
 
-    for (size_t i = 0; i < muos.size(); ++i) muos[i].setParticleIndx(i);
-    for (size_t i = 0; i < eles.size(); ++i) eles[i].setParticleIndx(i);
-    for (size_t i = 0; i < taus.size(); ++i) taus[i].setParticleIndx(i);
-    for (size_t i = 0; i < gams.size(); ++i) gams[i].setParticleIndx(i);
-    for (size_t i = 0; i < jets.size(); ++i) jets[i].setParticleIndx(i);
-    for (size_t i = 0; i < ljets.size(); ++i) ljets[i].setParticleIndx(i);
-
-    // --- Package for CutLang ---
-    std::map<std::string, std::vector<dbxMuon>>     muos_map { {"MUO", muos} };
-    std::map<std::string, std::vector<dbxElectron>> eles_map { {"ELE", eles} };
-    std::map<std::string, std::vector<dbxTau>>      taus_map { {"TAU", taus} };
-    std::map<std::string, std::vector<dbxPhoton>>   gams_map { {"PHO", gams} };
-    std::map<std::string, std::vector<dbxJet>>      jets_map { {"JET", jets} };
-    std::map<std::string, std::vector<dbxJet>>      ljets_map{ {"FJET", ljets} };
-    std::map<std::string, std::vector<dbxTruth>>    truth_map{ {"Truth", truth} };
-    std::map<std::string, std::vector<dbxTrack>>    track_map;        //empty
-    std::map<std::string, std::vector<dbxParticle>> combo_map{ {"Combo", combos} };
-    std::map<std::string, std::vector<dbxParticle>> constits_map;   //empty
-
-    std::map<std::string, TVector2> met_map;    //R2-style
-    
     // MET object (R2-style TVector2)
     {
       TVector2 v;
       v.SetMagPhi(met, met_phi);
-      met_map.insert(std::make_pair("MET", v));
+      met_map["MET"] = v;
     }
 
     DEBUG("MET ok\n");
 
-    AnalysisObjects a0 = { muos_map, eles_map, taus_map, gams_map,
-                           jets_map, ljets_map, truth_map, track_map,
-                           combo_map, constits_map, met_map, anevt };
+    muos_map["MUO"].swap(muos);
+    eles_map["ELE"].swap(eles);
+    taus_map["TAU"].swap(taus);
+    gams_map["PHO"].swap(gams);
+    jets_map["JET"].swap(jets);
+    ljets_map["FJET"].swap(ljets);
+    truth_map["Truth"].swap(truth);
+    track_map["Track"].clear();
+    combo_map["Combo"].swap(combos);
+    constits_map["Constits"].clear();
+
+    a0.muos=muos_map;
+    a0.eles=eles_map;
+    a0.taus=taus_map;
+    a0.gams=gams_map;
+    a0.jets=jets_map;
+    a0.ljets=ljets_map;
+    a0.truth=truth_map;
+    a0.track=track_map;
+    a0.combos=combo_map;
+    a0.constits=constits_map;
+    a0.met=met_map;
+    a0.evt = anevt;
 
     DEBUG("Filling finished\n");
 

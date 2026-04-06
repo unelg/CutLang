@@ -39,7 +39,7 @@ YACCV      = $(shell which yacc)
 FLEXV      = $(shell which flex)
 LEXEV      = $(shell which lex)
 
-CXX           = $(shell root-config --cxx) -g -O2 
+CXX           = $(shell root-config --cxx) -O3 ####-g -pg only when debugging
 #-D_CLV_
 #-D__DEBUG__
 CXXFLAGS      =$(INCLUDES) -Wall -fPIC -Wunused-variable -Wsign-compare

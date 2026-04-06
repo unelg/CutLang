@@ -417,14 +417,20 @@ int BPdbxA::Finalize(){
 /////////////////////////
 int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass){
   
-  evt_data anevt = ao->evt; // event information
+//  evt_data anevt = ao->evt; // event information
   DEBUG("Now running :"<<algoname<< "\n");  
 
   DEBUG("-----------------------------------------------"<<cname<<" ctrl:"<< controlword<< " lastC:"<<lastCutPass<< "\n");
   double evt_weight = ao->evt.user_evt_weight; // FROM file or previous calculation  
   DEBUG("--event user weight:"<<evt_weight<<" TRGe:"<< TRGe<< " TRGm:"<<TRGm<<"\n");
 
-  
+ 
+ 
+ vector<myParticle*> theseParticles;
+ theseParticles.reserve(64);  // "en az 64 pointer'lik yer ayir"
+
+
+
   if (controlword == 0){
 
 //   if (systematicsRun) {
@@ -443,7 +449,8 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 */
 //   }
 
-    if(TRGe>1 || TRGm> 1) { evt_weight *= anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+//    if(TRGe>1 || TRGm> 1) { evt_weight *= anevt.weight_mc*anevt.weight_pileup*anevt.weight_jvt;
+    if(TRGe>1 || TRGm> 1) { evt_weight *= ao->evt.weight_mc*ao->evt.weight_pileup*ao->evt.weight_jvt;
       //cout <<" evntno:"<< anevt.event_no<<"--w:"<< anevt.weight_pileup<<" "<<anevt.weight_mc<<" "<<anevt.weight_jvt <<"\n";
       // evt_weight *= 1; // CHANGE ME
     }
@@ -456,7 +463,7 @@ int BPdbxA::makeAnalysis( AnalysisObjects *ao, int controlword, int lastCutPass)
 
 // --------- INITIAL  # events  ====> C0
         eff->Fill(1, 1);
-DEBUG("------------------------------------------------- Event ID:"<<anevt.event_no<<" \n");
+DEBUG("------------------------------------------------- Event ID:"<<ao->evt.event_no<<" \n");
 
 // *************************************
 /// CutLang execution starts-------here*
@@ -464,7 +471,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     std::map<string, Node*>::iterator oter = ObjectCuts.begin();
     while(oter != ObjectCuts.end())
     {    Node * ocut = oter->second;
-         vector<myParticle *> theseParticles;
          while (ocut != NULL) {
            ocut->Reset();
            ocut=ocut->left;
@@ -479,7 +485,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     DEBUG("Start resetting cuts:"<< NodeCuts.size() <<"\n");
     while(iter != NodeCuts.end())
     {    Node * acut = iter->second;
-         vector<myParticle *> theseParticles;
          while (acut != NULL) {
            acut->Reset();
            acut=acut->left;
@@ -567,6 +572,7 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
     while(iter != NodeCuts.end())
     {   
         double d;
+        theseParticles.clear();        // ekle CLAUDE
         vector<int> originalParticleIndices;
         DEBUG("**********Selecting: "<<iter->first<<" | "<<iter->second->getStr()<<"\t");
         if ( iter->first < controlword ) {
@@ -583,7 +589,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
            if (optimize.find(iter->first) != optimize.end()){
              DEBUG("optimizer.\n");
              Node *searcher=iter->second;
-             vector<myParticle *> theseParticles;
              do {
                searcher->getParticles(&theseParticles);
                DEBUG("Before Eval"<<iter->first<<" "<<theseParticles.size()<<"\n");
@@ -617,7 +622,6 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
         if ((controlword == 0) && (optimize.size()>0)) {
            if (optimize.find(iter->first) != optimize.end()){
              DEBUG("These optimized results are to be saved.\n");
-             vector<myParticle *> theseParticles;
              vector<myParticle *> bParticles;
              Node *searcher=iter->second; //////////////////////////////////////////////////////////////////////////////NGU
              do { 
@@ -661,4 +665,3 @@ DEBUG("------------------------------------------------- Event ID:"<<anevt.event
 // les cuts sont finis ici.
     return 10000+NodeCuts.size();
 }
-

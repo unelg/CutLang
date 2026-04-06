@@ -112,11 +112,11 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     bool keepworking=true;
 
     DEBUG("inital sets #types: J, FJ:"<< ao->jets.size()<<","<<ao->ljets.size()<<" E,M,T:"<< ao->eles.size()<<","<<ao->muos.size()<<","<<ao->taus.size() <<" P:"<<ao->gams.size()<<" Co:"<<ao->combos.size() <<"\n"); 
-    map <string, std::vector<dbxElectron>  >::iterator itE;
+    unordered_map <string, std::vector<dbxElectron>  >::iterator itE;
     for (itE=ao->eles.begin();itE!=ao->eles.end();itE++){
      DEBUG("avaiable e-s are "<<itE->first<<" size:"<<itE->second.size()<<"\n");
     }
-    map <string, std::vector<dbxMuon>  >::iterator itM;
+    unordered_map <string, std::vector<dbxMuon>  >::iterator itM;
     for (itM=ao->muos.begin();itM!=ao->muos.end();itM++){
      DEBUG("avaiable mus are "<<itM->first<<" size:"<<itM->second.size()<<"\n");
     }
@@ -224,35 +224,35 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     
     DEBUG("prep work done:"<<ccount<<" #particles:"<< particles.size()<<" type:"<<type<< " symbol:"<<symbol<<" basename:"<<basename<<" name:"<<name<<"\n");
     if (ccount>=10) exit (1);
-    map <string, std::vector<dbxJet>  >::iterator itj;
+    unordered_map <string, std::vector<dbxJet>  >::iterator itj;
     for (itj=ao->jets.begin();itj!=ao->jets.end();itj++){
      if (itj->first == name) return 1;
     }
-    map <string, std::vector<dbxElectron>  >::iterator ite;
+    unordered_map <string, std::vector<dbxElectron>  >::iterator ite;
     for (ite=ao->eles.begin();ite!=ao->eles.end();ite++){
      if (ite->first == name) return 1;
     }
-    map <string, std::vector<dbxTruth> >::iterator ittr;
+    unordered_map <string, std::vector<dbxTruth> >::iterator ittr;
     for (ittr=ao->truth.begin();ittr!=ao->truth.end();ittr++){
      if (ittr->first == name) return 1;
     }
-    map <string, std::vector<dbxMuon>  >::iterator itm;
+    unordered_map <string, std::vector<dbxMuon>  >::iterator itm;
     for (itm=ao->muos.begin();itm!=ao->muos.end();itm++){
      if (itm->first == name) return 1;
     }
-    map <string, std::vector<dbxTau>  >::iterator itt;
+    unordered_map <string, std::vector<dbxTau>  >::iterator itt;
     for (itt=ao->taus.begin();itt!=ao->taus.end();itt++){
      if (itt->first == name) return 1;
     }
-    map <string, std::vector<dbxPhoton>  >::iterator itp;
+    unordered_map <string, std::vector<dbxPhoton>  >::iterator itp;
     for (itp=ao->gams.begin();itp!=ao->gams.end();itp++){
      if (itp->first == name) return 1;
     }
-    map <string, std::vector<dbxJet>  >::iterator itfj;
+    unordered_map <string, std::vector<dbxJet>  >::iterator itfj;
     for (itfj=ao->ljets.begin();itfj!=ao->ljets.end();itfj++){
      if (itfj->first == name) return 1;
     }
-    map <string, std::vector<dbxParticle>  >::iterator itc;
+    unordered_map <string, std::vector<dbxParticle>  >::iterator itc;
     for (itc=ao->combos.begin();itc!=ao->combos.end();itc++){
      if (itc->first == name) return 1;
     }
@@ -279,13 +279,12 @@ double ObjectNode::evaluate(AnalysisObjects* ao){
     return 1;
 }
 // ********************************** Helper Functions
-void updateParticles (Node *cutIt, std::vector<myParticle *>* particles, int ipart, std::string name ){
-        TString mycutstr=cutIt->getStr();
+void updateParticles (Node *cutIt, std::vector<myParticle *>* particles, int ipart, std::string name, bool hasIf ){
              for (int jp=0; jp<particles->size(); jp++){//the particles in the cut
                 particles->at(jp)->index=ipart;
                 particles->at(jp)->collection=name;
               }
-              if (mycutstr.Contains("if")) {
+              if (hasIf) {
                  std::vector<myParticle *>  bparticles;
                  std::vector<myParticle *> *aparticles=&bparticles;
 
@@ -435,9 +434,10 @@ object goodjets take Jet
         } // done with constis
         else
         if(simpleloop){
+            bool hasIf = mycutstr.Contains("if");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
               DEBUG("-----------Now ipart:"<<ipart<<"\n");
-              updateParticles(*cutIterator, particles, ipart, name);
+              updateParticles(*cutIterator, particles, ipart, name,hasIf);
               bool ppassed=(*cutIterator)->evaluate(ao);
               DEBUG("P/F:"<<ppassed<<"\n");
               if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -495,9 +495,15 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->eles)[name].size();
+//        std::cout<<"#electrons "<<name<<" is:"<< ipart_max<<"working at "<<(*cutIterator)->getStr()<<"\n";
+        if (ipart_max == 0) {
+//           std::cout<<"no electrons, finishing at "<<(*cutIterator)->getStr()<<"\n";
+           return;
+        }
         bool simpleloop=true;
  
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
@@ -515,10 +521,13 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         if ( ptypeset.size()==2) {simpleloop=false; }
  
         if(simpleloop){
+            auto &elvec = ao->eles.find(name)->second;
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                updateParticles(*cutIterator, particles, ipart, name);
+                updateParticles(*cutIterator, particles, ipart, name, hasIf);
                 bool ppassed=(*cutIterator)->evaluate(ao);
-                if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
+//                if (!ppassed) (ao->eles).find(name)->second.erase( (ao->eles).find(name)->second.begin()+ipart);
+                if (!ppassed) elvec.erase(elvec.begin()+ipart);
+
             }
         }
         else {
@@ -558,8 +567,13 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->muos)[name].size();
+        if (ipart_max == 0) {
+             // std::cout<<"no muons finishing at "<<(*cutIterator)->getStr()<<"\n";
+             return;
+        }
         bool simpleloop=true;
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
  
         DEBUG("Psize:"<<particles->size() <<"\t"<<" ipart_max:"<<ipart_max<<"\n");
         if ( particles->size()==0) {
@@ -590,7 +604,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               updateParticles(*cutIterator, particles, ipart, name);
+               updateParticles(*cutIterator, particles, ipart, name,hasIf);
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) { DEBUG("Removing muon id:"<<ipart);
                    (ao->muos).find(name)->second.erase( (ao->muos).find(name)->second.begin()+ipart);
@@ -635,7 +649,8 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->gams)[name].size();
         bool simpleloop=true;
         TString mycutstr=(*cutIterator)->getStr();
- 
+        bool hasIf = mycutstr.Contains("if");
+
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
@@ -653,7 +668,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
        
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               updateParticles(*cutIterator, particles, ipart, name);
+               updateParticles(*cutIterator, particles, ipart, name, hasIf);
                bool ppassed=(*cutIterator)->evaluate(ao);
                if (!ppassed) (ao->gams).find(name)->second.erase( (ao->gams).find(name)->second.begin()+ipart);
             }
@@ -697,6 +712,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
 
         DEBUG("Psize:"<<particles->size() <<"\n");
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -714,7 +730,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         if(simpleloop){
             DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               updateParticles(*cutIterator, particles, ipart, name);
+               updateParticles(*cutIterator, particles, ipart, name, hasIf);
                DEBUG("FJet:"<< ipart<<" Cut ite:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG(ppassed<<"\n");
@@ -759,6 +775,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         int ipart_max = (ao->taus)[name].size();
         bool simpleloop=true;
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
  
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
@@ -789,7 +806,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 
         if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-              updateParticles(*cutIterator, particles, ipart, name);
+              updateParticles(*cutIterator, particles, ipart, name, hasIf);
               bool ppassed=(*cutIterator)->evaluate(ao);
               if (!ppassed) (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
            } 
@@ -844,6 +861,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
      DEBUG("Cut ite:"<<(*cutIterator)->getStr() <<"\t");
      particles->clear();
      TString mycutstr=(*cutIterator)->getStr();
+     bool hasIf = mycutstr.Contains("if");
      if ((*cutIterator)->getStr().CompareTo(" qo") == 0){
        (*cutIterator)->getParticles(particles);
      } else {
@@ -888,7 +906,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         if(simpleloop){
             DEBUG("ONE particle  Combo Loop \n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-              updateParticles(*cutIterator, particles, ipart, name);
+              updateParticles(*cutIterator, particles, ipart, name, hasIf);
               bool ppassed=(*cutIterator)->evaluate(ao);
               if (!ppassed) { DEBUG("Killing Combo:"<<ipart);
                    (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
@@ -1109,7 +1127,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     DEBUG("Creating new GEN type named:"<<name<<" #Gtypes:"<<ao->truth.size()<<" #Gparticles:"<< (ao->truth)[basename].size() <<" Duplicating:"<<basename<<"\n"); 
     ao->truth.insert( std::pair<string, vector<dbxTruth> >(name, (ao->truth)[basename]) );
     DEBUG(ao->constits.size()<< " initial constits maps\n");
-    map <string, std::vector<dbxParticle>  >::iterator itpa;
+    unordered_map <string, std::vector<dbxParticle>  >::iterator itpa;
     for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
      DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
     }
@@ -1138,6 +1156,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         }
 //--------------------- if we have a LoopNode(max, min, sum) no constiloop.
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
@@ -1173,13 +1192,13 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
          continue; // will move to the next cut iterator
         } // done with constis
         DEBUG(name <<" has " << (ao->truth)[name].size()<<" particles left after constiloop.\n");
-        map <string, std::vector<dbxParticle>  >::iterator itpa;
+        unordered_map <string, std::vector<dbxParticle>  >::iterator itpa;
 
         if(simpleloop){
           DEBUG("--GEN simple loop-- "<< ipart_max<<"\n");
           for (int ipart=ipart_max-1; ipart>=0; ipart--){
              int pidx=(ao->truth)[name].at(ipart).ParticleIndx();
-             updateParticles(*cutIterator, particles, ipart, name);
+             updateParticles(*cutIterator, particles, ipart, name, hasIf);
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
@@ -1255,7 +1274,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     DEBUG("Creating new TRACK type named:"<<name<<" #types:"<<ao->track.size()<<" #particles:"<< (ao->track)[basename].size() <<" Duplicating:"<<basename<<"\n"); 
     ao->track.insert( std::pair<string, vector<dbxTrack> >(name, (ao->track)[basename]) );
     DEBUG(ao->constits.size()<< " initial constits maps\n");
-    map <string, std::vector<dbxParticle>  >::iterator itpa;
+    unordered_map <string, std::vector<dbxParticle>  >::iterator itpa;
     for (itpa=ao->constits.begin();itpa!=ao->constits.end();itpa++){
      DEBUG(itpa->first<<" has "<<itpa->second.size()<<"\n" );
     }
@@ -1284,6 +1303,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         }
 //--------------------- if we have a LoopNode(max, min, sum) no constiloop.
         TString mycutstr=(*cutIterator)->getStr();
+        bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
         if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
         if ( ptypeset.size()==2) {simpleloop=false; }
@@ -1319,13 +1339,13 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
          continue; // will move to the next cut iterator
         } // done with constis
         DEBUG(name <<" has " << (ao->track)[name].size()<<" particles left after constiloop.\n");
-        map <string, std::vector<dbxParticle>  >::iterator itpa;
+        unordered_map <string, std::vector<dbxParticle>  >::iterator itpa;
 
         if(simpleloop){
           DEBUG("--TRK simple loop-- "<< ipart_max<<"\n"); // number of candidates in the event. maybe 90 tracks
           for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over all candidates.
              int pidx=(ao->track)[name].at(ipart).ParticleIndx(); // why - something??
-             updateParticles(*cutIterator, particles, ipart, name);
+             updateParticles(*cutIterator, particles, ipart, name, hasIf);
              bool ppassed=(*cutIterator)->evaluate(ao);
              DEBUG(name<<" ID"<< pidx<<" Res:"<<ppassed<<"\n");
              if (!ppassed) {
@@ -1411,7 +1431,7 @@ void step_add_a_comb(vector<int> output_ii, vector<int> tab_select_jj, vector<in
       }
 	}
 }
-//-------------------------------------------------------------------------------------------------------------
+
 void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myParticle *> * particles, std::string name, std::string basename) {
    DEBUG("Creating new PARTITION COMBO type named:"<<name<<" previous Combo types #:"<<ao->combos.size()<<" #Criteria:"<<criteria->size() <<"\n"); //xxx
 
@@ -1627,16 +1647,18 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
                    particles->at(jp)->index =temp_index[abs(1+tidx1)]; // means we respect order -1, -2 
                    DEBUG("new index: "<< particles->at(jp)->index  <<"\n");
                 } else {
-                    particles->at(jp)->index=ipart;
-                    particles->at(jp)->collection=name;
+//                  particles->at(jp)->index=ipart;
+//                  particles->at(jp)->collection=name;
                  ;
                 }
                }
+
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ P or F: ~~~~~~ "<<ppassed<<"\n");
                if (!ppassed) {
 
-                              DEBUG("marking as bad:"<<name<<" " <<ipart<<"th combi.\n");
+                              DEBUG("Removing:"<<name<<" " <<ipart<<"th combi.\n");
+			      (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
 		 	      bad_combinations.push_back(combi_out[ipart]);
 		 	      good_combinations.erase(combi_out[ipart]);
 	     		    } else {      
@@ -1705,16 +1727,6 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
       } // two particle
       cutIterator++;
     }// end of  cut iterator loop
-
-// remove the bad combinations here
-	for (int ipart=ipart_max-1; ipart>=0; ipart--){ // loop over combis
-          std::vector< vector<int> >::iterator itb; // bad list iterator
-          itb=find (bad_combinations.begin(), bad_combinations.end(), combi_out[ipart]);
-          if ( itb != bad_combinations.end() ) {
-             DEBUG("Removing:" <<ipart<<" of combis:"<<(ao->combos).find(name)->second.size() );
-  	     (ao->combos).find(name)->second.erase( (ao->combos).find(name)->second.begin()+ipart);
-          }
-         }
 
    if (requested_max<=0) { //probably no particle available,never here
      vector<vector<int>> table_B;
@@ -1814,4 +1826,3 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     
    DEBUG("--Create new Parti ends---\n");
 }
-
