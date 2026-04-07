@@ -238,6 +238,7 @@ DEBUG("Filling finished\n");
         a0.jets=jets_map;
         a0.ljets=ljets_map;
         a0.combos=combo_map;
+        a0.met=met_map;
         a0.evt = anevt;
 
         ttr_map["mini"]->SetEntry(j);

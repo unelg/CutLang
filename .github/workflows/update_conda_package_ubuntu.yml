@@ -10,13 +10,13 @@ jobs:
   build-conda-ubuntu:
     
     runs-on: ubuntu-latest
-    container: rootproject/root:6.26.04-conda
+    container: rootproject/root:6.30.02-conda
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
       with:
-        node-version: '12.x'
+        node-version: '24'
     
     #- uses: s-weigand/setup-conda@v1
     - name: Update meta

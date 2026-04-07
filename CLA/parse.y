@@ -286,8 +286,9 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
 //                                                YYERROR;//stops parsing if variable already defined
                              } else {
                               VariableListBank.insert(make_pair(name,VariableList) );
-                              VariableList.clear();
+                              //VariableList.clear();
                              }
+			     VariableList.clear();
             }
             
             | DEF ID '=' OME '(' description ',' ID ',' ID ',' ID ',' index  ')' {

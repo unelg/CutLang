@@ -434,10 +434,15 @@ object goodjets take Jet
         } // done with constis
         else
         if(simpleloop){
-            bool hasIf = mycutstr.Contains("if");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){ // I have all particles, jets, in an event.
               DEBUG("-----------Now ipart:"<<ipart<<"\n");
-              updateParticles(*cutIterator, particles, ipart, name,hasIf);
+              for (int jp=0; jp<particles->size(); jp++){
+                std::string coll = particles->at(jp)->collection;
+                if (coll == name || coll == basename) {
+                    particles->at(jp)->index = ipart;
+                    particles->at(jp)->collection = name;
+                }
+              }
               bool ppassed=(*cutIterator)->evaluate(ao);
               DEBUG("P/F:"<<ppassed<<"\n");
               if (!ppassed) (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
@@ -448,37 +453,70 @@ object goodjets take Jet
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
                 particles->at(0)->index=ipart;  // 6213
-                particles->at(0)->collection=name;             
+                particles->at(0)->collection=name;
                 int ipart2_max=-1;
                 string base_collection2=particles->at(1)->collection;
                 t2=particles->at(1)->type;
                 ipart2_max=getCollectionSize(t2, base_collection2, ao);
+                int fixed_idx = particles->at(1)->index;
+                bool scan_second = (fixed_idx == 6213 || fixed_idx == 16213);
+                bool candidate_pass = false;
 
-                bool totpass=false;
-                for (int kpart=ipart2_max-1; kpart>=0; kpart--){ 
-                    particles->at(1)->index=kpart;             
-                    particles->at(1)->collection=base_collection2;      
+                if (!scan_second) {
+                    int kpart = fixed_idx;
+                    particles->at(1)->index = kpart;
+                    particles->at(1)->collection = base_collection2;
                     for (int jp=2; jp<particles->size(); jp++){
-                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
-                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
+                     if (particles->at(jp)->type == t1) {
+                         particles->at(jp)->index = ipart;
+                         particles->at(jp)->collection = name;
+                     }
+                     if (particles->at(jp)->type == t2) {
+                         particles->at(jp)->index = kpart;
+                         particles->at(jp)->collection = base_collection2;
+                     }
                     }
+                    candidate_pass = (*cutIterator)->evaluate(ao);
+                } else {
+                    bool saw_pair = false;
+                    for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                        saw_pair = true;
+                        particles->at(1)->index = kpart;
+                        particles->at(1)->collection = base_collection2;
+                        for (int jp=2; jp<particles->size(); jp++){
+                         if (particles->at(jp)->type == t1) {
+                             particles->at(jp)->index = ipart;
+                             particles->at(jp)->collection = name;
+                         }
+                         if (particles->at(jp)->type == t2) {
+                             particles->at(jp)->index = kpart;
+                             particles->at(jp)->collection = base_collection2;
+                         }
+                        }
 
-                    DEBUG("will Evaluate now:"<<(*cutIterator)->getStr() <<"\n");
-                    bool ppassed=(*cutIterator)->evaluate(ao);
-                    totpass |= ppassed;
-                    DEBUG("Local Pass/Fail:"<<ppassed<< " Global P/F: "<< totpass <<"\n");
-                    if (!ppassed & !anyof) {
-                         DEBUG("removing !any:"<<name<< " idx:"<<ipart<<"\n");
-                        (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
-                        break; // we can quit at first mismatch.
-                    }
-                } // end of loop over 2nd particle type
+                        DEBUG("will Evaluate now:"<<(*cutIterator)->getStr() <<"\n");
+                        bool ppassed = (*cutIterator)->evaluate(ao);
+                        DEBUG("Local Pass/Fail:"<<ppassed<< " Global P/F: "<< candidate_pass <<"\n");
+                        if (anyof) {
+                            if (ppassed) {
+                                candidate_pass = true;
+                                break;
+                            }
+                        } else {
+                            if (!ppassed) {
+                                candidate_pass = false;
+                                break;
+                            }
+                            candidate_pass = true;
+                        }
+                    } // end of loop over 2nd particle type
+                    if (!saw_pair) candidate_pass = false;
+                }
 
-//-----------------the particle removed in case of any should happen here.
-                 if (anyof & !totpass) {
-                         DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
-                        (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
-                 }
+                if (!candidate_pass) {
+                    DEBUG("removing:"<<name<< " idx:"<<ipart<<"\n");
+                    (ao->jets).find(name)->second.erase( (ao->jets).find(name)->second.begin()+ipart);
+                }
 
             } // loop over 1st particle type
         } // end of not a simple loop (with 2 particles)
@@ -708,11 +746,15 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         particles->clear();
         (*cutIterator)->getParticlesAt(particles,0);
         int ipart_max = (ao->ljets)[name].size();
+        std::vector<char> keep_fjet(ipart_max, 1);
+        bool changed_fjet=false;
         bool simpleloop=true;
+        bool anyof=false; // by default allof semantics for scanned 2nd collections
 
         DEBUG("Psize:"<<particles->size() <<"\n");
         TString mycutstr=(*cutIterator)->getStr();
         bool hasIf = mycutstr.Contains("if");
+        if ( mycutstr.Contains("anyof") ) { anyof=true; };
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -724,43 +766,146 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         for ( int kp=0; kp<particles->size(); kp++ ) {
          ptypeset.insert( particles->at(kp)->type);
         }
-        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size() > 2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( mycutstr.Contains("anyof") || mycutstr.Contains("allof") ) {simpleloop=true;}
         if ( ptypeset.size()==2) {simpleloop=false; }
- 
+        if ( mycutstr.Contains("anyof") || mycutstr.Contains("allof") ) {simpleloop=true;}
+        std::vector<int> original_indices;
+        std::vector<std::string> original_collections;
+        original_indices.reserve(particles->size());
+        original_collections.reserve(particles->size());
+        for (int jp=0; jp<(int)particles->size(); jp++) {
+            original_indices.push_back(particles->at(jp)->index);
+            original_collections.push_back(particles->at(jp)->collection);
+        }
+        auto reset_particles = [&]() {
+            for (int jp=0; jp<(int)particles->size(); jp++) {
+                particles->at(jp)->index = original_indices[jp];
+                particles->at(jp)->collection = original_collections[jp];
+            }
+        };
         if(simpleloop){
             DEBUG("Simple Loop with "<< ipart_max <<" particles\n");
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-               updateParticles(*cutIterator, particles, ipart, name, hasIf);
+               reset_particles();
+               if ( mycutstr.Contains("anyof") || mycutstr.Contains("allof") ) {
+                 for (int jp=0; jp<particles->size(); jp++){
+                   std::string coll = particles->at(jp)->collection;
+                   if (coll == name || coll == basename) {
+                     particles->at(jp)->index = ipart;
+                     particles->at(jp)->collection = name;
+                   }
+                 }
+               } else {
+                 updateParticles(*cutIterator, particles, ipart, name, hasIf);
+               }
                DEBUG("FJet:"<< ipart<<" Cut ite:"<<(*cutIterator)->getStr()<<"\t");
                bool ppassed=(*cutIterator)->evaluate(ao);
                DEBUG(ppassed<<"\n");
-               if (!ppassed) (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
+               if (!ppassed) {
+                 keep_fjet[ipart]=0;
+                 changed_fjet=true;
+               }
             }
         }
         else {
             DEBUG("size=2\n");
             ValueNode abc=ValueNode();
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
-                particles->at(0)->index=ipart;  // 6213
+                reset_particles();
+                if (particles->at(0)->index == 6213 || particles->at(0)->index == 16213) {
+                    particles->at(0)->index=ipart;  // 6213
+                    particles->at(0)->collection=name;
+                }
                 int ipart2_max;
                 string base_collection2=particles->at(1)->collection;
                 t2=particles->at(1)->type;
                 ipart2_max=getCollectionSize(t2, base_collection2, ao);
-                for (int kpart=ipart2_max-1; kpart>=0; kpart--){
-                    particles->at(1)->index=kpart;
-                    for (int jp=2; jp<particles->size(); jp++){
-                     if (particles->at(jp)->type == t1) particles->at(jp)->index=ipart;
-                     if (particles->at(jp)->type == t2) particles->at(jp)->index=kpart;
-                    }
+                int fixed_idx = particles->at(1)->index;
+                bool scan_second = (fixed_idx == 6213 || fixed_idx == 16213);
+                bool candidate_pass = false;
 
-                    bool ppassed=(*cutIterator)->evaluate(ao);
-                    if (!ppassed) {
-                        (ao->ljets).find(name)->second.erase( (ao->ljets).find(name)->second.begin()+ipart);
-                        break;
+                if (!scan_second) {
+                    reset_particles();
+                    if (particles->at(0)->index == 6213 || particles->at(0)->index == 16213) {
+                        particles->at(0)->index=ipart;
+                        particles->at(0)->collection=name;
                     }
-                } // second particle set
+                    int kpart = fixed_idx;
+                    particles->at(1)->index=kpart;
+                    particles->at(1)->collection=base_collection2;
+                    for (int jp=2; jp<particles->size(); jp++){
+                     if (particles->at(jp)->type == t1) {
+                         if (particles->at(jp)->index == 6213 || particles->at(jp)->index == 16213) {
+                             particles->at(jp)->index=ipart;
+                         }
+                         particles->at(jp)->collection=name;
+                     }
+                     if (particles->at(jp)->type == t2) {
+                         if (particles->at(jp)->index == 6213 || particles->at(jp)->index == 16213) {
+                             particles->at(jp)->index=kpart;
+                         }
+                         particles->at(jp)->collection=base_collection2;
+                     }
+                    }
+                    candidate_pass = (*cutIterator)->evaluate(ao);
+                } else {
+                    bool saw_pair=false;
+                    for (int kpart=ipart2_max-1; kpart>=0; kpart--){
+                        reset_particles();
+                        if (particles->at(0)->index == 6213 || particles->at(0)->index == 16213) {
+                            particles->at(0)->index=ipart;
+                            particles->at(0)->collection=name;
+                        }
+                        saw_pair=true;
+                        particles->at(1)->index=kpart;
+                        particles->at(1)->collection=base_collection2;
+                        for (int jp=2; jp<particles->size(); jp++){
+                         if (particles->at(jp)->type == t1) {
+                             if (particles->at(jp)->index == 6213 || particles->at(jp)->index == 16213) {
+                                 particles->at(jp)->index=ipart;
+                             }
+                             particles->at(jp)->collection=name;
+                         }
+                         if (particles->at(jp)->type == t2) {
+                             if (particles->at(jp)->index == 6213 || particles->at(jp)->index == 16213) {
+                                 particles->at(jp)->index=kpart;
+                             }
+                             particles->at(jp)->collection=base_collection2;
+                         }
+                        }
+
+                        bool ppassed = (*cutIterator)->evaluate(ao);
+                        if (anyof) {
+                            if (ppassed) {
+                                candidate_pass = true;
+                                break;
+                            }
+                        } else {
+                            if (!ppassed) {
+                                candidate_pass = false;
+                                break;
+                            }
+                            candidate_pass = true;
+                        }
+                    } // second particle set
+                    if (!saw_pair) candidate_pass = false;
+                }
+
+                if (!candidate_pass) {
+                    keep_fjet[ipart]=0;
+                    changed_fjet=true;
+                }
             }// first particle set
         }// end of two particles
+        if (changed_fjet) {
+            std::vector<dbxJet> filtered_fjets;
+            filtered_fjets.reserve((ao->ljets)[name].size());
+            for (int ipart=0; ipart<ipart_max; ipart++){
+                if (keep_fjet[ipart]) filtered_fjets.push_back((ao->ljets)[name].at(ipart));
+            }
+            (ao->ljets)[name].swap(filtered_fjets);
+        }
     }// end of cutIterator
    DEBUG("FATJETs created\n");
 }
