@@ -540,6 +540,12 @@ double flavorof( dbxParticle* apart){
     return flavor;
 }
 
+double tau32of( dbxParticle* apart){
+    double tau32=apart->Flavor();
+    DEBUG(" tau32:"<<tau32<<"\t");
+    return tau32;
+}
+
 double pdgIDof( dbxParticle* apart){
    double pdgID = apart->pdgID();
 //   DEBUG(" pdgIDof:"<<pdgID<<"\t");
@@ -748,4 +754,3 @@ double nbfof( dbxParticle* apart){
     DEBUG("NBJ:"<<nbf<<"\n");
     return nbf;
 }
-

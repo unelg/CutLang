@@ -104,6 +104,7 @@ vardef {varname}" "?":"" "?.*"\n"
 
 [pP][dD][gG][iI][dD] return PDGID;
 [fF][lL][aA][vV][oO][rR]|[bB][tT][aA][gG][gG][eE][rR] return FLAVOR;
+[tT][aA][uU]32 return TAU32;
 [pP][tT][cC][oO][nN][eE] return PTCONE;
 [eE][tT][cC][oO][nN][eE] return ETCONE;
 

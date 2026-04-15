@@ -14,6 +14,7 @@ struct myParticle{
     int type;
     int index;
     std::string collection;
+    int reduce_mode = 0; // 0:none, 1:anyof, 2:allof
 };
 
 struct cntHisto {

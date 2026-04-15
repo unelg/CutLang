@@ -198,7 +198,7 @@ DEBUG("MET ok\n");
         anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
-        anevt.event_no=eventNumber;
+        anevt.event_no=j;
         anevt.TRG_e= trigE;
         anevt.TRG_m= trigM;
         anevt.TRG_j= 0;

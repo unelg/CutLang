@@ -26,15 +26,15 @@ object goodjet
   take JET
   select pT(JET) > 30
   select abs(eta(JET)) < 2.5
-  # Selections like the following are usually used for "object cleaning"
+  # Selections like the following are usually used for "object cleaning". In that case, anyof or allof keywords should be used, depending on the purpose.
   # dR wrt. all muons should be > 0.4
-  select dR(JET, MUO) > 0.4
+  select dR(JET, allof(MUO)) > 0.4
   # dR wrt. all electrons should be > min( 0.4 , 0.1+9.6/Pt(ELE)
-  select dR(JET, ELE) > min( 0.4 , 0.1+9.6/Pt(ELE) ) 
+  select dR(JET, allof(ELE)) > min( 0.4 , 0.1+9.6/Pt(ELE[0:])) 
 
 # EVENT SELECTION
 region signal
-  select Size(JET) >= 5 
+  select Size(JET) >= 5
   select Sum( pT(JET) ) >= 200
   # Loop over all jets, find minimum dR(JET[i],METLV[0]) and require that value be > 0.2
   select min( dR(METLV[0], JET) ) > 0.3
