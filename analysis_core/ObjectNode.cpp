@@ -1340,13 +1340,14 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         std::set<int> ptypeset;
         int t1=particles->at(0)->type;
         int t2;
-        for ( int kp=0; kp<particles->size(); kp++ ) {
-         ptypeset.insert( particles->at(kp)->type);
-        }
-        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-        if ( ptypeset.size()==2) {simpleloop=false; }
+	        for ( int kp=0; kp<particles->size(); kp++ ) {
+	         ptypeset.insert( particles->at(kp)->type);
+	        }
+	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+	        if ( ptypeset.size()==2) {simpleloop=false; }
+	        int event_no = ao->evt.event_no;
 
-        if(simpleloop){
+	        if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
               updateParticles(*cutIterator, particles, ipart, name, hasIf);
               bool ppassed=(*cutIterator)->evaluate(ao);
