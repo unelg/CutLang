@@ -1340,14 +1340,14 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         std::set<int> ptypeset;
         int t1=particles->at(0)->type;
         int t2;
-	        for ( int kp=0; kp<particles->size(); kp++ ) {
-	         ptypeset.insert( particles->at(kp)->type);
-	        }
-	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
-	        if ( ptypeset.size()==2) {simpleloop=false; }
-	        int event_no = ao->evt.event_no;
+        for ( int kp=0; kp<particles->size(); kp++ ) {
+         ptypeset.insert( particles->at(kp)->type);
+        }
+        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
+        if ( ptypeset.size()==2) {simpleloop=false; }
+        int event_no = ao->evt.event_no;
 
-	        if(simpleloop){
+        if(simpleloop){
             for (int ipart=ipart_max-1; ipart>=0; ipart--){
               updateParticles(*cutIterator, particles, ipart, name, hasIf);
               bool ppassed=(*cutIterator)->evaluate(ao);
@@ -1368,16 +1368,16 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                 string base_collection2=particles->at(1)->collection;
                 t2=particles->at(1)->type;
                 ipart2_max=getCollectionSize(t2, base_collection2, ao);
-	                int fixed_idx = original_second_idx;
-	                bool scan_second = (fixed_idx == 6213 || fixed_idx == 16213);
-	                bool candidate_pass = false;
-	                DEBUG("TAU candidate event:" << event_no
-	                      << " cut:" << (*cutIterator)->getStr()
-	                      << " ipart:" << ipart
-	                      << " fixed_idx:" << fixed_idx
-	                      << " scan_second:" << scan_second
-	                      << " ipart2_max:" << ipart2_max << "\n");
-	                if (!scan_second) {
+                int fixed_idx = original_second_idx;
+                bool scan_second = (fixed_idx == 6213 || fixed_idx == 16213);
+                bool candidate_pass = false;
+                DEBUG("TAU candidate event:" << event_no
+                      << " cut:" << (*cutIterator)->getStr()
+                      << " ipart:" << ipart
+                      << " fixed_idx:" << fixed_idx
+                      << " scan_second:" << scan_second
+                      << " ipart2_max:" << ipart2_max << "\n");
+                if (!scan_second) {
                     int kpart = fixed_idx;
                     particles->at(1)->index=kpart;
                     particles->at(1)->collection=base_collection2;
@@ -1391,20 +1391,20 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         particles->at(jp)->collection=base_collection2;
                      }
                     }
-	                    double left_value = 0.0;
-	                    double right_value = 0.0;
-	                    if ((*cutIterator)->left)  left_value  = (*cutIterator)->left->evaluate(ao);
-	                    if ((*cutIterator)->right) right_value = (*cutIterator)->right->evaluate(ao);
-	                    candidate_pass=(*cutIterator)->evaluate(ao);
-	                    DEBUG("TAU fixed eval event:" << event_no
-	                          << " cut:" << (*cutIterator)->getStr()
-	                          << " ipart:" << ipart
-	                          << " kpart:" << kpart
-	                          << " left_value:" << left_value
-	                          << " right_value:" << right_value
-	                          << " result:" << candidate_pass << "\n");
-	                } else {
-	                    std::vector<bool> pair_pass;
+                    double left_value = 0.0;
+                    double right_value = 0.0;
+                    if ((*cutIterator)->left)  left_value  = (*cutIterator)->left->evaluate(ao);
+                    if ((*cutIterator)->right) right_value = (*cutIterator)->right->evaluate(ao);
+                    candidate_pass=(*cutIterator)->evaluate(ao);
+                    DEBUG("TAU fixed eval event:" << event_no
+                          << " cut:" << (*cutIterator)->getStr()
+                          << " ipart:" << ipart
+                          << " kpart:" << kpart
+                          << " left_value:" << left_value
+                          << " right_value:" << right_value
+                          << " result:" << candidate_pass << "\n");
+                } else {
+                    std::vector<bool> pair_pass;
                     for (int kpart=ipart2_max-1; kpart>=0; kpart--){
                         particles->at(1)->index=kpart;
                         particles->at(1)->collection=base_collection2;
@@ -1418,20 +1418,20 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                             particles->at(jp)->collection=base_collection2;
                          }
                         }
-	                        double left_value = 0.0;
-	                        double right_value = 0.0;
-	                        if ((*cutIterator)->left)  left_value  = (*cutIterator)->left->evaluate(ao);
-	                        if ((*cutIterator)->right) right_value = (*cutIterator)->right->evaluate(ao);
-	                        bool ppassed = (*cutIterator)->evaluate(ao);
-	                        DEBUG("TAU pair eval event:" << event_no
-	                              << " cut:" << (*cutIterator)->getStr()
-	                              << " ipart:" << ipart
-	                              << " kpart:" << kpart
-	                              << " left_value:" << left_value
-	                              << " right_value:" << right_value
-	                              << " result:" << ppassed << "\n");
-	                        pair_pass.push_back(ppassed);
-	                    }
+                        double left_value = 0.0;
+                        double right_value = 0.0;
+                        if ((*cutIterator)->left)  left_value  = (*cutIterator)->left->evaluate(ao);
+                        if ((*cutIterator)->right) right_value = (*cutIterator)->right->evaluate(ao);
+                        bool ppassed = (*cutIterator)->evaluate(ao);
+                        DEBUG("TAU pair eval event:" << event_no
+                              << " cut:" << (*cutIterator)->getStr()
+                              << " ipart:" << ipart
+                              << " kpart:" << kpart
+                              << " left_value:" << left_value
+                              << " right_value:" << right_value
+                              << " result:" << ppassed << "\n");
+                        pair_pass.push_back(ppassed);
+                    }
                     if (pair_pass.empty()) {
                         candidate_pass = false;
                     } else if (anyof) {
@@ -1441,25 +1441,25 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         }
                     } else {
                         candidate_pass = true;
-	                        for (bool ppassed : pair_pass) {
-	                            if (!ppassed) { candidate_pass = false; break; }
-	                        }
-	                    }
-	                    DEBUG("TAU reduced candidate event:" << event_no
-	                          << " cut:" << (*cutIterator)->getStr()
-	                          << " ipart:" << ipart
-	                          << " pair_count:" << pair_pass.size()
-	                          << " anyof_flag:" << anyof
-	                          << " final_result:" << candidate_pass << "\n");
-	                }
-	                if (!candidate_pass) {
-	                    (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
-	                }
-	            }// first particle set
-	            DEBUG("TAU post-cut event:" << event_no
-	                  << " cut:" << (*cutIterator)->getStr()
-	                  << " survivors:" << (ao->taus).find(name)->second.size() << "\n");
-	        }// end of two particles
+                        for (bool ppassed : pair_pass) {
+                            if (!ppassed) { candidate_pass = false; break; }
+                        }
+                    }
+                    DEBUG("TAU reduced candidate event:" << event_no
+                          << " cut:" << (*cutIterator)->getStr()
+                          << " ipart:" << ipart
+                          << " pair_count:" << pair_pass.size()
+                          << " anyof_flag:" << anyof
+                          << " final_result:" << candidate_pass << "\n");
+                }
+                if (!candidate_pass) {
+                    (ao->taus).find(name)->second.erase( (ao->taus).find(name)->second.begin()+ipart);
+                }
+            }// first particle set
+            DEBUG("TAU post-cut event:" << event_no
+                  << " cut:" << (*cutIterator)->getStr()
+                  << " survivors:" << (ao->taus).find(name)->second.size() << "\n");
+        }// end of two particles
     }// end of cutIterator
    DEBUG("TAUS created\n");
 }
