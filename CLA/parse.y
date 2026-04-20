@@ -106,7 +106,7 @@ std::map< std::string, int> systBANK;
 %token IDX METSIGNIF HARDMET HARDMETPHI
 %token TTBARNNLOREC OME
 %token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE Z0 CROSS DOTP //functions
-%token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR XSLUMICORRSF//simple funcs
+%token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR TAU32 XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
 %token ISTIGHT ISMEDIUM ISLOOSE MINIISO ABSISO
 %token GENPARTIDX DECAYMODE
@@ -286,8 +286,9 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
 //                                                YYERROR;//stops parsing if variable already defined
                              } else {
                               VariableListBank.insert(make_pair(name,VariableList) );
-                              VariableList.clear();
+                              //VariableList.clear();
                              }
+			     VariableList.clear();
             }
             
             | DEF ID '=' OME '(' description ',' ID ',' ID ',' ID ',' index  ')' {
@@ -550,6 +551,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
          | '{' particules '}' FLAVOR { vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
                                        $$=new FuncNode(flavorof,newList,"flavor");
+                                  }
+         | TAU32 '(' particules ')' {  vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(tau32of,newList,"tau32");
+                                  }
+         | '{' particules '}' TAU32 {  vector<myParticle*> newList;
+                                       TmpParticle.swap(newList);//then add newList to node
+                                       $$=new FuncNode(tau32of,newList,"tau32");
                                   }
         | CONSTITS '(' particules ')' {vector<myParticle*> newList;
                                        TmpParticle.swap(newList);//then add newList to node
@@ -1360,8 +1369,26 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                                 tmp="truth_"+to_string((int)$3);                        
                                 $$=strdup(tmp.c_str());
 			    }
+         | ANYOF '(' particule ')' {
+                                if (!TmpParticle.empty()) {
+                                    TmpParticle.back()->reduce_mode = 1;
+                                }
+                                tmp="anyof(";
+                                tmp+=$3;
+                                tmp+=")";
+                                $$=strdup(tmp.c_str());
+                            }
+         | ALLOF '(' particule ')' {
+                                if (!TmpParticle.empty()) {
+                                    TmpParticle.back()->reduce_mode = 2;
+                                }
+                                tmp="allof(";
+                                tmp+=$3;
+                                tmp+=")";
+                                $$=strdup(tmp.c_str());
+                            }
 	 | GEN '[' index ']' { 
-				myParticle* a = new myParticle;
+					myParticle* a = new myParticle;
                                 a->type =10; a->index = (int)$3; a->collection = "Truth";
                                 TmpParticle.push_back(a);
                                 tmp="truth_"+to_string((int)$3);

@@ -43,6 +43,7 @@ LFuncNode::LFuncNode(double (*func)(dbxParticle* part1,dbxParticle* part2),std::
            apart2.index=input2[i]->index;
            apart2.type=input2[i]->type;
            apart2.collection=input2[i]->collection;
+           apart2.reduce_mode=input2[i]->reduce_mode;
          originalParticles2.push_back(apart2);
         }
     }

@@ -86,6 +86,7 @@ double    Rapof( dbxParticle* apart);
 double    Phiof( dbxParticle* apart);
 double 	pdgIDof( dbxParticle* apart);
 double flavorof( dbxParticle* apart);
+double  tau32of( dbxParticle* apart);
 double   isBTag( dbxParticle* apart);
 double isTauTag( dbxParticle* apart);
 double isTight ( dbxParticle* apart);

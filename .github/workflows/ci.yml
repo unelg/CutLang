@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v6
       with:
-        node-version: '12.x'
+        node-version: '24'
     - name: chmod
       working-directory: .github/workflows
       run: |
@@ -32,19 +32,20 @@ jobs:
         libxft-dev libxext-dev python3 libssl-dev ;
 
         #libglew1.5-dev
-        sudo apt-get install gfortran libpcre3-dev \
+        sudo apt-get install -y gfortran libpcre3-dev \
         xlibmesa-glu-dev libftgl-dev \
         libmysqlclient-dev libfftw3-dev libcfitsio-dev \
         graphviz-dev libavahi-compat-libdnssd-dev \
         libldap2-dev python3-dev libxml2-dev libkrb5-dev \
-        libgsl0-dev qtwebengine5-dev;
+        libgsl0-dev qtwebengine5-dev libvdt-dev \
+        libtbb12 libtbb-dev;
                    
     - name: Build ROOT
       working-directory: .
       run: |
-        wget https://root.cern/download/root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
-        tar -xzvf root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
-        rm -rf root_v6.26.04.Linux-ubuntu20-x86_64-gcc9.4.tar.gz
+        wget https://root.cern/download/root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        tar -xzvf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        rm -rf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
     
       
     - name: CutLang Dependencies
@@ -127,7 +128,7 @@ jobs:
         SCRIPT_FILEPATH: ./.github/workflows/sendgrid.js     
       
     - name: Upload Output File
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v6
       with:
         name: tests (ubuntu-latest)
         path: ./.github/workflows/artifacts

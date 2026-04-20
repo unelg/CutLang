@@ -177,7 +177,7 @@ public:
 	bool    isMedium(){ return p_ismedium; }
 	bool    isLoose() { return p_isloose; }
 	int    ParticleIndx() { return p_particleindx; }
-	TLorentzVector lv()  const{ return p_lvector; }
+	const TLorentzVector& lv() const { return p_lvector; }
 	double ZZero() {return p_z0;}
 
 

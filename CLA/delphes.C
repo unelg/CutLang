@@ -17,6 +17,7 @@
 #include "AnalysisController.h"
 #include <unistd.h>
 #include "TTreeReader.h"
+#include <unordered_map>
 
 //#define _CLV_
 #ifdef _CLV_
@@ -120,6 +121,26 @@ void delphes::Loop(analy_struct aselect, char *extname)
    Tower *efpho;
    Tower *efnh;
 
+// Declare maps BEFORE the event loop
+   unordered_map<string, vector<dbxMuon>     > muos_map;
+   unordered_map<string, vector<dbxElectron> > eles_map;
+   unordered_map<string, vector<dbxTau>      > taus_map;
+   unordered_map<string, vector<dbxPhoton>   > gams_map;
+   unordered_map<string, vector<dbxJet>      > jets_map;
+   unordered_map<string, vector<dbxJet>      > ljets_map;
+   unordered_map<string, vector<dbxTruth>    > truth_map;
+   unordered_map<string, vector<dbxTrack>    > track_map;
+   unordered_map<string, vector<dbxParticle> > combo_map;
+   unordered_map<string, vector<dbxParticle> > constits_map;
+   unordered_map<string, TVector2            > met_map;
+// Pre-populate with fixed keys once
+   muos_map["MUO"];  eles_map["ELE"];  taus_map["TAU"];
+   gams_map["PHO"];  jets_map["JET"];  ljets_map["FJET"];
+   truth_map["Truth"]; track_map["Track"];
+   combo_map["Combo"]; constits_map["Constits"]; met_map["MET"];
+
+   AnalysisObjects a0;
+
 //--------------------------------------------------------------event loop
    for (Long64_t je=startevent; je<lastevent; ++je) {
 
@@ -150,46 +171,37 @@ void delphes::Loop(analy_struct aselect, char *extname)
        vector<dbxTrack>   tracks;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
-
-       map<string, vector<dbxMuon>     > muos_map;
-       map<string, vector<dbxElectron> > eles_map;
-       map<string, vector<dbxTau>      > taus_map;
-       map<string, vector<dbxPhoton>   > gams_map;
-       map<string, vector<dbxJet>      > jets_map;
-       map<string, vector<dbxJet>      >ljets_map;
-       map<string, vector<dbxTruth>    >truth_map;
-       map<string, vector<dbxTrack>    >track_map;
-       map<string, vector<dbxParticle> >combo_map;
-       map<string, vector<dbxParticle> >constits_map;
-       map<string, TVector2            >met_map;
+       muos_map["MUO"].clear();
+       eles_map["ELE"].clear();
+       taus_map["TAU"].clear();
+       gams_map["PHO"].clear();
+       jets_map["JET"].clear();
+       ljets_map["FJET"].clear();
+       truth_map["Truth"].clear();
+       track_map["Track"].clear();
+       combo_map["Combo"].clear();
+       constits_map["Constits"].clear();
+       met_map["MET"].Clear();
 
 //temporary variables
        TLorentzVector  alv, alv_up, alv_down, slv;
        TLorentzVector  alv_msdown, alv_msup, alv_iddown, alv_idup, alv_ptsup,alv_ptsdown;
        TLorentzVector dummyTlv(0.,0.,0.,0.);
        TVector2 met;
-       dbxJet      *adbxj;
-       dbxElectron *adbxe;
-       dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
-       dbxTruth    *adbxgen;
-       dbxTrack    *adbxtrk;
-
       DEBUG("Begin Filling"<<std::endl);
       if (branchMuon != NULL)
       for(i = 0; i < branchMuon->GetEntriesFast(); ++i) {
               muon= (Muon*) branchMuon->At(i);
               alv.SetPtEtaPhiM( muon->PT, muon->Eta, muon->Phi, (105.658/1E3) ); // all in GeV
-              adbxm= new dbxMuon(alv);
-              adbxm->setCharge(muon->Charge );
-      	      adbxm->setPdgID(-13*muon->Charge );
-              adbxm->setEtCone(muon->IsolationVarRhoCorr);
-              adbxm->setPtCone(muon->IsolationVar       );
-              adbxm->setParticleIndx(i);
-              adbxm->addAttribute( muon->DZ);          //0
-              adbxm->addAttribute( muon->D0);         //1
-              adbxm->addAttribute( muon->IsolationVar   ); //2
+              muons.emplace_back(alv);
+              muons.back().setCharge(muon->Charge );
+      	      muons.back().setPdgID(-13*muon->Charge );
+              muons.back().setEtCone(muon->IsolationVarRhoCorr);
+              muons.back().setPtCone(muon->IsolationVar       );
+              muons.back().setParticleIndx(i);
+              muons.back().addAttribute( muon->DZ);          //0
+              muons.back().addAttribute( muon->D0);         //1
+              muons.back().addAttribute( muon->IsolationVar   ); //2
 //---calculate miniiso here.
 	      double minisovar=0.0;
 	      double absisovar=0.0;
@@ -247,12 +259,9 @@ if (it == 0){
 //              minisovar=(minisovar-muon->PT)/muon->PT;
              //if (minisovar>0) cout << " mini iso:"<<minisovar<<"\n";
 //              cout << " --> muon pT, mini iso:"<< muon->PT << ", " << minisovar<<"\n";
-              adbxm->addAttribute( minisovar ); // 3
-              adbxm->addAttribute( absisovar ); // 4
+              muons.back().addAttribute( minisovar ); // 3
+              muons.back().addAttribute( absisovar ); // 4
 //             if (minisovar > 0.2) cout << minisovar << " muon" << endl;
-
-              muons.push_back(*adbxm);
-              delete adbxm;
       }
       DEBUG("Muons OK:"<< branchMuon->GetEntriesFast()<< std::endl);
 
@@ -261,14 +270,14 @@ if (it == 0){
       for(i = 0; i < branchElectron->GetEntriesFast(); ++i) {
               electron= (Electron*) branchElectron->At(i);
               alv.SetPtEtaPhiM( electron->PT, electron->Eta, electron->Phi, (0.511/1E3) ); // all in GeV
-              adbxe= new dbxElectron(alv);
-              adbxe->setCharge(electron->Charge );
-      	      adbxe->setPdgID(-11*electron->Charge );
-              adbxe->setParticleIndx(i);
-              adbxe->setClusterE(electron->EhadOverEem );
-              adbxe->addAttribute( electron->DZ);         // 0
-              adbxe->addAttribute( electron->D0     );   // 1
-              adbxe->addAttribute( electron->IsolationVar );
+              electrons.emplace_back(alv);
+              electrons.back().setCharge(electron->Charge );
+      	      electrons.back().setPdgID(-11*electron->Charge );
+              electrons.back().setParticleIndx(i);
+              electrons.back().setClusterE(electron->EhadOverEem );
+              electrons.back().addAttribute( electron->DZ);         // 0
+              electrons.back().addAttribute( electron->D0     );   // 1
+              electrons.back().addAttribute( electron->IsolationVar );
 
 
 //---calculate miniiso here.
@@ -328,11 +337,8 @@ if (it == 0){
 
  //             if (minisovar > 0.1) cout << minisovar << " electron" << endl;
 
-              adbxe->addAttribute( minisovar ); // mini 3
-              adbxe->addAttribute( absisovar ); // abs  4
-
-              electrons.push_back(*adbxe);
-              delete adbxe;
+              electrons.back().addAttribute( minisovar ); // mini 3
+              electrons.back().addAttribute( absisovar ); // abs  4
       }
       DEBUG("Electrons OK:"<< i <<std::endl);
 //PHOTONS
@@ -340,12 +346,10 @@ if (it == 0){
       for(i = 0; i < branchPhoton->GetEntriesFast(); ++i) {
                 photon= (Photon*) branchPhoton->At(i);
                 alv.SetPtEtaPhiM( photon->PT, photon->Eta, photon->Phi, 0 ); // all in GeV
-                adbxp= new dbxPhoton(alv);
-                adbxp->setCharge(0);
-                adbxp->setParticleIndx(i);
-                adbxp->setClusterE(photon->EhadOverEem );
-                photons.push_back(*adbxp);
-                delete adbxp;
+                photons.emplace_back(alv);
+                photons.back().setCharge(0);
+                photons.back().setParticleIndx(i);
+                photons.back().setClusterE(photon->EhadOverEem );
         }
         DEBUG("Photons OK:"<<i<<std::endl);
 
@@ -359,9 +363,9 @@ if (it == 0){
         double Tr_eta = track->Eta;
         int TparticleId  =  track->PID; 
         slv.SetPtEtaPhiM( Tr_pt, Tr_eta, track->Phi,  track->Mass );
-        adbxtrk= new dbxTrack(slv);
-        adbxtrk->setParticleIndx(i);
-      	adbxtrk->setPdgID( TparticleId );
+        tracks.emplace_back(slv);
+        tracks.back().setParticleIndx(i);
+      	tracks.back().setPdgID( TparticleId );
 
         double mT = 0.01;
 
@@ -382,15 +386,13 @@ if (it == 0){
         ChargedSum -= Tr_pt;
 //        cout <<" corrected:"<<ChargedSum<<"\n";
  //       cout <<"PDGID:"<<TparticleId<<"\n";
-        adbxtrk->setPtCone(ChargedSum);
+        tracks.back().setPtCone(ChargedSum);
 
  //iso tracks
         if ( (isMuon || isElectron) && Tr_pt >  5 && mT < 100 && ChargedSum/Tr_pt < 0.2) { aFlavor=1; }
         if (!(isMuon || isElectron) && Tr_pt > 10 && mT < 100 && ChargedSum/Tr_pt < 0.1) { aFlavor=2; }
 
-        adbxtrk->setFlavor(aFlavor); 
-        tracks.push_back(*adbxtrk);
-        delete adbxtrk;
+        tracks.back().setFlavor(aFlavor); 
       }
 //------------------------------------------------------
 // regular jets
@@ -401,12 +403,12 @@ if (it == 0){
       jet = (Jet*) branchJet->At(i);
       alv.SetPtEtaPhiM( jet->PT, jet->Eta, jet->Phi, jet->Mass ); // all in GeV
 //      cout<<"This Jet pt: "<<jet->PT<<", eta: "<<jet->Eta<<", phi: "<<jet->Phi <<" Q:"<<jet->Charge<<endl;
-      adbxj= new dbxJet(alv);
-      adbxj->setCharge(jet->Charge);
-      adbxj->setParticleIndx(i);
-      adbxj->setFlavor(jet->Flavor);
-      adbxj->set_isbtagged_77(  (bool)jet->BTag ); //  btag
-      adbxj->set_isTautagged( (bool)jet->TauTag); // tau tag
+      jets.emplace_back(alv);
+      jets.back().setCharge(jet->Charge);
+      jets.back().setParticleIndx(i);
+      jets.back().setFlavor(jet->Flavor);
+      jets.back().set_isbtagged_77(  (bool)jet->BTag ); //  btag
+      jets.back().set_isTautagged( (bool)jet->TauTag); // tau tag
 // Loop over all jet's constituents
       for(j = 0; j < jet->Particles.GetEntriesFast(); ++j) {
        object = jet->Particles.At(j);
@@ -416,30 +418,25 @@ if (it == 0){
         particle = (GenParticle*) object;
 //        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
         alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
-        adbxgen= new dbxTruth(alv);
-        adbxgen->setCharge( particle->Charge );
-        adbxgen->setPdgID(  particle->PID );
-        adbxgen->setParticleIndx(j);
-        adbxgen->addAttribute( particle->DZ);  //0
-        adbxgen->addAttribute( particle->D0);  
-        adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
-        adbxgen->addAttribute( particle->Status ); //3
-        adbxgen->addAttribute( particle->Z ); //4
-        adbxgen->addAttribute( particle->Y ); //5
-        adbxgen->addAttribute( particle->X ); //6
-        adbxgen->addAttribute( particle->T ); //7
-        constis.push_back(*adbxgen);
-        delete adbxgen;
+        constis.emplace_back(alv);
+        constis.back().setCharge( particle->Charge );
+        constis.back().setPdgID(  particle->PID );
+        constis.back().setParticleIndx(j);
+        constis.back().addAttribute( particle->DZ);  //0
+        constis.back().addAttribute( particle->D0);  
+        constis.back().addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        constis.back().addAttribute( particle->Status ); //3
+        constis.back().addAttribute( particle->Z ); //4
+        constis.back().addAttribute( particle->Y ); //5
+        constis.back().addAttribute( particle->X ); //6
+        constis.back().addAttribute( particle->T ); //7
        }
       }// end of loop over jets constits.
-
-    jets.push_back(*adbxj);
-    delete adbxj;
     if (constis.size() > 0){
       TString cname ="JET_";
               cname+=i;    // jet index
               cname+="c"; //  c for constituents
-       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
+       constits_map[cname.Data()] = constis;
        DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
        constis.clear();
     }
@@ -457,12 +454,12 @@ if (it == 0){
       fjet = (FatJet*) branchFJet->At(i);
       alv.SetPtEtaPhiM( fjet->PT, fjet->Eta, fjet->Phi, fjet->Mass ); // all in GeV
 //      cout<<"This Jet pt: "<<fjet->PT<<", eta: "<<fjet->Eta<<", phi: "<<fjet->Phi <<" Q:"<<fjet->Charge<<endl;
-      adbxj= new dbxJet(alv);
-      adbxj->setCharge(fjet->Charge);
-      adbxj->setParticleIndx(i);
-      adbxj->setFlavor(fjet->Flavor);
-      adbxj->set_isbtagged_77(  (bool)fjet->BTag ); //  btag
-      adbxj->set_isTautagged( (bool)fjet->TauTag); // tau tag
+      ljets.emplace_back(alv);
+      ljets.back().setCharge(fjet->Charge);
+      ljets.back().setParticleIndx(i);
+      ljets.back().setFlavor(fjet->Flavor);
+      ljets.back().set_isbtagged_77(  (bool)fjet->BTag ); //  btag
+      ljets.back().set_isTautagged( (bool)fjet->TauTag); // tau tag
 // Loop over all jet's constituents
       for(j = 0; j < fjet->Particles.GetEntriesFast(); ++j) {
        object = fjet->Particles.At(j);
@@ -472,30 +469,25 @@ if (it == 0){
         particle = (GenParticle*) object;
 //        cout << "    GenPart pt: " << particle->PT << ", eta: " << particle->Eta << ", M: " << particle->Mass << endl;
         alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); 
-        adbxgen= new dbxTruth(alv);
-        adbxgen->setCharge( particle->Charge );
-        adbxgen->setPdgID(  particle->PID );
-        adbxgen->setParticleIndx(j);
-        adbxgen->addAttribute( particle->DZ);  //0
-        adbxgen->addAttribute( particle->D0);  
-        adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
-        adbxgen->addAttribute( particle->Status ); //3
-        adbxgen->addAttribute( particle->Z ); //4
-        adbxgen->addAttribute( particle->Y ); //5
-        adbxgen->addAttribute( particle->X ); //6
-        adbxgen->addAttribute( particle->T ); //7
-        constis.push_back(*adbxgen);
-        delete adbxgen;
+        constis.emplace_back(alv);
+        constis.back().setCharge( particle->Charge );
+        constis.back().setPdgID(  particle->PID );
+        constis.back().setParticleIndx(j);
+        constis.back().addAttribute( particle->DZ);  //0
+        constis.back().addAttribute( particle->D0);  
+        constis.back().addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+        constis.back().addAttribute( particle->Status ); //3
+        constis.back().addAttribute( particle->Z ); //4
+        constis.back().addAttribute( particle->Y ); //5
+        constis.back().addAttribute( particle->X ); //6
+        constis.back().addAttribute( particle->T ); //7
        }
       }// end of loop over jets constits.
-
-    ljets.push_back(*adbxj);
-    delete adbxj;
     if (constis.size() > 0){
       TString cname ="FJET_";
               cname+=i;    // jet index
               cname+="c"; //  c for constituents
-       constits_map.insert( pair <string,vector<dbxParticle> > (cname.Data(), constis) );
+       constits_map[cname.Data()] = constis;
        DEBUG("Inserting "<<cname<<" :"<<constis.size()<<"\n");
        constis.clear();
     }
@@ -514,20 +506,20 @@ if (it == 0){
                 alv.SetPtEtaPhiM( particle->PT, particle->Eta, particle->Phi, particle->Mass ); // all in GeV
  //       if (abs( particle->PID)==15)
 //	cout<< i << "    GenPart pt: " << particle->PT << ", status: " << particle->Status << ", M: " << particle->Mass << endl;
-                adbxgen= new dbxTruth(alv);
-                adbxgen->setCharge( particle->Charge );
-                adbxgen->setPdgID(  particle->PID );
-                adbxgen->setParticleIndx(i);
-                adbxgen->addAttribute( particle->DZ);   // 0
-                adbxgen->addAttribute( particle->D0);  // 1 
-                adbxgen->addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
-                adbxgen->addAttribute( particle->Status ); // 3
-                adbxgen->addAttribute( particle->Z );  //4
-                adbxgen->addAttribute( particle->Y );  //5
-                adbxgen->addAttribute( particle->X );  //6
-                adbxgen->addAttribute( particle->T );  //7
-                adbxgen->addAttribute( particle->D1 );  //8
-                adbxgen->addAttribute( particle->D2 );  //9
+                truth.emplace_back(alv);
+                truth.back().setCharge( particle->Charge );
+                truth.back().setPdgID(  particle->PID );
+                truth.back().setParticleIndx(i);
+                truth.back().addAttribute( particle->DZ);   // 0
+                truth.back().addAttribute( particle->D0);  // 1 
+                truth.back().addAttribute( 0     ); // this is dummy, as we dont have isolation variable for GEN particles(unlike e,m,photon)
+                truth.back().addAttribute( particle->Status ); // 3
+                truth.back().addAttribute( particle->Z );  //4
+                truth.back().addAttribute( particle->Y );  //5
+                truth.back().addAttribute( particle->X );  //6
+                truth.back().addAttribute( particle->T );  //7
+                truth.back().addAttribute( particle->D1 );  //8
+                truth.back().addAttribute( particle->D2 );  //9
 
 		int d1 = particle->D1;
 		int d2 = particle->D2;
@@ -544,9 +536,8 @@ if (it == 0){
 				}
 			}
 		}
-		adbxgen->addAttribute(leadingX); //10
-		adbxgen->addAttribute(leadingY); //11
-                truth.push_back(*adbxgen);
+		truth.back().addAttribute(leadingX); //10
+		truth.back().addAttribute(leadingY); //11
 
 //
 /*
@@ -565,7 +556,6 @@ if (it == 0){
 //             cout <<"vtx:"<<particle->X <<" y:"<<particle->Y<<"\n";
              }
 */
-                delete adbxgen;
         }
     DEBUG("GENs:"<<i<<std::endl);
 
@@ -597,20 +587,30 @@ if (it == 0){
 	anevt.maxEvents=nentries;
 
         DEBUG("Filling finished evt:"<<j<<std::endl);
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>      > ("FJET",        ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",      tracks) );
-       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-         met_map.insert( pair <string,TVector2>             ("MET",           met) );
-    if (constits_map.size() < 1) // we only add this if it was previously empty...
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
+       muos_map["MUO"].swap(muons);
+       eles_map["ELE"].swap(electrons);
+       taus_map["TAU"].swap(taus);
+       gams_map["PHO"].swap(photons);
+       jets_map["JET"].swap(jets);
+       ljets_map["FJET"].swap(ljets);
+       truth_map["Truth"].swap(truth);
+       track_map["Track"].swap(tracks);
+       combo_map["Combo"].swap(combos);
+       if (constits_map.size() < 1) constits_map["Constits"].swap(constis);
+       met_map["MET"] = met;
+        a0.muos=muos_map;
+        a0.eles=eles_map;
+        a0.taus=taus_map;
+        a0.gams=gams_map;
+        a0.jets=jets_map;
+        a0.ljets=ljets_map;
+        a0.truth=truth_map;
+        a0.track=track_map;
+        a0.combos=combo_map;
+        a0.constits=constits_map;
+        a0.met=met_map;
+        a0.evt = anevt;
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map,track_map, combo_map, constits_map, met_map,  anevt};
 
         aCtrl.RunTasks(a0); // leaks
 

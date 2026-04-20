@@ -23,8 +23,8 @@ class AnalysisController {
    ~AnalysisController ( ) {};
     void Initialize ( char*);
     void SetJetUncs( vector<double> );
-    void RunTasks (AnalysisObjects,  std::map <std::string, AnalysisObjects>);
-    void RunTasks (AnalysisObjects aos) {RunTasks (aos, anull); }
+    void RunTasks (AnalysisObjects &a0,  std::map <std::string, AnalysisObjects> &analysis_objs_map);
+    void RunTasks (AnalysisObjects &aos) {RunTasks (aos, anull); }
     void Finalize();
     void MakePlots();
 

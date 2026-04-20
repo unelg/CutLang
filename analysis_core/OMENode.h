@@ -84,7 +84,7 @@ public:
         for (std::size_t i = 0; i < session->GetOutputCount(); i++) {
           output_names.emplace_back(session->GetOutputNameAllocated(i, allocator).get());
           auto output_shapes = session->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-         std::cout << "\t" << output_names.at(i) <<"\n";
+          //std::cout << "\t" << output_names.at(i) <<"\n";
 // verbose    std::cout << "\t" << output_names.at(i) << " : " << print_shape(output_shapes) << std::endl;
         }
 
@@ -93,16 +93,10 @@ public:
          assert(input_names.size() == 1 && output_names.size() == 1);
 }
     virtual void getParticles(std::vector<myParticle *>* particles) override{
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-                 variableList[0]->getParticlesAt(aparticles,0);
-                  particles->push_back(bparticles[0]);
+                 return;
                  }
     virtual void getParticlesAt(std::vector<myParticle *>* particles,int index) override{
-                 std::vector<myParticle *>  bparticles;
-                 std::vector<myParticle *> *aparticles=&bparticles;
-                 variableList[0]->getParticlesAt(aparticles,0);
-                  particles->push_back(bparticles[index]);
+                 return;
                  }
     
     virtual void Reset() override{}

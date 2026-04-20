@@ -14,18 +14,18 @@ build:
 
 requirements:
   host:
-    - root ==6.26.04
-    - jupyterlab ==3.0.16
-    - metakernel ==0.27.5
-    - flex ==2.6.4
-    - bison ==3.4
-    - make ==4.2.1
-    - wget ==1.20.1
+    - root ==6.30.02
+    - jupyterlab >=4,<5
+    - metakernel >=0.30,<1
+    - flex >=2.6
+    - bison >=3.8
+    - make
+    - wget
   run:
-    - root ==6.26.04
-    - jupyterlab ==3.0.16
-    - metakernel ==0.27.5
-    - wget ==1.20.1
+    - root ==6.30.02
+    - jupyterlab >=4,<5
+    - metakernel >=0.30,<1
+    - wget
 
 about:
   home: 'https://github.com/unelg/CutLang'
@@ -39,4 +39,4 @@ about:
 extra:
   recipe-maintainers:
     - unelg
-    - shenburak
+    - ahmetcansansar

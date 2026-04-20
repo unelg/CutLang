@@ -40,6 +40,12 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        this->getParticles(&inputParticles);       
  
        DEBUG("LoopNode: ---> #particles:"<< inputParticles.size()<<"\n");
+       if (inputParticles.empty()) { // allows work without particle dependence
+	  DEBUG("LoopNode working with 0 particles.")
+          retval = left->evaluate(ao);
+	  result_list.push_back(retval);
+	  continue;
+       }
        bool oneParticleAtATime=false;
        for (int ii=0; ii<inputParticles.size(); ii++){
         DEBUG("Loop particle ID:"<<ii<<" Type:"<<inputParticles[ii]->type<<" collection:"
@@ -174,7 +180,7 @@ double LoopNode::evaluate(AnalysisObjects* ao) {
        if (g==NULL) { return (*f)(result_list);}  // 1D case
        else {
        
-     map <string, std::vector<dbxJet>  >::iterator itJ;
+     unordered_map <string, std::vector<dbxJet>  >::iterator itJ;
     for (itJ=ao->jets.begin();itJ!=ao->jets.end();itJ++){
      DEBUG("avaiable jets are "<<itJ->first<<" size:"<<itJ->second.size()<<"\n");
     }

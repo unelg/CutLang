@@ -4,6 +4,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <signal.h>
+#include <unordered_map>
 
 #include "dbx_electron.h"
 #include "dbx_muon.h"
@@ -57,6 +58,26 @@ void atlasopenR2::Loop(analy_struct aselect, char *extname)
        cout << "Interval exceeds tree. Analysis is done on max available events starting from event : " << startevent << endl;
    }
 
+// Declare maps BEFORE the event loop
+ unordered_map<string, vector<dbxMuon>     > muos_map;
+ unordered_map<string, vector<dbxElectron> > eles_map;
+ unordered_map<string, vector<dbxTau>      > taus_map;
+ unordered_map<string, vector<dbxPhoton>   > gams_map;
+ unordered_map<string, vector<dbxJet>      > jets_map;
+ unordered_map<string, vector<dbxJet>      > ljets_map;
+ unordered_map<string, vector<dbxTruth>    > truth_map;
+ unordered_map<string, vector<dbxTrack>    > track_map;
+ unordered_map<string, vector<dbxParticle> > combo_map;
+ unordered_map<string, vector<dbxParticle> > constits_map;
+ unordered_map<string, TVector2            > met_map;
+// Pre-populate with fixed keys once
+muos_map["MUO"];  eles_map["ELE"];  taus_map["TAU"];
+gams_map["PHO"];  jets_map["JET"];  ljets_map["FJET"];
+truth_map["Truth"]; track_map["Track"];
+combo_map["Combo"]; constits_map["Constits"]; met_map["MET"];
+
+   AnalysisObjects a0;
+
    for (Long64_t j=startevent; j<lastevent; ++j) {
 
        if ( fctrlc ) { cout << "Processed " << j << " events\n"; break; }
@@ -76,55 +97,46 @@ std::cout << "Read Event"<<std::endl;
        vector<dbxParticle> combos;
        vector<dbxParticle> constis;
 
-       map<string, vector<dbxMuon>     > muos_map;
-       map<string, vector<dbxElectron> > eles_map;
-       map<string, vector<dbxTau>      > taus_map;
-       map<string, vector<dbxPhoton>   > gams_map;
-       map<string, vector<dbxJet>      > jets_map;
-       map<string, vector<dbxJet>     >ljets_map;
-       map<string, vector<dbxTruth>    >truth_map;
-       map<string, vector<dbxTrack>    >track_map;
-       map<string, vector<dbxParticle> >combo_map;
-       map<string, vector<dbxParticle> >constits_map;
-       map<string, TVector2            >  met_map;
+       muos_map["MUO"].clear();
+       eles_map["ELE"].clear();
+       taus_map["TAU"].clear();
+       gams_map["PHO"].clear();
+       jets_map["JET"].clear();
+       ljets_map["FJET"].clear();
+       truth_map["Truth"].clear();
+       track_map["Track"].clear();
+       combo_map["Combo"].clear();
+       constits_map["Constits"].clear();
+       met_map["MET"].Clear();
 
 //temporary variables
        TLorentzVector  alv;
        TVector2 met;
-       dbxJet      *adbxj;
-       dbxElectron *adbxe;
-       dbxMuon     *adbxm;
-       dbxTau      *adbxt;
-       dbxPhoton   *adbxp;
 
 DEBUG("Begin Filling"<<std::endl);
 
         for (unsigned int i=0; i<lep_n; i++) {
             alv.SetPtEtaPhiE( lep_pt->at(i)*0.001, lep_eta->at(i), lep_phi->at(i), lep_E->at(i)*0.001 ); // all in GeV
             if (lep_type->at(i)==13) {
-                adbxm= new dbxMuon(alv);
-                adbxm->setCharge(lep_charge->at(i) );
-		adbxm->setPdgID(-13*lep_charge->at(i));
-                adbxm->setEtCone(0.001*lep_etcone20->at(i)  );
-                adbxm->setPtCone(0.001*lep_ptcone30->at(i)  );
-                adbxm->setIsTight(lep_isTightID->at(i) );
-                adbxm->setParticleIndx(i);
-                adbxm->setIsTight(lep_isTightID->at(i) );
-                adbxm->setZZero(lep_z0->at(i));
-                muons.push_back(*adbxm);
-                delete adbxm;
+                muons.emplace_back(alv);
+                muons.back().setCharge(lep_charge->at(i));
+		muons.back().setPdgID(-13*lep_charge->at(i));
+                muons.back().setEtCone(0.001*lep_etcone20->at(i)  );
+                muons.back().setPtCone(0.001*lep_ptcone30->at(i)  );
+                muons.back().setIsTight(lep_isTightID->at(i) );
+                muons.back().setParticleIndx(i);
+                muons.back().setIsTight(lep_isTightID->at(i) );
+                muons.back().setZZero(lep_z0->at(i));
             }
             if (lep_type->at(i)==11) {
-                adbxe= new dbxElectron(alv);
-                adbxe->setCharge(lep_charge->at(i) );
-		adbxe->setPdgID(-11*lep_charge->at(i));
-                adbxe->setParticleIndx(i);
-                adbxe->setEtCone(0.001*lep_etcone20->at(i)  );
-                adbxe->setPtCone(0.001*lep_ptcone30->at(i)  );
-                adbxe->setIsTight(lep_isTightID->at(i) );
-                adbxe->setZZero(lep_z0->at(i));
-                electrons.push_back(*adbxe);
-                delete adbxe;
+                electrons.emplace_back(alv);
+                electrons.back().setCharge(lep_charge->at(i));
+		electrons.back().setPdgID(-11*lep_charge->at(i));
+                electrons.back().setParticleIndx(i);
+                electrons.back().setEtCone(0.001*lep_etcone20->at(i)  );
+                electrons.back().setPtCone(0.001*lep_ptcone30->at(i)  );
+                electrons.back().setIsTight(lep_isTightID->at(i) );
+                electrons.back().setZZero(lep_z0->at(i));
             }
         }
 
@@ -133,12 +145,10 @@ DEBUG("Muons, Electrons OK\n");
 // TAUS
         for(unsigned int i=0; i<tau_n; i++){
                 alv.SetPtEtaPhiE( tau_pt->at(i)*0.001, tau_eta->at(i), tau_phi->at(i), tau_E->at(i)*0.001 ); // all in GeV
-                adbxt= new dbxTau(alv);
-                adbxt->setCharge(tau_charge->at(i) );
-		adbxt->setPdgID(-15*tau_charge->at(i));
-                adbxt->setParticleIndx(i);
-                taus.push_back(*adbxt);
-                delete adbxt;
+                taus.emplace_back(alv);
+                taus.back().setCharge(tau_charge->at(i) );
+		taus.back().setPdgID(-15*tau_charge->at(i));
+                taus.back().setParticleIndx(i);
         }
 
 DEBUG("Taus OK\n");
@@ -146,34 +156,38 @@ DEBUG("Taus OK\n");
 //PHOTONS
         for (unsigned int i=0; i<photon_n; i++) {
                 alv.SetPtEtaPhiM( photon_pt->at(i)*0.001, photon_eta->at(i), photon_phi->at(i), 0 ); // all in GeV
-                adbxp= new dbxPhoton(alv);
-		adbxp->setPdgID(22);
-                adbxp->setEtCone(0.001*photon_etcone20->at(i) );
-                adbxp->setPtCone(0.001*photon_ptcone30->at(i) );
-                adbxp->setIsTight(photon_isTightID->at(i) );
-                adbxp->setCharge(0);
-                adbxp->setParticleIndx(i);
-                photons.push_back(*adbxp);
-                delete adbxp;
+                photons.emplace_back(alv);
+		photons.back().setPdgID(22);
+                photons.back().setEtCone(0.001*photon_etcone20->at(i) );
+                photons.back().setPtCone(0.001*photon_ptcone30->at(i) );
+                photons.back().setIsTight(photon_isTightID->at(i) );
+                photons.back().setCharge(0);
+                photons.back().setParticleIndx(i);
         }
 DEBUG("Photons OK\n");
 
 //JETS
         for (unsigned int i=0; i<jet_n; i++) {
                 alv.SetPtEtaPhiE( jet_pt->at(i)*0.001, jet_eta->at(i), jet_phi->at(i), jet_E->at(i)*0.001 ); // all in GeV
-                adbxj= new dbxJet(alv);
-                adbxj->setCharge(-99);
-                adbxj->setParticleIndx(i);
-                adbxj->setJVtxf(jet_jvt->at(i));
-                adbxj->setFlavor(jet_MV2c10->at(i) );
-                adbxj->set_isbtagged_77( jet_MV2c10->at(i) > blow_th ); // 5 is btag
-//                adbxj->setJVtxf(jet_jvf->at(i));
-//                adbxj->setFlavor(jet_MV1->at(i) );
-//                adbxj->set_isbtagged_77( jet_MV1->at(i) > blow_th ); // 5 is btag
-                jets.push_back(*adbxj);
-                delete adbxj;
+                jets.emplace_back(alv);
+                jets.back().setCharge(-99);
+                jets.back().setParticleIndx(i);
+                jets.back().setJVtxf(jet_jvt->at(i));
+                jets.back().setFlavor(jet_MV2c10->at(i) );
+                jets.back().set_isbtagged_77( jet_MV2c10->at(i) > blow_th ); // 5 is btag
         }
 DEBUG("Jets ok\n");
+
+//FAT JETS
+        for (unsigned int i=0; i<largeRjet_n; i++) {
+                alv.SetPtEtaPhiE( largeRjet_pt->at(i)*0.001, largeRjet_eta->at(i), largeRjet_phi->at(i), largeRjet_E->at(i)*0.001 ); // all in GeV
+                ljets.emplace_back(alv);
+                ljets.back().setCharge(-99);
+                ljets.back().setParticleIndx(i);
+                ljets.back().setFlavor(largeRjet_tau32->at(i));
+        }
+DEBUG("FATJET ok\n");
+
 //MET
         met.SetMagPhi( met_et*0.001,  met_phi);
 DEBUG("MET ok\n");
@@ -184,7 +198,7 @@ DEBUG("MET ok\n");
         anevt.user_evt_weight=1.0;
         anevt.lumiblk_no=1;
         anevt.top_hfor_type=0;
-        anevt.event_no=eventNumber;
+        anevt.event_no=j;
         anevt.TRG_e= trigE;
         anevt.TRG_m= trigM;
         anevt.TRG_j= 0;
@@ -202,19 +216,31 @@ DEBUG("MET ok\n");
 
 DEBUG("Filling finished\n");
 
-        muos_map.insert( pair <string,vector<dbxMuon>     > ("MUO",         muons) );
-        eles_map.insert( pair <string,vector<dbxElectron> > ("ELE",     electrons) );
-        taus_map.insert( pair <string,vector<dbxTau>      > ("TAU",          taus) );
-        gams_map.insert( pair <string,vector<dbxPhoton>   > ("PHO",       photons) );
-        jets_map.insert( pair <string,vector<dbxJet>      > ("JET",          jets) );
-       ljets_map.insert( pair <string,vector<dbxJet>     > ("FJET",        ljets) );
-       truth_map.insert( pair <string,vector<dbxTruth>    > ("Truth",       truth) );
-       track_map.insert( pair <string,vector<dbxTrack>    > ("Track",       track) );
-       combo_map.insert( pair <string,vector<dbxParticle> > ("Combo",      combos) );
-    constits_map.insert( pair <string,vector<dbxParticle> > ("Constits",  constis) );
-         met_map.insert( pair <string,TVector2>             ("MET",           met) );
+       muos_map["MUO"].swap(muons);
+       eles_map["ELE"].swap(electrons);
+       taus_map["TAU"].swap(taus);
+       gams_map["PHO"].swap(photons);
+       jets_map["JET"].swap(jets);
+       ljets_map["FJET"].swap(ljets);
+       combo_map["Combo"].swap(combos);
+/*
+       truth_map["Truth"].swap(truth);
+       track_map["Track"].swap(track);
+       constits_map["Constits"].swap(constis);
+*/
 
-        AnalysisObjects a0={muos_map, eles_map, taus_map, gams_map, jets_map, ljets_map, truth_map, track_map,  combo_map, constits_map, met_map, anevt};
+        met_map["MET"] = met;
+
+        a0.muos=muos_map;
+        a0.eles=eles_map;
+        a0.taus=taus_map;
+        a0.gams=gams_map;
+        a0.jets=jets_map;
+        a0.ljets=ljets_map;
+        a0.combos=combo_map;
+        a0.met=met_map;
+        a0.evt = anevt;
+
         ttr_map["mini"]->SetEntry(j);
         aCtrl.RunTasks(a0);
 

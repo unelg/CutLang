@@ -16,7 +16,7 @@ endif
 
 ROOTCFLAGS    = $(shell root-config --cflags)
 CXXFLAGS     += $(ROOTCFLAGS) -O3 -I../analysis_core  $(ONNX_INC)
-CXX           = $(shell root-config --cxx) -g
+CXX           = $(shell root-config --cxx) ####-g -pg only when debugging
 
 
 
