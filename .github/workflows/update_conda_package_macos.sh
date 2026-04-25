@@ -13,8 +13,8 @@ go_to_build_dir() {
     fi
 }
 
-if [ -z $PACKAGE_USERNAME ]; then
-    $PACKAGE_USERNAME="cutlang"
+if [ -z "$PACKAGE_USERNAME" ]; then
+    PACKAGE_USERNAME="cutlang"
 fi
 
 check_if_meta_yaml_file_exists() {
@@ -33,7 +33,12 @@ build_package(){
 upload_package(){
     export ANACONDA_API_TOKEN=$ANACONDA_TOKEN
     #anaconda upload -u cutlang --label main linux-64/*.tar.bz2
-    anaconda upload -u $PACKAGE_USERNAME --label main osx-64/*.tar.bz2
+    PACKAGE_FILE=$(find . -path "*/osx-arm64/*.tar.bz2" -print | head -n 1)
+    if [ -z "$PACKAGE_FILE" ]; then
+        echo "No osx-arm64 package artifact was produced."
+        exit 1
+    fi
+    anaconda upload -u "$PACKAGE_USERNAME" --label main "$PACKAGE_FILE"
 }
 
 go_to_build_dir

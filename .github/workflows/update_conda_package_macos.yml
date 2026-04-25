@@ -29,7 +29,7 @@ jobs:
         brew install gsed
 
         export version_cutlang=`cat ../../VERSION`
-        echo "::set-output name=VERSION_CUTLANG::$version_cutlang"
+        echo "VERSION_CUTLANG=$version_cutlang" >> "$GITHUB_OUTPUT"
 
         echo "::group::VERSION"
         echo "Inside group $version_cutlang"
@@ -43,11 +43,11 @@ jobs:
         echo "Inside group $meta"
         echo "::endgroup::"
         
-        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang | grep $version_cutlang)
-        echo "::set-output name=CHECK_VERSION_CUTLANG::$check_version_cutlang"
+        export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang 2>/dev/null | grep "$version_cutlang" || true)
+        echo "CHECK_VERSION_CUTLANG=$check_version_cutlang" >> "$GITHUB_OUTPUT"
         
         export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
-        echo "::set-output name=UNELG_REPO::$unelgRepo"
+        echo "UNELG_REPO=$unelgRepo" >> "$GITHUB_OUTPUT"
 
     - name: chmod
       working-directory: .github/workflows
