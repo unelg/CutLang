@@ -33,7 +33,7 @@ build_package(){
 upload_package(){
     export ANACONDA_API_TOKEN=$ANACONDA_TOKEN
     #anaconda upload -u cutlang --label main linux-64/*.tar.bz2
-    PACKAGE_FILE=$(find . -path "*/osx-arm64/*.tar.bz2" -print | head -n 1)
+    PACKAGE_FILE=$(find . \( -path "*/osx-arm64/*.conda" -o -path "*/osx-arm64/*.tar.bz2" \) -print | head -n 1)
     if [ -z "$PACKAGE_FILE" ]; then
         echo "No osx-arm64 package artifact was produced."
         exit 1
