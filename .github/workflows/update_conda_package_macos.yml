@@ -9,7 +9,7 @@ on:
 jobs:
   build-conda-macos:
     
-    runs-on: macos-12
+    runs-on: macos-15
 
     steps:
     - uses: actions/checkout@v6
@@ -17,10 +17,14 @@ jobs:
       with:
         node-version: '24'
 
-    - uses: s-weigand/setup-conda@v1
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: "3.11"
     - name: Update meta
       id: update_meta
       working-directory: ./scripts/conda
+      shell: bash -l {0}
       run: |
         brew install gsed
 
@@ -53,11 +57,10 @@ jobs:
         chmod +x update_conda_package_macos_mail_success.js
         chmod +x update_conda_package_macos_mail_error.js
 
-
-    - uses: s-weigand/setup-conda@v1
     - name: Build and upload conda macos
       if: ${{ !steps.update_meta.outputs.CHECK_VERSION_CUTLANG }}
       working-directory: ./.github/workflows
+      shell: bash -l {0}
       run: |
         conda info
         conda install -y anaconda-client conda-build
