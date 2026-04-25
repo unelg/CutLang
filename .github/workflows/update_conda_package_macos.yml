@@ -46,8 +46,8 @@ jobs:
         export check_version_cutlang=$(conda search -c ${{secrets.PACKAGE_USERNAME}} -f cutlang 2>/dev/null | grep "$version_cutlang" || true)
         echo "CHECK_VERSION_CUTLANG=$check_version_cutlang" >> "$GITHUB_OUTPUT"
         
-        export unelgRepo=$(git remote -v | grep -e 'origin.*unelg')
-        echo "UNELG_REPO=$unelgRepo" >> "$GITHUB_OUTPUT"
+        # export unelgRepo=$(git remote get-url origin 2>/dev/null | grep -e 'unelg' || true)
+        # echo "UNELG_REPO=$unelgRepo" >> "$GITHUB_OUTPUT"
 
     - name: chmod
       working-directory: .github/workflows
