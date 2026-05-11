@@ -63,9 +63,9 @@ public:
         uint32_t coreml_flags = 0;
 //           coreml_flags |= COREML_FLAG_ONLY_ENABLE_DEVICE_WITH_ANE;
 //           coreml_flags |= COREML_FLAG_ENABLE_ON_SUBGRAPH;
-             coreml_flags |= COREML_FLAG_USE_CPU_ONLY;
+//             coreml_flags |= COREML_FLAG_USE_CPU_ONLY;
 
-        Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_CoreML(session_options, coreml_flags));
+//        Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_CoreML(session_options, coreml_flags));
         session = new Ort::Session(env, model_file.c_str(), session_options);
 
         Ort::AllocatorWithDefaultOptions allocator;

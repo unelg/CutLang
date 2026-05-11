@@ -18,7 +18,7 @@ ifeq ($(strip $(ONNX_PATH)),)
 else
     # Library found
     $(info ONNX path is set to ${ONNX_PATH})
-    ONNX_LIB := -L$(ONNX_PATH)/lib -lonnxruntime
+    ONNX_LIB := -L$(ONNX_PATH)/lib -lonnxruntime -Wl,-rpath,$(ONNX_PATH)/lib
     ONNX_INC := -I$(ONNX_PATH)/include
 endif
 
@@ -153,4 +153,3 @@ clean:
 # clean everything including the auxiliaries we depend on
 cleanall: clean
 	$(MAKE) -C $(SUBDIRLOC)analysis_core clean
-
