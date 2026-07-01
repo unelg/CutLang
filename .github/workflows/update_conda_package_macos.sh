@@ -32,14 +32,19 @@ build_package(){
 
 upload_package(){
     export ANACONDA_API_TOKEN=$ANACONDA_TOKEN
-    anaconda whoami
     #anaconda upload -u cutlang --label main linux-64/*.tar.bz2
     PACKAGE_FILE=$(find . \( -path "*/osx-arm64/*.conda" -o -path "*/osx-arm64/*.tar.bz2" \) -print | head -n 1)
     if [ -z "$PACKAGE_FILE" ]; then
         echo "No osx-arm64 package artifact was produced."
         exit 1
     fi
-    anaconda upload -u cutlang --label main "$PACKAGE_FILE"
+    echo "PACKAGE_FILE=$PACKAGE_FILE"
+    ls -l "$PACKAGE_FILE"
+    echo "TOKEN_LENGTH=$(printf '%s' "$ANACONDA_API_TOKEN" | wc -c)"
+    printf '%s' "$ANACONDA_API_TOKEN" | od -An -t x1 | tail -n 1
+    anaconda config --show || true
+    anaconda config --show-sources || true
+    anaconda --verbose upload -u cutlang --label main "$PACKAGE_FILE"
 }
 
 go_to_build_dir
