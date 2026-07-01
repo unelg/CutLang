@@ -4,11 +4,9 @@ Testing ex00_helloworld.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex00_helloworld.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.9 % +-  0.299 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex00_helloworld.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.4 % +-    0.2 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex00_helloworld.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -23,11 +21,9 @@ Testing ex00_info.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex00_info.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    100 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex00_info.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    100 % +-      0 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex00_info.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -42,15 +38,9 @@ Testing ex01_selection.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex01_selection.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.9 % +-  0.299 %
-					 --> Overall efficiency	 =    0.6 % +-  0.244 %
-					 --> Overall efficiency	 =    0.3 % +-  0.173 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex01_selection.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    2.3 % +-  0.474 %
-					 --> Overall efficiency	 =    1.9 % +-  0.432 %
-					 --> Overall efficiency	 =    0.4 % +-    0.2 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex01_selection.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -67,13 +57,9 @@ Testing ex02_histograms.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex02_histograms.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
-					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex02_histograms.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =      0 % +-      0 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex02_histograms.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -89,13 +75,9 @@ Testing ex03_objreco.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex03_objreco.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.2 % +-  0.141 %
-					 --> Overall efficiency	 =    0.2 % +-  0.141 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex03_objreco.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
-					 --> Overall efficiency	 =    0.2 % +-  0.141 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex03_objreco.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -111,15 +93,9 @@ Testing ex04_syntaxes.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex04_syntaxes.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      2 % +-  0.443 %
-					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
-					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex04_syntaxes.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    1.8 % +-   0.42 %
-					 --> Overall efficiency	 =      1 % +-  0.315 %
-					 --> Overall efficiency	 =    0.2 % +-  0.141 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex04_syntaxes.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 3 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -136,13 +112,9 @@ Testing ex05_functions.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex05_functions.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex05_functions.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =  0.238 % +-  0.237 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex05_functions.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -158,13 +130,9 @@ Testing ex06_bins.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex06_bins.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =  0.414 % +-  0.292 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex06_bins.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =  0.238 % +-  0.237 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex06_bins.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -180,11 +148,9 @@ Testing ex07_chi2optimize.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex07_chi2optimize.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =   30.7 % +-    3.9 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex07_chi2optimize.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =     20 % +-   3.51 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex07_chi2optimize.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -199,11 +165,9 @@ Testing ex08_objloopsreducers.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex08_objloopsreducers.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =   75.4 % +-   2.28 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex08_objloopsreducers.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =   79.6 % +-   1.89 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex08_objloopsreducers.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -218,11 +182,9 @@ Testing ex09_sort.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex09_sort.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    100 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex09_sort.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =    100 % +-      0 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex09_sort.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -237,11 +199,9 @@ Testing ex10_tableweight.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex10_tableweight.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =   4.36 % +-  0.646 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex10_tableweight.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =     22 % +-   1.31 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex10_tableweight.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 1 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -256,13 +216,9 @@ Testing ex11_printsave.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex11_printsave.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =      0 % +-      0 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex11_printsave.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =  0.713 % +-   0.41 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex11_printsave.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
@@ -278,13 +234,9 @@ Testing ex12_counts.adl:
 With CMSOD
 CLA ./cms_opendata_ttbar.root CMSOD -i ex12_counts.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/cms_opendata_ttbar.root -inp CMSOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =    0.2 % +-  0.141 %
 With ATLASOD
 CLA ./atla_opendata_had_ttbar.root ATLASOD -i ex12_counts.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/atla_opendata_had_ttbar.root -inp ATLASOD -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
-					 --> Overall efficiency	 =      0 % +-      0 %
-					 --> Overall efficiency	 =    0.1 % +- 0.0999 %
 With DELPHES
 CLA ./delphes_events_ttbar.root DELPHES -i ex12_counts.adl -e 1000 -v 500
 /home/runner/work/CutLang/CutLang/CLA/CLA.exe /home/runner/work/CutLang/CutLang/runs/tutorials/delphes_events_ttbar.root -inp DELPHES -BP 2 -EVT 1000 -V 500 -ST 0 -S 0 w
