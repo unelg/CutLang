@@ -32,6 +32,7 @@ build_package(){
 
 upload_package(){
     export ANACONDA_API_TOKEN=$ANACONDA_TOKEN
+    anaconda whoami
     PACKAGE_FILE=$(find . \( -path "*/linux-64/*.conda" -o -path "*/linux-64/*.tar.bz2" \) -print | head -n 1)
     if [ -z "$PACKAGE_FILE" ]; then
         echo "No linux-64 package artifact was produced."
