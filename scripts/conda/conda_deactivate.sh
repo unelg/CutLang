@@ -1,3 +1,5 @@
+export CUTLANG_PATH=$CONDA_PREFIX/bin/cutlang 
+
 $CUTLANG_PATH/scripts/remove_kernel.sh $CONDA_PREFIX 1
 
 source $CUTLANG_PATH/scripts/conda/oldroot_set_for_conda.sh
