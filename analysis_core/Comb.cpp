@@ -49,6 +49,7 @@ void suppr_by_set_Comb(vector<vector<int> >&output, vector<int> temp, vector<vec
 
 void combinaison(int N, int K, vector<vector<int> >& output, vector<vector<int> > tab_select)
 {
+    if (N < K || K <= 0) return; // not enough particles in the event to build any combination
     vector<int> temp;
     string bitmask(K, 1);
     bitmask.resize(N, 0);

@@ -2446,6 +2446,7 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
     TLorentzVector  alv;
     int apq = 0;
     int apdgid=0;
+    int aptight=0; // OR of constituent tag bits, bit0: btag, bit1: tautag
     
     for(size_t k=0; k<combi_out.size(); ++k) {
       temp_index = combi_out[k]; // ex temp_index = {0,1} 
@@ -2474,6 +2475,9 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    alv+=(ao->jets)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->jets)[collectionName].at(temp_index[i]).q();
 	    apdgid+=(ao->jets)[collectionName].at(temp_index[i]).pdgID();
+	    aptight|=( (ao->jets)[collectionName].at(temp_index[i]).isTight()
+	             | ((ao->jets)[collectionName].at(temp_index[i]).isbtagged_77()
+	             + 2*(ao->jets)[collectionName].at(temp_index[i]).isTautagged()) );
 	    break;
 	  case photon_t: 
             alv+=(ao->gams)[collectionName].at(temp_index[i]).lv();
@@ -2490,10 +2494,11 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	    apq+=(ao->taus)[collectionName].at(temp_index[i]).q();
 	    apdgid+=(ao->taus)[collectionName].at(temp_index[i]).pdgID();
 	    break;
-	  case combo_t: 
+	  case combo_t:
 	    alv+=(ao->combos)[collectionName].at(temp_index[i]).lv();
 	    apq+=(ao->combos)[collectionName].at(temp_index[i]).q();
 	    apdgid+=(ao->combos)[collectionName].at(temp_index[i]).pdgID();
+	    aptight|=(ao->combos)[collectionName].at(temp_index[i]).isTight();
 	    break;
 	  default:
 	    std::cerr << "WRONG particle TYPE! Type:"<<particles->at(i)->type << std::endl;
@@ -2506,12 +2511,14 @@ void createNewParti(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 // we have the combined particle AND the indices of the parents
 
 	adbxp= new dbxParticle(alv);
-	adbxp->setCharge(apq);                            
-	adbxp->setPdgID(apdgid);                          
+	adbxp->setCharge(apq);
+	adbxp->setPdgID(apdgid);
+	adbxp->setIsTight(aptight);
 	combination.push_back(*adbxp);
 	delete adbxp;
         apq=0;
         apdgid=0;
+        aptight=0;
         alv.SetPxPyPzE(0,0,0,0);
         DEBUG("\n");
     }

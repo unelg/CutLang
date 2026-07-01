@@ -249,10 +249,11 @@ int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input
                                                         auto *combovec = (ao->combos.count(ac)) ? &ao->combos[ac] : nullptr;
                                                         if (!combovec || ai>=combovec->size()) return -1;
                                                         auto &ancombo = combovec->at(ai);
-                                                        inputPart->setTlv(  inputPart->lv()+sgn*ancombo.lv()); 
+                                                        inputPart->setTlv(  inputPart->lv()+sgn*ancombo.lv());
                                                         inputPart->setCharge(inputPart->q()+ancombo.q()  );
                                                         DEBUG("initial pdgID:"<< inputPart->pdgID() <<" add pdgID:"<<ancombo.pdgID()<<"\n");
 							inputPart->setPdgID(inputPart->pdgID()+ancombo.pdgID()  );
+                                                        inputPart->setIsTight(inputPart->isTight() | ancombo.isTight() );
                                                         break;
                                                         }
 
