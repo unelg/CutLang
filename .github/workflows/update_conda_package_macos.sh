@@ -38,7 +38,7 @@ upload_package(){
         echo "No osx-arm64 package artifact was produced."
         exit 1
     fi
-    anaconda upload -u "$PACKAGE_USERNAME" --label main "$PACKAGE_FILE"
+    anaconda upload -u cutlang --label main "$PACKAGE_FILE"
 }
 
 go_to_build_dir
