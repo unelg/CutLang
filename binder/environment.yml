@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
 - python=3.10
-- cutlang ==2.14.1
+- cutlang ==2.15.0
