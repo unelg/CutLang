@@ -37,13 +37,7 @@ upload_package(){
         echo "No linux-64 package artifact was produced."
         exit 1
     fi
-    echo "PACKAGE_FILE=$PACKAGE_FILE"
-    ls -l "$PACKAGE_FILE"
-    echo "TOKEN_LENGTH=$(printf '%s' "$ANACONDA_API_TOKEN" | wc -c)"
-    printf '%s' "$ANACONDA_API_TOKEN" | od -An -t x1 | tail -n 1
-    anaconda config --show || true
-    anaconda config --show-sources || true
-    anaconda --verbose upload -u cutlang --label main "$PACKAGE_FILE"
+    anaconda upload -u cutlang --label main "$PACKAGE_FILE"
     #anaconda upload -u cutlang --label main osx-64/*.tar.bz2
 }
 

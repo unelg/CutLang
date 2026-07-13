@@ -19,7 +19,7 @@ else
     # Library found
     $(info ONNX path is set to ${ONNX_PATH})
     ONNX_LIB := -L$(ONNX_PATH)/lib -lonnxruntime -Wl,-rpath,$(ONNX_PATH)/lib
-    ONNX_INC := -I$(ONNX_PATH)/include
+    ONNX_INC := -I$(ONNX_PATH)/include -I$(ONNX_PATH)/include/onnxruntime/core/session
 endif
 
 # we try to identify where the various subdirs (like CorrectionMethods) are

@@ -9,7 +9,7 @@ ifeq ($(strip $(ONNX_PATH)),)
     objects := $(filter-out OMENode.o,$(patsubst %.cpp,%.o,$(wildcard *.cpp)))
 else
     # Library found
-    ONNX_INC := -I$(ONNX_PATH)/include
+    ONNX_INC := -I$(ONNX_PATH)/include -I$(ONNX_PATH)/include/onnxruntime/core/session
     objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
     CXXFLAGS+= -DONNX_PRESENT
 endif

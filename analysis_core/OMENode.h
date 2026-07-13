@@ -21,7 +21,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <onnxruntime_cxx_api.h>
-#include <coreml_provider_factory.h>
+//#include <coreml_provider_factory.h>
 
 template <typename T>
 Ort::Value vec_to_tensor(std::vector<T>& data, const std::vector<std::int64_t>& shape) {
