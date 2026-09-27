@@ -29,6 +29,7 @@
 
 extern void _fsig_handler (int) ;
 extern bool fctrlc;
+extern map<string, TTreeReader*> ttr_map;
 
 
 TClonesArray* delphes::UseBranch(const char *branchName, TTree *fChain){
@@ -611,7 +612,7 @@ if (it == 0){
         a0.met=met_map;
         a0.evt = anevt;
 
-
+        ttr_map["Delphes"]->SetEntry(je);
         aCtrl.RunTasks(a0); // leaks
 
   }// event loop ends.

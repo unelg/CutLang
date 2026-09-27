@@ -23,19 +23,21 @@ CXX           = $(shell root-config --cxx) ####-g -pg only when debugging
 %.o : %.cxx
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-all : $(objects)
-	root -q -l -b -e '{gROOT->LoadMacro("dbxParticle.cpp+");}' 
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_muon.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_tau.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_electron.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_photon.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_jet.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_truth.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("dbx_track.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("DBXNtuple.cpp+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("delphesParticles.h+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("TStringAddFloat.cpp+");}' &
-	root -q -l -b -e '{gROOT->LoadMacro("ReadCardCINT.C+");}' &
+.DEFAULT_GOAL := all
+ACLIC_H    := dbx_muon dbx_tau dbx_electron dbx_photon dbx_jet dbx_truth dbx_track delphesParticles
+ACLIC_LIBS := $(addsuffix _h.so,$(ACLIC_H)) DBXNtuple_cpp.so TStringAddFloat_cpp.so ReadCardCINT_C.so
+
+# ACLiC shared libraries are real targets, so make (and make -jN) knows when they are done
+dbxParticle_cpp.so : dbxParticle.cpp dbxParticle.h
+	root -q -l -b -e '{gROOT->LoadMacro("$<+");}'
+%_h.so : %.h dbxParticle_cpp.so
+	root -q -l -b -e '{gROOT->LoadMacro("$<+");}'
+%_cpp.so : %.cpp dbxParticle_cpp.so
+	root -q -l -b -e '{gROOT->LoadMacro("$<+");}'
+%_C.so : %.C dbxParticle_cpp.so
+	root -q -l -b -e '{gROOT->LoadMacro("$<+");}'
+
+all : $(objects) dbxParticle_cpp.so $(ACLIC_LIBS)
 	test -L ../runs/DBXNtuple_cpp_ACLiC_dict_rdict.pcm   || ( ln -s ../analysis_core/DBXNtuple_cpp_ACLiC_dict_rdict.pcm     ../runs/ )
 	test -L ../runs/dbxParticle_cpp_ACLiC_dict_rdict.pcm || ( ln -s ../analysis_core/dbxParticle_cpp_ACLiC_dict_rdict.pcm   ../runs/ )
 	test -L ../runs/dbx_electron_h_ACLiC_dict_rdict.pcm  || ( ln -s ../analysis_core/dbx_electron_h_ACLiC_dict_rdict.pcm    ../runs/ )
