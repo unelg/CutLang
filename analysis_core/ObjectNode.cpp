@@ -330,6 +330,14 @@ bool collectionExists(int t2, std::string base_collection2, AnalysisObjects *ao 
     }
 }
 
+// reject <cut> (and NOT <cut>) is parsed as NOT(<cut>), and that NOT is applied to each pair
+// before the anyof/allof reduction. For an explicit anyof()/allof() on the 2nd collection the
+// reduction must therefore be swapped: NOT(anyof c) == allof(NOT c), NOT(allof c) == anyof(NOT c).
+bool isNegatedReduction(Node *cut, std::vector<myParticle *>* particles) {
+    if (particles->size() < 2 || particles->at(1)->reduce_mode == 0) return false;
+    return cut->left != NULL && cut->right == NULL && cut->getStr().EndsWith(" NOT");
+}
+
 int getCollectionSize(int t2, std::string base_collection2, AnalysisObjects *ao ){
 
             int ipart2_max;
@@ -404,6 +412,7 @@ void createNewJet(AnalysisObjects* ao,vector<Node*> *criteria,std::vector<myPart
         TString mycutstr=(*cutIterator)->getStr();
         if ( mycutstr.Contains("anyof") ) { anyof=true;  };
         if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 	        if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
 	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
 	        if ( ptypeset.size()==2) {simpleloop=false;}
@@ -583,7 +592,7 @@ object goodjets take Jet
                             candidate_pass = true;
                         }
                     } // end of loop over 2nd particle type
-	                    if (!saw_pair) candidate_pass = false;
+	                    if (!saw_pair) candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
 	                    DEBUG("JET reduced candidate event:" << event_no
 	                          << " cut:" << (*cutIterator)->getStr()
 	                          << " ipart:" << ipart
@@ -626,6 +635,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 	        bool hasIf = mycutstr.Contains("if");
 	        if ( mycutstr.Contains("anyof") ) { anyof=true; };
 	        if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+	        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 	        bool explicit_second_reduce = (particles->size() > 1 && particles->at(1)->reduce_mode != 0);
 	        DEBUG("Psize:"<<particles->size() <<"\n");
 	        if ( particles->size()==0) {
@@ -747,7 +757,7 @@ void createNewEle(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 	                        pair_pass.push_back(ppassed);
 	                    } //end of 2nd particles loop
 	                    if (pair_pass.empty()) {
-	                        candidate_pass = false;
+	                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
 	                    } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -796,6 +806,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("anyof") ) { anyof=true; };
         if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
  
         DEBUG("Psize:"<<particles->size() <<"\t"<<" ipart_max:"<<ipart_max<<"\n");
         if ( particles->size()==0) {
@@ -926,7 +937,7 @@ void createNewMuo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 	                        pair_pass.push_back(ppassed);
 	                    }
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -970,6 +981,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("anyof") ) { anyof=true; };
         if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
@@ -1086,7 +1098,7 @@ void createNewPho(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
 	                        pair_pass.push_back(ppassed);
 	                    }
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -1135,6 +1147,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
         bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("anyof") ) { anyof=true; };
         if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
         if ( particles->size()==0) {
            DEBUG("CutIte:"<<(*cutIterator)->getStr()<<"\n");
            bool ppassed=(*cutIterator)->evaluate(ao);
@@ -1289,7 +1302,7 @@ void createNewFJet(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myP
                         pair_pass.push_back(ppassed);
                     } // second particle set
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -1345,6 +1358,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
         bool hasIf = mycutstr.Contains("if");
         if ( mycutstr.Contains("anyof") ) { anyof=true; };
         if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
  
         DEBUG("Psize:"<<particles->size() <<"\n");
         if ( particles->size()==0) {
@@ -1460,7 +1474,7 @@ void createNewTau(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<myPa
                         pair_pass.push_back(ppassed);
                     }
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -1557,6 +1571,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
 	        if ( mycutstr.Contains("anyof") ) { anyof=true; };
 	        if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+	        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 	        if ( ptypeset.size()==2) {simpleloop=false; }
 	        int event_no = ao->evt.event_no;
 	        DEBUG("COMBO cut summary: event:" << event_no
@@ -1669,7 +1684,7 @@ void createNewCombo(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	                        pair_pass.push_back(ppassed);
 	                    } // second particle set
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -1915,6 +1930,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
 	        if ( mycutstr.Contains("anyof") ) { anyof=true; };
 	        if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+	        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 	        if ( ptypeset.size()==2) {simpleloop=false; }
 	        int event_no = ao->evt.event_no;
 	        DEBUG("TRUTH cut summary: event:" << event_no
@@ -2089,7 +2105,7 @@ void createNewTruth(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	                        pair_pass.push_back(ppassed);
 	                    } // second particle set
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
@@ -2158,6 +2174,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
         bool hasIf = mycutstr.Contains("if");
 	        if ( mycutstr.Contains("anyof") ) { anyof=true; };
 	        if (particles->size() > 1 && particles->at(1)->reduce_mode == 1) { anyof=true; }
+	        if (isNegatedReduction(*cutIterator, particles)) { anyof=!anyof; }
 	        if ( mycutstr.Contains("sum") || mycutstr.Contains("max") || mycutstr.Contains("min")) constiloop=false;
 	        if ( ptypeset.size()>2 ) {cerr <<" 3 particle selection is not allowed in this version!\n"; exit(1);}
 	        if ( ptypeset.size()==2) {simpleloop=false; }
@@ -2334,7 +2351,7 @@ void createNewTrack(AnalysisObjects* ao, vector<Node*> *criteria, std::vector<my
 	                        pair_pass.push_back(ppassed);
 	                    } // second particle set
                     if (pair_pass.empty()) {
-                        candidate_pass = false;
+                        candidate_pass = true; // empty 2nd collection: nothing to test against, keep the object (anyof and allof)
                     } else if (anyof) {
                         candidate_pass = false;
                         for (bool ppassed : pair_pass) {
