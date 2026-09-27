@@ -123,7 +123,7 @@ else
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -DONNX_PRESENT -c b.cpp
 endif
 
-l.o : parse.l
+l.o : parse.l b.o
 	$(LEXEXE) -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
 
 auxiliaries:

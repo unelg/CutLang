@@ -6,11 +6,11 @@ ONNX_PATH ?=
 ifeq ($(strip $(ONNX_PATH)),)
     # Library not found
     ONNX_INC :=
-    objects := $(filter-out OMENode.o,$(patsubst %.cpp,%.o,$(wildcard *.cpp)))
+    objects := $(filter-out OMENode.o DBXNtuple.o,$(patsubst %.cpp,%.o,$(wildcard *.cpp)))
 else
     # Library found
     ONNX_INC := -I$(ONNX_PATH)/include -I$(ONNX_PATH)/include/onnxruntime/core/session
-    objects := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+    objects := $(filter-out DBXNtuple.o,$(patsubst %.cpp,%.o,$(wildcard *.cpp)))
     CXXFLAGS+= -DONNX_PRESENT
 endif
 
