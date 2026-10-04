@@ -299,7 +299,6 @@ int BPdbxA:: readAnalysisParams() {
        if (inserted>0) {
               std::cout<<"Auto inserted cuts:"<< inserted<<"\n";
        }
-       bool nextcpp=false;
        while(iter != NodeCuts.end())
        {  
           DEBUG(" CUT "<<iter->first<<" LabelSkip:"<<labelSkip<< " inserted:"<<inserted << " ");
@@ -307,20 +306,19 @@ int BPdbxA:: readAnalysisParams() {
           string newNLabels=iter->second->getStr().Data();
           DEBUG("-->"<<effCL[ iter->first -1-labelSkip]<<"\t");
           TString ELabels=effCL[ iter->first -1-labelSkip];
-          if (inserted>0 && !nextcpp) { //5-0 yacc, 6-1: c++,
-            if ( iter->first == TRGValues.at(labelSkip+5)  ) { usecpp=false; inserted-=1;  } 
-          } else usecpp=true;
+          // auto-inserted size cuts can come back to back, e.g. ADD(goodJets, goodEles),
+          // so match each cut id against the list instead of assuming a C++ cut follows.
+          usecpp=true;
+          if (inserted>0 && iter->first == TRGValues.at(labelSkip+5)) { usecpp=false; inserted-=1; } //5-0 yacc, 6-1: c++
          
           if (usecpp) {
                 DEBUG("From C++:"<<ELabels<<"\n");
                 eff->GetXaxis()->SetBinLabel(iter->first+1,ELabels.Data()); // labels
-                nextcpp=false;
           } else {
                 DEBUG("from yacc:"<<newNLabels<<"\n");
                 string newlabels="Size "+newNLabels; 
                 eff->GetXaxis()->SetBinLabel(iter->first+1,newlabels.c_str()); // labels
                 labelSkip++;
-                nextcpp=true;
           } 
            
            iter++; 

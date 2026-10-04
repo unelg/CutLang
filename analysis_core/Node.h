@@ -67,6 +67,11 @@ enum particleType{
  consti_t=21
 };
 
+// particle index meaning "every member of this collection, added into one 4-vector".
+// Made by ADD(a, b, ...) in parse.y, expanded in FuncNode::partConstruct.
+// Must stay <10000 (loop particles) and differ from 6213/16213 (loop over all).
+#define VSUM_ALL_IDX 8213
+
 
 //generic node interface
 class Node{

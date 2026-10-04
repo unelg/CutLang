@@ -1,0 +1,54 @@
+# ADD(a, b, ...): all members of several collections summed into one Lorentz vector
+object goodJets : JET
+  select Pt(JET) > 25
+  select absEta(JET) < 2.5
+
+object goodEles : ELE
+  select Pt(ELE) > 15
+  select absEta(ELE) < 2.47
+
+object goodMuos : MUO
+  select Pt(MUO) > 15
+  select absEta(MUO) < 2.5
+
+define cv      = ADD(goodJets, goodEles, goodMuos)   # whole collections, N varies per event
+define cvJE    = ADD(goodJets, goodEles)
+define cvJM    = ADD(goodJets, goodMuos)
+define cvOld   = ADD(goodJets)                       # legacy single-collection path
+define cvJ2    = ADD(goodJets[0], goodJets[1])       # fixed items, comma separated
+define cvSl    = ADD(goodJets[0:1] goodEles[0])      # slice + fixed item, space separated
+define fix2je  = goodJets[0] + goodJets[1] + goodEles[0]
+define fix4je  = goodJets[0] + goodJets[1] + goodJets[2] + goodJets[3] + goodEles[0]
+
+region allev
+  select ALL
+  histo hmcv,  "m(cv)",  100, 0, 3000, m(cv)
+  histo hptcv, "pT(cv)", 100, 0, 1000, pT(cv)
+
+region r2je
+  select size(goodJets) == 2
+  select size(goodEles) == 1
+  select size(goodMuos) == 0
+  histo hm,       "m(cv)",            100, 0, 2000, m(cv)
+  histo hdm,     "m(cv)-m(fix)",     200, -1, 1, m(cv) - m(fix2je)
+  histo hdpt,    "pT(cv)-pT(fix)",   200, -1, 1, pT(cv) - pT(fix2je)
+  histo hdeta,   "eta(cv)-eta(fix)", 200, -1, 1, eta(cv) - eta(fix2je)
+  histo hdq,     "q(cv)-q(fix)",     200, -1, 1, q(cv) - q(fix2je)
+  histo hdsl,    "m(cvSl)-m(fix)",   200, -1, 1, m(cvSl) - m(fix2je)
+  histo hdold,   "m(cvOld)-m(cvJ2)", 200, -1, 1, m(cvOld) - m(cvJ2)
+
+region r4je
+  select size(goodJets) == 4
+  select size(goodEles) == 1
+  select size(goodMuos) == 0
+  histo hdm,  "m(cv)-m(fix)",   200, -1, 1, m(cv) - m(fix4je)
+  histo hdpt, "pT(cv)-pT(fix)", 200, -1, 1, pT(cv) - pT(fix4je)
+
+region noele
+  select size(goodEles) == 0
+  histo hdm, "m(cv)-m(cvJM)", 200, -1, 1, m(cv) - m(cvJM)
+  histo hdE, "E(cv)-E(cvJM)", 200, -1, 1, E(cv) - E(cvJM)
+
+region nomuo
+  select size(goodMuos) == 0
+  histo hdm, "m(cv)-m(cvJE)", 200, -1, 1, m(cv) - m(cvJE)

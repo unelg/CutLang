@@ -19,8 +19,44 @@ void FuncNode::ResetParticles(){
 }
  
    
+// number of members in collection coll of |type| atype for this event, -1 for an unknown type.
+// .at() throws if the collection was never built; callers catch it.
+static int collectionSize(AnalysisObjects *ao, int atype, const string& coll){
+        switch (atype){
+           case 12: return (ao->muos).at(coll).size();
+           case 10: return (ao->truth).at(coll).size();
+            case 1: return (ao->eles).at(coll).size();
+            case 2: return (ao->jets).at(coll).size();
+            case 7: return 1;
+            case 8: return (ao->gams).at(coll).size();
+            case 9: return (ao->ljets).at(coll).size();
+           case 11: return (ao->taus).at(coll).size();
+           case 19: return (ao->track).at(coll).size();
+           case 20: return (ao->combos)[coll].size();
+           case 21: return (ao->jets).at(coll).size();
+          default: return -1;
+        }
+}
+
 int FuncNode::partConstruct(AnalysisObjects *ao, std::vector<myParticle*> *input, dbxParticle* inputPart){
         inputPart->Reset();
+// ADD(a, b, ...): each whole-collection entry stands for all its members in this event.
+        std::vector<myParticle>  vsumParts;
+        std::vector<myParticle*> vsumList;
+        bool hasVsum=false;
+        for (unsigned int ip=0; ip<input->size(); ip++) if (input->at(ip)->index==VSUM_ALL_IDX) { hasVsum=true; break; }
+        if (hasVsum) {
+         for (unsigned int ip=0; ip<input->size(); ip++){
+           myParticle q=*(input->at(ip));
+           if (q.index!=VSUM_ALL_IDX) { vsumParts.push_back(q); continue; }
+           int n;
+           try { n=collectionSize(ao, abs(q.type), q.collection); } catch(...) { return -1; }
+           if (n<0) { cerr << "ADD: unsupported particle type:"<<q.type<<" collection:"<<q.collection<<"\n"; return -1; }
+           for (int k=0; k<n; k++) { q.index=k; vsumParts.push_back(q); }
+         }
+         for (unsigned int ip=0; ip<vsumParts.size(); ip++) vsumList.push_back(&vsumParts[ip]);
+         input=&vsumList;
+        }
         DEBUG("\n");
         for(vector<myParticle*>::iterator i=input->begin();i!=input->end();i++){
          DEBUG("CONSTRUCT type:"<<(*i)->type<<" index:"<< (*i)->index<< " addr:"<<*i<<  "\t name:"<< (*i)->collection<<"\n");
@@ -448,27 +484,13 @@ double FuncNode::evaluate(AnalysisObjects* ao) {
          int ipart2_max=-1;
          bool constiloop=false;
        try {
-                switch(abs(inputParticles[0]->type) ){ 
-                   case 12: ipart2_max=(ao->muos).at(base_collection2).size(); break;
-                   case 10: ipart2_max=(ao->truth).at(base_collection2).size(); break;
-                    case 1: ipart2_max=(ao->eles).at(base_collection2).size(); break;
-                    case 2: ipart2_max=(ao->jets).at(base_collection2).size(); break;
-                    case 7: ipart2_max=1; break;
-                    case 8: ipart2_max=(ao->gams).at(base_collection2).size(); break;
-                    case 9: ipart2_max=(ao->ljets).at(base_collection2).size(); break;
-                   case 11: ipart2_max=(ao->taus).at(base_collection2).size(); break;
-                   case 19: ipart2_max=(ao->track).at(base_collection2).size(); break;
-                   case 20: ipart2_max=(ao->combos)[base_collection2].size(); break;
-                   case 21: 
-                            ipart2_max=(ao->jets).at(base_collection2).size(); constiloop=true; 
-                            break;
-
-                   default:
+                ipart2_max=collectionSize(ao, abs(inputParticles[0]->type), base_collection2);
+                constiloop=(abs(inputParticles[0]->type)==21);
+                if (ipart2_max<0)
                        std::cerr << "FN WRONG PARTICLE TYPE:"<<inputParticles[0]->type  
                                  << " index:"<<inputParticles[0]->index 
                                  << " collection:"<<inputParticles[0]->collection 
-                                 << std::endl; break;
-                }
+                                 << std::endl;
            } catch(...) {
 //                    is it an object we can create?
 //                    userObjectA->evaluate(ao); // returns 1, hardcoded. see ObjectNode.cpp
