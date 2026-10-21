@@ -11,6 +11,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <algorithm>
 #include <iterator>
 
 //#define _CLV_
@@ -137,7 +138,7 @@ std::map< std::string, int> systBANK;
 %right '^'
 %type <integer> index bool SYSTVTYPE
 %type <node> e function condition action ifstatement
-%type <s> particule particules list2 list3 description
+%type <s> particule particules addargs list2 list3 description
 %type <s> LEPTON
 %type <s> ERRTYPE 
 %type <real> NUMBER
@@ -384,7 +385,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                   parts->push_back(name+" : "+partCname);
 
 				}
-            | DEF ID '=' ADD '(' particule ')' {  DEBUG($2<<" will be defined as the ADDition of particles.\n");
+            | DEF ID '=' ADD '(' addargs ')' {  DEBUG($2<<" will be defined as the ADDition of particles.\n");
                                    pnum=0;
                                    string name = $2;
                                    map<string,vector<myParticle*> >::iterator itn;
@@ -396,6 +397,22 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                    }
                                    vector<myParticle*> newpList;
                                    TmpParticle.swap(newpList);
+// ADD(a, b[0], c[1:2] ...): one 4-vector summed at evaluation time, kept as a particle list.
+// A single whole collection, ADD(goodJets), keeps the old sumobj object below.
+                                  if (newpList.size()!=1 || newpList[0]->index!=6213) {
+                                   for (unsigned int ip=0; ip<newpList.size(); ip++){
+                                     int idx=newpList[ip]->index;
+                                     if (idx==16213) {
+                                           ERRBUG(newpList[ip]->collection<<" : ");
+                                           yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"open-ended slice not supported in ADD");
+                                           YYERROR;
+                                     }
+                                     if      (idx==6213)  newpList[ip]->index=VSUM_ALL_IDX; // whole collection
+                                     else if (idx>=10000) newpList[ip]->index=idx-10000;    // one item of a[i:j]
+                                   }
+                                   ListParts->insert(make_pair(name,newpList));
+                                   parts->push_back(name+" : "+$6);
+                                  } else {
                                    string partname=newpList[0]->collection;
                                    int ptype=newpList[0]->type; // type is JETS or FJETS etc..
                                    map<string, Node *>::iterator it;
@@ -423,6 +440,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                            ListParts->insert(make_pair(name,newList));
                                            parts->push_back(name+" : "+$6);
                                    }
+                                  } // single whole collection
             }
             |  DEF  ID  ':'  particules { DEBUG($2<<" will be defined as a new particle using :.\n");
                                         pnum=0;
@@ -1286,6 +1304,14 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
 //  } 
    ;
 //------------------------------------------
+addargs : particules { $$=$1; }
+        | addargs ',' { pnum=0; } particules {
+                                                string s=$1;
+                                                string s2=$4;
+                                                s=s+" , "+s2;
+                                                $$=strdup(s.c_str());
+                                  }
+        ;
 list2 : '{' particules { pnum=0; TmpParticle.swap(TmpParticle1); } ',' particules '}' { 
                                                         string s=$2;
                                                         string s2=$5;
@@ -2395,13 +2421,28 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                         DEBUG("Defined as : "<< newList[0]->collection << "  type: " << newList[0]->type << "   index: " << newList[0]->index<<"\n");
                         DEBUG("Checking if it was previously checked.\n");
 // check all cuts here, if we see size( $1) OK, otherwise add.
+// Done for every collection in the list: ADD(goodJets, goodEles) needs both objects built.
                         if (NodeCuts->size() > 0) {
+                         vector<string> seenColl;
+                         for (unsigned int ic=0; ic<newList.size(); ic++) {
+                          string aparticle=newList[ic]->collection;
+                          if (std::find(seenColl.begin(), seenColl.end(), aparticle) != seenColl.end()) continue;
+                          seenColl.push_back(aparticle);
+                          map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
+                          if (it == ObjectCuts->end()) continue; // a base collection (ELE, JET...), nothing to build
                           std::map<int, Node*>::iterator iter = NodeCuts->begin();
                           std::size_t sfound=std::string::npos;
-                          string aparticle=newList[0]->collection;
                           while(iter != NodeCuts->end()) {
                              string pippo=iter->second->getStr().Data();
+                             // whole-name match only: jetsB must not be found inside jetsBC
                              sfound=pippo.find(aparticle);
+                             while (sfound != std::string::npos) {
+                                size_t after=sfound+aparticle.size();
+                                bool okBefore= sfound==0 || !(isalnum((unsigned char)pippo[sfound-1]) || pippo[sfound-1]=='_');
+                                bool okAfter = after>=pippo.size() || !(isalnum((unsigned char)pippo[after]) || pippo[after]=='_');
+                                if (okBefore && okAfter) break;
+                                sfound=pippo.find(aparticle, sfound+1);
+                             }
                              if (sfound !=std::string::npos) {
                                 DEBUG($1<< "found in previous cuts, nothing to do.\n");
                                 break;
@@ -2410,7 +2451,6 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                           }
                           if (sfound == std::string::npos){ 
                            cout << aparticle<< " is seen first time, Adding size>0 cut.\t";
-                           map<string,Node*>::iterator it = ObjectCuts->find(aparticle);
                            if (it == ObjectCuts->end() ) {
                               std::string message = "OBJect not defined: ";
                               message += aparticle;
@@ -2426,6 +2466,7 @@ particule : GEN '_' index   {  DEBUG("truth particule:"<<(int)$3<<"\n");
                               cout << "done.\n";
                            }
                           }
+                         }
                         }
                         TmpParticle.insert(TmpParticle.end(), newList.begin(), newList.end());
                         $$=$1;
