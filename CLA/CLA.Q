@@ -72,7 +72,7 @@ cout << "CLA v2.15.2\t";
  cout << "compiled on XXXXYYYYZZZZ \n";
 
 for (int i = 2; i < argc; i++) {
-     if (i + 1 != argc) // Check that we haven't finished parsing already
+     if (i + 1 != argc) { // Check that we haven't finished parsing already
          if        (std::string(argv[i]) == "-D")  { // Dump
              aselect.Dumpcount = atoi(argv[i + 1]);   i++;
          } else if (std::string(argv[i]) == "-BP") { // BP
@@ -100,6 +100,7 @@ for (int i = 2; i < argc; i++) {
              inptype = argv[i + 1];  i++;
          } else {
              std::cout << "invalid arguments, please read the help below.\n";
+         }
      }
  }
 

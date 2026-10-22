@@ -103,8 +103,8 @@ for (Long64_t j=startevent; j<lastevent; ++j) {
 //temporary variables
        TLorentzVector  alv;
        TVector2 met;
-       dbxTruth    *adbxg;
-       dbxTrack    *adbxk;
+//       dbxTruth    *adbxg;
+//       dbxTrack    *adbxk;
 
 //#define __DEBUG__
 #ifdef __DEBUG__

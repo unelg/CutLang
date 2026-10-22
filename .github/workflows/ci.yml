@@ -43,9 +43,11 @@ jobs:
     - name: Build ROOT
       working-directory: .
       run: |
-        wget https://root.cern/download/root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
-        tar -xzvf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
-        rm -rf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        # GitHub release instead of root.cern/download, which can be put behind CERN SSO
+        ROOT_TGZ=root_v6.32.24.Linux-ubuntu24.04-x86_64-gcc13.3.tar.gz
+        wget https://github.com/root-project/root/releases/download/v6-32-24/$ROOT_TGZ
+        tar -xzvf $ROOT_TGZ
+        rm -rf $ROOT_TGZ
     
       
     - name: CutLang Dependencies

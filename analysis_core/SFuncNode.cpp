@@ -950,6 +950,7 @@ TMatrixDSym getMomentumTensor(AnalysisObjects* ao, string s, float id){
   case fjet_t:     for (UInt_t i=0; i<ao->ljets.at(s).size(); i++) retTensor+=TLVecToTensor(ao->ljets.at(s).at(i).lv()); break;
   case photon_t:   for (UInt_t i=0; i<ao->gams.at(s).size(); i++) retTensor+=TLVecToTensor(ao->gams.at(s).at(i).lv()); break;
   case combo_t:    for (UInt_t i=0; i<ao->combos.at(s).size(); i++) retTensor+=TLVecToTensor(ao->combos.at(s).at(i).lv()); break;
+  default:         std::cerr<<"momentum tensor: No such Particle Type:"<<pid<<" for collection:"<<s<<"\n"; break;
   }
   retTensor *= 1./(retTensor[0][0]+retTensor[1][1]+retTensor[2][2]);
   return retTensor;

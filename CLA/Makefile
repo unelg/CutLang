@@ -113,8 +113,6 @@ endif
 
 
 b.o : parse.y
-	@echo You can run as   make ONNX_PATH=/Users/ngu/project/onnx/onnxruntime-osx-arm64-1.16.3
-	@echo "==================================================================================="
 	$(BISEXE) -d -v -o b.cpp parse.y; 
 
 ifeq ($(ONNX_PATH),)

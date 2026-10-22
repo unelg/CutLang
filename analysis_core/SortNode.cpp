@@ -129,7 +129,7 @@ double SortNode::evaluate(AnalysisObjects* ao)
 
     int type=particles.at(0)->type;
     string ac=particles.at(0)->collection;
-    int Max; //Total number of particles of the selected type
+    int Max=0; //Total number of particles of the selected type
     switch(type) //assuming all particles have the same type
     {
       case 12: Max=ao->muos[ac].size(); break;
@@ -140,8 +140,9 @@ double SortNode::evaluate(AnalysisObjects* ao)
        case 8: Max=ao->gams[ac].size();break;
       case 11: Max=ao->taus[ac].size();break;
       case 20: Max=ao->combos[ac].size();break;
+      default: std::cerr<<"sort: No such Particle Type:"<<type<<" for collection:"<<ac<<"\n"; break;
     }
-    double tempFuncVal[Max]; //temporarily stores the function values for the selected type particles
+    vector<double> tempFuncVal(Max); //temporarily stores the function values for the selected type particles
    //cout<<"N = "<<Max<<endl;
     for (int i = 0; i < Max; i++) {
         particles.at(0)->index = i;
@@ -149,9 +150,9 @@ double SortNode::evaluate(AnalysisObjects* ao)
       //  cout<<"FuncValue of ao->eles[ "<<particles.at(0)->collection<<" ].at("<<i<<") = "<<left->evaluate(ao)<<endl;
      }
 	
-	int sortedIndex[Max]; 
-	//SelectionSort(tempFuncVal,sortedIndex, Max, symbol);
-	QuickSort(tempFuncVal,sortedIndex, Max, symbol);
+	vector<int> sortedIndex(Max);
+	//SelectionSort(tempFuncVal.data(),sortedIndex.data(), Max, symbol);
+	QuickSort(tempFuncVal.data(),sortedIndex.data(), Max, symbol);
     switch(type)
     {
 	//sorting

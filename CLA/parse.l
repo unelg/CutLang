@@ -10,6 +10,9 @@ class Node;
 #include <iostream>
 #include "myParticle.h"
 #include "b.hpp"
+// Removed from the rules section after the NB rule, kept here for reference (flex rejects comments there).
+// It never matched: [-]?{real} -> NB comes first and takes the same text.
+// {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 %}
 digit   [0-9]
 integer {digit}+
@@ -207,7 +210,6 @@ daughterY return DAUGHTERY;
 "<<" return BWL;
 [-]?{integer} sscanf(yytext, "%d",&yylval.integer);return INT;
 [-]?{real} sscanf(yytext, "%lf",&yylval.real);return NB ;
-{real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
 [-+*/()&|^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z0-9]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;

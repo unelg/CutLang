@@ -25,10 +25,8 @@
 #define ERRBUG(a) std::cerr<<a
 
 #ifdef ONNX_PRESENT
-#pragma message "ONNX_PRESENT is defined"
-#define OMECMD new OMENode(pippo, oidx, itv->second, ita->second, its->second)    
-#else 
-#pragma message "ONNX_PRESENT is NOT defined"
+#define OMECMD new OMENode(pippo, oidx, itv->second, ita->second, its->second)
+#else
 #define OMECMD new SFuncNode(all,1, "all")
 #endif
 
@@ -118,7 +116,7 @@ std::map< std::string, int> systBANK;
 %token PERM COMB SORT TAKE UNION SUM ADD AVE ANYOF ALLOF
 %token ASCEND DESCEND ALIAS PM HLT
 %token EVENTNO RUNYEAR MCCHANNELNUMBER HFCLASSIFICATION RUNNO LBNO
-%token <real> PNB
+//%token <real> PNB // never produced by the lexer, see parse.l
 %token <real> NB 
 %token <integer> INT
 %token <s> ID HID 
@@ -329,7 +327,7 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
                                 YYERROR;//stops parsing if variable already defined
                               }
                               string pippo=$6;
-                                 int oidx=$14;
+                                 [[maybe_unused]] int oidx=$14; // used by OMECMD only with ONNX_PRESENT
                               NodeVars->insert(make_pair(name, OMECMD   ));
 
             }
@@ -1132,7 +1130,7 @@ function : '{' particules '}' 'm' {    vector<myParticle*> newList;
                                          if ( Initializations->at(0) == "DELPHES2" ) p0s="JetPUPPIAK8";
                                       }
                                       std::string funame=$1; 
-                                      bool named=0; //(funame.find('_') != std::string::npos);
+                                      //bool named=0; //(funame.find('_') != std::string::npos);
                                       std::string varname="";
                                                   //if (!named) varname+=p0s;
                                                   //if (!named) varname+="_";
@@ -3194,10 +3192,10 @@ command : CMD condition { //find a way to print commands
                               Node* a = new SFuncNode(uweight, child ,$2);
 			      NodeCuts->insert(make_pair(++cutcount,a));
                         }
-
-    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
-			NodeCuts->insert(make_pair(++cutcount,a));
-			}
+// never reduced: a plain number is already matched by WEIGHT ID e above (e -> NB)
+//    	| WEIGHT ID NB { Node* a = new SFuncNode(uweight,$3,$2); // (func, value, string)
+//			NodeCuts->insert(make_pair(++cutcount,a));
+//			}
     	| WEIGHT ID ID '(' e ')' {
                                 DEBUG("Weight "<< $2  <<"Will be from table "<< $3<< " using variable: "<< $5 << "\n");
                                 map<string, pair<vector<float>, bool> >::iterator itt;

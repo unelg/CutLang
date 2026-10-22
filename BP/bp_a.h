@@ -48,8 +48,8 @@ class BPdbxA : public dbxA {
       std::string mysystematics;
       std::vector<TString> effCL;
       std::vector< string> binCL;
-      TTree *old_tree;
-      TTreeReader *bpttr;
+//      TTree *old_tree;      // unused
+//      TTreeReader *bpttr;   // unused
 
       unsigned short int TRGe, TRGm;
       unsigned int systematics_bci;
