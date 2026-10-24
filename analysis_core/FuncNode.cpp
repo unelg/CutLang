@@ -423,7 +423,9 @@ void FuncNode::getParticles(std::vector<myParticle *>* particles) {
             DEBUG("FN getP i:"<<i<<" idx:"<<inputParticles[i]->index << " Coll:"<<inputParticles[i]->collection <<"\n");
             bool found=false;
             for(int j=0;j<size;j++){
-                if (inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection)  // AHA BU !!!!!!!!!!!!!!
+                bool sameValue = inputParticles[i]->index==particles->at(j)->index && inputParticles[i]->collection==particles->at(j)->collection;
+                // VALIDATION FIX: per-object placeholders (index 6213) are filled by the object loop: every term needs its own particle
+                if (inputParticles[i]->index==6213 ? inputParticles[i]==particles->at(j) : sameValue)  // AHA BU !!!!!!!!!!!!!!
                 {
                     found=true;break;
                 }
