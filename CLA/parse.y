@@ -125,10 +125,20 @@ std::map< std::string, int> systBANK;
 %token MIN MAX
 %token TRUE FALSE
 %token LT GT LE GE EQ NE IRG ERG
+// An object's criteria may be followed by commands that start with the same keywords
+// (select/reject/histo/print). Keep reading them as criteria of the object (shift).
+%precedence OBJEND
+%precedence CMD HISTO REJEC PRINT
 %left OR
 %left AND
-%token NOT 
+//%token NOT
+// NOT binds tighter than AND/OR: NOT a AND b means (NOT a) AND b, as in C (!) and Python (not)
+%precedence NOT
 %nonassoc LT GT LE GE EQ NE IRG ERG
+// bitwise and shift operators, ordered as in C: | lowest, then &, then << >>, all left-associative
+%left '|'
+%left '&'
+%left BWL BWR
 %left '+' '-'
 %left '*' '/'
 %right '?'
@@ -141,8 +151,10 @@ std::map< std::string, int> systBANK;
 %type <s> ERRTYPE 
 %type <real> NUMBER
 %%
-input : initializations countformats definitions_objects commands 
-      | initializations countformats objects_definitions commands
+// definitions and objects form one list in any order; the region header (ALGO ID) is the first command
+//input : initializations countformats definitions_objects commands
+//      | initializations countformats objects_definitions commands
+input : initializations countformats blocks commands
       ;
 initializations : initializations initialization 
         | 
@@ -198,17 +210,23 @@ initialization :  TRGE  '=' INT {DataFormats->at(0)=$3; string name="TRGe";
                   } 
                 ;
 
-definitions_objects : definitions objects_definitions
-            |
-            ;
+// replaced by blocks: these nested optional lists could derive the same input in several ways
+//definitions_objects : definitions objects_definitions
+//            |
+//            ;
+//
+//objects_definitions : objects definitions_objects
+//            |
+//            ;
+//
+//definitions : definitions definition
+//            |
+//            ;
 
-objects_definitions : objects definitions_objects
-            |
-            ;
-
-definitions : definitions definition 
-            | 
-            ;
+blocks : blocks definition
+       | blocks objectBloc
+       |
+       ;
 
 countformats : countformats countformat
              |
@@ -2476,16 +2494,17 @@ index : '-' INT {$$=-$2;}
           | INT {$$= $1;}
           | {$$= 6213;} // NGU
       ; 
-objects : objectBlocs ALGO ID
-        | objectBlocs 
-        | ALGO
-        | ALGO ID {  DEBUG("Alg is:"<< $2 <<"\n"); 
-                  }
-        ;
-objectBlocs : objectBlocs objectBloc
-            | objectBloc
-            ;
-objectBloc : OBJ ID TAKE ID criteria {
+// replaced by blocks (top of the grammar); the region header is handled by command : ALGO ID
+//objects : objectBlocs ALGO ID
+//        | objectBlocs
+//        | ALGO
+//        | ALGO ID {  DEBUG("Alg is:"<< $2 <<"\n");
+//                  }
+//        ;
+//objectBlocs : objectBlocs objectBloc
+//            | objectBloc
+//            ;
+objectBloc : OBJ ID TAKE ID criteria %prec OBJEND {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
                                         map<string, Node *>::iterator it ;
@@ -2514,7 +2533,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 criteriaBank.insert(make_pair($2,newList));
                                         }
                                     }
-      | OBJ ID ':' ID criteria {
+      | OBJ ID ':' ID criteria %prec OBJEND {
                                         vector<Node*> newList; //empty
                                         TmpCriteria.swap(newList);
                                         map<string, Node *>::iterator it ;
@@ -2543,7 +2562,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                                 criteriaBank.insert(make_pair($2,newList));
                                         }
                                     }
-       | OBJ ID ':' COMB '(' particules ')' hamhum criteria {
+       | OBJ ID ':' COMB '(' particules ')' hamhum criteria %prec OBJEND {
                       DEBUG("COMBI PARTITION: "<<CombiParticle.size()<<"\n");
                       vector<myParticle*> newPList;   
                       CombiParticle.swap(newPList); // RESET combiParticles
@@ -2811,7 +2830,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                      Node* obj=new ObjectNode($2,previous,NULL,newNList,$2 );
                                      ObjectCuts->insert(make_pair($2,obj));
                               }
-         | OBJ ID TAKE ELE criteria {
+         | OBJ ID TAKE ELE criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2820,7 +2839,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-         | OBJ ID ':' ELE criteria {
+         | OBJ ID ':' ELE criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new EleSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2830,7 +2849,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         criteriaBank.insert(make_pair($2,newList));
                                         DEBUG(" Criter:"<<newList[0]->getStr()<<"\n");
                                      }
-	 | OBJ ID TAKE GEN criteria {
+	 | OBJ ID TAKE GEN criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new GenSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2839,7 +2858,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-	 | OBJ ID ':' GEN criteria {
+	 | OBJ ID ':' GEN criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new GenSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2848,7 +2867,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
 				   }
-	 | OBJ ID TAKE TRK criteria {
+	 | OBJ ID TAKE TRK criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new Trk Set\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2857,7 +2876,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-	 | OBJ ID ':' TRK criteria {
+	 | OBJ ID ':' TRK criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new Trk Set\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2867,7 +2886,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         criteriaBank.insert(make_pair($2,newList));
 				   }
                                      
-         | OBJ ID TAKE MUO criteria {
+         | OBJ ID TAKE MUO criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2876,7 +2895,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-         | OBJ ID ':' MUO criteria {
+         | OBJ ID ':' MUO criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new MuoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2886,7 +2905,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         criteriaBank.insert(make_pair($2,newList));
                                         DEBUG(" Criter:"<<newList[0]->getStr()<<"\n");
                                      }
-         | OBJ ID TAKE TAU criteria {
+         | OBJ ID TAKE TAU criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2895,7 +2914,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-         | OBJ ID ':' TAU criteria {
+         | OBJ ID ':' TAU criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new TauSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2904,7 +2923,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                      }
-         | OBJ ID TAKE PHO criteria {   DEBUG(" "<<$2<<" is a new PhoSet\n");
+         | OBJ ID TAKE PHO criteria %prec OBJEND {   DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
@@ -2912,7 +2931,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                     }
-         | OBJ ID ':' PHO criteria {    DEBUG(" "<<$2<<" is a new PhoSet\n");
+         | OBJ ID ':' PHO criteria %prec OBJEND {    DEBUG(" "<<$2<<" is a new PhoSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("PHO",NULL,createNewPho,newList,"obj Pho" );
@@ -2920,7 +2939,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                     }
-         | OBJ ID TAKE JET criteria {   DEBUG(" "<<$2<<" is a new JetSet\n");
+         | OBJ ID TAKE JET criteria %prec OBJEND {   DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
@@ -2928,11 +2947,11 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                     }
-         | OBJ BJET ':' JET criteria {
+         | OBJ BJET ':' JET criteria %prec OBJEND {
                                        yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"*BJET* keyword already defined internally, use another name.");
                                        YYERROR;//stops parsing if variable not found
                                       }
-         | OBJ ID ':' JET criteria {    DEBUG(" "<<$2<<" is a new JetSet\n");
+         | OBJ ID ':' JET criteria %prec OBJEND {    DEBUG(" "<<$2<<" is a new JetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
                                         Node* previous=new ObjectNode("JET",NULL,createNewJet,newList,"obj Jet" ); //
@@ -2940,7 +2959,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                       }
-           | OBJ ID TAKE FJET criteria {
+           | OBJ ID TAKE FJET criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new FatJetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2949,7 +2968,7 @@ objectBloc : OBJ ID TAKE ID criteria {
                                         ObjectCuts->insert(make_pair($2,obj));
                                         criteriaBank.insert(make_pair($2,newList));
                                       }
-           | OBJ ID ':' FJET criteria {
+           | OBJ ID ':' FJET criteria %prec OBJEND {
                                         DEBUG(" "<<$2<<" is a new FatJetSet\n");
                                         vector<Node*> newList;
                                         TmpCriteria.swap(newList);
@@ -2976,7 +2995,7 @@ objectBloc : OBJ ID TAKE ID criteria {
 	                                        ObjectCuts->insert(make_pair($2,obj));
 				   }
 */	
-             | OBJ ID TAKE LEP criteria
+             | OBJ ID TAKE LEP criteria %prec OBJEND
 //           | OBJ ID ':' BJET criteria
 //           | OBJ ID ':' QGJET criteria
 //           | OBJ ID ':' NUMET criteria
@@ -3061,8 +3080,9 @@ hamhum : ALIAS ID {
 criteria : criteria criterion 
          | criterion 
          ;
-criterion : CMD condition   { TmpCriteria.push_back($2); }
-          | CMD action      { TmpCriteria.push_back($2); }
+// CMD condition is already covered by CMD action (action -> condition), so it is not needed here
+//criterion : CMD condition   { TmpCriteria.push_back($2); }
+criterion : CMD action      { TmpCriteria.push_back($2); }
           | PRINT variablelist
                   { DEBUG("criterion print in CSV format\n");
                     string pippo="Print"; pippo+= to_string(cutcount);
@@ -3115,7 +3135,7 @@ command : CMD condition { //find a way to print commands
                             BinCuts->insert(make_pair(++bincount, $3));
                             BinNames->insert(make_pair(bincount,$2));
                         }
-        | ALGO ID {  cout << " ALGO: "<< $2<<" \t";
+        | ALGO ID {  DEBUG(" ALGO: "<< $2<<" \t");
                   }
         | SAVE ID { NodeCuts->insert(make_pair(++cutcount, new SaveNode($2))); }
         | SAVE ID CSV variablelist
