@@ -22,6 +22,7 @@
 #include <iostream>
 #include <fstream>
 #include <ios>
+#include <iomanip> // setprecision for save-to-CSV and print
 #include <stdio.h>
 #include <cstdio>
 
@@ -70,7 +71,7 @@ public:
     virtual void Reset() override{}
     virtual void createFile() override {
             if(savetype=="variableList"){
-                if (selector) csvsave.open(fname);
+                if (selector) { csvsave.open(fname); csvsave << std::setprecision(10); } // 10 digits: event/run numbers (32-bit) exact
                 return ;
             }
 	    ftsave = new TFile (fname.c_str(),"RECREATE"); // il faut changer le nom du fichier
@@ -103,6 +104,8 @@ public:
             }
             csvsave << "\n";
            } else {
+            std::streamsize oldPrecision = std::cout.precision(); // remember the current setting (default 6)
+            std::cout.precision(10);                              // 10 digits: event/run numbers (32-bit) exact
 // .........vector<Node*> variableList;
             for (int i = 0; i < (int)variableList.size(); i++)
             {
@@ -156,6 +159,7 @@ public:
             if (aparticles->size()>0){
               if (aparticles->at(0)->type == 21) {std::cout<<"\t";} else std::cout << "\n"; 
             } else std::cout << " . \n";
+            std::cout.precision(oldPrecision);                    // restore it for CutLang's other output
            }
             return 1;
       }
