@@ -92,7 +92,7 @@ def singleAnalysis(arguments, histoId=None):
         if res == 0:
             print("hadd finished successfully, now removing auxiliary files")
             removePattern('histoOut-BP_*.root')
-            removePattern(['_head.ini', '_algos.ini', '_inifile'])
+            removePattern(['_head.ini', '_algos.ini', '_inifile', '_linemap'])
             removePattern('BP_*-card.ini')
     return res
 
@@ -136,6 +136,9 @@ for i, arg in enumerate(sys.argv[3::2]):
 
 
 
+# error messages of CLA.exe point to this file
+os.environ.setdefault('CLA_ADLFILE', os.path.abspath(arguments["inifile"]))
+
 # for histoList command
 f = open(arguments["inifile"], 'r')
 Lines = f.readlines()
@@ -150,7 +153,9 @@ for linenumber, line in enumerate(Lines):
         histoLists[histoListControl+"_count"] = 0
     if histoListControl == False and "histoList" not in line and line[0] != "#": # if histoListControl is not defined and is not comment line or histoList line
         newLines += line
-    
+    elif histoListControl == False and line[0] == "#": # comment lines become empty lines, so the line numbers stay the same
+        newLines += "\n"
+
     for histo in histoLists: # histoLists for loop: fills histo definitions using counter
         if line.strip() == histo and line[0] != "#":
             newLines = "\n".join(newLines.split("\n")[:-2])+"\n"
@@ -266,8 +271,9 @@ if arguments['parallel'] > 1:
         os.system('root -l -q \'' + base_dir + 'analysis_core/FinalEff.C("' + './histoOut-' + arguments[
             'inifile'] + '.root", \'' + str(skip_histos) + '\', \'' + str(skip_effs) + '\')\'')
     removePattern('histoOut-BP_*.root')
-    removePattern(['_head.ini', '_algos.ini', '_inifile'])
+    removePattern(['_head.ini', '_algos.ini', '_inifile', '_linemap'])
     removePattern('BP_*-card.ini')
     os.system('rm -r '+base_dir+'temp*')
 else:
-    singleAnalysis(arguments)
+    if singleAnalysis(arguments) != 0:
+        sys.exit(1)  # CLA.exe has printed the reason

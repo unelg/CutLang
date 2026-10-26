@@ -12,6 +12,8 @@
 #include "bp_a.h"
 #include "analysis_core.h"
 #include "dbx_a.h"
+#include <cstdio>
+#include <unistd.h>     // _exit
 
 //#define _CLV_
 
@@ -31,6 +33,18 @@ extern int cutcount;
 extern int bincount;
 extern int yylineno;
 extern char * yytext;
+extern void cl_lexer_start(FILE *f);  // CLA/parse.l
+extern void cl_report(int line, const std::string &msg, const std::string &hint, bool caret);  // CLA/parse.y
+extern std::string cl_adl_name();
+
+// Stop after an ADL error. _exit, not exit: exit() runs ROOT's cleanup, which closes the output
+// file while the regions parsed before the error are half built, and that crashes or hangs on
+// lxplus. Nothing is saved after a parse error anyway (no events processed).
+static void cl_stop_parsing() {
+  cerr << "CutLang stopped: cannot parse " << cl_adl_name() << " (no events processed)\n";
+  cout.flush(); cerr.flush(); fflush(NULL);
+  _exit(99);
+}
 
 bool is_number(const std::string& s)
 {
@@ -61,9 +75,12 @@ int BPdbxA:: readAnalysisParams() {
     TString ObjList2file="\n";
 
     bool algorithmnow=false;
+    int adlline=0; // line in the user's ADL file, following the #@line markers of the CLA drivers
 
     while ( ! cardfile.eof() ) {
        getline( cardfile, tempLine );
+       adlline++;
+       if (tempLine.compare(0, 7, "#@line ") == 0) { adlline = atoi(tempLine.c_str()+7) - 1; continue; }
        if ( tempLine[0] == '#' ) continue; // skip comment lines starting with #
        if (tempLine.find_first_of("#") != std::string::npos ){ // skip anything after #
          tempLine.erase(tempLine.find_first_of("#"));
@@ -93,6 +110,10 @@ int BPdbxA:: readAnalysisParams() {
 
 //---------algo / region etc.
        if ((firstword == "algo") || (firstword=="region"))  {
+           if (resultstr.size() < 2) {
+             cl_report(adlline, "'"+resultstr[0]+"' needs a name", "Write the region as: region <name>", false);
+             cl_stop_parsing();
+           }
            cout <<"\t REGION/ALGO:"<< resultstr[1] <<"\n";
            algorithmnow=true;
            algoname=resultstr[1];
@@ -205,15 +226,14 @@ int BPdbxA:: readAnalysisParams() {
        TRGValues={1,0,0,0,0};
        yyin=fopen(CardName,"r");
        if (yyin==NULL) { cout << "Cardfile "<<CardName<<" has problems, please check\n";}
+       cl_lexer_start(yyin); // line counting restarts for every card
        cutcount=0;
        bincount=0;
-       cout <<"==Parsing started:\n";
+       cout <<"==Parsing started:"<<endl;
        retval=yyparse(&parts,&NodeVars,&ListParts,&NodeCuts, &BinCuts, &ObjectCuts, &NameInitializations, &TRGValues, &ListTables, &cntHistos, &systmap, &BinNames);
-       cout <<"Parsing finished.==\n";
+       cout <<"Parsing finished.=="<<endl;
        if (retval){
-         cout << "\nyyParse returns SYNTAX error in the input file.\n";
-         cout << "Offending text is: "<< yytext<<"\n";
-         exit (99); 
+         cl_stop_parsing();
        }
        cout << "We have "<<NodeCuts.size() << " CutLang Cuts, "<<ObjectCuts.size()  <<" CutLang objects and ";
        cout << BinCuts.size() << " Bins\n";

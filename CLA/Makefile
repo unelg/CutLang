@@ -122,7 +122,7 @@ else
 endif
 
 l.o : parse.l b.o
-	$(LEXEXE) -s -o l.cpp parse.l ; $(CXX) $(INCLUDES) -c l.cpp
+	$(LEXEXE) -s -o l.cpp parse.l && $(CXX) $(INCLUDES) -c l.cpp
 
 auxiliaries:
 	$(MAKE) -C $(SUBDIRLOC)analysis_core

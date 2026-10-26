@@ -58,13 +58,24 @@ case $key in
       exit 1
     fi
     origdir=$PWD
+    # error messages of CLA.exe point to this file (a parallel sub-run keeps the user's file)
+    if [ -z "$CLA_ADLFILE" ]; then
+      case "$ADLFILE" in
+        /*) CLA_ADLFILE=$ADLFILE ;;
+        *)  CLA_ADLFILE=$origdir/$ADLFILE ;;
+      esac
+      export CLA_ADLFILE
+    fi
     pushd . > /dev/null
-    cp $ADLFILE $tempdir; 
+    cp $ADLFILE $tempdir;
     cd $tempdir;
     ADLFILE=`echo $ADLFILE | rev | cut -d'/' -f 1|rev`
     INIFILE=_lastrun.adl
-# convert the \ signs back to same line
-    sed -e ':x /\\$/ { N; s/\\\n//g ; bx }' ${ADLFILE} > ${INIFILE}
+# convert the \ signs back to same line; an empty line is added for each joined line
+# so that the line numbers stay the same as in the ADL file
+    LC_ALL=C awk '{ if (sub(/\\$/, "")) { buf = buf $0; n++; next }
+           print buf $0; for (i = 0; i < n; i++) print ""; buf = ""; n = 0 }
+         END { if (n) { print buf; for (i = 1; i < n; i++) print "" } }' ${ADLFILE} > ${INIFILE}
     cat ${INIFILE} | grep -v '^#' | grep "region " > pippo
     cat ${INIFILE} | grep -v '^#' | grep "algo " >> pippo
     Nalgo=`cat pippo | wc -l`
@@ -207,12 +218,11 @@ if [ ${PRLL} -ne 1 ]; then
     se=0
   fi
   mkdir -p $WORK_PATH/temp_adl_$SHELL_ID
-  cp ${INIFILE} $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl  # temporary adl to supress eff tables from parallel processes
-  if [[ -n $(grep -i "SkipEffs" ${INIFILE}) ]]; then 
-    sed -i '/SkipEffs/Id' $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
-  fi
+  # temporary adl to supress eff tables from parallel processes: an existing SkipEffs line is
+  # emptied (not deleted) and "#@line 1" after the added line keeps the ADL line numbers
+  LC_ALL=C awk 'tolower($0) ~ /skipeffs/ { print ""; next } { print }' ${INIFILE} > _tempor.adl
 #  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl | tee $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
-  echo 'SkipEffs = 1' | cat - $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl > _tempor.adl; mv _tempor.adl $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl
+  printf 'SkipEffs = 1\n#@line 1\n' | cat - _tempor.adl > $WORK_PATH/temp_adl_$SHELL_ID/tempor.adl; rm -f _tempor.adl
 else
   if [ $Nalgo -gt 1 ]; then
   echo Analysis with Multiple Regions $tempdir
@@ -243,7 +253,9 @@ for bpfile in `ls -1 BP_*-card.ini`; do
     HISTOLISTVAR=0
     # for histoList command
     if grep -q "histoList" "$bpfile"; then
-     cat ${bpfile} | grep -v '^#' > ${bpfile}.tmp
+     # comments become empty lines and #@line markers are kept, so that line numbers before
+     # the histoList expansion stay correct (lines after an expanded histoList can shift)
+     LC_ALL=C awk '/^#@line / { print; next } /^#/ { print ""; next } { print }' ${bpfile} > ${bpfile}.tmp
      abpfile=${bpfile}.tmp
      HISTOLISTVAR=1
     fi
@@ -294,6 +306,7 @@ for bpfile in `ls -1 BP_*-card.ini`; do
 done
 
 ######### finished HistoList
+clastatus=0   # exit code of this script: not 0 if CutLang stopped (for example on an ADL error)
 for datafile in $inputfilelist; do
 
 if ! [[ "${PRLL}" =~ ^[0-9]+$ ]] || [ ${PRLL} -gt $numcpu ] || [ ${PRLL} -lt 0 ]; then
@@ -336,22 +349,30 @@ elif [ ${PRLL} -ne 1 ]; then
 
     cd $WORK_PATH/temp_runs_${SHELL_ID}_${lp}
     if [ $lp -eq $((PRLL-1)) ]; then # calls CLA.sh from temp folders
-      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 2>/dev/null > ../temp_adl_$SHELL_ID/out_${lp}.txt
+      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 2>../temp_adl_$SHELL_ID/err_${lp}.txt > ../temp_adl_$SHELL_ID/out_${lp}.txt
     else
-      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP 
-      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP 2>/dev/null > ../temp_adl_$SHELL_ID/out_${lp}.txt
+      echo CLA $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl+EVENTS%PRLL)) -v $VERBOSE $DEPP
+      ./CLA.sh $_dataf $datatype -i ../temp_adl_$SHELL_ID/tempor.adl -s $((STRT+lp*intrvl)) -e $((intrvl)) -v $VERBOSE  $DEPP 2>../temp_adl_$SHELL_ID/err_${lp}.txt > ../temp_adl_$SHELL_ID/out_${lp}.txt
     fi
   }
 #####################################
 
-  if [ $? -eq 0 ]; then # multithreading
-    for ((i = 0 ; i < ${PRLL} ; i++)); do
-      multitask "$i" &
-    done
-    wait
-  fi
-  if [ $? -eq 0 ]; then
+  prc=0
+  pids=()
+  for ((i = 0 ; i < ${PRLL} ; i++)); do # multithreading
+    multitask "$i" &
+    pids+=($!)
+  done
+  for p in "${pids[@]}"; do
+    wait $p || prc=1
+  done
+  if [ $prc -ne 0 ]; then
+    # every process parses the same ADL, so the messages of the first one are enough
+    cat $WORK_PATH/temp_adl_$SHELL_ID/err_0.txt >&2
+    rm -rf $WORK_PATH/temp_runs_${SHELL_ID}_* $WORK_PATH/temp_adl_$SHELL_ID  # temp folders of this run
+    clastatus=99
+  else
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
     rm -f $PWD/histoOut-${rbase}.root
     allHistos=""
@@ -373,24 +394,25 @@ elif [ ${PRLL} -ne 1 ]; then
       rm -f $PWD/histoOut-BP_*.root
       rm -f $PWD/_head.ini $PWD/_algos.ini $PWD/_inifile
       rm -f $PWD/BP_*-card.ini 
-      rm -f $PWD/out1 
+      rm -f $PWD/out1
       rm -f $PWD/algdeps.cmd
     fi
+    if [ $addRootName -eq 0 ]; then
+       outfilename=histoOut-${rbase}.root
+    else
+       outfilename=histoOut-${rbase}-${database}.root
+    fi
+    echo "end CLA_multicore. Output file:  " ${outfilename}
+    mv histoOut-${rbase}.root ${origdir}/$outfilename
   fi
-  if [ $addRootName -eq 0 ]; then
-     outfilename=histoOut-${rbase}.root
-  else
-     outfilename=histoOut-${rbase}-${database}.root
-  fi
-  echo "end CLA_multicore. Output file:  " ${outfilename} 
-  mv histoOut-${rbase}.root ${origdir}/$outfilename
 else
 ########################################## SINGLE CORE
   rm $PWD/histoOut-BP_*.root 2>/dev/null 
   echo $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
-  $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS} 
+  $execmd $datafile -inp $datatype -BP $Nalgo -EVT $EVENTS -V ${VERBOSE} -ST $STRT -S ${SYST} ${HLTLIST} ${EXARG} ${DEPS}
+  rc=$?
   database=`echo ${datafile} | rev | cut -d'/' -f 1 | cut -f2- -d'.'|rev`
-  if [ $? -eq 0 ]; then
+  if [ $rc -eq 0 ]; then
     rbase=`echo ${ADLFILE} | rev | cut -d'/' -f 1 | rev|cut -f1 -d'.'`
     if [ -f "$PWD/histoOut-${rbase}.root" ]; then
       rm -f  $PWD/histoOut-${rbase}.root
@@ -403,18 +425,19 @@ else
     if [ $? -ne 0 ]; then
      echo "hadd failed. Check auxiliary files in $tempdir ."
     fi
+    if [ $addRootName -eq 0 ]; then
+       outfilename=histoOut-${rbase}.root
+    else
+       outfilename=histoOut-${rbase}-${database}.root
+    fi
+    echo "end CLA single. Output file: " $outfilename
+    mv histoOut-${rbase}.root ${origdir}/$outfilename
   else
-    echo "CutLang failed. "
+    clastatus=$rc   # CLA.exe has printed the reason; no output file is written
   fi
-  if [ $addRootName -eq 0 ]; then
-     outfilename=histoOut-${rbase}.root
-  else
-     outfilename=histoOut-${rbase}-${database}.root
-  fi
-  echo "end CLA single. Output file: " $outfilename
-  mv histoOut-${rbase}.root ${origdir}/$outfilename
 
 fi
 done
 popd > /dev/null
 #rm -r "$tempdir"
+exit $clastatus

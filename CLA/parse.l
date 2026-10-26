@@ -13,6 +13,16 @@ class Node;
 // Removed from the rules section after the NB rule, kept here for reference (flex rejects comments there).
 // It never matched: [-]?{real} -> NB comes first and takes the same text.
 // {real} sscanf(yytext, "%lf",&yylval.real);return PNB ;
+
+// Position of the current token, used in error messages (see cl_report in parse.y)
+int cl_tokcol = 1;   // column where the current token starts
+int cl_toklen = 0;   // length of the current token
+static int cl_col = 1; // column of the next character
+#define YY_USER_ACTION { cl_tokcol = cl_col; cl_toklen = yyleng; \
+                         for (int i = 0; i < yyleng; i++) { if (yytext[i] == '\n') cl_col = 1; else cl_col++; } }
+void cl_bad_char(const char *txt);          // reports a character no rule accepts
+void cl_lexer_fatal(const char *msg);       // reports the position and exits (no C++ attributes here: flex passes this block through m4)
+#define YY_FATAL_ERROR(msg) cl_lexer_fatal(msg)
 %}
 digit   [0-9]
 integer {digit}+
@@ -179,8 +189,9 @@ daughterY return DAUGHTERY;
 "AND"|"&&"|"and" return AND;//logical ops
 "OR"|"||"|"or" return OR;
 "NOT" return NOT;
-"#".*"\n" ;
-[ \t\n] ;
+^"#@line "[0-9]+[^\n]*\n yylineno = atoi(yytext+7); // the next line is line N of the ADL file of the user (marker written by the CLA drivers; no apostrophes in flex actions)
+"#"[^\n]* ;
+[ \t\r\n] ; // \r: files with Windows line endings
 [aA][vV][eE] return AVE;
 [sS][uU][mM] return SUM;
 [aA][dD][dD] return ADD;
@@ -213,4 +224,12 @@ daughterY return DAUGHTERY;
 [-+*/()&|^:\[\]{}_mqPE,?=] return *yytext;
 [a-zA-Z0-9]+(?:_[a-zA-Z]+[a-zA-Z0-9]*)*[a-zA-Z0-9]+ yylval.s=strdup(yytext);return ID;
 "\""[^\"]*"\"" yylval.s=strdup(yytext);return HID;
+[\xC2-\xF4][\x80-\xBF]+ cl_bad_char(yytext); return LEXERROR;
+. cl_bad_char(yytext); return LEXERROR;
 %%
+// Start reading a new card file: line and column counting restart at 1
+void cl_lexer_start(FILE *f) {
+  yyrestart(f);
+  yylineno = 1;
+  cl_col = 1;
+}

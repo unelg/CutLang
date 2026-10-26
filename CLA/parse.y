@@ -13,6 +13,10 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <fstream>
+#include <cstdio>
+#include <cctype>
+#include <unistd.h>     // _exit
 
 //#define _CLV_
 #ifdef _CLV_
@@ -34,12 +38,15 @@ extern int yylex();
 extern int yylineno;
 extern map<string, TTreeReader*> ttr_map;
 
+// Error messages give the file and line in the user's ADL file and show the source line (see the end of this file)
+void cl_report(int line, const std::string &msg, const std::string &hint, bool caret);
+
 void yyerror(list<string> *parts, map<string,Node*>* NodeVars, map<string,vector<myParticle*> >* ListParts,
                 map<int,Node*>* NodeCuts, map<int,Node*>* BinCuts, map<string,Node*>* ObjectCuts,
                 vector<string>* Initializations, vector<int>* DataFormats, map <string, pair<vector<float>, bool> >* ListTables,
                 map<string, vector<cntHisto> > *cntHistos,  map<int, vector<string> > *systmap,  map<int, string > *BinNames,
-                const char *s) { 
-                   std::cerr << "ERROR: " << s << "\t at line: " << yylineno <<  std::endl; } 
+                const char *s) {
+                   cl_report(yylineno, s, "", false); }
 int cutcount;
 int bincount; 
 using namespace std;
@@ -81,6 +88,9 @@ std::map< std::string, int> systBANK;
 }
 //%define parse.lac full
 //%define parse.error verbose
+%require "3.6"
+// syntax errors are reported by yyreport_syntax_error at the end of this file
+%define parse.error custom
 
 // the order of parameters is important!!!
 %parse-param {std::list<std::string> *parts}
@@ -97,7 +107,8 @@ std::map< std::string, int> systBANK;
 %parse-param {std::map<int, std::string>* BinNames}
 %token COUNTSFORMAT COUNTS ERR_SYST ERR_STAT PROCESS
 %token PAPEXPERIMENT PAPID PAPPUBLICATION PAPSQRTS PAPLUMI PAPARXIV PAPHEPDATA PAPDOI PAPTITLE
-%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC 
+%token DEF CMD HISTO OBJ ALGO WEIGHT REJEC
+%token LEXERROR // returned by the lexer for a character that no rule accepts, after reporting it
 %token SYSTEMATIC SYST_W_MC SYST_W_JVT SYST_W_PILEUP SYST_W_LEP SYST_W_BTAG SYST_TTREE
 %token TABLE BINS TABLETYPE ERRORS NVARS ADLINFO 
 %token ELE MUO LEP TAU PHO JET BJET QGJET FJET NUMET METLV GEN TRK //particle types
@@ -3494,6 +3505,144 @@ condition :  e LT e { $$=new BinaryNode(lt,$1,$3,"<");  }
            | condition AND condition { $$=new BinaryNode(LogicalAnd,$1,$3,"AND"); } 
            | condition OR condition  { $$=new BinaryNode(LogicalOr, $1,$3,"OR"); }
 	   |           NOT condition { $$=new UnaryAONode(LogicalNot,$2,"NOT"); }
-           | '(' condition ')' { $$=$2; } 
+           | '(' condition ')' { $$=$2; }
            ;
 %%
+// ---------------------------------------------------------------------------
+// Error messages. The CLA drivers put the user's ADL file in CLA_ADLFILE and keep
+// its line numbers in the card files (#@line markers), so messages can point to it.
+extern char *yytext;
+extern int cl_tokcol, cl_toklen;
+
+static std::string cl_adl_path() { const char *p = getenv("CLA_ADLFILE"); return p ? p : ""; }
+
+std::string cl_adl_name() {
+  std::string p = cl_adl_path();
+  if (p.empty()) return "ADL file";
+  size_t s = p.find_last_of('/');
+  return s == std::string::npos ? p : p.substr(s+1);
+}
+
+static bool cl_source_line(int line, std::string &text) {
+  std::ifstream f(cl_adl_path());
+  if (!f) return false;
+  std::string l;
+  for (int i = 1; std::getline(f, l); i++) if (i == line) { text = l; return true; }
+  return false;
+}
+
+// Print "ERROR: file, line N: msg", an optional hint, the source line and a ^ under the current token
+void cl_report(int line, const std::string &msg, const std::string &hint, bool caret) {
+  std::cout.flush();   // keep the order of stdout and stderr in log files
+  std::cerr << "ERROR: " << cl_adl_name() << ", line " << line << ": " << msg << "\n";
+  if (!hint.empty()) std::cerr << "       " << hint << "\n";
+  std::string src;
+  if (!cl_source_line(line, src)) return;
+  if (!src.empty() && src.back() == '\r') src.pop_back();
+  char num[16];
+  snprintf(num, sizeof num, "%5d | ", line);
+  std::cerr << num << src << "\n";
+  if (!caret || cl_toklen <= 0) return;
+  // spacing in the card can differ from the source line ("region" becomes "algo"),
+  // so take the occurrence of the token that is closest to its column in the card
+  std::string tok(yytext, cl_toklen);
+  long best = -1;
+  for (size_t pos = src.find(tok); pos != std::string::npos; pos = src.find(tok, pos+1))
+    if (best < 0 || labs((long)pos - (cl_tokcol-1)) < labs(best - (cl_tokcol-1))) best = pos;
+  if (best < 0) return;
+  std::string pad, mark = "^";
+  for (long i = 0; i < best; i++) {
+    unsigned char c = src[i];
+    if ((c & 0xC0) == 0x80) continue;      // UTF-8 continuation byte: same character
+    pad += (c == '\t') ? '\t' : ' ';
+  }
+  int nchar = 0;
+  for (unsigned char c : tok) if ((c & 0xC0) != 0x80) nchar++;
+  for (int i = 1; i < nchar; i++) mark += '~';
+  std::cerr << "      | " << pad << mark << "\n";
+}
+
+// Called by the lexer for a character that no rule accepts
+void cl_bad_char(const char *txt) {
+  std::string t(txt), desc, hint;
+  unsigned char c = t[0];
+  if (c >= 0x80) {
+    std::string bytes;
+    char hex[8];
+    for (unsigned char b : t) { snprintf(hex, sizeof hex, bytes.empty() ? "%02X" : " %02X", b); bytes += hex; }
+    struct { const char *utf8, *name, *use; } known[] = {
+      {"\xE2\x88\x92", "Unicode minus sign",          "the ASCII '-'"},
+      {"\xE2\x80\x93", "en dash",                     "the ASCII '-'"},
+      {"\xE2\x80\x94", "em dash",                     "the ASCII '-'"},
+      {"\xE2\x80\x9C", "left double quotation mark",  "straight double quotes \"...\""},
+      {"\xE2\x80\x9D", "right double quotation mark", "straight double quotes \"...\""},
+      {"\xE2\x80\x98", "left single quotation mark",  "straight double quotes \"...\""},
+      {"\xE2\x80\x99", "right single quotation mark", "straight double quotes \"...\""},
+      {"\xC2\xA0",     "non-breaking space",          "a normal space"},
+      {"\xE2\x89\xA4", "less-than-or-equal sign",     "'<='"},
+      {"\xE2\x89\xA5", "greater-than-or-equal sign",  "'>='"},
+      {"\xC3\x97",     "multiplication sign",         "'*'"},
+    };
+    desc = " (bytes " + bytes;
+    for (auto &k : known) if (t == k.utf8) {
+      desc += std::string(", ") + k.name;
+      hint = std::string("Use ") + k.use + ". Text copied from PDF or Word files often contains such characters.";
+    }
+    desc += ")";
+    if (hint.empty()) hint = "Non-ASCII characters are allowed only inside quoted text.";
+  } else if (c < 0x20 || c == 0x7F) {
+    char hex[24];
+    snprintf(hex, sizeof hex, "(byte %02X)", c);
+    t = hex;
+  } else {
+    switch (c) {
+      case ';':  hint = "ADL statements do not end with ';'."; break;
+      case '\\': hint = "'\\' is allowed only at the end of a line, to continue the statement on the next line."; break;
+      case '!':  hint = "Use NOT for negation and != for 'not equal'."; break;
+      case '\'': hint = "Text must be written in double quotes \"...\"."; break;
+      default:   if (isalpha(c)) hint = "Single-letter names are not allowed; use at least two characters.";
+    }
+  }
+  std::string shown = (c < 0x20 || c == 0x7F) ? t : "'" + t + "'";
+  cl_report(yylineno, "unexpected character " + shown + desc, hint, c >= 0x20 && c != 0x7F);
+}
+
+// Called by flex instead of printing only "flex scanner jammed"
+void cl_lexer_fatal(const char *msg) {
+  cl_report(yylineno, std::string("lexer error (") + msg + ") near '" + yytext + "'", "", false);
+  std::cout.flush(); fflush(NULL);
+  _exit(99);   // same reason as cl_stop_parsing in BP/bp_a.cxx
+}
+
+// Syntax errors: say what was found, with a hint for common mistakes
+static int yyreport_syntax_error(const yypcontext_t *yyctx, std::list<std::string> *parts, std::map<std::string,Node*>* NodeVars,
+        std::map<std::string,std::vector<myParticle*> >* ListParts, std::map<int,Node*>* NodeCuts, std::map<int,Node*>* BinCuts,
+        std::map<std::string,Node*>* ObjectCuts, std::vector<std::string>* Initializations, std::vector<int>* DataFormats,
+        std::map<std::string,std::pair<std::vector<float>, bool> >* ListTables, std::map<std::string, std::vector<cntHisto> >* cntHistos,
+        std::map<int, std::vector<std::string> > *systmap, std::map<int, std::string>* BinNames) {
+  yysymbol_kind_t tok = yypcontext_token(yyctx);
+  if (tok == YYSYMBOL_LEXERROR) return 0;          // the lexer has already reported the character
+  std::string text(yytext), msg = "syntax error", hint;
+  if (tok == YYSYMBOL_YYEOF) {
+    cl_report(yylineno, msg + ", unexpected end of file", "", false);
+    return 0;
+  }
+  bool word = !text.empty() && isalpha((unsigned char)text[0]);
+  for (unsigned char c : text) if (!isalnum(c) && c != '_') word = false;
+  if      (tok == YYSYMBOL_ID)                         msg += ", unexpected name '" + text + "'";
+  else if (tok == YYSYMBOL_INT || tok == YYSYMBOL_NB)  msg += ", unexpected number '" + text + "'";
+  else if (tok == YYSYMBOL_HID)                        msg += ", unexpected text " + text;
+  else if (word)                                       msg += ", unexpected keyword '" + text + "'";
+  else                                                 msg += ", unexpected '" + text + "'";
+  yysymbol_kind_t expected[YYNTOKENS];
+  int nexp = yypcontext_expected_tokens(yyctx, expected, YYNTOKENS);
+  bool wants_name = false;
+  for (int i = 0; i < nexp; i++) if (expected[i] == YYSYMBOL_ID) wants_name = true;
+  if (word && tok != YYSYMBOL_ID && wants_name) {
+    msg += ", expecting a name";
+    hint = "'" + text + "' is a reserved word and cannot be used as a name.";
+  }
+  if (text == "=") msg += " (did you mean '=='?)";
+  cl_report(yylineno, msg, hint, true);
+  return 0;
+}

@@ -11,7 +11,7 @@ for linenumber, line in enumerate(Lines):
     elif "CLA.py ./" in line:
         cla=linenumber
     if cla != -1:
-        if "yyParse returns SYNTAX error in the input file" in line:
+        if "yyParse returns SYNTAX error in the input file" in line or "CutLang stopped:" in line:
             finding = linenumber
             ending = linenumber + 1
         elif "Aborted" in line:
