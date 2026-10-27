@@ -1,0 +1,4 @@
+# 1D histo whose variable starts with a number literal
+region h1
+  select Size(JET) >= 1
+  histo hA , "2 x leading jet pT", 50, 0, 1000, 2 * pT(JET[0])

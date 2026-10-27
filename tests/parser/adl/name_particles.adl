@@ -1,0 +1,8 @@
+object goodJets
+  take Jet
+  select pT(Jet) > 30
+define pair = goodJets[0] goodJets[1]
+define yy = pair
+region rr
+  select Size(goodJets) >= 2
+  select m(yy) > 0

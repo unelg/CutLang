@@ -58,7 +58,14 @@ jobs:
     - name: Build CutLang
       working-directory: CLA
       run: |
-        source ../root/bin/thisroot.sh; root --version; make
+        # from a clean state and in parallel, so missing dependencies between targets show up here
+        source ../root/bin/thisroot.sh; root --version; make clean && make -j$(nproc)
+
+    - name: Parser Tests
+      working-directory: .
+      run: |
+        # grammar conflict counts, accepted and malformed ADL, error messages and exit codes (tests/parser/README.md)
+        source root/bin/thisroot.sh; tests/parser/run_parser_tests.sh tests/parser/out_ci
     
     - name: Run Tests
       working-directory: .github/workflows
@@ -113,8 +120,15 @@ jobs:
         git commit -m "automated update" 
         git --version
         git status
-        git push origin ${GITHUB_REF##*/}
-        git --version
+        # git push origin ${GITHUB_REF##*/}
+        # git --version
+        # other workflows push to the same branch on the same push (VERSION bump), so rebase on them first
+        branch=${GITHUB_REF##*/}
+        for i in 1 2 3; do
+          git pull --rebase --autostash origin $branch && git push origin HEAD:$branch && exit 0
+          echo "push attempt $i rejected, retrying"; sleep 15
+        done
+        echo "could not push the updated baseline"; exit 1
 
     - name: Check for Bad Run Flag
       id: check_files
@@ -134,3 +148,11 @@ jobs:
       with:
         name: tests (ubuntu-latest)
         path: ./.github/workflows/artifacts
+
+    - name: Upload Parser Test Output
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v6
+      with:
+        name: parser tests (ubuntu-latest)
+        path: ./tests/parser/out_ci
+        if-no-files-found: ignore

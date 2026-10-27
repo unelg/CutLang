@@ -1,0 +1,13 @@
+# NOT precedence check (fix E). nj = Size(JET)
+region notand
+  select NOT Size(JET) >= 2 AND Size(JET) >= 1
+region notand_left
+  select (NOT Size(JET) >= 2) AND Size(JET) >= 1
+region notand_right
+  select NOT (Size(JET) >= 2 AND Size(JET) >= 1)
+region notor
+  select NOT Size(JET) >= 2 OR Size(JET) >= 3
+region notor_left
+  select (NOT Size(JET) >= 2) OR Size(JET) >= 3
+region notor_right
+  select NOT (Size(JET) >= 2 OR Size(JET) >= 3)

@@ -1,0 +1,18 @@
+define MZ = 91.2
+object goodJets
+  take Jet
+  select pT(Jet) > 30
+object goodMuons
+  take Muon
+  select pT(Muon) > 10
+define mjj = m(goodJets[0] goodJets[1])
+object cleanJets
+  take goodJets
+  select pT(goodJets) > 40
+region twojets
+  select Size(goodJets) >= 2
+  select mjj > 50
+  histo hmjj , "mjj", 50, 0, 1000, mjj
+region onemu
+  select Size(goodMuons) >= 1
+  select Size(cleanJets) >= 1

@@ -1,0 +1,15 @@
+# line 1: comment
+# line 2: comment
+object goodJets
+  take Jet
+  select pT(Jet) > 30
+# line 6: comment
+
+region first
+  select Size(goodJets) >= 1
+  # line 10: indented comment
+  select Size(goodJets) >= 2
+
+region second
+  select Size(goodJets) >= 1
+  select Size(goodJets) >>> 2

@@ -1,0 +1,14 @@
+# line 1
+# line 2
+# line 3
+object goodJets
+  take Jet
+  select pT(Jet) > 30
+
+region first
+  # line 9
+  # line 10
+  select Size(goodJets) >>> 1
+
+region second
+  select Size(goodJets) >= 2

@@ -1,0 +1,8 @@
+object goodJets
+  take Jet
+  select pT(Jet) > 30 \
+         and abs(eta(Jet)) < 2.5
+
+region only
+  select Size(goodJets) >= 1
+  select Size(goodJets) >>> 2

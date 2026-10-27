@@ -1,0 +1,57 @@
+# Combined conditions in object blocks must select the same objects as the same cuts written
+# one term per line. Before commit 2265a88 the terms of one condition could be evaluated on
+# different objects (4-6 % of events were wrong for the first three blocks below).
+object andOne
+  take JET
+  select Pt(JET) > 30 && AbsEta(JET) < 1.0
+object andSwapped
+  take JET
+  select AbsEta(JET) < 1.0 && Pt(JET) > 30
+object andTwo
+  take JET
+  select Pt(JET) > 30
+  select AbsEta(JET) < 1.0
+object rangeOne
+  take JET
+  select Pt(JET) > 40 && Pt(JET) < 80
+object rangeTwo
+  take JET
+  select Pt(JET) > 40
+  select Pt(JET) < 80
+object rejectOr
+  take JET
+  reject Pt(JET) <= 30 || AbsEta(JET) >= 1.0
+# JVT cleaning as written in the SingleTop and TTbar ADLs, and three disjoint groups of kept jets
+object jvtOne
+  take JET
+  select Pt(JET) > 30.0
+  select AbsEta(JET) < 2.5
+  reject Pt(JET) < 60.0 && ( AbsEta(JET) < 2.4 && jet_jvt(JET) < 0.59 )
+object keptA
+  take JET
+  select Pt(JET) > 30.0
+  select AbsEta(JET) < 2.5
+  select Pt(JET) >= 60
+object keptB
+  take JET
+  select Pt(JET) > 30.0
+  select AbsEta(JET) < 2.5
+  select Pt(JET) < 60
+  select AbsEta(JET) >= 2.4
+object keptC
+  take JET
+  select Pt(JET) > 30.0
+  select AbsEta(JET) < 2.5
+  select Pt(JET) < 60
+  select AbsEta(JET) < 2.4
+  select jet_jvt(JET) >= 0.59
+region and_ok
+  select Size(andOne) == Size(andTwo)
+region and_swapped_ok
+  select Size(andSwapped) == Size(andTwo)
+region range_ok
+  select Size(rangeOne) == Size(rangeTwo)
+region reject_or_ok
+  select Size(rejectOr) == Size(andTwo)
+region jvt_ok
+  select Size(jvtOne) == Size(keptA) + Size(keptB) + Size(keptC)

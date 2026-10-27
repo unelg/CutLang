@@ -1,0 +1,11 @@
+# print lists: commas are optional, so "aa -bb" could be one value or two (conflict group G).
+# The longest expression wins: "aa -bb" is aa - bb. A signed number is one token: "5 -3" is two values.
+define aa = 7
+define bb = 2
+region printlists
+  select ALL
+  print aa , -bb
+  print aa -bb
+  print aa - bb
+  print 5 -3
+  print 5 - 3

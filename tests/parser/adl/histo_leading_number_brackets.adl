@@ -1,0 +1,3 @@
+region h3
+  select Size(JET) >= 1
+  histo hC , "2 x leading jet pT", 50, 0, 1000, (2 * pT(JET[0]))

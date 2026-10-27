@@ -1,0 +1,61 @@
+# CutLang parser tests, run by run_parser_tests.sh
+#
+# name | driver | result | checks
+#   name    ADL file adl/<name>.adl
+#   driver  sh = runs/CLA.sh, j2 = runs/CLA.sh -j 2, py = runs/CLA.py
+#   result  ok   = exit 0
+#           fail = clean non-zero exit (a crash, a timeout or "scanner jammed" always fails)
+#   checks  space separated, all must hold:
+#           msg:<text>    the output contains <text> (the rest of the line, so it must be the last check)
+#           print:<file>  the values printed by the first event equal expected/<file>
+#           same:<A>=<B>  regions A and B end with the same number of events
+#           allpass:<R>   every cut of region R keeps all events
+
+# ---- grammar conveniences: accepted, and read the intended way
+operators                     | sh | ok   | print:operators.txt
+not_precedence                | sh | ok   | same:notand=notand_left same:notor=notor_left
+lists_print                   | sh | ok   | print:lists_print.txt
+name_variable                 | sh | ok   |
+name_particles                | sh | ok   |
+name_index                    | sh | ok   |
+# define of a whole collection is rejected (known limitation: reported one line late, line not checked)
+name_object                   | sh | fail | msg:is known as an object
+histo_leading_number          | sh | fail | msg:histo_leading_number.adl, line 4:
+histo_leading_var             | sh | ok   |
+histo_leading_number_brackets | sh | ok   |
+regions_only                  | sh | ok   |
+interleaved_blocks            | sh | ok   |
+region_named                  | sh | ok   |
+crlf_ok                       | sh | ok   |
+comment_at_eof_ok             | sh | ok   |
+paper0_original_ok            | sh | ok   |
+paper4_continuation           | sh | ok   |
+# combined conditions in object blocks select the same objects as one term per line (commit 2265a88)
+compound_object_cuts          | sh | ok   | allpass:and_ok allpass:and_swapped_ok allpass:range_ok allpass:reject_or_ok allpass:jvt_ok
+
+# ---- malformed ADL: the right line of the user's file and a useful message
+paper1_unicode_minus          | sh | fail | msg:paper1_unicode_minus.adl, line 62: unexpected character
+paper2_single_equals          | sh | fail | msg:paper2_single_equals.adl, line 83: syntax error, unexpected '=' (did you mean '=='?)
+paper3_reserved_word          | sh | fail | msg:paper3_reserved_word.adl, line 92: syntax error, unexpected keyword 'all', expecting a name
+paper4b_continuation_error    | sh | fail | msg:paper4b_continuation_error.adl, line 83:
+lineno_region1                | sh | fail | msg:lineno_region1.adl, line 11:
+lineno_region2                | sh | fail | msg:lineno_region2.adl, line 15:
+lineno_multi_first            | sh | fail | msg:lineno_multi_first.adl, line 11:
+lineno_multi_third            | sh | fail | msg:lineno_multi_third.adl, line 13:
+lineno_continuation           | sh | fail | msg:lineno_continuation.adl, line 8:
+lineno_dep_after_blank        | sh | fail | msg:lineno_dep_after_blank.adl, line 14:
+char_at                       | sh | fail | msg:line 6: unexpected character '@'
+char_dollar                   | sh | fail | msg:line 6: unexpected character '$'
+char_backslash_mid            | sh | fail | msg:is allowed only at the end of a line
+char_semicolon                | sh | fail | msg:ADL statements do not end with ';'
+char_single_letter            | sh | fail | msg:Single-letter names are not allowed
+char_curly_quotes             | sh | fail | msg:left double quotation mark
+char_nbsp                     | sh | fail | msg:line 5: unexpected character
+region_noname                 | sh | fail | msg:'region' needs a name
+region_noname_single          | sh | fail | msg:line 4: 'region' needs a name
+
+# ---- the drivers pass the result on
+paper2_single_equals          | j2 | fail | msg:paper2_single_equals.adl, line 83:
+paper0_original_ok            | j2 | ok   |
+paper2_single_equals          | py | fail | msg:paper2_single_equals.adl, line 83:
+paper0_original_ok            | py | ok   |

@@ -1,0 +1,6 @@
+object goodJets
+  take Jet
+  select pT(Jet) > 30
+
+region
+  select Size(goodJets) >= 2

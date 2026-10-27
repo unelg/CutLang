@@ -1,0 +1,8 @@
+# no define and no object block: only regions
+region anyjet
+  select ALL
+  select Size(JET) >= 1
+
+region twojets
+  select Size(JET) >= 2
+  histo hj1pt , "leading jet pT", 50, 0, 500, pT(JET[0])

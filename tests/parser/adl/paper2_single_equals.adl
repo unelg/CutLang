@@ -1,0 +1,110 @@
+# Z Boson Analysis
+
+#info analysis
+#  title Review of the 13 TeV ATLAS Open Data Release
+#  experiment ATLAS
+#  id PUB-OTRC-2020-01
+#  lumi 10 fb-1
+#  sqrts 13
+#  publication https://cds.cern.ch/record/2707171
+
+object goodEle : ELE
+  select Pt(ELE) > 25
+  select absEta(ELE) < 2.47
+  reject absEta(ELE) [] 1.37 1.52
+  select lep_isTightID(ELE) == 1
+  select lep_ptcone30(ELE)/lep_pt(ELE) < 0.15
+  select lep_etcone20(ELE)/lep_pt(ELE) < 0.15
+  select abs(lep_z0(ELE)*sin(Theta(ELE))) < 0.5
+  select abs(lep_trackd0pvunbiased(ELE))/lep_tracksigd0pvunbiased(ELE) < 5
+
+object goodMuo : MUO
+  select Pt(MUO) > 25
+  select absEta(MUO) < 2.5
+  select lep_isTightID(MUO) == 1
+  select lep_ptcone30(MUO)/lep_pt(MUO) < 0.15
+  select lep_etcone20(MUO)/lep_pt(MUO) < 0.15
+  select abs(lep_trackd0pvunbiased(MUO))/lep_tracksigd0pvunbiased(MUO) < 3
+  select abs(lep_z0(MUO)*sin(Theta(MUO))) < 0.5
+
+object goodLep : Union(goodEle,goodMuo)
+
+#### weights ####
+##### weights #####
+define Sfactor : scaleFactor_ELE*scaleFactor_MUON*scaleFactor_LepTRIGGER*scaleFactor_PILEUP*scaleFactor_BTAG
+define Lumi : 10064 # 10 fb-1
+
+# Single-top samples (DSID 410011-410026) carry mis-scaled mcWeight and SumWeights
+# branches in the 2020 ntuples; only sign(mcWeight) is used and the sum of weights
+# is the number of generated events.
+define isSingleTop = HSTEP(channelNumber > 410010) * HSTEP(channelNumber < 410027)
+define mcW = isSingleTop * (HSTEP(mcWeight) - HSTEP(0 - mcWeight)) + (1 - isSingleTop) * mcWeight
+define totweight : XSection*mcW*Sfactor*Lumi
+
+define totweightAuto : HSTEP(channelNumber < 310000) * 1 + HSTEP(channelNumber > 310000) * totweight
+# For data, total weight = 1
+
+define Zll : goodLep[0] goodLep[1]
+define Zllwindow : abs(m(Zll) - 91.18)
+
+region Preselection
+  select ALL
+  weight eventweight totweightAuto
+  select trigE == 1 || trigM == 1
+  select Size(goodEle) >= 0
+  select Size(goodMuo) >= 0
+  select Size(goodLep) == 2
+  Sort Pt(goodLep) descend
+  select Size(JET) == 0
+  select q(goodLep[0])*q(goodLep[1]) < 0
+  select abs(PDGID(goodLep[0])) == abs(PDGID(goodLep[1]))
+  histo hPtleadlep,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
+  histo hEtaleadlep,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
+  histo hPhileadlep,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
+  histo hEleadlep,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
+  histo hQleadlep,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
+  histo hPDGID,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+
+region Zee
+  Preselection
+  select Zllwindow < 25
+  select abs(PDGID(goodLep[0])) == 11
+  histo hZeeMass1,"Zee Mass (GeV)",30,68,114,m(Zll)
+  histo hPtleadlep1,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
+  histo hEtaleadlep1,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
+  histo hPhileadlep1,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
+  histo hEleadlep1,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
+  histo hQleadlep1,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
+  histo hPDGID1,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+
+region Zmumu
+  Preselection
+  select Zllwindow < 25
+  select abs(PDGID(goodLep[0])) = 13 || abs(PDGID(goodLep[1])) == 13
+  histo hZmmMass1,"Zmm Mass (GeV)",30,68,114,m(Zll)
+  histo hPtleadlep1,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
+  histo hEtaleadlep1,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
+  histo hPhileadlep1,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
+  histo hEleadlep1,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
+  histo hQleadlep1,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
+  histo hPDGID1,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+
+region Zll
+  select ALL
+  weight eventweight totweightAuto
+  select trigE == 1 || trigM == 1
+  select Size(goodEle) >= 0
+  select Size(goodMuo) >= 0
+  select Size(goodLep) == 2
+  Sort Pt(goodLep) descend
+  select Size(JET) == 0
+  select q(goodLep[0])*q(goodLep[1]) < 0
+  select abs(PDGID(goodLep[0])) == abs(PDGID(goodLep[1]))
+  select Zllwindow < 25
+  histo hPtleadlep,"Pt Leadlep (GeV)",20,0,200,Pt(goodLep[0])
+  histo hEtaleadlep,"Eta Leadlep",30,-3,3,Eta(goodLep[0])
+  histo hPhileadlep,"Phi Leadlep",32,-3.2,3.2,Phi(goodLep[0])
+  histo hEleadlep,"E Leadlep (GeV)",30,0,300,E(goodLep[0])
+  histo hQleadlep,"Q Leadlep",7,-1.75,1.75,q(goodLep[0])
+  histo hPDGID,"|PDGID| Leadlep",15,5.5,20.5,abs(PDGID(goodLep[0]))
+  histo hZllMass1,"Zll Mass (GeV)",30,68,114,m(Zll)
