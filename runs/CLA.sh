@@ -383,6 +383,15 @@ elif [ ${PRLL} -ne 1 ]; then
 #   echo "hadd -f $PWD/histoOut-${rbase}.root $allHistos ------- merging all root files"
     echo "----> merging all root files"
     hadd -f $PWD/histoOut-${rbase}.root $allHistos >> /dev/null # merging all root files
+    # "save ... csv" files: every job writes the same files, joined here in event order
+    for f in $WORK_PATH/temp_runs_${SHELL_ID}_0/*.csv; do
+      [ -f "$f" ] || continue
+      csvname=`basename $f`
+      : > ${origdir}/$csvname
+      for ((i = 0 ; i < ${PRLL} ; i++)); do
+        cat $WORK_PATH/temp_runs_${SHELL_ID}_${i}/$csvname >> ${origdir}/$csvname
+      done
+    done
     wait
     # prints efficiencies of combined files
     if [ $? -eq 0 ]; then
@@ -432,6 +441,9 @@ else
     fi
     echo "end CLA single. Output file: " $outfilename
     mv histoOut-${rbase}.root ${origdir}/$outfilename
+    for file in *.csv; do
+    	[[ -f "$file" ]] && mv "$file" ${origdir}/
+    done
   else
     clastatus=$rc   # CLA.exe has printed the reason; no output file is written
   fi
