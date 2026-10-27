@@ -30,8 +30,13 @@ PRLL=1
 DEPS="w"
 DEPP=" "
 HLTLIST=" "
-datadir=$(realpath $1)
+#datadir=$(realpath $1)
 dataurl=$1
+if [[ $1 == *"://"* ]]; then
+  datadir=$1   # URL (root://, https://): read by ROOT, not a local path
+else
+  datadir=$(realpath $1)
+fi
 datatype=$2
 numcpu=1
 addRootName=0
@@ -163,7 +168,7 @@ if [ -d ${datadir} ]; then
    inputfilelist=`ls ${datadir}/*.root`
    echo $inputfilelist
    echo '-----------------------------'
-else if [ -n ${datadir+x} ] && [ ! -f "$datadir" ]; then
+else if [ -n ${datadir+x} ] && [ ! -f "$datadir" ] && [[ $datadir != *"://"* ]]; then
   	tput setaf 1; echo "${datadir} does not exist."
   	tput sgr0
      fi
