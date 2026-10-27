@@ -42,6 +42,7 @@ printed_values() {
 }
 
 mkdir -p "$OUT" || exit 1
+OUT=$(cd "$OUT" && pwd)   # absolute: each case runs in its own directory
 echo "CutLang: $CL"
 echo "input:   $IN ($FMT, $EVTS events)"
 echo "output:  $OUT"

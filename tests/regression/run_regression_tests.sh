@@ -27,6 +27,7 @@ sha256() { if command -v sha256sum > /dev/null 2>&1; then sha256sum "$@"; else s
 trim() { printf '%s' "$1" | sed -e 's/^[[:blank:]]*//' -e 's/[[:blank:]]*$//'; }
 
 mkdir -p "$OUT" || exit 1
+OUT=$(cd "$OUT" && pwd)   # absolute: the checks and cases below run in other directories
 echo "CutLang: $CL"
 echo "suite:   $SUITE"
 echo "output:  $OUT"
