@@ -60,6 +60,21 @@ def read_histos(path):
     return histos
 
 
+def same_axes(a, b):
+    """axis lines: the same number of bins, and bin edges equal up to rounding (an edge at 0 comes
+    out as about +-1e-16, different on each platform)"""
+    if len(a) != len(b):
+        return False
+    for la, lb in zip(a, b):
+        ea, eb = [float(x) for x in la.split()[1:]], [float(x) for x in lb.split()[1:]]
+        if len(ea) != len(eb) or ea[0] != eb[0]:   # ea[0] is the number of bins
+            return False
+        width = abs(ea[-1] - ea[1]) or 1.0         # axis range
+        if any(abs(x - y) > 1e-9 * width for x, y in zip(ea[1:], eb[1:])):
+            return False
+    return True
+
+
 def compare_histos(ref, out, problems):
     if not (out / "histos.txt").exists():
         problems.append("histos.txt: missing (no output file?)")
@@ -71,8 +86,11 @@ def compare_histos(ref, out, problems):
         problems.append(f"{key}: not in the reference")
     for key in sorted(a.keys() & b.keys()):
         (ha, va), (hb, vb) = a[key], b[key]
-        if ha != hb:
-            problems.append(f"{key}: header or binning differs: {ha[0]!r} vs {hb[0]!r}")
+        if ha[0] != hb[0]:
+            problems.append(f"{key}: header differs: {ha[0]!r} vs {hb[0]!r}")
+            continue
+        if not same_axes(ha[1:], hb[1:]):
+            problems.append(f"{key}: binning differs: {ha[1:]!r} vs {hb[1:]!r}")
             continue
         for i, (x, y) in enumerate(zip(va, vb)):
             if not math.isclose(x, y, rel_tol=REL_TOL, abs_tol=0.0):
