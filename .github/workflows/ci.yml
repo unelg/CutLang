@@ -66,6 +66,23 @@ jobs:
       run: |
         # grammar conflict counts, accepted and malformed ADL, error messages and exit codes (tests/parser/README.md)
         source root/bin/thisroot.sh; tests/parser/run_parser_tests.sh tests/parser/out_ci
+
+    - name: Suite Commit
+      id: suite
+      run: echo "ref=$(cat tests/regression/suite_commit.txt)" >> $GITHUB_OUTPUT
+
+    - name: Checkout ADL Benchmark Suite
+      uses: actions/checkout@v6
+      with:
+        repository: ahmetcansansar/ADL4ATLASOpenData
+        ref: ${{ steps.suite.outputs.ref }}
+        path: ADL4ATLASOpenData
+
+    - name: Regression Tests
+      working-directory: .
+      run: |
+        # the suite analyses on its skims, compared with tests/regression/reference (tests/regression/README.md)
+        source root/bin/thisroot.sh; SUITE=ADL4ATLASOpenData tests/regression/run_regression_tests.sh tests/regression/out_ci
     
     - name: Run Tests
       working-directory: .github/workflows
@@ -155,4 +172,12 @@ jobs:
       with:
         name: parser tests (ubuntu-latest)
         path: ./tests/parser/out_ci
+        if-no-files-found: ignore
+
+    - name: Upload Regression Test Output
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v6
+      with:
+        name: regression tests (ubuntu-latest)
+        path: ./tests/regression/out_ci
         if-no-files-found: ignore

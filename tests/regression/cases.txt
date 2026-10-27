@@ -1,0 +1,19 @@
+# CutLang regression tests, run by run_regression_tests.sh
+#
+# analysis | skim | driver
+#   analysis  analyses/<analysis>/<analysis>.adl of the ADL4ATLASOpenData suite; references in reference/<analysis>/
+#   skim      tests/skims/<skim>.5000evt.root of the suite
+#   driver    sh = runs/CLA.sh, j2 = runs/CLA.sh -j 2 (compared with the same reference as sh)
+
+WBosonAnalysis        | mc_410000.ttbar_lep.1lep                        | sh
+SingleTopAnalysis     | mc_410011.single_top_tchan.1lep                 | sh
+TTbarAnalysis         | mc_410000.ttbar_lep.1lep                        | sh
+ZBosonAnalysis        | mc_363490.llll.2lep                             | sh
+SUSYAnalysis          | mc_392985.SlepSlep_direct_600p0_300p0_2L8.2lep  | sh
+WZDiBosonAnalysis     | mc_363491.lllv.3lep                             | sh
+HZZAnalysis           | mc_345060.ggH125_ZZ4lep.4lep                    | sh
+ZZDiBosonAnalysis     | mc_363490.llll.4lep                             | sh
+ZPrimeBoostedAnalysis | mc_301325.ZPrime1000_tt.1largeRjet1lep          | sh
+
+# the parallel run gives the same events and histograms
+ZBosonAnalysis        | mc_363490.llll.2lep                             | j2

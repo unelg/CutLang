@@ -17,3 +17,5 @@ CLA/CLA.exe
 .DS_Store
 .github/previous/*
 tests/parser/out_*
+tests/regression/out_*
+tests/*/__pycache__/
