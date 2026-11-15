@@ -69,6 +69,7 @@ vardef {varname}" "?":"" "?.*"\n"
 [rR][uU][nN][nN][oO] return RUNNO;
 [lL][bB][nN][oO] return LBNO;
 "OME" return OME;
+"BDT" return BDT;
 
 [pP][rR][iI][nN][tT] return PRINT;
 [oO][nN]|[tT][rR][uU][eE] return TRUE; 
