@@ -33,7 +33,6 @@
 #else
 #define OMECMD new SFuncNode(all,1, "all")
 #endif
-
 extern int yylex();
 extern int yylineno;
 extern map<string, TTreeReader*> ttr_map;
@@ -114,7 +113,7 @@ std::map< std::string, int> systBANK;
 %token ELE MUO LEP TAU PHO JET BJET QGJET FJET NUMET METLV GEN TRK //particle types
 %token TRGE TRGM SKPE SKPH SAVE CSV 
 %token IDX METSIGNIF HARDMET HARDMETPHI
-%token TTBARNNLOREC OME
+%token TTBARNNLOREC OME BDT
 %token PHI ETA RAP ABSETA THETA PT PZ NBF DR DPHI DETA PTCONE ETCONE Z0 CROSS DOTP //functions
 %token NUMOF HT APLANARITY SPHERICITY MET ALL NONE LEPSF BTAGSF PDGID FLAVOR TAU32 XSLUMICORRSF//simple funcs
 %token RELISO DXY EDXY DZ EDZ ISBTAG ISCTAG ISTAUTAG 
@@ -364,7 +363,51 @@ definition : DEF ID  '=' particules {  DEBUG($2<<" will be defined as a new part
 //             1  2   3   4   5    6          7     8           9   10             
                                cout << "Found an ONNX model execution:"<< $6 << "\n"; 
             }
-
+            | DEF ID '=' BDT '(' description ',' ID ')' {
+                             string name = $2;
+                             if (NodeVars->find(name) != NodeVars->end()) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable already defined");
+                                 YYERROR;
+                             }
+                             string vname = $8;
+                             map<string,vector<Node*> >::iterator itv = VariableListBank.find(vname);
+                             if (itv == VariableListBank.end()) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined!");
+                                 YYERROR;
+                             }
+                             string xml1 = $6;
+                             Node* node = nullptr;
+                             try {
+                                 node = new BDTNode(name, xml1, "", "BDTG", itv->second);
+                             } catch (const std::exception& e) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, e.what());
+                                 YYERROR;
+                             }
+                             NodeVars->insert(make_pair(name, node));
+            }
+            | DEF ID '=' BDT '(' description ',' description ',' ID ')' {
+                             string name = $2;
+                             if (NodeVars->find(name) != NodeVars->end()) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"Variable already defined");
+                                 YYERROR;
+                             }
+                             string vname = $10;
+                             map<string,vector<Node*> >::iterator itv = VariableListBank.find(vname);
+                             if (itv == VariableListBank.end()) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"VariableList not defined!");
+                                 YYERROR;
+                             }
+                             string xml1 = $6;
+                             string xml2 = $8;
+                             Node* node = nullptr;
+                             try {
+                                 node = new BDTNode(name, xml1, xml2, "BDTG", itv->second);
+                             } catch (const std::exception& e) {
+                                 yyerror(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, e.what());
+                                 YYERROR;
+                             }
+                             NodeVars->insert(make_pair(name, node));
+            }
             | DEF ID '=' CONSTITS list2 {  DEBUG($2<<" will be defined as the children of particles.\n");
                                    pnum=0;
                                    string name = $2;

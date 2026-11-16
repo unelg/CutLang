@@ -1,0 +1,54 @@
+# BDT(xml1, xml2, varlist): even event numbers use xml1, odd event numbers use xml2
+# BDT(xml, varlist)       : one file, used for every event
+# The list follows the order of variables in xml
+
+# define objects BDT inputs are built from
+object goodJets : JET
+	select pT(JET) > 50
+	select abs(eta(JET)) < 2.8
+
+# define event variable for BDTs needs
+define mEff = MET + fHT(goodJets)
+
+# list the BDT inputs in same order as Expression entries in XML weight files
+#    (met, meff, Ap, jetPt0-3, jetEta0-3)
+define BDTvars = { MET mEff fAplanarity(goodJets)
+                   pT(goodJets[0]) pT(goodJets[1]) pT(goodJets[2]) pT(goodJets[3])
+                   eta(goodJets[0]) eta(goodJets[1]) eta(goodJets[2]) eta(goodJets[3]) }
+
+# make BDT scores using paths of weight files and input list
+
+#    single file, every event uses it
+define BDTscoreW1  = BDT ( "/path/to/ZeroLepton2018-SRBDT-GGd1_weight1.xml" , BDTvars)
+define BDTscoreW2  = BDT ( "/path/to/ZeroLepton2018-SRBDT-GGd1_weight2.xml" , BDTvars)
+
+#    two files, even events use first one, odd events use second one
+define BDTscoreW12 = BDT ( "/path/to/ZeroLepton2018-SRBDT-GGd1_weight1.xml" ,
+                             "/path/to/ZeroLepton2018-SRBDT-GGd1_weight2.xml" , BDTvars)
+
+# evaluate the score and apply the cut on it. 
+# the score is between 0 and 1
+
+# weight for every event from first file
+region SRBDTw1
+	select ALL
+	select size(goodJets) >= 4
+	select MET > 300
+	select mEff > 1400
+	select BDTscoreW1 > 0.97
+
+# weight for every event from second file
+region SRBDTw2
+	select ALL
+	select size(goodJets) >= 4
+	select MET > 300
+	select mEff > 1400
+	select BDTscoreW2 > 0.97
+
+# even events use first weights from first file, odd events use weights from second file
+region SRBDTw12
+	select ALL
+	select size(goodJets) >= 4
+	select MET > 300
+	select mEff > 1400
+	select BDTscoreW12 > 0.97

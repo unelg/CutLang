@@ -29,6 +29,7 @@
 #ifdef ONNX_PRESENT
 #include "OMENode.h"
 #endif
+#include "BDTNode.h"
 //Delete Nodes
 //Print Nodes As Defined by User
 #endif /* NodeTree_h */
