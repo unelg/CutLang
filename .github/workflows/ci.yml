@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v6
@@ -163,14 +163,14 @@ jobs:
     - name: Upload Output File
       uses: actions/upload-artifact@v6
       with:
-        name: tests (ubuntu-latest)
+        name: tests (ubuntu-24.04)
         path: ./.github/workflows/artifacts
 
     - name: Upload Parser Test Output
       if: ${{ failure() }}
       uses: actions/upload-artifact@v6
       with:
-        name: parser tests (ubuntu-latest)
+        name: parser tests (ubuntu-24.04)
         path: ./tests/parser/out_ci
         if-no-files-found: ignore
 
@@ -178,6 +178,6 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v6
       with:
-        name: regression tests (ubuntu-latest)
+        name: regression tests (ubuntu-24.04)
         path: ./tests/regression/out_ci
         if-no-files-found: ignore
